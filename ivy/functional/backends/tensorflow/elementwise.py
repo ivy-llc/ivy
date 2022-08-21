@@ -1,5 +1,7 @@
 # global
+import numpy as np
 import tensorflow as tf
+from tensorflow.experimental.numpy import any
 from typing import Union
 
 # local
@@ -8,15 +10,6 @@ import ivy
 
 def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
-
-
-def _clamp_bits(x1, x2):
-    x2 = tf.clip_by_value(
-        x2,
-        tf.constant(0, dtype=x2.dtype),
-        tf.constant(x1.dtype.size * 8 - 1, dtype=x2.dtype),
-    )
-    return x1, x2
 
 
 def abs(
@@ -107,7 +100,6 @@ def bitwise_left_shift(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -131,7 +123,6 @@ def bitwise_right_shift(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -222,7 +213,13 @@ def floor_divide(
     out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.experimental.numpy.floor_divide(x1, x2)
+    if (not np.all(x2)) or (np.any(x2) == -0):  # check for division by zero
+        ret = np.floor_divide(x1, x2)
+    else:
+        ret = tf.experimental.numpy.floor_divide(x1, x2)
+
+    if (any(isinf(x1)) and any(isfinite(x2))) or (any(isfinite(x1)) and any(isinf(x2))):
+        return ivy.full_like(ret, floor(divide(x1, x2)), dtype=ret.dtype)
     return ret
 
 
@@ -290,16 +287,12 @@ def less_equal(
 def log(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        x = tf.cast(x, dtype=ivy.default_float_dtype())
     return tf.math.log(x)
 
 
 def log10(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        x = tf.cast(x, dtype=ivy.default_float_dtype())
     return tf.math.log(x) / tf.math.log(tf.constant(10.0, x.dtype))
 
 
@@ -314,8 +307,6 @@ def log1p(
 def log2(
     x: Union[tf.Tensor, tf.Variable], *, out: Union[tf.Tensor, tf.Variable] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_int_dtype(x):
-        x = tf.cast(x, dtype=ivy.default_float_dtype())
     return tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype))
 
 
@@ -382,9 +373,6 @@ def negative(
     return tf.negative(x)
 
 
-negative.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
-
-
 def not_equal(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -419,9 +407,6 @@ def pow(
                 x2 = tf.cast(x2, tf.float64)
             return tf.cast(tf.experimental.numpy.power(x1, x2), promoted_type)
     return tf.experimental.numpy.power(x1, x2)
-
-
-pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
 
 
 def remainder(
@@ -507,16 +492,13 @@ def trunc(
     ret = x
     if not ivy.is_array(x):
         raise Exception("Input must be array")
-    elif not ("int" in str(x.dtype)):
-        if not ret.get_shape().ndims == 0:
-            ret = tf.tensor_scatter_nd_update(
-                x, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
-            )
-            ret = tf.tensor_scatter_nd_update(
-                ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
-            )
-        else:
-            ret = (tf.math.floor if ret > 0 else tf.math.ceil)(ret)
+    elif not ("int" in str(x.dtype) or ret.get_shape().ndims == 0):
+        ret = tf.tensor_scatter_nd_update(
+            ret, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
+        )
+        ret = tf.tensor_scatter_nd_update(
+            ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
+        )
     return ret
 
 

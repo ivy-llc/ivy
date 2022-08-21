@@ -115,13 +115,7 @@ class ArrayWithStatistical(abc.ABC):
         ivy.array([0.667, 0.667, 9.33 ])
 
         """
-        return ivy.var(
-            self._data,
-            axis=axis,
-            correction=correction,
-            keepdims=keepdims,
-            out=out
-        )
+        return ivy.var(self._data, axis, correction, keepdims, out=out)
 
     def prod(
         self: ivy.Array,

@@ -1,24 +1,15 @@
 """Collection of tests for elementwise functions."""
 
-from numbers import Number
-
 # global
 import numpy as np
 from hypothesis import given, assume, strategies as st
+from numbers import Number
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
-_zero = np.asarray(0, dtype="uint8")
-_one = np.asarray(1, dtype="uint8")
-
-
-def _not_too_close_to_zero(x):
-    f = np.vectorize(lambda item: item + (_one if np.isclose(item, 0) else _zero))
-    return f(x)
+import ivy.functional.backends.numpy as ivy_np
 
 
 # abs
@@ -259,12 +250,7 @@ def test_atan(
 # atan2
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
-        num_arrays=2,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="atan2"),
     data=st.data(),
@@ -283,14 +269,6 @@ def test_atan2(
 ):
     input_dtype, x = dtype_and_x
 
-    x1 = np.asarray(x[0], dtype=input_dtype[0])
-    x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    x1 = _not_too_close_to_zero(x1)
-    x2 = _not_too_close_to_zero(x2)
-
-    assume(not (np.any(np.isclose(x1, 0)) or np.any(np.isclose(x2, 0))))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -301,8 +279,8 @@ def test_atan2(
         instance_method=instance_method,
         fw=fw,
         fn_name="atan2",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -397,10 +375,6 @@ def test_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    # make sure x2 is not negative
-    if "int" in input_dtype[0] and "int" in input_dtype[1]:
-        x[1] = np.abs(x[1])
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -510,10 +484,6 @@ def test_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    # make sure x2 is not negative
-    if "int" in input_dtype[0] and "int" in input_dtype[1]:
-        x[1] = np.abs(x[1])
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -690,9 +660,8 @@ def test_divide(
 
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # prevent too close to zero
-    assume(not np.any(np.isclose(x2, 0)))
+    # prevent division by 0
+    assume(np.all(x2 != 0))
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -831,10 +800,6 @@ def test_floor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    x = np.asarray(x, dtype=input_dtype)
-    assume(not np.any(np.isclose(x, 0)))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -845,7 +810,7 @@ def test_floor(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor",
-        x=x,
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -854,8 +819,7 @@ def test_floor(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=2,
         allow_inf=False,
-        large_value_safety_factor=2,
-        shared_dtype=True,
+        safety_factor=0.5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
     data=st.data(),
@@ -873,15 +837,10 @@ def test_floor_divide(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    x1 = (np.asarray(x[0], dtype=input_dtype[0]),)
+    x2 = (np.asarray(x[1], dtype=input_dtype[1]),)
+    assume(np.all(x2[0] != 0))
 
-    x1 = np.asarray(x[0], dtype=input_dtype[0])
-    x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # Make sure it's not dividing value too close to zero
-    assume(not np.any(np.isclose(x2, 0)))
-
-    # Absolute tolerance is 1,
-    # due to flooring can cause absolute error of 1 due to precision
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -892,9 +851,8 @@ def test_floor_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="floor_divide",
-        x1=x1,
-        x2=x2,
-        atol_=1,
+        x1=x1[0],
+        x2=x2[0],
     )
 
 
@@ -920,12 +878,6 @@ def test_greater(
 ):
     input_dtype, x = dtype_and_x
 
-    x1 = np.asarray(x[0], dtype=input_dtype[0])
-    x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # make sure they're not too close together
-    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -936,8 +888,8 @@ def test_greater(
         instance_method=instance_method,
         fw=fw,
         fn_name="greater",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -963,12 +915,6 @@ def test_greater_equal(
 ):
     input_dtype, x = dtype_and_x
 
-    x1 = np.asarray(x[0], dtype=input_dtype[0])
-    x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # make sure they're not too close together
-    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -979,8 +925,8 @@ def test_greater_equal(
         instance_method=instance_method,
         fw=fw,
         fn_name="greater_equal",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -1086,9 +1032,7 @@ def test_isnan(
 # less
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        num_arrays=2,
-        min_num_dims=1,
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="less"),
     data=st.data(),
@@ -1107,12 +1051,6 @@ def test_less(
 ):
     input_dtype, x = dtype_and_x
 
-    x1 = np.asarray(x[0], dtype=input_dtype[0])
-    x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # make sure they're not too close together
-    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1123,8 +1061,8 @@ def test_less(
         instance_method=instance_method,
         fw=fw,
         fn_name="less",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -1150,12 +1088,6 @@ def test_less_equal(
 ):
     input_dtype, x = dtype_and_x
 
-    x1 = np.asarray(x[0], dtype=input_dtype[0])
-    x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # make sure they're not too close together
-    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1166,8 +1098,8 @@ def test_less_equal(
         instance_method=instance_method,
         fw=fw,
         fn_name="less_equal",
-        x1=x1,
-        x2=x2,
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -1190,10 +1122,6 @@ def test_log(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    # avoid logging values too close to zero
-    assume(not np.any(np.isclose(x, 0)))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1227,10 +1155,6 @@ def test_log1p(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    # avoid logging values too close to zero
-    assume(not np.any(np.isclose(x, 0)))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1264,10 +1188,6 @@ def test_log2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    # avoid logging values too close to zero
-    assume(not np.any(np.isclose(x, 0)))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1301,10 +1221,6 @@ def test_log10(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    # avoid logging values too close to zero
-    assume(not np.any(np.isclose(x, 0)))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1656,27 +1572,16 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    # input_dtype, x = (['int16', 'int8'], [[2], [64]])
-
-    # Make sure x2 isn't a float when x1 is integer
-    assume(
-        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
-    )
-
-    # Make sure x2 is non-negative when both is integer
-    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
-        x[1] = np.abs(x[1])
-
-    x[0] = _not_too_close_to_zero(x[0])
-    x[1] = _not_too_close_to_zero(x[1])
-
-    # Makesure it doesn't overflow
-    nt = np.promote_types(input_dtype[0], input_dtype[1])
-    size = nt.itemsize * 8 - 1
-    assume(np.all(np.log2(x[0]) * x[1] <= size))
 
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
+    assume(
+        not (
+            np.any(x2 < 0)
+            and ivy.is_int_dtype(input_dtype[1])
+            and ivy.is_int_dtype(input_dtype[0])
+        )
+    )
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -1716,10 +1621,7 @@ def test_remainder(
     input_dtype, x = dtype_and_x
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
-
-    # Make sure values is not too close to zero
-    assume(not np.any(np.isclose(x1, 0)))
-    assume(not np.any(np.isclose(x2, 0)))
+    assume(not np.any(x2 == 0))
 
     native_array = [native_array, native_array]
     container = [container, container]
@@ -1791,10 +1693,6 @@ def test_sign(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    x = np.asarray(x, dtype=input_dtype)
-    assume(not np.any(np.isclose(x, 0)))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

@@ -17,7 +17,6 @@ def max(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims, out=out))
 
 
@@ -31,7 +30,11 @@ def mean(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
     return np.asarray(np.mean(x, axis=axis, keepdims=keepdims, out=out))
 
 
@@ -45,7 +48,6 @@ def min(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
 
 
@@ -78,7 +80,6 @@ def prod(
         else:
             dtype = np.uint64
     dtype = ivy.as_native_dtype(dtype)
-    axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
 
 
@@ -93,7 +94,6 @@ def std(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.std(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
 
 
@@ -126,7 +126,6 @@ def sum(
         else:
             dtype = np.uint64
     dtype = ivy.as_native_dtype(dtype)
-    axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
 
 
@@ -141,8 +140,12 @@ def var(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    return np.asarray(np.var(x, axis=axis, keepdims=keepdims, out=out))
 
 
 var.support_native_out = True

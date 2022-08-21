@@ -272,12 +272,3 @@ This should have hopefully given you a good feel for data types, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `data types discussion`_,
 or reach out on `discord`_ in the `data types channel`_!
-
-
-**Video**
-
-.. raw:: html
-
-    <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
-    </iframe>

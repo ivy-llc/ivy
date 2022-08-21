@@ -1,11 +1,10 @@
 # global
-from typing import Union, Optional
-
 import numpy as np
+from typing import Union, Optional, Callable
+import functools
 
 # local
 import ivy
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 try:
     from scipy.special import erf as _erf
@@ -17,18 +16,15 @@ def _cast_for_binary_op(x1, x2):
     return ivy.promote_types_of_inputs(x1, x2)
 
 
-def _clamp_bits(x1, x2):
-    x2 = np.clip(
-        x2,
-        np.array(0, dtype=x2.dtype),
-        np.array(np.dtype(x1.dtype).itemsize * 8 - 1),
-        dtype=x2.dtype,
-    )
-    return x1, x2
-
-
 # when inputs are 0 dimensional, numpy's functions return scalars
 # so we use this wrapper to ensure outputs are always numpy arrays
+def _handle_0_dim_output(function: Callable) -> Callable:
+    @functools.wraps(function)
+    def new_function(*args, **kwargs):
+        ret = function(*args, **kwargs)
+        return np.asarray(ret) if not isinstance(ret, np.ndarray) else ret
+
+    return new_function
 
 
 @_handle_0_dim_output
@@ -144,7 +140,6 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
     return np.left_shift(x1, x2, out=out)
 
 
@@ -173,7 +168,6 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
     return np.right_shift(x1, x2, out=out)
 
 
@@ -295,7 +289,10 @@ def floor_divide(
 ) -> np.ndarray:
     x1, x2 = _cast_for_binary_op(x1, x2)
     ret = np.floor_divide(x1, x2, out=out)
-
+    if (isinf(x1).any() and isfinite(x2).any()) or (
+        isfinite(x1).any() and isinf(x2).any()
+    ):
+        return ivy.full_like(ret, np.floor(np.divide(x1, x2)), dtype=ret.dtype)
     return ret
 
 

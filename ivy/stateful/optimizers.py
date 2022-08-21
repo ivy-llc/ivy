@@ -216,11 +216,11 @@ class SGD(Optimizer):
             v,
             grads,
             self._lr if isinstance(self._lr, float) else self._lr(),
-            inplace=self._inplace,
-            stop_gradients=self._stop_gradients,
+            self._inplace,
+            self._stop_gradients,
         )
 
-    def set_state(self, state: ivy.Container):
+    def set_state(self, state: ivy.container):
         """
         Set state of the optimizer.
 
@@ -295,12 +295,12 @@ class LARS(Optimizer):
             v,
             grads,
             self._lr if isinstance(self._lr, float) else self._lr(),
-            decay_lambda=self._decay_lambda,
-            inplace=self._inplace,
-            stop_gradients=self._stop_gradients,
+            self._decay_lambda,
+            self._inplace,
+            self._stop_gradients,
         )
 
-    def set_state(self, state: ivy.Container):
+    def set_state(self, state: ivy.container):
         """
         Set state of the optimizer.
 
@@ -400,15 +400,15 @@ class Adam(Optimizer):
             self._mw,
             self._vw,
             self._count,
-            beta1=self._beta1,
-            beta2=self._beta2,
-            epsilon=self._epsilon,
-            inplace=self._inplace,
-            stop_gradients=self._stop_gradients,
+            self._beta1,
+            self._beta2,
+            self._epsilon,
+            self._inplace,
+            self._stop_gradients,
         )
         return new_v
 
-    def set_state(self, state: ivy.Container):
+    def set_state(self, state: ivy.container):
         """
         Set state of the optimizer.
 
@@ -486,7 +486,7 @@ class LAMB(Optimizer):
 
     # Custom Step
 
-    def _step(self, v: ivy.Container, grads: ivy.Container):
+    def _step(self, v: ivy.container, grads: ivy.container):
         """
         Update nested variables container v by LAMB update step,
         using nested grads container.
@@ -515,17 +515,17 @@ class LAMB(Optimizer):
             self._mw,
             self._vw,
             self._count,
-            beta1=self._beta1,
-            beta2=self._beta2,
-            epsilon=self._epsilon,
-            max_trust_ratio=self._max_trust_ratio,
-            decay_lambda=self._decay_lambda,
-            inplace=self._inplace,
-            stop_gradients=self._stop_gradients,
+            self._beta1,
+            self._beta2,
+            self._epsilon,
+            self._max_trust_ratio,
+            self._decay_lambda,
+            self._inplace,
+            self._stop_gradients,
         )
         return new_v
 
-    def set_state(self, state: ivy.Container):
+    def set_state(self, state: ivy.container):
         """Set state of the optimizer.
 
         Parameters
