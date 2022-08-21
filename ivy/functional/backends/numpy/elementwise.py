@@ -530,6 +530,16 @@ pow.support_native_out = True
 
 
 @_handle_0_dim_output
+def reciprocal(
+    x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.reciprocal(x, out=out)
+
+
+reciprocal.support_native_out = True
+
+
+@_handle_0_dim_output
 def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
