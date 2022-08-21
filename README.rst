@@ -32,7 +32,7 @@
     </div>
     <br clear="all" />
 
-**We’re on a mission to unify all ML frameworks 💥 + automate code conversions 🔄. pip install ivy-core 🚀, join our growing community 😊, and lets-unify.ai! 🦾**
+**We’re on a mission to unify all ML frameworks 💥 + automate codes conversions 🔄. pip install ivy-core 🚀, join our growing community 😊, and lets-unify.ai! 🦾**
 
 .. raw:: html
 
