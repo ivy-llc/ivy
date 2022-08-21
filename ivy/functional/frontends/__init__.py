@@ -67,8 +67,8 @@ def set_frontend_to_specific_version(frontend):
     frontend
         the frontend module for which we provide the version support
     Returns
-        The function doesn't return anything and upodates the frontend __dict__
-        to make the original functiona name to point to the version specific one
+        The function doesn't return anything and updates the frontend __dict__
+        to make the original function name to point to the version specific one
 
     -------
 
