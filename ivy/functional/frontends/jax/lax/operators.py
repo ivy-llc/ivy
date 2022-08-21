@@ -101,6 +101,10 @@ def bitwise_or(x, y):
     return ivy.bitwise_or(x, y)
 
 
+def bitwise_not(x, y):
+    return ivy.bitwise_invert(x, y)
+
+
 def neg(x):
     return ivy.negative(x)
 
