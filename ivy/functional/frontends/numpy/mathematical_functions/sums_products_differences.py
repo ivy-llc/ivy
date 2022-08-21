@@ -8,11 +8,13 @@ from ivy.func_wrapper import from_zero_dim_arrays_to_float
 @from_zero_dim_arrays_to_float
 def prod(
         x,
+        /,
+        *,
         axis=None,
         dtype=None,
         out=None,
         keepdims=None,
-        initinal=None,
+        initial=None,
         where=None
 ):
     if dtype:

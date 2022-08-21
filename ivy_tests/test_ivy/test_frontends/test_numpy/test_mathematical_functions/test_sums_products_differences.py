@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-# import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -13,12 +12,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.current_backend().valid_dtypes),
+    dtype_and_x=helpers.dtype_values_axis(available_dtypes=ivy.current_backend().valid_dtypes),
     dtype=st.sampled_from(ivy.current_backend().valid_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.prod"
-    )
+    ),
+    keepdims=st.booleans(),
+    initial=st.one_of(st.none(), st.booleans(), st.integers(), st.floats(), st.complex_numbers())
 )
 def test_numpy_prod(
     dtype_and_x,
@@ -29,14 +30,16 @@ def test_numpy_prod(
     num_positional_args,
     native_array,
     fw,
+    keepdims,
+    initial
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_and_x
     input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        as_variable=[as_variable],
+        native_array=[native_array],
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -48,11 +51,11 @@ def test_numpy_prod(
         frontend="numpy",
         fn_tree="prod",
         x=np.asarray(x, dtype=input_dtype[0]),
-        axis=None,
-        dtype=None,
+        axis=axis,
+        dtype=dtype,
         out=None,
-        keepdims=np._NoValue,
-        initial=np._NoValue,
+        keepdims=keepdims,
+        initial=initial,
         where=where,
         test_values=False,
     )
