@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # global
 import ivy
 import numpy as np
@@ -80,12 +79,9 @@ def test_jax_lax_tan(
 
 
 # noinspection DuplicatedCode
-=======
->>>>>>> d5b6172a0147071eaf8aac982234ec9a8fe8ef16
 @st.composite
 def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
-<<<<<<< HEAD
     if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
     elif ivy.is_int_dtype(dtype):
@@ -147,7 +143,6 @@ def test_jax_lax_abs(
 ):
     input_dtype, x = dtype_and_x
 
-=======
     return draw(
         st.sampled_from(ivy.valid_numeric_dtypes).filter(
             lambda x: ivy.can_cast(dtype, x)
@@ -172,7 +167,6 @@ def test_jax_lax_convert_element_type(
     dtype_and_x, as_variable, num_positional_args, native_array, fw, new_dtype
 ):
     input_dtype, x = dtype_and_x
->>>>>>> d5b6172a0147071eaf8aac982234ec9a8fe8ef16
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -181,12 +175,9 @@ def test_jax_lax_convert_element_type(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-<<<<<<< HEAD
         fn_name="lax.abs",
         x=np.asarray(x, dtype=input_dtype),
-=======
         fn_tree="lax.convert_element_type",
         operand=np.asarray(x, dtype=input_dtype),
         new_dtype=new_dtype,
->>>>>>> d5b6172a0147071eaf8aac982234ec9a8fe8ef16
     )
