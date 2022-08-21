@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # global
 import ivy
 import numpy as np
@@ -79,85 +80,12 @@ def test_jax_lax_tan(
 
 
 # noinspection DuplicatedCode
+=======
+>>>>>>> d5b6172a0147071eaf8aac982234ec9a8fe8ef16
 @st.composite
-def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(st.integers(1, 4), key="num_dims"))
-    num_arrays = draw(st.shared(st.integers(2, 4), key="num_arrays"))
-    common_shape = draw(
-        helpers.lists(
-            arg=st.integers(2, 3), min_size=num_dims - 1, max_size=num_dims - 1
-        )
-    )
-    unique_idx = draw(helpers.integers(min_value=0, max_value=num_dims - 1))
-    unique_dims = draw(
-        helpers.lists(arg=st.integers(2, 3), min_size=num_arrays, max_size=num_arrays)
-    )
-    xs = list()
-    available_dtypes = tuple(
-        set(ivy_np.valid_float_dtypes).intersection(ivy_jax.valid_float_dtypes)
-    )
-    input_dtypes = draw(
-        helpers.array_dtypes(available_dtypes=available_dtypes, shared_dtype=True)
-    )
-    for ud, dt in zip(unique_dims, input_dtypes):
-        x = draw(
-            helpers.array_values(
-                shape=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:],
-                dtype=dt,
-            )
-        )
-        xs.append(x)
-    return xs, input_dtypes, unique_idx
-
-
-# concat
-@given(
-    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=helpers.array_bools(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.concatenate"
-    ),
-    native_array=helpers.array_bools(),
-)
-def test_jax_lax_concat(
-    xs_n_input_dtypes_n_unique_idx,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
-):
-    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="jax",
-        fn_name="lax.concatenate",
-        operands=xs,
-        dimension=unique_idx,
-    )
-
-
-# full
-@st.composite
-def _dtypes(draw):
-    return draw(
-        st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(ivy_jax.valid_numeric_dtypes), length=1
-            ),
-            key="dtype",
-        )
-    )
-
-
-@st.composite
-def _fill_value(draw):
+def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
+<<<<<<< HEAD
     if ivy.is_uint_dtype(dtype):
         return draw(st.integers(0, 5))
     elif ivy.is_int_dtype(dtype):
@@ -219,6 +147,32 @@ def test_jax_lax_abs(
 ):
     input_dtype, x = dtype_and_x
 
+=======
+    return draw(
+        st.sampled_from(ivy.valid_numeric_dtypes).filter(
+            lambda x: ivy.can_cast(dtype, x)
+        )
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_dtype_and_values(
+        num_arrays=1,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.convert_element_type"
+    ),
+    new_dtype=_sample_castable_numeric_dtype(),
+)
+def test_jax_lax_convert_element_type(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw, new_dtype
+):
+    input_dtype, x = dtype_and_x
+>>>>>>> d5b6172a0147071eaf8aac982234ec9a8fe8ef16
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -227,6 +181,12 @@ def test_jax_lax_abs(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
+<<<<<<< HEAD
         fn_name="lax.abs",
         x=np.asarray(x, dtype=input_dtype),
+=======
+        fn_tree="lax.convert_element_type",
+        operand=np.asarray(x, dtype=input_dtype),
+        new_dtype=new_dtype,
+>>>>>>> d5b6172a0147071eaf8aac982234ec9a8fe8ef16
     )
