@@ -136,5 +136,8 @@ def exp(x):
     return ivy.exp(x)
 
 
+exp.unsupported_dtypes = {"torch": "float16"}
+
+
 def convert_element_type(operand, new_dtype):
     return ivy.astype(operand, new_dtype)
