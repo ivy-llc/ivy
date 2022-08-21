@@ -50,14 +50,10 @@ def test_tensorflow_det(
 
 @st.composite
 def _solve_get_dtype_and_data(draw):
-    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
-    print("==== arbitrary_dims:", arbitrary_dims)
-    random_size = draw(st.integers(min_value=1, max_value=4))
-    print("==== random_size:", arbitrary_dims)
-
-    shape = (*arbitrary_dims, random_size, random_size)
-    print("==== shape:", shape)
-    return draw(
+    batch = draw(st.integers(min_value=1, max_value=5))
+    random_size = draw(st.integers(min_value=2, max_value=4))
+    shape = (batch, random_size, random_size)
+    data1 = draw(
         helpers.dtype_and_values(
             available_dtypes=ivy_tf.valid_float_dtypes,
             shape=shape,
@@ -65,6 +61,18 @@ def _solve_get_dtype_and_data(draw):
             max_value=10,
         )
     )
+
+    shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
+    data2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_tf.valid_float_dtypes,
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return (data1, data2)
 
 
 # solve
@@ -82,18 +90,19 @@ def test_tensorflow_solve(
     native_array,
     fw,
 ):
-    print("=== dtype_and_x:", dtype_and_x)
-    # input_dtype, x = dtype_and_x
 
-    # helpers.test_frontend_function(
-    #     input_dtypes=input_dtype,
-    #     as_variable_flags=as_variable,
-    #     with_out=False,
-    #     num_positional_args=num_positional_args,
-    #     native_array_flags=native_array,
-    #     fw=fw,
-    #     frontend="tensorflow",
-    #     fn_tree="linalg.solve",
-    #     x=np.asarray(x[0], dtype=input_dtype[0]),
-    #     y=np.asarray(x[1], dtype=input_dtype[1]),
-    # )
+    data1, data2 = dtype_and_x
+    input_dtype1, x = data1
+    input_dtype2, y = data2
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="linalg.solve",
+        x=np.asarray(x, dtype=input_dtype1),
+        y=np.asarray(y, dtype=input_dtype2),
+    )
