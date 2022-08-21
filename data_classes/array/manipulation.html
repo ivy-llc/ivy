@@ -164,9 +164,9 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.clip">
-<span class="sig-name descname"><span class="pre">clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.clip" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.clip. This method simply wraps the
-function, and so the docstring for ivy.clip also applies to this method
+<span class="sig-name descname"><span class="pre">clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.clip" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.roll. This method simply wraps the
+function, and so the docstring for ivy.roll also applies to this method
 with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -197,38 +197,18 @@ with x_min, and those &gt; x_max with x_max.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.concat">
-<span class="sig-name descname"><span class="pre">concat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.concat" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.concat. This method simply
-wraps the function, and so the docstring for ivy.concat also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input arrays to join. The arrays must have the same shape, except in the
-dimension specified by axis.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – axis along which the arrays will be joined. If axis is None, arrays (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
-must be flattened before concatenation. If axis is negative, axis on
-which to join arrays is determined by counting from the top. Default: 0.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-that the inputs broadcast to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – an output array containing the concatenated values.</p>
+<span class="sig-name descname"><span class="pre">concat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.concat" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.constant_pad">
-<span class="sig-name descname"><span class="pre">constant_pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.constant_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.constant_pad" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.constant_pad. This method simply
-wraps the function, and so the docstring for ivy.split also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">constant_pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.constant_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.constant_pad" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -237,7 +217,7 @@ to this method with minimal changes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.expand_dims">
-<span class="sig-name descname"><span class="pre">expand_dims</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.expand_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.expand_dims" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">expand_dims</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.expand_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.expand_dims" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.expand_dims. This method simply wraps
 the function, and so the docstring for ivy.expand_dims also applies to this
 method with minimal changes.</p>
@@ -271,11 +251,8 @@ by one in a given <code class="docutils literal notranslate"><span class="pre">a
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.flip">
-<span class="sig-name descname"><span class="pre">flip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.flip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.flip" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.flip. This method simply
-wraps the function, and so the docstring for ivy.flip also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">flip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.flip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.flip" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -285,10 +262,7 @@ to this method with minimal changes.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.permute_dims">
 <span class="sig-name descname"><span class="pre">permute_dims</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.permute_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.permute_dims" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.permute_dims. This method simply
-wraps the function, and so the docstring for ivy.permute_dims also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -297,7 +271,7 @@ to this method with minimal changes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.repeat">
-<span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repeats</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.repeat" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repeats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.repeat" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.repeat. This method simply wraps the
 function, and so the docstring for ivy.repeat also applies to this method
 with minimal changes.</p>
@@ -318,8 +292,8 @@ with minimal changes.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.reshape">
 <span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.reshape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.reshape" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.reshape. This method simply wraps the
-function, and so the docstring for ivy.reshape also applies to this method
+<dd><p>ivy.Array instance method variant of ivy.roll. This method simply wraps the
+function, and so the docstring for ivy.roll also applies to this method
 with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -358,7 +332,7 @@ and  elements as <code class="docutils literal notranslate"><span class="pre">se
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.roll">
-<span class="sig-name descname"><span class="pre">roll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.roll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.roll" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">roll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.roll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.roll" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.roll. This method simply wraps the
 function, and so the docstring for ivy.roll also applies to this method
 with minimal changes.</p>
@@ -400,7 +374,7 @@ relative to <code class="docutils literal notranslate"><span class="pre">self</s
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.split">
-<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_or_size_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_remainder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.split" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_or_size_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_remainder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.split" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.split. This method simply
 wraps the function, and so the docstring for ivy.split also applies
 to this method with minimal changes.</p>
@@ -447,11 +421,8 @@ with minimal changes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.stack">
-<span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.stack" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.stack. This method simply
-wraps the function, and so the docstring for ivy.stack also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.stack" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -460,11 +431,8 @@ to this method with minimal changes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.swapaxes">
-<span class="sig-name descname"><span class="pre">swapaxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.swapaxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.swapaxes" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.swap_axes. This method simply
-wraps the function, and so the docstring for ivy.split also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">swapaxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.swapaxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.swapaxes" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -474,10 +442,7 @@ to this method with minimal changes.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.tile">
 <span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.tile" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.tile. This method simply
-wraps the function, and so the docstring for ivy.tile also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
@@ -487,10 +452,7 @@ to this method with minimal changes.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.manipulation.ArrayWithManipulation.zero_pad">
 <span class="sig-name descname"><span class="pre">zero_pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/manipulation.html#ArrayWithManipulation.zero_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.manipulation.ArrayWithManipulation.zero_pad" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.zero_pad. This method simply
-wraps the function, and so the docstring for ivy.zero_pad also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
