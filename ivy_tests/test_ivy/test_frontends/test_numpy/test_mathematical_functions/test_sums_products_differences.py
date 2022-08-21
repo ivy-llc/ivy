@@ -3,8 +3,9 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
+# import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -12,15 +13,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.current_backend().valid_dtypes),
+    dtype=st.sampled_from(ivy.current_backend().valid_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.prod"
-    ),
-    native_array=helpers.array_bools(),
+    )
 )
 def test_numpy_prod(
     dtype_and_x,
@@ -53,7 +51,8 @@ def test_numpy_prod(
         axis=None,
         dtype=None,
         out=None,
-        keepdims=False,
+        keepdims=np._NoValue,
+        initial=np._NoValue,
         where=where,
-        test_values=False,
+        test_values=True,
     )

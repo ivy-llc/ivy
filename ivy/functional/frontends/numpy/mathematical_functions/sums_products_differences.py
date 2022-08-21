@@ -11,8 +11,9 @@ def prod(
         axis=None,
         dtype=None,
         out=None,
-        keepdims=False,
-        where=True
+        keepdims=None,
+        initinal=None,
+        where=None
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
