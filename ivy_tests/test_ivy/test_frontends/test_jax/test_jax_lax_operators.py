@@ -785,6 +785,11 @@ def _dtype_x_bounded_axis(draw, **kwargs):
     return dtype, x, axis
 
 
+@st.composite
+def _sample_int_dtype(draw):
+    return draw(st.sampled_from(ivy.valid_int_dtypes))
+
+
 @handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_bounded_axis(
@@ -795,7 +800,7 @@ def _dtype_x_bounded_axis(draw, **kwargs):
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmax"
     ),
-    index_dtype=st.sampled_from(ivy.valid_int_dtypes),
+    index_dtype=_sample_int_dtype(),
 )
 def test_jax_lax_argmax(
     dtype_x_axis,
@@ -831,7 +836,7 @@ def test_jax_lax_argmax(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmin"
     ),
-    index_dtype=st.sampled_from(ivy.valid_int_dtypes),
+    index_dtype=_sample_int_dtype(),
 )
 def test_jax_lax_argmin(
     dtype_x_axis,
