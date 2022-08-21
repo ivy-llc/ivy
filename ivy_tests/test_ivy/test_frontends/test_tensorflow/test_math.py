@@ -434,36 +434,34 @@ def test_tensorflow_reduce_logsumexp(
     )
 
 
-# argmax
-@handle_cmd_line_args
+#argmax    
+
 @given(
-    dtype_and_x=helpers.statistical_dtype_values(function="argmax"),
-    as_variable=helpers.array_bools(num_arrays=1),
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.argmax"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
+    native_array=helpers.array_bools(),
 )
 def test_tensorflow_argmax(
-    dtype_and_x,
+    xs_n_input_dtypes_n_unique_idx,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x, axis = dtype_and_x
-    if isinstance(axis, tuple):
-        axis = axis[0]
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="math.argmax",
-        input=np.asarray(x, dtype=input_dtype),
-        axis=axis,
-        output_type="int64"
+        fn_name="argmax",
+        values=xs,
+        axis=unique_idx,
     )
