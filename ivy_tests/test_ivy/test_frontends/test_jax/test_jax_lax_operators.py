@@ -1017,3 +1017,38 @@ def test_jax_lax_convert_element_type(
         operand=np.asarray(x, dtype=input_dtype),
         new_dtype=new_dtype,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=_dtype_x_bounded_axis(
+        available_dtypes=ivy.valid_numeric_dtypes,
+        min_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.cumprod"
+    ),
+    reverse=st.booleans(),
+)
+def test_jax_lax_cumprod(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    reverse,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.cumprod",
+        operand=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        reverse=reverse,
+    )
