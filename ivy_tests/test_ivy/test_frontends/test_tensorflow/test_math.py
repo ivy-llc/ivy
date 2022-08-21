@@ -269,6 +269,204 @@ def test_tensorflow_log_sigmoid(
         fn_tree="math.log_sigmoid",
         x=np.asarray(x, dtype=input_dtype),
     )
+    
+    
+# reciprocal_no_nan()
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.reciprocal_no_nan"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_reciprocal_no_nan(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=1,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.reciprocal_no_nan",
+        input_tensor=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# reduce_all()
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple([ivy.bool]),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.reduce_all"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_reduce_all(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="reduce_all",
+        input_tensor=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# reduce_any()
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple([ivy.bool]),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.reduce_any"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_reduce_any(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="reduce_any",
+        input_tensor=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# reduce_euclidean_norm()
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.reduce_euclidean_norm"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_reduce_euclidean_norm(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.reduce_euclidean_norm",
+        input_tensor=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# reduce_logsumexp()
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.reduce_logsumexp"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_reduce_logsumexp(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="reduce_logsumexp",
+        input_tensor=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# argmax
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.statistical_dtype_values(function="argmax"),
+    as_variable=helpers.array_bools(num_arrays=1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.argmax"
+    ),
+    native_array=helpers.array_bools(num_arrays=1),
+)
+def test_tensorflow_argmax(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.argmax",
+        input=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        output_type="int64"
+    )
 
 
 # reduce_max
