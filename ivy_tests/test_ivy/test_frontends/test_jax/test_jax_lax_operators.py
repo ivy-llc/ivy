@@ -198,7 +198,7 @@ def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_length(
-                x=st.sampled_from(ivy_jax.valid_numeric_dtypes), length=1
+                x=st.sampled_from(ivy.valid_numeric_dtypes), length=1
             ),
             key="dtype",
         )
@@ -898,34 +898,10 @@ def test_jax_lax_bitwise_xor(
 
 
 @st.composite
-def _dtypes(draw):
-    return draw(
-        st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(ivy_np.valid_numeric_dtypes), length=1
-            ),
-            key="dtype",
-        )
-    )
-
-
-@st.composite
-def _fill_value(draw):
-    dtype = draw(_dtypes())[0]
-    if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
-    if ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
-
-
-@st.composite
-def _dtype_and_values(draw):
+def _dtype_and_values(draw, **kwargs):
     return draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
-            num_arrays=1,
-            min_num_dims=1,
+            **kwargs,
             dtype=draw(_dtypes()),
         )
     )
