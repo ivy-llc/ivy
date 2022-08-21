@@ -1,15 +1,14 @@
 name: test_dashboard
 on:
-<<<<<<< HEAD
   workflow_run:
     workflows: [test-nn-ivy, test-stateful-ivy, test-core-ivy]
     types:
       - completed
     branches: master
-=======
+
   schedule:
     - cron: "*/20 * * * *"
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
+
 jobs:
   trigger-dashboard-script:
     name: Trigger Dashboard
@@ -24,7 +23,6 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-<<<<<<< HEAD
           python-version: "3.10"
       - name: Install Dependencies
         run: |
@@ -37,22 +35,21 @@ jobs:
         run: |
           cd ivy
           python3 dashboard.py $WORKING_DIR
-=======
+
           python-version: '3.10'
 
       - name: Install Libraries
         uses: BSFishy/pip-action@v1
         with:
-           packages: |
-             requests
-             emoji
-             pandas
-             tabulate
-             PyGithub
+          packages: |
+            requests
+            emoji
+            pandas
+            tabulate
+            PyGithub
       - name: Run Dashboard file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            cd ivy/automation_tools/dashboard_automation
-            python3 dashboard_script.py "$GITHUB_TOKEN"
->>>>>>> 241a3c87d774fb0877df3ef70ff67e83a6cbe4be
+          cd ivy/automation_tools/dashboard_automation
+          python3 dashboard_script.py "$GITHUB_TOKEN"
