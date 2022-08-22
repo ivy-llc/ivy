@@ -20,10 +20,10 @@ def map(f, xs):
 
 def while_loop(cond_fun, body_fun, init_val):
     # compile
-    cond = ivy.compile(cond_fun, example_inputs=[init_val])
-    body = ivy.compile(body_fun, example_inputs=[init_val])
+    cond_fun = ivy.compile(cond_fun, example_inputs=[init_val])
+    body_fun = ivy.compile(body_fun, example_inputs=[init_val])
     # function body
     val = init_val
-    while ivy.all(cond(val)):
-        val = body(val)
+    while ivy.all(cond_fun(val)):
+        val = body_fun(val)
     return val
