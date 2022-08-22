@@ -34,5 +34,9 @@ def atan(x, name="atan"):
     return ivy.atan(x)
 
 
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
+
+
 def sin(x, name="sin"):
     return ivy.sin(x)
