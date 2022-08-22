@@ -1005,6 +1005,21 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.tile. This method simply
         wraps the function, and so the docstring for ivy.tile also applies to
         this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container.static_tile((2,3))
+        >>> print(y)
+        {
+            a: ivy.array([[0,1,0,1,0,1],
+                          [2,3,2,3,2,3],
+                          [0,1,0,1,0,1],
+                          [2,3,2,3,2,3]]),
+            b: ivy.array([[4,5,4,5,4,5],
+                          [4,5,4,5,4,5]])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "tile",
@@ -1032,6 +1047,17 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.tile. This method simply wraps the
         function, and so the docstring for ivy.tile also applies to this method
         with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = x.tile((2,3))
+        >>> print(y)
+        {
+            a: (<classivy.array.array.Array>shape=[4,6]),
+            b: (<classivy.array.array.Array>shape=[2,6])
+        }
+
         """
         return self.static_tile(
             self,

@@ -1209,20 +1209,18 @@ def tile(
     With :code:`ivy.Array` input:
     
     >>> x = ivy.array([1,2,3,4])
-    >>> y = ivy.tile(x,(3,))
+    >>> y = ivy.tile(x,(3))
     >>> print(y)
-    [1,2,3,4,1,2,3,4,1,2,3,4]
+    ivy.array([1,2,3,4,1,2,3,4,1,2,3,4])
 
     >>> x = ivy.array([[1,2,3], \
                        [4,5,6]])
     >>> y = ivy.tile(x, (2,3))
     >>> print(y)
-    {
-        [[1,2,3,1,2,3,1,2,3]
-         [4,5,6,4,5,6,4,5,6]
-         [1,2,3,1,2,3,1,2,3]
-         [4,5,6,4,5,6,4,5,6]]
-    }
+    ivy.array([[1,2,3,1,2,3,1,2,3],
+               [4,5,6,4,5,6,4,5,6],
+               [1,2,3,1,2,3,1,2,3],
+               [4,5,6,4,5,6,4,5,6]])
 
     With :code:`ivy.NativeArray` input:
     
@@ -1230,27 +1228,24 @@ def tile(
                                [1]]])
     >>> y = ivy.tile(x,(2,2,3))
     >>> print(y)
-    {
-        [[[0,0,0],
-          [1,1,1],
-          [0,0,0],
-          [1,1,1]],
-         [[0,0,0],
-          [1,1,1],
-          [0,0,0],
-          [1,1,1]]
-        ]
-    }
+    ivy.array([[[0,0,0],
+                [1,1,1],
+                [0,0,0],
+                [1,1,1]],
+               [[0,0,0],
+                [1,1,1],
+                [0,0,0],
+                [1,1,1]]])
 
     With :code:`ivy.Container` input:
     
     >>> x = ivy.Container( a = ivy.array([0,1,2]), b = ivy.array([[3],[4]]))
-    >>> y = ivy.tile(x, (2))
+    >>> y = ivy.tile(x, (1,2))
     >>> print(y)
     {
-        a = [0,1,2,0,1,2]
-        b = [[3,3],
-             [4,4]]
+        a: ivy.array([[0,1,2,0,1,2]]),
+        b: ivy.array([[3,3],
+                      [4,4]])
     }
 
     Both the description and the type hints above assumes an array input for simplicity,
