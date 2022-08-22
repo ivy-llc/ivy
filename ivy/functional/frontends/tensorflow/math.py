@@ -139,7 +139,6 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
-# TODO: divide_no_nan
 def divide_no_nan(x, y, name="divide_no_nan"):
     return ivy.where(
         y == 0,
@@ -148,15 +147,20 @@ def divide_no_nan(x, y, name="divide_no_nan"):
     )
 
 
-# TODO: erfcinv
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
 
 
-# TODO: is_non_decreasing
+def is_non_decreasing(x, name="is_non_decreasing"):
+    if ivy.array(x).size < 2:
+        return ivy.array(True)
+    return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
 
 
-# TODO: is_strictly_increasing
+def is_strictly_increasing(x, name="is_strictly_increasing"):
+    if ivy.array(x).size < 2:
+        return ivy.array(True)
+    return ivy.all(ivy.less(x, ivy.roll(x, -1)))
 
 
-# TODO: Ibeta
+# TODO: Ibeta for Future Release
