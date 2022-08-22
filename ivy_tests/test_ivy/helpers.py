@@ -39,35 +39,13 @@ cmd_line_args = (
 )
 
 try:
-    import jax.numpy as jnp
-except (ImportError, RuntimeError, AttributeError):
-    jnp = None
-try:
     import tensorflow as tf
 
-    _tf_version = float(".".join(tf.__version__.split(".")[0:2]))
-    if _tf_version >= 2.3:
-        # noinspection PyPep8Naming,PyUnresolvedReferences
-        from tensorflow.python.types.core import Tensor as tensor_type
-    else:
-        # noinspection PyPep8Naming
-        # noinspection PyProtectedMember,PyUnresolvedReferences
-        from tensorflow.python.framework.tensor_like import _TensorLike as tensor_type
     physical_devices = tf.config.list_physical_devices("GPU")
     for device in physical_devices:
         tf.config.experimental.set_memory_growth(device, True)
 except ImportError:
     tf = None
-try:
-    import torch
-except ImportError:
-    torch = None
-try:
-    import mxnet as mx
-    import mxnet.ndarray as mx_nd
-except ImportError:
-    mx = None
-    mx_nd = None
 from hypothesis import strategies as st
 
 # local
@@ -3023,3 +3001,52 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
+
+
+@st.composite
+def statistical_dtype_values(draw, *, function):
+    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+
+    size = draw(st.integers(1, 10))
+
+    if dtype == "float16":
+        max_value = 2048
+    elif dtype == "float32":
+        max_value = 16777216
+    elif dtype == "float64":
+        max_value = 9.0071993e15
+
+    if function == "prod":
+        abs_value_limit = 0.99 * max_value ** (1 / size)
+    elif function in ["var", "std"]:
+        abs_value_limit = 0.99 * (max_value / size) ** 0.5
+    else:
+        abs_value_limit = 0.99 * max_value / size
+
+    values = draw(
+        list_of_length(
+            x=st.floats(
+                -abs_value_limit,
+                abs_value_limit,
+                allow_subnormal=False,
+                allow_infinity=False,
+            ),
+            length=size,
+        )
+    )
+
+    shape = np.asarray(values, dtype=dtype).shape
+    size = np.asarray(values, dtype=dtype).size
+    axis = draw(get_axis(shape=shape, allow_none=True))
+    if function == "var" or function == "std":
+        if isinstance(axis, int):
+            correction = draw(
+                st.integers(-shape[axis], shape[axis] - 1)
+                | st.floats(-shape[axis], shape[axis] - 1)
+            )
+            return dtype, values, axis, correction
+
+        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
+        return dtype, values, axis, correction
+
+    return dtype, values, axis

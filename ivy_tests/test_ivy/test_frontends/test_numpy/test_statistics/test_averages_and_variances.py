@@ -117,4 +117,3 @@ def test_numpy_mean(
         where=where,
         test_values=False,
     )
-    
