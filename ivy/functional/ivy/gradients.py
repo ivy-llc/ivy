@@ -137,10 +137,6 @@ def unset_with_grads():
     Enter a nested code space where gradients are computed. This method
     deletes the with_grads component from the global list with_grads_stack
 
-    Parameters
-    ----------
-        No Paramters(Void function)
-
     Returns
     -------
     ret
