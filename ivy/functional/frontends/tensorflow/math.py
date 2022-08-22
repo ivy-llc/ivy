@@ -135,5 +135,5 @@ reduce_std.unsupported_dtypes = {
 }
 
 
-def asinh(x):
+def asinh(x, name="asinh"):
     return ivy.asinh(x)
