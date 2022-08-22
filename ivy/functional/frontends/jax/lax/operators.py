@@ -176,5 +176,5 @@ def reciprocal(x):
 
 
 reciprocal.unsupported_dtypes = {"torch": ("float16",),
-                                 "tensorflow": ("uint8", "int8", "uint16", "int16",\
+                                 "tensorflow": ("uint8", "int8", "uint16", "int16",
                                                 "uint32", "int32", "uint64", "int64")}
