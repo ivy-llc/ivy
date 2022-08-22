@@ -2684,6 +2684,82 @@ def cumsum(
     ret
         Input array with cumulatively summed elements along axis
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 5, 2, 0])
+    >>> y = ivy.cumsum(x)
+    >>> print(y)
+    ivy.array([1, 6, 8, 8])
+
+    >>> x = ivy.array([[6, 4, 2], [1, 3, 0]])
+    >>> y = ivy.zeros((2,3), dtype= int)
+    >>> ivy.cumsum(x, axis = 0, out=y)
+    >>> print(y)
+    ivy.array([[6, 4, 2],
+               [7, 7, 2]])
+
+    >>> x = ivy.array([[2, 4, 5], [3, 6, 5], [1, 3, 10]])
+    >>> ivy.cumsum(x, axis= 1, out=x)
+    >>> print(x)
+    ivy.array([[ 2,  6, 11],
+               [ 3,  9, 14],
+               [ 1,  4, 14]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
+                          b=ivy.array([[3, 5, 7]]))
+    >>> y = ivy.cumsum(x)
+    >>> print(y)
+    {
+    a: ivy.array([1, 4, 9]),
+    b: ivy.array([3, 8, 15])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
+                          b=ivy.array([[3, 5, 8], \
+                                       [5, 6, 5]]), \
+                          c=ivy.array([[2, 4, 1], \
+                                       [3, 6, 9], \
+                                       [0, 2, 3]]))
+    >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
+                          b = ivy.zeros((2, 3)), \
+                          c = ivy.zeros((3,3)))
+    >>> ivy.cumsum(x, axis=1, out=y)
+    >>> print(y)
+    {
+    a: ivy.array([[1, 4, 8]]),
+    b: ivy.array([[3, 8, 16],
+                  [5, 11, 16]]),
+    c: ivy.array([[2, 6, 7],
+                  [3, 9, 18],
+                  [0, 2, 5]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[0], \
+                                       [5]]), \
+                          b=ivy.array([[6, 8, 7], \
+                                       [4, 2, 3]]), \
+                          c=ivy.array([[1, 2], \
+                                       [3, 4], \
+                                       [6, 4]]))
+    >>> ivy.cumsum(x, axis=0, out=x)
+    >>> print(x)
+    {
+    a: ivy.array([[0],
+                  [5]]),
+    b: ivy.array([[6, 8, 7],
+                  [10, 10, 10]]),
+    c: ivy.array([[1, 2],
+                  [4, 6],
+                  [10, 10]])
+    }
     """
     return current_backend(x).cumsum(x, axis, out=out)
 
