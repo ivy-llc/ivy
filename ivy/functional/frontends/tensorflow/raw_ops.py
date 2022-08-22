@@ -28,3 +28,7 @@ def fill(dims, value, name="full"):
 
 def asin(x, name="asin"):
     return ivy.asin(x)
+
+
+def atan(x, name="atan"):
+    return ivy.atan(x)
