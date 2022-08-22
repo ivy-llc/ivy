@@ -161,6 +161,10 @@ def cumsum(operand, axis=0, reverse=False):
 cumsum.unsupported_dtypes = {"torch": ("float16",)}
 
 
+def ge(x, y):
+    return ivy.greater(x, y)
+
+
 # cosh
 def cosh(x):
     return ivy.cosh(x)
