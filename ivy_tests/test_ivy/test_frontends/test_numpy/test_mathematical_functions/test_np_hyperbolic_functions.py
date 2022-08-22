@@ -60,7 +60,7 @@ def test_numpy_sinh(
     )
 
 
-# cosh
+# tanh
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
@@ -109,4 +109,3 @@ def test_numpy_tanh(
         subok=True,
         test_values=False,
     )
-    
