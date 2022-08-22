@@ -49,7 +49,7 @@ gelu.unsupported_dtypes = ("float16",)
 
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if not ivy.is_array(x):
-        x=torch.tensor(x)
+        x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
 
 
