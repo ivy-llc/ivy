@@ -26,5 +26,13 @@ def fill(dims, value, name="full"):
     return ivy.full(dims, value)
 
 
+def asin(x, name="asin"):
+    return ivy.asin(x)
+
+
+def atan(x, name="atan"):
+    return ivy.atan(x)
+
+
 def sin(x):
     return ivy.sin(x)
