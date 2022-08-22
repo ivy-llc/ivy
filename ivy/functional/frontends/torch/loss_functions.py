@@ -7,8 +7,6 @@ def _get_reduction_method(reduction, to_reduce):
         ret = to_reduce
     elif reduction == "mean":
         ret = ivy.mean(to_reduce)
-    elif reduction == "elementwise_mean":
-        ret = ivy.mean(to_reduce)
     elif reduction == "sum":
         ret = ivy.sum(to_reduce)
     else:
