@@ -2675,14 +2675,15 @@ def cumsum(
     x
         Input array.
     axis
-        int, Axis along which the cumulative sum is computed. By default 0.
+        Axis along which the cumulative sum is computed. By default 0.
     out
-        optional output array, for writing the result to.
+        Optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        Input array with cumulatively summed elements along axis
+        Array which holds the result of applying cumsum at each
+        original array elements along the specified axis.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
@@ -2718,8 +2719,8 @@ def cumsum(
     >>> y = ivy.cumsum(x)
     >>> print(y)
     {
-    a: ivy.array([1, 3, 5]),
-    b: ivy.array([3, 5, 7])
+        a: ivy.array([1, 3, 5]),
+        b: ivy.array([3, 5, 7])
     }
 
     >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
@@ -2734,12 +2735,12 @@ def cumsum(
     >>> ivy.cumsum(x, axis=1, out=y)
     >>> print(y)
     {
-    a: ivy.array([[1, 4, 8]]),
-    b: ivy.array([[3, 8, 16],
-                  [5, 11, 16]]),
-    c: ivy.array([[2, 6, 7],
-                  [3, 9, 18],
-                  [0, 2, 5]])
+        a: ivy.array([[1, 4, 8]]),
+        b: ivy.array([[3, 8, 16],
+                      [5, 11, 16]]),
+        c: ivy.array([[2, 6, 7],
+                      [3, 9, 18],
+                      [0, 2, 5]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[0], \
@@ -2752,14 +2753,18 @@ def cumsum(
     >>> ivy.cumsum(x, axis=0, out=x)
     >>> print(x)
     {
-    a: ivy.array([[0],
-                  [5]]),
-    b: ivy.array([[6, 8, 7],
-                  [10, 10, 10]]),
-    c: ivy.array([[1, 2],
-                  [4, 6],
-                  [10, 10]])
+        a: ivy.array([[0],
+                      [5]]),
+        b: ivy.array([[6, 8, 7],
+                      [10, 10, 10]]),
+        c: ivy.array([[1, 2],
+                      [4, 6],
+                      [10, 10]])
     }
+
+    With :code:`ivy.Array` instance method:
+
+    With :code:`ivy.Container` instance method:
     """
     return current_backend(x).cumsum(x, axis, out=out)
 

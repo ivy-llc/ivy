@@ -115,6 +115,56 @@ class ArrayWithGeneral(abc.ABC):
                 [4]])]
         """
         return ivy.unstack(self._data, axis, keepdims)
+    def cumsum(
+        self: ivy.Array,
+        axis: int = 0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cumsum. This method simply wraps the
+        function, and so the docstring for ivy.cumsum also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to apply cumsum.
+        axis
+            Axis along which the cumulative sum is computed. Default is 0.
+        out
+            Optional array container. Default is None.
+
+        Returns
+        -------
+        ret
+            Array which holds the result of applying cumsum at each
+            original array elements along the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 4, 5])
+        >>> y = x.cumsum()
+        >>> print(y)
+        ivy.array([ 1,  3,  6, 10, 15])
+
+        >>> x = ivy.array([[2, 3], [4, 6], [8, 12]])
+        >>> y = ivy.zeros((3, 2))
+        >>> x.cumsum(axis=1, out=y)
+        >>> print(y)
+        ivy.array([[ 2,  5],
+                   [ 4, 10],
+                   [ 8, 20]])
+
+        >>> x = ivy.array([[1, 5, 10], [4, 8, 10], [2, 3, 5]])
+        >>> y = ivy.zeros((3, 2))
+        >>> x.cumsum(axis=0, out=x)
+        >>> print(x)
+        ivy.array([[ 1,  5, 10],
+                   [ 5, 13, 20],
+                   [ 7, 16, 25]])
+        """
+        return ivy.cumsum(self._data, axis, out=out)
 
     def cumprod(
         self: ivy.Array,
