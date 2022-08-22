@@ -295,7 +295,6 @@ def test_tensorflow_asin(
         frontend="tensorflow",
         fn_tree="asin",
         x=np.asarray(x, dtype=dtype),
-        rtol=1e-05,
     )
 
 
@@ -327,5 +326,4 @@ def test_tensorflow_atan(
         frontend="tensorflow",
         fn_tree="atan",
         x=np.asarray(x, dtype=dtype),
-        rtol=1e-05,
     )
