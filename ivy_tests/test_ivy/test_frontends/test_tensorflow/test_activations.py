@@ -7,7 +7,7 @@ import ivy.functional.backends.tensorflow as ivy_tf
 
 
 @given(
-    dtype_array=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_dtypes),
+    dtype_array=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.exponential"
@@ -17,9 +17,7 @@ import ivy.functional.backends.tensorflow as ivy_tf
 def test_tensorflow_exponential(
     *, dtype_array, as_variable, num_positional_args, native_array, fw
 ):
-
     dtype, x = dtype_array
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
