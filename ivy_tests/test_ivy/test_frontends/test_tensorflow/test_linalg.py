@@ -72,4 +72,3 @@ def test_tensorflow_eigvalsh(
         fn_tree="linalg.eigvalsh",
         input=np.asarray(x, dtype=input_dtype),
     )
-

@@ -2,12 +2,12 @@
 import ivy
 
 
-def embedding(input, weight, padding_idx=None, max_norm=None,
-              norm_type=2.0, scale_grad_by_freq=False, sparse=False):
-    return ivy.embedding(input, weight, padding_idx=None, max_norm=None,
-<<<<<<< HEAD
-                         norm_type=2.0, scale_grad_by_freq=False, sparse=False)
-=======
-                         norm_type=2.0, scale_grad_by_freq=False, sparse=False)
-  
->>>>>>> 9f4596f592aa614b5a5d528a3418203660fb9146
+def embedding(num_embeddings, embedding_dim, padding_idx=None,
+              max_norm=None, norm_type=2.0, scale_grad_by_freq=False,
+              sparse=False, _weight=None, device=None, dtype=None):
+    return ivy.embedding(num_embeddings, embedding_dim, padding_idx=None,
+                         max_norm=None, norm_type=2.0, scale_grad_by_freq=False,
+                         sparse=False, _weight=None, device=None, dtype=None)
+
+
+
