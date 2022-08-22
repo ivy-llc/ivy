@@ -28,6 +28,36 @@ def _type_conversion_64(x):
     return ivy.astype(x, "float64")
 
 
+def _batch_promotion(*args, default_dtype="float64"):
+    # Promote all types
+
+    promote_types = set()
+
+    for arg in args:
+        if args is None:
+            continue
+        if isinstance(arg, float) or isinstance(arg, int):
+            continue
+        promote_types.add(str(arg.dtype))
+
+    if "float64" in promote_types:
+        return "float64"
+
+    if "float32" in promote_types:
+        return "float32"
+
+    if "float16" in promote_types and "bfloat16" in promote_types:
+        return "float32"
+
+    if "float16" in promote_types:
+        return "float16"
+
+    if "bfloat16" in promote_types:
+        return "bfloat16"
+
+    return default_dtype
+
+
 def _mean(x, axis=None, keepdims=False, where=None):
     # Mean with support for where
     if where is None:
@@ -124,6 +154,8 @@ softplus.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
+    default = "float64" if mean is not None and variance is not None else "float32"
+
     x_typed = _type_conversion(x)
     if mean is None:
         mean = _mean(x_typed, axis=axis, keepdims=True, where=where)
@@ -132,8 +164,11 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
             ivy.square(x).astype(x_typed.dtype), axis=axis, keepdims=True, where=where
         ) - ivy.square(mean)
 
-    res = (x - mean) / ivy.sqrt(variance + epsilon)
-    return res.astype(x_typed.dtype)
+    res = (x - mean) / ivy.sqrt(variance + ivy.asarray(epsilon, dtype=x_typed.dtype))
+
+    out_type = _batch_promotion(x, mean, variance, default_dtype=default)
+
+    return ivy.asarray(res, dtype=out_type)
 
 
 normalize.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
