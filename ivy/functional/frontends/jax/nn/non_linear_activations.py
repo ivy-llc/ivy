@@ -107,3 +107,32 @@ def softplus(x):
 
 
 softplus.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def log_sigmoid(x):
+    x = _type_conversion(x)
+    return -ivy.softplus(-x).astype(x.dtype)
+
+
+log_sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def log_softmax(x, axis=-1):
+    x_max = ivy.max(x)
+    shifted = ivy.subtract(x, x_max)
+    shifted_logsumexp = ivy.log(ivy.sum(ivy.exp(shifted), axis=axis, keepdims=True))
+    ret = shifted - shifted_logsumexp
+    return ret
+
+
+log_softmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def glu(x, axis=-1):
+    size = x.shape[axis]
+    assert size % 2 == 0, "axis size must be divisible by 2"
+    x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
+    return ivy.multiply(x1, ivy.sigmoid(x2))
+
+
+glu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
