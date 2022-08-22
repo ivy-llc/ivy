@@ -1959,14 +1959,11 @@ def cache_fn(func: Callable) -> Callable:
 def current_backend_str() -> Union[str, None]:
     """Return framework string
 
-    Parameters
-    ----------
-
     Returns
     -------
     ret
         The framework string.
-    
+
     Examples
     --------
     Without setting default backend of NumPy
