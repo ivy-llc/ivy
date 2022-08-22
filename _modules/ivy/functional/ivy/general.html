@@ -1598,7 +1598,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_in</span> <span class="o">=</span> <span class="n">x</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">orig_x</span> <span class="o">=</span> <span class="n">x</span>
     <span class="k">if</span> <span class="n">linear</span><span class="p">:</span>
         <span class="n">scales</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_freq</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num_bands</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
@@ -1629,7 +1629,7 @@
         <span class="n">sin_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">sin_x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_bands</span> <span class="o">*</span> <span class="n">dim</span><span class="p">])</span>
         <span class="n">cos_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">cos_x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_bands</span> <span class="o">*</span> <span class="n">dim</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">concat</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">orig_x</span><span class="p">,</span> <span class="n">sin_x</span><span class="p">,</span> <span class="n">cos_x</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">orig_x</span><span class="p">,</span> <span class="n">sin_x</span><span class="p">,</span> <span class="n">cos_x</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sin_x</span><span class="p">,</span> <span class="n">cos_x</span></div>
 
 
