@@ -16,3 +16,7 @@ def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
 
 def map(f, xs):
     return ivy.stack([f(x) for x in xs])
+
+
+def switch(f, init, xs, length=None, reverse=False, unroll=1):
+    pass
