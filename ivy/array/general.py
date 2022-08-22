@@ -846,17 +846,4 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.get_num_dims(self, as_array)
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
+        
