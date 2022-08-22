@@ -1469,7 +1469,7 @@ def fourier_encode(
     """
     x_in = x
     dim = x.shape[-1]
-    x = ivy.expand_dims(x, -1)
+    x = ivy.expand_dims(x, axis=-1)
     orig_x = x
     if linear:
         scales = ivy.linspace(1.0, max_freq / 2, num_bands, device=dev(x))
@@ -1500,7 +1500,7 @@ def fourier_encode(
         sin_x = ivy.reshape(sin_x, [-1, num_bands * dim])
         cos_x = ivy.reshape(cos_x, [-1, num_bands * dim])
     if concat:
-        return ivy.concat([orig_x, sin_x, cos_x], -1)
+        return ivy.concat([orig_x, sin_x, cos_x], axis=-1)
     return sin_x, cos_x
 
 
