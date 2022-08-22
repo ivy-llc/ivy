@@ -47,7 +47,6 @@ def test_tensorflow_det(
     )
 
 
-
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
