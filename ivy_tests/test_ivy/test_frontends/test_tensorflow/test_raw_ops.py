@@ -266,23 +266,22 @@ def test_tensorflow_full(
         rtol=1e-05,
     )
 
+
 @handle_cmd_line_args
 @given(
-    dtype_and_x = helpers.dtype_and_values(
-    available_dtypes=ivy_tf.valid_float_dtypes
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_tf.valid_float_dtypes) - set(["bfloat16", "float16"])
+        )
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.asin"
     ),
-    native_array=st.booleans()
+    native_array=st.booleans(),
 )
 def test_tensorflow_asin(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    fw,
-    native_array
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
