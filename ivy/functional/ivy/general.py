@@ -1957,12 +1957,25 @@ def cache_fn(func: Callable) -> Callable:
 
 
 def current_backend_str() -> Union[str, None]:
-    """Summary.
+    """Return framework string
 
     Returns
     -------
     ret
         The framework string.
+
+    Examples
+    --------
+    Without setting default backend of NumPy:
+
+    >>> print(ivy.current_backend_str())
+
+
+    With setting default backend as 'torch':
+
+    >>> ivy.set_backend('torch')
+    >>> print(ivy.current_backend_str())
+    torch
 
     """
     fw = current_backend()
@@ -2098,12 +2111,27 @@ def get_min_denominator() -> float:
 
 
 def set_min_denominator(val: float) -> None:
-    """Set the global minimum denominator used by ivy for numerically stable division.
+    """
+    Set the global minimum denominator used by ivy for numerically stable division.
 
     Parameters
     ----------
     val
-        The new value to set the minimum denominator to.
+        The value to set the global minimum denominator to.
+
+
+    Examples
+    --------
+    >>> x = ivy.get_min_denominator()
+    >>> print(x)
+    1e-12
+
+    To set the minimum denominator to 1e-13
+
+    >>> ivy.set_min_denominator(1e-13)
+    >>> y = ivy.get_min_denominator()
+    >>> print(y)
+    1e-13
 
     """
     ivy._MIN_DENOMINATOR = val
