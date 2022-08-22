@@ -19,14 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
             ),
         ),
         num_arrays=2,
-        min_value=-1.0013580322265625e-05,
-        max_value=1e04,
-        exclude_min=True,
-        exclude_max=True,
         shared_dtype=True,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.allclose"
