@@ -11,6 +11,8 @@ def ceil(
     order="k",
     dtype=None,
     subok=True,
+    signature=None,
+    extobj=None
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
