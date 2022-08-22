@@ -87,20 +87,27 @@ def inplace_update(
     val: Union[ivy.Array, tf.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_variable(x_native):
-        x_native.assign(val_native)
-        if ivy.is_ivy_array(x):
-            x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_variable(x_native):
+            x_native.assign(val_native)
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+            else:
+                x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            x = ivy.Array(x_native)
-    elif ensure_in_backend:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    elif ivy.is_ivy_array(x):
-        x.data = val_native
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        return x
     else:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    return x
+        return val
 
 
 def inplace_arrays_supported():

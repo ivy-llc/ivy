@@ -46,16 +46,6 @@ try:
         tf.config.experimental.set_memory_growth(device, True)
 except ImportError:
     tf = None
-try:
-    import torch
-except ImportError:
-    torch = None
-try:
-    import mxnet as mx
-    import mxnet.ndarray as mx_nd
-except ImportError:
-    mx = None
-    mx_nd = None
 from hypothesis import strategies as st
 
 # local
