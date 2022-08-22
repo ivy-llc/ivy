@@ -137,3 +137,22 @@ reduce_std.unsupported_dtypes = {
 
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
+
+
+def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
+    return ivy.var(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_variance.unsupported_dtypes = {
+    "tensorflow": (
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64"),
+}
