@@ -265,7 +265,7 @@ def test_tensorflow_full(
         value=fill_value,
         rtol=1e-05,
     )
-<<<<<<< HEAD:ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
+
 
 
 # mutiply
@@ -289,6 +289,29 @@ def test_tensorflow_multiply(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+
+
+
+# asin
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.asin"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_asin(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -324,6 +347,31 @@ def test_tensorflow_subtract(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        fn_tree="asin",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+# atan
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.atan"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_atan(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -356,6 +404,31 @@ def test_tensorflow_average(dtype_and_x, as_variable, num_positional_args, nativ
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        fn_tree="atan",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+# atanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.atanh"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_atanh(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -365,5 +438,8 @@ def test_tensorflow_average(dtype_and_x, as_variable, num_positional_args, nativ
         fn_name="average",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),)
-=======
->>>>>>> 153cf4d358545a89579af055ddd56568221a1a90:ivy_tests/test_ivy/test_frontends/test_tensorflow/test_raw_ops.py
+
+        fn_tree="atanh",
+        x=np.asarray(x, dtype=dtype),
+    )
+

@@ -6,20 +6,22 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # flip
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)),
         ),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"), 
-        ret_tuple=True,
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_tuple=True,
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -48,8 +50,8 @@ def test_torch_flip(
         input=np.asarray(value, dtype=input_dtype),
         dims=axis,
     )
-    
-    
+
+
 # roll
 @given(
     dtype_and_values=helpers.dtype_and_values(
