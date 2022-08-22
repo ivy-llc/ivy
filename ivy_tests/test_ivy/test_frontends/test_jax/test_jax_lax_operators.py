@@ -746,7 +746,7 @@ def test_jax_lax_bitwise_or(
     )
 
 
-#bitwise_not
+# bitwise_not
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
