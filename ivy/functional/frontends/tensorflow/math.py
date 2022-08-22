@@ -52,7 +52,9 @@ log_sigmoid.unsupported_dtypes = {
 
 
 def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
-    return ivy.where(input_tensor == 0, 0.0, 1 / input_tensor)
+    return ivy.where(
+        input_tensor == 0, ivy.array(0.0, dtype=input_tensor.dtype), 1 / input_tensor
+    )
 
 
 def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
@@ -83,3 +85,26 @@ def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsu
 reduce_logsumexp.unsupported_dtypes = {
     "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
 }
+
+
+# TODO: divide_no_nan
+def divide_no_nan(x, y, name="divide_no_nan"):
+    return ivy.where(
+        y == 0,
+        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
+        x / y,
+    )
+
+
+# TODO: erfcinv
+def erfcinv(x, name="erfcinv"):
+    return 1 / (1 - ivy.erf(x))
+
+
+# TODO: is_non_decreasing
+
+
+# TODO: is_strictly_increasing
+
+
+# TODO: Ibeta
