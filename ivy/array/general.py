@@ -208,7 +208,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
         ivy.array([[ 1.,  2.],
-           <        [ 1.,  5.],
+                   [ 1.,  5.],
                    [ 1., 11.]])
         """
         return ivy.cumprod(self._data, axis, exclusive, out=out)
