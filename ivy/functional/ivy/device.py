@@ -39,9 +39,9 @@ class DefaultDevice:
 
     # noinspection PyShadowingNames
     def __init__(
-        self,
-        device: Union[ivy.Device, ivy.NativeDevice],
-        /,
+            self,
+            device: Union[ivy.Device, ivy.NativeDevice],
+            /,
     ) -> None:
         """Initialises the DefaultDevice class
 
@@ -126,8 +126,8 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 
 
 def get_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice],
-    /,
+        device: Union[ivy.Device, ivy.NativeDevice],
+        /,
 ) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
@@ -295,7 +295,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
 @handle_nestable
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
+        device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -320,7 +320,7 @@ def print_all_ivy_arrays_on_dev(
 
 
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
+        x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """
     Get the native device handle for input array x.
@@ -394,7 +394,6 @@ def dev(
         a: cpu,
         b: device(type=cpu)
     }
-
 
     """
     return ivy.current_backend(x).dev(x, as_native=as_native)
@@ -491,7 +490,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 
 
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, process_specific: bool = False
+        device: Union[ivy.Device, ivy.NativeDevice], /, *, process_specific: bool = False
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -530,10 +529,10 @@ def used_mem_on_dev(
 
 
 def percent_used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice],
-    /,
-    *,
-    process_specific: bool = False,
+        device: Union[ivy.Device, ivy.NativeDevice],
+        /,
+        *,
+        process_specific: bool = False,
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
     used RAM is returned.
@@ -629,6 +628,20 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         )
 
 
+def dev_dist_iter(device: Union[ivy.Device, ivy.NativeDevice]):
+    """
+    Implements the dev_dist_iter function
+    Parameters
+    ----------
+    device
+
+    Returns
+    -------
+
+    """
+    raise NotImplementedError
+
+
 # Availability
 
 
@@ -710,11 +723,11 @@ def tpu_is_available() -> bool:
 
 # noinspection PyShadowingNames
 def default_device(
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    /,
-    *,
-    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
-    as_native: bool = None,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
+        /,
+        *,
+        item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+        as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
     If the as native flag is set, the device will be converted to a native device.
@@ -834,12 +847,12 @@ def unset_default_device() -> None:
 @handle_out_argument
 @handle_nestable
 def to_device(
-    x: Union[ivy.Array, ivy.NativeArray],
-    device: Union[ivy.Device, ivy.NativeDevice],
-    /,
-    *,
-    stream: Optional[Union[int, Any]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray],
+        device: Union[ivy.Device, ivy.NativeDevice],
+        /,
+        *,
+        stream: Optional[Union[int, Any]] = None,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -912,9 +925,9 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
 
 
 def set_split_factor(
-    factor: float,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    /,
+        factor: float,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
+        /,
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -960,17 +973,17 @@ def set_split_factor(
 
 
 def split_func_call(
-    func: Callable,
-    inputs: Union[ivy.Array, ivy.NativeArray],
-    mode: str,
-    /,
-    *,
-    max_chunk_size: int = None,
-    chunk_size: int = None,
-    input_axes: Union[int, Iterable[int]] = 0,
-    output_axes: Union[int, Iterable[int]] = None,
-    stop_gradients: bool = False,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
+        func: Callable,
+        inputs: Union[ivy.Array, ivy.NativeArray],
+        mode: str,
+        /,
+        *,
+        max_chunk_size: int = None,
+        chunk_size: int = None,
+        input_axes: Union[int, Iterable[int]] = 0,
+        output_axes: Union[int, Iterable[int]] = None,
+        stop_gradients: bool = False,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
@@ -1022,7 +1035,7 @@ def split_func_call(
     chunk_size = ivy.default(
         chunk_size,
         lambda: 1
-        + int(
+                + int(
             round((max_chunk_size - 1) * ivy.split_factor(ivy.default_device(device)))
         ),
         True,
@@ -1086,8 +1099,8 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
             if isinstance(fn_unsupported_devices, dict):
                 backend_str = ivy.current_backend_str()
                 if (
-                    backend_str in fn_supported_devices
-                    and backend_str in fn_unsupported_devices
+                        backend_str in fn_supported_devices
+                        and backend_str in fn_unsupported_devices
                 ):
                     return False
         else:
