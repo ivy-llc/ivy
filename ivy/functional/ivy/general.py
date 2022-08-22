@@ -2761,10 +2761,6 @@ def cumsum(
                       [4, 6],
                       [10, 10]])
     }
-
-    With :code:`ivy.Array` instance method:
-
-    With :code:`ivy.Container` instance method:
     """
     return current_backend(x).cumsum(x, axis, out=out)
 

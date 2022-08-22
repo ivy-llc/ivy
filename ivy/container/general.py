@@ -776,12 +776,31 @@ class ContainerWithGeneral(ContainerBase):
         >>> x.cumsum(axis=1, out=y)
         >>> print(y)
         {
-            a: ivy.array([[1, 2],
-                          [1, 5],
-                          [1, 11]]),
-            b: ivy.array([[1, 3],
-                          [1, 4],
-                          [1, 5]])
+            a: ivy.array([[1, 4, 8],
+                          [5, 12, 20],
+                          [9, 19, 30]]),
+            b: ivy.array([[3, 7, 12],
+                         [4, 9, 15],
+                         [5, 11, 18]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[0], \
+                                       [5]]), \
+                          b=ivy.array([[6, 8, 7], \
+                                       [4, 2, 3]]), \
+                          c=ivy.array([[1, 2], \
+                                       [3, 4], \
+                                       [6, 4]]))
+        >>> x.cumsum(axis=0, out=x)
+        >>> print(x)
+        {
+            a: ivy.array([[0],
+                         [5]]),
+            b: ivy.array([[6, 8, 7],
+                         [10, 10, 10]]),
+            c: ivy.array([[1, 2],
+                         [4, 6],
+                         [10, 10]])
         }
         """
         return self.static_cumsum(
