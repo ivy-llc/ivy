@@ -170,3 +170,7 @@ def sqrt(input, *, out=None):
 
 
 sqrt.unsupported_dtypes = ("float16",)
+
+
+def sign(input, *, out=None):
+    return ivy.sign(input, out=out)
