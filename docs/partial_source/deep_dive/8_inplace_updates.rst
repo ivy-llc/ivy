@@ -2,7 +2,7 @@ Inplace Updates
 ===============
 
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L323
+.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
 .. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
@@ -299,7 +299,7 @@ Additionally, with a PyTorch backend, the :code:`ivy.negative` function defers t
 efficient inplace update possible, making use of backend-specific optimizations.
 
 If we had instead simply used the wrapper
-`handle_out_argument <https://github.com/unifyai/ivy/blob/50f1ad6b66a74931efff4931c4e2b3d485e354ca/ivy/func_wrapper.py#L361>`_,
+`handle_out_argument`_,
 then we would not leverage any of these benefits, and instead simply call
 :code:`ivy.inplace_update` at the very end of the function call.
 
@@ -313,7 +313,7 @@ For such functions, the inplace update should just be performed using
 like `so <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L254>`_.
 
 Technically, this could be handled using the
-`handle_out_argument <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/func_wrapper.py#L361>`_
+`handle_out_argument`_
 wrapping, but we opt to implement this in the compositional function itself,
 due to point 1 mentioned above.
 
