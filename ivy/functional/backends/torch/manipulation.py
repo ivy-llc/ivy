@@ -262,15 +262,8 @@ def repeat(
     return ret
 
 
-
-
-
 def tile(
-    x: torch.Tensor,
-    /,
-    reps: Sequence[int],
-    *,
-    out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
