@@ -670,13 +670,3 @@ class Array(
     @_native_wrapper
     def __iter__(self):
         return iter([to_ivy(i) for i in self._data])
-
-
-# noinspection PyRedeclaration
-class Variable(Array):
-    def __init__(self, data):
-        assert ivy.is_variable(data)
-        super().__init__(data)
-
-    def __repr__(self):
-        return super().__repr__().replace("array", "variable")
