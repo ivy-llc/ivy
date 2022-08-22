@@ -30,3 +30,17 @@ def switch(index, branches, *operands, operand=None):
     index = max(index, 0)
     index = min(len(branches) - 1, index)
     return branches[index](*operands)
+
+
+def scan(f, init, xs, length=None):
+    if xs is None:
+        xs = [None] * length
+    carry = init
+    ys = []
+    for x in xs:
+        carry, y = f(carry, x)
+        ys.append(y)
+    return carry, ivy.stack(ys)
+
+
+
