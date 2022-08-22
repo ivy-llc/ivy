@@ -1880,7 +1880,9 @@ def arg_names(receiver):
     return list(inspect.signature(receiver).parameters.keys())
 
 
-def match_kwargs(kwargs, *receivers, allow_duplicates=False):
+def match_kwargs(
+    kwargs: Dict, *receivers: Iterable[Callable], allow_duplicates: bool = False
+) -> Union[List[Dict], Dict]:
     """Match keyword arguments to either class or function receivers.
 
     Parameters
@@ -1897,6 +1899,20 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     -------
     ret
         Sequence of keyword arguments split as best as possible.
+
+    Examples
+    --------
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
+
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
     split_kwargs = list()
