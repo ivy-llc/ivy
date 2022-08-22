@@ -113,10 +113,6 @@ the arguments to be added will be casted to the desired type through
 :code:`ivy.astype`. The returned result is then obtained through :code:`ivy.add`
 just like the other examples.
 
-Just like the Jax frontend version of this :code:`add` function, a :code:`dict` is
-specified in the :code:`unsupported_dtypes` attribute to indicate the list of
-invalid :code:`dtype` for the backend framework.
-
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
@@ -145,6 +141,10 @@ With :code:`tan` as the second example, it has a sub-category of
 directory. By referring to the `numpy.tan`_ documentation, it has additional
 arguments just like its :code:`add` function, thus needing additional handling code.
 
+Just like the Jax frontend version of this :code:`tan` function, a :code:`dict` is
+specified in the :code:`unsupported_dtypes` attribute to indicate the list of
+invalid data types for any backend framework.
+
 **TensorFlow**
 
 .. code-block:: python
@@ -161,9 +161,7 @@ changes when using :code:`ivy`. It is valid by simply importing
 
 There are three arguments according to the `tf.add`_ documentation, where we
 have written accordingly as shown above. Just like the previous examples, it will
-also return :code:`ivy.add` for the linking of backend framework. If there are any
-unsupported dtypes in any backend, it is specified with the help of the
-:code:`unsupported_dtypes` attribute.
+also return :code:`ivy.add` for the linking of backend framework.
 
 .. code-block:: python
 
@@ -176,7 +174,9 @@ unsupported dtypes in any backend, it is specified with the help of the
 Let's look at another example, :code:`tan`, it is placed under :code:`functions` just
 like :code:`add`. By referring to the `tf.tan`_ documentation, we code the arguments
 accordingly, then link its return to :code:`ivy.tan` so that the computation
-operation is decided according to the backend framework.
+operation is decided according to the backend framework. If there are any
+unsupported dtypes in any backend, it is specified with the help of the
+:code:`unsupported_dtypes` attribute.
 
 **PyTorch**
 
@@ -200,10 +200,6 @@ the PyTorch `torch.add`_ documentation, you will notice that :code:`alpha`
 acts as a scale for the :code:`other` argument. Thus, we will recover the original
 behaviour by passing :code:`other * alpha` into :code:`ivy.add`.
 
-You may have noticed that the :code:`unsupported_dtypes` attribute is a :code:`tuple`
-here. This indicates that this :code:`torch.add` frontend function itself does not
-support the :code:`float16` dtype.
-
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
@@ -216,6 +212,10 @@ Using :code:`tan` as a second example, it is placed under :code:`pointwise_ops`
 according to the `torch`_ directory. By referring to the `torch.tan`_ documentation,
 we code its positional and keyword arguments accordingly, then return with
 :code:`ivy.tan` to link the operation to the backend framework.
+
+You may have noticed that the :code:`unsupported_dtypes` attribute is a :code:`tuple`
+here. This indicates that this :code:`torch.tan` frontend function itself does not
+support the :code:`float16` dtype.
 
 Compositions
 ------------
