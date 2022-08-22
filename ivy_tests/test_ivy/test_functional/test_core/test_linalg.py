@@ -1164,7 +1164,8 @@ def test_cholesky(
         fn_name="cholesky",
         x=x,
         upper=upper,
-        rtol=1e-3,
+        rtol_=1e-3,
+        atol_=1e-3,
     )
 
 
