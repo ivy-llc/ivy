@@ -1966,16 +1966,18 @@ def current_backend_str() -> Union[str, None]:
 
     Examples
     --------
-    Without setting default backend of NumPy
+    Without setting default backend of NumPy:
 
-    >>> print(ivy.current_backend_str)
-    <function current_backend_str at 0x7fbc15f65af0>
+    >>> ivy.set_backend("numpy")
+    >>> print(ivy.current_backend_str())
+    numpy
 
-    With setting default backend as 'torch'
+    With setting default backend as 'torch':
 
     >>> ivy.set_backend('torch')
-    >>> print(ivy.current_backend_str)
-    <function current_backend_str at 0x7fbba0a07c10>
+    >>> print(ivy.current_backend_str())
+    torch
+
     """
     fw = current_backend()
     if not backend_stack:
