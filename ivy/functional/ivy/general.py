@@ -2718,8 +2718,8 @@ def cumsum(
     >>> y = ivy.cumsum(x)
     >>> print(y)
     {
-    a: ivy.array([1, 4, 9]),
-    b: ivy.array([3, 8, 15])
+    a: ivy.array([1, 3, 5]),
+    b: ivy.array([3, 5, 7])
     }
 
     >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
