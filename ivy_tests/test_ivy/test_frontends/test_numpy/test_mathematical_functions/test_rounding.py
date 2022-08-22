@@ -8,6 +8,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
