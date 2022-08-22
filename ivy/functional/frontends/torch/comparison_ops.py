@@ -3,19 +3,19 @@ import ivy
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
-    return ivy.all(
-        ivy.less_equal(
-            ivy.abs(ivy.subtract(input, other)),
-            ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
-        )
+    ret = ivy.less_equal(
+        ivy.abs(ivy.subtract(input, other)),
+        ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
     )
+    return ivy.all(ret)
 
 
 def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
     finite_input = ivy.isfinite(input)
     finite_other = ivy.isfinite(other)
     if ivy.all(finite_input) and ivy.all(finite_other):
-        return _compute_allclose_with_tol(input, other, rtol, atol)
+        ret = _compute_allclose_with_tol(input, other, rtol, atol)
+        return bool(ret)
     else:
         finites = ivy.bitwise_and(finite_input, finite_other)
         ret = ivy.zeros_like(finites)
@@ -30,7 +30,7 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
         if equal_nan:
             both_nan = ivy.bitwise_and(ivy.isnan(input), ivy.isnan(other))
             ret[both_nan] = both_nan[both_nan]
-        return ret
+        return ivy.all(ret)
 
 
 allclose.unsupported_dtypes = ("float16",)
