@@ -72,8 +72,7 @@ class ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.mean.
+        """ivy.Container instance method variant of ivy.mean.
         This method simply wraps the function, and so
         the docstring for ivy.mean also applies to this method
         with minimal changes.
@@ -83,14 +82,16 @@ class ContainerWithStatistical(ContainerBase):
         self
             input array. Should have a floating-point data type.
         axis
-            axis or axes along which arithmetic means must be computed. By default, the mean
-            must be computed over the entire array. If a Sequence of integers, arithmetic means
-            must be computed over multiple axes. Default: ``None``.
+            axis or axes along which arithmetic means must be computed. By default,
+            the mean must be computed over the entire array. If a Sequence of
+            integers, arithmetic means must be computed over multiple axes.
+            Default: ``None``.
         keepdims
-            bool, if ``True``, the reduced axes (dimensions) must be included in the result
-            as singleton dimensions, and, accordingly, the result must be compatible with
-            the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced
-            axes (dimensions) must not be included in the result. Default: ``False``.
+            bool, if ``True``, the reduced axes (dimensions) must be included in the
+            result as singleton dimensions, and, accordingly, the result must be
+            compatible with the input array (see :ref:`broadcasting`). Otherwise,
+            if ``False``, the reduced axes (dimensions) must not be included in
+            the result. Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to.
             Default is None.
@@ -117,6 +118,8 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
+        With :code:`ivy.Container` input:
+
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.mean()
         >>> print(y)
@@ -125,28 +128,28 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(4.)
         }
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.1, 1.1, 2.1]))
         >>> y = ivy.mean(x)
         >>> print(y)
         {
-            a: ivy.array(1.),
-            b: ivy.array(4.)
+            a: ivy.array(0.6),
+            b: ivy.array(1.1)
         }
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
         >>> x.mean(out=x)
         >>> print(x)
         {
-            a: ivy.array(1.),
-            b: ivy.array(4.)
+            a: ivy.array(0.),
+            b: ivy.array(0.9)
         }
 
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., -1., 1.]), b=ivy.array([1., 1., 1.]))
         >>> ivy.mean(x, out=x)
         >>> print(x)
         {
-            a: ivy.array(1.),
-            b: ivy.array(4.)
+            a: ivy.array(0.),
+            b: ivy.array(1.)
         }
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
@@ -158,13 +161,13 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array([4.5, 5.5, 6.5])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                              b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+        >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
+                              b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
         >>> ivy.mean(x, axis=1, out=x)
         >>> print(x)
         {
-            a: ivy.array([1., 4.]),
-            b: ivy.array([4., 7.])
+            a: ivy.array([1., 2.]),
+            b: ivy.array([3., 4.])
         }
 
         """

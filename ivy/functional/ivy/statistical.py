@@ -149,8 +149,8 @@ def mean(
         input array. Should have a floating-point data type.
     axis
         axis or axes along which arithmetic means must be computed. By default, the mean
-        must be computed over the entire array. If a Sequence of integers, arithmetic means
-        must be computed over multiple axes. Default: ``None``.
+        must be computed over the entire array. If a Sequence of integers, arithmetic
+        means must be computed over multiple axes. Default: ``None``.
     keepdims
         bool, if ``True``, the reduced axes (dimensions) must be included in the result
         as singleton dimensions, and, accordingly, the result must be compatible with
@@ -164,8 +164,8 @@ def mean(
     ret
         array, if the arithmetic mean was computed over the entire array, a
         zero-dimensional array containing the arithmetic mean; otherwise, a
-        non-zero-dimensional array containing the arithmetic means. The returned array
-        must have the same data type as ``x``.
+        non-zero-dimensional array containing the arithmetic means. The returned
+        array must have the same data type as ``x``.
         .. note::
            While this specification recommends that this function only accept input
            arrays having a floating-point data type, specification-compliant array
@@ -183,22 +183,22 @@ def mean(
     >>> print(y)
     ivy.array(4.)
 
-    >>> x = ivy.array([3., 4., 5.])
+    >>> x = ivy.array([1, 2, 3, 0, -1])
     >>> y = ivy.mean(x)
     >>> print(y)
-    ivy.array(4.)
+    ivy.array(0.)
 
-    >>> x = ivy.array([3., 4., 5.])
+    >>> x = ivy.array([0.1, 1.1, 2.1])
     >>> y = ivy.array(0.)
     >>> ivy.mean(x, out=y)
     >>> print(y)
-    ivy.array(4.)
+    ivy.array(1.1)
 
-    >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
+    >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
     >>> y = ivy.array([0., 0., 0.])
     >>> x.mean(axis=0, out=y)
     >>> print(y)
-    ivy.array([1.5, 2.5, 3.5])
+    ivy.array([-0.25,  1.05,  2.1 ])
 
     >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
     >>> y = ivy.array([0., 0.])
@@ -208,45 +208,45 @@ def mean(
 
     With :code:`ivy.native_array` input:
 
-    >>> x = ivy.native_array([3., 4., 5.])
+    >>> x = ivy.native_array([1., 2., 3.])
     >>> y = x.mean()
     >>> print(y)
-    4.0
+    2.0
 
-    >>> x = ivy.native_array([3., 4., 5.])
+    >>> x = ivy.native_array([-2.5, 1.4, 5.6])
     >>> y = ivy.mean(x)
     >>> print(y)
-    ivy.array(4.)
+    ivy.array(1.5)
 
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
+    >>> x = ivy.native_array([[-1, -2, -3, 0, -4], [1, 2, 3, 0, 4]])
     >>> y = ivy.array([0., 0., 0.])
     >>> ivy.mean(x, axis=0, out=y)
     >>> print(y)
-    ivy.array([1.5, 2.5, 3.5])
+    ivy.array([0., 0., 0., 0., 0.])
 
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
+    >>> x = ivy.native_array([[0.0, 1.1, 2.2], [3.3, 4.4, 5.5]])
     >>> y = ivy.native_array([0., 0.])
     >>> ivy.mean(x, axis=1, out=y)
     >>> print(y)
-    [1., 4.]
+    [1.1, 4.4]
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.1, 1.1, 2.1]))
     >>> y = ivy.mean(x)
     >>> print(y)
     {
-        a: ivy.array(1.),
-        b: ivy.array(4.)
+        a: ivy.array(0.6),
+        b: ivy.array(1.1)
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                          b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+    >>> x = ivy.Container(a=ivy.array([[1, 2], [3, 4]]), \
+                          b=ivy.array([[5, 6], [7, 8]]))
     >>> ivy.mean(x, axis=0, out=x)
     >>> print(x)
     {
-        a: ivy.array([1.5, 2.5, 3.5]),
-        b: ivy.array([4.5, 5.5, 6.5])
+        a: ivy.array([2., 3.]),
+        b: ivy.array([6., 7.])
     }
 
     This function conforms to the `Array API Standard
@@ -254,9 +254,9 @@ def mean(
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
     signatures.statistical_functions.mean.html>`_ in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :code:`ivy.Container` instances in place of any of the arguments.
 
     Functional Examples
     -------------------
@@ -267,17 +267,17 @@ def mean(
     >>> print(y)
     ivy.array(4.)
 
-    >>> x = ivy.array([3., 4., 5.])
+    >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.array(0.)
     >>> ivy.mean(x, out=y)
     >>> print(y)
-    ivy.array(4.)
+    ivy.array(1.)
 
-    >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
+    >>> x = ivy.array([[-1, -2, -3, 0, -1], [1, 2, 3, 0, 1]])
     >>> y = ivy.array([0., 0.])
     >>> ivy.mean(x, axis=1, out=y)
     >>> print(y)
-    ivy.array([1., 4.])
+    ivy.array([-1.4,  1.4])
 
     With :code:`ivy.native_array` input:
 
@@ -300,12 +300,12 @@ def mean(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
     >>> y = ivy.mean(x)
     >>> print(y)
     {
-        a: ivy.array(1.),
-        b: ivy.array(4.)
+        a: ivy.array(0.),
+        b: ivy.array(0.9)
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
@@ -326,24 +326,24 @@ def mean(
     >>> print(y)
     ivy.array(4.)
 
-    >>> x = ivy.array([3., 4., 5.])
+    >>> x = ivy.array([0., 7.3, -1.3])
     >>> y = ivy.array(0.)
     >>> x.mean(out=y)
     >>> print(y)
-    ivy.array(4.)
+    ivy.array(2.)
 
-    >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
+    >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
     >>> y = ivy.array([0., 0., 0.])
     >>> x.mean(axis=0, out=y)
     >>> print(y)
-    ivy.array([1.5, 2.5, 3.5])
+    ivy.array([-0.25,  1.05,  2.1])
 
     With :code:`ivy.native_array` input:
 
-    >>> x = ivy.native_array([3., 4., 5.])
+    >>> x = ivy.native_array([0.0, 1.1, 2.2])
     >>> y = x.mean()
     >>> print(y)
-    4.0
+    1.1
 
     >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
     >>> y = x.mean()
@@ -362,29 +362,29 @@ def mean(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.2, 2.2, 4.2]))
     >>> y = x.mean()
     >>> print(y)
     {
-        a: ivy.array(1.),
-        b: ivy.array(4.)
+        a: ivy.array(0.6),
+        b: ivy.array(2.2)
     }
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> x = ivy.Container(a=ivy.array([1., 1., 1.], b=ivy.array([0., -1., 1.])))
     >>> x.mean(out=x)
     >>> print(x)
     {
-        a: ivy.array(1.),
-        b: ivy.array(4.)
+        a: ivy.array(1.1),
+        b: ivy.array(0.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                          b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
-    >>> x.mean(axis=0, out=x)
+    >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
+                          b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
+    >>> x.mean(axis=1, out=x)
     >>> print(x)
     {
-        a: ivy.array([1.5, 2.5, 3.5]),
-        b: ivy.array([4.5, 5.5, 6.5])
+        a: ivy.array([1., 2.]),
+        b: ivy.array([3., 4.])
     }
 
     """
