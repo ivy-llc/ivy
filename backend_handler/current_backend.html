@@ -129,6 +129,36 @@
              
   <section id="current-backend">
 <h1>current_backend<a class="headerlink" href="#current-backend" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.backend_handler.current_backend">
+<span class="sig-prename descclassname"><span class="pre">ivy.backend_handler.</span></span><span class="sig-name descname"><span class="pre">current_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/backend_handler.html#current_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.backend_handler.current_backend" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the current backend. Priorities:
+global_backend &gt; argument’s backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*args/**kwargs</strong> – <p>the arguments from which to try to infer the backend, when there is
+no globally set backend.</p>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Ivy’s current backend.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>If no global backend is set, then the backend is inferred from the arguments:
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; x = np.array([2.0])
+&gt;&gt;&gt; print(ivy.current_backend(x))
+&lt;module ‘ivy.functional.backends.numpy’ from ‘/ivy/ivy/functional/backends/numpy/__init__.py’&gt;   </p>
+<p>The global backend set in set_backend has priority over any arguments
+passed to current_backend:
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; ivy.set_backend(“jax”)
+&gt;&gt;&gt; x = np.array([2.0])
+&gt;&gt;&gt; print(ivy.current_backend(x))
+&lt;module ‘ivy.functional.backends.jax’ from ‘/ivy/ivy/functional/backends/jax/__init__.py’&gt;   </p>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
