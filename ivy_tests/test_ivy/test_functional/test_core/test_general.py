@@ -1393,10 +1393,10 @@ def test_inplace_increment(*, x_n_inc, tensor_fn, device):
 
 
 @pytest.mark.parametrize(
-    "backend_str",
-    [None, "numpy", "mxnet", "torch", "tensorflow", "jax"]
+    "backend_str", [None, "numpy", "mxnet", "torch", "tensorflow", "jax"]
 )
 def test_current_backend_str(backend_str):
+    ivy.unset_backend()
     if backend_str:
         ivy.set_backend(backend_str)
         cur_fw = ivy.current_backend_str()
@@ -1404,8 +1404,7 @@ def test_current_backend_str(backend_str):
         assert cur_fw == backend_str
     else:
         inital_fw = ivy.current_backend_str()
-        assert inital_fw == ''
-    pytest.skip()
+        assert inital_fw == ""
 
 
 # Still to Add #
