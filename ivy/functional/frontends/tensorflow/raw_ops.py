@@ -24,3 +24,7 @@ def cosh(x, name="cosh"):
 
 def fill(dims, value, name="full"):
     return ivy.full(dims, value)
+
+
+def asin(x, name="asin"):
+    return ivy.asin(x)
