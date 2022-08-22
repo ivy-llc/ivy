@@ -22,9 +22,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_value=1.0013580322265625e-05,
         max_value=1,
         shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
     ),
-    rtol=st.floats(min_value=-1e06, max_value=1e-03, allow_infinity=False),
-    atol=st.floats(min_value=-1e08, max_value=1e-04, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.allclose"
     ),
@@ -32,8 +33,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 )
 def test_torch_allclose(
     dtype_and_input,
-    rtol,
-    atol,
     equal_nan,
     as_variable,
     num_positional_args,
@@ -52,7 +51,7 @@ def test_torch_allclose(
         fn_tree="allclose",
         input=np.asarray(input[0], dtype=input_dtype[0]),
         other=np.asarray(input[1], dtype=input_dtype[1]),
-        rtol=rtol,
-        atol=atol,
+        rtol=1e-05,
+        atol=1e-08,
         equal_nan=equal_nan,
     )

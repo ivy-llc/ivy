@@ -3,19 +3,19 @@ import ivy
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
-    in_sub = ivy.abs(ivy.subtract(input, other))
-    tol_sum = rtol + atol
-    other_abs = ivy.abs(other)
-    prod = ivy.multiply(tol_sum, other_abs)
-    comp = ivy.less_equal(in_sub, prod)
-    return ivy.all(comp)
+    return ivy.all(
+        ivy.less_equal(
+            ivy.abs(ivy.subtract(input, other)),
+            ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
+        )
+    )
 
 
 def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
     finite_input = ivy.isfinite(input)
     finite_other = ivy.isfinite(other)
     if ivy.all(finite_input) and ivy.all(finite_other):
-        _compute_allclose_with_tol(input, other, rtol, atol)
+        return _compute_allclose_with_tol(input, other, rtol, atol)
     else:
         finites = ivy.bitwise_and(finite_input, finite_other)
         ret = ivy.zeros_like(finites)
