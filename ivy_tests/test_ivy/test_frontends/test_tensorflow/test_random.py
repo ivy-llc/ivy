@@ -77,7 +77,7 @@ def test_tensorflow_uniform(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="uniform",
+        fn_tree="random.uniform",
         minval=np.asarray(low, dtype=low_dtype),
         maxval=np.asarray(high, dtype=high_dtype),
         shape=None,
