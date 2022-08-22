@@ -9,6 +9,7 @@ import torch
 import torch.nn
 
 # local
+import ivy
 
 
 def relu(x: torch.Tensor, /) -> torch.Tensor:
@@ -47,6 +48,8 @@ gelu.unsupported_dtypes = ("float16",)
 
 
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    if not ivy.is_array(x):
+        x=torch.tensor(x)
     return torch.sigmoid(x, out=out)
 
 
