@@ -7,8 +7,6 @@ def _get_reduction_func(reduction):
         ret = lambda x : x
     elif reduction == 'mean':
         ret = ivy.mean
-    elif reduction == 'elementwise_mean':
-        ret = ivy.mean
     elif reduction == 'sum':
         ret = ivy.sum
     else:
@@ -72,10 +70,4 @@ def binary_cross_entropy(
     return result
 
 
-binary_cross_entropy.unsupported_dtypes = (
-    'uint16', 
-    'float16', 
-    'uint64', 
-    'float64', 
-    'uint32'
-)
+binary_cross_entropy.unsupported_dtypes = ('float16', 'float64')

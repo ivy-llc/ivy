@@ -75,14 +75,16 @@ def test_torch_cross_entropy(
                 set(ivy_torch.valid_float_dtypes)
             )
         ), 
-        min_value=0, 
-        max_value=1, 
+        min_value=0.0, 
+        max_value=1.0, 
+        large_value_safety_factor=1.0, 
+        small_value_safety_factor=1.0, 
         allow_inf=False, 
         exclude_min=True, 
         exclude_max=True, 
         min_num_dims=1, 
         max_num_dims=1, 
-        min_dim_size=2,
+        min_dim_size=2, 
     ), 
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -92,6 +94,8 @@ def test_torch_cross_entropy(
         ), 
         min_value=1.0013580322265625e-05, 
         max_value=1.0, 
+        large_value_safety_factor=1.0, 
+        small_value_safety_factor=1.0, 
         allow_inf=False, 
         exclude_min=True, 
         exclude_max=True, 
