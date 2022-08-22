@@ -15,6 +15,7 @@ Array
    :caption: Array
 
    array/array/Array.rst
+   array/array/Variable.rst
 
 
 
