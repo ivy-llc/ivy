@@ -56,7 +56,6 @@ def test_docstrings(backend):
         "det",
         "cumprod",
         "where",
-        "reduce_variance",
     ]
 
     # skip list for array and container docstrings
