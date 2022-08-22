@@ -40,3 +40,7 @@ def atanh(x, name="atanh"):
 
 def tan(x, name="tan"):
     return ivy.tan(x)
+
+
+def tanh(x, name="tanh"):
+    return ivy.tanh(x)
