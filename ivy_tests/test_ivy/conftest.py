@@ -19,13 +19,6 @@ TEST_BACKENDS: Dict[str, callable] = {
     "torch": lambda: helpers.get_ivy_torch(),
     "": lambda: None,
 }
-TEST_CALL_METHODS: Dict[str, callable] = {
-    "numpy": helpers.np_call,
-    "jax": helpers.jnp_call,
-    "tensorflow": helpers.tf_call,
-    "torch": helpers.torch_call,
-    "": None,
-}
 
 CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
     "as_variable": None,
@@ -58,7 +51,7 @@ def pytest_configure(config):
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(device, f, compile_graph, call, fw, implicit):
+def run_around_tests(device, f, compile_graph, fw, implicit):
     clear_backend_stack()
     if f is not None:
         with f.use:
@@ -112,11 +105,10 @@ def pytest_generate_tests(metafunc):
                             TEST_BACKENDS[backend_str](),
                             compile_graph,
                             implicit,
-                            TEST_CALL_METHODS[backend_str],
                             backend_str,
                         )
                     )
-    metafunc.parametrize("device,f,compile_graph,implicit,call,fw", configs)
+    metafunc.parametrize("device,f,compile_graph,implicit,fw", configs)
 
 
 @pytest.fixture(scope="session")
