@@ -6,6 +6,8 @@ def det(input, name=None):
 
 
 det.unsupported_dtypes = ("float16", "bfloat16")
+
+
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 

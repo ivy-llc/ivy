@@ -1195,13 +1195,3 @@ class Profiler(abc.ABC):
     @abc.abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
         raise NotImplementedError
-
-  A "cpu" as device:
-        >>> with ivy.DefaultDevice("cpu") as device:
-        >>>     # with block calls device.__enter__()
-        >>>     print(device._dev)
-        "cpu"
-
-        """
-        ivy.set_default_device(self._dev)
-        return self
