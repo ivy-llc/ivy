@@ -1968,9 +1968,8 @@ def current_backend_str() -> Union[str, None]:
     --------
     Without setting default backend of NumPy:
 
-    >>> ivy.set_backend("numpy")
     >>> print(ivy.current_backend_str())
-    numpy
+
 
     With setting default backend as 'torch':
 
