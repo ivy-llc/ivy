@@ -1,5 +1,5 @@
 # global
-# import ivy
+import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -36,6 +36,7 @@ def test_tensorflow_shuffle(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        test_values=False,
         fw=fw,
         frontend="tensorflow",
         fn_tree="random.shuffle",
