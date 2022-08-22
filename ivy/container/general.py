@@ -762,8 +762,8 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            Container whose leaves hold the result of applying cumsum at each original leaf
-            arrays along the specified axis.
+            Container whose leaves hold the result of applying cumsum
+            at each original leaf arrays along the specified axis.
 
         Examples
         --------
@@ -860,8 +860,8 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            Container whose leaves hold the result of applying cumsum at each original leaf
-            arrays along the specified axis.
+            Container whose leaves hold the result of applying cumsum
+            at each original leaf arrays along the specified axis.
 
         Examples
         --------
