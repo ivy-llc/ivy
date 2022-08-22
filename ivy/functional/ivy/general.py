@@ -1317,6 +1317,13 @@ def clip_vector_norm(
         b: ivy.array([0.849, 1.13, 1.41])
     }
 
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.clip_vector_norm(2.0)
+    >>> print(y)
+    ivy.array([0., 0.894, 1.79])
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -2093,7 +2100,24 @@ def stable_divide(
         b: ivy.array([0.857, 10.])
     }
 
+    With :code:`ivy.Array` instance method:
 
+    >>> x = ivy.asarray([4., 5., 6.])
+    >>> y = x.stable_divide(2)
+    >>> print(y)
+    ivy.array([2., 2.5, 3.])
+
+    >>> x = ivy.asarray([4, 5, 6])
+    >>> y = x.stable_divide(4, min_denominator=1)
+    >>> print(y)
+    ivy.array([0.8, 1. , 1.2])
+
+    >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
+    >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
+    >>> z = x.stable_divide(y)
+    >>> print(z)
+    ivy.array([[4.  , 2.5 , 2.  ],
+            [3.5 , 2.67, 2.25]])
 
     """
     # noinspection PyProtectedMember
