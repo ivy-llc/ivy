@@ -56,6 +56,7 @@ import ivy.functional.backends.torch as ivy_torch
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.cross_entropy"
     ),
+    label_smoothing=helpers.floats(min_value=0, max_value=0.49),
 )
 def test_torch_cross_entropy(
     dtype_and_input,
@@ -64,6 +65,7 @@ def test_torch_cross_entropy(
     size_average,
     reduce,
     reduction,
+    label_smoothing,
     as_variable,
     num_positional_args,
     native_array,
@@ -85,8 +87,7 @@ def test_torch_cross_entropy(
         target=np.asarray(target, dtype=target_dtype),
         weight=np.asarray(weights, dtype=weights_dtype),
         size_average=size_average,
-        ignore_index=-100,
         reduce=reduce,
         reduction=reduction,
-        label_smoothing=0.0,
+        label_smoothing=label_smoothing,
     )

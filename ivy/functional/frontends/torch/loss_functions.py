@@ -47,7 +47,7 @@ def cross_entropy(
     label_smoothing=0.0,
 ):
     input = ivy.softmax(input)
-    ret = ivy.cross_entropy(target, input, epsilon=0.0)
+    ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
     if weight is not None:
         ret = ivy.multiply(weight, ret)
     ret = _apply_reduction(reduction, size_average, reduce, ret)
