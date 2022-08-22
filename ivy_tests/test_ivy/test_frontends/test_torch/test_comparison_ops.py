@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
             ),
         ),
         num_arrays=2,
-        min_value=0,
+        min_value=1.0013580322265625e-05,
         max_value=1,
         shared_dtype=True,
     ),
