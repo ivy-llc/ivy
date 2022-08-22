@@ -327,3 +327,34 @@ def test_tensorflow_atan(
         fn_tree="atan",
         x=np.asarray(x, dtype=dtype),
     )
+
+
+# atanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.atanh"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_atanh(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="atanh",
+        x=np.asarray(x, dtype=dtype),
+    )
