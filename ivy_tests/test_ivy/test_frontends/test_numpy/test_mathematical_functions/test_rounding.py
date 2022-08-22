@@ -29,9 +29,9 @@ def test_numpy_floor(
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
+        input_dtype=list(input_dtype),
+        as_variable=list(as_variable),
+        native_array=list(native_array),
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
