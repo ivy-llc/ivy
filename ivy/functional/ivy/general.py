@@ -1880,7 +1880,9 @@ def arg_names(receiver):
     return list(inspect.signature(receiver).parameters.keys())
 
 
-def match_kwargs(kwargs, *receivers, allow_duplicates=False):
+def match_kwargs(
+    kwargs: Dict, *receivers: Iterable[Callable], allow_duplicates: bool = False
+) -> Union[List[Dict], Dict]:
     """Match keyword arguments to either class or function receivers.
 
     Parameters
@@ -1897,6 +1899,20 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     -------
     ret
         Sequence of keyword arguments split as best as possible.
+
+    Examples
+    --------
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
+
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
     split_kwargs = list()
@@ -1959,26 +1975,24 @@ def cache_fn(func: Callable) -> Callable:
 def current_backend_str() -> Union[str, None]:
     """Return framework string
 
-    Parameters
-    ----------
-
     Returns
     -------
     ret
         The framework string.
-    
+
     Examples
     --------
-    Without setting default backend of NumPy
+    Without setting default backend of NumPy:
 
-    >>> print(ivy.current_backend_str)
-    ''
+    >>> print(ivy.current_backend_str())
 
-    With setting default backend as 'torch'
+
+    With setting default backend as 'torch':
 
     >>> ivy.set_backend('torch')
-    >>> print(ivy.current_backend_str)
-    "torch"
+    >>> print(ivy.current_backend_str())
+    torch
+
     """
     fw = current_backend()
     if not backend_stack:
