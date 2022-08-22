@@ -10,4 +10,4 @@ def shuffle(value, seed, name=None):
 
 
 def uniform(shape, minval, maxval, dtype=None, seed=None, name=None):
-    return ivy.random_uniform(shape=shape, low=minval, high=maxval)
+    return ivy.random_uniform(low=minval, high=maxval, shape=shape, dtype=dtype)

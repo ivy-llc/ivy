@@ -57,12 +57,10 @@ def test_tensorflow_shuffle(
         min_value=101,
         max_value=1000,
     ),
-    # as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.uniform"
     ),
-    # native_array=helpers.list_of_length(x=st.booleans(), length=2),
     native_array=st.booleans(),
 )
 def test_tensorflow_uniform(
@@ -79,7 +77,7 @@ def test_tensorflow_uniform(
         fw=fw,
         frontend="tensorflow",
         fn_tree="random.uniform",
+        shape=None,
         minval=np.asarray(low, dtype=low_dtype),
         maxval=np.asarray(high, dtype=high_dtype),
-        shape=None,
     )
