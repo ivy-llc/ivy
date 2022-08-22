@@ -32,3 +32,7 @@ def asin(x, name="asin"):
 
 def atan(x, name="atan"):
     return ivy.atan(x)
+
+
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
