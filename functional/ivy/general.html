@@ -940,15 +940,14 @@ inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Without setting default backend of NumPy</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">)</span>
-<span class="go">&#39;&#39;</span>
+<p>Without setting default backend of NumPy:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>With setting default backend as ‘torch’</p>
+<p>With setting default backend as ‘torch’:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">)</span>
-<span class="go">&quot;torch&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">())</span>
+<span class="go">torch</span>
 </pre></div>
 </div>
 </dd></dl>

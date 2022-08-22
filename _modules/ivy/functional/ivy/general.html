@@ -2088,26 +2088,24 @@
 <div class="viewcode-block" id="current_backend_str"><a class="viewcode-back" href="../../../../functional/ivy/general/current_backend_str.html#ivy.functional.ivy.general.current_backend_str">[docs]</a><span class="k">def</span> <span class="nf">current_backend_str</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Return framework string</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The framework string.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Without setting default backend of NumPy</span>
+<span class="sd">    Without setting default backend of NumPy:</span>
 
-<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str)</span>
-<span class="sd">    &#39;&#39;</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str())</span>
 
-<span class="sd">    With setting default backend as &#39;torch&#39;</span>
+
+<span class="sd">    With setting default backend as &#39;torch&#39;:</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str)</span>
-<span class="sd">    &quot;torch&quot;</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.current_backend_str())</span>
+<span class="sd">    torch</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="n">current_backend</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_stack</span><span class="p">:</span>
@@ -2617,7 +2615,7 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="inplace_update"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_update.html#ivy.functional.ivy.general.inplace_update">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="inplace_update"><a class="viewcode-back" href="../../../../functional/ivy/general/inplace_update/inplace_update_functional.html#ivy.functional.ivy.general.inplace_update">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
