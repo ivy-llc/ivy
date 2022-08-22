@@ -46,6 +46,7 @@ def test_docstrings(backend):
         "unique_counts",
         "unique_all",
         "total_mem_on_dev",
+        "reduce_variance",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation
