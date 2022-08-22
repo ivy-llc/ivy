@@ -670,20 +670,6 @@ def squeeze(
     >>> print(ivy.squeeze(x, axis=(0, 2)))
     ivy.array([0, 1, 2])
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 2])
-    >>> print(ivy.squeeze(x))
-    ivy.array([0, 1, 2])
-
-    >>> x = ivy.native_array([[[3]]])
-    >>> print(ivy.squeeze(x, 2))
-    ivy.array([[3]])
-
-    >>> x = ivy.native_array(0)
-    >>> print(ivy.squeeze(x, 0))
-    ivy.array(0)
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
