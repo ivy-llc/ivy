@@ -149,17 +149,16 @@ class ContainerWithGeneral(ContainerBase):
             out=out,
         )
 
-
     @staticmethod
     def static_inplace_update(
-        x : Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.inplace_update. This method
@@ -215,7 +214,7 @@ class ContainerWithGeneral(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.inplace_update. This method
@@ -241,7 +240,7 @@ class ContainerWithGeneral(ContainerBase):
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
-        
+
         Returns
         -------
         ret
