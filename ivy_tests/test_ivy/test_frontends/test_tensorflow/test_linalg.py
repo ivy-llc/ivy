@@ -56,7 +56,6 @@ def test_tensorflow_det(
     ),
     native_array=st.booleans(),
 )
-
 def test_tensorflow_eigvalsh(
     dtype_and_input, as_variable, num_positional_args, native_array, fw
 ):
@@ -72,5 +71,3 @@ def test_tensorflow_eigvalsh(
         fn_tree="linalg.eigvalsh",
         input=np.asarray(x, dtype=input_dtype),
     )
-
-
