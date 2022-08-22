@@ -3,11 +3,12 @@ import ivy
 
 
 def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
-    if operand is not None and operands:
-        raise TypeError(
-            "if `operand` is passed, positional `operands` should not be passed"
-        )
-    operands = (operand,)
+    if operand is not None:
+        if operands:
+            raise TypeError(
+                "if `operand` is passed, positional `operands` should not be passed"
+            )
+        operands = (operand,)
 
     if pred:
         return true_fun(*operands)
@@ -18,5 +19,14 @@ def map(f, xs):
     return ivy.stack([f(x) for x in xs])
 
 
-def switch(f, init, xs, length=None, reverse=False, unroll=1):
-    pass
+def switch(index, branches, *operands, operand=None):
+    if operand is not None:
+        if operands:
+            raise TypeError(
+                "if `operand` is passed, positional `operands` should not be passed"
+            )
+        operands = (operand,)
+
+    index = max(index, 0)
+    index = min(len(branches) - 1, index)
+    return branches[index](*operands)
