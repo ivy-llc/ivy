@@ -694,7 +694,7 @@ def test_tensorflow_reduce_variance(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ), min_num_dims=1, min_dim_size=2
     ),
-    scalar_val = helpers.list_of_length(x=st.floats(), length=1),
+    scalar_val=helpers.list_of_length(x=st.floats(), length=1),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.scalar_mul"
