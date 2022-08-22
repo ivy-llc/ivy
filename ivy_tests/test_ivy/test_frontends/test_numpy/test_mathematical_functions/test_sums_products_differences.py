@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.prod"
     ),
     keepdims=st.booleans(),
-    initial=st.one_of(st.none(), st.booleans(), st.integers(), st.floats(), st.complex_numbers())
+    initial=st.one_of(st.booleans(), st.integers(), st.floats(), st.complex_numbers())
 )
 def test_numpy_prod(
     dtype_and_x,
