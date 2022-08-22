@@ -52,9 +52,7 @@ log_sigmoid.unsupported_dtypes = {
 
 
 def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
-    return ivy.where(
-        input_tensor == 0, ivy.array(0.0, dtype=input_tensor.dtype), 1 / input_tensor
-    )
+    return ivy.where(input_tensor == 0, 0.0, 1 / input_tensor)
 
 
 def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
@@ -85,6 +83,60 @@ def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsu
 reduce_logsumexp.unsupported_dtypes = {
     "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
 }
+
+
+def argmax(input, axis, output_type, name=None):
+    return ivy.argmax(input, axis=axis)
+
+
+def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
+    return ivy.max(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_max.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
+    return ivy.min(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_min.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def reduce_prod(input_tensor, axis=None, keepdims=False, name="reduce_prod"):
+    return ivy.prod(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_prod.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
+    return ivy.std(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_std.unsupported_dtypes = {
+    "tensorflow": (
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64"),
+}
+
+
+def asinh(x, name="asinh"):
+    return ivy.asinh(x)
 
 
 # TODO: divide_no_nan
