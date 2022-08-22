@@ -878,7 +878,7 @@ class ContainerWithRandom(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
                               b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> ivy.Container.static_shuffle(x)
+        >>> print(ivy.Container.static_shuffle(x))
             {
                 a: ivy.array([[6.5, 2.3], 
                             [9.8, 7.6]]),
@@ -886,16 +886,16 @@ class ContainerWithRandom(ContainerBase):
                             [7.6, 5.4]])
             }
 
-        >>> z = ivy.Container(a=ivy.zeros((2,2)), \
-                              b=ivy.ones((2,2)))
-        >>> ivy.Container.static_shuffle(x, out=z)
+        >>> z = ivy.Container(a=ivy.array([[0.,0.], [0., 0.]]), \
+                              b=ivy.array([[0.,0.], [0., 0.]]))
+        >>> print(ivy.Container.static_shuffle(x, out=z))
             {
                 a: ivy.array([[6.5, 2.3], 
                             [9.8, 7.6]]),
                 b: ivy.array([[0.9, 2.4], 
                             [7.6, 5.4]])
             }
-        >>> z
+        >>> print(z)
             {
                 a: ivy.array([[6.5, 2.3], 
                             [9.8, 7.6]]),
@@ -957,7 +957,7 @@ class ContainerWithRandom(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[9.8,7.6],[6.5,2.3]]), \
                               b=ivy.array([[0.9,2.4],[7.6,5.4]]))
-        >>> x.shuffle()
+        >>> print(x.shuffle())
             {
                 a: ivy.array([[6.5, 2.3], 
                             [9.8, 7.6]]),
@@ -965,9 +965,9 @@ class ContainerWithRandom(ContainerBase):
                             [0.9, 2.4]])
             }
 
-        >>> z = ivy.Container(a=ivy.zeros((2,2)), \
-                              b=ivy.ones((2,2)))
-        >>> x.shuffle(out = z)
+        >>> z = ivy.Container(a=ivy.array([[0.,0.], [0., 0.]]), \
+                              b=ivy.array([[0.,0.], [0., 0.]]))
+        >>> print(x.shuffle(out = z))
             {
                 a: ivy.array([[6.5, 2.3], 
                             [9.8, 7.6]]),
@@ -975,7 +975,7 @@ class ContainerWithRandom(ContainerBase):
                             [7.6, 5.4]])
             }
 
-        >>> ivy.shuffle(x)
+        >>> print(ivy.shuffle(x))
             {
                 a: ivy.array([[6.5, 2.3], 
                             [9.8, 7.6]]),
@@ -983,9 +983,9 @@ class ContainerWithRandom(ContainerBase):
                             [7.6, 5.4]])
             }
 
-        >>> z = ivy.Container(a=ivy.zeros((2,2)), \ 
-                              b=ivy.ones((2,2)))
-        >>> ivy.shuffle(x, out = z)
+        >>> z = ivy.Container(a=ivy.array([[0.,0.], [0., 0.]]), \
+                              b=ivy.array([[0.,0.], [0., 0.]]))
+        >>> print(ivy.shuffle(x, out = z))
             {
                 a: ivy.array([[9.8, 7.6], 
                             [6.5, 2.3]]),
@@ -998,25 +998,25 @@ class ContainerWithRandom(ContainerBase):
         With :code:`ivy.Array` inputs:
 
         >>> x = ivy.array([-1.2,-9.1,-3.4])
-        >>> x.shuffle()
+        >>> print(x.shuffle())
             ivy.array([-9.1, -1.2, -3.4])
 
-        >>> z = ivy.zeros(3, )
-        >>> x.shuffle(out = z)
+        >>> z = ivy.array([0., 0., 0.])
+        >>> print(x.shuffle(out = z))
             ivy.array([-3.4, -9.1, -1.2])
-        >>> z
+        >>> print(z)
             ivy.array([-3.4, -9.1, -1.2])
 
-        >>> ivy.shuffle(x)
+        >>> print(ivy.shuffle(x))
             ivy.array([-1.2, -9.1, -3.4])
 
-        >>> z = ivy.zeros(3, )
-        >>> ivy.shuffle(x, out = z)
+        >>> z = ivy.array([0., 0., 0.])
+        >>> print(ivy.shuffle(x, out = z))
             ivy.array([-1.2, -3.4, -9.1])
-        >>> z
+        >>> print(z)
             ivy.array([-1.2, -3.4, -9.1])
 
-            
+
         """
         return self.static_shuffle(
             self,
