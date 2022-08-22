@@ -2963,7 +2963,7 @@ def handle_cmd_line_args(test_fn):
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
-    @settings(max_examples=1)
+    @settings(max_examples=50)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
