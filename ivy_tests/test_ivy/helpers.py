@@ -39,35 +39,13 @@ cmd_line_args = (
 )
 
 try:
-    import jax.numpy as jnp
-except (ImportError, RuntimeError, AttributeError):
-    jnp = None
-try:
     import tensorflow as tf
 
-    _tf_version = float(".".join(tf.__version__.split(".")[0:2]))
-    if _tf_version >= 2.3:
-        # noinspection PyPep8Naming,PyUnresolvedReferences
-        from tensorflow.python.types.core import Tensor as tensor_type
-    else:
-        # noinspection PyPep8Naming
-        # noinspection PyProtectedMember,PyUnresolvedReferences
-        from tensorflow.python.framework.tensor_like import _TensorLike as tensor_type
     physical_devices = tf.config.list_physical_devices("GPU")
     for device in physical_devices:
         tf.config.experimental.set_memory_growth(device, True)
 except ImportError:
     tf = None
-try:
-    import torch
-except ImportError:
-    torch = None
-try:
-    import mxnet as mx
-    import mxnet.ndarray as mx_nd
-except ImportError:
-    mx = None
-    mx_nd = None
 from hypothesis import strategies as st
 
 # local
@@ -3062,12 +3040,13 @@ def statistical_dtype_values(draw, *, function):
     axis = draw(get_axis(shape=shape, allow_none=True))
     if function == "var" or function == "std":
         if isinstance(axis, int):
-            correction = draw(st.integers(-shape[axis], shape[axis] - 1)
-                              | st.floats(-shape[axis], shape[axis] - 1))
+            correction = draw(
+                st.integers(-shape[axis], shape[axis] - 1)
+                | st.floats(-shape[axis], shape[axis] - 1)
+            )
             return dtype, values, axis, correction
 
-        correction = draw(st.integers(-size, size - 1)
-                          | st.floats(-size, size - 1))
+        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
         return dtype, values, axis, correction
 
     return dtype, values, axis

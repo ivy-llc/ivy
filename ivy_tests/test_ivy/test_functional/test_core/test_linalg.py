@@ -936,13 +936,7 @@ def test_pinv(
 # qr
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=5,
-    ),
+    dtype_x=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(fn_name="qr"),
     mode=st.sampled_from(("reduced", "complete")),
 )
