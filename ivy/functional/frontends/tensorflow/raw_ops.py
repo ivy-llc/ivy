@@ -38,7 +38,6 @@ def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
-
 def tan(x, name="tan"):
     return ivy.tan(x)
 
