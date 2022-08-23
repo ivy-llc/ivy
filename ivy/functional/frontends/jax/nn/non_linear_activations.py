@@ -201,3 +201,17 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
 
 
 normalize.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def hard_tanh(x):
+    x = ivy.asarray(x)
+    n1 = -1
+    if "uint" in str(x.dtype):
+        dtype = x.dtype
+        # tensorflow can't use -1 for uint
+        n1 = ivy.asarray((1 << ivy.dtype_bits(dtype)) - 1, dtype=dtype)
+
+    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
+
+
+hard_tanh.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
