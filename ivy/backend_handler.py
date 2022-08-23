@@ -169,6 +169,7 @@ def set_backend_to_specific_version(backend):
             if orig_name:
                 backend.__dict__[orig_name] = backend.__dict__[i]
 
+
 def current_backend(*args, **kwargs):
     """Returns the current backend. Priorities:
     global_backend > argument's backend.
