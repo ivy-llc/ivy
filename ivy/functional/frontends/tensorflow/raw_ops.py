@@ -32,3 +32,6 @@ def asin(x, name="asin"):
 
 def atan(x, name="atan"):
     return ivy.atan(x)
+
+def bitwise_and(x, y, name="bitwise_and"):
+    return ivy.bitwise_and(x,y)
