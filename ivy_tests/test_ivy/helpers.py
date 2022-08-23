@@ -575,6 +575,13 @@ def assert_all_close(
         ), "{} != {}".format(ret_np, ret_from_np)
 
 
+def assert_same_type_and_shape(x, y):
+    assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
+    if isinstance(x, np.ndarray):
+        assert x.shape == y.shape, "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
+        assert x.dtype == y.dtype, "x.dtype = {}, y.dtype = {}".format(x.dtype, y.dtype)
+
+
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
     """Splits the kwargs into args and kwargs, with the first num_positional_args ported
     to args.
@@ -690,6 +697,7 @@ def value_test(
             ret_np_flat, ret_np_from_gt_flat
         )
     )
+    assert_same_type_and_shape(ret_np_flat, ret_np_from_gt_flat)
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
@@ -1233,6 +1241,7 @@ def test_method(
                     ret_np_flat, ret_np_from_gt_flat
                 )
             )
+            assert_same_type_and_shape(ret_np_flat, ret_np_from_gt_flat)
     elif test_values:
         value_test(
             ret_np_flat=ret_np_flat,
