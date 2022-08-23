@@ -1,4 +1,4 @@
-#global
+# global
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -6,6 +6,7 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
+
 
 @st.composite
 def _get_dtype_and_matrix(draw):
@@ -20,6 +21,7 @@ def _get_dtype_and_matrix(draw):
             max_value=10,
         )
     )
+
 
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
