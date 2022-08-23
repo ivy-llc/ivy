@@ -72,9 +72,14 @@ def softplus(x: torch.Tensor, /) -> torch.Tensor:
 
 softplus.unsupported_dtypes = ("float16",)
 
+
 def mish(
     x: torch.Tensor,
     /,
     *,
-    inplace: bool = False) -> torch.Tensor:
+    inplace: bool = False
+) -> torch.Tensor:
     return torch.nn.functional.mish(x, inplace=inplace)
+
+
+mish.unsupported_dtypes = ("float16",)
