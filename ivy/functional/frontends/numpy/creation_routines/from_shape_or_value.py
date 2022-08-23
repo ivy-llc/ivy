@@ -24,8 +24,10 @@ def ones(shape, dtype=None, order="C", *, like=None):
     return ivy.ones(shape, dtype=dtype)
 
 
-def ones_like():
-    pass
+def ones_like(a, dtype=None, order="K", subok=True, shape=None):
+    if shape:
+        return ivy.ones(shape, dtype=dtype)
+    return ivy.ones_like(a, dtype=dtype)
 
 
 def zeros():
