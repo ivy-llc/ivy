@@ -410,6 +410,7 @@ def test_tensorflow_Maximum(
     input_dtype, values = dtype_and_x
     x = values[0]
     y = values[1]
+    input_dtype = input_dtype[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -445,6 +446,7 @@ def test_tensorflow_Minimum(
     input_dtype, values = dtype_and_x
     x = values[0]
     y = values[1]
+    input_dtype = input_dtype[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
