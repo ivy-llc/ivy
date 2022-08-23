@@ -620,11 +620,11 @@ def matmul(
     Parameters
     ----------
     x1
-         first input array. Should have a numeric data type. Must have at least one
-         dimension.
+        first input array. Should have a numeric data type. Must have at least one
+        dimension.
     x2
-         second input array. Should have a numeric data type. Must have at least one
-         dimension.
+        second input array. Should have a numeric data type. Must have at least one
+        dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -678,7 +678,6 @@ def matmul(
 
     Examples
     --------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([2., 0., 3.])
