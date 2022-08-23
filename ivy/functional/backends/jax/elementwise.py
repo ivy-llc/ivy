@@ -349,7 +349,7 @@ def remainder(
         res_floored = jnp.where(res >= 0, jnp.floor(res), jnp.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return diff * x2
+        return (diff * x2).astype(x1.dtype)
     return jnp.remainder(x1, x2)
 
 
