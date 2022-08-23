@@ -38,7 +38,7 @@ def test_numpy_min(
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -46,6 +46,6 @@ def test_numpy_min(
         fn_tree="min",
         arrays=xs,
         axis=None,
+        out=None,
         keepdims=False,
-        f=None,
     )
