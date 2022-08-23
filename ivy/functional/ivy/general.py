@@ -2333,7 +2333,23 @@ def num_arrays_in_memory():
 
 
 def print_all_arrays_in_memory():
-    """Prints all arrays which are currently alive."""
+    """
+    Gets all the native Ivy arrays which are currently alive(in the garbage collector)
+    from get_all_arrays_in_memory() function and prints them to the console.
+    
+    Parameters
+    ----------
+    None
+
+    Output
+    ------
+    All the Ivy native arrays which are currently alive.
+
+    Returns
+    -------
+    None
+
+    """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
