@@ -335,6 +335,15 @@ def pow(
     return jnp.power(x1, x2)
 
 
+def reciprocal(
+    x: Union[float, JaxArray], 
+    /, 
+    *, 
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.reciprocal(x)
+
+
 def remainder(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
