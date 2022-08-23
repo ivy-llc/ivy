@@ -555,13 +555,17 @@ def remainder(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    modulus: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = torch.remainder(x1, x2, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
+        diff = res - res_floored
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return torch.mul(diff, x2, out=out)
+    return torch.remainder(x1, x2, out=out)
 
 
 remainder.support_native_out = True
