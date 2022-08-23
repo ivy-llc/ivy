@@ -3063,6 +3063,8 @@ def num_positional_args(draw, *, fn_name: str = None):
         else:
             fn = fn.__dict__[fn_name_key]
     for param in inspect.signature(fn).parameters.values():
+        if param.name == "self":
+            continue
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1
