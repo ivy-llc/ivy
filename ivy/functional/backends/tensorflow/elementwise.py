@@ -522,9 +522,16 @@ def remainder(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    modulus: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = tf.where(res >= 0, tf.math.floor(res), tf.math.ceil(res))
+        diff = res - res_floored
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return diff * x2
     return tf.experimental.numpy.remainder(x1, x2)
 
 
