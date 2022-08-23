@@ -7,51 +7,24 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-# add
+# Acos
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
-        num_arrays=2,
-        shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.add"
-    ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-)
-def test_tensorflow_add(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_name="add",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
-    )
-
-
-# tan
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.tan"
+        fn_name="ivy.functional.frontends.tensorflow.acos"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_tan(
+def test_tensorflow_acos(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -63,7 +36,38 @@ def test_tensorflow_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="tan",
+        fn_tree="acos",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# Acosh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.acosh"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_acosh(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="acosh",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -109,6 +113,7 @@ def _arrays_idx_n_dtypes(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -134,9 +139,71 @@ def test_tensorflow_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="concat",
+        fn_tree="concat",
         values=xs,
         axis=unique_idx,
+    )
+
+
+# cos
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cos"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_cos(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="cos",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# cosh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cosh"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_cosh(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="cosh",
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -160,9 +227,10 @@ def _fill_value(draw):
         return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
         return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(st.floats(-5, 5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -192,29 +260,119 @@ def test_tensorflow_full(
         native_array_flags=False,
         fw=fw,
         frontend="tensorflow",
-        fn_name="fill",
+        fn_tree="fill",
         dims=shape,
         value=fill_value,
         rtol=1e-05,
     )
 
 
-# mutiply
+# asin
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.asin"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_asin(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="asin",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+# atan
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.atan"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_atan(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="atan",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+# atanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.atanh"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_atanh(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="atanh",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+# sin
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
-        num_arrays=2,
-        shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.multiply"
+        fn_name="ivy.functional.frontends.tensorflow.sin"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-def test_tensorflow_multiply(
+def test_tensorflow_sin(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -226,106 +384,6 @@ def test_tensorflow_multiply(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="multiply",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
-    )
-
-
-# subtract
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_tf.valid_numeric_dtypes)
-            )
-        ),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.subtract"
-    ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-)
-def test_tensorflow_subtract(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_name="subtract",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
-    )
-
-
-# logical_xor
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.logical_xor"
-    ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-)
-def test_tensorflow_logical_xor(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_name="math.logical_xor",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
-    )
-
-
-# divide
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.divide"
-    ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
-)
-def test_tensorflow_divide(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_name="divide",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        fn_tree="sin",
+        x=np.asarray(x, dtype=input_dtype),
     )

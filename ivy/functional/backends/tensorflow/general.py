@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 
 _round = round
 import numpy as np
@@ -67,7 +67,9 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
@@ -85,20 +87,27 @@ def inplace_update(
     val: Union[ivy.Array, tf.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_variable(x_native):
-        x_native.assign(val_native)
-        if ivy.is_ivy_array(x):
-            x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_variable(x_native):
+            x_native.assign(val_native)
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+            else:
+                x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            x = ivy.Array(x_native)
-    elif ensure_in_backend:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    elif ivy.is_ivy_array(x):
-        x.data = val_native
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        return x
     else:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    return x
+        return val
 
 
 def inplace_arrays_supported():
@@ -108,7 +117,9 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native - val_native)
@@ -118,13 +129,15 @@ def inplace_decrement(x, val):
             x = ivy.Array(x_native)
     else:
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x.data -= val_native
         else:
             x = ivy.Array(val_native)
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native + val_native)
@@ -238,7 +251,6 @@ def scatter_nd(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
             tf.cast(tensor, dtype=updates.dtype)
@@ -354,6 +366,9 @@ def one_hot(
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.one_hot(indices, depth)
+
+
+one_hot.unsupported_dtypes = ("int8", "int16", "uint16", "uint32", "uint64")
 
 
 def current_backend_str():
