@@ -323,7 +323,7 @@ def flip(
     }
 
     """
-    return current_backend(x).flip(x, axis, out=out)
+    return current_backend(x).flip(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
