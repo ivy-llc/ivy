@@ -60,7 +60,8 @@ def _input_channels_and_dtype_and_values(draw):
     ),
     weight_initializer=_sample_initializer(),
     wb_n_b_init=_bias_flag_and_initializer(),
-    with_v=st.booleans(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
     num_positional_args_init=helpers.num_positional_args(fn_name="Linear.__init__"),
     num_positional_args_method=helpers.num_positional_args(fn_name="Linear._forward"),
     seed=helpers.seed(),
@@ -71,7 +72,8 @@ def test_linear_layer(
     output_channels,
     weight_initializer,
     wb_n_b_init,
-    with_v,
+    init_with_v,
+    method_with_v,
     num_positional_args_init,
     num_positional_args_method,
     seed,
@@ -103,6 +105,8 @@ def test_linear_layer(
         all_as_kwargs_np_method={"x": np.asarray(x, dtype=input_dtype)},
         fw=fw,
         class_name="Linear",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
         test_values=False,
     )
 
