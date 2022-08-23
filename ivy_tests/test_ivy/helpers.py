@@ -1081,6 +1081,8 @@ def test_method(
     fw: str,
     class_name: str,
     method_name: str = "__call__",
+    init_with_v: bool = False,
+    method_with_v: bool = False,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
@@ -1128,6 +1130,12 @@ def test_method(
         name of the class to test.
     method_name
         name of tthe method to test.
+    init_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the constructor with the variables v passed explicitly.
+    method_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the method with the variables v passed explicitly.
     rtol_
         relative tolerance value.
     atol_
@@ -1249,6 +1257,12 @@ def test_method(
     )
     # run
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+    if isinstance(ins, ivy.Module):
+        v = ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+        if init_with_v:
+            ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
+        if method_with_v:
+            kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
