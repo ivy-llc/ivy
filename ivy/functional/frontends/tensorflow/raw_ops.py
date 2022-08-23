@@ -2,15 +2,41 @@
 import ivy
 
 
+def acos(x, name="acos"):
+    return ivy.acos(x)
+
+
+def acosh(x, name="acosh"):
+    return ivy.acosh(x)
+
+
 def concat(values, axis, name="concat"):
-    return ivy.concat(values, axis)
+    return ivy.concat(values, axis=axis)
 
 
-concat.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+def cos(x, name="cos"):
+    return ivy.cos(x)
+
+
+def cosh(x, name="cosh"):
+    return ivy.cosh(x)
 
 
 def fill(dims, value, name="full"):
     return ivy.full(dims, value)
 
 
-fill.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+def asin(x, name="asin"):
+    return ivy.asin(x)
+
+
+def atan(x, name="atan"):
+    return ivy.atan(x)
+
+
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
+
+
+def sin(x, name="sin"):
+    return ivy.sin(x)

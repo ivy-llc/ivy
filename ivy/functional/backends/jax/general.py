@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence
+from typing import Iterable, Optional, Union, Sequence, List
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -89,7 +89,7 @@ def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> Jax
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
@@ -105,14 +105,17 @@ def inplace_update(
     val: Union[ivy.Array, JaxArray],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    if ensure_in_backend:
-        raise Exception("JAX does not natively support inplace updates")
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_ivy_array(x):
-        x.data = val_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        if ensure_in_backend:
+            raise Exception("JAX does not natively support inplace updates")
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            raise Exception("JAX does not natively support inplace updates")
+        return x
     else:
-        raise Exception("JAX does not natively support inplace updates")
-    return x
+        return val
 
 
 def inplace_arrays_supported():
@@ -324,7 +327,9 @@ def inplace_decrement(x, val):
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
+) -> Union[ivy.Array, ivy.Container]:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data += val_native
