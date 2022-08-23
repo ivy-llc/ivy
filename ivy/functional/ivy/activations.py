@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    integer_arrays_to_float,
 )
 
 
@@ -155,6 +156,7 @@ def leaky_relu(
     return current_backend(x).leaky_relu(x, alpha, out=out)
 
 
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -186,6 +188,7 @@ def gelu(
     return current_backend(x).gelu(x, approximate, out=out)
 
 
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
