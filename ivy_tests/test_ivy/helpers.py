@@ -3173,3 +3173,8 @@ def statistical_dtype_values(draw, *, function):
         return dtype, values, axis, correction
 
     return dtype, values, axis
+
+
+@st.composite
+def seed(draw):
+    return draw(st.integers(min_value=0, max_value=2**8 - 1))
