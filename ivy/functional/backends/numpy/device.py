@@ -11,21 +11,25 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
-def dev(x: np.ndarray, as_native: bool = False) -> Union[ivy.Device, str]:
+def dev(x: np.ndarray,
+        /,
+        *,
+        as_native: bool = False
+        ) -> Union[ivy.Device, str]:
     if as_native:
         return "cpu"
     return as_ivy_dev("cpu")
 
 
-def as_ivy_dev(device):
+def as_ivy_dev(device: str, /):
     return ivy.Device("cpu")
 
 
-def as_native_dev(device):
+def as_native_dev(device: str, /):
     return "cpu"
 
 
-def clear_mem_on_dev(device):
+def clear_mem_on_dev(device: str, /):
     return None
 
 
@@ -61,7 +65,11 @@ def _to_device(x: np.ndarray, device=None) -> np.ndarray:
 
 
 def to_device(
-    x: np.ndarray, device: str, *, stream: Optional[Union[int, Any]] = None
+        x: np.ndarray,
+        device: str,
+        /,
+        *,
+        stream: Optional[Union[int, Any]] = None
 ) -> np.ndarray:
     if device is not None:
         device = as_native_dev(device)
