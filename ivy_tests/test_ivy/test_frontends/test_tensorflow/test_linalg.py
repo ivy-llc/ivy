@@ -5,7 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
-
+import ivy.functional.backends.numpy as ivy_np
 
 @st.composite
 def _get_dtype_and_matrix(draw):
