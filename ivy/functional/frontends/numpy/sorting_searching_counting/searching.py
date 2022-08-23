@@ -27,3 +27,7 @@ def nonzero(a):
     `numpy.nonzero` has the same behavior with `ivy.nonzero`
     """
     return ivy.nonzero(a)
+
+
+def argmax(a, axis=None, out=None, *, keepdims=False):
+    return ivy.argmax(a, axis=axis, out=out, keepdims=keepdims)
