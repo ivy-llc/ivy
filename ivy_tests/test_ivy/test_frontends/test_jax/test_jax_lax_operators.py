@@ -1,7 +1,7 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -981,11 +981,9 @@ def test_jax_lax_exp(
 @st.composite
 def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
-    return draw(
-        st.sampled_from(ivy.valid_numeric_dtypes).filter(
-            lambda x: ivy.can_cast(dtype, x)
-        )
-    )
+    to_dtype = draw(st.sampled_from(ivy.valid_numeric_dtypes))
+    assume(ivy.can_cast(dtype, to_dtype))
+    return to_dtype
 
 
 @handle_cmd_line_args
@@ -1208,4 +1206,39 @@ def test_jax_lax_broadcast(
         fn_tree="lax.broadcast",
         operand=np.asarray(x, dtype=input_dtype),
         sizes=sizes,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_bounded_axis=_dtype_x_bounded_axis(
+        available_dtypes=ivy.valid_numeric_dtypes,
+        min_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.sort"
+    ),
+    is_stable=st.booleans(),
+)
+def test_jax_lax_sort(
+    dtype_x_bounded_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    is_stable,
+):
+    input_dtype, x, axis = dtype_x_bounded_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.sort",
+        operand=np.asarray(x, dtype=input_dtype),
+        dimension=axis,
+        is_stable=is_stable,
     )
