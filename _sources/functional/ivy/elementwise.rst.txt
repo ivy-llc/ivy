@@ -58,6 +58,7 @@ Elementwise
    elementwise/not_equal.rst
    elementwise/positive.rst
    elementwise/pow.rst
+   elementwise/reciprocal.rst
    elementwise/remainder.rst
    elementwise/round.rst
    elementwise/sign.rst
