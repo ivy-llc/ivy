@@ -1067,11 +1067,11 @@ def test_unsupported_function(*, fn, args, kwargs):
 
 def test_method(
     *,
-    input_dtypes_constructor: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    as_variable_flags_constructor: Union[bool, List[bool]] = None,
-    num_positional_args_constructor: int = 0,
-    native_array_flags_constructor: Union[bool, List[bool]] = None,
-    all_as_kwargs_np_constructor: dict = None,
+    input_dtypes_init: Union[ivy.Dtype, List[ivy.Dtype]] = None,
+    as_variable_flags_init: Union[bool, List[bool]] = None,
+    num_positional_args_init: int = 0,
+    native_array_flags_init: Union[bool, List[bool]] = None,
+    all_as_kwargs_np_init: dict = None,
     input_dtypes_method: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags_method: Union[bool, List[bool]],
     num_positional_args_method: int,
@@ -1093,18 +1093,18 @@ def test_method(
 
     Parameters
     ----------
-    input_dtypes_constructor
+    input_dtypes_init
         data types of the input arguments to the constructor in order.
-    as_variable_flags_constructor
+    as_variable_flags_init
         dictates whether the corresponding input argument passed to the constructor
         should be treated as an ivy.Variable.
-    num_positional_args_constructor
+    num_positional_args_init
         number of input arguments that must be passed as positional arguments to the
         constructor.
-    native_array_flags_constructor
+    native_array_flags_init
         dictates whether the corresponding input argument passed to the constructor
         should be treated as a native array.
-    all_as_kwargs_np_constructor:
+    all_as_kwargs_np_init:
         input arguments to the constructor as keyword arguments.
     input_dtypes_method
         data types of the input arguments to the method in order.
@@ -1148,16 +1148,12 @@ def test_method(
         optional, return value from the Ground Truth function
     """
     # convert single values to length 1 lists
-    (
-        input_dtypes_constructor,
-        as_variable_flags_constructor,
-        native_array_flags_constructor,
-    ) = as_lists(
-        ivy.default(input_dtypes_constructor, []),
-        ivy.default(as_variable_flags_constructor, []),
-        ivy.default(native_array_flags_constructor, []),
+    (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = as_lists(
+        ivy.default(input_dtypes_init, []),
+        ivy.default(as_variable_flags_init, []),
+        ivy.default(native_array_flags_init, []),
     )
-    all_as_kwargs_np_constructor = ivy.default(all_as_kwargs_np_constructor, dict())
+    all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
     (
         input_dtypes_method,
         as_variable_flags_method,
@@ -1172,21 +1168,21 @@ def test_method(
 
     # make all lists equal in length
     num_arrays_constructor = max(
-        len(input_dtypes_constructor),
-        len(as_variable_flags_constructor),
-        len(native_array_flags_constructor),
+        len(input_dtypes_init),
+        len(as_variable_flags_init),
+        len(native_array_flags_init),
     )
-    if len(input_dtypes_constructor) < num_arrays_constructor:
-        input_dtypes_constructor = [
-            input_dtypes_constructor[0] for _ in range(num_arrays_constructor)
+    if len(input_dtypes_init) < num_arrays_constructor:
+        input_dtypes_init = [
+            input_dtypes_init[0] for _ in range(num_arrays_constructor)
         ]
-    if len(as_variable_flags_constructor) < num_arrays_constructor:
-        as_variable_flags_constructor = [
-            as_variable_flags_constructor[0] for _ in range(num_arrays_constructor)
+    if len(as_variable_flags_init) < num_arrays_constructor:
+        as_variable_flags_init = [
+            as_variable_flags_init[0] for _ in range(num_arrays_constructor)
         ]
-    if len(native_array_flags_constructor) < num_arrays_constructor:
-        native_array_flags_constructor = [
-            native_array_flags_constructor[0] for _ in range(num_arrays_constructor)
+    if len(native_array_flags_init) < num_arrays_constructor:
+        native_array_flags_init = [
+            native_array_flags_init[0] for _ in range(num_arrays_constructor)
         ]
 
     num_arrays_method = max(
@@ -1211,9 +1207,9 @@ def test_method(
         ]
 
     # update variable flags to be compatible with float dtype
-    as_variable_flags_constructor = [
+    as_variable_flags_init = [
         v if ivy.is_float_dtype(d) else False
-        for v, d in zip(as_variable_flags_constructor, input_dtypes_constructor)
+        for v, d in zip(as_variable_flags_init, input_dtypes_init)
     ]
     as_variable_flags_method = [
         v if ivy.is_float_dtype(d) else False
@@ -1221,8 +1217,8 @@ def test_method(
     ]
 
     # change all data types so that they are supported by this framework
-    input_dtypes_constructor = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_constructor
+    input_dtypes_init = [
+        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_init
     ]
     input_dtypes_method = [
         "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
@@ -1230,15 +1226,15 @@ def test_method(
 
     # create args
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_constructor,
-        kwargs=all_as_kwargs_np_constructor,
+        num_positional_args=num_positional_args_init,
+        kwargs=all_as_kwargs_np_init,
     )
     args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
         args_np=args_np_constructor,
         kwargs_np=kwargs_np_constructor,
-        input_dtypes=input_dtypes_constructor,
-        as_variable_flags=as_variable_flags_constructor,
-        native_array_flags=native_array_flags_constructor,
+        input_dtypes=input_dtypes_init,
+        as_variable_flags=as_variable_flags_init,
+        native_array_flags=native_array_flags_init,
     )
     args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
@@ -1261,8 +1257,8 @@ def test_method(
     args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
         args_np=args_np_constructor,
         kwargs_np=kwargs_np_constructor,
-        input_dtypes=input_dtypes_constructor,
-        as_variable_flags=as_variable_flags_constructor,
+        input_dtypes=input_dtypes_init,
+        as_variable_flags=as_variable_flags_init,
     )
     args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
