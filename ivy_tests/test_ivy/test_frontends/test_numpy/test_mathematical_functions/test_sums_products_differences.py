@@ -12,7 +12,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_and_x=np_frontend_helpers.dtype_x_bounded_axis(available_dtypes=ivy.current_backend().valid_dtypes),
+    dtype_and_x=np_frontend_helpers.dtype_x_bounded_axis(
+        available_dtypes=ivy.current_backend().valid_dtypes
+    ),
     dtype=st.sampled_from(ivy.current_backend().valid_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
