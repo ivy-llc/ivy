@@ -4,7 +4,7 @@ from numbers import Number
 
 # global
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, assume
 
 # local
 import ivy
@@ -22,12 +22,11 @@ def _not_too_close_to_zero(x):
 
 
 # abs
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="abs"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_abs(
     *,
     dtype_and_x,
@@ -55,12 +54,11 @@ def test_abs(
 
 
 # acosh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="acosh"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_acosh(
     *,
     dtype_and_x,
@@ -88,12 +86,11 @@ def test_acosh(
 
 
 # acos
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_acos(
     *,
     dtype_and_x,
@@ -121,14 +118,13 @@ def test_acos(
 
 
 # add
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_add(
     *,
     dtype_and_x,
@@ -158,12 +154,11 @@ def test_add(
 
 
 # asin
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="asin"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_asin(
     *,
     dtype_and_x,
@@ -191,12 +186,11 @@ def test_asin(
 
 
 # asinh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="asinh"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_asinh(
     *,
     dtype_and_x,
@@ -224,12 +218,11 @@ def test_asinh(
 
 
 # atan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="atan"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_atan(
     *,
     dtype_and_x,
@@ -257,6 +250,7 @@ def test_atan(
 
 
 # atan2
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -267,9 +261,7 @@ def test_atan(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="atan2"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_atan2(
     *,
     dtype_and_x,
@@ -307,12 +299,11 @@ def test_atan2(
 
 
 # atanh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="atanh"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_atanh(
     *,
     dtype_and_x,
@@ -340,14 +331,13 @@ def test_atanh(
 
 
 # bitwise_and
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_bitwise_and(
     *,
     dtype_and_x,
@@ -377,6 +367,7 @@ def test_bitwise_and(
 
 
 # bitwise_left_shift
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes,
@@ -386,9 +377,7 @@ def test_bitwise_and(
         small_value_safety_factor=0.9,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_bitwise_left_shift(
     *,
     dtype_and_x,
@@ -422,14 +411,13 @@ def test_bitwise_left_shift(
 
 
 # bitwise_invert
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",)
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_bitwise_invert(
     *,
     dtype_and_x,
@@ -457,14 +445,13 @@ def test_bitwise_invert(
 
 
 # bitwise_or
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_bitwise_or(
     *,
     dtype_and_x,
@@ -494,6 +481,7 @@ def test_bitwise_or(
 
 
 # bitwise_right_shift
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes,
@@ -503,9 +491,7 @@ def test_bitwise_or(
         small_value_safety_factor=0.9,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_bitwise_right_shift(
     *,
     dtype_and_x,
@@ -539,14 +525,13 @@ def test_bitwise_right_shift(
 
 
 # bitwise_xor
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_bitwise_xor(
     *,
     dtype_and_x,
@@ -576,12 +561,11 @@ def test_bitwise_xor(
 
 
 # ceil
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_ceil(
     *,
     dtype_and_x,
@@ -609,12 +593,11 @@ def test_ceil(
 
 
 # cos
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="cos"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_cos(
     *,
     dtype_and_x,
@@ -642,12 +625,11 @@ def test_cos(
 
 
 # cosh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="cosh"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_cosh(
     *,
     dtype_and_x,
@@ -675,14 +657,13 @@ def test_cosh(
 
 
 # divide
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="divide"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_divide(
     *,
     dtype_and_x,
@@ -718,14 +699,13 @@ def test_divide(
 
 
 # equal
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="equal"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_equal(
     *,
     dtype_and_x,
@@ -755,12 +735,11 @@ def test_equal(
 
 
 # exp
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="exp"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_exp(
     *,
     dtype_and_x,
@@ -788,12 +767,11 @@ def test_exp(
 
 
 # expm1
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="expm1"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_expm1(
     *,
     dtype_and_x,
@@ -821,12 +799,11 @@ def test_expm1(
 
 
 # floor
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="floor"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_floor(
     *,
     dtype_and_x,
@@ -857,6 +834,7 @@ def test_floor(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -866,9 +844,7 @@ def test_floor(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_floor_divide(
     *,
     dtype_and_x,
@@ -907,14 +883,13 @@ def test_floor_divide(
 
 
 # greater
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="greater"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_greater(
     *,
     dtype_and_x,
@@ -950,14 +925,13 @@ def test_greater(
 
 
 # greater_equal
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="greater_equal"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_greater_equal(
     *,
     dtype_and_x,
@@ -976,7 +950,6 @@ def test_greater_equal(
 
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -993,12 +966,11 @@ def test_greater_equal(
 
 
 # isfinite
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="isfinite"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_isfinite(
     *,
     dtype_and_x,
@@ -1026,12 +998,11 @@ def test_isfinite(
 
 
 # isinf
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="isinf"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_isinf(
     *,
     dtype_and_x,
@@ -1059,12 +1030,11 @@ def test_isinf(
 
 
 # isnan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="isnan"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_isnan(
     *,
     dtype_and_x,
@@ -1092,6 +1062,7 @@ def test_isnan(
 
 
 # less
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -1099,9 +1070,7 @@ def test_isnan(
         min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="less"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_less(
     *,
     dtype_and_x,
@@ -1137,14 +1106,13 @@ def test_less(
 
 
 # less_equal
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="less_equal"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_less_equal(
     *,
     dtype_and_x,
@@ -1180,12 +1148,11 @@ def test_less_equal(
 
 
 # log
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_log(
     *,
     dtype_and_x,
@@ -1217,12 +1184,11 @@ def test_log(
 
 
 # log1p
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log1p"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_log1p(
     *,
     dtype_and_x,
@@ -1254,12 +1220,11 @@ def test_log1p(
 
 
 # log2
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log2"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_log2(
     *,
     dtype_and_x,
@@ -1291,12 +1256,11 @@ def test_log2(
 
 
 # log10
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="log10"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_log10(
     *,
     dtype_and_x,
@@ -1328,14 +1292,13 @@ def test_log10(
 
 
 # logaddexp
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="logaddexp"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_logaddexp(
     *,
     dtype_and_x,
@@ -1366,12 +1329,11 @@ def test_logaddexp(
 
 
 # logical_and
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="logical_and"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_logical_and(
     *,
     dtype_and_x,
@@ -1401,12 +1363,11 @@ def test_logical_and(
 
 
 # logical_not
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
     num_positional_args=helpers.num_positional_args(fn_name="logical_not"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_logical_not(
     *,
     dtype_and_x,
@@ -1434,12 +1395,11 @@ def test_logical_not(
 
 
 # logical_or
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="logical_or"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_logical_or(
     *,
     dtype_and_x,
@@ -1469,12 +1429,11 @@ def test_logical_or(
 
 
 # logical_xor
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
     num_positional_args=helpers.num_positional_args(fn_name="logical_xor"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_logical_xor(
     *,
     dtype_and_x,
@@ -1504,14 +1463,13 @@ def test_logical_xor(
 
 
 # multiply
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="multiply"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_multiply(
     *,
     dtype_and_x,
@@ -1541,12 +1499,11 @@ def test_multiply(
 
 
 # negative
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="negative"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_negative(
     *,
     dtype_and_x,
@@ -1574,14 +1531,13 @@ def test_negative(
 
 
 # not_equal
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="not_equal"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_not_equal(
     *,
     dtype_and_x,
@@ -1611,12 +1567,11 @@ def test_not_equal(
 
 
 # positive
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="positive"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_positive(
     *,
     dtype_and_x,
@@ -1644,14 +1599,13 @@ def test_positive(
 
 
 # pow
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="pow"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_pow(
     *,
     dtype_and_x,
@@ -1702,14 +1656,13 @@ def test_pow(
 
 
 # remainder
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
     num_positional_args=helpers.num_positional_args(fn_name="remainder"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_remainder(
     *,
     dtype_and_x,
@@ -1748,12 +1701,11 @@ def test_remainder(
 
 
 # round
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="round"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_round(
     *,
     dtype_and_x,
@@ -1781,12 +1733,11 @@ def test_round(
 
 
 # sign
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sign"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_sign(
     *,
     dtype_and_x,
@@ -1818,12 +1769,11 @@ def test_sign(
 
 
 # sin
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sin"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_sin(
     *,
     dtype_and_x,
@@ -1851,12 +1801,11 @@ def test_sin(
 
 
 # sinh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="sinh"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_sinh(
     *,
     dtype_and_x,
@@ -1884,12 +1833,11 @@ def test_sinh(
 
 
 # square
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="square"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_square(
     *,
     dtype_and_x,
@@ -1917,14 +1865,13 @@ def test_square(
 
 
 # sqrt
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes, allow_inf=False
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sqrt"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_sqrt(
     *,
     dtype_and_x,
@@ -1952,14 +1899,13 @@ def test_sqrt(
 
 
 # subtract
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_subtract(
     *,
     dtype_and_x,
@@ -1989,12 +1935,11 @@ def test_subtract(
 
 
 # tan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="tan"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_tan(
     *,
     dtype_and_x,
@@ -2022,12 +1967,11 @@ def test_tan(
 
 
 # tanh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_tanh(
     *,
     dtype_and_x,
@@ -2055,12 +1999,11 @@ def test_tanh(
 
 
 # trunc
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="trunc"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_trunc(
     *,
     dtype_and_x,
@@ -2092,12 +2035,11 @@ def test_trunc(
 
 
 # erf
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="erf"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_erf(
     *,
     dtype_and_x,
@@ -2125,14 +2067,13 @@ def test_erf(
 
 
 # minimum
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_minimum(
     *,
     dtype_and_x,
@@ -2171,14 +2112,13 @@ def test_minimum(
 
 
 # maximum
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_maximum(
     *,
     dtype_and_x,
