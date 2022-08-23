@@ -83,8 +83,7 @@ def test_torch_full(
     )
 
 
-
-#ones_like
+# ones_like
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_torch.valid_float_dtypes),
@@ -102,7 +101,7 @@ def test_torch_ones_like(
     num_positional_args,
     fw,
 ):
-    dtype, input= dtype_and_x
+    dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=False,
@@ -112,7 +111,7 @@ def test_torch_ones_like(
         fw=fw,
         frontend="torch",
         fn_tree="ones_like",
-        input=np.asarray(input,dtype=dtype),
+        input=np.asarray(input, dtype=dtype),
         dtype=dtypes[0],
         device=device,
         requires_grad=requires_grad,
