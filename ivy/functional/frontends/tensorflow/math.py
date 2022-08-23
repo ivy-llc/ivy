@@ -52,7 +52,9 @@ log_sigmoid.unsupported_dtypes = {
 
 
 def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
-    return ivy.where(input_tensor == 0, 0.0, 1 / input_tensor)
+    return ivy.where(
+        input_tensor == 0, ivy.array(0.0, dtype=input_tensor.dtype), 1 / input_tensor
+    )
 
 
 def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
@@ -154,12 +156,16 @@ def erfcinv(x, name="erfcinv"):
 def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
+    if ivy.array(x).size == 2:
+        return ivy.array(x[0] <= x[1])
     return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
 
 
 def is_strictly_increasing(x, name="is_strictly_increasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
+    if ivy.array(x).size == 2:
+        return ivy.array(x[0] < x[1])
     return ivy.all(ivy.less(x, ivy.roll(x, -1)))
 
 
