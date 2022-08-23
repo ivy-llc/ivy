@@ -398,7 +398,7 @@ def test_tensorflow_sin(
         ),
         num_arrays=2,
     ),
-    as_variable=[st.booleans(), st.booleans()]
+    as_variable=[st.booleans(), st.booleans()],
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Maximum"
     ),
