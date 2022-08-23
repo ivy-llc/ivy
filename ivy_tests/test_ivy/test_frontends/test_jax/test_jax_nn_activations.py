@@ -349,3 +349,115 @@ def test_jax_nn_softplus(
         fn_tree="nn.softplus",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_float_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.nn.log_sigmoid"
+    ),
+)
+def test_jax_nn_log_sigmoid(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="nn.log_sigmoid",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_float_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+        min_value=-2,
+        min_num_dims=1,
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.nn.log_softmax"
+    ),
+)
+def test_jax_nn_log_softmax(
+    dtype_and_x,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="nn.log_softmax",
+        rtol=1e-3,
+        atol=1e-3,
+        x=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_float_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+        min_value=-2,
+        min_num_dims=1,
+        min_dim_size=4,
+        max_dim_size=4,
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.nn.glu"
+    ),
+)
+def test_jax_nn_glu(
+    dtype_and_x,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="nn.glu",
+        rtol=1e-3,
+        atol=1e-3,
+        x=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+    )
