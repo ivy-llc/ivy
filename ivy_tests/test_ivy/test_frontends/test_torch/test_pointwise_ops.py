@@ -1031,7 +1031,6 @@ def test_torch_sqrt(
         max_value=1e04,
         allow_inf=False,
     ),
-    alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.pow"
     ),
