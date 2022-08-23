@@ -1257,8 +1257,12 @@ def test_method(
     )
     # run
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+    v_np = None
     if isinstance(ins, ivy.Module):
-        v = ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+        v = ivy.Container(
+            ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+        )
+        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if init_with_v:
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
         if method_with_v:
@@ -1281,6 +1285,11 @@ def test_method(
         as_variable_flags=as_variable_flags_method,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
+    if isinstance(ins_gt, ivy.Module):
+        v_gt = v_np.map(
+            lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
+        )
+        kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )
