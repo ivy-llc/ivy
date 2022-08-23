@@ -1067,11 +1067,11 @@ def test_unsupported_function(*, fn, args, kwargs):
 
 def test_method(
     *,
-    input_dtypes_constructor: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags_constructor: Union[bool, List[bool]],
-    num_positional_args_constructor: int,
-    native_array_flags_constructor: Union[bool, List[bool]],
-    all_as_kwargs_np_constructor: dict,
+    input_dtypes_constructor: Union[ivy.Dtype, List[ivy.Dtype]] = None,
+    as_variable_flags_constructor: Union[bool, List[bool]] = None,
+    num_positional_args_constructor: int = 0,
+    native_array_flags_constructor: Union[bool, List[bool]] = None,
+    all_as_kwargs_np_constructor: dict = None,
     input_dtypes_method: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags_method: Union[bool, List[bool]],
     num_positional_args_method: int,
@@ -1149,10 +1149,11 @@ def test_method(
         as_variable_flags_constructor,
         native_array_flags_constructor,
     ) = as_lists(
-        input_dtypes_constructor,
-        as_variable_flags_constructor,
-        native_array_flags_constructor,
+        ivy.default(input_dtypes_constructor, []),
+        ivy.default(as_variable_flags_constructor, []),
+        ivy.default(native_array_flags_constructor, []),
     )
+    all_as_kwargs_np_constructor = ivy.default(all_as_kwargs_np_constructor, dict())
     input_dtypes_method, as_variable_flags_method, native_array_flags_method = as_lists(
         input_dtypes_method, as_variable_flags_method, native_array_flags_method
     )
