@@ -162,7 +162,7 @@ cumsum.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def ge(x, y):
-    return ivy.greater(x, y)
+    return ivy.greater_equal(x, y)
 
 
 def reshape(operand, new_sizes, dimensions=None):
