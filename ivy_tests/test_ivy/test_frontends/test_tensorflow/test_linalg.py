@@ -2,6 +2,8 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
+import sys
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
@@ -77,15 +79,26 @@ def test_tensorflow_eigvalsh(
 def _solve_get_dtype_and_data(draw):
     batch = draw(st.integers(min_value=1, max_value=5))
     random_size = draw(st.integers(min_value=2, max_value=4))
-    shape = (batch, random_size, random_size)
-    data1 = draw(
-        helpers.dtype_and_values(
-            available_dtypes=ivy_tf.valid_float_dtypes,
-            shape=shape,
-            min_value=-10,
-            max_value=10,
-        )
+    # shape = (batch, random_size, random_size)
+
+    input_dtype = draw(
+        st.shared(st.sampled_from(ivy_tf.valid_float_dtypes), key="shared_dtype")
     )
+    shape = (random_size, random_size)
+    tmp = []
+    for i in range(batch):
+        tmp.append(
+            draw(
+                helpers.array_values(
+                    dtype=input_dtype,
+                    shape=shape,
+                    min_value=-10,
+                    max_value=10,
+                ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+            )
+        )
+
+    data1 = (input_dtype, tmp)
 
     shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
     data2 = draw(
@@ -97,7 +110,7 @@ def _solve_get_dtype_and_data(draw):
         )
     )
 
-    return (data1, data2)
+    return data1, data2
 
 
 # solve
@@ -119,6 +132,7 @@ def test_tensorflow_solve(
     data1, data2 = dtype_and_x
     input_dtype1, x = data1
     input_dtype2, y = data2
+
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         as_variable_flags=as_variable,
