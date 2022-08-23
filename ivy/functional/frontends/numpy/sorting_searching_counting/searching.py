@@ -1,6 +1,5 @@
 # local
 import ivy
-import numpy as np
 
 def where(cond, x1=None, x2=None, /):
     if x1 is None and x2 is None:
