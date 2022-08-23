@@ -280,7 +280,7 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
         kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
         return fn(*args, **kwargs)
 
-    new_fn.integer_array_to_float = True
+    new_fn.integer_arrays_to_float = True
     return new_fn
 
 
@@ -457,7 +457,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for attr in [
             "infer_device",
             "infer_dtype",
-            "integer_array_to_float",
+            "integer_arrays_to_float",
             "outputs_to_ivy_arrays",
             "inputs_to_native_arrays",
             "inputs_to_ivy_arrays",
