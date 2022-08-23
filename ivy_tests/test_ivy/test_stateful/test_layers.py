@@ -107,7 +107,6 @@ def test_linear_layer(
         class_name="Linear",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        test_values=False,
     )
 
 
