@@ -2901,54 +2901,44 @@ def scatter_nd(
     
     Examples
     --------
-    scatter values into a zeros array
+    scatter values into an empty array, With :code:`ivy.Array` input:
     
-    >> indices = ivy.Array([4, 3, 1, 7])
-    >> updates = ivy.Array([9, 10, 11, 12])
-    >> shape = ivy.Array([8])
+    >> indices = ivy.array([[4], [3], [1], [7]])
+    >> updates = ivy.array([9, 10, 11, 12])
+    >> shape = ivy.array([8])
     >> scatter = ivy.scatter_nd(indices, updates, shape)
     >> print(scatter)
-    [0, 11, 0, 10, 9, 0, 0, 12]
+    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
-    scatter values into an array
+    scatter into an empty array, With: `ivy.Container` input:
 
-    >> arr = ivy.Array([1,2,3,4,5,6,7,8, 9, 10])
-    >> indices = ivy.Array([4, 3, 1, 7])
-    >> updates = ivy.Array([9, 10, 11, 12])
-    >> scatter = ivy.scatter_nd(indices, updates, arr)
-    >> print(scatter)
-    [1,11,3,10,9,6,7,12, 9, 10]
-
-    Examples
-    --------
-    scatter into an empty array
-    >> indices = ivy.array([[4],[3],[6]])
+    >> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+                        b=ivy.array([[5],[1],[2]]))
     >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
-                    b=ivy.array([20, 30, 40]))
+                        b=ivy.array([20, 30, 40]))
     >> shape = ivy.Container(a=ivy.array([10]),
-                            b = ivy.array([10]))
+                        b = ivy.array([10]))
     >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
-    print(z)
+    >> print(z)
     {
         a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
-        b: ivy.array([0, 0, 0, 30, 20, 0, 40, 0, 0, 0])
+        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
     }
 
-    scatter into an array
-    >> indices = ivy.array([[4],[3],[6]])
-    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
-                    b=ivy.array([20, 30, 40]))
+    scatter into an array, With : `ivy.Container` and `ivy.Array` input:
+
+    >> indices = ivy.array([[4],[3],[1]])
+    >> updates = ivy.Container(a=ivy.array([10, 20, 30]),
+                    b=ivy.array([200, 300, 400]))
     >> shape = ivy.array([10, 10])
-    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-                            b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+                            b = ivy.array([10, 20, 30, 40, 50]))
     >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
     >> print(z)
     {
-        a: ivy.array([1, 2, 3, 200, 100, 6, 200, 8, 9, 10]),
-        b: ivy.array([1, 2, 3, 30, 20, 6, 40, 8, 9, 10])
+        a: ivy.array([1, 30, 3, 20, 10]),
+        b: ivy.array([10, 400, 30, 300, 200])
     }
-
-
     """
     return current_backend(indices).scatter_nd(
         indices, updates, shape, tensor, reduction, out=out

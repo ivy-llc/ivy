@@ -231,7 +231,7 @@ class ArrayWithGeneral(abc.ABC):
         --------
         scatter values into an array
 
-        >> arr = ivy.Array([1,2,3,4,5,6,7,8, 9, 10])
+        >> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >> indices = ivy.array([[4], [3], [1], [7]])
         >> updates = ivy.array([9, 10, 11, 12])
         >> scatter = indices.scatter_nd(updates, tensor=arr, reduction='replace')
@@ -240,12 +240,13 @@ class ArrayWithGeneral(abc.ABC):
 
         scatter values into an empty array
 
-        >> shape = ivy.array([8])
-        >> indices = ivy.array([[4], [3], [1], [7]])
-        >> updates = ivy.array([9, 10, 11, 12])
+        >> shape = ivy.array([2, 5])
+        >> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
+        >> updates = ivy.array([25, 40, 21, 22])
         >> scatter = indices.scatter_nd(updates, shape=shape)
         >> print(scatter)
-        ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
+        ivy.array([[ 0,  0, 22, 40,  0],
+                    [ 0, 21,  0,  0, 25]])
         """
         return ivy.scatter_nd(self, updates, shape, reduction, tensor=tensor, out=out)
     

@@ -1052,6 +1052,22 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
+        scatter into an empty array
+        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+                                    b=ivy.array([[2],[3],[4]]))
+        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+                                    b=ivy.array([20, 30, 40]))
+        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+        >> shape = ivy.Container(a=ivy.array([10]),
+                                b = ivy.array([10]))
+        z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
+        >> print(z)
+        {
+            a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
+            b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
+        }
+        
         scatter into an array
         >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
                   b=ivy.array([[2],[3],[4]]))
@@ -1068,21 +1084,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
 
-        scatter into an empty array
-        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
-                                    b=ivy.array([[2],[3],[4]]))
-        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
-                                    b=ivy.array([20, 30, 40]))
-        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-        >> shape = ivy.Container(a=ivy.array([10]),
-                                b = ivy.array([10]))
-        z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
-        >> print(z)
-        {
-            a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
-            b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
-        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "scatter_nd",
@@ -1157,18 +1159,17 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         scatter into an array
-        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
-                  b=ivy.array([[2],[3],[4]]))
+        >> indices = ivy.Container(a=ivy.array([[3],[1],[2]]),
+                                    b=ivy.array([[4],[1],[3]]))
         >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
-                        b=ivy.array([20, 30, 40]))
-        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-
-        z = indices.scatter_nd(updates, tensor=arr, reduction='replace')
+                                    b=ivy.array([20, 30, 40]))
+        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+                                b=ivy.array([11, 22, 33, 44, 55]))
+        >> z = indices.scatter_nd(updates, tensor=arr, reduction='replace')
         >> print(z)
         {
-            a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
-            b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
+            a: ivy.array([1, 60, 70, 50, 5]),
+            b: ivy.array([11, 30, 33, 40, 20])
         }
 
         scatter into an empty array
