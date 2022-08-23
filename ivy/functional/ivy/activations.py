@@ -359,3 +359,30 @@ def softplus(
 
     """
     return current_backend(x).softplus(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def mish(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    inplace: bool = False
+    )-> ivy.Array:
+    """
+    Applies the Mish function, element-wise.
+    Mish: A Self Regularized Non-Monotonic Neural Activation Function - https://arxiv.org/abs/1908.08681.
+
+    Parameters
+    ----------
+    Input Array.
+    inplace
+
+    Returns
+    -------
+    ret
+        The input array with mish applied element-wise.
+
+    """
+    return current_backend(x).mish(x, inplace)
