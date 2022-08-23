@@ -5,6 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # noinspection DuplicatedCode
@@ -51,6 +52,7 @@ def _dtype_n_with_out(draw):
 
 
 # concat
+@handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     as_variable=helpers.array_bools(),
@@ -79,7 +81,7 @@ def test_numpy_concatenate(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="concatenate",
+        fn_tree="concatenate",
         arrays=xs,
         axis=unique_idx,
         out=None,
