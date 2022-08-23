@@ -19,7 +19,7 @@ import ivy.functional.backends.torch as ivy_torch
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        ret_tuple=True,
+        # ret_tuple=True,
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -133,7 +133,7 @@ def test_torch_cumsum(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -141,6 +141,8 @@ def test_torch_cumsum(
         fn_tree="cumsum",
         input=np.asarray(value, dtype=input_dtype),
         dim=axis,
+        dtype=input_dtype,
+        out=None,
     )
 
     
