@@ -420,7 +420,7 @@ def test_tensorflow_tanh(
         fn_tree="tanh",
         x=np.asarray(x, dtype=input_dtype),
     )
-
+    
     
 # sin
 @handle_cmd_line_args
