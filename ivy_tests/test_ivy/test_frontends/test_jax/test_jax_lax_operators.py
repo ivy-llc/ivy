@@ -1187,7 +1187,7 @@ def test_jax_lax_reshape(
     sizes=helpers.get_shape(min_num_dims=1),
 )
 def test_jax_lax_broadcast(
-dtype_and_x,
+    dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
@@ -1213,7 +1213,7 @@ dtype_and_x,
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=list(
-        set(ivy_jax.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))
+            set(ivy_jax.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))
         )
     ),
     num_positional_args=helpers.num_positional_args(
