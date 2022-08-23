@@ -4,8 +4,8 @@ import tensorflow as tf
 import torch
 
 
-def _is_sparse_array(x):
-    if isinstance(x, tf.SparseTensor):
+def _is_composite_array(x):
+    if isinstance(x, (tf.SparseTensor, tf.RaggedTensor)):
         return True
     if isinstance(x, torch.Tensor):
         if x.layout in [torch.sparse_coo, torch.sparse_csr]:
@@ -13,14 +13,19 @@ def _is_sparse_array(x):
     return False
 
 
-def _flatten_sparse_array(x):
-    if isinstance(x, tf.SparseTensor):
+def _flatten_composite_array(x):
+    if isinstance(x, tf.RaggedTensor):
+        new_struc = [x.flat_values]
+        for row_split in x.nested_row_splits:
+            new_struc.append(row_split)
+        return new_struc
+    elif isinstance(x, tf.SparseTensor):
         return [x.indices, x.values, x.dense_shape]
-    if isinstance(x, torch.Tensor):
+    elif isinstance(x, torch.Tensor):
         if x.layout == torch.sparse_coo:
             x = x.coalesce()
             return [x.indices(), x.values(), ivy.native_array(x.size(), dtype="int64")]
-        if x.layout == torch.sparse_csr:
+        elif x.layout == torch.sparse_csr:
             return [
                 x.crow_indices(),
                 x.col_indices(),
@@ -30,20 +35,14 @@ def _flatten_sparse_array(x):
 
 
 def flatten(structure, expand_composites=False):
-    if expand_composites:
-        if isinstance(structure, tf.RaggedTensor):
-            new_struc = [structure.flat_values]
-            for row_split in structure.nested_row_splits:
-                new_struc.append(row_split)
-            return new_struc
-        if _is_sparse_array(structure):
-            return _flatten_sparse_array(structure)
-    if isinstance(structure, (tuple, list)):
+    if expand_composites and _is_composite_array(structure):
+        return _flatten_composite_array(structure)
+    elif isinstance(structure, (tuple, list)):
         new_struc = []
         for child in structure:
             new_struc += flatten(child)
         return new_struc
-    if isinstance(structure, dict):
+    elif isinstance(structure, dict):
         new_struc = []
         for key in sorted(structure):
             new_struc += flatten(structure[key])
