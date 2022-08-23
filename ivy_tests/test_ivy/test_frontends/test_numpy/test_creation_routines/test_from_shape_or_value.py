@@ -166,6 +166,41 @@ def test_numpy_identity(
     )
 
 
+# ones
+@handle_cmd_line_args
+@given(
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=_dtypes(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ones"
+    ),
+)
+def test_numpy_ones(
+    shape,
+    dtypes,
+    num_positional_args,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="ones",
+        shape=shape,
+        dtype=dtypes[0],
+    )
+
+
 # full
 @st.composite
 def _fill_value(draw):

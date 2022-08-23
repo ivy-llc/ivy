@@ -20,8 +20,8 @@ def identity(n, dtype=None, *, like=None):
     return ivy.eye(n, dtype=dtype)
 
 
-def ones():
-    pass
+def ones(shape, dtype=None, order="C", *, like=None):
+    return ivy.ones(shape, dtype=dtype)
 
 
 def ones_like():
