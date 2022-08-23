@@ -542,9 +542,9 @@ def remainder(
     if not modulus:
         res = x1 / x2
         res_floored = np.where(res >= 0, np.floor(res), np.ceil(res))
-        diff = res - res_floored
+        diff = np.asarray(res - res_floored, dtype=res.dtype)
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return diff * x2
+        return np.asarray(diff * x2, dtype=x1.dtype)
     return np.remainder(x1, x2, out=out)
 
 

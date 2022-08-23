@@ -527,7 +527,7 @@ def remainder(
         res_floored = tf.where(res >= 0, tf.math.floor(res), tf.math.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return diff * x2
+        return tf.cast(diff * x2, x1.dtype)
     return tf.experimental.numpy.remainder(x1, x2)
 
 
