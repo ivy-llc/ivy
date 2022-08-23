@@ -594,7 +594,7 @@ def roll(
         b: ivy.array([5., 3., 4.])
     }
     """
-    return current_backend(x).roll(x, shift, axis, out=out)
+    return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
 @to_native_arrays_and_back

@@ -13,7 +13,7 @@ flip.unsupported_dtypes = (
 
 
 def roll(input, shifts, dims=None):
-    return ivy.roll(input, shifts, dims)
+    return ivy.roll(input, shifts, axis=dims)
 
 
 roll.unsupported_dtypes = (
