@@ -348,7 +348,7 @@ def test_numpy_sqrt(
         subok=True,
         test_values=False,
     )
-    
+
 
 # cbrt
 @given(
