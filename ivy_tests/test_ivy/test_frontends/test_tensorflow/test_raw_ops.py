@@ -397,6 +397,7 @@ def test_tensorflow_sin(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
         num_arrays=2,
+        shared_dtype=True,
     ),
     as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
@@ -408,8 +409,6 @@ def test_tensorflow_Maximum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, values = dtype_and_x
-    x = values[0]
-    y = values[1]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -419,8 +418,8 @@ def test_tensorflow_Maximum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Maximum",
-        x=np.asarray(x, dtype=input_dtype[0]),
-        y=np.asarray(y, dtype=input_dtype[1]),
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
@@ -432,6 +431,7 @@ def test_tensorflow_Maximum(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
         num_arrays=2,
+        shared_dtype=True,
     ),
     as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
@@ -442,9 +442,7 @@ def test_tensorflow_Maximum(
 def test_tensorflow_Minimum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, values = dtype_and_x
-    x = values[0]
-    y = values[1]
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -454,7 +452,7 @@ def test_tensorflow_Minimum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Minimum",
-        x=np.asarray(x, dtype=input_dtype[0]),
-        y=np.asarray(y, dtype=input_dtype[1]),
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )
  
