@@ -698,7 +698,6 @@ def value_test(
             ret_np_flat, ret_np_from_gt_flat
         )
     )
-    ivy.nested_multi_map(assert_same_type_and_shape, (ret_np_flat, ret_np_from_gt_flat))
     # value tests, iterating through each array in the flattened returns
     if not rtol:
         for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
