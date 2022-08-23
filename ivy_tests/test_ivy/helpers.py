@@ -1076,6 +1076,7 @@ def test_method(
     as_variable_flags_method: Union[bool, List[bool]],
     num_positional_args_method: int,
     native_array_flags_method: Union[bool, List[bool]],
+    container_flags_method: Union[bool, List[bool]],
     all_as_kwargs_np_method: dict,
     fw: str,
     class_name: str,
@@ -1116,6 +1117,9 @@ def test_method(
     native_array_flags_method
         dictates whether the corresponding input argument passed to the method should
         be treated as a native array.
+    container_flags_method
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy Container.
     all_as_kwargs_np_method:
         input arguments to the method as keyword arguments.
     fw
@@ -1157,6 +1161,47 @@ def test_method(
     input_dtypes_method, as_variable_flags_method, native_array_flags_method = as_lists(
         input_dtypes_method, as_variable_flags_method, native_array_flags_method
     )
+
+    # make all lists equal in length
+    num_arrays_constructor = max(
+        len(input_dtypes_constructor),
+        len(as_variable_flags_constructor),
+        len(native_array_flags_constructor),
+    )
+    if len(input_dtypes_constructor) < num_arrays_constructor:
+        input_dtypes_constructor = [
+            input_dtypes_constructor[0] for _ in range(num_arrays_constructor)
+        ]
+    if len(as_variable_flags_constructor) < num_arrays_constructor:
+        as_variable_flags_constructor = [
+            as_variable_flags_constructor[0] for _ in range(num_arrays_constructor)
+        ]
+    if len(native_array_flags_constructor) < num_arrays_constructor:
+        native_array_flags_constructor = [
+            native_array_flags_constructor[0] for _ in range(num_arrays_constructor)
+        ]
+
+    num_arrays_method = max(
+        len(input_dtypes_method),
+        len(as_variable_flags_method),
+        len(native_array_flags_method),
+        len(container_flags_method),
+    )
+    if len(input_dtypes_method) < num_arrays_method:
+        input_dtypes_method = [input_dtypes_method[0] for _ in range(num_arrays_method)]
+    if len(as_variable_flags_method) < num_arrays_method:
+        as_variable_flags_method = [
+            as_variable_flags_method[0] for _ in range(num_arrays_method)
+        ]
+    if len(native_array_flags_method) < num_arrays_method:
+        native_array_flags_method = [
+            native_array_flags_method[0] for _ in range(num_arrays_method)
+        ]
+    if len(container_flags_method) < num_arrays_method:
+        container_flags_method = [
+            container_flags_method[0] for _ in range(num_arrays_method)
+        ]
+
     # update variable flags to be compatible with float dtype
     as_variable_flags_constructor = [
         v if ivy.is_float_dtype(d) else False
@@ -1185,6 +1230,7 @@ def test_method(
         kwargs_np=kwargs_np_constructor,
         input_dtypes=input_dtypes_constructor,
         as_variable_flags=as_variable_flags_constructor,
+        native_array_flags=native_array_flags_constructor,
     )
     args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
@@ -1194,6 +1240,8 @@ def test_method(
         kwargs_np=kwargs_np_method,
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
+        native_array_flags=native_array_flags_method,
+        container_flags=container_flags_method,
     )
     # run
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
