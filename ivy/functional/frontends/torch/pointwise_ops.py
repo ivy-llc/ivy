@@ -174,3 +174,6 @@ sqrt.unsupported_dtypes = ("float16",)
 
 def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
+
+
+pow.unsupported_dtypes = ("float16",)
