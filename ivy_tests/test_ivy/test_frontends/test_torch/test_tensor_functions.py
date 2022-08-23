@@ -14,8 +14,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
+            set(ivy_np.valid_dtypes).intersection(
+                set(ivy_torch.valid_dtypes)
             )
         ),
         min_num_dims=1,
