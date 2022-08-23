@@ -4,7 +4,7 @@ from numbers import Number
 
 # global
 import numpy as np
-from hypothesis import given, assume
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -1660,6 +1660,7 @@ def test_pow(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
     num_positional_args=helpers.num_positional_args(fn_name="remainder"),
+    modulus=st.booleans(),
 )
 def test_remainder(
     *,
@@ -1667,6 +1668,7 @@ def test_remainder(
     as_variable,
     with_out,
     num_positional_args,
+    modulus,
     native_array,
     container,
     instance_method,
@@ -1695,6 +1697,7 @@ def test_remainder(
         fn_name="remainder",
         x1=x1,
         x2=x2,
+        modulus=modulus,
     )
 
 

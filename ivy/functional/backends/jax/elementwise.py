@@ -344,9 +344,16 @@ def remainder(
     x2: Union[float, JaxArray],
     /,
     *,
+    modulus: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = jnp.where(res >= 0, jnp.floor(res), jnp.ceil(res))
+        diff = res - res_floored
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return diff * x2
     return jnp.remainder(x1, x2)
 
 
