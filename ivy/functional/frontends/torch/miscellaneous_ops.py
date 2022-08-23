@@ -12,8 +12,13 @@ flip.unsupported_dtypes = (
 )
 
 
+def fliplr(input):
+    assert len(input.shape) >= 2, "Requires the tensor to be at least 2-D"
+    return ivy.flip(input, axis=(-1,))
+
+
 def roll(input, shifts, dims=None):
-    return ivy.roll(input, shifts, dims)
+    return ivy.roll(input, shifts, axis=dims)
 
 
 roll.unsupported_dtypes = (

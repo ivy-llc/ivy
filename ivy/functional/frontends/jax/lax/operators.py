@@ -162,7 +162,7 @@ cumsum.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def ge(x, y):
-    return ivy.greater(x, y)
+    return ivy.greater_equal(x, y)
 
 
 def reshape(operand, new_sizes, dimensions=None):
@@ -178,3 +178,16 @@ def reciprocal(x):
 reciprocal.unsupported_dtypes = {"torch": ("float16",),
                                  "tensorflow": ("uint8", "int8", "uint16", "int16",
                                                 "uint32", "int32", "uint64", "int64")}
+
+
+def broadcast(operand, sizes):
+    ret = ivy.zeros(tuple(sizes) + tuple(ivy.shape(operand)), dtype=ivy.dtype(operand))
+    return ret + operand
+
+
+def sort(operand, dimension=-1, is_stable=True, num_keys=1):
+    return ivy.sort(operand, axis=dimension, stable=is_stable)
+
+
+def le(x, y):
+    return ivy.less_equal(x, y)

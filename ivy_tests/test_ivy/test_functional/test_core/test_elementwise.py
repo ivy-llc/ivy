@@ -4,7 +4,7 @@ from numbers import Number
 
 # global
 import numpy as np
-from hypothesis import given, assume
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -373,7 +373,7 @@ def test_bitwise_and(
         available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=0.9,
+        large_value_safety_factor=1.1,
         small_value_safety_factor=0.9,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
@@ -840,17 +840,15 @@ def test_floor(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=2,
         allow_inf=False,
-        large_value_safety_factor=2,
+        large_value_safety_factor=1.1,
         shared_dtype=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
 )
 def test_floor_divide(
     *,
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -870,7 +868,7 @@ def test_floor_divide(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1696,6 +1694,7 @@ def test_reciprocal(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, allow_inf=False
     ),
     num_positional_args=helpers.num_positional_args(fn_name="remainder"),
+    modulus=st.booleans(),
 )
 def test_remainder(
     *,
@@ -1703,6 +1702,7 @@ def test_remainder(
     as_variable,
     with_out,
     num_positional_args,
+    modulus,
     native_array,
     container,
     instance_method,
@@ -1731,6 +1731,7 @@ def test_remainder(
         fn_name="remainder",
         x1=x1,
         x2=x2,
+        modulus=modulus,
     )
 
 
