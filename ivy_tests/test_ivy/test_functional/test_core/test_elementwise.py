@@ -373,7 +373,7 @@ def test_bitwise_and(
         available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=0.9,
+        large_value_safety_factor=1.1,
         small_value_safety_factor=0.9,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
@@ -840,7 +840,7 @@ def test_floor(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=2,
         allow_inf=False,
-        large_value_safety_factor=0.95,
+        large_value_safety_factor=1.1,
         shared_dtype=True,
     ),
 )
