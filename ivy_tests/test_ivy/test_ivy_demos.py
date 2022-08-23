@@ -6,7 +6,6 @@ import pytest
 # local
 import ivy
 import ivy.functional.backends.numpy
-import ivy_tests.test_ivy.helpers as helpers
 
 
 # Tests #
