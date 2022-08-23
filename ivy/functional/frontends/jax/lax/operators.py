@@ -178,3 +178,7 @@ def broadcast(operand, sizes):
 
 def sort(operand, dimension=-1, is_stable=True, num_keys=1):
     return ivy.sort(operand, axis=dimension, stable=is_stable)
+
+
+def le(x, y):
+    return ivy.less_equal(x, y)
