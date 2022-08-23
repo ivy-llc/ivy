@@ -1298,35 +1298,12 @@ def test_method(
     if not test_values:
         return ret, ret_from_gt
     # value test
-    if test_values == "with_v":
-        if "v" in kwargs_np_constructor or "v" in kwargs_np_method:
-            value_test(
-                ret_np_flat=ret_np_flat,
-                ret_np_from_gt_flat=ret_np_from_gt_flat,
-                rtol=rtol_,
-                atol=atol_,
-            )
-        else:
-            if type(ret_np_flat) != list:
-                ret_np_flat = [ret_np_flat]
-            if type(ret_np_from_gt_flat) != list:
-                ret_np_from_gt_flat = [ret_np_from_gt_flat]
-            assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
-                "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
-                "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-                    ret_np_flat, ret_np_from_gt_flat
-                )
-            )
-            ivy.nested_multi_map(
-                assert_same_type_and_shape, (ret_np_flat, ret_np_from_gt_flat)
-            )
-    elif test_values:
-        value_test(
-            ret_np_flat=ret_np_flat,
-            ret_np_from_gt_flat=ret_np_from_gt_flat,
-            rtol=rtol_,
-            atol=atol_,
-        )
+    value_test(
+        ret_np_flat=ret_np_flat,
+        ret_np_from_gt_flat=ret_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+    )
 
 
 def test_function(
