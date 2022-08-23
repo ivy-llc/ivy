@@ -1598,7 +1598,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_in</span> <span class="o">=</span> <span class="n">x</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">orig_x</span> <span class="o">=</span> <span class="n">x</span>
     <span class="k">if</span> <span class="n">linear</span><span class="p">:</span>
         <span class="n">scales</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_freq</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num_bands</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
@@ -1629,7 +1629,7 @@
         <span class="n">sin_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">sin_x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_bands</span> <span class="o">*</span> <span class="n">dim</span><span class="p">])</span>
         <span class="n">cos_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">cos_x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_bands</span> <span class="o">*</span> <span class="n">dim</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">concat</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">orig_x</span><span class="p">,</span> <span class="n">sin_x</span><span class="p">,</span> <span class="n">cos_x</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">orig_x</span><span class="p">,</span> <span class="n">sin_x</span><span class="p">,</span> <span class="n">cos_x</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sin_x</span><span class="p">,</span> <span class="n">cos_x</span></div>
 
 
@@ -2009,7 +2009,9 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="match_kwargs"><a class="viewcode-back" href="../../../../functional/ivy/general/match_kwargs.html#ivy.functional.ivy.general.match_kwargs">[docs]</a><span class="k">def</span> <span class="nf">match_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">*</span><span class="n">receivers</span><span class="p">,</span> <span class="n">allow_duplicates</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="match_kwargs"><a class="viewcode-back" href="../../../../functional/ivy/general/match_kwargs.html#ivy.functional.ivy.general.match_kwargs">[docs]</a><span class="k">def</span> <span class="nf">match_kwargs</span><span class="p">(</span>
+    <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">*</span><span class="n">receivers</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">],</span> <span class="n">allow_duplicates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Match keyword arguments to either class or function receivers.</span>
 
 <span class="sd">    Parameters</span>
@@ -2026,6 +2028,20 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        Sequence of keyword arguments split as best as possible.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; o = ivy.zeros(3, dtype=int)</span>
+<span class="sd">    &gt;&gt;&gt; kwargs = {&#39;out&#39;: o, &#39;bias&#39;: ivy.arange(3)}</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    [{&#39;out&#39;: ivy.array([0, 0, 0])}, {&#39;bias&#39;: ivy.array([0, 1, 2])}]</span>
+
+<span class="sd">    &gt;&gt;&gt; o = ivy.zeros(3, dtype=int)</span>
+<span class="sd">    &gt;&gt;&gt; kwargs = {&#39;out&#39;: o, &#39;bias&#39;: ivy.arange(3)}</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    [{&#39;out&#39;: ivy.array([0, 0, 0]), &#39;bias&#39;: ivy.array([0, 1, 2])}, {}]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">split_kwargs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
