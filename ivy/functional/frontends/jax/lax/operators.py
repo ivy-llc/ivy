@@ -95,6 +95,13 @@ def atan(x):
 atan.unsupported_dtypes = {"torch": ("float16",)}
 
 
+def cos(x):
+    return ivy.cos(x)
+
+
+cos.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def ceil(x):
     return ivy.ceil(x)
 
