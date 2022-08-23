@@ -6,4 +6,4 @@ def ifftshift(x, axes=None, name=None):
     return ivy.ifftshift(x)
 
 
-ifftshift.unsupported_dtypes = {"torch": ("float16",)}
+ifftshift.unsupported_dtypes = ("afloat16", "bfloat16")
