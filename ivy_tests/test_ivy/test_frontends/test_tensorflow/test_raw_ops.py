@@ -398,11 +398,11 @@ def test_tensorflow_sin(
         ),
         num_arrays=2,
     ),
-    as_variable=st.booleans(),
+    as_variable=[st.booleans(), st.booleans()]
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Maximum"
     ),
-    native_array=st.booleans()
+    native_array=[st.booleans(), st.booleans()]
 )
 def test_tensorflow_Maximum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -410,7 +410,6 @@ def test_tensorflow_Maximum(
     input_dtype, values = dtype_and_x
     x = values[0]
     y = values[1]
-    input_dtype = input_dtype[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -420,8 +419,8 @@ def test_tensorflow_Maximum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="Maximum",
-        x=np.asarray(x, dtype=input_dtype),
-        y=np.asarray(y, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
+        y=np.asarray(y, dtype=input_dtype[1]),
     )
 
 
@@ -434,11 +433,11 @@ def test_tensorflow_Maximum(
         ),
         num_arrays=2,
     ),
-    as_variable=st.booleans(),
+    as_variable=[st.booleans(), st.booleans],
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Minimum"
     ),
-    native_array=st.booleans()
+    native_array=[st.booleans(), st.booleans()]
 )
 def test_tensorflow_Minimum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -446,7 +445,6 @@ def test_tensorflow_Minimum(
     input_dtype, values = dtype_and_x
     x = values[0]
     y = values[1]
-    input_dtype = input_dtype[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -456,7 +454,7 @@ def test_tensorflow_Minimum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="Minimum",
-        x=np.asarray(x, dtype=input_dtype),
-        y=np.asarray(y, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
+        y=np.asarray(y, dtype=input_dtype[1]),
     )
  
