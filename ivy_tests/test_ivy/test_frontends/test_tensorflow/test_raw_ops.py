@@ -408,7 +408,7 @@ def test_tensorflow_sin(
 def test_tensorflow_Maximum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, values = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
