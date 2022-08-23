@@ -461,3 +461,52 @@ def test_jax_nn_glu(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+        num_arrays=3,
+        shared_dtype=True,
+    ),
+    axis=st.just(-1),
+    epsilon=helpers.floats(
+        min_value=0.01,
+        max_value=1,
+    ),
+    where=st.none(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.nn.normalize"
+    ),
+)
+def test_jax_nn_normalize(
+    dtype_and_x,
+    axis,
+    epsilon,
+    where,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="nn.normalize",
+        x=np.asarray(xs[0], dtype=input_dtypes[0]),
+        axis=axis,
+        mean=np.asarray(xs[1], dtype=input_dtypes[1]),
+        variance=np.asarray(xs[2], dtype=input_dtypes[2]),
+        epsilon=epsilon,
+        where=where,
+    )

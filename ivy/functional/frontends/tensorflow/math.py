@@ -81,7 +81,10 @@ def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsu
 
 
 reduce_logsumexp.unsupported_dtypes = {
-    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64", "float16", 
+                   "float32", "float64"),
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64")
 }
 
 
@@ -121,22 +124,24 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 
 reduce_std.unsupported_dtypes = {
-    "tensorflow": (
-        "uint8",
-        "uint16",
-        "uint32",
-        "uint64",
-        "float16",
-        "float32",
-        "float64",
-    ),
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64", "float16", 
+                   "float32", "float64"),
     "torch": ("float16", "bfloat16"),
-    "numpy": ("float16", "bfloat16", "float32", "float64"),
+    "numpy": ("float16", "bfloat16", "float32", "float64")
 }
 
 
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
+    
+
+def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_sum.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
 
 
 def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
@@ -145,4 +150,20 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 reduce_variance.unsupported_dtypes = {
     "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64", "float16", 
+                   "float32", "float64"),
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64")
+}
+
+
+def scalar_mul(scalar, x, name="scalar_mul"):
+    return ivy.multiply(x, ivy.array([scalar]))
+
+
+scalar_mul.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64", "float16", 
+                   "float32", "float64"),
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16", "float32", "float64")
 }
