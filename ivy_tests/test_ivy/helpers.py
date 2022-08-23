@@ -7,13 +7,13 @@ from io import StringIO
 import sys
 import re
 import inspect
+import pytest
 import numpy as np
 import math
 from typing import Union, List
-from hypothesis import assume
+from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
-
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -39,35 +39,13 @@ cmd_line_args = (
 )
 
 try:
-    import jax.numpy as jnp
-except (ImportError, RuntimeError, AttributeError):
-    jnp = None
-try:
     import tensorflow as tf
 
-    _tf_version = float(".".join(tf.__version__.split(".")[0:2]))
-    if _tf_version >= 2.3:
-        # noinspection PyPep8Naming,PyUnresolvedReferences
-        from tensorflow.python.types.core import Tensor as tensor_type
-    else:
-        # noinspection PyPep8Naming
-        # noinspection PyProtectedMember,PyUnresolvedReferences
-        from tensorflow.python.framework.tensor_like import _TensorLike as tensor_type
     physical_devices = tf.config.list_physical_devices("GPU")
     for device in physical_devices:
         tf.config.experimental.set_memory_growth(device, True)
 except ImportError:
     tf = None
-try:
-    import torch
-except ImportError:
-    torch = None
-try:
-    import mxnet as mx
-    import mxnet.ndarray as mx_nd
-except ImportError:
-    mx = None
-    mx_nd = None
 from hypothesis import strategies as st
 
 # local
@@ -159,167 +137,6 @@ def _convert_vars(
             new_vars.append(var)
 
     return new_vars
-
-
-def np_call(func, *args, **kwargs):
-    """Call a given function and return the result as a Numpy Array.
-
-    Parameters
-    ----------
-    func
-        The given function (callable).
-    args
-        The arguments to be given.
-    kwargs
-        The keywords args to be given.
-
-    Returns
-    -------
-    ret
-        The result of the function call as a Numpy Array
-    """
-    ret = func(*args, **kwargs)
-    if isinstance(ret, (list, tuple)):
-        return ivy.to_native(ret, nested=True)
-    return ivy.to_numpy(ret)
-
-
-def jnp_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=jnp.asarray
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=jnp.asarray
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(jnp.ndarray, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(jnp.ndarray, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def tf_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=tf.convert_to_tensor
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(),
-        from_type=np.ndarray,
-        to_type_callable=tf.convert_to_tensor,
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(tensor_type, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(tensor_type, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def tf_graph_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=tf.convert_to_tensor
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(),
-        from_type=np.ndarray,
-        to_type_callable=tf.convert_to_tensor,
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-
-    @tf.function
-    def tf_func(*local_args, **local_kwargs):
-        return func(*local_args, **local_kwargs)
-
-    output = tf_func(*new_args, **new_kwargs)
-
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(tensor_type, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(tensor_type, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def torch_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=torch.from_numpy
-    )
-    new_kw_vals = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=torch.from_numpy
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(torch.Tensor, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(torch.Tensor, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-def mx_call(func, *args, **kwargs):
-    new_args = _convert_vars(
-        vars_in=args, from_type=np.ndarray, to_type_callable=mx_nd.array
-    )
-    new_kw_items = _convert_vars(
-        vars_in=kwargs.values(), from_type=np.ndarray, to_type_callable=mx_nd.array
-    )
-    new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
-    output = func(*new_args, **new_kwargs)
-    if isinstance(output, tuple):
-        return tuple(
-            _convert_vars(
-                vars_in=output,
-                from_type=(mx_nd.ndarray.NDArray, ivy.Array),
-                to_type_callable=ivy.to_numpy,
-            )
-        )
-    else:
-        return _convert_vars(
-            vars_in=[output],
-            from_type=(mx_nd.ndarray.NDArray, ivy.Array),
-            to_type_callable=ivy.to_numpy,
-        )[0]
-
-
-_calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
 
 
 # function that trims white spaces from docstrings
@@ -756,6 +573,14 @@ def assert_all_close(
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_np), rtol=rtol, atol=atol
         ), "{} != {}".format(ret_np, ret_from_np)
+
+
+def assert_same_type_and_shape(values, this_key_chain):
+    x, y = values
+    assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
+    if isinstance(x, np.ndarray):
+        assert x.shape == y.shape, "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
+        assert x.dtype == y.dtype, "x.dtype = {}, y.dtype = {}".format(x.dtype, y.dtype)
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
@@ -1242,58 +1067,78 @@ def test_unsupported_function(*, fn, args, kwargs):
 
 def test_method(
     *,
-    input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags: Union[bool, List[bool]],
-    all_as_kwargs_np,
-    num_positional_args: int,
-    input_dtypes_constructor: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags_constructor: Union[bool, List[bool]],
-    constructor_kwargs,
-    num_positional_args_constructor: int,
+    input_dtypes_constructor: Union[ivy.Dtype, List[ivy.Dtype]] = None,
+    as_variable_flags_constructor: Union[bool, List[bool]] = None,
+    num_positional_args_constructor: int = 0,
+    native_array_flags_constructor: Union[bool, List[bool]] = None,
+    all_as_kwargs_np_constructor: dict = None,
+    input_dtypes_method: Union[ivy.Dtype, List[ivy.Dtype]],
+    as_variable_flags_method: Union[bool, List[bool]],
+    num_positional_args_method: int,
+    native_array_flags_method: Union[bool, List[bool]],
+    container_flags_method: Union[bool, List[bool]],
+    all_as_kwargs_np_method: dict,
     fw: str,
     class_name: str,
-    rtol: float = None,
-    atol: float = 1e-06,
-    test_values: bool = True,
+    method_name: str = "__call__",
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    test_values: Union[bool, str] = True,
+    test_gradients: bool = False,
     ground_truth_backend: str = "tensorflow",
+    device_: str = "cpu",
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
     by comparing the result with numpy.
 
     Parameters
     ----------
-    input_dtypes
-        data types of the input arguments in order.
-    as_variable_flags
-        dictates whether the corresponding input argument should be treated as an
-        ivy Variable.
-    all_as_kwargs_np:
-        input arguments to the function as keyword arguments.
-    num_positional_args
-        number of input arguments that must be passed as positional
-        arguments.
     input_dtypes_constructor
-        data types of the input arguments for the constructor in order.
+        data types of the input arguments to the constructor in order.
     as_variable_flags_constructor
-        dictates whether the corresponding input argument should be treated as an
-        ivy Variable for the constructor
-    constructor_kwargs:
-        input arguments to the constructor as keyword arguments.
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as an ivy.Variable.
     num_positional_args_constructor
-        number of input arguments that must be passed as positional
-        arguments to the constructor.
+        number of input arguments that must be passed as positional arguments to the
+        constructor.
+    native_array_flags_constructor
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as a native array.
+    all_as_kwargs_np_constructor:
+        input arguments to the constructor as keyword arguments.
+    input_dtypes_method
+        data types of the input arguments to the method in order.
+    as_variable_flags_method
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy.Variable.
+    num_positional_args_method
+        number of input arguments that must be passed as positional arguments to the
+        method.
+    native_array_flags_method
+        dictates whether the corresponding input argument passed to the method should
+        be treated as a native array.
+    container_flags_method
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy Container.
+    all_as_kwargs_np_method:
+        input arguments to the method as keyword arguments.
     fw
         current backend (framework).
     class_name
         name of the class to test.
-    rtol
+    method_name
+        name of tthe method to test.
+    rtol_
         relative tolerance value.
-    atol
+    atol_
         absolute tolerance value.
     test_values
-        if True, test for the correctness of the resulting values.
+        can be a bool or a string to indicate whether correctness of values should be
+        tested. If the value is `with_v`, shapes are tested but not values.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
+    device_
+        The device on which to create arrays.
 
     Returns
     -------
@@ -1303,70 +1148,158 @@ def test_method(
         optional, return value from the Ground Truth function
     """
     # convert single values to length 1 lists
-    input_dtypes, as_variable_flags = as_lists(input_dtypes, as_variable_flags)
+    (
+        input_dtypes_constructor,
+        as_variable_flags_constructor,
+        native_array_flags_constructor,
+    ) = as_lists(
+        ivy.default(input_dtypes_constructor, []),
+        ivy.default(as_variable_flags_constructor, []),
+        ivy.default(native_array_flags_constructor, []),
+    )
+    all_as_kwargs_np_constructor = ivy.default(all_as_kwargs_np_constructor, dict())
+    input_dtypes_method, as_variable_flags_method, native_array_flags_method = as_lists(
+        input_dtypes_method, as_variable_flags_method, native_array_flags_method
+    )
+
+    # make all lists equal in length
+    num_arrays_constructor = max(
+        len(input_dtypes_constructor),
+        len(as_variable_flags_constructor),
+        len(native_array_flags_constructor),
+    )
+    if len(input_dtypes_constructor) < num_arrays_constructor:
+        input_dtypes_constructor = [
+            input_dtypes_constructor[0] for _ in range(num_arrays_constructor)
+        ]
+    if len(as_variable_flags_constructor) < num_arrays_constructor:
+        as_variable_flags_constructor = [
+            as_variable_flags_constructor[0] for _ in range(num_arrays_constructor)
+        ]
+    if len(native_array_flags_constructor) < num_arrays_constructor:
+        native_array_flags_constructor = [
+            native_array_flags_constructor[0] for _ in range(num_arrays_constructor)
+        ]
+
+    num_arrays_method = max(
+        len(input_dtypes_method),
+        len(as_variable_flags_method),
+        len(native_array_flags_method),
+        len(container_flags_method),
+    )
+    if len(input_dtypes_method) < num_arrays_method:
+        input_dtypes_method = [input_dtypes_method[0] for _ in range(num_arrays_method)]
+    if len(as_variable_flags_method) < num_arrays_method:
+        as_variable_flags_method = [
+            as_variable_flags_method[0] for _ in range(num_arrays_method)
+        ]
+    if len(native_array_flags_method) < num_arrays_method:
+        native_array_flags_method = [
+            native_array_flags_method[0] for _ in range(num_arrays_method)
+        ]
+    if len(container_flags_method) < num_arrays_method:
+        container_flags_method = [
+            container_flags_method[0] for _ in range(num_arrays_method)
+        ]
+
     # update variable flags to be compatible with float dtype
-    as_variable_flags = [
+    as_variable_flags_constructor = [
         v if ivy.is_float_dtype(d) else False
-        for v, d in zip(as_variable_flags, input_dtypes)
+        for v, d in zip(as_variable_flags_constructor, input_dtypes_constructor)
+    ]
+    as_variable_flags_method = [
+        v if ivy.is_float_dtype(d) else False
+        for v, d in zip(as_variable_flags_method, input_dtypes_method)
     ]
 
     # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
+    input_dtypes_constructor = [
+        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_constructor
+    ]
+    input_dtypes_method = [
+        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
+    ]
 
     # create args
-    calling_args_np, calling_kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
+    args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_constructor,
+        kwargs=all_as_kwargs_np_constructor,
     )
-    calling_args, calling_kwargs, _, _, _ = create_args_kwargs(
-        args_np=calling_args_np,
-        kwargs_np=calling_kwargs_np,
-        input_dtypes=input_dtypes,
-        as_variable_flags=as_variable_flags,
-    )
-
-    constructor_args_np, constructor_kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_constructor, kwargs=constructor_kwargs
-    )
-    constructor_args, constructor_kwargs, _, _, _ = create_args_kwargs(
-        args_np=constructor_args_np,
-        kwargs_np=constructor_kwargs_np,
+    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+        args_np=args_np_constructor,
+        kwargs_np=kwargs_np_constructor,
         input_dtypes=input_dtypes_constructor,
         as_variable_flags=as_variable_flags_constructor,
+        native_array_flags=native_array_flags_constructor,
+    )
+    args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
+    )
+    args_method, kwargs_method, _, _, _ = create_args_kwargs(
+        args_np=args_np_method,
+        kwargs_np=kwargs_np_method,
+        input_dtypes=input_dtypes_method,
+        as_variable_flags=as_variable_flags_method,
+        native_array_flags=native_array_flags_method,
+        container_flags=container_flags_method,
     )
     # run
-    ins = ivy.__dict__[class_name](*constructor_args, **constructor_kwargs)
+    ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        ins, *calling_args, **calling_kwargs
+        ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
-    calling_args_gt, calling_kwargs_gt, _, _, _ = create_args_kwargs(
-        args_np=calling_args_np,
-        kwargs_np=calling_kwargs_np,
-        input_dtypes=input_dtypes,
-        as_variable_flags=as_variable_flags,
-    )
-    constructor_args_gt, constructor_kwargs_gt, _, _, _ = create_args_kwargs(
-        args_np=constructor_args_np,
-        kwargs_np=constructor_kwargs_np,
+    args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
+        args_np=args_np_constructor,
+        kwargs_np=kwargs_np_constructor,
         input_dtypes=input_dtypes_constructor,
         as_variable_flags=as_variable_flags_constructor,
     )
-    ins_gt = ivy.__dict__[class_name](*constructor_args_gt, **constructor_kwargs_gt)
+    args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
+        args_np=args_np_method,
+        kwargs_np=kwargs_np_method,
+        input_dtypes=input_dtypes_method,
+        as_variable_flags=as_variable_flags_method,
+    )
+    ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        ins_gt, *calling_args_gt, **calling_kwargs_gt
+        ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )
     ivy.unset_backend()
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, ret_from_gt
     # value test
-    value_test(
-        ret_np_flat=ret_np_flat,
-        ret_np_from_gt_flat=ret_np_from_gt_flat,
-        rtol=rtol,
-        atol=atol,
-    )
+    if test_values == "with_v":
+        if "v" in kwargs_np_constructor or "v" in kwargs_np_method:
+            value_test(
+                ret_np_flat=ret_np_flat,
+                ret_np_from_gt_flat=ret_np_from_gt_flat,
+                rtol=rtol_,
+                atol=atol_,
+            )
+        else:
+            if type(ret_np_flat) != list:
+                ret_np_flat = [ret_np_flat]
+            if type(ret_np_from_gt_flat) != list:
+                ret_np_from_gt_flat = [ret_np_from_gt_flat]
+            assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
+                "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
+                "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
+                    ret_np_flat, ret_np_from_gt_flat
+                )
+            )
+            ivy.nested_multi_map(
+                assert_same_type_and_shape, (ret_np_flat, ret_np_from_gt_flat)
+            )
+    elif test_values:
+        value_test(
+            ret_np_flat=ret_np_flat,
+            ret_np_from_gt_flat=ret_np_from_gt_flat,
+            rtol=rtol_,
+            atol=atol_,
+        )
 
 
 def test_function(
@@ -1406,7 +1339,7 @@ def test_function(
         arguments.
     native_array_flags
         dictates whether the corresponding input argument should be treated
-         as a native array.
+        as a native array.
     container_flags
         dictates whether the corresponding input argument should be treated
          as an ivy Container.
@@ -2382,6 +2315,12 @@ def array_and_indices(
     return (x, indices)
 
 
+def _zeroing(x):
+    # covnert -0.0 to 0.0
+    if x == 0.0:
+        return 0.0
+
+
 @st.composite
 def array_values(
     draw,
@@ -2446,18 +2385,23 @@ def array_values(
             min_value = ivy.default(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
-            max_value = ivy.default(max_value, round(255 * large_value_safety_factor))
+            max_value = ivy.default(
+                max_value, min(255, round(255 * large_value_safety_factor))
+            )
         elif dtype == "uint16":
             min_value = ivy.default(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
-            max_value = ivy.default(max_value, round(65535 * large_value_safety_factor))
+            max_value = ivy.default(
+                max_value, min(65535, round(65535 * large_value_safety_factor))
+            )
         elif dtype == "uint32":
             min_value = ivy.default(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
             max_value = ivy.default(
-                max_value, round(4294967295 * large_value_safety_factor)
+                max_value,
+                min(4294967295, round(4294967295 * large_value_safety_factor)),
             )
         elif dtype == "uint64":
             min_value = ivy.default(
@@ -2483,26 +2427,28 @@ def array_values(
         else:
             if dtype == "int8":
                 min_value = ivy.default(
-                    min_value, round(-128 * large_value_safety_factor)
+                    min_value, max(-128, round(-128 * large_value_safety_factor))
                 )
                 max_value = ivy.default(
-                    max_value, round(127 * large_value_safety_factor)
+                    max_value, min(127, round(127 * large_value_safety_factor))
                 )
 
             elif dtype == "int16":
                 min_value = ivy.default(
-                    min_value, round(-32768 * large_value_safety_factor)
+                    min_value, max(-32768, round(-32768 * large_value_safety_factor))
                 )
                 max_value = ivy.default(
-                    max_value, round(32767 * large_value_safety_factor)
+                    max_value, min(32767, round(32767 * large_value_safety_factor))
                 )
 
             elif dtype == "int32":
                 min_value = ivy.default(
-                    min_value, round(-2147483648 * large_value_safety_factor)
+                    min_value,
+                    max(-2147483648, round(-2147483648 * large_value_safety_factor)),
                 )
                 max_value = ivy.default(
-                    max_value, round(2147483647 * large_value_safety_factor)
+                    max_value,
+                    min(2147483647, round(2147483647 * large_value_safety_factor)),
                 )
 
             elif dtype == "int64":
@@ -2522,6 +2468,14 @@ def array_values(
                 )
             max_neg_value = -1 if small_value_safety_factor > 1 else 0
             min_pos_value = 1 if small_value_safety_factor > 1 else 0
+
+            if min_value >= max_neg_value:
+                min_value = min_pos_value
+                max_neg_value = max_value
+            elif max_value <= min_pos_value:
+                min_pos_value = min_value
+                max_value = max_neg_value
+
             values = draw(
                 list_of_length(
                     x=st.integers(min_value, max_neg_value)
@@ -2530,7 +2484,6 @@ def array_values(
                 )
             )
     elif dtype == "float16":
-
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2551,10 +2504,18 @@ def array_values(
         else:
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -3)
-            min_value_pos = round(limit, -3)
+            max_value_neg = round(-1 * limit, 3)
+            min_value_pos = round(limit, 3)
             max_value_pos = max_value
-
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
+            if min_value_neg is not None and min_value_neg >= max_value_neg:
+                min_value_neg = min_value_pos
+                max_value_neg = max_value_pos
+            elif max_value_pos is not None and max_value_pos <= min_value_pos:
+                min_value_pos = min_value_neg
+                max_value_pos = max_value_neg
             values = draw(
                 list_of_length(
                     x=st.floats(
@@ -2581,7 +2542,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype in ["float32", "bfloat16"]:
+    elif dtype == "float32":
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2601,9 +2562,23 @@ def array_values(
         else:
             limit = math.log(small_value_safety_factor)
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -6)
-            min_value_pos = round(limit, -6)
+            max_value_neg = round(-1 * limit, 6)
+            min_value_pos = round(limit, 6)
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+            )
             max_value_pos = max_value
+            if min_value_neg is not None and min_value_neg >= max_value_neg:
+                min_value_neg = min_value_pos
+                max_value_neg = max_value_pos
+            elif max_value_pos is not None and max_value_pos <= min_value_pos:
+                min_value_pos = min_value_neg
+                max_value_pos = max_value_neg
+
+            min_value_pos = _zeroing(min_value_pos)
+            max_value_pos = _zeroing(max_value_pos)
+            min_value_neg = _zeroing(min_value_neg)
+            max_value_neg = _zeroing(max_value_neg)
 
             values = draw(
                 list_of_length(
@@ -2631,8 +2606,7 @@ def array_values(
                 )
             )
         values = [v * large_value_safety_factor for v in values]
-    elif dtype == "float64":
-
+    elif dtype in ["float64", "bfloat16"]:
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
@@ -2651,12 +2625,19 @@ def array_values(
             )
         else:
             limit = math.log(small_value_safety_factor)
-
             min_value_neg = min_value
-            max_value_neg = round(-1 * limit, -15)
-            min_value_pos = round(limit, -15)
+            max_value_neg = round(-1 * limit, 15)
+            min_value_pos = round(limit, 15)
             max_value_pos = max_value
-
+            max_value_neg, min_value_pos = (
+                np.array([max_value_neg, min_value_pos]).astype("float64").tolist()
+            )
+            if min_value_neg is not None and min_value_neg >= max_value_neg:
+                min_value_neg = min_value_pos
+                max_value_neg = max_value_pos
+            elif max_value_pos is not None and max_value_pos <= min_value_pos:
+                min_value_pos = min_value_neg
+                max_value_pos = max_value_neg
             values = draw(
                 list_of_length(
                     x=st.floats(
@@ -2939,7 +2920,8 @@ def get_axis(
     unique=True,
     min_size=1,
     max_size=None,
-    ret_tuple=False,
+    force_tuple=False,
+    force_int=False,
 ):
     """Draws one or more axis for the given shape.
 
@@ -2947,7 +2929,7 @@ def get_axis(
     ----------
     draw
         special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list)
+        data-set (ex. list).
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
@@ -2963,16 +2945,25 @@ def get_axis(
         axes drawn
     max_size
         int or hypothesis strategy; if a tuple of axes is drawn, the maximum number of
-        axes drawn; if None and unique is True, then it is set to the number of axes
-        in the shape
-    ret_tuple
-        boolean; if False, randomly draw both integers and List[int]; If True, draw
-        only List[int] as tuple[int]
+        axes drawn.
+        If None and unique is True, then it is set to the number of axes in the shape
+    force_tuple
+        boolean, if true, all axis will be returned as a tuple. If force_tuple and
+        force_int are true, then an AssertionError is raised
+    force_int
+        boolean, if true, all axis will be returned as an int. If force_tuple and
+        force_int are true, then an AssertionError is raised
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    assert not (force_int and force_tuple), (
+        "Cannot return an int and a tuple. If "
+        "both are valid then set 'force_int' "
+        "and 'force_tuple' to False."
+    )
+
     # Draw values from any strategies given
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
@@ -2987,39 +2978,33 @@ def get_axis(
     if max_size is None and unique:
         max_size = max(axes, min_size)
 
+    valid_strategies = []
+
     if allow_none:
+        valid_strategies.append(st.none())
+
+    if not force_tuple:
         if axes == 0:
-            axis = draw(
-                st.none()
-                | st.just(0)
-                | st.lists(st.just(0), min_size=min_size, max_size=max_size)
+            valid_strategies.append(st.just(0))
+        else:
+            valid_strategies.append(st.integers(-axes, axes - 1))
+    if not force_int:
+        if axes == 0:
+            valid_strategies.append(
+                st.lists(st.just(0), min_size=min_size, max_size=max_size)
             )
         else:
-            axis = draw(
-                st.none()
-                | ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
+            valid_strategies.append(
+                st.lists(
+                    st.integers(-axes, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
                 )
             )
-    else:
-        if axes == 0:
-            axis = draw(
-                st.just(0) | st.lists(st.just(0), min_size=min_size, max_size=max_size)
-            )
-        else:
-            axis = draw(
-                ints(min_value=-axes, max_value=axes - 1)
-                | st.lists(
-                    ints(min_value=-axes, max_value=axes - 1),
-                    min_size=min_size,
-                    max_size=max_size,
-                    unique_by=unique_by,
-                )
-            )
+
+    axis = draw(st.one_of(*valid_strategies))
+
     if type(axis) == list:
         if sorted:
 
@@ -3030,8 +3015,6 @@ def get_axis(
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
         axis = tuple(axis)
-    elif ret_tuple:
-        axis = tuple([axis])
     return axis
 
 
@@ -3089,23 +3072,41 @@ def bool_val_flags(draw, cl_arg: Union[bool, None]):
 
 
 def handle_cmd_line_args(test_fn):
-    # first four arguments are all fixtures
-    def new_fn(data, get_command_line_flags, fw, device, call, *args, **kwargs):
-        # inspecting for keyword arguments in test function
-        for param in inspect.signature(test_fn).parameters.values():
-            if param.name in cmd_line_args:
-                kwargs[param.name] = data.draw(
-                    bool_val_flags(get_command_line_flags[param.name])
-                )
-            elif param.name == "data":
-                kwargs["data"] = data
-            elif param.name == "fw":
-                kwargs["fw"] = fw
-            elif param.name == "device":
-                kwargs["device"] = device
-            elif param.name == "call":
-                kwargs["call"] = call
-        return test_fn(*args, **kwargs)
+    from ivy_tests.test_ivy.conftest import (
+        FW_STRS,
+        TEST_BACKENDS,
+    )
+
+    # first[1:-2] 5 arguments are all fixtures
+    @given(data=st.data())
+    @settings(max_examples=1)
+    def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
+        flag, fw_string = (False, "")
+        # skip test if device is gpu and backend is numpy
+        if "gpu" in device and ivy.current_backend_str() == "numpy":
+            # Numpy does not support GPU
+            pytest.skip()
+        if not f:
+            # randomly draw a backend if not set
+            fw_string = data.draw(st.sampled_from(FW_STRS))
+            f = TEST_BACKENDS[fw_string]()
+        else:
+            # use the one which is parametrized
+            flag = True
+
+        # set backend using the context manager
+        with f.use:
+            # inspecting for keyword arguments in test function
+            for param in inspect.signature(test_fn).parameters.values():
+                if param.name in cmd_line_args:
+                    kwargs[param.name] = data.draw(
+                        bool_val_flags(get_command_line_flags[param.name])
+                    )
+                elif param.name == "fw":
+                    kwargs["fw"] = fw if flag else fw_string
+                elif param.name == "device":
+                    kwargs["device"] = device
+            return test_fn(*args, **kwargs)
 
     return new_fn
 
@@ -3116,3 +3117,52 @@ def gradient_incompatible_function(*, fn):
         and hasattr(fn, "computes_gradients")
         and fn.computes_gradients
     )
+
+
+@st.composite
+def statistical_dtype_values(draw, *, function):
+    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+
+    size = draw(st.integers(1, 10))
+
+    if dtype == "float16":
+        max_value = 2048
+    elif dtype == "float32":
+        max_value = 16777216
+    elif dtype == "float64":
+        max_value = 9.0071993e15
+
+    if function == "prod":
+        abs_value_limit = 0.99 * max_value ** (1 / size)
+    elif function in ["var", "std"]:
+        abs_value_limit = 0.99 * (max_value / size) ** 0.5
+    else:
+        abs_value_limit = 0.99 * max_value / size
+
+    values = draw(
+        list_of_length(
+            x=st.floats(
+                -abs_value_limit,
+                abs_value_limit,
+                allow_subnormal=False,
+                allow_infinity=False,
+            ),
+            length=size,
+        )
+    )
+
+    shape = np.asarray(values, dtype=dtype).shape
+    size = np.asarray(values, dtype=dtype).size
+    axis = draw(get_axis(shape=shape, allow_none=True))
+    if function == "var" or function == "std":
+        if isinstance(axis, int):
+            correction = draw(
+                st.integers(-shape[axis], shape[axis] - 1)
+                | st.floats(-shape[axis], shape[axis] - 1)
+            )
+            return dtype, values, axis, correction
+
+        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
+        return dtype, values, axis, correction
+
+    return dtype, values, axis

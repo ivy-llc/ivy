@@ -5,6 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # full
@@ -39,6 +40,7 @@ def _requires_grad(draw):
 
 
 # full
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
