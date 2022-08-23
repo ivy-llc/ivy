@@ -1212,7 +1212,7 @@ def test_jax_lax_broadcast(
 @handle_cmd_line_args
 @given(
     dtype_x_bounded_axis=_dtype_x_bounded_axis(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=ivy.valid_numeric_dtypes,
         min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(
