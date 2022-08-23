@@ -1,7 +1,7 @@
 # global
 import ivy
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -981,11 +981,9 @@ def test_jax_lax_exp(
 @st.composite
 def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
-    return draw(
-        st.sampled_from(ivy.valid_numeric_dtypes).filter(
-            lambda x: ivy.can_cast(dtype, x)
-        )
-    )
+    to_dtype = draw(st.sampled_from(ivy.valid_numeric_dtypes))
+    assume(ivy.can_cast(dtype, to_dtype))
+    return to_dtype
 
 
 @handle_cmd_line_args
