@@ -20,5 +20,25 @@ def identity(n, dtype=None, *, like=None):
     return ivy.eye(n, dtype=dtype)
 
 
+def ones():
+    pass
+
+
+def ones_like():
+    pass
+
+
+def zeros():
+    pass
+
+
+def zeros_like():
+    pass
+
+
 def full(shape, fill_value, dtype=None, order="C", *, like=None):
     return ivy.full(shape, fill_value, dtype=dtype)
+
+
+def full_like():
+    pass
