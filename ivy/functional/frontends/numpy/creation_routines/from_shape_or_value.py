@@ -30,12 +30,14 @@ def ones_like(a, dtype=None, order="K", subok=True, shape=None):
     return ivy.ones_like(a, dtype=dtype)
 
 
-def zeros():
-    pass
+def zeros(shape, dtype=float, order="C", *, like=None):
+    return ivy.zeros(shape, dtype=dtype)
 
 
-def zeros_like():
-    pass
+def zeros_like(a, dtype=None, order="K", subok=True, shape=None):
+    if shape:
+        return ivy.zeros(shape, dtype=dtype)
+    return ivy.zeros_like(a, dtype=dtype)
 
 
 def full(shape, fill_value, dtype=None, order="C", *, like=None):
