@@ -387,3 +387,74 @@ def test_tensorflow_sin(
         fn_tree="sin",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+    
+# Maximum
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+        num_arrays=2,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Maximum"
+    ),
+    native_array=st.booleans()
+)
+def test_tensorflow_Maximum(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, values = dtype_and_x
+    x = values[0]
+    y = values[1]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="Maximum",
+        x=np.asarray(x, dtype=input_dtype),
+        y=np.asarray(y, dtype=input_dtype),
+    )
+
+
+# Minimum
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        )
+        num_arrays=2,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Minimum"
+    ),
+    native_array=st.booleans()
+)
+def test_tensorflow_Maximum(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, values = dtype_and_x
+    x = values[0]
+    y = values[1]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="Minimum",
+        x=np.asarray(x, dtype=input_dtype),
+        y=np.asarray(y, dtype=input_dtype),
+    )
+ 
