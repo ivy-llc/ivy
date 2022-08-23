@@ -439,7 +439,7 @@ def test_tensorflow_Maximum(
     ),
     native_array=st.booleans()
 )
-def test_tensorflow_Maximum(
+def test_tensorflow_Minimum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, values = dtype_and_x
