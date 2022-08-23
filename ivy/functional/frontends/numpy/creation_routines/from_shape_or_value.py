@@ -44,5 +44,7 @@ def full(shape, fill_value, dtype=None, order="C", *, like=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
-def full_like():
-    pass
+def full_like(a, fill_value, dtype=None, order="K", subok=True, shape=None):
+    if shape:
+        return ivy.full(shape, fill_value, dtype=dtype)
+    return ivy.full_like(a, fill_value, dtype=dtype)
