@@ -359,8 +359,8 @@ def test_tensorflow_atanh(
         x=np.asarray(x, dtype=dtype),
     )
 
-#tan
 
+# tan
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
