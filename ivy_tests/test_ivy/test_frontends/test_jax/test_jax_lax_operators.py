@@ -1181,7 +1181,9 @@ def test_jax_lax_reshape(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=list(
+        set(ivy_jax.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))
+        )
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.reciprocal"
