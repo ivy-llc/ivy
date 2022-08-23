@@ -5,6 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
@@ -71,4 +72,40 @@ def test_tensorflow_eigvalsh(
         frontend="tensorflow",
         fn_tree="linalg.eigvalsh",
         input=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# slogdet
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_tf.valid_float_dtypes,
+        min_value=0,
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
+)
+def test_tensorflow_slogdet(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="slogdet",
+        x=np.asarray(x, dtype=input_dtype),
     )
