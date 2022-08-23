@@ -700,20 +700,20 @@ def value_test(
     )
     # value tests, iterating through each array in the flattened returns
     if not rtol:
-        for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
-            rtol = TOLERANCE_DICT.get(str(ret_from_np.dtype), 1e-03)
+        for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
+            rtol = TOLERANCE_DICT.get(str(ret_np_from_gt.dtype), 1e-03)
             assert_all_close(
                 ret_np,
-                ret_from_np,
+                ret_np_from_gt,
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
             )
     else:
-        for ret_np, ret_from_np in zip(ret_np_flat, ret_np_from_gt_flat):
+        for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
             assert_all_close(
                 ret_np,
-                ret_from_np,
+                ret_np_from_gt,
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
