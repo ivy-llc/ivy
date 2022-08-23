@@ -115,3 +115,8 @@ def Expm1(*, x, name="Expm1"):
 
 def Log(*, x, name="Log"):
     return ivy.log(x)
+
+
+def zeros_like(x, name="zerosLike"):
+    return ivy.zeros_like(x)
+
