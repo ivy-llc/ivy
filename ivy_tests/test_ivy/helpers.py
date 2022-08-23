@@ -2371,6 +2371,7 @@ def array_values(
     -------
     A strategy that draws a list.
     """
+    assert large_value_safety_factor >= 1, "large_value_safety_factor must be >= 1"
     exclude_min = exclude_min if ivy.exists(min_value) else False
     exclude_max = exclude_max if ivy.exists(max_value) else False
     size = 1
@@ -2386,14 +2387,14 @@ def array_values(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
             max_value = ivy.default(
-                max_value, min(255, round(255 * large_value_safety_factor))
+                max_value, min(255, round(255 / large_value_safety_factor))
             )
         elif dtype == "uint16":
             min_value = ivy.default(
                 min_value, 1 if small_value_safety_factor < 1 else 0
             )
             max_value = ivy.default(
-                max_value, min(65535, round(65535 * large_value_safety_factor))
+                max_value, min(65535, round(65535 / large_value_safety_factor))
             )
         elif dtype == "uint32":
             min_value = ivy.default(
@@ -2401,7 +2402,7 @@ def array_values(
             )
             max_value = ivy.default(
                 max_value,
-                min(4294967295, round(4294967295 * large_value_safety_factor)),
+                min(4294967295, round(4294967295 / large_value_safety_factor)),
             )
         elif dtype == "uint64":
             min_value = ivy.default(
@@ -2411,7 +2412,7 @@ def array_values(
                 max_value,
                 min(
                     18446744073709551615,
-                    round(18446744073709551615 * large_value_safety_factor),
+                    round(18446744073709551615 / large_value_safety_factor),
                 ),
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
@@ -2427,28 +2428,28 @@ def array_values(
         else:
             if dtype == "int8":
                 min_value = ivy.default(
-                    min_value, max(-128, round(-128 * large_value_safety_factor))
+                    min_value, max(-128, round(-128 / large_value_safety_factor))
                 )
                 max_value = ivy.default(
-                    max_value, min(127, round(127 * large_value_safety_factor))
+                    max_value, min(127, round(127 / large_value_safety_factor))
                 )
 
             elif dtype == "int16":
                 min_value = ivy.default(
-                    min_value, max(-32768, round(-32768 * large_value_safety_factor))
+                    min_value, max(-32768, round(-32768 / large_value_safety_factor))
                 )
                 max_value = ivy.default(
-                    max_value, min(32767, round(32767 * large_value_safety_factor))
+                    max_value, min(32767, round(32767 / large_value_safety_factor))
                 )
 
             elif dtype == "int32":
                 min_value = ivy.default(
                     min_value,
-                    max(-2147483648, round(-2147483648 * large_value_safety_factor)),
+                    max(-2147483648, round(-2147483648 / large_value_safety_factor)),
                 )
                 max_value = ivy.default(
                     max_value,
-                    min(2147483647, round(2147483647 * large_value_safety_factor)),
+                    min(2147483647, round(2147483647 / large_value_safety_factor)),
                 )
 
             elif dtype == "int64":
@@ -2456,14 +2457,14 @@ def array_values(
                     min_value,
                     max(
                         -9223372036854775808,
-                        round(-9223372036854775808 * large_value_safety_factor),
+                        round(-9223372036854775808 / large_value_safety_factor),
                     ),
                 )
                 max_value = ivy.default(
                     max_value,
                     min(
                         9223372036854775807,
-                        round(9223372036854775807 * large_value_safety_factor),
+                        round(9223372036854775807 / large_value_safety_factor),
                     ),
                 )
             max_neg_value = -1 if small_value_safety_factor > 1 else 0
@@ -2541,7 +2542,7 @@ def array_values(
                     length=size,
                 )
             )
-        values = [v * large_value_safety_factor for v in values]
+        values = [v / large_value_safety_factor for v in values]
     elif dtype == "float32":
         if min_value is not None and max_value is not None:
             values = draw(
@@ -2605,7 +2606,7 @@ def array_values(
                     length=size,
                 )
             )
-        values = [v * large_value_safety_factor for v in values]
+        values = [v / large_value_safety_factor for v in values]
     elif dtype in ["float64", "bfloat16"]:
         if min_value is not None and max_value is not None:
             values = draw(
@@ -2663,7 +2664,7 @@ def array_values(
                     length=size,
                 )
             )
-        values = [v * large_value_safety_factor for v in values]
+        values = [v / large_value_safety_factor for v in values]
     elif dtype == "bool":
         values = draw(list_of_length(x=st.booleans(), length=size))
     array = np.array(values)
