@@ -10,6 +10,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
+def broadcast_to(input, shape, name="broadcast_to"):
+    return ivy.broadcast_to(input, shape=shape)
+
+
 def concat(values, axis, name="concat"):
     return ivy.concat(values, axis=axis)
 

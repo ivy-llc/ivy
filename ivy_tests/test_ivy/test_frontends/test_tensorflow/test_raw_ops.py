@@ -62,6 +62,65 @@ def test_tensorflow_Acosh(
     )
 
 
+def _get_broadcastable_shapes(draw):
+    to_shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=2,
+            max_num_dims=6,
+            min_dim_size=1,
+            max_dim_size=5,
+        )
+    )
+    in_shape = draw(
+        helpers.nph.broadcastable_shapes(shape=to_shape, min_dims=1, max_dims=6)
+    )
+    return in_shape, to_shape
+
+
+@st.composite
+def _array_and_broadcast_shape(draw):
+    in_shape, to_shape = _get_broadcastable_shapes(draw)
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_tf.valid_float_dtypes,
+            shape=in_shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    return dtype_and_x, to_shape
+
+
+# broadcast_to
+@handle_cmd_line_args
+@given(
+    array_and_shape=_array_and_broadcast_shape(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.broadcast_to"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_broadcast_to(
+    array_and_shape, as_variable, num_positional_args, native_array, fw
+):
+    dtype_and_x, to_shape = array_and_shape
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="broadcast_to",
+        input=np.asarray(x, dtype=input_dtype),
+        shape=to_shape,
+    )
+
+
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
