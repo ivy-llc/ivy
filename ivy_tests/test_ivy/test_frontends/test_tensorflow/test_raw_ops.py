@@ -395,7 +395,7 @@ def test_tensorflow_sin(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        )
+        ),
         num_arrays=2,
     ),
     as_variable=st.booleans(),
@@ -430,7 +430,7 @@ def test_tensorflow_Maximum(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        )
+        ),
         num_arrays=2,
     ),
     as_variable=st.booleans(),
