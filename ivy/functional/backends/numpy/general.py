@@ -126,7 +126,9 @@ def inplace_increment(
 
 
 def cumsum(
-    x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    axis: int = 0,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.cumsum(x, axis, out=out)
 
