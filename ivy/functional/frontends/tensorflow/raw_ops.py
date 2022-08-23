@@ -123,3 +123,8 @@ def Reshape(tensor, shape, name="reshape"):
 
 def Sinh(*, x, name="Sinh"):
     return ivy.sinh(x)
+
+
+def ZerosLike(x, name="ZerosLike"):
+    return ivy.zeros_like(x)
+
