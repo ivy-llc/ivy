@@ -119,7 +119,7 @@ _MIN_BASE = 1e-5
 
 # local
 import threading
-from .array import Array, Variable, add_ivy_array_instance_methods
+from .array import Array, add_ivy_array_instance_methods
 from .array.conversions import *
 from .array import conversions as arr_conversions
 from .container import conversions as cont_conversions
