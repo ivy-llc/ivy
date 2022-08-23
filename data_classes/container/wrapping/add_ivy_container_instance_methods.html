@@ -160,33 +160,6 @@
              
   <section id="add-ivy-container-instance-methods">
 <h1>add_ivy_container_instance_methods<a class="headerlink" href="#add-ivy-container-instance-methods" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.wrapping.add_ivy_container_instance_methods">
-<span class="sig-prename descclassname"><span class="pre">ivy.container.wrapping.</span></span><span class="sig-name descname"><span class="pre">add_ivy_container_instance_methods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/wrapping.html#add_ivy_container_instance_methods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.wrapping.add_ivy_container_instance_methods" title="Permalink to this definition"></a></dt>
-<dd><p>Loop over all ivy modules such as activations, general, etc. and add
-the module functions to ivy container as instance methods using _wrap_function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – the class we want to add the instance methods to.</p></li>
-<li><p><strong>modules</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">module</span></code>]) – the modules to loop over: activations, general etc.</p></li>
-<li><p><strong>static</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – whether the function should be added as a static method. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>to_ignore</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]) – any functions we don’t want to add an instance method for. (default: <code class="docutils literal notranslate"><span class="pre">()</span></code>)</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>As shown, <cite>add_ivy_container_instance_methods</cite> adds all the appropriate functions
-from the statistical module as instance methods to our toy <cite>ContainerExample</cite> class:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ivy.functional.ivy</span> <span class="kn">import</span> <span class="n">statistical</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ContainerExample</span><span class="p">:</span>             <span class="k">pass</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">add_ivy_container_instance_methods</span><span class="p">(</span><span class="n">ContainerExample</span><span class="p">,</span> <span class="p">[</span><span class="n">statistical</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">ContainerExample</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">),</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ContainerExample</span><span class="p">,</span> <span class="s2">&quot;var&quot;</span><span class="p">))</span>
-<span class="go">True True</span>
-</pre></div>
-</div>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

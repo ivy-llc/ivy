@@ -209,28 +209,6 @@
              
   <section id="set-queue-timeout">
 <h1>set_queue_timeout<a class="headerlink" href="#set-queue-timeout" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.general.set_queue_timeout">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_queue_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#set_queue_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_queue_timeout" title="Permalink to this definition"></a></dt>
-<dd><p>Set the global queue timeout value (in seconds)
-Default value without this function being called is 15 seconds.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>timeout</strong> – The timeout when waiting for containers to arrive from the queues.
-To be set in seconds.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>&gt;&gt; x = ivy.queue_timeout()
-&gt;&gt; print(x)
-15.0</p>
-<p>To set the timeout for example 30 seconds</p>
-<p>&gt;&gt; ivy.set_queue_timeout(30)
-&gt;&gt; y = ivy.queue_timeout()
-&gt;&gt; print(y)
-30</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
