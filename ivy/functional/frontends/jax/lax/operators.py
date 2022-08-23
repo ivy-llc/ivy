@@ -174,3 +174,7 @@ def reshape(operand, new_sizes, dimensions=None):
 def broadcast(operand, sizes):
     ret = ivy.zeros(tuple(sizes) + tuple(ivy.shape(operand)), dtype=ivy.dtype(operand))
     return ret + operand
+
+
+def sort(operand, dimension=-1, is_stable=True, num_keys=1):
+    return ivy.sort(operand, axis=dimension, stable=is_stable)
