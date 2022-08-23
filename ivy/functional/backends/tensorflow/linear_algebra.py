@@ -253,6 +253,7 @@ def matrix_rank(
     ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
     return ret
     
+
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
     *,
