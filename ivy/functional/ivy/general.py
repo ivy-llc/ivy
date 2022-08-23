@@ -2476,7 +2476,7 @@ def supports_inplace(
         data type of x.
 
     Raises
-    -------
+    ------
     ValueError
         If x isn't a class instance of ivy.Variable, ivy.Array,
         or ivy.NativeArray, an exception will be raised.
@@ -2486,7 +2486,6 @@ def supports_inplace(
 
     Examples
     --------
-
     With :code:'ivy.DType("bool")' input:
     >>> x = True
     >>> ret = ivy.supports_inplace(x)
@@ -2518,7 +2517,6 @@ def supports_inplace(
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
     raise ValueError("Input x must be either a variable or an array.")
-
 
 
 @inputs_to_native_arrays

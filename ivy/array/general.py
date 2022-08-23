@@ -388,9 +388,9 @@ class ArrayWithGeneral(abc.ABC):
 
     def supports_inplace(self: ivy.Array) -> bool:
         """
-        ivy.Array instance method variant of ivy.supports_inplace. This method simply wraps
-        the function, and so the docstring for ivy.supports_inplace also applies to this
-        method with minimal changes.
+        ivy.Array instance method variant of ivy.supports_inplace. This method simply
+        wraps the function, and so the docstring for ivy.supports_inplace also applies
+        to this method with minimal changes.
 
         Parameters
         ----------

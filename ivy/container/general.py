@@ -2146,9 +2146,9 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.supports_inplace. This method simply wraps
-        the function, and so the docstring for ivy.supports_inplace also applies to this
-        method with minimal changes.
+        ivy.Container static method variant of ivy.supports_inplace. This method
+        simply wraps the function, and so the docstring for ivy.supports_inplace
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2169,7 +2169,7 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
 
         Returns
-        -------
+        ------
         ret
             An ivy.Container instance of bool values.
             True if nodes of x support in-place operations. False otherwise.
@@ -2177,8 +2177,8 @@ class ContainerWithGeneral(ContainerBase):
         Raises
         -------
         ValueError
-            If a node(s) of the container isn't a class instance of ivy.Variable, ivy.Array,
-            or ivy.NativeArray, an exception will be raised.
+            If a node(s) of the container isn't a class instance of ivy.Variable,
+            ivy.Array, or ivy.NativeArray, an exception will be raised.
 
         Examples
         --------
@@ -2266,7 +2266,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(ret)
         {
             a: true,
-            b: false
+            b: true
         }
         """
         return ContainerWithGeneral.static_supports_inplace(
