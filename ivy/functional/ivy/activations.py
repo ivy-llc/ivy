@@ -372,8 +372,8 @@ def mish(
 ) -> ivy.Array:
     """
     Applies the Mish function, element-wise.
-    Mish: A Self Regularized Non-Monotonic Neural Activation Function
-     - https://arxiv.org/abs/1908.08681 .
+    Mish: A Self Regularized Non-Monotonic Neural Activation Function - 
+    https://arxiv.org/abs/1908.08681 .
 
     Mish(x) = x * tanh(softplus(x))
     
