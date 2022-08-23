@@ -791,9 +791,7 @@ def test_tensorflow_erfcinv(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_tf.valid_numeric_dtypes)
-            )
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
     as_variable=st.booleans(),
