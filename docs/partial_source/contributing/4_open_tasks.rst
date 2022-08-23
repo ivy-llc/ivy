@@ -148,17 +148,26 @@ The general workflow for this task is:
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
 
-If you feel as though there is an ivy function clearly missing, which would make your
-frontend function much simpler to implement, then you have two options:
+If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing,
+which would make your frontend function much simpler to implement,
+then you have two options:
 
 #. try to implement the function as a composition of currently present ivy functions,
    as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_
    guide, and add the :code:`#ToDo` comment in the implementation as explained. Once the
-   PR is merged, your sub-task issue will then be closed as normal.
-#. alternatively, you can add the "Next Release" label to your sub-task issue, and then
-   simply choose another frontend function to work on, leaving the original issue open.
+   PR is merged, your sub-task issue will then be closed as normal. You should then
+   create a new issue with the title :code:`ivy.<func_name>`, add the labels
+   :code:`Extension` and :code:`Next Release` to it, and then simply leave it open.
+#. alternatively, if you do not want to try and implement the frontend function
+   compositionally, then you can remove the :code:`` label from the sub-task issue,
+   rename the issue to :code:`ivy.<func_name>`, add the :code:`Extension` and
+   :code:`Next Release` labels, and then simply choose another frontend function to work
+   on, leaving this original issue open. This issue will also still show up as open in
+   the original ToDo list, helpfully preventing others from working on this problematic
+   frontend function, which depends on the unimplemented :code:`ivy.<func_name>`.
 
-There are a few points to take note of when working on your chosen frontend function:
+There are a few other points to take note of when working on your chosen frontend
+function:
 
 #. you should only implement **one** frontend function.
 #. the frontend function is framework-specific, thus it should be implemented in
