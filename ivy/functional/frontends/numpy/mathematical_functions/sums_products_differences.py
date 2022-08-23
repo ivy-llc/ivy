@@ -19,9 +19,9 @@ def prod(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.prod(x, axis=axis, keepdims=keepdims, out=out)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
+    ret = ivy.prod(x, axis=axis, keepdims=keepdims, out=out)
     return ret
 
 
