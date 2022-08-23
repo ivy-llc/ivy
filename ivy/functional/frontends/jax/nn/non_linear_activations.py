@@ -215,3 +215,11 @@ def hard_tanh(x):
 
 
 hard_tanh.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def celu(x, alpha=1.0):
+    x = _type_conversion_64(x)
+    return ivy.maximum(x, 0.0) + alpha * ivy.expm1(ivy.minimum(x, 0.0) / alpha)
+
+
+celu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
