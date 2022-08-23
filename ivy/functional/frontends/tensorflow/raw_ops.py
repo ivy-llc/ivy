@@ -44,8 +44,3 @@ def tan(x, name="tan"):
 
 def tanh(x, name="tanh"):
     return ivy.tanh(x)
-
-
-def sin(x, name="sin"):
-    return ivy.sin(x)
-
