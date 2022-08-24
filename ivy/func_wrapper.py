@@ -247,7 +247,7 @@ def infer_dtype(fn: Callable) -> Callable:
     return new_fn
 
 
-def integer_array_to_float(fn: Callable) -> Callable:
+def integer_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -268,31 +268,19 @@ def integer_array_to_float(fn: Callable) -> Callable:
             promoted to default float dtype.
 
         """
-        if args:
 
-            args = list(args)
-            for i in range(len(args)):
-                if ivy.is_array(args[i]):
-                    if ivy.is_int_dtype(args[i].dtype):
-                        is_native = ivy.is_native_array(args[i])
-                        args[i] = ivy.asarray(args[i], dtype=ivy.default_float_dtype())
-                        if is_native:
-                            args[i] = ivy.to_native(args[i])
+        def _to_float_array(x):
+            if not ivy.is_array(x) or not ivy.is_int_dtype(x.dtype):
+                return x
+            if ivy.is_ivy_array(x):
+                return ivy.asarray(x, dtype=ivy.default_float_dtype())
+            return ivy.native_array(x, dtype=ivy.default_float_dtype(as_native=True))
 
-            args = tuple(args)
-        if kwargs:
-            for i in kwargs:
-                if ivy.is_array(kwargs[i]):
-                    if ivy.is_int_dtype(kwargs[i].dtype):
-                        is_native = ivy.is_native_array(kwargs[i])
-                        kwargs[i] = ivy.asarray(
-                            kwargs[i], dtype=ivy.default_float_dtype()
-                        )
-                        if is_native:
-                            kwargs[i] = ivy.to_native(kwargs[i])
+        args = ivy.nested_map(args, _to_float_array, to_mutable=True)
+        kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
         return fn(*args, **kwargs)
 
-    new_fn.integer_array_to_float = True
+    new_fn.integer_arrays_to_float = True
     return new_fn
 
 
@@ -469,7 +457,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for attr in [
             "infer_device",
             "infer_dtype",
-            "integer_array_to_float",
+            "integer_arrays_to_float",
             "outputs_to_ivy_arrays",
             "inputs_to_native_arrays",
             "inputs_to_ivy_arrays",
