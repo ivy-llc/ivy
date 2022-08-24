@@ -26,4 +26,4 @@ def slogdet(input, name=None):
     return ivy.slogdet(input)
 
 
-slogdet.unsupported_dtypes = {"torch": ("float16",)}
+slogdet.unsupported_dtypes = {"torch": ("float16",  "bfloat16")}
