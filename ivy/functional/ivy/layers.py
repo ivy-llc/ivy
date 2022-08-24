@@ -471,13 +471,13 @@ def multi_head_attention(
     if ivy.exists(to_kv_fn):
         kv = to_kv_fn(context, v=to_kv_v)
     else:
-        kv = ivy.split(context, 2, -1)
+        kv = ivy.split(context, num_or_size_splits=2, axis=-1)
 
     # BS x K x (HxF),  BS x K x (HxF)
     if isinstance(kv, tuple):
         k, v = kv
     else:
-        k, v = ivy.split(kv, 2, -1)
+        k, v = ivy.split(kv, num_or_size_splits=2, axis=-1)
 
     # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
     q, k, v = map(
