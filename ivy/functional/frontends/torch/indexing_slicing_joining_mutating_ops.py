@@ -34,7 +34,7 @@ def reshape(input, shape):
 
 
 def stack(tensors, dim=0, *, out=None):
-     return ivy.stack(tensors, axis=dim, out=out)
+    return ivy.stack(tensors, axis=dim, out=out)
 
 
 def movedim(input, source, destination):
