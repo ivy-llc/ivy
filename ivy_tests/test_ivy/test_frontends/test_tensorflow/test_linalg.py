@@ -34,7 +34,7 @@ def _get_dtype_and_matrix(draw):
     native_array=st.booleans(),
 )
 def test_tensorflow_det(
-        dtype_and_input, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
