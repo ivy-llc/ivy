@@ -48,53 +48,105 @@ def test_numpy_arange(
 # linspace
 @handle_cmd_line_args
 @given(
-    dtype_and_start=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=2,
-        min_dim_size=2,
+    dtype_and_start_stop=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        num_arrays=2,
         min_value=-50,
-        max_value=0,
-    ),
-    dtype_and_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=2,
-        min_dim_size=2,
-        min_value=1,
         max_value=50,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        allow_inf=False,
+        shared_dtype=True,
     ),
-    num=helpers.ints(min_value=5, max_value=50),
+    num=helpers.ints(min_value=5, max_value=10),
     endpoint=st.booleans(),
     retstep=st.booleans(),
+    axis=helpers.ints(min_value=-1, max_value=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linspace"
     ),
 )
 def test_numpy_linspace(
-    dtype_and_start,
-    dtype_and_stop,
+    dtype_and_start_stop,
     num,
     endpoint,
     retstep,
-    as_variable,
+    axis,
     num_positional_args,
-    native_array,
     fw,
 ):
-    start_dtype, start = dtype_and_start
-    stop_dtype, stop = dtype_and_stop
+    input_dtypes, range = dtype_and_start_stop
     helpers.test_frontend_function(
-        input_dtypes=[start_dtype, stop_dtype],
-        as_variable_flags=as_variable,
+        input_dtypes=input_dtypes,
+        as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        native_array_flags=False,
         fw=fw,
         frontend="numpy",
         fn_tree="linspace",
-        start=np.asarray(start, dtype=start_dtype),
-        stop=np.asarray(stop, dtype=stop_dtype),
+        start=np.asarray(range[0], dtype=input_dtypes[0]),
+        stop=np.asarray(range[1], dtype=input_dtypes[1]),
         num=num,
         endpoint=endpoint,
         retstep=retstep,
-        dtype=start_dtype,
+        dtype=input_dtypes[0],
+        axis=axis,
     )
+
+
+# logspace
+# @handle_cmd_line_args
+# @given(
+#     dtype_and_start=helpers.dtype_and_values(
+#         available_dtypes=ivy_np.valid_float_dtypes,
+#         min_num_dims=2,
+#         min_dim_size=2,
+#         min_value=-50,
+#         max_value=0,
+#     ),
+#     dtype_and_stop=helpers.dtype_and_values(
+#         available_dtypes=ivy_np.valid_float_dtypes,
+#         min_num_dims=2,
+#         min_dim_size=2,
+#         min_value=1,
+#         max_value=50,
+#     ),
+#     num=helpers.ints(min_value=5, max_value=50),
+#     endpoint=st.booleans(),
+#     base=helpers.ints(min_value=2, max_value=10),
+#     num_positional_args=helpers.num_positional_args(
+#         fn_name="ivy.functional.frontends.numpy.logspace"
+#     ),
+# )
+# def test_numpy_logspace(
+#     dtype_and_start,
+#     dtype_and_stop,
+#     num,
+#     endpoint,
+#     base,
+#     as_variable,
+#     num_positional_args,
+#     native_array,
+#     fw,
+# ):
+#     start_dtype, start = dtype_and_start
+#     stop_dtype, stop = dtype_and_stop
+#     helpers.test_frontend_function(
+#         input_dtypes=[start_dtype, stop_dtype],
+#         as_variable_flags=as_variable,
+#         with_out=False,
+#         num_positional_args=num_positional_args,
+#         native_array_flags=native_array,
+#         fw=fw,
+#         frontend="numpy",
+#         fn_tree="logspace",
+#         start=np.asarray(start, dtype=start_dtype),
+#         stop=np.asarray(stop, dtype=stop_dtype),
+#         num=num,
+#         endpoint=endpoint,
+#         base=base,
+#         dtype=start_dtype,
+#     )

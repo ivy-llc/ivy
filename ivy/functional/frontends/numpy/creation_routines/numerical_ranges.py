@@ -9,9 +9,12 @@ def arange(start, stop=None, step=1, dtype=None, *, like=None):
 def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
     ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
     if retstep:
-        step = ret[1] - ret[0]
+        step = (stop - start) / num
         return ret, step
     return ret
+
+
+linspace.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
@@ -19,3 +22,6 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
         interval = (stop - start) / num
         stop -= interval
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
+
+
+logspace.unsupported_dtypes = {"torch": ("float16",)}
