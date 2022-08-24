@@ -4379,7 +4379,7 @@ def reciprocal(
     -------
     ret
         A new array with the positive value of each element in ``x``.
-    
+
     """
     return ivy.current_backend(x).reciprocal(x, out=out)
 
@@ -5092,6 +5092,223 @@ def subtract(
     ret
         an array containing the element-wise differences.
 
+         Functional Examples
+    ------------------
+
+    With: code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x2 = ivy.array([1, 0, 0, -1])
+    >>> y  =  ivy.subtract(x1, x2)
+    >>> print(y)
+    ivy.array([0, 0, 1, 2])
+
+    >>> x1 = ivy.array([1, 0, 1, 0])
+    >>> x2 = ivy.array([0, 1, 0, 1])
+    >>> y = ivy.subtract(x1, x2)
+    >>> print(y)
+    ivy.array([ 1, -1,  1, -1])
+
+    >>> x1 = ivy.array([1, -1, 1, -1])
+    >>> x2 = ivy.array([0, -1, 1, 0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.subtract(x1, x2, out=y)
+    >>> print(y)
+    ivy.array([ 1,  0,  0, -1])
+
+    >>> x1 = ivy.array([1, -1, 1, -1])
+    >>> x2 = ivy.array([0, -1, 1, 0])
+    >>> y = ivy.subtract(x1, x2, out=x1)
+    >>> print(y)
+    vy.array([ 1,  0,  0, -1])
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1, 2])
+    >>> x2 = ivy.array([1, 2])
+    >>> y = ivy.subtract(x1, x2)
+    >>> print(y)
+    ivy.array([0, 0])
+
+    >>> x1 = ivy.native_array([1, -1])
+    >>> x2 = ivy.array([0, 1])
+    >>> y = ivy.subtract(x1, x2)
+    >>> print(y)
+    ivy.array([ 1, -2])
+
+    >>> x1 = ivy.native_array([1, -1, 1, -1])
+    >>> x2 = ivy.native_array([0, -1, 1, 0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.subtract(x1, x2, out=y)
+    >>> print(y)
+    ivy.array([ 1,  0,  0, -1])
+
+    >>> x1 = ivy.native_array([1, 2, 3, 4])
+    >>> x2 = ivy.native_array([0, 2, 3, 4])
+    >>> y = ivy.zeros(4)
+    >>> ivy.subtract(x1, x2, out=y)
+    >>> print(y)
+    ivy.array([1, 0, 0, 0])
+
+    With :code:`ivy.Container` input:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 0, 3]), \
+                           b=ivy.array([1, 2, 3]), \
+                           c=ivy.native_array([1, 2, 4]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 2, 3]), \
+                           c=ivy.native_array([1, 2, 4]))
+    >>> y = ivy.subtract(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([0, -2, 0]),
+        b: ivy.array([0, 0, 0]),
+        c: ivy.array([0, 0, 0])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.native_array([0, 1, 0]), \
+                           b=ivy.array([1, 2, 3]), \
+                           c=ivy.native_array([1.0, 2.0, 4.0]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.native_array([1.1, 2.1, 3.1]), \
+                           c=ivy.native_array([1, 2, 4]))
+    >>> y = ivy.subtract(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([-1, -1, -3]),
+        b: ivy.array([-0.1, -0.1, -0.1]),
+        c: ivy.array([0., 0., 0.])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = ivy.subtract(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([0, 0, 0]),
+        b: ivy.array([0, -1, 0])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = ivy.subtract(x1, x2)
+    >>> print(y)
+    {
+         a: ivy.array([0., 0., 0.]),
+         b: ivy.array([0., 0., 0.])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x2 = ivy.array([1, 0, 0, -1])
+    >>> y = x1.subtract(x2, out=x2)
+    >>> print(y)
+    ivy.array([0, 0, 1, 2])
+
+    >>> x1 = ivy.array([1, 0, 1, 0])
+    >>> x2 = ivy.array([0, 1, 0, 1])
+    >>> y = x1.subtract(x2, out=x2)
+    >>> print(y)
+    ivy.array([ 1, -1,  1, -1])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = x1.subtract(x2, out=x2)
+    >>> print(y)
+    {
+         a: ivy.array([0, 0, 0]),
+         b: ivy.array([0, -1, 0])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = x1.subtract(x2, out=x2)
+    >>> print(y)
+    {
+         a: ivy.array([0., -1., 0.]),
+         b: ivy.array([0., 0., 0.])
+    }
+
+    Operator Examples
+    -----------------
+
+    With :code:`ivy.Array` instances:
+
+    >>> x1 = ivy.array([1, 0, 1, 1])
+    >>> x2 = ivy.array([1, 0, 0, -1])
+    >>> y = (x1 - x2)
+    >>> print(y)
+    ivy.array([0, 0, 1, 2])
+
+    >>> x1 = ivy.array([1, 0, 1, 0])
+    >>> x2 = ivy.array([0, 1, 0, 1])
+    >>> y = (x1 - x2)
+    >>> print(y)
+    ivy.array([ 1, -1,  1, -1])
+
+    With :code:`ivy.Container` instances:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = (x1 - x2)
+    >>> print(y)
+    {
+         a: ivy.array([0, 0, 0]),
+         b: ivy.array([0, -1, 0])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = (x1 - x2)
+    >>> print(y)
+    {
+        a: ivy.array([0., -1., 0.]),
+        b: ivy.array([0., 0., 0.])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 3, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> y = (x1 - x2)
+    >>> print(y)
+    {
+        a: ivy.array([0, 0, 0]),
+        b: ivy.array([0, -1, 0])
+    }
+
+    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]), \
+                           b=ivy.array([1, 4, 5]))
+    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]), \
+                           b=ivy.array([1.0, 4.0, 5.0]))
+    >>> y = (x1 - x2)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0., 0.]),
+        b: ivy.array([0., 0., 0.])
+    }
     """
     return ivy.current_backend(x1).subtract(x1, x2, out=out)
 
