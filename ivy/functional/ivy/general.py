@@ -141,7 +141,7 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
+def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -353,6 +353,14 @@ def copy_array(
 ) -> ivy.Array:
     """Copy an array.
 
+    Parameters
+    ----------
+    x
+        array, input array containing elements to copy.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    
     Returns
     -------
     ret
@@ -552,6 +560,22 @@ def array_equal(
     >>> print(k)
     False
 
+    With :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([1, 0, 1])
+    >>> y = x1.array_equal(x2)
+    >>> print(y)
+    False
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instance method:
+
+    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
+    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
+    >>> y = x1.all_equal(x2)
+    >>> print(y)
+    True
+
     """
     return current_backend(x0).array_equal(x0, x1)
 
@@ -725,6 +749,22 @@ def all_equal(
         a: true,
         b: false
     }
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([1, 0, 1])
+    >>> y = x1.all_equal(x2, equality_matrix= False)
+    >>> print(y)
+    False
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instance method:
+
+    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
+    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
+    >>> y = x1.all_equal(x2, equality_matrix= True)
+    >>> print(y)
+    ivy.array([[ True,  True], [ True,  True]])
 
     """
     equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
@@ -1277,6 +1317,13 @@ def clip_vector_norm(
         b: ivy.array([0.849, 1.13, 1.41])
     }
 
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.clip_vector_norm(2.0)
+    >>> print(y)
+    ivy.array([0., 0.894, 1.79])
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -1458,7 +1505,7 @@ def fourier_encode(
 @inputs_to_native_arrays
 @handle_nestable
 def value_is_nan(
-    x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True
+    x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: Optional[bool] = True
 ) -> bool:
     """Determine whether the single valued array or scalar is of nan type.
 
@@ -1967,11 +2014,13 @@ def set_min_base(val: float) -> None:
     ivy._MIN_BASE = val
 
 
+@inputs_to_native_arrays
+@handle_nestable
 def stable_divide(
-    numerator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-    denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-    min_denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
-) -> Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]:
+    numerator: Union[Number, ivy.Array, ivy.NativeArray],
+    denominator: Union[Number, ivy.Array, ivy.NativeArray],
+    min_denominator: Union[Number, ivy.Array, ivy.NativeArray] = None,
+) -> Union[Number, ivy.Array]:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
 
@@ -2051,30 +2100,53 @@ def stable_divide(
         b: ivy.array([0.857, 10.])
     }
 
+    With :code:`ivy.Array` instance method:
 
+    >>> x = ivy.asarray([4., 5., 6.])
+    >>> y = x.stable_divide(2)
+    >>> print(y)
+    ivy.array([2., 2.5, 3.])
+
+    >>> x = ivy.asarray([4, 5, 6])
+    >>> y = x.stable_divide(4, min_denominator=1)
+    >>> print(y)
+    ivy.array([0.8, 1. , 1.2])
+
+    >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
+    >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
+    >>> z = x.stable_divide(y)
+    >>> print(z)
+    ivy.array([[4.  , 2.5 , 2.  ],
+            [3.5 , 2.67, 2.25]])
 
     """
     # noinspection PyProtectedMember
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
+@inputs_to_native_arrays
+@handle_nestable
+def stable_pow(
+    base: Union[Number, ivy.Array, ivy.NativeArray],
+    exponent: Union[Number, ivy.Array, ivy.NativeArray],
+    min_base: float = None,
+) -> Any:
     """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
     for numerical stability.
 
     Parameters
     ----------
     base
-        The numerator of the division.
+        The base number.
     exponent
-        The denominator of the division.
+        The exponent number.
     min_base
         The minimum base to use, use global ivy._MIN_BASE by default.
 
     Returns
     -------
     ret
-        The new item following the numerically stable division.
+        The new item following the numerically stable power.
 
 
     """
@@ -2120,7 +2192,7 @@ def set_queue_timeout(timeout):
     TIMEOUT = timeout
 
 
-def queue_timeout():
+def get_queue_timeout():
     """Get the global queue timeout values (in seconds).
 
     Default value without this function being called is 10 seconds.
@@ -2130,7 +2202,7 @@ def queue_timeout():
     return TIMEOUT
 
 
-def tmp_dir():
+def get_tmp_dir():
     """Get the path for directory that saves temporary files.
     
     Returns
@@ -2208,7 +2280,7 @@ def inplace_variables_supported(f=None):
 
 @inputs_to_native_arrays
 @handle_nestable
-def supports_inplace(x):
+def supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     """Determine whether inplace operations are supported for the data type of x.
 
     Parameters
@@ -2231,7 +2303,7 @@ def supports_inplace(x):
 
 @inputs_to_native_arrays
 @handle_nestable
-def assert_supports_inplace(x):
+def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     """Asserts that inplace operations are supported for x, else raises exception.
 
     Parameters

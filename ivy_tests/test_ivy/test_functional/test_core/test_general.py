@@ -1574,44 +1574,186 @@ def test_all_equal(x_val_and_dtypes, equality_matrix, as_variable, num_positiona
     equality_matrix=equality_matrix
     )
 
-def test_clip_matrix_norm():
-    return
 
-def test_value_is_nan():
-    return
+@given(
+    x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=2),
+    max_norm=st.floats(),
+    p=st.sampled_from([ 1, 2, float('inf'), 'fro', 'nuc']),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="clip_matrix_norm"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_clip_matrix_norm(
+    x,
+    max_norm,
+    p,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    call,
+    fw,
+):
+    dtype, x = x[0], x[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="clip_matrix_norm",
+        rtol_=1e-5,
+        x=np.asarray(x, dtype=dtype),
+        max_norm=max_norm,
+        p=p,
+    )
 
-def test_has_nans():
-    return
+@given(x_n_include_inf_n_value=st.sampled_from([
+    [ivy.array([1]),True,False],
+    [ivy.array(ivy.nan),False,True],
+    [ivy.native_array(ivy.inf),True,True],
+    [ivy.array(ivy.inf),False,False]
+    ]))
+def test_value_is_nan(x_n_include_inf_n_value):
+    x, include_inf, value = x_n_include_inf_n_value
+    ret = ivy.value_is_nan(x, include_inf)
+    assert ret == value
 
-def test_shape_to_tuple():
-    return
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+    ),
+    include_infs=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="has_nans"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_has_nans(x_val_and_dtypes, include_infs, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name='has_nans',
+        x=np.asarray(x, dtype=dtype),
+        include_infs=include_infs
+    )
+@given(
+    x=st.booleans(),
+)
+def test_try_else_none(x):
+    if x:
+        ret = ivy.try_else_none(lambda : True)
+        assert ret is True
+    else:
+        ret = ivy.try_else_none(lambda x: x)
+        assert ret is None
 
-def test_try_else_none():
-    return
+@given(
+    x_n_value=st.sampled_from([
+        [ivy.value_is_nan, ['x', 'include_infs']],
+        [ivy.clip_matrix_norm, ['x', 'max_norm', 'p', 'out']],
+    ]))
+def test_arg_names(x_n_value):
+    x, value = x_n_value 
+    ret = ivy.arg_names(x)
+    assert ret == value
 
-def test_arg_names():
-    return
-
-def test_current_framework_str():
-    return
+def test_current_backend_str(fw):
+    assert ivy.current_backend_str() == fw
 
 def test_get_min_denominator():
-    return
+    assert ivy.get_min_denominator() == 1e-12
 
-def test_set_min_denominator():
-    return
+@given(x=st.floats(allow_nan=False, allow_infinity=False))
+def test_set_min_denominator(x):
+    ivy.set_min_denominator(x)
+    assert ivy.get_min_denominator() == x
 
 def test_get_min_base():
-    return
+    assert ivy.get_min_base() == 1e-5 
 
-def test_set_min_base():
-    return
+@given(x=st.floats(allow_nan=False, allow_infinity=False))
+def test_set_min_base(x):
+    ivy.set_min_base(x)
+    assert ivy.get_min_base() == x
 
-def test_stable_divide():
-    return
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="stable_divide"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_stable_divide(dtype_and_x, as_variable, num_positional_args, native_array, container, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name='stable_divide',
+        numerator=np.asarray(x[0], dtype=input_dtype[0]),
+        denominator=np.asarray(x[1], dtype=input_dtype[1]),
+        min_denominator=np.asarray(x[2], dtype=input_dtype[2])
+    )
 
-def test_stable_pow():
-    return
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=3,
+        min_value=0,
+        shared_dtype=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="stable_pow"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+)
+def test_stable_pow(
+    dtype_and_x, as_variable, num_positional_args, native_array, container, fw
+):
+    input_dtype, x = dtype_and_x
+    for i in range(len(input_dtype)):
+        if input_dtype[i] in ["uint8", "uint16", "uint32", "uint64"]:
+            return
+    # assume(not (input_dtype[i] in ["uint8"] for i in range(len(input_dtype))))
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="stable_pow",
+        base=np.asarray(x[0], dtype=input_dtype[0]),
+        exponent=np.asarray(x[1], dtype=input_dtype[1]),
+        min_base=np.asarray(x[2], dtype=input_dtype[2]),
+    )
 
 def test_get_all_arrays_in_memory():
     return
@@ -1622,23 +1764,85 @@ def test_num_arrays_in_memory():
 def test_print_all_arrays_in_memory():
     return
 
-def test_set_queue_timeout():
-    return
 
-def test_queue_timeout():
-    return
+@given(
+    x=st.floats(allow_nan=False, allow_infinity=False),
+)
+def test_set_queue_timeout(x):
+    ivy.set_queue_timeout(x)
+    ret = ivy.get_queue_timeout()
+    assert ret == x
 
-def test_tmp_dir():
-    return
+
+def test_get_queue_timeout():
+    ret = ivy.get_queue_timeout()
+    assert ret == 15.0
+
+
+def test_get_tmp_dir():
+    ret = ivy.get_tmp_dir()
+    assert ret == '/tmp'
+
 
 def test_set_tmp_dir():
-    return
+    ivy.set_tmp_dir('/new_dir')
+    ret = ivy.get_tmp_dir()
+    assert ret == '/new_dir'
 
-def test_supports_inplace():
-    return
 
-def test_assert_supports_inplace():
-    return
+
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="supports_inplace"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name='supports_inplace',
+        x=np.asarray(x, dtype=dtype)
+    )
+
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="assert_supports_inplace"),
+    native_array=st.booleans(),
+    container=st.booleans()
+)
+def test_assert_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    if fw == "tensorflow" or fw == "jax":
+        return
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name='assert_supports_inplace',
+        ground_truth_backend='numpy',
+        x=np.asarray(x, dtype=dtype)
+    )
 
 def test_arg_info():
     return
