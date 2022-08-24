@@ -121,9 +121,7 @@ def std(
         )
 
     if keepdims:
-        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)]
-        ret = tf.constant(ret, shape=shape)
+        ret = tf.constant(ret, shape=x.shape)
     return ret
 
 
@@ -188,9 +186,7 @@ def var(
         )
 
     if keepdims:
-        shape = [1 if tf.rank(ret) == 0 else ret.shape[0]] \
-            + [1 for i in range(len(x.shape) - 1)]
-        ret = tf.constant(ret, shape=shape)
+        ret = tf.constant(ret, shape=x.shape)
     return ret
 
 
