@@ -207,9 +207,15 @@ def ne(x, y):
     return ivy.not_equal(x, y)
 
 
-# cosh
 def cosh(x):
     return ivy.cosh(x)
+
+
+def round(x):
+    return ivy.round(x)
+
+
+round.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def lt(x, y):
