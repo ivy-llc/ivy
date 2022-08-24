@@ -358,6 +358,10 @@ def test_torch_movedim(
     fw,
 ):
     input_dtype, value = dtype_and_values
+    if isinstance(source, int) and not isinstance(destination, int):
+        destination = destination[0]
+    elif isinstance(destination, int) and not isinstance(source, int):
+        source = source[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
