@@ -175,9 +175,19 @@ def reciprocal(x):
     return ivy.reciprocal(x)
 
 
-reciprocal.unsupported_dtypes = {"torch": ("float16",),
-                                 "tensorflow": ("uint8", "int8", "uint16", "int16",
-                                                "uint32", "int32", "uint64", "int64")}
+reciprocal.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": (
+        "uint8",
+        "int8",
+        "uint16",
+        "int16",
+        "uint32",
+        "int32",
+        "uint64",
+        "int64",
+    ),
+}
 
 
 def broadcast(operand, sizes):
