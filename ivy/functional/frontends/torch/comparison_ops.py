@@ -38,5 +38,5 @@ allclose.unsupported_dtypes = ("float16",)
 
 
 def equal(input, other):
-    ret = ivy.all(ivy.equal(input, other))
+    ret = ivy.all_equal(input, other, equality_matrix=False)
     return bool(ret)
