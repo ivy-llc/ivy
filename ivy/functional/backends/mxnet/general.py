@@ -164,7 +164,7 @@ def cumprod(
         new_array_list.append(new_array_list[-1] * array_chunk)
     if ivy.exists(out):
         return ivy.inplace_update(out, mx.nd.concat(*new_array_list, dim=axis))
-    return mx.nd.concat(*new_array_list, dim=axis)
+    return mx.nd.concat(*new_array_list, dim=axis, dtype=dtype)
 
 
 # noinspection PyShadowingNames
