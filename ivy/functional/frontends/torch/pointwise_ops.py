@@ -144,8 +144,36 @@ def atan2(input, other, *, out=None):
 atan2.unsupported_dtypes = ("float16",)
 
 
+def negative(input, *, out=None):
+    return ivy.negative(input, out=out)
+
+
+negative.unsupported_dtypes = ("float16",)
+
+
+def bitwise_and(input, other, *, out=None):
+    return ivy.bitwise_and(input, other, out=out)
+
+
+bitwise_and.unsupported_dtypes = ("float16",)
+
+
 def log10(input, *, out=None):
     return ivy.log10(input, out=out)
 
 
 log10.unsupported_dtypes = ("float16",)
+
+
+def trunc(input, *, out=None):
+    return ivy.trunc(input, out=out)
+
+
+trunc.unsupported_dtypes = ("float16",)
+
+
+def sqrt(input, *, out=None):
+    return ivy.sqrt(input, out=out)
+
+
+sqrt.unsupported_dtypes = ("float16",)

@@ -89,11 +89,7 @@ def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> Jax
     return ret
 
 
-def unstack(
-    x: JaxArray,
-    axis: int,
-    keepdims: bool = False
-) -> List[JaxArray]:
+def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
@@ -109,14 +105,17 @@ def inplace_update(
     val: Union[ivy.Array, JaxArray],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    if ensure_in_backend:
-        raise Exception("JAX does not natively support inplace updates")
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_ivy_array(x):
-        x.data = val_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        if ensure_in_backend:
+            raise Exception("JAX does not natively support inplace updates")
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_ivy_array(x):
+            x.data = val_native
+        else:
+            raise Exception("JAX does not natively support inplace updates")
+        return x
     else:
-        raise Exception("JAX does not natively support inplace updates")
-    return x
+        return val
 
 
 def inplace_arrays_supported():
@@ -135,7 +134,7 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
@@ -152,7 +151,7 @@ def scatter_flat(
     tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     target = tensor
     target_given = ivy.exists(target)
@@ -195,7 +194,7 @@ def scatter_nd(
     tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
@@ -263,7 +262,7 @@ def gather(
     indices: JaxArray,
     axis: int = -1,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return _to_device(jnp.take_along_axis(params, indices, axis))
 
