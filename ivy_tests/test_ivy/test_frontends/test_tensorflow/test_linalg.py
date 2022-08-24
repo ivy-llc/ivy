@@ -46,7 +46,7 @@ def test_tensorflow_det(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.det",
-        input=np.asarray(x, dtype=input_dtype),
+        input=np.asarray(x, dtype=input_dtype),   
     )
 
 
@@ -112,8 +112,8 @@ def test_matrix_rank(
         fn_tree="linalg.matrix_rank",
         atol=1.0,
         a=np.asarray(x, dtype=input_dtype),
-        tol=tolr
-   )
+        tol=tolr,   
+    )
 
 
 @st.composite
