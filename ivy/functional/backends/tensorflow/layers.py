@@ -52,7 +52,7 @@ def conv1d_transpose(
         )
         output_shape = [x.shape[0]], output_shape, [x.shape[-1]]
     elif len(output_shape) == 1:
-        output_shape = [x.shape[0]], [output_shape[0]], [x.shape[-1]]
+        output_shape = [x.shape[0], output_shape[0], x.shape[-1]]
     res = tf.nn.conv1d_transpose(
         x,
         filters,
