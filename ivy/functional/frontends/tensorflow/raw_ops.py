@@ -26,6 +26,13 @@ def fill(dims, value, name="full"):
     return ivy.full(dims, value)
 
 
+def linear(x, name="linear"):
+        return ivy.linear(x)
+
+
+linear.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
 def asin(x, name="asin"):
     return ivy.asin(x)
 

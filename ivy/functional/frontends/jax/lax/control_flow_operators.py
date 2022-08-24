@@ -15,6 +15,13 @@ def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
     return false_fun(*operands)
 
 
+def fori_loop(lower, upper, body_fun, init_val):
+    val = init_val
+    for i in range(lower, upper):
+        val = body_fun(i, val)
+    return val
+
+
 def map(f, xs):
     return ivy.stack([f(x) for x in xs])
 
