@@ -9,6 +9,8 @@ def arange(start, stop=None, step=1, dtype=None, *, like=None):
 def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
     ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
     if retstep:
+        if endpoint:
+            num -= 1
         step = (stop - start) / num
         return ret, step
     return ret

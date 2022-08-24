@@ -852,7 +852,14 @@ def linspace(
 
     """
     return current_backend(start).linspace(
-        start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device, out=out
+        start,
+        stop,
+        num,
+        axis=axis,
+        endpoint=endpoint,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
 
 
