@@ -157,7 +157,7 @@ def test_tensorflow_solve(
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.slogdet"
-        ),
+    ),
      native_array=st.booleans(),
 )
 def test_tensorflow_slogdet(
