@@ -18,7 +18,7 @@ sparse_categorical_crossentropy.unsupported_dtypes = {"torch": ("float16", "bflo
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true-y_pred))
 
-mean_absolute_error.unsupported_dtypes = {"torch": ("float16", "bfloat16"),
+mean_absolute_error.unsupported_dtypes = {
                                           "numpy": ("float16","bfloat16", "float32", "float64"),
                                           }
 
