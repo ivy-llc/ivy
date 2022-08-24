@@ -447,7 +447,7 @@ def reciprocal(
 
 
 reciprocal.support_native_out = True
-reciprocal.unsupported_dtypes = ("float16")
+reciprocal.unsupported_dtypes = ("float16",)
 
 
 def round(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -572,6 +572,7 @@ def remainder(
 
 
 remainder.support_native_out = True
+remainder.unsupported_dtypes = ("float16",)
 
 
 def atanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
