@@ -133,7 +133,7 @@ def matrix_rank(
             x = x.reshape([-1])
         ret = jnp.linalg.matrix_rank(x, rtol)
     ret = jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
-    return 
+    return ret
 
 
 def matrix_transpose(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
