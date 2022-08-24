@@ -59,12 +59,21 @@ def asin(x):
     return ivy.asin(x)
 
 
+asin.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def sinh(x):
     return ivy.sinh(x)
 
 
+sinh.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def atan2(x, y):
     return ivy.atan2(x, y)
+
+
+atan2.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def min(x, y):
@@ -79,11 +88,11 @@ def eq(x, y):
     return ivy.equal(x, y)
 
 
-eq.unsupported_dtypes = {"torch": ("bfloat16",)}
-
-
 def atan(x):
     return ivy.atan(x)
+
+
+atan.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def ceil(x):
@@ -105,21 +114,12 @@ def neg(x):
     return ivy.negative(x)
 
 
-neg.unsupported_dtypes = {"torch": ("bfloat16",)}
-
-
 def argmax(operand, axis, index_dtype):
     return ivy.astype(ivy.argmax(operand, axis=axis), index_dtype)
 
 
-argmax.unsupported_dtypes = {"torch": ("bfloat16",)}
-
-
 def argmin(operand, axis, index_dtype):
     return ivy.astype(ivy.argmin(operand, axis=axis), index_dtype)
-
-
-argmin.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 def bitwise_xor(x, y):
@@ -162,4 +162,46 @@ cumsum.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def ge(x, y):
-    return ivy.greater(x, y)
+    return ivy.greater_equal(x, y)
+
+
+def reshape(operand, new_sizes, dimensions=None):
+    if dimensions:
+        operand = ivy.permute_dims(operand, dimensions)
+    return ivy.reshape(operand, new_sizes)
+
+
+def reciprocal(x):
+    return ivy.reciprocal(x)
+
+
+reciprocal.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": (
+        "uint8",
+        "int8",
+        "uint16",
+        "int16",
+        "uint32",
+        "int32",
+        "uint64",
+        "int64",
+    ),
+}
+
+
+def broadcast(operand, sizes):
+    ret = ivy.zeros(tuple(sizes) + tuple(ivy.shape(operand)), dtype=ivy.dtype(operand))
+    return ret + operand
+
+
+def sort(operand, dimension=-1, is_stable=True, num_keys=1):
+    return ivy.sort(operand, axis=dimension, stable=is_stable)
+
+
+def le(x, y):
+    return ivy.less_equal(x, y)
+
+
+def ne(x, y):
+    return ivy.not_equal(x, y)

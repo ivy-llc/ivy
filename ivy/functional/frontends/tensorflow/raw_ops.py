@@ -33,5 +33,22 @@ def asin(x, name="asin"):
 def atan(x, name="atan"):
     return ivy.atan(x)
 
-def bitwise_and(x, y, name="bitwise_and"):
-    return ivy.bitwise_and(x,y)
+
+def BitwiseAnd(*, x, y, name="BitwiseAnd"):
+    return ivy.bitwise_and(x, y)
+
+
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
+
+
+def sin(x, name="sin"):
+    return ivy.sin(x)
+
+
+def Maximum(*, x, y, name="Maximum"):
+    return ivy.maximum(x, y)
+
+
+def Minimum(*, x, y, name="Minimum"):
+    return ivy.minimum(x, y)

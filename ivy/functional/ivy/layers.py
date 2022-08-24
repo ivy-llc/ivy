@@ -471,13 +471,13 @@ def multi_head_attention(
     if ivy.exists(to_kv_fn):
         kv = to_kv_fn(context, v=to_kv_v)
     else:
-        kv = ivy.split(context, 2, -1)
+        kv = ivy.split(context, num_or_size_splits=2, axis=-1)
 
     # BS x K x (HxF),  BS x K x (HxF)
     if isinstance(kv, tuple):
         k, v = kv
     else:
-        k, v = ivy.split(kv, 2, -1)
+        k, v = ivy.split(kv, num_or_size_splits=2, axis=-1)
 
     # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
     q, k, v = map(
@@ -1157,7 +1157,7 @@ def lstm_update(
         ivy.matmul(x_flat, Wi) + (bias if bias is not None else 0),
         batch_shape + [timesteps, -1],
     )
-    Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, 4, -1)
+    Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, num_or_size_splits=4, axis=-1)
 
     # recurrent kernel
     Wh = recurrent_kernel
@@ -1193,9 +1193,9 @@ def lstm_update(
         ct = ft * ctm1 + it * gt
         ht = ot * ivy.tanh(ct)
 
-        hts_list.append(ivy.expand_dims(ht, -2))
+        hts_list.append(ivy.expand_dims(ht, axis=-2))
 
-    return ivy.concat(hts_list, -2), ct
+    return ivy.concat(hts_list, axis=-2), ct
 
 
 lstm_update.unsupported_dtypes = {"torch": ("float16",)}
