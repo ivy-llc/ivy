@@ -139,29 +139,17 @@ def std(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    correction: Union[int, float] = 0.0,
+    correction: Union[int] = 0,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    dtype = x.dtype
-    if isinstance(axis, tuple):
-        ret = []
-        for i in axis:
-            ret.append(_new_std_fun(x, axis=i, correction=correction, dtype=dtype))
-        ret = torch.tensor(ret, dtype=dtype)
-    elif isinstance(axis, int):
-        ret = _new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
-    else:
-        num = torch.numel(x)
-        ret = _new_std_fun(
-            torch.reshape(x, (num,)), axis=0, correction=correction, dtype=dtype
-        )
-
-    if keepdims:
-        ret = torch.reshape(ret, x.shape)
-    return ret
-
+    if axis!=None:
+        axis = tuple(axis)
+        return torch.std(x,
+                         dim=axis,
+                         correction=correction,
+                         keepdims=keepdims)
+    return torch.std(x)
 
 std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
 
@@ -196,28 +184,17 @@ def var(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    correction: Union[int, float] = 0.0,
+    correction: Union[int, float] = 0,
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    dtype = x.dtype
-    if isinstance(axis, tuple):
-        ret = []
-        for i in axis:
-            ret.append(_new_var_fun(x, axis=i, correction=correction, dtype=dtype))
-        ret = torch.tensor(ret, dtype=dtype)
-    elif isinstance(axis, int):
-        ret = _new_var_fun(x, axis=axis, correction=correction, dtype=dtype)
-    else:
-        num = torch.numel(x)
-        ret = _new_var_fun(
-            torch.reshape(x, (num,)), axis=0, correction=correction, dtype=dtype
-        )
-
-    if keepdims:
-        ret = torch.reshape(ret, x.shape)
-    return ret
+    if axis!=None:
+        axis = tuple(axis)
+        return torch.var(x,
+                         dim=axis,
+                         correction=correction,
+                         keepdims=keepdims)
+    return torch.var(x)
 
 
 # Extra #
