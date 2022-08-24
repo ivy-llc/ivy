@@ -60,15 +60,19 @@ def conv1d_transpose(
     dilations = (dilations,) if isinstance(dilations, int) else dilations
     if data_format == "NWC":
         x_shape = list(x.shape[1:2])
+        channel = x.shape[-1]
     else:
         x_shape = list(x.shape[2:])
+        channel = x.shape[1]
     out_w = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
 
     if output_shape is None:
-        output_shape = [out_w]
-    diff_w = -(output_shape[0] - out_w)
+        output_shape = [x_shape[0], out_w, channel]
+    elif len(output_shape) == 1:
+        output_shape = [x_shape[0], output_shape[0], channel]
+    diff_w = -(output_shape[1] - out_w)
     pad_w_before, pad_w_after = _conv_transpose_padding(
         filters.shape[0], strides[0], padding, dilations[0], diff_w
     )
