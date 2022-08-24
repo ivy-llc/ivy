@@ -1776,12 +1776,14 @@ def default(
     ivy.array([1, 2, 3])
 
     >>> x = lambda a, b: a + b
-    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True, catch_exceptions=True)
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,
+                        catch_exceptions=True)
     >>> print(y)
     ivy.array([1, 2, 3])
 
     >>> x = lambda a, b: a + b
-    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True, catch_exceptions=True, rev=True)
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True, 
+                        catch_exceptions=True, rev=True)
     >>> print(y)
     ivy.array([1, 2, 3])
 
