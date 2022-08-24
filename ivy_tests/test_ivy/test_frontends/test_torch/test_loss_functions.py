@@ -20,7 +20,6 @@ import ivy.functional.backends.torch as ivy_torch
         ),
         allow_inf=False,
         min_num_dims=2,
-        # max_num_dims=2,
         min_dim_size=1,
     ),
     dtype_and_target=helpers.dtype_and_values(
