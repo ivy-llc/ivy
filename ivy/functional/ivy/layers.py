@@ -206,7 +206,7 @@ def scaled_dot_product_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
+    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -231,7 +231,7 @@ def scaled_dot_product_attention(
     >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
+    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -325,7 +325,7 @@ def scaled_dot_product_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[nan,nan],[nan,nan],[nan,nan]]])
+    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -334,7 +334,7 @@ def scaled_dot_product_attention(
     >>> out = ivy.zeros(shape=(1, 3, 2))
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask, out=out)
     >>> print(out)
-    ivy.array([[[nan, nan],[nan, nan],[nan, nan]]])
+    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
 
     With :code:`ivy.Container` input:
 
@@ -391,7 +391,7 @@ def scaled_dot_product_attention(
         )
 
     # BS x Q x K
-    attn = ivy.softmax(sim, -1)
+    attn = ivy.softmax(sim, axis=-1)
 
     # BS x Q x F
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
