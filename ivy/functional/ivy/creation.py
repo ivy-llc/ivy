@@ -314,13 +314,13 @@ def full_like(
     Functional Examples
     -------------------
     With int datatype:
-    
+
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
-    
+
     >>> fill_value = 0.000123
     >>> x = ivy.ones(5)
     >>> y = ivy.full_like(x, fill_value)
@@ -328,7 +328,7 @@ def full_like(
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
     With float datatype:
-    
+
     >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     >>> fill_value = 0.000123
     >>> y = ivy.full_like(x, fill_value)
@@ -336,13 +336,13 @@ def full_like(
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
     With ivy.NativeArray input:
-    
+
     >>> x = ivy.native_array([3.0, 8.0])
     >>> fill_value = 0.000123
     >>> y = ivy.full_like(x,fill_value)
     >>> print(y)
     ivy.array([0.000123, 0.000123])
-    
+
     >>> x = ivy.native_array([[3., 8., 2.], [2., 8., 3.]])
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
@@ -350,7 +350,7 @@ def full_like(
            [0.000123, 0.000123, 0.000123]])
 
     With ivy.Container input:
-    
+
     >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
                            b=ivy.array([4.123,5.23,6.23]))
     >>> fill_value = 15.0
@@ -365,7 +365,7 @@ def full_like(
     ------------------------
 
     With ivy.Array input:
-    
+
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
     >>> y = x.full_like(fill_value)
@@ -373,7 +373,7 @@ def full_like(
     ivy.array([1, 1, 1, 1, 1, 1])
 
     With ivy.Container input:
-    
+
     >>> x = ivy.Container(a=ivy.array([1,2,3]), \
                            b=ivy.array([4,5,6]))
     >>> fill_value = 10
@@ -852,7 +852,14 @@ def linspace(
 
     """
     return current_backend(start).linspace(
-        start, stop, num, axis, endpoint=endpoint, dtype=dtype, device=device, out=out
+        start,
+        stop,
+        num,
+        axis=axis,
+        endpoint=endpoint,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
 
 
@@ -1190,5 +1197,5 @@ def logspace(
 
     """
     return current_backend(start).logspace(
-        start, stop, num, base, axis, dtype=dtype, device=device, out=out
+        start, stop, num, base=base, axis=axis, dtype=dtype, device=device, out=out
     )
