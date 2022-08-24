@@ -182,7 +182,7 @@ def test_torch_cumsum(
         dtype=input_dtype,
         out=None,
     )
-    
+
 
 # repeat_interleave
 @given(
