@@ -175,9 +175,19 @@ def reciprocal(x):
     return ivy.reciprocal(x)
 
 
-reciprocal.unsupported_dtypes = {"torch": ("float16",),
-                                 "tensorflow": ("uint8", "int8", "uint16", "int16",
-                                                "uint32", "int32", "uint64", "int64")}
+reciprocal.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": (
+        "uint8",
+        "int8",
+        "uint16",
+        "int16",
+        "uint32",
+        "int32",
+        "uint64",
+        "int64",
+    ),
+}
 
 
 def broadcast(operand, sizes):
@@ -191,3 +201,7 @@ def sort(operand, dimension=-1, is_stable=True, num_keys=1):
 
 def le(x, y):
     return ivy.less_equal(x, y)
+
+
+def ne(x, y):
+    return ivy.not_equal(x, y)
