@@ -152,6 +152,7 @@ def cumprod(
     x: mx.nd.NDArray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
