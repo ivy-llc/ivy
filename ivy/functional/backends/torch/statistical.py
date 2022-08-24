@@ -97,21 +97,8 @@ def prod(
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
-        axis = x.dim() - 1
-    elif type(axis) == tuple:
-        if len(axis) == 0:
-            axis = x.dim() - 1
-        else:
-            return torch.prod(
-                torch.Tensor(
-                    [
-                        torch.prod(input=x, dim=i, dtype=dtype, keepdim=keepdims)
-                        for i in axis
-                    ]
-                ),
-                dtype=dtype,
-            )
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+        return torch.prod(input=x, dtype=dtype)
+    return torch.prod(input=x, dim=axis, dtype=dtype, keepdims=keepdims)
 
 
 prod.unsupported_dtypes = ("float16",)
