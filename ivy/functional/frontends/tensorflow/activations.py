@@ -1,13 +1,6 @@
 import ivy
 
 
-def exponential(x):
-    return ivy.exp(x)
-
-
-exponential.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def hard_sigmoid(x):
     point_two = ivy.full(x.shape, 0.2)
     point_five = ivy.full(x.shape, 0.5)
