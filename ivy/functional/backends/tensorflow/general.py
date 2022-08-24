@@ -171,7 +171,21 @@ def cumprod(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumprod(x, axis, exclusive)
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return tf.math.cumprod(x, axis, exclusive)
+    elif dtype is None:
+        if ivy.is_float_dtype(x):
+            default_dtype = ivy.default_float_dtype()
+        elif ivy.is_int_dtype(x):
+            default_dtype = ivy.default_int_dtype()
+        else:
+            default_dtype = ivy.default_uint_dtype()
+        if ivy.dtype_bits(x.dtype) < ivy.dtype_bits(default_dtype):
+            dtype = default_dtype
+        else:
+            return tf.math.cumprod(x, axis, exclusive)
+    return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
 
 
 # noinspection PyShadowingNames
