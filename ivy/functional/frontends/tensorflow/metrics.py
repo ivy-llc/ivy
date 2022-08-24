@@ -6,7 +6,7 @@ def binary_matches(y_true, y_pred, threshold=0.5):
     threshold = ivy.astype(ivy.array(threshold), y_pred.dtype)
     y_pred = ivy.astype(ivy.greater(y_pred, threshold), y_pred.dtype)
     return ivy.astype(
-        ivy.equal(y_true, y_pred), ivy.default_float_dtype(input=y_pred, as_native=True)
+        ivy.equal(y_true, y_pred), ivy.default_float_dtype(as_native=True)
     )
 
 
