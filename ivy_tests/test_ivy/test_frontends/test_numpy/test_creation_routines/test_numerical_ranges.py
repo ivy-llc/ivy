@@ -62,24 +62,19 @@ def test_numpy_arange(
         min_value=1,
         max_value=50,
     ),
-    # stop=helpers.ints(min_value=1, max_value=50),
     num=helpers.ints(min_value=5, max_value=50),
     endpoint=st.booleans(),
     retstep=st.booleans(),
-    # dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linspace"
     ),
 )
 def test_numpy_linspace(
-    # start,
-    # stop,
     dtype_and_start,
     dtype_and_stop,
     num,
     endpoint,
     retstep,
-    # dtype,
     as_variable,
     num_positional_args,
     native_array,
