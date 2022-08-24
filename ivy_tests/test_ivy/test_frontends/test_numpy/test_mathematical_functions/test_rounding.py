@@ -30,7 +30,13 @@ def test_numpy_ceil(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
+    if not ivy.is_array(input_dtype):
+        input_dtype = [input_dtype]
+    if not ivy.is_array(as_variable):
+        as_variable = [as_variable]
+    if not ivy.is_array(native_array):
+        native_array = [native_array]
+
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
