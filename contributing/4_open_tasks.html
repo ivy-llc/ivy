@@ -229,7 +229,7 @@ few moments to take effect, so please be patient. 🙂</p>
 <p>2. After adding the checklist to your PR, you should then modify this checklist with
 the status of each item according to the symbols(emojis) within the LEGEND section.</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true" style="width: 420px;" /></a>
-<p>3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for
+<p>1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for
 your PR and we will start checking your implementation and marking the items as complete
 using the checkboxes next to them.</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true" style="width: 420px;" /></a>
@@ -241,8 +241,8 @@ and address your issues.</p>
 <p><strong>Notes</strong>:</p>
 <ol class="arabic simple">
 <li><p>It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.</p></li>
-<li><p>Please pay attention to the formatting of the checklist generating comment, as it is important.</p></li>
-<li><p>Do not edit the checklist, if you are facing issues, please add them in a different comment.</p></li>
+<li><p>The checklist items’ statuses should be manually updated by the PR author. It does not automatically run any tests to update them!</p></li>
+<li><p>Do not edit the checklist text, only the emoji symbols. 😅</p></li>
 <li><p>Please refrain from using the checkboxes next to checklist items.</p></li>
 </ol>
 </section>
@@ -262,17 +262,26 @@ for this task, which is explained below.</p>
 <li><p>write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
 <li><p>verify that the tests for your function are passing</p></li>
 </ol>
-<p>If you feel as though there is an ivy function clearly missing, which would make your
-frontend function much simpler to implement, then you have two options:</p>
+<p>If you feel as though there is an ivy function <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> clearly missing,
+which would make your frontend function much simpler to implement,
+then you have two options:</p>
 <ol class="arabic simple">
 <li><p>try to implement the function as a composition of currently present ivy functions,
 as explained in the “Temporary Compositions” sub-section of the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html">Ivy Frontends</a>
 guide, and add the <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment in the implementation as explained. Once the
-PR is merged, your sub-task issue will then be closed as normal.</p></li>
-<li><p>alternatively, you can add the “Next Release” label to your sub-task issue, and then
-simply choose another frontend function to work on, leaving the original issue open.</p></li>
+PR is merged, your sub-task issue will then be closed as normal. You should then
+create a new issue with the title <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>, add the labels
+<code class="code docutils literal notranslate"><span class="pre">Extension</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code> to it, and then simply leave it open.</p></li>
+<li><p>alternatively, if you do not want to try and implement the frontend function
+compositionally, then you can remove the :code:`` label from the sub-task issue,
+rename the issue to <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>, add the <code class="code docutils literal notranslate"><span class="pre">Extension</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code> labels, and then simply choose another frontend function to work
+on, leaving this original issue open. This issue will also still show up as open in
+the original ToDo list, helpfully preventing others from working on this problematic
+frontend function, which depends on the unimplemented <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code>.</p></li>
 </ol>
-<p>There are a few points to take note of when working on your chosen frontend function:</p>
+<p>There are a few other points to take note of when working on your chosen frontend
+function:</p>
 <ol class="arabic simple">
 <li><p>you should only implement <strong>one</strong> frontend function.</p></li>
 <li><p>the frontend function is framework-specific, thus it should be implemented in
