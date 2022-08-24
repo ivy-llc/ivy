@@ -148,6 +148,7 @@ def test_tensorflow_solve(
 
 
 # slogdet
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_tf.valid_float_dtypes,
