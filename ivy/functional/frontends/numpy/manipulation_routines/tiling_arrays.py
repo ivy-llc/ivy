@@ -1,10 +1,10 @@
 # global
-# import ivy
+import ivy
 
 
-def tile():
-    pass
+def tile(A, reps):
+    return ivy.tile(A, reps)
 
 
-def repeat():
-    pass
+def repeat(a, repeats, axis=None):
+    return ivy.repeat(a, repeats, axis=axis)
