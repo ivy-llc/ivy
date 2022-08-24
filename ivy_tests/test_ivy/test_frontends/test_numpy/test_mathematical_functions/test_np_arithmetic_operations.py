@@ -397,4 +397,3 @@ def test_numpy_cbrt(
         subok=True,
         test_values=False,
     )
-
