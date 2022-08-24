@@ -400,16 +400,13 @@ def test_numpy_cbrt(
 
 
 # trunc
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
-    where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.trunc"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_trunc(
     dtype_and_x,
@@ -446,4 +443,3 @@ def test_numpy_trunc(
         subok=True,
         test_values=False,
     )
-
