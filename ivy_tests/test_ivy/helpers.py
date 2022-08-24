@@ -3138,6 +3138,8 @@ def statistical_dtype_values(draw, *, function):
         max_value = 16777216
     elif dtype == "float64":
         max_value = 9.0071993e15
+    elif dtype == "bfloat16":
+        max_value = 9.0071993e15
 
     if function == "prod":
         abs_value_limit = 0.99 * max_value ** (1 / size)
