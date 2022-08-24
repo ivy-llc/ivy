@@ -134,6 +134,7 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if exclusive:
