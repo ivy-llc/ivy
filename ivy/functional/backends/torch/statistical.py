@@ -143,13 +143,14 @@ def std(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis!=None:
+    if axis is not None:
         axis = tuple(axis)
         return torch.std(x,
                          dim=axis,
                          correction=correction,
                          keepdims=keepdims)
     return torch.std(x)
+
 
 std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
 
@@ -188,7 +189,7 @@ def var(
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis!=None:
+    if axis is not None:
         axis = tuple(axis)
         return torch.var(x,
                          dim=axis,
