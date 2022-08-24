@@ -46,6 +46,5 @@ divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
-    # return ivy.log(ivy.sigmoid(x))
 
 log_sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
