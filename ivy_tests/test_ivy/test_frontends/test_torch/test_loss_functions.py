@@ -31,9 +31,9 @@ import ivy.functional.backends.torch as ivy_torch
         min_value=0,
         max_value=1,
         allow_inf=False,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
     ),
     dtype_and_weights=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -42,9 +42,9 @@ import ivy.functional.backends.torch as ivy_torch
             )
         ),
         allow_inf=False,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),
