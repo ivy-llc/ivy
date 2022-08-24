@@ -148,14 +148,17 @@ def test_tensorflow_solve(
 
 
 # slogdet
-@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_tf.valid_float_dtypes,
         min_value=0,
         shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.slogdet"
+        ),
+     native_array=st.booleans(),
 )
 def test_tensorflow_slogdet(
     *,
