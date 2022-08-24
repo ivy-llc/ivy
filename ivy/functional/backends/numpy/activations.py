@@ -5,6 +5,7 @@ from typing import Optional
 # global
 import numpy as np
 
+import ivy
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 try:
@@ -42,7 +43,9 @@ def gelu(x, /, *, approximate: Optional[bool] = True) -> np.ndarray:
 
 
 def sigmoid(x: np.ndarray, /) -> np.ndarray:
-    return np.asarray(1 / (1 + np.exp(-x)))
+    if not ivy.is_array(x):
+        return np.asarray(1 / (1 + np.exp(-x)))
+    return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)
 
 
 def softmax(
