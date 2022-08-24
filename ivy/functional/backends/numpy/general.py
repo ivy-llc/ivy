@@ -138,6 +138,7 @@ def cumprod(
     x: np.ndarray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if exclusive:
