@@ -1,18 +1,17 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
-
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.current_backend().valid_dtypes),
+    dtype=st.sampled_from(ivy.current_backend().valid_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ceil"
