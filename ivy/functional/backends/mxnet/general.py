@@ -74,7 +74,7 @@ container_types = lambda: []
 
 
 def unstack(
-    x: mx.nd.NDArray, 
+    x: mx.nd.NDArray,
     axis: int,
     keepdims: bool = False,
 ) -> List[mx.nd.NDArray]:
@@ -90,13 +90,16 @@ def inplace_update(
     val: Union[ivy.Array, mx.nd.NDArray],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native[:] = val_native
-    if ivy.is_ivy_array(x):
-        x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native[:] = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
     else:
-        x = ivy.Array(x_native)
-    return x
+        return val
 
 
 def inplace_arrays_supported():
