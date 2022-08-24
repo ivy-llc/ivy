@@ -960,13 +960,11 @@ def x_and_lstm(draw, dtypes):
     dtype_lstm=x_and_lstm(
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
 )
 def test_lstm(
     *,
     dtype_lstm,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -991,7 +989,7 @@ def test_lstm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=5,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
