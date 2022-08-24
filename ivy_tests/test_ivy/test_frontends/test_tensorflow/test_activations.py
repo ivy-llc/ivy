@@ -1,16 +1,13 @@
-# global
-import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
 
 
 @given(
-    dtype_array=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_dtypes),
+    dtype_array=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.exponential"
@@ -20,9 +17,7 @@ import ivy.functional.backends.tensorflow as ivy_tf
 def test_tensorflow_exponential(
     *, dtype_array, as_variable, num_positional_args, native_array, fw
 ):
-
     dtype, x = dtype_array
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -43,13 +38,11 @@ def test_tensorflow_exponential(
         fn_name="ivy.functional.frontends.tensorflow.hard_sigmoid"
     ),
     native_array=st.booleans(),
-    # fw='tensorflow.keras'
 )
 def test_tensorflow_hard_sigmoid(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
-    
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -58,6 +51,6 @@ def test_tensorflow_hard_sigmoid(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="hard_sigmoid",
+        fn_name="keras.activations.hard_sigmoid",
         x=np.asarray(x, dtype=input_dtype),
     )
