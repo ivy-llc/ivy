@@ -34,9 +34,29 @@ def atan(x, name="atan"):
     return ivy.atan(x)
 
 
+def BitwiseAnd(*, x, y, name="BitwiseAnd"):
+    return ivy.bitwise_and(x, y)
+
+
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
+def tan(x, name="tan"):
+    return ivy.tan(x)
+
+
+def tanh(x, name="tanh"):
+    return ivy.tanh(x)
+
+
 def sin(x, name="sin"):
     return ivy.sin(x)
+
+
+def Maximum(*, x, y, name="Maximum"):
+    return ivy.maximum(x, y)
+
+
+def Minimum(*, x, y, name="Minimum"):
+    return ivy.minimum(x, y)

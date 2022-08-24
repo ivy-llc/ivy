@@ -1081,6 +1081,8 @@ def test_method(
     fw: str,
     class_name: str,
     method_name: str = "__call__",
+    init_with_v: bool = False,
+    method_with_v: bool = False,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
@@ -1128,6 +1130,12 @@ def test_method(
         name of the class to test.
     method_name
         name of tthe method to test.
+    init_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the constructor with the variables v passed explicitly.
+    method_with_v
+        if the class being tested is an ivy.Module, then setting this flag as True will
+        call the method with the variables v passed explicitly.
     rtol_
         relative tolerance value.
     atol_
@@ -1249,6 +1257,16 @@ def test_method(
     )
     # run
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+    v_np = None
+    if isinstance(ins, ivy.Module):
+        v = ivy.Container(
+            ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+        )
+        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
+        if init_with_v:
+            ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
+        if method_with_v:
+            kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
@@ -1267,6 +1285,11 @@ def test_method(
         as_variable_flags=as_variable_flags_method,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
+    if isinstance(ins_gt, ivy.Module):
+        v_gt = v_np.map(
+            lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
+        )
+        kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )
@@ -1275,35 +1298,12 @@ def test_method(
     if not test_values:
         return ret, ret_from_gt
     # value test
-    if test_values == "with_v":
-        if "v" in kwargs_np_constructor or "v" in kwargs_np_method:
-            value_test(
-                ret_np_flat=ret_np_flat,
-                ret_np_from_gt_flat=ret_np_from_gt_flat,
-                rtol=rtol_,
-                atol=atol_,
-            )
-        else:
-            if type(ret_np_flat) != list:
-                ret_np_flat = [ret_np_flat]
-            if type(ret_np_from_gt_flat) != list:
-                ret_np_from_gt_flat = [ret_np_from_gt_flat]
-            assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
-                "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
-                "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-                    ret_np_flat, ret_np_from_gt_flat
-                )
-            )
-            ivy.nested_multi_map(
-                assert_same_type_and_shape, (ret_np_flat, ret_np_from_gt_flat)
-            )
-    elif test_values:
-        value_test(
-            ret_np_flat=ret_np_flat,
-            ret_np_from_gt_flat=ret_np_from_gt_flat,
-            rtol=rtol_,
-            atol=atol_,
-        )
+    value_test(
+        ret_np_flat=ret_np_flat,
+        ret_np_from_gt_flat=ret_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+    )
 
 
 def test_function(
@@ -3138,6 +3138,8 @@ def statistical_dtype_values(draw, *, function):
         max_value = 16777216
     elif dtype == "float64":
         max_value = 9.0071993e15
+    elif dtype == "bfloat16":
+        max_value = 9.0071993e15
 
     if function == "prod":
         abs_value_limit = 0.99 * max_value ** (1 / size)
@@ -3173,3 +3175,8 @@ def statistical_dtype_values(draw, *, function):
         return dtype, values, axis, correction
 
     return dtype, values, axis
+
+
+@st.composite
+def seed(draw):
+    return draw(st.integers(min_value=0, max_value=2**8 - 1))

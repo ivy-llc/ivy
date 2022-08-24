@@ -70,10 +70,12 @@ def conv1d_transpose(
         new_w = ivy.deconv_length(
             x.shape[2], strides, filter_shape[0], padding, dilations
         )
-        output_shape = [new_w]
+        output_shape = [x.shape[0], new_w, x.shape[1]]
+    elif len(output_shape) == 1:
+        output_shape = [x.shape[0], output_shape[0], x.shape[1]]
     not_valid_h = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-    pad_w = ivy.handle_padding(output_shape[0], strides, filter_shape[0], padding)
+    pad_w = ivy.handle_padding(output_shape[1], strides, filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0]
     elif padding == "SAME":
@@ -88,7 +90,7 @@ def conv1d_transpose(
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     out_w = _out_shape(x.shape[2], strides, pad_w, dilations, filters.shape[2])
-    output_padding = [max(output_shape[0] - out_w, 0)]
+    output_padding = [max(output_shape[1] - out_w, 0)]
     res = torch.nn.functional.conv_transpose1d(
         x,
         filters,

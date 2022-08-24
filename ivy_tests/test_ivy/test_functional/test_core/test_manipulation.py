@@ -481,6 +481,7 @@ def test_stack(
 
 
 # clip
+@handle_cmd_line_args
 @given(
     x_min_n_max=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
@@ -488,7 +489,6 @@ def test_stack(
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_clip(
     *,
     data,
@@ -548,12 +548,12 @@ def _pad_helper(draw):
 
 
 # constant_pad
+@handle_cmd_line_args
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_constant_pad(
     *,
     data,
