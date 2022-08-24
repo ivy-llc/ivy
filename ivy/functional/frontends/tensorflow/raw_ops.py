@@ -36,3 +36,15 @@ def atan(x, name="atan"):
 
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
+
+
+def sin(x, name="sin"):
+    return ivy.sin(x)
+
+
+def Maximum(*, x, y, name="Maximum"):
+    return ivy.maximum(x, y)
+
+
+def Minimum(*, x, y, name="Minimum"):
+    return ivy.minimum(x, y)
