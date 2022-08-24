@@ -150,17 +150,12 @@ def dtypes_shared(draw, num_dtypes):
         available_dtypes=ivy_np.valid_dtypes, num_arrays=1
     ),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="astype"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_astype(
     dtype_and_x,
     dtype,
+    with_out,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -170,8 +165,8 @@ def test_astype(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
+        with_out=with_out,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
