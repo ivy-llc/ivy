@@ -44,9 +44,5 @@ def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
 
 
-def reshape(input, shape):
-    return ivy.reshape(input, shape)
-
-
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)
