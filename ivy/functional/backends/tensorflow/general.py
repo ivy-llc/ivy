@@ -157,6 +157,7 @@ def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
     *,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumsum(x, axis)
