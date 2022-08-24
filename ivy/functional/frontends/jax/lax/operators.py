@@ -207,12 +207,10 @@ def ne(x, y):
     return ivy.not_equal(x, y)
 
 
-# cosh
 def cosh(x):
     return ivy.cosh(x)
 
 
-# round
 def round(x):
     return ivy.round(x)
 
