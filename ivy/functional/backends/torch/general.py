@@ -148,6 +148,7 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if exclusive:
