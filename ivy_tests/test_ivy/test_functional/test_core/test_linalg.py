@@ -7,6 +7,7 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -1023,17 +1024,27 @@ def test_svd(
     if results is None:
         return
 
-    ret_np_flat, ret_from_np_flat = results
+    # value test based on recreating the original matrix and testing the consistency
+    ret_flat_np, ret_from_gt_flat_np = results
+    U, S, Vh = ret_flat_np
+    m = U.shape[-1]
+    n = Vh.shape[-1]
+    S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+    U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
+    S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
+
+    with ivy.functional.backends.numpy.use:
+        S_mat = S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+        S_mat_gt = (
+            S_gt
+            * ivy.eye(U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]).data
+        )
+    reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+    reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
 
     # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        num_cols = ret_np.shape[-2]
-        for col_idx in range(num_cols):
-            ret_np_col = ret_np[..., col_idx, :]
-            ret_from_np_col = ret_from_np[..., col_idx, :]
-            helpers.assert_all_close(
-                np.abs(ret_np_col), np.abs(ret_from_np_col), rtol=1e-1, atol=1e-1
-            )
+    helpers.assert_all_close(reconstructed, reconstructed_gt)
+    helpers.assert_all_close(reconstructed, np.asarray(x, dtype=dtype))
 
 
 # matrix_norm
