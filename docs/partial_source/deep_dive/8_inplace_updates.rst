@@ -384,3 +384,12 @@ This should have hopefully given you a good feel for inplace updates, and how th
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `inplace updates discussion`_,
 or reach out on `discord`_ in the `inplace updates channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
+    </iframe>
