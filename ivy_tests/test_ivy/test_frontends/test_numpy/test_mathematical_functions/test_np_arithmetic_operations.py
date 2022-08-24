@@ -447,4 +447,3 @@ def test_numpy_trunc(
         test_values=False,
     )
 
-    
