@@ -25,6 +25,7 @@ def sinh(
 
 sinh.unsupported_dtypes = {"torch": ("float16",)}
 
+
 @from_zero_dim_arrays_to_float
 def arcsinh(
     x,
@@ -46,3 +47,4 @@ def arcsinh(
 
 
 arcsinh.unsupported_dtypes = {"torch": ("float16",)}
+
