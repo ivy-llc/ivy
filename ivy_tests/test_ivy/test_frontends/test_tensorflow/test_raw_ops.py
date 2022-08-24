@@ -329,6 +329,38 @@ def test_tensorflow_atan(
     )
 
 
+# BitwiseAnd
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_int_dtypes + ("bool",),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    as_variable=helpers.array_bools(num_arrays=2),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.BitwiseAnd"
+    ),
+    native_array=helpers.array_bools(num_arrays=2),
+)
+def test_tensorflow_BitwiseAnd(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.BitwiseAnd",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
 # atanh
 @handle_cmd_line_args
 @given(
@@ -388,7 +420,7 @@ def test_tensorflow_sin(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-    
+
 # Maximum
 @handle_cmd_line_args
 @given(
@@ -403,7 +435,7 @@ def test_tensorflow_sin(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Maximum"
     ),
-    native_array=helpers.array_bools(num_arrays=2)
+    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_tensorflow_Maximum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -437,7 +469,7 @@ def test_tensorflow_Maximum(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Minimum"
     ),
-    native_array=helpers.array_bools(num_arrays=2)
+    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_tensorflow_Minimum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -455,4 +487,3 @@ def test_tensorflow_Minimum(
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
- 
