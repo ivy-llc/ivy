@@ -166,7 +166,6 @@ def test_tensorflow_slogdet(
     as_variable,
     num_positional_args,
     native_array,
-    instance_method,
     fw,
 ):
     input_dtype, x = dtype_and_x
@@ -176,7 +175,6 @@ def test_tensorflow_slogdet(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        instance_method=instance_method,
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.slogdet",
