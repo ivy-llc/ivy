@@ -203,6 +203,10 @@ def le(x, y):
     return ivy.less_equal(x, y)
 
 
+def ne(x, y):
+    return ivy.not_equal(x, y)
+
+
 # round
 def round(x):
     return ivy.round(x)

@@ -201,3 +201,57 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
 
 
 normalize.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def hard_tanh(x):
+    x = ivy.asarray(x)
+    n1 = -1
+    if "uint" in str(x.dtype):
+        dtype = x.dtype
+        # tensorflow can't use -1 for uint
+        n1 = ivy.asarray((1 << ivy.dtype_bits(dtype)) - 1, dtype=dtype)
+
+    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
+
+
+hard_tanh.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def _celu_result_dtype(x, alpha):
+    x_native = isinstance(x, int) or isinstance(x, float)
+    alpha_native = isinstance(alpha, int) or isinstance(alpha, float)
+    if x_native and alpha_native:
+        return "float64"
+
+    if x_native:
+        return _type_conversion(alpha).dtype
+
+    if alpha_native:
+        return _type_conversion(x).dtype
+
+    dtypes = [str(ivy.dtype(x)), str(ivy.dtype(alpha))]
+
+    if "float64" in dtypes:
+        return "float64"
+    if "float32" in dtypes:
+        return "float32"
+    if "bfloat16" in dtypes:
+        return "bfloat16"
+    if "float16" in dtypes:
+        return "float16"
+    if "int64" in dtypes or "uint64" in dtypes:
+        return "float64"
+
+    if "uint32" in dtypes and any(d in dtypes for d in ["int8", "int16", "int32"]):
+        return "float64"
+
+    return "float32"
+
+
+def celu(x, alpha=1.0):
+    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
+    dtype = _celu_result_dtype(x, alpha)
+    return ivy.asarray(ret, dtype=dtype)
+
+
+celu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
