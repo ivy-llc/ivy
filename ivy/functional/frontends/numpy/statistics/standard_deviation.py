@@ -1,18 +1,18 @@
 import ivy
+from ivy.func_wrapper import from_zero_dim_arrays_to_float
 
+#std
+@from_zero_dim_arrays_to_float
 def std(
     x,
+    /,
+    *,
     axis=None,
     correction=0.0,
     keepdims=False,
-    /,
     out=None,
-    *,
     where=True,
-    casting="same_kind",
-    order="k",
     dtype=None,
-    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))

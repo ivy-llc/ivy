@@ -7,3 +7,5 @@ from . import correlating
 from .correlating import *
 from . import histograms
 from .histograms import *
+from . import standard_deviation
+from .standard_deviation import *
