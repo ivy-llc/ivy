@@ -210,3 +210,7 @@ def ne(x, y):
 # cosh
 def cosh(x):
     return ivy.cosh(x)
+
+
+def lt(x, y):
+    return ivy.less(x, y)
