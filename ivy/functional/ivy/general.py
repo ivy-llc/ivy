@@ -2680,6 +2680,7 @@ def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
