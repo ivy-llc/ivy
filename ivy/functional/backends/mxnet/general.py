@@ -138,6 +138,7 @@ def inplace_increment(
 def cumsum(
     x: mx.nd.NDArray,
     axis: int = 0,
+    dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if ivy.exists(out):

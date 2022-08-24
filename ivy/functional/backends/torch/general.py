@@ -135,7 +135,11 @@ def inplace_increment(
 
 
 def cumsum(
-    x: torch.Tensor, axis: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    axis: int = 0,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.cumsum(x, axis, out=out)
 
