@@ -206,3 +206,15 @@ def le(x, y):
 # round
 def round(x):
     return ivy.round(x)
+
+
+round.unsupported_dtypes = (
+    "uint8",
+    "int8",
+    "uint16",
+    "int16",
+    "uint32",
+    "int32",
+    "uint64",
+    "int64",
+)
