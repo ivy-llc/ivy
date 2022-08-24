@@ -125,7 +125,13 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: False
 
 
-def cumsum(x: JaxArray, axis: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
+def cumsum(
+    x: JaxArray,
+    axis: int = 0,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     return jnp.cumsum(x, axis)
 
 
