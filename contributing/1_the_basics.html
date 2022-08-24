@@ -213,7 +213,7 @@ which act as placeholders for tracking many related sub-tasks in a ToDo list.</p
 <ol class="loweralpha">
 <li><p>Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an
 issue created and (iii) is not mentioned in the comments.</p></li>
-<li><p>Create a new issue with the title being just the name of the task you would like to work on.</p></li>
+<li><p>Create a new issue with the title being just the name of the sub-task you would like to work on.</p></li>
 <li><p>comment on the ToDo list issue with a reference to this issue like so:</p>
 <p><code class="code docutils literal notranslate"><span class="pre">-</span> <span class="pre">[</span> <span class="pre">]</span> <span class="pre">#Issue_number</span></code></p>
 <p>Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
@@ -227,10 +227,12 @@ respond to our requested changes you must re-request a review in order for us to
 <li><p>Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!</p></li>
 </ol>
 <p>In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
-the issue will be closed and the task will be made free for others in the community. Likewise, if we have requested
-changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
-issue will be closed, and the task will be freed for others in the community. Even if you do not make code changes,
-you should request a new code review to flag to us that our attention is again needed to further the discussion.</p>
+a warning message will appear on the issue. If another 7 days pass without any changes, the issue will be closed and
+the task will be made free for others in the community. Likewise, if we have requested changes on your PR, and you
+do not respond and request a new code review within 7 days, then a warning message will appear on the PR. If another
+7 days pass without any changes, then the PR and the associated issue will be closed, and the task will be freed for
+others in the community. Even if you do not make code changes, you should request a new code review to flag to us
+that our attention is again needed to further the discussion.</p>
 <p>The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
 priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
 allocated but then are not acted upon for long periods of time, while preventing others in the community from working
@@ -243,6 +245,9 @@ people, and sometimes there is not as much free time available as initially thou
 Please don’t take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.</p>
 <p>Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
 investigate!</p>
+<p>Finally, we limit the maximum number of <em>open</em> and <em>incomplete</em> sub-task issues at <em>three</em> per person.
+This is to prevent anyone from self-allocating many sub-tasks,
+preventing others in the community from engaging, and then not being able to complete them.</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
 src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video">

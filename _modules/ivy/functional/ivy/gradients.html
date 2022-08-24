@@ -129,9 +129,11 @@
   <h1>Source code for ivy.functional.ivy.gradients</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Collection of gradient Ivy functions.&quot;&quot;&quot;</span>
 
+<span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
@@ -265,10 +267,6 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
 <span class="sd">    deletes the with_grads component from the global list with_grads_stack</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">        No Paramters(Void function)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -654,7 +652,7 @@
     <span class="n">beta2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.999</span><span class="p">,</span>
     <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Compute adam step delta, given the derivatives of some cost c with respect</span>
 <span class="sd">    to weights ws, using ADAM update. `[reference]</span>
 
@@ -780,10 +778,11 @@
     <span class="n">mw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">beta1</span> <span class="o">*</span> <span class="n">mw</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw</span><span class="p">)</span>
     <span class="n">dcdw_sqrd</span> <span class="o">=</span> <span class="n">dcdw</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">beta2</span> <span class="o">*</span> <span class="n">vw</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw_sqrd</span><span class="p">)</span>
+    <span class="n">vw_sqrt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">vw</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
     <span class="n">beta1_pow</span> <span class="o">=</span> <span class="n">beta1</span><span class="o">**</span><span class="n">step</span>
     <span class="n">beta2_pow</span> <span class="o">=</span> <span class="n">beta2</span><span class="o">**</span><span class="n">step</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2_pow</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1_pow</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw_sqrt</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 
 
 <span class="n">adam_step</span><span class="o">.</span><span class="n">out_index</span> <span class="o">=</span> <span class="mi">0</span>
