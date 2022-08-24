@@ -1374,7 +1374,6 @@ def test_jax_lax_cosh(
     )
 
 
-
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
@@ -1409,7 +1408,6 @@ def test_jax_lax_lt(
     )
 
 
-
 # round
 @handle_cmd_line_args
 @given(
@@ -1439,7 +1437,7 @@ def test_jax_lax_round(
     )
 
 
-#cos
+# cos
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
