@@ -551,6 +551,7 @@ def test_jax_nn_hard_tanh(
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         num_arrays=2,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.celu"
@@ -573,6 +574,41 @@ def test_jax_nn_celu(
         fw=fw,
         frontend="jax",
         fn_tree="nn.celu",
+        x=np.asarray(xs[0], dtype=input_dtypes[0]),
+        alpha=np.asarray(xs[1], dtype=input_dtypes[1]),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        large_value_safety_factor=1,
+        small_value_safety_factor=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.nn.elu"
+    ),
+)
+def test_jax_nn_elu(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="nn.elu",
         x=np.asarray(xs[0], dtype=input_dtypes[0]),
         alpha=np.asarray(xs[1], dtype=input_dtypes[1]),
     )

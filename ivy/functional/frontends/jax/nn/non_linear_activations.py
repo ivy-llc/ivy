@@ -38,7 +38,7 @@ def _batch_promotion(*args, default_dtype="float64"):
             continue
         if isinstance(arg, float) or isinstance(arg, int):
             continue
-        promote_types.add(str(arg.dtype))
+        promote_types.add(ivy.dtype(arg))
 
     if "float64" in promote_types:
         return "float64"
@@ -54,6 +54,13 @@ def _batch_promotion(*args, default_dtype="float64"):
 
     if "bfloat16" in promote_types:
         return "bfloat16"
+
+    if "int64" in promote_types or "uint64" in promote_types:
+        return "float64"
+
+    ints = ["int8", "int16", "int32"]
+    if "uint32" in promote_types and any(d in promote_types for d in ints):
+        return "float64"
 
     return default_dtype
 
@@ -217,7 +224,7 @@ def hard_tanh(x):
 hard_tanh.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
-def _celu_result_dtype(x, alpha):
+def _celu_result_dtype(x, alpha, defualt_dtype="float32"):
     x_native = isinstance(x, int) or isinstance(x, float)
     alpha_native = isinstance(alpha, int) or isinstance(alpha, float)
     if x_native and alpha_native:
@@ -245,13 +252,22 @@ def _celu_result_dtype(x, alpha):
     if "uint32" in dtypes and any(d in dtypes for d in ["int8", "int16", "int32"]):
         return "float64"
 
-    return "float32"
+    return defualt_dtype
 
 
 def celu(x, alpha=1.0):
     ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
-    dtype = _celu_result_dtype(x, alpha)
+    dtype = _batch_promotion(x, alpha, default_dtype="float32")
     return ivy.asarray(ret, dtype=dtype)
 
 
 celu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def elu(x, alpha=1.0):
+    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x))
+    dtype = _batch_promotion(x, alpha, default_dtype="float64")
+    return ivy.asarray(ret, dtype=dtype)
+
+
+elu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
