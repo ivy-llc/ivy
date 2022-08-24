@@ -113,7 +113,7 @@ def test_matrix_rank(
         atol=1.0,
         a=np.asarray(x, dtype=input_dtype),
         tol=tolr
-        )
+   )
 
 
 @st.composite
