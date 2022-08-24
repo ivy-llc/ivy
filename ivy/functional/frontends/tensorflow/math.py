@@ -42,9 +42,3 @@ def divide(x, y, name=None):
 
 
 divide.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
-def log_sigmoid(x, name=None):
-    return -ivy.softplus(-x)
-
-log_sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
