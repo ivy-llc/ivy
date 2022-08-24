@@ -166,7 +166,6 @@ def test_tensorflow_slogdet(
     as_variable,
     num_positional_args,
     native_array,
-    container,
     instance_method,
     fw,
 ):
@@ -177,7 +176,6 @@ def test_tensorflow_slogdet(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
         instance_method=instance_method,
         fw=fw,
         frontend="tensorflow",
