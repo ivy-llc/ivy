@@ -681,7 +681,7 @@ def test_tensorflow_reduce_variance(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="reduce_variance",
+        fn_tree="math.reduce_variance",
         input_tensor=np.asarray(x, dtype=input_dtype),
     )
 
