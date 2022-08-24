@@ -201,3 +201,7 @@ def sort(operand, dimension=-1, is_stable=True, num_keys=1):
 
 def le(x, y):
     return ivy.less_equal(x, y)
+
+
+def ne(x, y):
+    return ivy.not_equal(x, y)
