@@ -6,60 +6,14 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy
 
 
-@st.composite
-def statistical_dtype_values(draw, *, function):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-
-    size = draw(st.integers(1, 10))
-
-    if dtype == "float16":
-        max_value = 2048
-    elif dtype == "float32":
-        max_value = 16777216
-    elif dtype == "float64":
-        max_value = 9.0071993e15
-
-    if function == "prod":
-        abs_value_limit = 0.99 * max_value ** (1 / size)
-    elif function in ["var", "std"]:
-        abs_value_limit = 0.99 * (max_value / size) ** 0.5
-    else:
-        abs_value_limit = 0.99 * max_value / size
-
-    values = draw(
-        helpers.list_of_length(
-            x=st.floats(
-                -abs_value_limit,
-                abs_value_limit,
-                allow_subnormal=False,
-                allow_infinity=False,
-            ),
-            length=size,
-        )
-    )
-
-    shape = np.asarray(values, dtype=dtype).shape
-    size = np.asarray(values, dtype=dtype).size
-    axis = draw(helpers.get_axis(shape=shape, allow_none=True))
-    if function == "var" or function == "std":
-        if isinstance(axis, int):
-            correction = draw(st.integers(-shape[axis], shape[axis] - 1)
-                              | st.floats(-shape[axis], shape[axis] - 1))
-            return dtype, values, axis, correction
-
-        correction = draw(st.integers(-size, size - 1)
-                          | st.floats(-size, size - 1))
-        return dtype, values, axis, correction
-
-    return dtype, values, axis
-
-
 # mean
+@handle_cmd_line_args
 @given(
-    dtype_and_x=statistical_dtype_values(function="mean"),
+    dtype_and_x=helpers.statistical_dtype_values(function="mean"),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
@@ -117,4 +71,3 @@ def test_numpy_mean(
         where=where,
         test_values=False,
     )
-    

@@ -1571,6 +1571,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        modulus: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1586,6 +1587,8 @@ class ArrayWithElementwise(abc.ABC):
             divisor input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1616,7 +1619,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1., 4., 2.])
         """
-        return ivy.remainder(self._data, x2, out=out)
+        return ivy.remainder(self._data, x2, modulus=modulus, out=out)
 
     def round(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
