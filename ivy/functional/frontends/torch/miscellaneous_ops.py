@@ -40,5 +40,5 @@ cumsum.unsupported_dtypes = (
 )
 
 
-def repeat_interleave(input, repeats, dim=None):
-    return ivy.repeat(input, repeats, dim=dim)
+def repeat_interleave(input, repeats, dim=None, *, output_size=None):
+    return ivy.repeat(input, repeats, dim=dim, output_size)
