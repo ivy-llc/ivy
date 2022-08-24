@@ -95,7 +95,7 @@ def astype(
 
     >>> x = ivy.array([1, 2])
     >>> y = ivy.zeros_like(x)
-    >>> y = ivy.astype(x, dtype = ivy.float64)
+    >>> y = ivy.astype(x, ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
 
