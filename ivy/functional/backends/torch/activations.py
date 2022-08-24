@@ -9,6 +9,7 @@ import torch
 import torch.nn
 
 # local
+import ivy
 
 
 def relu(x: torch.Tensor, /) -> torch.Tensor:
@@ -47,6 +48,8 @@ gelu.unsupported_dtypes = ("float16",)
 
 
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    if not ivy.is_array(x):
+        x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
 
 
@@ -57,8 +60,7 @@ sigmoid.support_native_out = True
 def softmax(x: torch.Tensor, /, *, axis: Optional[int] = None) -> torch.Tensor:
     if axis is None:
         axis = -1
-    exp_x = torch.exp(x)
-    return exp_x / torch.sum(exp_x, axis, keepdims=True)
+    return torch.nn.functional.softmax(x, axis)
 
 
 softmax.unsupported_dtypes = ("float16",)

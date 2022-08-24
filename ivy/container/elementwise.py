@@ -1834,6 +1834,30 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = ivy.Container.static_bitwise_right_shift(a, b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([5, 5, 16])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+        >>> y = ivy.Container.static_bitwise_right_shift(a, b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([1, 2, 16])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_right_shift",
@@ -1889,6 +1913,17 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
+        >>> y = a.bitwise_right_shift(b)
+        >>> print(y)
+        {
+            a: ivy.array([2, 1, 1]),
+            b: ivy.array([1, 2, 16])
+        }
         """
         return self.static_bitwise_right_shift(
             self,
@@ -5544,6 +5579,7 @@ class ContainerWithElementwise(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        modulus: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -5563,6 +5599,8 @@ class ContainerWithElementwise(ContainerBase):
             input array or container. Must be compatible with ``x1``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5622,6 +5660,7 @@ class ContainerWithElementwise(ContainerBase):
             "remainder",
             x1,
             x2,
+            modulus=modulus,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -5634,6 +5673,7 @@ class ContainerWithElementwise(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        modulus: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -5653,6 +5693,8 @@ class ContainerWithElementwise(ContainerBase):
             input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5711,6 +5753,7 @@ class ContainerWithElementwise(ContainerBase):
         return self.static_remainder(
             self,
             x2,
+            modulus=modulus,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
