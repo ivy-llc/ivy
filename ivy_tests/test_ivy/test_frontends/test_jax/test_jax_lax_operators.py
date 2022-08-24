@@ -1437,8 +1437,9 @@ def test_jax_lax_round(
         fn_tree="lax.round",
         x=np.asarray(x, dtype=input_dtype),
     )
-    
-    
+
+
+#cos
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
