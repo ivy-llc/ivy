@@ -147,9 +147,9 @@ def cumprod(
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = np.cumprod(x, -1, out=out)
+        res = np.cumprod(x, -1, dtype=dtype, out=out)
         return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis, out=out)
+    return np.cumprod(x, axis, dtype=dtype, out=out)
 
 
 cumprod.support_native_out = True

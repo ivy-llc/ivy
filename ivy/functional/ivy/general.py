@@ -2825,7 +2825,7 @@ def cumprod(
                       [15, 42]])
     }
     """
-    return current_backend(x).cumprod(x, axis, exclusive, out=out)
+    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back
