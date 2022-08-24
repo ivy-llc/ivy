@@ -553,6 +553,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -610,6 +611,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
