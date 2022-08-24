@@ -124,14 +124,16 @@ def matrix_rank(
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if x.size == 0:
+   if x.size == 0:
         ret = 0
     elif x.size == 1:
         ret = jnp.count_nonzero(x)
     else:
+        if x.ndim > 2:
+            x = x.reshape([-1])
         ret = jnp.linalg.matrix_rank(x, rtol)
     ret = jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
-    return ret
+    return 
 
 
 def matrix_transpose(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
