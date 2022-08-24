@@ -160,9 +160,7 @@ var.support_native_out = True
 
 
 def einsum(
-    equation: str,
-    *operands: np.ndarray, 
-    out: Optional[np.ndarray] = None
+    equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.einsum(equation, *operands, out=out))
 
