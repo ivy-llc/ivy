@@ -20,9 +20,7 @@ import ivy.functional.backends.torch as ivy_torch
         ),
         allow_inf=False,
         min_num_dims=2,
-        max_num_dims=2,
         min_dim_size=1,
-        max_dim_size=1,
     ),
     dtype_and_target=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -34,9 +32,7 @@ import ivy.functional.backends.torch as ivy_torch
         max_value=1,
         allow_inf=False,
         min_num_dims=2,
-        max_num_dims=2,
         min_dim_size=1,
-        max_dim_size=1,
     ),
     dtype_and_weights=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -46,7 +42,6 @@ import ivy.functional.backends.torch as ivy_torch
         ),
         allow_inf=False,
         min_num_dims=2,
-        max_num_dims=2,
         min_dim_size=1,
         shape=(1,),
     ),
