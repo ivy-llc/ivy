@@ -1,22 +1,20 @@
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # pixel_shuffle
 @given(
-dtype_and_x=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
     available_dtypes=tuple(ivy_torch.valid_float_dtypes, ivy_torch.valid_int_dtypes)),
-as_variable=helpers.array_bools(),
-with_out=True,
-num_positional_args=helpers.num_positional_args(
+    as_variable=helpers.array_bools(),
+    with_out=True,
+    num_positional_args=helpers.num_positional_args(
     fn_name="functional.frontends.torch.pixel_shuffle"),
-native_array=helpers.array_bools(),
+    native_array=helpers.array_bools(),
 )
 def test_torch_pixel_shuffle(
     dtype_and_x,
