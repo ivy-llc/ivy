@@ -66,12 +66,13 @@ def test_torch_allclose(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.equal"
+        fn_name="ivy.functional.frontends.torch.eq"
     ),
 )
-def test_torch_equal(
+def test_torch_eq(
     dtype_and_inputs,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -80,12 +81,13 @@ def test_torch_equal(
     helpers.test_frontend_function(
         input_dtypes=inputs_dtypes,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="equal",
+        fn_tree="eq",
         input=np.asarray(inputs[0], dtype=inputs_dtypes[0]),
         other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
+        out=None,
     )

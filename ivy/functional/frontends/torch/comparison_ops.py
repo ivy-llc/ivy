@@ -37,6 +37,6 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
 allclose.unsupported_dtypes = ("float16",)
 
 
-def equal(input, other):
-    ret = ivy.all(ivy.equal(input, other))
-    return bool(ret)
+def eq(input, other, *, out=None):
+    ret = ivy.equal(input, other, out=out)
+    return ret
