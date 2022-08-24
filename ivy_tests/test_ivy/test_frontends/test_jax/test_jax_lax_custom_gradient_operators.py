@@ -46,7 +46,8 @@ def test_stop_gradient(dtype_and_x, as_variable, num_positional_args, native_arr
         fn_name="ivy.functional.frontends.jax.lax.custom_linear_solve"
     ),
 )
-def test_custom_linear_solve(dtype_and_x, as_variable, num_positional_args, native_array, fw):
+def test_custom_linear_solve(dtype_and_x, as_variable, num_positional_args, 
+                             native_array, fw):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
