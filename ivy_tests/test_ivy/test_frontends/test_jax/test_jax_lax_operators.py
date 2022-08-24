@@ -1239,7 +1239,7 @@ def test_jax_lax_reciprocal(
         fn_tree="lax.reciprocal",
         x=np.asarray(x, dtype=input_dtype),
     )
-    
+
 
 @handle_cmd_line_args
 @given(
