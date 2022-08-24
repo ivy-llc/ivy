@@ -158,9 +158,9 @@ def cumprod(
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = torch.cumprod(x, -1, out=out)
+        res = torch.cumprod(x, -1, dtype=dtype, out=out)
         return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis, out=out)
+    return torch.cumprod(x, axis, dtype=dtype, out=out)
 
 
 cumprod.support_native_out = True
