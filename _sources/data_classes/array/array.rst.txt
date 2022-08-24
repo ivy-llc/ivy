@@ -14,5 +14,4 @@ Array
    :caption: Array
 
    array/Array.rst
-   array/Variable.rst
 
