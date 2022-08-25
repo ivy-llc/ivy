@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Any
+from typing import Optional, Tuple, Union, List, Callable
 
 # local
 from ivy import Container
@@ -89,7 +89,7 @@ class ContainerWithLayers(ContainerBase):
         *,
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray,ivy.Container]:
+    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
             "scaled_dot_product_attention",
             q,
@@ -109,7 +109,7 @@ class ContainerWithLayers(ContainerBase):
         *,
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray,ivy.Container]:
+    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_scaled_dot_product_attention(
             self,
             k,
@@ -393,7 +393,7 @@ class ContainerWithLayers(ContainerBase):
         data_format: str = "NWC",
         dilations: int = 1,
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray,ivy.Container]:
+    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_conv1d_transpose(
             self,
             filters,
@@ -681,8 +681,9 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-    ) -> Union[Container, Container]:
+        recurrent_bias: Optional[Union[ivy.Array, \
+            ivy.NativeArray, ivy.Container]] = None,
+    ) -> Union[ivy.Container, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
             "lstm_update",
             x,
@@ -703,8 +704,9 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-    ) -> Union[Container, Container]:
+        recurrent_bias: Optional[Union[ivy.Array, \
+            ivy.NativeArray, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
         return self.static_lstm_update(
             self,
             init_h,
