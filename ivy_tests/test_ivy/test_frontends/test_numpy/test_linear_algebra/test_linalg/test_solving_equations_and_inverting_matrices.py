@@ -66,7 +66,6 @@ def test_numpy_solve(
     data1, data2 = dtype_and_x
     input_dtype1, x = data1
     input_dtype2, y = data2
-    axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
 
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
@@ -80,3 +79,4 @@ def test_numpy_solve(
         x=np.asarray(x, dtype=input_dtype1),
         y=np.asarray(y, dtype=input_dtype2),
     )
+    
