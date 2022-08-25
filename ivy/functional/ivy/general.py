@@ -2348,14 +2348,6 @@ def print_all_arrays_in_memory():
     Returns
     -------
     None
-
-    Example
-    --------
-    >> x = ivy.array([1., 2., 3., 4.])
-    >> y = ivy.array([8., 7., 6., 5.])
-    >> ivy.print_all_arrays_in_memory()
-    <class 'numpy.ma.core.MaskedArray'> ()
-    <class 'numpy.ma.core.MaskedConstant'> ()
     """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
