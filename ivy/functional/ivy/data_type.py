@@ -923,6 +923,32 @@ def default_float_dtype(
     return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
 
 
+def infer_default_dtype(
+    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
+):
+    """Summary.
+
+    Parameters
+    ----------
+    dtype
+
+    as_native
+        (Default value = False)
+
+    Returns
+    -------
+        Return the default data type for the “kind” (integer or floating-point) of dtype
+
+    """
+    if ivy.is_float_dtype(dtype):
+        default_dtype = ivy.default_float_dtype(as_native=as_native)
+    elif ivy.is_int_dtype(dtype):
+        default_dtype = ivy.default_int_dtype(as_native=as_native)
+    else:
+        default_dtype = ivy.default_uint_dtype(as_native=as_native)
+    return default_dtype
+
+
 # noinspection PyShadowingNames
 def default_dtype(
     *, dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
