@@ -160,7 +160,7 @@ def conv2d_transpose(
         channel = x.shape[-1]
     else:
         x_shape = list(x.shape[2:])
-        channel = x.shap[1]
+        channel = x.shape[1]
     out_h = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
