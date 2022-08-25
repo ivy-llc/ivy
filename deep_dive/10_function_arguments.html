@@ -287,14 +287,10 @@ This is all explained in more detail in the <a class="reference internal" href="
 </section>
 <section id="out-argument">
 <h2>out Argument<a class="headerlink" href="#out-argument" title="Permalink to this heading"></a></h2>
-<p>The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should always be provided as keyword-only arguments.
-Additionally, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should <strong>only</strong> be added to the backend functions if the wrapped backend function
-directly supports supports the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument itself. Otherwise, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should be omitted from
-the backend implementation. The inplace update is automatically handled in the
-wrapper code if no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is detected in the backend signature, which is why we should only add it if the
-wrapped backend function itself supports the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
-which will result in the most efficient inplace update.
-This is all explained in more detail in the <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
+<p>The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should always be provided as a keyword-only argument,
+and it should be added to all functions in the Ivy API and backend API which support
+inplace updates, with a default value of <code class="code docutils literal notranslate"><span class="pre">None</span></code> in all cases.
+The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is explained in more detail in the <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
 </section>
 <section id="dtype-and-device-arguments">
 <h2>dtype and device arguments<a class="headerlink" href="#dtype-and-device-arguments" title="Permalink to this heading"></a></h2>

@@ -286,7 +286,7 @@ meaning that a new <code class="code docutils literal notranslate"><span class="
 <p>Most functions in Ivy support inplace updates via the inclusion of a keyword-only <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
 This enables users to specify the array to which they would like the output of a function to be written.
 This could for example be the input array itself, but can also be any other array of choice.</p>
-<p>All Ivy functions which return a single array should support inplace updates.
+<p>All Ivy functions which return a single array should support inplace updates via the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
 The type hint of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code>.
 However, as discussed above, if the function is <em>nestable</em> then <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is omitted from the type hint in such cases,
