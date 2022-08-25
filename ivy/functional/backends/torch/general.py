@@ -155,7 +155,10 @@ def cumsum(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.cumsum(x, axis, out=out)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    return torch.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True

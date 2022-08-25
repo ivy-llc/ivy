@@ -174,7 +174,12 @@ def cumsum(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumsum(x, axis)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if x.dtype == dtype:
+        return tf.math.cumsum(x, axis)
+    return tf.math.cumsum(tf.cast(x, dtype), axis)
 
 
 def cumprod(
