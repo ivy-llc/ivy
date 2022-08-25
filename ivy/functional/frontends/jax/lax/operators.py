@@ -211,6 +211,9 @@ def cosh(x):
     return ivy.cosh(x)
 
 
+cosh.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def round(x):
     return ivy.round(x)
 

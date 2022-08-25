@@ -368,11 +368,9 @@ def std(
     ivy.array(0.8164966)
 
     """
-    return current_backend(x).std(x,
-                                  axis=axis,
-                                  correction=correction,
-                                  keepdims=keepdims,
-                                  out=out)
+    return current_backend(x).std(
+        x, axis=axis, correction=correction, keepdims=keepdims, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -614,44 +612,10 @@ def var(
         b: ivy.array(0.6666667)
     }
 
-    >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), b=ivy.array([3.0, 4.0, 5.0]))
-    >>> y = ivy.Container.static_var(x)
-    >>> print(y)
-    {
-        a: ivy.array(0.6666667),
-        b: ivy.array(0.6666667)
-    }
-
-    Instance Method Examples
-    ------------------------
-    Using :code:`ivy.Array` instance method:
-    
-    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0],[6.0, 7.0, 8.0]])
-    >>> y = x.var()
-    >>> print(y)
-    ivy.array(6.6666665)
-
-    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0],[6.0, 7.0, 8.0]])
-    >>> y = x.var(axis=0)
-    >>> print(y)
-    ivy.array([6., 6., 6.])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), b=ivy.array([3.0, 4.0, 5.0]))
-    >>> y = x.var()
-    >>> print(y)
-    {
-        a: ivy.array(0.6666667),
-        b: ivy.array(0.6666667)
-    }
-
     """
-    return current_backend(x).var(x,
-                                  axis=axis,
-                                  correction=correction,
-                                  keepdims=keepdims,
-                                  out=out)
+    return current_backend(x).var(
+        x, axis=axis, correction=correction, keepdims=keepdims, out=out
+    )
 
 
 # Extra #
