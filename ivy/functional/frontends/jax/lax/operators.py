@@ -223,3 +223,6 @@ round.unsupported_dtypes = {"torch": ("float16",)}
 
 def lt(x, y):
     return ivy.less(x, y)
+
+def cos(x) -> Any:
+    return ivy.cos(x)
