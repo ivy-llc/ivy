@@ -79,4 +79,4 @@ def test_numpy_solve(
         x=np.asarray(x, dtype=input_dtype1),
         y=np.asarray(y, dtype=input_dtype2),
     )
-    
+ 
