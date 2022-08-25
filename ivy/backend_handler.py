@@ -165,11 +165,12 @@ def set_backend_to_specific_version(backend):
     f = importlib.import_module(f)
     f_version = f.__version__
 
-    for i in list(backend.__dict__):
-        if "_v_" in i:
-            orig_name = fn_name_from_version_specific_fn_name(i, f_version)
+    for key in list(backend.__dict__):
+        if "_v_" in key:
+            orig_name = fn_name_from_version_specific_fn_name(key, f_version)
             if orig_name:
-                backend.__dict__[orig_name] = backend.__dict__[i]
+                backend.__dict__[orig_name] = backend.__dict__[key]
+                backend.__dict__[orig_name].__name__=orig_name
 
 
 def current_backend(*args, **kwargs):
