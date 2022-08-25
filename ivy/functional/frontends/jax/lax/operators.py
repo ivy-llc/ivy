@@ -223,3 +223,10 @@ round.unsupported_dtypes = {"torch": ("float16",)}
 
 def lt(x, y):
     return ivy.less(x, y)
+
+
+def pow(x, y):
+    return ivy.pow(x, y)
+
+
+pow.unsupported_dtypes = ("int64", "int32", "int16", "uint64", "uint32", "uint16")
