@@ -43,6 +43,8 @@ def sin(x, name="sin"):
 def square(x, name="square"):
     return ivy.square(x)
 
+def sqrt(x, name="sqrt"):
+    return ivy.sqrt(x)
 
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
