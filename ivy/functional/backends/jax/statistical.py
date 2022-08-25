@@ -17,7 +17,7 @@ def max(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
@@ -29,7 +29,7 @@ def mean(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.mean(x, axis=axis, keepdims=keepdims)
@@ -41,7 +41,7 @@ def min(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
@@ -54,7 +54,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[jnp.dtype] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
         if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [
@@ -85,7 +85,7 @@ def std(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
@@ -98,7 +98,7 @@ def sum(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: jnp.dtype = None,
     keepdims: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
         if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [
@@ -129,10 +129,21 @@ def var(
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if isinstance(correction, int):
+        return jnp.asarray(
+            jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
+        )
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    return (size / (size - correction)) * jnp.asarray(
+        jnp.var(x, axis=axis, keepdims=keepdims, out=out)
+    )
 
 
 # Extra #
@@ -140,8 +151,6 @@ def var(
 
 
 def einsum(
-    equation: str,
-    *operands: JaxArray,
-    out: Optional[JaxArray] = None
+    equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
