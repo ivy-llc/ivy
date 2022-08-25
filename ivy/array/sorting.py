@@ -51,12 +51,12 @@ class ArrayWithSorting(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([1, 5, 2])
-        >>> y = x.argsort(-1, True, False)
+        >>> y = x.argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         ivy.array([1, 2, 0])
 
         >>> x = ivy.array([9.6, 2.7, 5.2])
-        >>> y = x.argsort(-1, True, False)
+        >>> y = x.argsort(axis=-1, descending=True, stable=False)
         >>> print(y)
         ivy.array([0, 2, 1])
 
@@ -82,12 +82,12 @@ class ArrayWithSorting(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([7, 8, 6])
-        >>> y = x.sort(-1, True, False)
+        >>> y = x.sort(axis=-1, descending=True, stable=False)
         >>> print(y)
         ivy.array([8, 7, 6])
 
         >>> x = ivy.array([8.5, 8.2, 7.6])
-        >>> y = x.sort(-1, True, False)
+        >>> y = x.sort(axis=-1, descending=True, stable=False)
         >>> print(y)
         ivy.array([8.5, 8.2, 7.6])
 

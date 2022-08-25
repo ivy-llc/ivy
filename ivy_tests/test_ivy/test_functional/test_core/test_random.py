@@ -12,6 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # random_uniform
+@handle_cmd_line_args
 @given(
     dtype_and_low=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -25,9 +26,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_random_uniform(
     *,
     dtype_and_low,
@@ -69,6 +68,7 @@ def test_random_uniform(
 
 
 # random_normal
+@handle_cmd_line_args
 @given(
     dtype_and_mean=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -82,9 +82,7 @@ def test_random_uniform(
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_random_normal(
     *,
     dtype_and_mean,
@@ -148,12 +146,11 @@ def _pop_size_num_samples_replace_n_probs(draw):
 
 
 # multinomial
+@handle_cmd_line_args
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
     num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_multinomial(
     *,
     everything,
@@ -195,6 +192,7 @@ def test_multinomial(
 
 
 # randint
+@handle_cmd_line_args
 @given(
     dtype_and_low=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -212,9 +210,7 @@ def test_multinomial(
     ),
     dtype=st.sampled_from(("int8", "int16", "int32", "int64", None)),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_randint(
     *,
     dtype_and_low,
@@ -256,6 +252,7 @@ def test_randint(
 
 
 # seed
+@handle_cmd_line_args
 @given(
     seed_val=helpers.ints(min_value=0, max_value=2147483647),
 )
@@ -265,6 +262,7 @@ def test_seed(seed_val):
 
 
 # shuffle
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
@@ -273,9 +271,7 @@ def test_seed(seed_val):
         min_dim_size=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_shuffle(
     *,
     dtype_and_x,
@@ -304,4 +300,4 @@ def test_shuffle(
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(ivy.sort(u, 0) == ivy.sort(v, 0))
+        assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))

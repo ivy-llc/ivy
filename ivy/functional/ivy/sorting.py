@@ -74,12 +74,12 @@ def argsort(
     ivy.array([1,2,0])
 
     >>> x = ivy.array([[1.5, 3.2], [2.3, 2.3]])
-    >>> ivy.argsort(x, 0, True, False, out=x)
+    >>> ivy.argsort(x, axis=0, descending=True, stable=False, out=x)
     >>> print(x)
     ivy.array([[1, 0], [0, 1]])
 
     >>> x = ivy.array([[[1,3], [3,2]], [[2,4], [2,0]]])
-    >>> y = ivy.argsort(x, 1, False, True)
+    >>> y = ivy.argsort(x, axis=1, descending=False, stable=True)
     >>> print(y)
     ivy.array([[[0, 1], [1, 0]], [[0, 1], [1, 0]]])
 
@@ -149,7 +149,7 @@ def sort(
 
     >>> x = ivy.array([[[8.9,0], [19,5]],\
                       [[6,0.3], [19,0.5]]])
-    >>> y = ivy.sort(x, -1, True, False)
+    >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
     ivy.array([[[ 8.9,  0. ], [19. ,  5. ]],
                [[ 6. ,  0.3], [19. ,  0.5]]])
@@ -157,13 +157,13 @@ def sort(
     With：code:`ivy.NativeArray` inputs:
     
     >>> x = ivy.native_array([1.5, 3.2, 0.7, 2.5])
-    >>> y = ivy.sort(x, -1, True, False)
+    >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
     ivy.array([3.2, 2.5, 1.5, 0.7])
 
     >>> x = ivy.native_array([[[8.9, 0], [19, 5]],\
                               [[6, 0.3], [19, 0.5]]])
-    >>> y = ivy.sort(x, -1, True, False)
+    >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
     ivy.array([[[ 8.9,  0.],[19. ,  5. ]],\
                [[ 6. ,  0.3 ],[19. ,  0.5]]])
@@ -172,7 +172,7 @@ def sort(
 
     >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
                           b=ivy.array([[9, 0.7], [0.4, 0]]))
-    >>> y = ivy.sort(x, -1, True, False)
+    >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
     {
         a: ivy.array([8., 6., 0.5]),
@@ -181,7 +181,7 @@ def sort(
 
     >>> x = ivy.Container(a=ivy.array([3, 0.7, 1]),\
                           b=ivy.array([[4, 0.9], [0.6, 0.2]]))
-    >>> y = ivy.sort(x, -1, True, False)
+    >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
     {
         a: ivy.array([3., 1., 0.7]),
@@ -193,7 +193,7 @@ def sort(
 
     >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
                           b=ivy.native_array([[9, 0.7], [0.4, 0]]))
-    >>> y = ivy.sort(x, -1, True, False)
+    >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
     {
         a: ivy.array([8., 6., 0.5]),
@@ -202,7 +202,7 @@ def sort(
 
     >>> x = ivy.Container(a=ivy.array([3, 0.9, 5]),\
                           b=ivy.native_array([[4, 0.1], [0.4, 0.8]]))
-    >>> y = ivy.sort(x, -1, True, False)
+    >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
     {
         a: ivy.array([5., 3., 0.9]),
