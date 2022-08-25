@@ -38,6 +38,10 @@ def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     return ivy.bitwise_and(x, y)
 
 
+def BitwiseXor(*, x, y, name="BitwiseXor"):
+    return ivy.bitwise_xor(x, y)
+
+
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
