@@ -88,6 +88,13 @@ reduce_logsumexp.unsupported_dtypes = {
 }
 
 
+def logical_and(x, y, name="LogicalAnd"):
+    return ivy.logical_and(x, y)
+
+
+logical_and.supported_dtypes = ("bool",)
+
+
 def argmax(input, axis, output_type, name=None):
     return ivy.argmax(input, axis=axis)
 
@@ -149,10 +156,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 
 reduce_variance.unsupported_dtypes = {
-    "tensorflow": ("uint8", "uint16", "uint32", "uint64", "float16", 
-                   "float32", "float64"),
-    "torch": ("float16", "bfloat16"),
-    "numpy": ("float16", "bfloat16", "float32", "float64")
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
 }
 
 
@@ -174,3 +178,10 @@ def log_sigmoid(x, name=None):
 
 
 log_sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
+    ret = ivy.cumprod(x, axis, exclusive)
+    if reverse:
+        return ivy.flip(ret, axis)
+    return ret

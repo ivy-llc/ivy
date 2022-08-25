@@ -50,3 +50,83 @@ def test_torch_allclose(
         atol=1e-08,
         equal_nan=equal_nan,
     )
+
+
+# equal
+@handle_cmd_line_args
+@given(
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.equal"
+    ),
+)
+def test_torch_equal(
+    dtype_and_inputs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    inputs_dtypes, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=inputs_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="equal",
+        input=np.asarray(inputs[0], dtype=inputs_dtypes[0]),
+        other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
+    )
+
+
+# eq
+@handle_cmd_line_args
+@given(
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.eq"
+    ),
+)
+def test_torch_eq(
+    dtype_and_inputs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    inputs_dtypes, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=inputs_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="eq",
+        input=np.asarray(inputs[0], dtype=inputs_dtypes[0]),
+        other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
+        out=None,
+    )

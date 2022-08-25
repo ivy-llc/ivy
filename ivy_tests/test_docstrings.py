@@ -63,7 +63,7 @@ def test_docstrings(backend):
     currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list
-    to_skip += skip_list_temp + currently_being_worked_on
+    to_skip += skip_list_temp #+ currently_being_worked_on
 
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
