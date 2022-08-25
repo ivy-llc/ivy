@@ -88,6 +88,13 @@ reduce_logsumexp.unsupported_dtypes = {
 }
 
 
+def logical_and(x, y, name="LogicalAnd"):
+    return ivy.logical_and(x, y)
+
+
+logical_and.supported_dtypes = ("bool",)
+
+
 def argmax(input, axis, output_type, name=None):
     return ivy.argmax(input, axis=axis)
 
