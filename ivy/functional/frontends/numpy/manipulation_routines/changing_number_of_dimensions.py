@@ -5,11 +5,7 @@ import ivy
 # squeeze
 def squeeze(
     x,
-    axis,
+    axis=None,
     /,
 ):
-    ret = ivy.squeeze(x, axis)
-    return ret
-
-
-squeeze.unsupported_dtypes = {"torch": ("float16",)}
+    return ivy.squeeze(x, axis)

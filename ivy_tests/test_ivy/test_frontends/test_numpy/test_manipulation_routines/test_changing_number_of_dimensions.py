@@ -32,14 +32,17 @@ def _squeeze_helper(draw):
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.squeeze"
     ),
+    as_variable=helpers.array_bools(),
+    with_out=st.booleans(),
+    native_array=helpers.array_bools(),
 )
 def test_numpy_squeeze(
     dtype_and_x,
     axis,
-    as_variable,
-    with_out,
     num_positional_args,
     native_array,
+    as_variable,
+    with_out,
     fw,
 ):
     input_dtype, x = dtype_and_x
