@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#basic">Basic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -384,6 +385,34 @@ Sometimes Ivy’s API is not ready to have a new function added. In such cases, 
 frontend function should be added as a heavy composition, but a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment
 should be added, explaining that this frontend implementation will be updated as soon as
 <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> is implemented.</p>
+</section>
+<section id="supported-data-types-and-devices">
+<h2>Supported Data Types and Devices<a class="headerlink" href="#supported-data-types-and-devices" title="Permalink to this heading"></a></h2>
+<p>Sometimes, the corresponding function in the original framework might only support a
+subset of data types. For example, <code class="code docutils literal notranslate"><span class="pre">tf.math.logical_and</span></code> only supports inputs of
+type <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>. However, Ivy’s
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L84">implementation</a>
+is as follows, with direct wrapping around <code class="code docutils literal notranslate"><span class="pre">ivy.logical_and</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">logical_and</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LogicalAnd&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="code docutils literal notranslate"><span class="pre">ivy.logical_and</span></code> supports all data types, and so
+<code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and</span></code> can also easily support all
+data types. However, the primary purpose of these frontend functions if for code
+transpilations, and in such cases it would never be useful to support extra data types
+beyond <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>, as the tensorflow code being transpiled would not support this.
+Additionally, the unit tests for all frontend functions use the original framework
+function as the ground truth, and so we can only test
+<code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and</span></code> with boolean inputs anyway.</p>
+<p>For these reasons, all frontend functions which correspond to functions with limited
+data type support in the native framework (which go beyond the data type limitations of
+the framework itself) should be flagged
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88">as such</a>
+in a manner like the following:</p>
+<p>The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
+more devices, we should still flag the frontend function devices to be the same as those
+supported by the function in the native framework.</p>
 <p><strong>Round Up</strong></p>
 <p>This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
 after going through the contents! We have a <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this
