@@ -989,6 +989,8 @@ def test_qr(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
+        min_value=0.1,
+        max_value=10.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="svd"),
     fm=st.booleans(),
@@ -1043,8 +1045,8 @@ def test_svd(
     reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
 
     # value test
-    helpers.assert_all_close(reconstructed, reconstructed_gt)
-    helpers.assert_all_close(reconstructed, np.asarray(x, dtype=dtype))
+    helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
+    helpers.assert_all_close(reconstructed, np.asarray(x, dtype=dtype), atol=1e-04)
 
 
 # matrix_norm
