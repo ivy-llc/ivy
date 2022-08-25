@@ -65,6 +65,41 @@ def _batch_promotion(*args, default_dtype="float64"):
     return default_dtype
 
 
+def _canonicalize_axis(axis, ndim):
+    if not -ndim <= axis < ndim:
+        raise ValueError(f"axis {axis} is out of bounds for array of dimension {ndim}")
+    if axis < 0:
+        axis = axis + ndim
+    return axis
+
+
+def _len(x):
+    shape = ivy.shape(x)
+    if len(shape) == 0:
+        return 0
+    return shape[0]
+
+
+def _reduction_dims(a, axis):
+    ndims = len(ivy.shape(a))
+    if axis is None:
+        return (tuple(range(ndims)),) * 2
+    if not isinstance(axis, (tuple, list)):
+        axis = (axis,)
+    canon_axis = tuple(_canonicalize_axis(ax, ndims) for ax in axis)
+    if len(canon_axis) != len(set(canon_axis)):
+        raise ValueError(f"duplicate value in 'axis': {axis}")
+
+    # TODO: deal with named axis
+
+    canon_pos_axis = tuple(x for x in canon_axis if isinstance(x, int))
+
+    if len(canon_pos_axis) != len(canon_axis):
+        return canon_pos_axis, canon_axis
+    else:
+        return canon_axis, canon_axis
+
+
 def _mean(x, axis=None, keepdims=False, where=None):
     # Mean with support for where
     if where is None:
@@ -240,3 +275,54 @@ def elu(x, alpha=1.0):
 
 
 elu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
+    a = ivy.asarray(a)
+    if b is not None:
+        dtype = _batch_promotion(a, b, default_dtype="float32")
+        a = ivy.astype(a, dtype)
+        b = ivy.asarray(b, dtype=dtype)
+        a = ivy.where(b != 0, a, -ivy.inf)
+
+    out_dtype = _batch_promotion(a, b, default_dtype="float32")
+
+    pos_dims, dims = _reduction_dims(a, axis)
+
+    amax = ivy.max(a, axis=pos_dims, keepdims=keepdims)
+    notinf = ivy.asarray(not ivy.isinf(amax))
+    amax = ivy.stop_gradient(ivy.where(notinf, amax, ivy.zeros_like(amax)))
+    amax_with_dims = amax if keepdims else ivy.expand_dims(amax, axis=pos_dims)
+
+    # fast path for non-negative result
+    if b is None:
+        out = ivy.add(
+            ivy.log(
+                ivy.sum(
+                    ivy.exp(ivy.subtract(a, amax_with_dims)),
+                    axis=dims,
+                    keepdims=keepdims,
+                )
+            ),
+            amax,
+        )
+        sign = ivy.where(ivy.isnan(out), out, 1.0)
+        sign = ivy.where(ivy.isinf(-out), 0.0, sign).astype(out.dtype)
+    else:
+        expsub = ivy.exp(ivy.subtract(a, amax_with_dims))
+        if b is not None:
+            expsub = ivy.multiply(expsub, b)
+        sumexp = ivy.sum(expsub, axis=dims, keepdims=keepdims)
+        sign = ivy.stop_gradient(ivy.sign(sumexp))
+        out = ivy.add(ivy.log(ivy.abs(sumexp)), amax)
+
+    if return_sign:
+        return out, sign
+
+    if b is not None:
+        out = ivy.where(sign < 0, ivy.array(ivy.nan, dtype=out.dtype), out)
+
+    return out.astype(out_dtype)
+
+
+logsumexp.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
