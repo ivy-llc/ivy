@@ -1,0 +1,57 @@
+# global
+import random
+
+import numpy as np
+from hypothesis import given, strategies as st
+
+# local
+import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
+
+@st.composite
+def _dtype_x_axis(draw, **kwargs):
+    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
+    if random.randint(0, 9) % 2 != 0:
+        axis = None
+    return dtype, x, axis
+
+
+# sum
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=_dtype_x_axis(
+        available_dtypes=(ivy_np.valid_float_dtypes), min_num_dims=2, min_dim_size=2
+    ),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.sum"
+    ),
+)
+def test_numpy_sum(
+    dtype_x_axis,
+    keep_dims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="sum",
+        x=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        dtype=None,
+        keepdims=keep_dims,
+        out=None,
+    )
