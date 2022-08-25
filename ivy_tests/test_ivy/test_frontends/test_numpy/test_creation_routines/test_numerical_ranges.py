@@ -147,3 +147,48 @@ def test_numpy_logspace(
         dtype=input_dtypes[0],
         axis=axis,
     )
+
+
+# meshgrid
+@handle_cmd_line_args
+@given(
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        num_arrays=2,
+        min_num_dims=1,
+        min_dim_size=1,
+        shared_dtype=True,
+    ),
+    copy=st.booleans(),
+    sparse=st.booleans(),
+    indexing=st.sampled_from(["xy", "ij"]),
+)
+def test_numpy_meshgrid(
+    dtype_and_arrays,
+    copy,
+    sparse,
+    indexing,
+    fw,
+):
+    input_dtypes, arrays = dtype_and_arrays
+    kw = {}
+    i = 0
+    for x_ in arrays:
+        kw["x{}".format(i)] = np.asarray(x_, dtype=input_dtypes[0])
+        i += 1
+    num_positional_args = len(arrays)
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="meshgrid",
+        **kw,
+        copy=copy,
+        sparse=sparse,
+        indexing=indexing,
+    )
