@@ -471,7 +471,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape, copy=copy)
 
 
 @to_native_arrays_and_back
