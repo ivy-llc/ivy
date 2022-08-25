@@ -70,7 +70,9 @@ def cbrt(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.pow(x, 1.0 / 3.0, out=out)
+    
+    all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0, out=out)
+    ret = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive, out=out) 
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
