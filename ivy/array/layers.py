@@ -10,7 +10,7 @@ import ivy
 
 class ArrayWithLayers(abc.ABC):
     def linear(
-        self: ivy.Container,
+        self: ivy.Array,
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -25,7 +25,7 @@ class ArrayWithLayers(abc.ABC):
         )
 
     def dropout(
-        self: ivy.Container,
+        self: ivy.Array,
         prob: float,
         /,
         *,
@@ -42,7 +42,7 @@ class ArrayWithLayers(abc.ABC):
         )
 
     def scaled_dot_product_attention(
-        self: ivy.Container,
+        self: ivy.Array,
         k: Union[ivy.Array, ivy.NativeArray],
         v: Union[ivy.Array, ivy.NativeArray],
         scale: float,
@@ -50,7 +50,7 @@ class ArrayWithLayers(abc.ABC):
         *,
         mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         return ivy.scaled_dot_product_attention(
             self._data,
             k,
@@ -61,7 +61,7 @@ class ArrayWithLayers(abc.ABC):
         )
 
     def multi_head_attention(
-        self: ivy.Container,
+        self: ivy.Array,
         scale,
         num_heads,
         /,
@@ -74,8 +74,8 @@ class ArrayWithLayers(abc.ABC):
         to_q_v=None,
         to_kv_v=None,
         to_out_v=None,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         return ivy.multi_head_attention(
             self._data,
             scale,
@@ -92,7 +92,7 @@ class ArrayWithLayers(abc.ABC):
         )
 
     def conv1d(
-        self: ivy.Container,
+        self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: int,
         padding: str,
@@ -153,7 +153,7 @@ class ArrayWithLayers(abc.ABC):
         )
 
     def conv1d_transpose(
-        self: ivy.Container,
+        self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: int,
         padding: str,
@@ -162,8 +162,8 @@ class ArrayWithLayers(abc.ABC):
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NWC",
         dilations: int = 1,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         return ivy.conv1d_transpose(
             self._data,
             filters,
@@ -176,7 +176,7 @@ class ArrayWithLayers(abc.ABC):
         )
 
     def depthwise_conv2d(
-        self: ivy.Container,
+        self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
         strides: Union[int, Tuple[int], Tuple[int, int]],
         padding: Union[str, List[int]],
@@ -271,14 +271,14 @@ class ArrayWithLayers(abc.ABC):
             filters,
             strides,
             padding,
-            output_shape = output_shape,
+            output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
             out=out,
         )
 
     def lstm_update(
-        self: ivy.Container,
+        self: ivy.Array,
         init_h: Union[ivy.Array, ivy.NativeArray],
         init_c: Union[ivy.Array, ivy.NativeArray],
         kernel: Union[ivy.Array, ivy.NativeArray],
@@ -287,7 +287,7 @@ class ArrayWithLayers(abc.ABC):
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, ivy,Container, Any]]:
+    ) -> Tuple[ivy.Array,ivy.Array]:
         return ivy.lstm_update(
             self._data,
             init_h,
