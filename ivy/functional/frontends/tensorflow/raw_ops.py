@@ -38,12 +38,32 @@ def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     return ivy.bitwise_and(x, y)
 
 
+def BitwiseXor(*, x, y, name="BitwiseXor"):
+    return ivy.bitwise_xor(x, y)
+
+
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
+def tan(x, name="tan"):
+    return ivy.tan(x)
+
+
+def tanh(x, name="tanh"):
+    return ivy.tanh(x)
+
+
 def sin(x, name="sin"):
     return ivy.sin(x)
+
+
+def square(x, name="square"):
+    return ivy.square(x)
+
+
+def sqrt(x, name="sqrt"):
+    return ivy.sqrt(x)
 
 
 def Maximum(*, x, y, name="Maximum"):
