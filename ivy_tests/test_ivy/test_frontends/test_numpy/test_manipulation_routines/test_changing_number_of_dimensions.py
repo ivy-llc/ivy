@@ -2,7 +2,6 @@ import ivy.functional.backends.numpy as ivy_np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 import numpy as np
 from hypothesis import given
 from hypothesis import strategies as st
@@ -22,7 +21,6 @@ def _squeeze_helper(draw):
     return draw(st.sampled_from(valid_axes))
 
 
-@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -32,27 +30,21 @@ def _squeeze_helper(draw):
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.squeeze"
     ),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_squeeze(
     dtype_and_x,
     axis,
     num_positional_args,
-    native_array,
-    as_variable,
-    with_out,
     fw,
 ):
     input_dtype, x = dtype_and_x
     input_dtype = [input_dtype]
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
+        as_variable_flags=False,
+        with_out=False,
+        native_array_flags=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
         fn_tree="squeeze",
