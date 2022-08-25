@@ -37,6 +37,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
@@ -82,7 +83,11 @@ flip.unsupported_dtypes = (
 
 
 def permute_dims(
-    x: torch.Tensor, /, axes: Tuple[int, ...], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    axes: Tuple[int, ...],
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ret = torch.permute(x, axes)
     return ret
@@ -101,6 +106,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
         newarr = torch.clone(x)
@@ -141,7 +147,6 @@ def squeeze(
     x: torch.Tensor,
     /,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
@@ -228,7 +233,7 @@ def split(
             remainder = num_chunks - num_chunks_int
             if remainder == 0:
                 num_or_size_splits = torch.round(
-                    torch.tensor(dim_size) / torch.tensor(num_or_size_splits), out=out
+                    torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
                 )
             else:
                 num_or_size_splits = tuple(
@@ -237,14 +242,11 @@ def split(
                 )
         else:
             num_or_size_splits = torch.round(
-                torch.tensor(dim_size) / torch.tensor(num_or_size_splits), out=out
+                torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
             )
     elif isinstance(num_or_size_splits, list):
         num_or_size_splits = tuple(num_or_size_splits)
     return list(torch.split(x, num_or_size_splits, axis))
-
-
-split.support_native_out = True
 
 
 def repeat(
@@ -353,6 +355,4 @@ def clip(
 
 
 clip.support_native_out = True
-
-
 clip.unsupported_dtypes = ("float16",)
