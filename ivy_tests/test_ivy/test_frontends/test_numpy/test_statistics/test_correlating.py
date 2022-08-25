@@ -25,6 +25,7 @@ def _dtype_x_axis(draw, **kwargs):
     dtype_x_axis=_dtype_x_axis(
         available_dtypes=(ivy_np.valid_float_dtypes), min_num_dims=2, min_dim_size=2
     ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     keep_dims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sum"
@@ -32,10 +33,12 @@ def _dtype_x_axis(draw, **kwargs):
 )
 def test_numpy_sum(
     dtype_x_axis,
+    dtype,
     keep_dims,
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -43,7 +46,7 @@ def test_numpy_sum(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -51,7 +54,7 @@ def test_numpy_sum(
         fn_tree="sum",
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
-        dtype=None,
+        dtype=dtype,
         keepdims=keep_dims,
         out=None,
     )
