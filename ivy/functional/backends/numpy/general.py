@@ -145,7 +145,9 @@ def cumsum(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.cumsum(x, axis, out=out)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True
