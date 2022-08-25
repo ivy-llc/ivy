@@ -154,12 +154,7 @@ def inplace_increment(
 
 
 def _infer_dtype(x_dtype: tf.DType):
-    if ivy.is_float_dtype(x_dtype):
-        default_dtype = ivy.default_float_dtype(as_native=True)
-    elif ivy.is_int_dtype(x_dtype):
-        default_dtype = ivy.default_int_dtype(as_native=True)
-    else:
-        default_dtype = ivy.default_uint_dtype(as_native=True)
+    default_dtype = ivy.infer_default_dtype(x_dtype)
     if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
         dtype = default_dtype
     else:
