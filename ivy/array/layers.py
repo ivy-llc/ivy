@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Tuple, Union, List, Callable, Any
+from typing import Optional, Tuple, Union, List, Callable
 
 # local
 import ivy
@@ -287,7 +287,7 @@ class ArrayWithLayers(abc.ABC):
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Tuple[ivy.Array,ivy.Array]:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         return ivy.lstm_update(
             self._data,
             init_h,
