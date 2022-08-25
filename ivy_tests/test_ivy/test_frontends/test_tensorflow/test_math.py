@@ -240,8 +240,8 @@ def test_tensorflow_negative(
     )
 
 
-
 # logical_and
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.bool]),
@@ -268,8 +268,9 @@ def test_tensorflow_logical_and(
         frontend="tensorflow",
         fn_tree="math.logical_and",
         x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1])
-        )
+        y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
 
 # log_sigmoid
 @handle_cmd_line_args
@@ -496,5 +497,5 @@ def test_tensorflow_argmax(
         fn_tree="math.argmax",
         input=np.asarray(x, dtype=input_dtype),
         axis=axis,
-        output_type="int64"
+        output_type="int64",
     )
