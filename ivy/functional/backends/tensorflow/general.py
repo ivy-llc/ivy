@@ -153,6 +153,20 @@ def inplace_increment(
     return x
 
 
+def _infer_dtype(x_dtype: tf.DType):
+    if ivy.is_float_dtype(x_dtype):
+        default_dtype = ivy.default_float_dtype(as_native=True)
+    elif ivy.is_int_dtype(x_dtype):
+        default_dtype = ivy.default_int_dtype(as_native=True)
+    else:
+        default_dtype = ivy.default_uint_dtype(as_native=True)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
@@ -172,19 +186,10 @@ def cumprod(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     if x.dtype == dtype:
         return tf.math.cumprod(x, axis, exclusive)
-    elif dtype is None:
-        if ivy.is_float_dtype(x):
-            default_dtype = ivy.default_float_dtype()
-        elif ivy.is_int_dtype(x):
-            default_dtype = ivy.default_int_dtype()
-        else:
-            default_dtype = ivy.default_uint_dtype()
-        if ivy.dtype_bits(x.dtype) < ivy.dtype_bits(default_dtype):
-            dtype = default_dtype
-        else:
-            return tf.math.cumprod(x, axis, exclusive)
     return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
 
 
