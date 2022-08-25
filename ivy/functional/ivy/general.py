@@ -1741,6 +1741,52 @@ def default(
     ret
         x if x exists (is not None), else default.
 
+    Functional Examples
+    ------------------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    default_string
+
+    >>> x = ""
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: ivy.array([1, 2, 3])
+    >>> y = ivy.default(x, ivy.array([4, 5, 6]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True, rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
     """
     with_callable = catch_exceptions or with_callable
     if rev:
@@ -2333,7 +2379,22 @@ def num_arrays_in_memory():
 
 
 def print_all_arrays_in_memory():
-    """Prints all arrays which are currently alive."""
+    """
+    Gets all the native Ivy arrays which are currently alive(in the garbage collector)
+    from get_all_arrays_in_memory() function and prints them to the console.
+    
+    Parameters
+    ----------
+    None
+
+    Output
+    ------
+    Type and shape of all the Ivy native arrays which are currently alive.
+
+    Returns
+    -------
+    None
+    """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
