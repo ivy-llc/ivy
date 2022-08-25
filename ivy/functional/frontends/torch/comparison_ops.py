@@ -49,3 +49,8 @@ def eq(input, other, *, out=None):
 
 def argsort(input, dim=-1, descending=False):
     return ivy.argsort(input, axis=dim, descending=descending)
+
+
+def sort(input, dim=-1, descending=False, stable=False, *, out=None):
+    ret = input
+    return ret.sort(axis=dim, descending=descending, stable=stable, out=out)
