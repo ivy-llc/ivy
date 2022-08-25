@@ -333,7 +333,7 @@ def test_tensorflow_atan(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",),
+        available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -365,7 +365,7 @@ def test_tensorflow_BitwiseAnd(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",),
+        available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
