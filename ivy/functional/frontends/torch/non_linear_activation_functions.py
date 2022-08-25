@@ -34,10 +34,3 @@ def gelu(input, approximate="none"):
 
 
 gelu.unsupported_dtypes = ("float16",)
-
-
-def mish(input, inplace=False):
-    return ivy.mish(input, inplace)
-
-
-mish.unsupported_dtypes = ("float16",)
