@@ -27,3 +27,7 @@ def slogdet(input, name=None):
 
 
 slogdet.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def tensordot(a, b, axes, name=None):
+    return ivy.tensordot(a, b, axes)
