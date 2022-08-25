@@ -1,19 +1,61 @@
 # local
+from typing import Tuple, Union
 import ivy
+
+
+class Initalizer:
+    def create_variables(
+        self, 
+        var_shape: Tuple[int, int], 
+        device: Union[ivy.Device, ivy.NativeDevice], 
+        fan_out: float = None, 
+        fan_in: float = None, 
+        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None
+    ) -> ivy.Variable:
+        """
+        Create internal variables for the layer
+        
+        Parameters
+        ----------
+        var_shape
+            Tuple representing the shape of the desired array. If considering the array as a rectangular matrix, this tuple is represented as '(ROWS, COLUMNS)'.
+        device
+            Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        fan_out
+            The number of nodes in the next layer.
+        fan_in
+            The number of nodes in the previous layer.
+        dtype
+            Desired data type.
+        """
+        return None
 
 
 # Constant #
 # ---------#
 
 
-class Constant:
+class Constant(Initalizer):
     def __init__(self, constant):
+        """
+        Constant initializer, will fill in all values with the value of `constant`.
+
+        Parameters
+        ----------
+        constant
+            Constant value for initialization.
+        """
         self._constant = constant
 
     def create_variables(
-        self, var_shape, device, fan_out=None, fan_in=None, dtype=None
-    ):
-        """Create internal variables for the layer"""
+        self, 
+        var_shape: Tuple[int, int], 
+        device: Union[ivy.Device, ivy.NativeDevice], 
+        fan_out: float = None, 
+        fan_in: float = None, 
+        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None
+    ) -> ivy.Variable:
         return ivy.variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
         )
@@ -21,11 +63,17 @@ class Constant:
 
 class Zeros(Constant):
     def __init__(self):
+        """
+        A constant initalizer that fills with the constant value `0.0`.
+        """
         super().__init__(0.0)
 
 
 class Ones(Constant):
     def __init__(self):
+        """
+        A constant initalizer that fills with the constant value `1.0`.
+        """
         super().__init__(1.0)
 
 
@@ -33,7 +81,7 @@ class Ones(Constant):
 # --------#
 
 
-class Uniform:
+class Uniform(Initalizer):
     def __init__(self, numerator, fan_mode, power, gain):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
@@ -56,7 +104,7 @@ class Uniform:
                 )
             fan = fan_in
         elif self._fan_mode == "fan_out":
-            if fan_in is None:
+            if fan_out is None:
                 raise Exception(
                     "output_channels must be specified for fan_out denominator mode."
                 )
@@ -107,7 +155,7 @@ class Siren(Uniform):
 # ---------#
 
 
-class KaimingNormal:
+class KaimingNormal(Initalizer):
     def __init__(self, mean=0, fan_mode="fan_in"):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
