@@ -125,6 +125,20 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: False
 
 
+def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
+    if ivy.is_float_dtype(x_dtype):
+        default_dtype = ivy.default_float_dtype()
+    elif ivy.is_int_dtype(x_dtype):
+        default_dtype = ivy.default_int_dtype()
+    else:
+        default_dtype = ivy.default_uint_dtype()
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
     x: JaxArray,
     axis: int = 0,
@@ -145,15 +159,8 @@ def cumprod(
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        if ivy.is_float_dtype(x):
-            default_dtype = ivy.default_float_dtype()
-        elif ivy.is_int_dtype(x):
-            default_dtype = ivy.default_int_dtype()
-        else:
-            default_dtype = ivy.default_uint_dtype()
-        if ivy.dtype_bits(x.dtype) < ivy.dtype_bits(default_dtype):
-            dtype = default_dtype
-    if dtype:
+        dtype = _infer_dtype(dtype, x.dtype)
+    if dtype != x.dtype:
         x = x.astype(dtype)
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
