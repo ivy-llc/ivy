@@ -149,7 +149,7 @@ invalid data types for any backend framework.
 
 .. code-block:: python
 
-    # in ivy/functional/frontends/tensorflow/functions.py
+    # in ivy/functional/frontends/tensorflow/math.py
     def add(x, y, name=None):
         return ivy.add(x, y)
 
@@ -165,7 +165,7 @@ also return :code:`ivy.add` for the linking of backend framework.
 
 .. code-block:: python
 
-    # in ivy/functional/frontends/tensorflow/functions.py
+    # in ivy/functional/frontends/tensorflow/math.py
     def tan(x, name=None):
         return ivy.tan(x)
 
@@ -259,7 +259,7 @@ required behaviour. For example, we can reverse the result by calling
 
 .. code-block:: python
 
-    # ivy/functional/frontends/tensorflow/math/general.py
+    # ivy/functional/frontends/tensorflow/math.py
     def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
         ret = ivy.cumprod(x, axis, exclusive)
         if reverse:

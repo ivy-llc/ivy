@@ -268,7 +268,7 @@ arguments just like its <code class="code docutils literal notranslate"><span cl
 specified in the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute to indicate the list of
 invalid data types for any backend framework.</p>
 <p><strong>TensorFlow</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/functions.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
@@ -281,7 +281,7 @@ changes when using <code class="code docutils literal notranslate"><span class="
 <p>There are three arguments according to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/add">tf.add</a> documentation, where we
 have written accordingly as shown above. Just like the previous examples, it will
 also return <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> for the linking of backend framework.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/functions.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
@@ -359,7 +359,7 @@ support this behaviour by default.</p>
 required behaviour. For example, we can reverse the result by calling
 <code class="code docutils literal notranslate"><span class="pre">ivy.flip()</span></code> after running <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
 <p><strong>TensorFlow Frontend</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math/general.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
