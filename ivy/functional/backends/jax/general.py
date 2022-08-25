@@ -126,12 +126,7 @@ inplace_variables_supported = lambda: False
 
 
 def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
-    if ivy.is_float_dtype(x_dtype):
-        default_dtype = ivy.default_float_dtype()
-    elif ivy.is_int_dtype(x_dtype):
-        default_dtype = ivy.default_int_dtype()
-    else:
-        default_dtype = ivy.default_uint_dtype()
+    default_dtype = ivy.infer_default_dtype(x_dtype)
     if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
         dtype = default_dtype
     else:
