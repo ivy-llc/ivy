@@ -25,4 +25,3 @@ def shuffle(x):
 
 def seed(seed=None):
     ivy.seed(seed_value=seed)
-    
