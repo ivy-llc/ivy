@@ -2,7 +2,6 @@
 from typing import Optional, Tuple, Union, List, Callable
 
 # local
-from ivy import Container
 from ivy.container.base import ContainerBase
 import ivy
 
@@ -681,7 +680,7 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        recurrent_bias: Optional[Union[ivy.Array, \
+        recurrent_bias: Optional[Union[ivy.Array,
             ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Container, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
@@ -704,7 +703,7 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        recurrent_bias: Optional[Union[ivy.Array, \
+        recurrent_bias: Optional[Union[ivy.Array,
             ivy.NativeArray, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
         return self.static_lstm_update(
