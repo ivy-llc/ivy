@@ -165,6 +165,10 @@ def ge(x, y):
     return ivy.greater_equal(x, y)
 
 
+def gt(x, y):
+    return ivy.greater(x, y)
+
+
 def reshape(operand, new_sizes, dimensions=None):
     if dimensions:
         operand = ivy.permute_dims(operand, dimensions)
