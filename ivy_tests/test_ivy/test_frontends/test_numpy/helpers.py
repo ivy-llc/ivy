@@ -54,7 +54,7 @@ def handle_where_and_array_bools(
 ):
     where_array = isinstance(where, list)
     if where_array:
-        where = np.asarray(where, dtype=np.bool)
+        where = np.asarray(where, dtype=np.bool_)
         if ivy.exists(input_dtype):
             input_dtype += ["bool"]
         if ivy.exists(as_variable):
