@@ -170,7 +170,7 @@ def set_backend_to_specific_version(backend):
             orig_name = fn_name_from_version_specific_fn_name(key, f_version)
             if orig_name:
                 backend.__dict__[orig_name] = backend.__dict__[key]
-                backend.__dict__[orig_name].__name__=orig_name
+                backend.__dict__[orig_name].__name__ = orig_name
 
 
 def current_backend(*args, **kwargs):
