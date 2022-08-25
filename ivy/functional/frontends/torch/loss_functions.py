@@ -2,9 +2,9 @@
 import ivy
 
 
-def _get_reduction_func(reduction):    
+def _get_reduction_func(reduction):
     if reduction == 'none':
-        ret = lambda x : x
+        ret = lambda x: x
     elif reduction == 'mean':
         ret = ivy.mean
     elif reduction == 'sum':
@@ -28,8 +28,8 @@ def _legacy_get_string(size_average, reduce):
     return ret
 
 
-def _get_reduction(reduction, 
-                   size_average=None, 
+def _get_reduction(reduction,
+                   size_average=None,
                    reduce=None):
     if size_average is not None or reduce is not None:
         return _get_reduction_func(_legacy_get_string(size_average, reduce))
@@ -72,14 +72,14 @@ def _apply_reduction(reduction, size_average, reduce, to_reduce):
 
 
 def cross_entropy(
-    input,
-    target,
-    weight=None,
-    size_average=None,
-    ignore_index=-100,
-    reduce=None,
-    reduction="mean",
-    label_smoothing=0.0,
+        input,
+        target,
+        weight=None,
+        size_average=None,
+        ignore_index=-100,
+        reduce=None,
+        reduction="mean",
+        label_smoothing=0.0,
 ):
     input = ivy.softmax(input)
     ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
@@ -93,16 +93,16 @@ cross_entropy.unsupported_dtypes = ("float16",)
 
 
 def binary_cross_entropy(
-    input, 
-    target, 
-    weight=None, 
-    size_average=None, 
-    reduce=None, 
-    reduction='mean'
+        input,
+        target,
+        weight=None,
+        size_average=None,
+        reduce=None,
+        reduction='mean'
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
-    
+
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result)
@@ -110,3 +110,13 @@ def binary_cross_entropy(
 
 
 binary_cross_entropy.unsupported_dtypes = ('float16', 'float64')
+
+
+def smooth_l1_loss(
+        input,
+        target,
+        reduction="mean",
+        beta=1.0
+):
+    reduction = _get_reduction(reduction)
+    return reduction(ivy.smooth_l1_loss(input, target, beta))

@@ -276,3 +276,44 @@ def sparse_cross_entropy(
 
 sparse_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
 sparse_cross_entropy.supported_dtypes = {"tensorflow": ("uint8", "int32", "int64")}
+
+
+@handle_nestable
+def smooth_l1_loss(
+        true: Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
+        beta: float = 1.0
+) -> ivy.Array:
+    """Computes smooth_l1_loss between predicted and true discrete distributions.
+       smooth_l1_loss creates a criterion that uses a squared term if the absolute element-wise error falls below beta and an L1 term otherwise.
+
+    Parameters
+    ----------
+    true
+        input array containing true labels.
+    pred
+        input array containinf the predicted labels.
+    beta
+        Threshold between L1 loss and L2 loss. The Value must be non-negative.
+    Returns
+    -------
+    ret
+        The smooth_l1_loss between the given distributions.
+
+    Examples
+    -------
+    >>> a = array([0, 0, 1.5, 0])
+    >>> b = array([0.25, 0.25, 0.25, 0.25])
+    >>> print(ivy.smooth_l1_loss(a, b))
+    ivy.array([0.0312, 0.0312, 0.75  , 0.0312])
+
+    >>> c = array([1.1, 0.1, 0.1, 1.1])
+    >>> print(ivy.smooth_l1_loss(a, c, reduction='sum'))
+    ivy.array([0.6  , 0.005, 0.9  , 0.6  ])
+
+    """
+    assert beta >= 0, "the parameter beta must be non-negative."
+    ret = 0.5 * (pred - true) ** 2 / beta
+    ret[abs(pred - true) >= beta] = abs(pred[abs(pred - true) >= beta] - true[abs(pred - true) >= beta]) - 0.5 * beta
+    return ret
+
