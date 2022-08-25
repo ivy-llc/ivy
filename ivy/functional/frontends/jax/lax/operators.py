@@ -2,6 +2,9 @@
 from typing import Any
 import ivy
 
+def svd(x, full_matrices):
+    return ivy.svd(x, full_matrices)
+
 
 def add(x, y):
     return ivy.add(x, y)
