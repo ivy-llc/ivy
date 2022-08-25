@@ -37,9 +37,11 @@ def atan(x, name="atan"):
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
-
 def sin(x, name="sin"):
     return ivy.sin(x)
+
+def square(x, name="square"):
+    return ivy.square(x)
 
 
 def Maximum(*, x, y, name="Maximum"):
