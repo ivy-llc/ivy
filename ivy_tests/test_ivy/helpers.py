@@ -536,7 +536,7 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
 
 
 def assert_all_close(
-    ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
+    ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
     """Matches the ret_np and ret_from_np inputs element-by-element to ensure that
     they are the same.
@@ -545,7 +545,7 @@ def assert_all_close(
     ----------
     ret_np
         Return from the framework to test. Ivy Container or Numpy Array.
-    ret_from_np
+    ret_from_gt_np
         Return from the ground truth framework. Ivy Container or Numpy Array.
     rtol
         Relative Tolerance Value.
@@ -558,21 +558,21 @@ def assert_all_close(
     -------
     None if the test passes, else marks the test as failed.
     """
-    assert ret_np.dtype is ret_from_np.dtype, (
+    assert ret_np.dtype is ret_from_gt_np.dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_np.dtype,
+            ret_from_gt_np.dtype,
             ivy.current_backend_str(),
             ret_np.dtype,
         )
     )
-    if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
-        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
+    if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
+        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     else:
         assert np.allclose(
-            np.nan_to_num(ret_np), np.nan_to_num(ret_from_np), rtol=rtol, atol=atol
-        ), "{} != {}".format(ret_np, ret_from_np)
+            np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
+        ), "{} != {}".format(ret_np, ret_from_gt_np)
 
 
 def assert_same_type_and_shape(values, this_key_chain):
