@@ -1103,6 +1103,8 @@ def test_matrix_norm(
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=3,
+        min_value=0.1,
+        max_value=10.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
 )
