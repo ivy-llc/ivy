@@ -250,5 +250,3 @@ def test_numpy_multiply(
         subok=True,
         test_values=False,
     )
-
-    
