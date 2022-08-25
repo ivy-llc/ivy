@@ -27,3 +27,11 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
 
 
 logspace.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
+    # Todo: add sparse check
+    ret = ivy.meshgrid(*xi, indexing=indexing)
+    if copy:
+        return ivy.copy_array(ret)
+    return ret
