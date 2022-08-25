@@ -107,7 +107,7 @@ the status of each item according to the symbols(emojis) within the LEGEND secti
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
    :width: 420
 
-3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
+1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
 your PR and we will start checking your implementation and marking the items as complete 
 using the checkboxes next to them.
 
@@ -125,8 +125,8 @@ and address your issues.
 **Notes**: 
 
 1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
-2. Please pay attention to the formatting of the checklist generating comment, as it is important.
-3. Do not edit the checklist, if you are facing issues, please add them in a different comment.
+2. The checklist items' statuses should be manually updated by the PR author. It does not automatically run any tests to update them!
+3. Do not edit the checklist text, only the emoji symbols. 😅
 4. Please refrain from using the checkboxes next to checklist items.
 
 
