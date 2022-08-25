@@ -139,7 +139,6 @@ matrix_power.unsupported_dtypes = ("float16",)
 matrix_power.support_native_out = True
 
 
-# noinspection PyPep8Naming
 def matrix_rank(
     x: torch.Tensor,
     rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -155,22 +154,10 @@ def matrix_rank(
 matrix_rank.support_native_out = True
 
 
-def matrix_transpose(x: torch.Tensor) -> torch.Tensor:
-    ret = torch.swapaxes(x, -1, -2)
-    return ret
-
-
-matrix_transpose.unsupported_dtypes = (
-    "float16",
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
+def matrix_transpose(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.swapaxes(x, -1, -2)
 
 
 def outer(
