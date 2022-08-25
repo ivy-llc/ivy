@@ -143,8 +143,11 @@ def cumprod(
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = np.cumprod(x, -1, out=out)
-        return np.swapaxes(res, axis, -1)
+        res = np.cumprod(x, -1)
+        res = np.swapaxes(res, axis, -1)
+        if out is not None:
+            return ivy.inplace_update(out, res)
+        return res
     return np.cumprod(x, axis, out=out)
 
 
