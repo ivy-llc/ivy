@@ -178,3 +178,10 @@ def log_sigmoid(x, name=None):
 
 
 log_sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
+    ret = ivy.cumprod(x, axis, exclusive)
+    if reverse:
+        return ivy.flip(ret, axis)
+    return ret
