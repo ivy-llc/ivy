@@ -681,7 +681,7 @@ class ContainerWithLayers(ContainerBase):
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         recurrent_bias: Optional[Union[ivy.Array,
-            ivy.NativeArray, ivy.Container]] = None,
+                                       ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Container, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
             "lstm_update",
@@ -704,7 +704,7 @@ class ContainerWithLayers(ContainerBase):
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         recurrent_bias: Optional[Union[ivy.Array,
-            ivy.NativeArray, ivy.Container]] = None,
+                                       ivy.NativeArray, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
         return self.static_lstm_update(
             self,
