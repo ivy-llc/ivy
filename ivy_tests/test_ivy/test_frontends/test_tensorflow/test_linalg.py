@@ -176,6 +176,11 @@ def test_tensorflow_solve(
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
         fn_tree="linalg.solve",
         x=np.asarray(x, dtype=input_dtype1),
         y=np.asarray(y, dtype=input_dtype2),
