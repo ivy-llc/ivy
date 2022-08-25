@@ -130,3 +130,48 @@ def test_torch_eq(
         other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
         out=None,
     )
+
+
+# argsort
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.argsort"
+    ),
+    descending=st.booleans(),
+)
+def test_torch_argsort(
+    dtype_input_axis,
+    descending,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="argsort",
+        input=np.asarray(input, dtype=input_dtype),
+        dim=axis,
+        descending=descending,
+    )
