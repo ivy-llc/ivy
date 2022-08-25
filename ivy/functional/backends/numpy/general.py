@@ -125,6 +125,20 @@ def inplace_increment(
     return x
 
 
+def _infer_dtype(x_dtype: np.dtype):
+    if ivy.is_float_dtype(x_dtype):
+        default_dtype = ivy.default_float_dtype()
+    elif ivy.is_int_dtype(x_dtype):
+        default_dtype = ivy.default_int_dtype()
+    else:
+        default_dtype = ivy.default_uint_dtype()
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
@@ -145,16 +159,7 @@ def cumprod(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if ivy.is_float_dtype(x):
-            default_dtype = ivy.default_float_dtype()
-        elif ivy.is_int_dtype(x):
-            default_dtype = ivy.default_int_dtype()
-        else:
-            default_dtype = ivy.default_uint_dtype()
-        if ivy.dtype_bits(x.dtype) < ivy.dtype_bits(default_dtype):
-            dtype = default_dtype
-        else:
-            dtype = x.dtype
+        dtype = _infer_dtype(x.dtype)
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
