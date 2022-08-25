@@ -24,3 +24,10 @@ solve.unsupported_dtypes = ("float16", "bfloat16")
 
 def tensordot(a, b, axes, name=None):
     return ivy.tensordot(a, b, axes)
+
+
+def slogdet(input, name=None):
+    return ivy.slogdet(input)
+
+
+slogdet.unsupported_dtypes = ("float16", "bfloat16")
