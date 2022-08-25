@@ -1,5 +1,6 @@
 from typing import Optional, Tuple
 
+import ivy
 import numpy as np
 
 
@@ -50,7 +51,5 @@ def where(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    dtype = np.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.astype(dtype)
-    x2 = x2.astype(dtype)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.where(condition, x1, x2)
