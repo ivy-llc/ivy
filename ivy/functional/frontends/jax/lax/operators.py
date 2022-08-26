@@ -95,6 +95,13 @@ def atan(x):
 atan.unsupported_dtypes = {"torch": ("float16",)}
 
 
+def cos(x):
+    return ivy.cos(x)
+
+
+cos.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def ceil(x):
     return ivy.ceil(x)
 
@@ -163,6 +170,10 @@ cumsum.unsupported_dtypes = {"torch": ("float16",)}
 
 def ge(x, y):
     return ivy.greater_equal(x, y)
+
+
+def gt(x, y):
+    return ivy.greater(x, y)
 
 
 def reshape(operand, new_sizes, dimensions=None):
