@@ -38,6 +38,14 @@ def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     return ivy.bitwise_and(x, y)
 
 
+def BitwiseOr(*, x, y, name="BitwiseOr"):
+    return ivy.bitwise_or(x, y)
+
+
+def BitwiseXor(*, x, y, name="BitwiseXor"):
+    return ivy.bitwise_xor(x, y)
+
+
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
@@ -52,6 +60,14 @@ def tanh(x, name="tanh"):
 
 def sin(x, name="sin"):
     return ivy.sin(x)
+
+
+def square(x, name="square"):
+    return ivy.square(x)
+
+
+def sqrt(x, name="sqrt"):
+    return ivy.sqrt(x)
 
 
 def Maximum(*, x, y, name="Maximum"):

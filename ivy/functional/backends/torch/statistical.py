@@ -145,10 +145,7 @@ def std(
 ) -> torch.Tensor:
     if axis is not None:
         axis = tuple(axis)
-        return torch.std(x,
-                         dim=axis,
-                         correction=correction,
-                         keepdims=keepdims)
+        return torch.std(x, dim=axis, correction=correction, keepdims=keepdims)
     return torch.std(x)
 
 
@@ -189,13 +186,19 @@ def var(
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis is not None:
-        axis = tuple(axis)
-        return torch.var(x,
-                         dim=axis,
-                         correction=correction,
-                         keepdims=keepdims)
-    return torch.var(x)
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if correction == 0:
+        return torch.var(x, dim=axis, unbiased=False, keepdims=keepdims)
+    elif correction == 1:
+        return torch.var(x, dim=axis, unbiased=True, keepdims=keepdims)
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    return (size / (size - correction)) * torch.var(
+        x, dim=axis, unbiased=False, keepdims=keepdims
+    )
 
 
 # Extra #
