@@ -1469,7 +1469,7 @@ def fourier_encode(
     """
     x_in = x
     dim = x.shape[-1]
-    x = ivy.expand_dims(x, -1)
+    x = ivy.expand_dims(x, axis=-1)
     orig_x = x
     if linear:
         scales = ivy.linspace(1.0, max_freq / 2, num_bands, device=dev(x))
@@ -1500,7 +1500,7 @@ def fourier_encode(
         sin_x = ivy.reshape(sin_x, [-1, num_bands * dim])
         cos_x = ivy.reshape(cos_x, [-1, num_bands * dim])
     if concat:
-        return ivy.concat([orig_x, sin_x, cos_x], -1)
+        return ivy.concat([orig_x, sin_x, cos_x], axis=-1)
     return sin_x, cos_x
 
 
@@ -1741,6 +1741,52 @@ def default(
     ret
         x if x exists (is not None), else default.
 
+    Functional Examples
+    ------------------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    default_string
+
+    >>> x = ""
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: ivy.array([1, 2, 3])
+    >>> y = ivy.default(x, ivy.array([4, 5, 6]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True, rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
     """
     with_callable = catch_exceptions or with_callable
     if rev:
@@ -1880,7 +1926,9 @@ def arg_names(receiver):
     return list(inspect.signature(receiver).parameters.keys())
 
 
-def match_kwargs(kwargs, *receivers, allow_duplicates=False):
+def match_kwargs(
+    kwargs: Dict, *receivers: Iterable[Callable], allow_duplicates: bool = False
+) -> Union[List[Dict], Dict]:
     """Match keyword arguments to either class or function receivers.
 
     Parameters
@@ -1897,6 +1945,20 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     -------
     ret
         Sequence of keyword arguments split as best as possible.
+
+    Examples
+    --------
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
+
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
     split_kwargs = list()
@@ -1959,26 +2021,24 @@ def cache_fn(func: Callable) -> Callable:
 def current_backend_str() -> Union[str, None]:
     """Return framework string
 
-    Parameters
-    ----------
-
     Returns
     -------
     ret
         The framework string.
-    
+
     Examples
     --------
-    Without setting default backend of NumPy
+    Without setting default backend of NumPy:
 
-    >>> print(ivy.current_backend_str)
-    ''
+    >>> print(ivy.current_backend_str())
 
-    With setting default backend as 'torch'
+
+    With setting default backend as 'torch':
 
     >>> ivy.set_backend('torch')
-    >>> print(ivy.current_backend_str)
-    "torch"
+    >>> print(ivy.current_backend_str())
+    torch
+
     """
     fw = current_backend()
     if not backend_stack:
@@ -2113,12 +2173,27 @@ def get_min_denominator() -> float:
 
 
 def set_min_denominator(val: float) -> None:
-    """Set the global minimum denominator used by ivy for numerically stable division.
+    """
+    Set the global minimum denominator used by ivy for numerically stable division.
 
     Parameters
     ----------
     val
-        The new value to set the minimum denominator to.
+        The value to set the global minimum denominator to.
+
+
+    Examples
+    --------
+    >>> x = ivy.get_min_denominator()
+    >>> print(x)
+    1e-12
+
+    To set the minimum denominator to 1e-13
+
+    >>> ivy.set_min_denominator(1e-13)
+    >>> y = ivy.get_min_denominator()
+    >>> print(y)
+    1e-13
 
     """
     ivy._MIN_DENOMINATOR = val
@@ -2304,7 +2379,22 @@ def num_arrays_in_memory():
 
 
 def print_all_arrays_in_memory():
-    """Prints all arrays which are currently alive."""
+    """
+    Gets all the native Ivy arrays which are currently alive(in the garbage collector)
+    from get_all_arrays_in_memory() function and prints them to the console.
+    
+    Parameters
+    ----------
+    None
+
+    Output
+    ------
+    Type and shape of all the Ivy native arrays which are currently alive.
+
+    Returns
+    -------
+    None
+    """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
