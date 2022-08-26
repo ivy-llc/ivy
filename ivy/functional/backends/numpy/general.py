@@ -128,9 +128,21 @@ def inplace_increment(
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
+    *,
+    dtype: np.dtype,
+    device: str,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.cumsum(x, axis, out=out)
+    if reverse:
+        x = np.flip(x, axis=axis)
+    if exclusive:
+        x = np.swapaxes(x, axis, -1)
+        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = np.cumsum(x, -1, dtype=dtype, out=out)
+        return _to_device(np.swapaxes(x, axis, -1), device=device)
+    return _to_device(np.cumsum(x, axis, dtype=dtype, out=out), device=device)
 
 
 cumsum.support_native_out = True

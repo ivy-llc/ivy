@@ -15,6 +15,7 @@ import ivy
 from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
+    infer_dtype,
     infer_device,
     inputs_to_native_arrays,
     to_native_arrays_and_back,
@@ -2676,10 +2677,16 @@ def inplace_increment(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@infer_dtype
+@infer_device
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
@@ -2689,9 +2696,19 @@ def cumsum(
     x
         Input array.
     axis
-        Axis along which the cumulative sum is computed. By default 0.
+        Axis along which the cumulative sum is computed. Default is ``0``.
+    exclusive
+        Whether to perform cumsum exclusively. Default is ``False``.
+    reverse
+        Whether to perform the cumsum from last to first element in the selected
+        axis. Default is False (from first to last element)
+    dtype
+        Output array data type. Default is ``None``.
+    device
+        Device on which to place the created array. Default is ``None``.
     out
-        Optional output array, for writing the result to.
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -2708,19 +2725,20 @@ def cumsum(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 5, 2, 0])
-    >>> y = ivy.cumsum(x)
+    >>> y = ivy.cumsum(x,reverse=False)
     >>> print(y)
     ivy.array([1, 6, 8, 8])
 
-    >>> x = ivy.array([[6, 4, 2], [1, 3, 0]])
+    >>> x = ivy.array([[6, 4, 2],
+                       [1, 3, 0]])
     >>> y = ivy.zeros((2,3), dtype= int)
-    >>> ivy.cumsum(x, axis = 0, out=y)
+    >>> ivy.cumsum(x,axis=0,exclusive=True,reverse=bool,out=y)
     >>> print(y)
     ivy.array([[6, 4, 2],
                [7, 7, 2]])
 
     >>> x = ivy.array([[2, 4, 5], [3, 6, 5], [1, 3, 10]])
-    >>> ivy.cumsum(x, axis= 1, out=x)
+    >>> ivy.cumsum(x,axis=1,reverse=bool,out=x)
     >>> print(x)
     ivy.array([[ 2,  6, 11],
                [ 3,  9, 14],
@@ -2730,7 +2748,7 @@ def cumsum(
 
     >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
                           b=ivy.array([[3, 5, 7]]))
-    >>> y = ivy.cumsum(x)
+    >>> y = ivy.cumsum(x,reverse=bool)
     >>> print(y)
     {
         a: ivy.array([1, 3, 5]),
@@ -2746,7 +2764,7 @@ def cumsum(
     >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
                           b = ivy.zeros((2, 3)), \
                           c = ivy.zeros((3,3)))
-    >>> ivy.cumsum(x, axis=1, out=y)
+    >>> ivy.cumsum(x,axis=1,reverse=bool,out=y)
     >>> print(y)
     {
         a: ivy.array([[1, 4, 8]]),
@@ -2764,7 +2782,7 @@ def cumsum(
                           c=ivy.array([[1, 2], \
                                        [3, 4], \
                                        [6, 4]]))
-    >>> ivy.cumsum(x, axis=0, out=x)
+    >>> ivy.cumsum(x,axis=0,reverse=bool,out=x)
     >>> print(x)
     {
         a: ivy.array([[0],
@@ -2776,7 +2794,8 @@ def cumsum(
                       [10, 10]])
     }
     """
-    return current_backend(x).cumsum(x, axis, out=out)
+    return current_backend(x).cumsum(x, axis, exclusive, reverse,
+                                     dtype=dtype, device=device, out=out)
 
 
 @to_native_arrays_and_back
