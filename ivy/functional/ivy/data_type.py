@@ -942,10 +942,10 @@ def infer_default_dtype(
     """
     if ivy.is_float_dtype(dtype):
         default_dtype = ivy.default_float_dtype(as_native=as_native)
-    elif ivy.is_int_dtype(dtype):
-        default_dtype = ivy.default_int_dtype(as_native=as_native)
-    else:
+    elif ivy.is_uint_dtype(dtype):
         default_dtype = ivy.default_uint_dtype(as_native=as_native)
+    else:
+        default_dtype = ivy.default_int_dtype(as_native=as_native)
     return default_dtype
 
 
