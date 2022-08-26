@@ -177,7 +177,7 @@ def test_torch_argsort(
     )
 
 
-# ge
+# greater_equal
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
