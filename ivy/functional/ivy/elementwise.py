@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_array_to_float,
+    integer_arrays_to_float,
 )
 
 
@@ -179,7 +179,7 @@ def acos(
     return ivy.current_backend(x).acos(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -497,7 +497,7 @@ def asin(
     return ivy.current_backend(x).asin(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -666,7 +666,7 @@ def atan(
     return ivy.current_backend(x).atan(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -843,7 +843,7 @@ def atan2(
     return ivy.current_backend(x1).atan2(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1230,8 +1230,9 @@ def bitwise_right_shift(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the right
-    according to the respective element ``x2_i`` of the input array ``x2``.
+    """
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the 
+    right according to the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
        This operation must be an arithmetic shift (i.e., sign-propagating) and thus
@@ -1242,9 +1243,9 @@ def bitwise_right_shift(
     x1
         first input array. Should have an integer data type.
     x2
-        second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
-        Should have an integer data type. Each element must be greater than or equal to
-        0.
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). 
+        Should have an integer data type. Each element must be greater than or equal
+        to ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1252,16 +1253,96 @@ def bitwise_right_shift(
     Returns
     -------
     ret
-        out (array), an array containing the element-wise results.
-        The returned array must have a data type determined by Type Promotion Rules.
+        an array containing the element-wise results. The returned array must have a 
+        data type determined by :ref:`type-promotion`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
-    >>> lhs = ivy.array([5, 2, 3, 1], dtype=ivy.int64)
-    >>> rhs = ivy.array([1, 3, 2, 1], dtype=ivy.int64)
-    >>> y = ivy.bitwise_right_shift(lhs, rhs)
+    With :code:`ivy.Array` input:
+
+    >>> a = ivy.array([2, 9, 16, 31])
+    >>> b = ivy.array([0, 1, 2, 3])
+    >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
-    ivy.array([2, 0, 0, 0])
+    ivy.array([2, 4, 4, 3])
+
+    >>> a = ivy.array([[32, 40, 55], \
+                       [16, 33, 170]])
+    >>> b = ivy.array([5, 2, 1])
+    >>> y = ivy.zeros((2, 3))
+    >>> ivy.bitwise_right_shift(a, b, out=y)
+    >>> print(y)
+    ivy.array([[ 1., 10., 27.],
+               [ 0.,  8., 85.]])
+
+    >>> a = ivy.array([[10, 64], \
+                       [43, 87], \
+                       [5, 37]])
+    >>> b = ivy.array([1, 3])
+    >>> ivy.bitwise_right_shift(a, b, out=a)
+    >>> print(a)
+    ivy.array([[ 5,  8],
+               [21, 10],
+               [ 2,  4]])
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> a = ivy.native_array([[32, 40, 55], \
+                              [16, 33, 170]])
+    >>> b = ivy.native_array([5, 2, 1])
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    ivy.array([[ 1, 10, 27],
+               [ 0,  8, 85]])
+
+    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> a = ivy.array([[10, 64], \
+                       [43, 87], \
+                       [5, 37]])
+    >>> b = ivy.native_array([1, 3])
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    ivy.array([[ 5,  8],
+               [21, 10],
+               [ 2,  4]])
+
+    With one :code:`ivy.Container` input:
+
+    >>> a = ivy.Container(a = ivy.array([100, 200]), \
+                          b = ivy.array([125, 243]))
+    >>> b = ivy.array([3, 6])
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    {
+        a: ivy.array([12, 3]),
+        b: ivy.array([15, 3])
+    }
+
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> a = ivy.Container(a = ivy.array([10, 25, 42]), \
+                          b = ivy.array([64, 65]), \
+                          c = ivy.array([200, 225, 255]))
+    >>> b = ivy.Container(a = ivy.array([0, 1, 2]), \
+                          b = ivy.array([6]), \
+                          c = ivy.array([4, 5, 6]))
+    >>> y = ivy.bitwise_right_shift(a, b)
+    >>> print(y)
+    {
+        a: ivy.array([10, 12, 10]),
+        b: ivy.array([1, 1]),
+        c: ivy.array([12, 7, 3])
+    }
     """
     return ivy.current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 
@@ -1517,7 +1598,7 @@ def ceil(
 
 
 @to_native_arrays_and_back
-@integer_array_to_float
+@integer_arrays_to_float
 @handle_out_argument
 @handle_nestable
 def cos(
@@ -1590,7 +1671,7 @@ def cos(
     return ivy.current_backend(x).cos(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1844,7 +1925,7 @@ def equal(
     return ivy.current_backend(x1, x2).equal(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1895,7 +1976,7 @@ def exp(
     return ivy.current_backend(x).exp(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2561,7 +2642,7 @@ def multiply(
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2661,7 +2742,7 @@ def isfinite(
     return ivy.current_backend(x).isfinite(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2814,7 +2895,7 @@ def isinf(
     return ivy.current_backend(x).isinf(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3067,7 +3148,7 @@ def less(
     return ivy.current_backend(x1).less(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3110,7 +3191,7 @@ def log(
     return ivy.current_backend(x).log(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3197,7 +3278,7 @@ def log10(
     return ivy.current_backend(x).log10(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3296,7 +3377,7 @@ def log1p(
     return ivy.current_backend(x).log1p(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -4364,11 +4445,40 @@ def pow(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def reciprocal(
+    x: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns a new array with the reciprocal of each element in ``x``.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A new array with the positive value of each element in ``x``.
+    
+    """
+    return ivy.current_backend(x).reciprocal(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def remainder(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    modulus: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the remainder of division for each element ``x1_i`` of the input array
@@ -4429,6 +4539,8 @@ def remainder(
     x2
         divisor input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`).
         Should have a numeric data type.
+    modulus
+        whether to compute the modulus instead of the remainder. Default is True.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -4477,7 +4589,7 @@ def remainder(
         b: ivy.array([0., 2., 1.])
     }
     """
-    return ivy.current_backend(x1, x2).remainder(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).remainder(x1, x2, modulus=modulus, out=out)
 
 
 @to_native_arrays_and_back
@@ -4657,7 +4769,7 @@ def sign(
     return ivy.current_backend(x).sign(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -4747,7 +4859,7 @@ def sin(
     return ivy.current_backend(x).sin(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -4820,7 +4932,7 @@ def sinh(
     return ivy.current_backend(x).sinh(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -5153,7 +5265,7 @@ def tan(
     return ivy.current_backend(x).tan(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

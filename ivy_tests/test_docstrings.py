@@ -60,35 +60,65 @@ def test_docstrings(backend):
 
     # skip list for array and container docstrings
     skip_arr_cont = ["layer_norm"]
-    currently_being_worked_on = ["layer_norm"]
+    # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list
-    to_skip += skip_list_temp + currently_being_worked_on
+    to_skip += skip_list_temp  # + currently_being_worked_on
 
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
             for method_name in dir(v):
-                method = getattr(ivy.Array, method_name)
-                if (
-                    method_name in skip_arr_cont
-                    or helpers.gradient_incompatible_function(fn=method)
-                    or helpers.docstring_examples_run(fn=method, from_array=True)
-                ):
-                    continue
-                success = False
-                failures.append("Array." + method_name)
+                if hasattr(ivy.functional, method_name):
+                    method = getattr(ivy.Array, method_name)
+                    if (
+                        method_name in skip_arr_cont
+                        or helpers.gradient_incompatible_function(
+                            fn=getattr(ivy.functional, method_name)
+                        )
+                        or helpers.docstring_examples_run(fn=method, from_array=True)
+                    ):
+                        continue
+                    success = False
+                    failures.append("Array." + method_name)
+                else:
+                    method = getattr(ivy.Array, method_name)
+                    if (
+                        method_name in skip_arr_cont
+                        or helpers.gradient_incompatible_function(fn=method)
+                        or helpers.docstring_examples_run(fn=method, from_array=True)
+                    ):
+                        continue
+                    success = False
+                    failures.append("Array." + method_name)
 
         elif k == "Container":
             for method_name in dir(v):
-                method = getattr(ivy.Container, method_name)
-                if (
-                    method_name in skip_arr_cont
-                    or helpers.gradient_incompatible_function(fn=method)
-                    or helpers.docstring_examples_run(fn=method, from_container=True)
-                ):
-                    continue
-                success = False
-                failures.append("Container." + method_name)
+                if hasattr(ivy.functional, method_name):
+                    method = getattr(ivy.Container, method_name)
+                    if (
+                        method_name in skip_arr_cont
+                        or helpers.gradient_incompatible_function(
+                            fn=getattr(ivy.functional, method_name)
+                        )
+                        or helpers.docstring_examples_run(
+                            fn=method, from_container=True
+                        )
+                    ):
+                        continue
+                    success = False
+                    failures.append("Container." + method_name)
+                else:
+                    method = getattr(ivy.Container, method_name)
+                    if (
+                        method_name in skip_arr_cont
+                        or helpers.gradient_incompatible_function(fn=method)
+                        or helpers.docstring_examples_run(
+                            fn=method, from_container=True
+                        )
+                    ):
+                        continue
+                    success = False
+                    failures.append("Container." + method_name)
 
         else:
             if (

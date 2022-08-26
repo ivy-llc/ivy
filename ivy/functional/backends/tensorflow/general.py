@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 
 _round = round
 import numpy as np
@@ -26,7 +26,7 @@ def is_native_array(x, exclusive=False):
 def copy_array(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
@@ -57,7 +57,7 @@ def floormod(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
@@ -67,7 +67,9 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
@@ -85,20 +87,27 @@ def inplace_update(
     val: Union[ivy.Array, tf.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_variable(x_native):
-        x_native.assign(val_native)
-        if ivy.is_ivy_array(x):
-            x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_variable(x_native):
+            x_native.assign(val_native)
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+            else:
+                x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            x = ivy.Array(x_native)
-    elif ensure_in_backend:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    elif ivy.is_ivy_array(x):
-        x.data = val_native
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        return x
     else:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    return x
+        return val
 
 
 def inplace_arrays_supported():
@@ -144,13 +153,28 @@ def inplace_increment(
     return x
 
 
+def _infer_dtype(x_dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumsum(x, axis)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if x.dtype == dtype:
+        return tf.math.cumsum(x, axis)
+    return tf.math.cumsum(tf.cast(x, dtype), axis)
 
 
 def cumprod(
@@ -158,9 +182,15 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumprod(x, axis, exclusive)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if x.dtype == dtype:
+        return tf.math.cumprod(x, axis, exclusive)
+    return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
 
 
 # noinspection PyShadowingNames
@@ -171,7 +201,7 @@ def scatter_flat(
     tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     target = tensor
     target_given = ivy.exists(target)
@@ -240,7 +270,7 @@ def scatter_nd(
     tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -333,7 +363,7 @@ def gather(
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     return tf.gather(params, indices, axis=axis, batch_dims=axis)
@@ -343,7 +373,7 @@ def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.gather_nd(params, indices)
 
@@ -353,10 +383,13 @@ def one_hot(
     depth: int,
     *,
     device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.one_hot(indices, depth)
+
+
+one_hot.unsupported_dtypes = ("int8", "int16", "uint16", "uint32", "uint64")
 
 
 def current_backend_str():
@@ -372,7 +405,7 @@ def multiprocessing(context=None):
 def indices_where(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.where(x)
 

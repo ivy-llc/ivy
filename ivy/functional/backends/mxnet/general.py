@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import ivy
 
 _round = round
@@ -73,7 +73,11 @@ def floormod(
 container_types = lambda: []
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(
+    x: mx.nd.NDArray,
+    axis: int,
+    keepdims: bool = False,
+) -> List[mx.nd.NDArray]:
     if x.shape == ():
         return [x]
     num_outputs = x.shape[axis]
@@ -86,13 +90,16 @@ def inplace_update(
     val: Union[ivy.Array, mx.nd.NDArray],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native[:] = val_native
-    if ivy.is_ivy_array(x):
-        x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native[:] = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
     else:
-        x = ivy.Array(x_native)
-    return x
+        return val
 
 
 def inplace_arrays_supported():
@@ -131,6 +138,7 @@ def inplace_increment(
 def cumsum(
     x: mx.nd.NDArray,
     axis: int = 0,
+    dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if ivy.exists(out):
@@ -145,6 +153,7 @@ def cumprod(
     x: mx.nd.NDArray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
@@ -155,7 +164,7 @@ def cumprod(
         new_array_list.append(new_array_list[-1] * array_chunk)
     if ivy.exists(out):
         return ivy.inplace_update(out, mx.nd.concat(*new_array_list, dim=axis))
-    return mx.nd.concat(*new_array_list, dim=axis)
+    return mx.nd.concat(*new_array_list, dim=axis, dtype=dtype)
 
 
 # noinspection PyShadowingNames

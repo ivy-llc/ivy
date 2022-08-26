@@ -71,7 +71,7 @@ def floormod(
     return ret
 
 
-def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))
@@ -89,13 +89,16 @@ def inplace_update(
     val: Union[ivy.Array, torch.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data = val_native
-    if ivy.is_ivy_array(x):
-        x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native.data = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
     else:
-        x = ivy.Array(x_native)
-    return x
+        return val
 
 
 def inplace_arrays_supported():
@@ -131,10 +134,26 @@ def inplace_increment(
     return x
 
 
+def _infer_dtype(x_dtype: torch.dtype):
+    default_dtype = ivy.infer_default_dtype(x_dtype, as_native=True)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
-    x: torch.Tensor, axis: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    axis: int = 0,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.cumsum(x, axis, out=out)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    return torch.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True
@@ -145,14 +164,18 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = torch.cumprod(x, -1, out=out)
+        res = torch.cumprod(x, -1, dtype=dtype, out=out)
         return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis, out=out)
+    return torch.cumprod(x, axis, dtype=dtype, out=out)
 
 
 cumprod.support_native_out = True
