@@ -270,9 +270,13 @@ class ContainerWithLayers(ContainerBase):
         padding: str,
         /,
         *,
+        key_chains=None, 
+        to_apply=True, 
+        prune_unapplied=False, 
+        map_sequences=False,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        out: Optional[ivy.Array] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.conv2d. This method simply
@@ -322,6 +326,10 @@ class ContainerWithLayers(ContainerBase):
             padding=padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains, 
+            to_apply=to_apply, 
+            prune_unapplied=prune_unapplied, 
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -332,9 +340,13 @@ class ContainerWithLayers(ContainerBase):
         padding: str,
         /,
         *,
+        key_chains=None, 
+        to_apply=True, 
+        prune_unapplied=False, 
+        map_sequences=False,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        out: Optional[ivy.Array] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of `ivy.conv2d`. This method simply
@@ -377,5 +389,5 @@ class ContainerWithLayers(ContainerBase):
         }
         """
         return self.static_conv2d(
-            self, filters, strides, padding, data_format, dilations, out=out
+            self, filters, strides, padding, data_format, dilations, key_chains=key_chains, to_apply=to_apply, prune_unapplied=prune_unapplied, map_sequences=map_sequences, out=out
         )
