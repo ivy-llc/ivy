@@ -125,7 +125,27 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: False
 
 
-def cumsum(x: JaxArray, axis: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
+def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
+def cumsum(
+    x: JaxArray,
+    axis: int = 0,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(dtype, x.dtype)
+    if dtype != x.dtype:
+        x = x.astype(dtype)
     return jnp.cumsum(x, axis)
 
 
@@ -134,8 +154,14 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(dtype, x.dtype)
+    if dtype != x.dtype:
+        x = x.astype(dtype)
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
