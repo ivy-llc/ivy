@@ -191,10 +191,10 @@ def test_torch_argsort(
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.ge"
+        fn_name="ivy.functional.frontends.torch.greater_equal"
     ),
 )
-def test_torch_ge(
+def test_torch_greater_equal(
     dtype_and_inputs,
     as_variable,
     with_out,
@@ -211,7 +211,7 @@ def test_torch_ge(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="ge",
+        fn_tree="greater_equal",
         input=np.asarray(inputs[0], dtype=input_dtype[0]),
         other=np.asarray(inputs[1], dtype=input_dtype[1]),
         out=None,
