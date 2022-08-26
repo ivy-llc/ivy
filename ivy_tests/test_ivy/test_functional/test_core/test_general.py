@@ -513,11 +513,11 @@ def test_unstack(*, x_n_axis, dtype, tensor_fn, device):
         expected_shape = list(x.shape)
         expected_shape.pop(axis_val)
     assert ret[0].shape == tuple(expected_shape)
+    ret = ivy.unstack(x, axis)
+    ret_from_np = ivy.functional.backends.numpy.unstack(ivy.to_numpy(x), axis)
     # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.unstack(x, axis)),
-        np.asarray(ivy.functional.backends.numpy.unstack(ivy.to_numpy(x), axis)),
-    )
+    for ret_i, ret_from_np_i in zip(ret, ret_from_np):
+        assert np.allclose(ivy.to_numpy(ret_i), ret_from_np_i)
 
 
 # fourier_encode
