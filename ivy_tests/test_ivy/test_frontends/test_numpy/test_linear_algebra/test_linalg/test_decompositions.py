@@ -48,6 +48,7 @@ def test_numpy_cholesky(
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.cholesky",
+        rtol=1e-02,
         a=np.array(x, dtype=dtype),
     )
 
@@ -61,6 +62,8 @@ def test_numpy_cholesky(
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
+        min_value=2,
+        max_value=5,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.qr"
@@ -85,6 +88,7 @@ def test_numpy_qr(
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.qr",
+        rtol=1e-02,
         a=np.array(x, dtype=dtype),
         mode=mode,
     )
