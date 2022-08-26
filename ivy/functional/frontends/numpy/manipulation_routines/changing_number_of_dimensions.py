@@ -4,8 +4,7 @@ import ivy
 
 # squeeze
 def squeeze(
-    x,
+    a,
     axis=None,
-    /,
 ):
-    return ivy.squeeze(x, axis)
+    return ivy.squeeze(a, axis)
