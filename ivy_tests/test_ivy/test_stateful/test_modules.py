@@ -24,7 +24,7 @@ class TrainableModule(ivy.Module):
         ivy.Module.__init__(self, device, v=v, with_partial_v=with_partial_v)
 
     def _forward(self, x):
-        x = ivy.expand_dims(x, 0)
+        x = ivy.expand_dims(x, axis=0)
         x = ivy.tanh(self._linear0(x))
         x = ivy.tanh(self._linear1(x))
         return ivy.tanh(self._linear2(x))[0]

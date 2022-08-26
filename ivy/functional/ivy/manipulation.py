@@ -209,7 +209,7 @@ def expand_dims(
                       [5.]])
     }
     """
-    return current_backend(x).expand_dims(x, axis, out=out)
+    return current_backend(x).expand_dims(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -471,7 +471,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
