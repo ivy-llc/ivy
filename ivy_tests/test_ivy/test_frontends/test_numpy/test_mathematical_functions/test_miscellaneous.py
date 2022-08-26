@@ -115,7 +115,7 @@ def test_numpy_cbrt(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sqrt"
     ),
-    native_array=helpers.array_bools(),
+    native_array=st.booleans(),
 )
 def test_numpy_sqrt(
     dtype_and_x,
@@ -143,14 +143,14 @@ def test_numpy_sqrt(
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=True,
+        subok=False,
         test_values=False,
     )
 
 
 # square
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, num_arrays=1),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=st.booleans(),
@@ -172,7 +172,7 @@ def test_numpy_square(
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -180,19 +180,19 @@ def test_numpy_square(
         fw=fw,
         frontend="numpy",
         fn_tree="square",
-        x=np.asarray([x, 0], dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=True,
-        test_values=False,
+        subok=False,
+        test_values=True,
     )
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, num_arrays=1),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=st.booleans(),
@@ -228,13 +228,13 @@ def test_numpy_absolute(
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=True,
+        subok=False,
         test_values=False,
     )
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, num_arrays=1),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=st.booleans(),
@@ -242,7 +242,7 @@ def test_numpy_absolute(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.fabs"
     ),
-    native_array=helpers.array_bools(),
+    native_array=st.booleans(),
 )
 def test_numpy_fabs(
     dtype_and_x,
@@ -270,6 +270,6 @@ def test_numpy_fabs(
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=True,
+        subok=False,
         test_values=False,
     )

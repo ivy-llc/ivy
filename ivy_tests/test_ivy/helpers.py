@@ -1784,6 +1784,8 @@ def test_frontend_function(
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
+    print("ret", ret)
+
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtypes))
 
@@ -1835,13 +1837,25 @@ def test_frontend_function(
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
 
+        print("args_frontend", args_frontend)
+        print("kwargs_frontend", kwargs_frontend)
+        print("frontend_ret gt", frontend_ret, type(frontend_ret))
+        
+        if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
+            frontend_ret = np.asarray([frontend_ret])
+        
+        print("frontend_ret gt after fix", frontend_ret, type(frontend_ret))
+
         # tuplify the frontend return
         if not isinstance(frontend_ret, tuple):
             frontend_ret = (frontend_ret,)
 
+        print("frontend_ret gt post tuple", frontend_ret)
         # flatten the frontend return and convert to NumPy arrays
         frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
+        print("frontend_ret_idxs", frontend_ret_idxs)
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        print("frontend_ret_flat", frontend_ret_flat)
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
         ivy.unset_backend()
@@ -1862,6 +1876,7 @@ def test_frontend_function(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
+        ground_truth_backend=frontend
     )
 
 

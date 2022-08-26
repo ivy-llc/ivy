@@ -28,8 +28,8 @@ def clip(a,
 
     ret = ivy.minimum(a_max, ivy.maximum(a, a_min), out=out)
         
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    if where is not None:
+        ret = ivy.where(ivy.broadcast_to(where, a.shape), ret, ivy.default(ivy.default(out, a), ivy.zeros_like(ret)), out=out)
     
     ret = ivy.astype(ivy.array(ret), ivy.as_ivy_dtype(dtype), out=out)
 
@@ -49,11 +49,10 @@ def sqrt(
     dtype=None,
     subok=True,
 ):
+    x = ivy.array(x)
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.sqrt(x, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    ret = ivy.where(ivy.broadcast_to(where, x.shape), ivy.sqrt(x), ivy.default(out, x), out=out)
     return ret
 
 
@@ -70,12 +69,10 @@ def cbrt(
     subok=True,
 ):
     if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    
-    all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0, out=out)
-    ret = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive, out=out) 
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+        x =  ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
+    correct_signs = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive) 
+    ret = ivy.where(ivy.broadcast_to(where, x.shape), correct_signs, ivy.default(out, x), out=out)
     return ret
 
 
@@ -92,9 +89,7 @@ def square(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.square(x, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    ret = ivy.where(ivy.broadcast_to(where, x.shape), ivy.square(x), ivy.default(out, x), out=out)
     return ret
 
 
@@ -111,9 +106,7 @@ def absolute(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.abs(x, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    ret = ivy.where(ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out)
     return ret
 
 
@@ -130,9 +123,7 @@ def fabs(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.abs(x, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    ret = ivy.where(ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out)
     return ret
 
 
@@ -150,8 +141,8 @@ def sign(
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.sign(x, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    if where is not None:
+        ret = ivy.where(ivy.broadcast_to(where, x.shape), ret, ivy.default(ivy.default(out, x), ivy.zeros_like(ret)), out=out)
     return ret
 
 
@@ -172,8 +163,8 @@ def heaviside(
     if type(x2) != ivy.Array:
         x2 = x1.full_like(x2)
     ret = ivy.where(ivy.equal(x, x1.full_like(0.0)), x2, x1.full_like(0.0), out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    if where is not None:
+        ret = ivy.where(ivy.broadcast_to(where, x.shape), ret, ivy.default(ivy.default(out, x), ivy.zeros_like(ret)), out=out)
     return ret
 
 
