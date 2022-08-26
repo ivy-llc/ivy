@@ -303,13 +303,10 @@ form our own strategies for describing data by composing Hypothesis’ built-in 
 <h3>Integration of Strategies into Ivy Tests<a class="headerlink" href="#integration-of-strategies-into-ivy-tests" title="Permalink to this heading"></a></h3>
 <p>Once a strategy is initialised the <strong>given</strong> decorator is added to the test function for drawing values from the strategy
 and passing them as inputs to the test. For example, in this code snippet here -:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@given</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
 <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">),</span>
-<span class="n">as_variable</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span>
-<span class="n">native_array</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
 <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-<span class="n">container</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span>
-<span class="n">instance_method</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
 <span class="n">alpha</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_leaky_relu</span><span class="p">(</span>
@@ -342,7 +339,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
                     <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,)</span>
 </pre></div>
 </div>
-<p>In the test above, all parameters being exhaustively drawn inside the given block from hypothesis either
+<p>In the test above, all parameters being exhaustively drawn inside the decorator <code class="code docutils literal notranslate"><span class="pre">&#64;handle_cmd_line_args</span></code> and <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> from hypothesis either
 <strong>directly</strong> (<em>native_array, num_positional, instance_methods, alpha</em>) or <strong>indirectly</strong> (<em>dtype_and_x, as_variable, container</em>)
 with the <em>helper</em> functions.</p>
 <p><strong>Note</strong> - It is advisable to specify the parameters of given as keyword arguments, so that there’s a correspondence
