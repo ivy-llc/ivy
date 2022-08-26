@@ -14,7 +14,6 @@ def main():
     interns_assigned_volunteers = import_file("assets/volunteer_go_to_intern.json")
     intern_points_of_contact = import_file("assets/intern_poc.json")
     intern_assign_rates = import_file("assets/intern_assign_rate.json")
-    
     interns_pocs = intern_points_of_contact.keys()
     interns = intern_points_of_contact.values()
 

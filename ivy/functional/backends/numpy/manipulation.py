@@ -219,7 +219,7 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.asarray(np.clip(x, x_min, x_max, out=out))
+    ret = np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
     return ret
 
 
