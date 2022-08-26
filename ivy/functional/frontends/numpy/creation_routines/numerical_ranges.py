@@ -83,7 +83,10 @@ class nd_grid:
         current_arr = total_arr
         while current_arr != 0:
             arr = self._shape_array(self.grids[current_arr - 1], current_arr, total_arr)
-            self.grids[current_arr - 1] = arr[0]
+            if self.sparse:
+                self.grids[current_arr - 1] = arr
+            else:
+                self.grids[current_arr - 1] = arr[0]
             current_arr -= 1
 
     def _init_array(self, array, current, total):
@@ -93,6 +96,12 @@ class nd_grid:
         return ivy.repeat(array, rep, axis=0)
 
     def _shape_array(self, array, current, total):
+        # ogrid
+        if self.sparse:
+            new_shape = [1] * total
+            new_shape[current - 1] = self.shapes[current - 1]
+            return ivy.reshape(array, new_shape)
+        # mgrid
         if current != total:
             array = self._init_array(array, current, total)
         while current != 1:
@@ -109,6 +118,16 @@ class nd_grid:
             if ivy.is_float_dtype(grid):
                 is_float = True
                 break
+        # ogrid
+        if self.sparse:
+            for i in range(0, len(self.grids)):
+                self.grids[i] = (
+                    ivy.native_array(self.grids[i], dtype="float64")
+                    if is_float
+                    else ivy.native_array(self.grids[i], dtype="int64")
+                )
+            return self.grids
+        # mgrid
         return (
             ivy.native_array(self.grids, dtype="float64")
             if is_float
