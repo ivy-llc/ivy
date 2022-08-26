@@ -17,6 +17,10 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Union[ivy.Array, ivy.NativeArray] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -24,6 +28,10 @@ class ContainerWithLayers(ContainerBase):
             x,
             weight,
             bias=bias,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -33,12 +41,20 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Union[ivy.Array, ivy.NativeArray] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_linear(
             self,
             weight,
             bias=bias,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -50,6 +66,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -58,6 +78,10 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -68,6 +92,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         scale: bool = True,
         dtype: ivy.Dtype = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_dropout(
@@ -75,6 +103,10 @@ class ContainerWithLayers(ContainerBase):
             prob,
             scale=scale,
             dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -87,6 +119,10 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
@@ -96,6 +132,10 @@ class ContainerWithLayers(ContainerBase):
             v,
             scale,
             mask=mask,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -107,6 +147,10 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_scaled_dot_product_attention(
@@ -115,6 +159,10 @@ class ContainerWithLayers(ContainerBase):
             v,
             scale,
             mask=mask,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -133,6 +181,10 @@ class ContainerWithLayers(ContainerBase):
         to_q_v=None,
         to_kv_v=None,
         to_out_v=None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
@@ -148,6 +200,10 @@ class ContainerWithLayers(ContainerBase):
             to_q_v=to_q_v,
             to_kv_v=to_kv_v,
             to_out_v=to_out_v,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -165,6 +221,10 @@ class ContainerWithLayers(ContainerBase):
         to_q_v=None,
         to_kv_v=None,
         to_out_v=None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_multi_head_attention(
@@ -179,6 +239,10 @@ class ContainerWithLayers(ContainerBase):
             to_q_v=to_q_v,
             to_kv_v=to_kv_v,
             to_out_v=to_out_v,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -192,6 +256,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NWC",
         dilations: int = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -245,6 +313,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -257,6 +329,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NWC",
         dilations: int = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -309,6 +385,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -322,6 +402,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -332,6 +416,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -344,6 +432,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_conv1d(
@@ -353,6 +445,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -367,6 +463,10 @@ class ContainerWithLayers(ContainerBase):
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NWC",
         dilations: int = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
@@ -378,6 +478,10 @@ class ContainerWithLayers(ContainerBase):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -391,6 +495,10 @@ class ContainerWithLayers(ContainerBase):
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NWC",
         dilations: int = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_conv1d_transpose(
@@ -401,6 +509,10 @@ class ContainerWithLayers(ContainerBase):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -415,6 +527,10 @@ class ContainerWithLayers(ContainerBase):
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NHWC",
         dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
@@ -426,6 +542,10 @@ class ContainerWithLayers(ContainerBase):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -439,6 +559,10 @@ class ContainerWithLayers(ContainerBase):
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NHWC",
         dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_conv2d_transpose(
@@ -449,6 +573,10 @@ class ContainerWithLayers(ContainerBase):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -462,6 +590,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -515,6 +647,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -527,6 +663,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -575,6 +715,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -588,6 +732,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NDHWC",
         dilations: int = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -598,6 +746,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -610,6 +762,10 @@ class ContainerWithLayers(ContainerBase):
         *,
         data_format: str = "NDHWC",
         dilations: int = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_conv3d(
@@ -619,6 +775,10 @@ class ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -633,6 +793,10 @@ class ContainerWithLayers(ContainerBase):
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NDHWC",
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -644,6 +808,10 @@ class ContainerWithLayers(ContainerBase):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -657,6 +825,10 @@ class ContainerWithLayers(ContainerBase):
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NDHWC",
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_conv3d_transpose(
@@ -667,6 +839,10 @@ class ContainerWithLayers(ContainerBase):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -682,7 +858,11 @@ class ContainerWithLayers(ContainerBase):
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         recurrent_bias: Optional[Union[ivy.Array,
                                        ivy.NativeArray, ivy.Container]] = None,
-    ) -> Union[ivy.Container, ivy.Container]:
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Tuple[ivy.Container, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
             "lstm_update",
             x,
@@ -692,6 +872,10 @@ class ContainerWithLayers(ContainerBase):
             recurrent_kernel,
             bias=bias,
             recurrent_bias=recurrent_bias,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     def lstm_update(
@@ -705,6 +889,10 @@ class ContainerWithLayers(ContainerBase):
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         recurrent_bias: Optional[Union[ivy.Array,
                                        ivy.NativeArray, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
         return self.static_lstm_update(
             self,
@@ -714,4 +902,8 @@ class ContainerWithLayers(ContainerBase):
             recurrent_kernel,
             bias=bias,
             recurrent_bias=recurrent_bias,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
