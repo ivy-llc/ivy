@@ -2,6 +2,9 @@
 # global
 import ivy
 
+#local
+from collections import namedtuple
+
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
     ret = ivy.less_equal(
@@ -56,4 +59,6 @@ def sort(input, dim=-1, descending=False, stable=False, out=None):
 
     indices = ivy.argsort(input, axis=dim, descending=descending)
 
-    return [values, indices]  # should be a namedtuple?
+    ret = namedtuple('sort', ['values', 'indices'])(values, indices)
+
+    return ret
