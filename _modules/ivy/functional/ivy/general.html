@@ -2511,7 +2511,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets all the native Ivy arrays which are currently alive(in the garbage collector)</span>
 <span class="sd">    from get_all_arrays_in_memory() function and prints them to the console.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    None</span>
@@ -2870,6 +2870,7 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns the cumulative sum of the elements along a given axis.</span>
@@ -2880,6 +2881,21 @@
 <span class="sd">        Input array.</span>
 <span class="sd">    axis</span>
 <span class="sd">        int, Axis along which the cumulative sum is computed. By default 0.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array. If None,</span>
+<span class="sd">        if the default data type corresponding to the data type “kind” (integer or</span>
+<span class="sd">        floating-point) of x has a smaller range of values than the data type of x</span>
+<span class="sd">        (e.g., x has data type int64 and the default data type is int32, or x has data</span>
+<span class="sd">        type uint64 and the default data type is int64), the returned array must have</span>
+<span class="sd">        the same data type as x. if x has a floating-point data type, the returned array</span>
+<span class="sd">        must have the default floating-point data type. if x has a signed integer data</span>
+<span class="sd">        type (e.g., int16), the returned array must have the default integer data type.</span>
+<span class="sd">        if x has an unsigned integer data type (e.g., uint16), the returned array must</span>
+<span class="sd">        have an unsigned integer data type having the same number of bits as the default</span>
+<span class="sd">        integer data type (e.g., if the default integer data type is int32, the returned</span>
+<span class="sd">        array must have a uint32 data type). If the data type (either specified or</span>
+<span class="sd">        resolved) differs from the data type of x, the input array should be cast to the</span>
+<span class="sd">        specified data type before computing the product. Default: None.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
 
@@ -2900,6 +2916,7 @@
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns the cumulative product of the elements along a given axis.</span>
@@ -2912,6 +2929,21 @@
 <span class="sd">        int , axis along which the cumulative product is computed. By default 0.</span>
 <span class="sd">    exclusive</span>
 <span class="sd">        optional bool, Whether to perform the cumprod exclusively. Defaults is False.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array. If None,</span>
+<span class="sd">        if the default data type corresponding to the data type “kind” (integer or</span>
+<span class="sd">        floating-point) of x has a smaller range of values than the data type of x</span>
+<span class="sd">        (e.g., x has data type int64 and the default data type is int32, or x has data</span>
+<span class="sd">        type uint64 and the default data type is int64), the returned array must have</span>
+<span class="sd">        the same data type as x. if x has a floating-point data type, the returned array</span>
+<span class="sd">        must have the default floating-point data type. if x has a signed integer data</span>
+<span class="sd">        type (e.g., int16), the returned array must have the default integer data type.</span>
+<span class="sd">        if x has an unsigned integer data type (e.g., uint16), the returned array must</span>
+<span class="sd">        have an unsigned integer data type having the same number of bits as the default</span>
+<span class="sd">        integer data type (e.g., if the default integer data type is int32, the returned</span>
+<span class="sd">        array must have a uint32 data type). If the data type (either specified or</span>
+<span class="sd">        resolved) differs from the data type of x, the input array should be cast to the</span>
+<span class="sd">        specified data type before computing the product. Default: None.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -3013,7 +3045,7 @@
 <span class="sd">                      [15, 42]])</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="scatter_flat"><a class="viewcode-back" href="../../../../functional/ivy/general/scatter_flat.html#ivy.functional.ivy.general.scatter_flat">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -3102,11 +3134,11 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array of given shape, with the values scattered at the indices.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    scatter values into an empty array, With :code:`ivy.Array` input:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt; indices = ivy.array([[4], [3], [1], [7]])</span>
 <span class="sd">    &gt;&gt; updates = ivy.array([9, 10, 11, 12])</span>
 <span class="sd">    &gt;&gt; shape = ivy.array([8])</span>

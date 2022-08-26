@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>function_unsupported_dtypes &mdash; Ivy 1.0 documentation</title>
+  <title>infer_default_dtype &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ivy.function_unsupported_dtypes" href="function_unsupported_dtypes/function_unsupported_dtypes_functional.html" />
-    <link rel="prev" title="ivy.Container.static_function_supported_dtypes" href="function_supported_dtypes/static_function_supported_dtypes_container.html" /> 
+    <link rel="next" title="default_dtype" href="default_dtype.html" />
+    <link rel="prev" title="ivy.Container.static_default_float_dtype" href="default_float_dtype/static_default_float_dtype_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -70,17 +70,13 @@
 <li class="toctree-l2"><a class="reference internal" href="as_native_dtype.html">as_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="closest_valid_dtype.html">closest_valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_float_dtype.html">default_float_dtype</a></li>
-<li class="toctree-l2"><a class="reference internal" href="infer_default_dtype.html">infer_default_dtype</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">infer_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_dtype.html">default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_int_dtype.html">default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_uint_dtype.html">default_uint_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="function_supported_dtypes.html">function_supported_dtypes</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">function_unsupported_dtypes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="function_unsupported_dtypes/function_unsupported_dtypes_functional.html">ivy.function_unsupported_dtypes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="function_unsupported_dtypes/static_function_unsupported_dtypes_container.html">ivy.Container.static_function_unsupported_dtypes</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="function_unsupported_dtypes.html">function_unsupported_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="invalid_dtype.html">invalid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_bool_dtype.html">is_bool_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_int_dtype.html">is_int_dtype</a></li>
@@ -163,9 +159,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../data_type.html">Data type</a> &raquo;</li>
-      <li>function_unsupported_dtypes</li>
+      <li>infer_default_dtype</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/data_type/function_unsupported_dtypes.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/data_type/infer_default_dtype.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -173,37 +169,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="function-unsupported-dtypes">
-<h1>function_unsupported_dtypes<a class="headerlink" href="#function-unsupported-dtypes" title="Permalink to this heading"></a></h1>
+  <section id="infer-default-dtype">
+<h1>infer_default_dtype<a class="headerlink" href="#infer-default-dtype" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.function_unsupported_dtypes">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">function_unsupported_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#function_unsupported_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.function_unsupported_dtypes" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the unsupported data types of the current backend’s function.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.infer_default_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">infer_default_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_native</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/data_type.html#infer_default_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.infer_default_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Summary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to check for the unsupported dtype attribute</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – </p></li>
+<li><p><strong>as_native</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – (Default value = False) (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The unsupported data types of the function</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">function_unsupported_dtypes</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">acosh</span><span class="p">))</span>
-<span class="go">(&#39;float16&#39;,&#39;uint16&#39;,&#39;uint32&#39;,&#39;uint64&#39;)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_function_unsupported_dtypes">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_function_unsupported_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/data_type.html#ContainerWithData_type.static_function_unsupported_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_function_unsupported_dtypes" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Return the default data type for the “kind” (integer or floating-point) of dtype</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -213,16 +193,14 @@
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="function_supported_dtypes/static_function_supported_dtypes_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_function_supported_dtypes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="function_unsupported_dtypes/function_unsupported_dtypes_functional.html" class="btn btn-neutral float-right" title="ivy.function_unsupported_dtypes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="default_float_dtype/static_default_float_dtype_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_default_float_dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="default_dtype.html" class="btn btn-neutral float-right" title="default_dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

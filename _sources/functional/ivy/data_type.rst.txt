@@ -25,6 +25,7 @@ Data type
    data_type/as_native_dtype.rst
    data_type/closest_valid_dtype.rst
    data_type/default_float_dtype.rst
+   data_type/infer_default_dtype.rst
    data_type/default_dtype.rst
    data_type/default_int_dtype.rst
    data_type/default_uint_dtype.rst

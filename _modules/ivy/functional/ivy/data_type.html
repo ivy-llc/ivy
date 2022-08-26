@@ -1052,6 +1052,32 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">FloatDtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="infer_default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/infer_default_dtype.html#ivy.functional.ivy.data_type.infer_default_dtype">[docs]</a><span class="k">def</span> <span class="nf">infer_default_dtype</span><span class="p">(</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Summary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype</span>
+
+<span class="sd">    as_native</span>
+<span class="sd">        (Default value = False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Return the default data type for the “kind” (integer or floating-point) of dtype</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+        <span class="n">default_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype</span><span class="p">(</span><span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+        <span class="n">default_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_uint_dtype</span><span class="p">(</span><span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">default_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_int_dtype</span><span class="p">(</span><span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">default_dtype</span></div>
+
+
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_dtype.html#ivy.functional.ivy.data_type.default_dtype">[docs]</a><span class="k">def</span> <span class="nf">default_dtype</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>

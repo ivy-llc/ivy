@@ -70,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data_type/as_native_dtype.html">as_native_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/closest_valid_dtype.html">closest_valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/default_float_dtype.html">default_float_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/infer_default_dtype.html">infer_default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/default_dtype.html">default_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/default_int_dtype.html">default_int_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_type/default_uint_dtype.html">default_uint_dtype</a></li>
@@ -1077,6 +1078,23 @@ number larger than 1.0 according to the IEEE-754 standard.</p>
 <span class="go">}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.data_type.infer_default_dtype">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">infer_default_dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_native</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/data_type.html#infer_default_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.data_type.infer_default_dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – </p></li>
+<li><p><strong>as_native</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – (Default value = False) (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Return the default data type for the “kind” (integer or floating-point) of dtype</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
