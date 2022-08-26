@@ -95,6 +95,7 @@ def test_numpy_any(
     native_array,
     fw,
 ):
+
     input_dtype, x, axis = dtype_x_axis
     input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
