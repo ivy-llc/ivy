@@ -7,9 +7,12 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
+@helpers.handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.current_backend().valid_dtypes),
-    dtype=st.sampled_from(ivy.current_backend().valid_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.current_backend().valid_float_dtypes
+    ),
+    dtype=st.sampled_from(ivy.current_backend().valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.floor"
@@ -26,7 +29,12 @@ def test_numpy_floor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
+    if input_dtype != list:
+        [input_dtype]
+    if as_variable != list:
+        [as_variable]
+    if native_array != list:
+        [native_array]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
