@@ -19,7 +19,9 @@ Function Wrapping
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`function wrapping channel`: https://discord.com/channels/799879767196958751/982737993028755496
-.. _`interger_array_to_float`: https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/ivy/func_wrapper.py#L244
+.. _`integer_array_to_float`: https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/ivy/func_wrapper.py#L244
+.. _`handle_cmd_line_args`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/helpers.py#L3081
+.. _`corresponding flags`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/conftest.py#L174
 
 When a backend framework is set by calling :code:`ivy.set_backend(backend_name)`,
 then all Ivy functions are `wrapped`_. This is achieved by calling `_wrap_function`_, which will apply the appropriate
@@ -69,6 +71,11 @@ Following are some of the wrapping functions currently used:
 #.  `integer_array_to_float`_: This wrapping function enables conversion of integer array inputs in the positional and keyword
     arguments to a function to the default float dtype. This is currently used to support integer array arguments to functions
     for which one or more backend frameworks only non-integer numeric dtypes.
+#.  `handle_cmd_line_args`_: This wrapping function enables us to arbitrarily sample backend at test time using Hypothesis strategies. This enables us
+    to infer the framework and generate appropriate data types directly inside the :code:`@given` decorator. With this approach in place, it's no longer
+    necessary to check if the data type is supported and skip the test if it's not. Another place wherein this decorator is helpful is when we perform
+    configurable argument testing for the parameters :code:`(as_variable, with_out, native_array, container, instance_method, test_gradients)` through
+    the command line. The `corresponding flags`_ are used to set these values.
 
 When calling `_wrap_function`_ during :ref:`Backend Setting`, firstly the attributes of the functions are checked 
 to get all the wrapping functions for a particular functions. Then all the wrapping functions applicable to a
