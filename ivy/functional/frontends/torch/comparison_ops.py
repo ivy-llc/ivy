@@ -57,3 +57,11 @@ def greater_equal(input, other, *, out=None):
 
 
 ge = greater_equal
+
+
+def greater(input, other, *, out=None):
+    ret = ivy.greater(input, other, out=out)
+    return ret
+
+
+gt = greater
