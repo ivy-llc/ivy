@@ -89,7 +89,7 @@ class TrainableModuleWithList(ivy.Module):
         ivy.Module.__init__(self, device)
 
     def _forward(self, x):
-        x = ivy.expand_dims(x, 0)
+        x = ivy.expand_dims(x, axis=0)
         x = ivy.tanh(self._layers[0](x))
         x = ivy.tanh(self._layers[1](x))
         return ivy.tanh(self._layers[2](x))[0]
@@ -313,7 +313,7 @@ class TrainableModuleWithDict(ivy.Module):
         ivy.Module.__init__(self, device)
 
     def _forward(self, x):
-        x = ivy.expand_dims(x, 0)
+        x = ivy.expand_dims(x, axis=0)
         x = ivy.tanh(self._layers["linear0"](x))
         x = ivy.tanh(self._layers["linear1"](x))
         return ivy.tanh(self._layers["linear2"](x))[0]
@@ -376,7 +376,7 @@ class WithCustomVarStructure(ivy.Module):
         self._linear2 = ivy.Linear(hidden_size, out_size, device=device)
         ivy.Module.__init__(self, device)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         return ivy.Container(x=self._linear0.v, y=self._linear1.v, z=self._linear2.v)
 
     def _forward(self, x):
