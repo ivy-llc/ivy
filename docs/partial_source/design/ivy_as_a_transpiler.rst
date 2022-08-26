@@ -105,7 +105,7 @@ frontend is implemented by wrapping two Ivy methods :code:`ivy.cumprod()`, and :
 
 .. code-block:: python
 
-   # ivy/functional/frontends/tensorflow/math/general.py
+   # ivy/functional/frontends/tensorflow/math.py
    def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
        ret = ivy.cumprod(x, axis, exclusive)
        if reverse:

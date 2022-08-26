@@ -21,4 +21,4 @@ jobs:
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
             cd ivy/automation_tools/pr_automation
-            python3 pr_action.py $PR_NUMBER "$PR_AUTHOR" "$GITHUB_TOKEN"
+            python3 pr_action.py $PR_NUMBER "$PR_AUTHOR"
