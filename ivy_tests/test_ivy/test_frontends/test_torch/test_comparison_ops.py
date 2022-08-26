@@ -221,5 +221,5 @@ def test_torch_sort(
         dim=axis,
         descending=descending,
         stable=stable,
-        out=None
+        out=None,
     )
