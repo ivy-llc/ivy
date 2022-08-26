@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Callable
+from typing import Optional, Tuple, Union, List, Callable, Dict
 
 # local
 from ivy.container.base import ContainerBase
