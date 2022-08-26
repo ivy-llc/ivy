@@ -211,13 +211,10 @@ and passing them as inputs to the test. For example, in this code snippet here -
 
 .. code-block:: python
 
+    @handle_cmd_line_args
     @given(
     dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
-    as_variable=helpers.list_of_length(st.booleans(), 2),
-    native_array=st.booleans(),
     num_positional_args=helpers.ints(min_value=0, max_value=2),
-    container=helpers.list_of_length(st.booleans(), 2),
-    instance_method=st.booleans(),
     alpha=helpers.floats(),
     )
     def test_leaky_relu(
@@ -249,7 +246,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
    			x=np.asarray(x, dtype=dtype),
    			alpha=alpha,)
 
-In the test above, all parameters being exhaustively drawn inside the given block from hypothesis either
+In the test above, all parameters being exhaustively drawn inside the decorator :code:`@handle_cmd_line_args` and :code:`@given` from hypothesis either
 **directly** (*native_array, num_positional, instance_methods, alpha*) or **indirectly** (*dtype_and_x, as_variable, container*)
 with the *helper* functions.
 
