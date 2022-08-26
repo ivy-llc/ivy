@@ -710,6 +710,45 @@ then we should not use the helper :code:`test_array_function`.
 For example, :code:`ivy.num_gpus` does not receive any arrays in the input,
 and so we should not make us of :code:`test_array_function` in the test implementation.
 
+Re-Running Failed Ivy Tests
+---------------------------
+
+When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
+For example, in the :code:`test_result_type` Test, we find the following output on running the test:
+
+.. code-block::
+
+        Falsifying example: test_result_type(
+            dtype_and_x=(['bfloat16', 'int16'], [-0.9090909090909091, -1]),
+            as_variable=False,
+            num_positional_args=2,
+            native_array=False,
+            container=False,
+            instance_method=False,
+            fw='torch',
+        )
+
+It is always efficient to fix this particular example first, before running any other examples.
+In order to achieve this functionality, we can use the :code:`@example` Hypothesis decorator.
+The :code:`@example` decorator ensures that a specific example is always tested, on running a particular test. The decorator requires the test arguments as parameters.
+For the :code:`test_result_type` Test, we can add the decorator as follows:
+
+.. code-block::
+
+        @example(
+            dtype_and_x=(['bfloat16', 'int16'], [-0.9090909090909091, -1]),
+            as_variable=False,
+            num_positional_args=2,
+            native_array=False,
+            container=False,
+            instance_method=False,
+            fw='torch',
+        )
+
+This ensures that the given example is always tested while running the test, allowing one to debug the failure
+efficiently.
+
+
 **Round Up**
 
 This should have hopefully given you a good feel for how the tests are implemented in Ivy.
