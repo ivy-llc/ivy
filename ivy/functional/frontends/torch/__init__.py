@@ -41,3 +41,5 @@ from . import utilities
 from .utilities import *
 from . import vision_functions
 from .vision_functions import *
+from . import Tensor
+from .Tensor import *

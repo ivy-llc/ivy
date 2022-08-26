@@ -27,3 +27,5 @@ from . import signal
 from .signal import *
 from . import sparse
 from .sparse import *
+from . import Tensor
+from .Tensor import *

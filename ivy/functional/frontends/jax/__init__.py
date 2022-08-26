@@ -1,4 +1,6 @@
 # flake8: noqa
+from . import DeviceArray
+from .DeviceArray import *
 from .lax import operators
 from ivy.functional.frontends.jax.lax.operators import *
 from .lax import control_flow_operators

@@ -1644,6 +1644,7 @@ def test_frontend_function(
     with_out: bool,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
+    instance_method: bool = False,
     fw: str,
     frontend: str,
     fn_tree: str,
@@ -1716,10 +1717,10 @@ def test_frontend_function(
     ]
 
     # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
-    *frontend_submods, fn_tree = fn_tree.split(".")
+    *frontend_submods, function_name = fn_tree.split(".")
 
     # check for unsupported dtypes in backend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
+    function = getattr(ivy.functional.frontends.__dict__[frontend], function_name)
     test_unsupported = check_unsupported_dtype(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
@@ -1756,15 +1757,33 @@ def test_frontend_function(
         args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
     # frontend function
-    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
+    frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[function_name]
 
     # run from the Ivy API directly
-    if test_unsupported:
-        test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
-        return
+    if instance_method:
+        if args == []:
+            instance = list(kwargs.values())[0]
+            kwargs.pop(list(kwargs.keys())[0])
+        else:
+            instance = args[0]
+            args = args[1:]
 
-    ret = frontend_fn(*args, **kwargs)
-    ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
+        if test_unsupported:
+            test_unsupported_function(
+                fn=instance.__getattribute__(function_name), args=args, kwargs=kwargs
+            )
+
+        setattr(instance, "ivy_instance_method", frontend_fn)
+        ret = instance.ivy_instance_method(*args, **kwargs)
+        ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
+
+    else:
+        if test_unsupported:
+            test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
+            return
+
+        ret = frontend_fn(*args, **kwargs)
+        ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
     # assert idx of return if the idx of the out array provided
     out = ret
     if with_out:
