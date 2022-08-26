@@ -279,6 +279,11 @@ def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
     return ret
 
 
+@_handle_flat_arrays_in_out
+def reciprocal(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.reciprocal(x)
+
+
 cosh = lambda x: math.cosh(x) if isinstance(x, float) else mx.nd.cosh(x)
 asinh = lambda x: math.asinh(x) if isinstance(x, float) else mx.nd.arcsinh(x)
 log = lambda x: math.log(x) if isinstance(x, float) else mx.nd.log(x)
