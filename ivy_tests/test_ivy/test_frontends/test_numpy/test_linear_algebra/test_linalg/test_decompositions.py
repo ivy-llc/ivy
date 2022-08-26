@@ -117,7 +117,6 @@ def test_numpy_svd(
     num_positional_args,
     fw,
 ):
-
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=[dtype],
