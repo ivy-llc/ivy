@@ -1360,7 +1360,7 @@ def test_jax_lax_cosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1503,8 +1503,8 @@ def test_jax_lax_gt(
         x=xs[0],
         y=xs[1],
     )
-    
-    
+
+
 # cos
 @handle_cmd_line_args
 @given(
