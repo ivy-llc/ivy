@@ -32,13 +32,21 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
     return torch.equal(x0, x1)
 
 
-def to_numpy(x: torch.Tensor) -> np.ndarray:
-    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
+def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
+    if isinstance(x, (float, int, bool)):
         return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
     elif torch.is_tensor(x):
         if x.dtype is torch.bfloat16:
             x = x.to(torch.float16)
-        return x.detach().cpu().numpy()
+        if copy:
+            return x.detach().cpu().numpy()
+        else:
+            raise ValueError("Overwriting the same address is not supported for torch.")
     raise ValueError("Expected a pytorch tensor.")
 
 
@@ -63,7 +71,7 @@ def floormod(
     return ret
 
 
-def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))
@@ -81,13 +89,16 @@ def inplace_update(
     val: Union[ivy.Array, torch.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data = val_native
-    if ivy.is_ivy_array(x):
-        x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native.data = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
     else:
-        x = ivy.Array(x_native)
-    return x
+        return val
 
 
 def inplace_arrays_supported():

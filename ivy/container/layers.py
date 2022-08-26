@@ -53,15 +53,11 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0
-        >>> b = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0
+        >>> a = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
+        >>> b = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
-        >>> y = ivy.Container.static_depthwise_conv2d( \
-                                                    inp, \
-                                                    filters, \
-                                                    strides=2, \
-                                                    padding='SAME')
+        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])
+        >>> y = ivy.Container.static_depthwise_conv2d(inp, filters, 2, 'SAME')
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
@@ -118,10 +114,10 @@ class ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0
-        >>> b = ivy.randint(0, 255, (1, 128, 128, 3)).astype(ivy.float32) / 255.0
+        >>> a = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
+        >>> b = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> inp = ivy.Container(a=a, b=b)
-        >>> filters = ivy.random_normal(0, 1, [3, 3, 3])
+        >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])
         >>> y = inp.depthwise_conv2d(filters, 2, 'SAME')
         >>> print(y.shape)
         [1, 64, 64, 3]
