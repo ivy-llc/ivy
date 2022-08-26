@@ -6,6 +6,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 
+# from ivy.functional.frontends.numpy import mgrid, ogrid
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -192,3 +193,20 @@ def test_numpy_meshgrid(
         sparse=sparse,
         indexing=indexing,
     )
+
+
+# mgrid
+@given(
+    start=helpers.ints(min_value=-50, max_value=0),
+    stop=helpers.ints(min_value=1, max_value=50),
+    step=helpers.ints(min_value=1, max_value=5),
+)
+def test_numpy_mgrid(
+    start,
+    stop,
+    step,
+):
+    pass
+
+
+# ogrid
