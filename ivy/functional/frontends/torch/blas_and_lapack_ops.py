@@ -16,6 +16,13 @@ def ger(input, vec2, *, out=None):
 ger.unsupported_dtypes = {"numpy": ("float16", "int8")}
 
 
+def inverse(input, *, out=None):
+    return ivy.inv(input, out=out)
+
+
+inverse.unsupported_dtypes = ("float16",)
+
+
 def outer(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 

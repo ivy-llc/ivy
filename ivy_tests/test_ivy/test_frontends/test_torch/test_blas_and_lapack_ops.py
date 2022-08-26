@@ -106,6 +106,45 @@ def test_torch_ger(
     )
 
 
+# inverse
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(ivy_torch.valid_float_dtypes)
+        ),
+        min_value=0,
+        max_value=25,
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.inverse"
+    ),
+)
+def test_torch_inverse(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="inverse",
+        rtol=1e-03,
+        input=np.asarray(x, dtype=dtype),
+    )
+
+
 # outer
 @handle_cmd_line_args
 @given(
