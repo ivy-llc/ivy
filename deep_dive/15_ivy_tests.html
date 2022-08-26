@@ -75,6 +75,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#self-consistent-and-explicit-testing">Self-Consistent and Explicit Testing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id6">test_array_function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#re-running-failed-ivy-tests">Re-Running Failed Ivy Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
@@ -739,6 +740,39 @@ arrays in the arguments.</p>
 then we should not use the helper <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code>.
 For example, <code class="code docutils literal notranslate"><span class="pre">ivy.num_gpus</span></code> does not receive any arrays in the input,
 and so we should not make us of <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> in the test implementation.</p>
+</section>
+<section id="re-running-failed-ivy-tests">
+<h2>Re-Running Failed Ivy Tests<a class="headerlink" href="#re-running-failed-ivy-tests" title="Permalink to this heading"></a></h2>
+<p>When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
+For example, in the <code class="code docutils literal notranslate"><span class="pre">test_result_type</span></code> Test, we find the following output on running the test:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Falsifying</span> <span class="n">example</span><span class="p">:</span> <span class="n">test_result_type</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="p">([</span><span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span> <span class="s1">&#39;int16&#39;</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.9090909090909091</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">as_variable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">container</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">instance_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">fw</span><span class="o">=</span><span class="s1">&#39;torch&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>It is always efficient to fix this particular example first, before running any other examples.
+In order to achieve this functionality, we can use the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> Hypothesis decorator.
+The <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator ensures that a specific example is always tested, on running a particular test. The decorator requires the test arguments as parameters.
+For the <code class="code docutils literal notranslate"><span class="pre">test_result_type</span></code> Test, we can add the decorator as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@example</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="p">([</span><span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span> <span class="s1">&#39;int16&#39;</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.9090909090909091</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">as_variable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">container</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">instance_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">fw</span><span class="o">=</span><span class="s1">&#39;torch&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This ensures that the given example is always tested while running the test, allowing one to debug the failure
+efficiently.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for how the tests are implemented in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,
