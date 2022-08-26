@@ -26,3 +26,24 @@ def prod(
 
 
 prod.unsupported_dtypes = {"torch": ("float16",)}
+
+
+# sum
+def sum(
+        x,
+        /,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=None,
+        initial=None,
+        where=None
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    if ivy.is_array(where):
+        x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
+    ret = ivy.sum(x, axis=axis, keepdims=keepdims, out=out)
+    return ret
+
+sum.unsupported_dtypes = {"torch": ("float16",)}
