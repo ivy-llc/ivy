@@ -74,8 +74,8 @@ class nd_grid:
             stop = start
             start = 0
         if isinstance(step, complex):
-            step = abs(stop - start) / (abs(step) - 1)
-            stop += step / 2
+            step = abs(stop - start) / (int(abs(step)) - 1)
+            stop += step
         return start, stop, step
 
     def _process_arrays(self):
