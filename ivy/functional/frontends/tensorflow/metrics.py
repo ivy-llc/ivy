@@ -21,8 +21,8 @@ def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False, axis=-1):
 
 
 def binary_crossentropy(y_true, y_pred,
-                        from_logits: bool =False,
-                        label_smoothing: float =0.) -> ivy.Array:
+                        from_logits: bool = False,
+                        label_smoothing: float = 0.) -> ivy.Array:
     """Computes the binary crossentropy loss.
     Parameters
     ----------
