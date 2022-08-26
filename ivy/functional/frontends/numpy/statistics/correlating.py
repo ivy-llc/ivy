@@ -1,5 +1,4 @@
 import ivy
-import numpy as np
 
 
 def sum(
@@ -10,8 +9,8 @@ def sum(
     dtype=None,
     keepdims=False,
     out=None,
-    initial=np._NoValue,
-    where=np._NoValue,
+    initial=None,
+    where=None,
 ):
     return ivy.sum(
         x,

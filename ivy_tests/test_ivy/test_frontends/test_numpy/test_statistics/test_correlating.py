@@ -25,7 +25,7 @@ def _dtype_x_axis(draw, **kwargs):
         )
     )
 
-    where = st.sampled_from([np._NoValue, where])
+    where = draw(st.sampled_from([where, np._NoValue]))
     return (dtype, x, axis), where
 
 
@@ -37,7 +37,7 @@ def _dtype_x_axis(draw, **kwargs):
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     keep_dims=st.booleans(),
-    initial=st.sampled_from([0, np._NoValue]),
+    initial=st.sampled_from([np._NoValue, 0]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sum"
     ),
