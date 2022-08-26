@@ -54,3 +54,6 @@ def argsort(input, dim=-1, descending=False):
 def ge(input, other, *, out=None):
     ret = ivy.greater_equal(input, other, out=out)
     return ret
+
+
+greater_equal = ge
