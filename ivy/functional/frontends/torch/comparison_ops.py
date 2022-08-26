@@ -52,5 +52,8 @@ def argsort(input, dim=-1, descending=False):
 
 
 def sort(input, dim=-1, descending=False, stable=False, *, out=None):
-    ret = input
-    return ret.sort(axis=dim, descending=descending, stable=stable, out=out)
+    values = ivy.sort(input, axis=dim, descending=descending, stable=stable, out=out)
+
+    indices = ivy.argsort(input, axis=dim,descending=descending)
+
+    return [values, indices] # should be a namedtuple?

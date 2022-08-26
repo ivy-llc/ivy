@@ -187,17 +187,15 @@ def test_torch_argsort(
             ),
         ),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
         min_axis=-1,
         max_axis=0,
     ),
+    descending=st.booleans(),
+    stable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.sort"
     ),
-    descending=st.booleans(),
-    stable=st.booleans(),
 )
 def test_torch_sort(
     dtype_input_axis,
@@ -223,4 +221,5 @@ def test_torch_sort(
         dim=axis,
         descending=descending,
         stable=stable,
+        out=None,
     )
