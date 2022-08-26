@@ -3062,7 +3062,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="scatter_nd"><a class="viewcode-back" href="../../../../functional/ivy/general/scatter_nd.html#ivy.functional.ivy.general.scatter_nd">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="scatter_nd"><a class="viewcode-back" href="../../../../functional/ivy/general/scatter_nd/scatter_nd_functional.html#ivy.functional.ivy.general.scatter_nd">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="k">def</span> <span class="nf">scatter_nd</span><span class="p">(</span>
@@ -3072,8 +3072,8 @@
     <span class="n">tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Scatter updates into a new array according to indices.</span>
 
 <span class="sd">    Parameters</span>
@@ -3102,7 +3102,47 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array of given shape, with the values scattered at the indices.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    scatter values into an empty array, With :code:`ivy.Array` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt; indices = ivy.array([[4], [3], [1], [7]])</span>
+<span class="sd">    &gt;&gt; updates = ivy.array([9, 10, 11, 12])</span>
+<span class="sd">    &gt;&gt; shape = ivy.array([8])</span>
+<span class="sd">    &gt;&gt; scatter = ivy.scatter_nd(indices, updates, shape)</span>
+<span class="sd">    &gt;&gt; print(scatter)</span>
+<span class="sd">    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])</span>
 
+<span class="sd">    scatter into an empty array, With: `ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt; indices = ivy.Container(a=ivy.array([[4],[3],[6]]),</span>
+<span class="sd">                        b=ivy.array([[5],[1],[2]]))</span>
+<span class="sd">    &gt;&gt; updates = ivy.Container(a=ivy.array([100, 200, 200]),</span>
+<span class="sd">                        b=ivy.array([20, 30, 40]))</span>
+<span class="sd">    &gt;&gt; shape = ivy.Container(a=ivy.array([10]),</span>
+<span class="sd">                        b = ivy.array([10]))</span>
+<span class="sd">    &gt;&gt; z = ivy.scatter_nd(indices, updates, shape=shape, reduction=&#39;replace&#39;)</span>
+<span class="sd">    &gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),</span>
+<span class="sd">        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    scatter into an array, With : `ivy.Container` and `ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt; indices = ivy.array([[4],[3],[1]])</span>
+<span class="sd">    &gt;&gt; updates = ivy.Container(a=ivy.array([10, 20, 30]),</span>
+<span class="sd">                    b=ivy.array([200, 300, 400]))</span>
+<span class="sd">    &gt;&gt; shape = ivy.array([10, 10])</span>
+<span class="sd">    &gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),</span>
+<span class="sd">                            b = ivy.array([10, 20, 30, 40, 50]))</span>
+<span class="sd">    &gt;&gt; z = ivy.scatter_nd(indices, updates, tensor=arr, reduction=&#39;replace&#39;)</span>
+<span class="sd">    &gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([1, 30, 3, 20, 10]),</span>
+<span class="sd">        b: ivy.array([10, 400, 30, 300, 200])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span>
         <span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">reduction</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
