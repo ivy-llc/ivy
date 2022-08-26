@@ -25,7 +25,7 @@ def logical_xor(x, y, name="LogicalXor"):
     return ivy.logical_xor(x, y)
 
 
-logical_xor.supported_dtypes = {"torch": ("bool", "bool")}
+logical_xor.supported_dtypes = {"torch": ("bool",)}
 
 
 def divide(x, y, name=None):
@@ -38,16 +38,6 @@ def negative(x, name=None):
 
 negative.unsupported_dtypes = {
     "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
-}
-
-
-def log_sigmoid(x, name=None):
-    return -ivy.softplus(-x)
-
-
-log_sigmoid.unsupported_dtypes = {
-    "torch": ("float16", "bfloat16"),
-    "numpy": ("float16", "bfloat16", "float32", "float64"),
 }
 
 
@@ -81,8 +71,21 @@ def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsu
 
 
 reduce_logsumexp.unsupported_dtypes = {
-    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+    "tensorflow": (
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+    ),
+    "torch": ("float16",),
 }
+
+
+def logical_and(x, y, name="LogicalAnd"):
+    return ivy.logical_and(x, y)
+
+
+logical_and.supported_dtypes = ("bool",)
 
 
 def argmax(input, axis, output_type, name=None):
@@ -126,6 +129,45 @@ reduce_std.unsupported_dtypes = {
         "uint16",
         "uint32",
         "uint64",
+    ),
+}
+
+
+def asinh(x, name="asinh"):
+    return ivy.asinh(x)
+
+
+asinh.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_sum.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
+    return ivy.var(input_tensor, axis=axis, keepdims=keepdims)
+
+
+reduce_variance.unsupported_dtypes = {
+    "tensorflow": ("uint8", "uint16", "uint32", "uint64"),
+}
+
+
+def scalar_mul(scalar, x, name="scalar_mul"):
+    return ivy.multiply(x, ivy.array([scalar]))
+
+
+scalar_mul.unsupported_dtypes = {
+    "tensorflow": (
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
         "float16",
         "float32",
         "float64",
@@ -135,5 +177,15 @@ reduce_std.unsupported_dtypes = {
 }
 
 
-def asinh(x, name="asinh"):
-    return ivy.asinh(x)
+def log_sigmoid(x, name=None):
+    return -ivy.softplus(-x)
+
+
+log_sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
+    ret = ivy.cumprod(x, axis, exclusive)
+    if reverse:
+        return ivy.flip(ret, axis)
+    return ret

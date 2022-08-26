@@ -323,7 +323,7 @@ def flip(
     }
 
     """
-    return current_backend(x).flip(x, axis, out=out)
+    return current_backend(x).flip(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -471,7 +471,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -594,7 +594,7 @@ def roll(
         b: ivy.array([5., 3., 4.])
     }
     """
-    return current_backend(x).roll(x, shift, axis, out=out)
+    return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -968,7 +968,7 @@ def repeat(
         b: ivy.array([0., 0., 1., 1., 2., 2.])
     }
     """
-    return current_backend(x).repeat(x, repeats, axis, out=out)
+    return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
 @to_native_arrays_and_back

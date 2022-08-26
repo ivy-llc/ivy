@@ -22,10 +22,6 @@ def _cast_for_bitwise_op(x1, x2, clamp=False):
     return x1, x2
 
 
-def _cast_for_binary_op(x1, x2):
-    return ivy.promote_types_of_inputs(x1, x2)
-
-
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.absolute(x)
 
@@ -61,7 +57,7 @@ def atan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def atan2(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.arctan2(x1, x2)
 
 
@@ -152,7 +148,7 @@ def divide(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = jax.numpy.divide(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
         ret = jnp.asarray(ret, dtype=x1.dtype)
@@ -168,7 +164,7 @@ def equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.equal(x1, x2)
 
 
@@ -194,7 +190,7 @@ def floor_divide(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jax.numpy.floor_divide(x1, x2)
 
 
@@ -301,7 +297,7 @@ def multiply(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.multiply(x1, x2)
 
 
@@ -318,7 +314,7 @@ def not_equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.not_equal(x1, x2)
 
 
@@ -335,8 +331,14 @@ def pow(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.power(x1, x2)
+
+
+def reciprocal(
+    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.reciprocal(x)
 
 
 def remainder(
@@ -344,9 +346,16 @@ def remainder(
     x2: Union[float, JaxArray],
     /,
     *,
+    modulus: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = jnp.where(res >= 0, jnp.floor(res), jnp.ceil(res))
+        diff = res - res_floored
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return jnp.round(diff * x2).astype(x1.dtype)
     return jnp.remainder(x1, x2)
 
 
@@ -384,7 +393,7 @@ def subtract(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.subtract(x1, x2)
 
 
@@ -414,7 +423,7 @@ def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 def maximum(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.maximum(x1, x2)
 
 
@@ -425,5 +434,5 @@ def minimum(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.minimum(x1, x2)
