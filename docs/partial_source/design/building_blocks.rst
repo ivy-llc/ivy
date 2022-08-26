@@ -251,7 +251,7 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
         recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         """Perform long-short term memory update by unrolling time dimension of input array.
         Parameters
         ----------
