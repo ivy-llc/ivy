@@ -198,14 +198,11 @@ an <code class="code docutils literal notranslate"><span class="pre">ivy.Contain
 <li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/ivy/func_wrapper.py#L244">integer_array_to_float</a>: This wrapping function enables conversion of integer array inputs in the positional and keyword
 arguments to a function to the default float dtype. This is currently used to support integer array arguments to functions
 for which one or more backend frameworks only non-integer numeric dtypes.</p></li>
-<li><dl class="simple">
-<dt><a class="reference external" href="https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/helpers.py#L3081">handle_cmd_line_args</a>: This wrapping function enables us to arbitrarily sample backend at test time using Hypothesis strategies. This enables us</dt><dd><p>to infer the framework and generate appropriate data types directly inside the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator. With this approach in place, it’s no longer
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/helpers.py#L3081">handle_cmd_line_args</a>: This wrapping function enables us to arbitrarily sample backend at test time using Hypothesis strategies. This enables us
+to infer the framework and generate appropriate data types directly inside the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator. With this approach in place, it’s no longer
 necessary to check if the data type is supported and skip the test if it’s not. Another place wherein this decorator is helpful is when we perform
 configurable argument testing for the parameters <code class="code docutils literal notranslate"><span class="pre">(as_variable,</span> <span class="pre">with_out,</span> <span class="pre">native_array,</span> <span class="pre">container,</span> <span class="pre">instance_method,</span> <span class="pre">test_gradients)</span></code> through
-the command line. The <a class="reference external" href="https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/conftest.py#L174">corresponding flags</a> are used to set these values.</p>
-</dd>
-</dl>
-</li>
+the command line. The <a class="reference external" href="https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/conftest.py#L174">corresponding flags</a> are used to set these values.</p></li>
 </ol>
 <p>When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/644412e3e691d2a04c7d3cd36fb492aa9f5d6b2d/ivy/func_wrapper.py#L340">_wrap_function</a> during <a class="reference internal" href="2_backend_setting.html#backend-setting"><span class="std std-ref">Backend Setting</span></a>, firstly the attributes of the functions are checked
 to get all the wrapping functions for a particular functions. Then all the wrapping functions applicable to a

@@ -71,7 +71,7 @@ Following are some of the wrapping functions currently used:
 #.  `integer_array_to_float`_: This wrapping function enables conversion of integer array inputs in the positional and keyword
     arguments to a function to the default float dtype. This is currently used to support integer array arguments to functions
     for which one or more backend frameworks only non-integer numeric dtypes.
-#. `handle_cmd_line_args`_: This wrapping function enables us to arbitrarily sample backend at test time using Hypothesis strategies. This enables us
+#.  `handle_cmd_line_args`_: This wrapping function enables us to arbitrarily sample backend at test time using Hypothesis strategies. This enables us
     to infer the framework and generate appropriate data types directly inside the :code:`@given` decorator. With this approach in place, it's no longer
     necessary to check if the data type is supported and skip the test if it's not. Another place wherein this decorator is helpful is when we perform
     configurable argument testing for the parameters :code:`(as_variable, with_out, native_array, container, instance_method, test_gradients)` through
