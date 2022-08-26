@@ -96,24 +96,11 @@ def sum(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if dtype is None and jnp.issubdtype(x.dtype, jnp.integer):
-        if jnp.issubdtype(x.dtype, jnp.signedinteger) and x.dtype in [
-            jnp.int8,
-            jnp.int16,
-            jnp.int32,
-        ]:
-            dtype = jnp.int32
-        elif jnp.issubdtype(x.dtype, jnp.unsignedinteger) and x.dtype in [
-            jnp.uint8,
-            jnp.uint16,
-            jnp.uint32,
-        ]:
-            dtype = jnp.uint32
-        elif x.dtype == jnp.int64:
-            dtype = jnp.int64
-        else:
-            dtype = jnp.uint64
     dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(dtype, x.dtype)
+    if dtype != x.dtype:
+        x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
