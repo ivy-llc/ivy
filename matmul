@@ -1,0 +1,57 @@
+def matmul
+    (x1: array,
+    x2: array,
+    /,
+    out=None,
+    *,
+    casting='same_kind',
+    order='K',
+    dtype=None,
+    subok=True
+):
+    if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    ret = ivy.matmul(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+'''
+Produces the Matrix product of two arrays.
+
+Parameters
+x1, x2 
+
+ret: optional [ivy.Array]= None
+
+A location where the result is stored.It must have a shape that matches the signature (n,k),(k,m)->(n,m). If None, a freshly-allocated array is returned.
+
+**kwargs
+For other keyword-only arguments
+
+Returns: y ndarray
+The matrix product of the inputs. When both parameters x1 and x2 are 1D vectors, then this ends up being a scalar.
+
+Raises: ValueError
+
+If the last dimension of x1 is not the same size as the second-to-last dimension of x2.
+
+If a scalar value is passed in.
+
+
+
+
+Example
+
+The matrix product of 2D arrays:
+
+a = ivy.array([[1, 0],
+              [0, 1]])
+b = ivy.array([[3, 1],
+              [1, 2]])
+ivy.matmul(a, b)
+array([[3, 1],
+       [1, 2]])
+
+
+'''
