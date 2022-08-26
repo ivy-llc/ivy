@@ -95,6 +95,13 @@ def atan(x):
 atan.unsupported_dtypes = {"torch": ("float16",)}
 
 
+def cos(x):
+    return ivy.cos(x)
+
+
+cos.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def ceil(x):
     return ivy.ceil(x)
 
@@ -165,6 +172,10 @@ def ge(x, y):
     return ivy.greater_equal(x, y)
 
 
+def gt(x, y):
+    return ivy.greater(x, y)
+
+
 def reshape(operand, new_sizes, dimensions=None):
     if dimensions:
         operand = ivy.permute_dims(operand, dimensions)
@@ -223,6 +234,13 @@ round.unsupported_dtypes = {"torch": ("float16",)}
 
 def lt(x, y):
     return ivy.less(x, y)
+
+
+def pow(x, y):
+    return ivy.pow(x, y)
+
+
+pow.unsupported_dtypes = ("int64", "int32", "int16", "uint64", "uint32", "uint16")
 
 
 # log1p
