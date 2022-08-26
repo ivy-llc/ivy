@@ -4383,10 +4383,10 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4., 5., .]),\
+                              b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([5., 6., 7.]))
         >>> z = ivy.Container.static_logaddexp(y,x)
         >>> print(z)
         {
@@ -4454,10 +4454,10 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using :code:`ivy.Container` input:
         
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
+                              b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([5., 6., 7.]))
         >>> z = ivy.logaddexp(y,x)
         >>> print(z)
         {
