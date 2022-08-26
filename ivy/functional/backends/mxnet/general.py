@@ -138,6 +138,7 @@ def inplace_increment(
 def cumsum(
     x: mx.nd.NDArray,
     axis: int = 0,
+    dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if ivy.exists(out):
@@ -152,6 +153,7 @@ def cumprod(
     x: mx.nd.NDArray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     array_stack = [mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
@@ -162,7 +164,7 @@ def cumprod(
         new_array_list.append(new_array_list[-1] * array_chunk)
     if ivy.exists(out):
         return ivy.inplace_update(out, mx.nd.concat(*new_array_list, dim=axis))
-    return mx.nd.concat(*new_array_list, dim=axis)
+    return mx.nd.concat(*new_array_list, dim=axis, dtype=dtype)
 
 
 # noinspection PyShadowingNames
