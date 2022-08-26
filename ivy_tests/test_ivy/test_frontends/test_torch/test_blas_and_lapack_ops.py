@@ -59,3 +59,95 @@ def test_torch_cholesky(
         input=np.asarray(x, dtype=dtype),
         upper=upper,
     )
+
+
+# ger
+@handle_cmd_line_args
+@given(
+    dtype_xy=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                ivy_torch.valid_numeric_dtypes
+            )
+        ),
+        num_arrays=2,
+        min_value=1,
+        max_value=50,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.ger"
+    ),
+)
+def test_torch_ger(
+    dtype_xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    types, arrays = dtype_xy
+    type1, type2 = types
+    x1, x2 = arrays
+
+    helpers.test_frontend_function(
+        input_dtypes=types,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="ger",
+        input=np.asarray(x1, dtype=type1),
+        vec2=np.asarray(x2, dtype=type2),
+    )
+
+
+# outer
+@handle_cmd_line_args
+@given(
+    dtype_xy=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                ivy_torch.valid_numeric_dtypes
+            )
+        ),
+        num_arrays=2,
+        min_value=1,
+        max_value=50,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.outer"
+    ),
+)
+def test_torch_outer(
+    dtype_xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    types, arrays = dtype_xy
+    type1, type2 = types
+    x1, x2 = arrays
+
+    helpers.test_frontend_function(
+        input_dtypes=types,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="outer",
+        input=np.asarray(x1, dtype=type1),
+        vec2=np.asarray(x2, dtype=type2),
+    )
