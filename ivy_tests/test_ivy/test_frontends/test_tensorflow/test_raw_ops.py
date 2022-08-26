@@ -644,3 +644,38 @@ def test_tensorflow_Minimum(
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
+
+# Sub
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy.all_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    as_variable=helpers.array_bools(num_arrays=2),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.sub"
+    ),
+    native_array=helpers.array_bools(num_arrays=2),
+)
+def test_tensorflow_sub(
+        dtype_and_x,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="sub",
+        x=np.asarray(x[0], dtype=dtype[0]),
+        y=np.asarray(x[1], dtype=dtype[1]),
+    )

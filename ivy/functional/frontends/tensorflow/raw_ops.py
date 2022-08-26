@@ -76,3 +76,8 @@ def Maximum(*, x, y, name="Maximum"):
 
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
+
+
+def sub(x, y, name="sub"):
+    return ivy.subtract(x, y)
+
