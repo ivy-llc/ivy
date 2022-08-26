@@ -85,6 +85,7 @@ class Finfo:
 def astype(
     x: np.ndarray,
     dtype: np.dtype,
+    /,
     *,
     copy: bool = True,
     out: Optional[ivy.Array] = None,
