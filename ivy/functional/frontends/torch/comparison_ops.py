@@ -51,7 +51,7 @@ def argsort(input, dim=-1, descending=False):
     return ivy.argsort(input, axis=dim, descending=descending)
 
 
-def sort(input, dim=-1, descending=False, stable=False, *, out=None):
+def sort(input, dim=-1, descending=False, stable=False, out=None):
     values = ivy.sort(input, axis=dim, descending=descending, stable=stable, out=out)
 
     indices = ivy.argsort(input, axis=dim,descending=descending)

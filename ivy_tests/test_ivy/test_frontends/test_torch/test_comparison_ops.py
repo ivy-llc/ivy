@@ -212,7 +212,7 @@ def test_torch_sort(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
@@ -221,5 +221,5 @@ def test_torch_sort(
         dim=axis,
         descending=descending,
         stable=stable,
-        out=None,
+        out=None
     )
