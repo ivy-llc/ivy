@@ -95,7 +95,7 @@ def astype(
 
     >>> x = ivy.array([1, 2])
     >>> y = ivy.zeros_like(x)
-    >>> y = ivy.astype(x, dtype = ivy.float64)
+    >>> y = ivy.astype(x, ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
 
@@ -921,6 +921,32 @@ def default_float_dtype(
     if as_native:
         return ivy.as_native_dtype(ret)
     return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
+
+
+def infer_default_dtype(
+    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
+):
+    """Summary.
+
+    Parameters
+    ----------
+    dtype
+
+    as_native
+        (Default value = False)
+
+    Returns
+    -------
+        Return the default data type for the “kind” (integer or floating-point) of dtype
+
+    """
+    if ivy.is_float_dtype(dtype):
+        default_dtype = ivy.default_float_dtype(as_native=as_native)
+    elif ivy.is_uint_dtype(dtype):
+        default_dtype = ivy.default_uint_dtype(as_native=as_native)
+    else:
+        default_dtype = ivy.default_int_dtype(as_native=as_native)
+    return default_dtype
 
 
 # noinspection PyShadowingNames
