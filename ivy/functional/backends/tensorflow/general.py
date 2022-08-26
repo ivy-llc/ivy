@@ -26,7 +26,7 @@ def is_native_array(x, exclusive=False):
 def copy_array(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
@@ -57,7 +57,7 @@ def floormod(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
@@ -157,7 +157,7 @@ def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumsum(x, axis)
 
@@ -167,7 +167,7 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.cumprod(x, axis, exclusive)
 
@@ -180,7 +180,7 @@ def scatter_flat(
     tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     target = tensor
     target_given = ivy.exists(target)
@@ -249,7 +249,7 @@ def scatter_nd(
     tensor: Optional[Union[tf.Tensor, tf.Variable]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.exists(tensor) and not isinstance(updates, Number):
         tensor = (
@@ -342,7 +342,7 @@ def gather(
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     return tf.gather(params, indices, axis=axis, batch_dims=axis)
@@ -352,7 +352,7 @@ def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.gather_nd(params, indices)
 
@@ -362,7 +362,7 @@ def one_hot(
     depth: int,
     *,
     device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         return tf.one_hot(indices, depth)
@@ -384,7 +384,7 @@ def multiprocessing(context=None):
 def indices_where(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.where(x)
 

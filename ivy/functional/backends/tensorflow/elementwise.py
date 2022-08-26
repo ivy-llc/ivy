@@ -513,6 +513,27 @@ def pow(
 pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
 
 
+def reciprocal(
+    x: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.reciprocal(x)
+
+
+reciprocal.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+)
+
+
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -527,7 +548,7 @@ def remainder(
         res_floored = tf.where(res >= 0, tf.math.floor(res), tf.math.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return diff * x2
+        return tf.cast(tf.round(diff * x2), x1.dtype)
     return tf.experimental.numpy.remainder(x1, x2)
 
 

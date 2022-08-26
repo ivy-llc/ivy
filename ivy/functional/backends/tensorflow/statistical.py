@@ -34,7 +34,7 @@ def max(
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
@@ -46,7 +46,7 @@ def mean(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
@@ -58,7 +58,7 @@ def min(
     *,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
@@ -71,7 +71,7 @@ def prod(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[tf.DType] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
@@ -94,7 +94,7 @@ def std(
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     dtype = x.dtype
@@ -125,7 +125,7 @@ def sum(
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[tf.DType] = None,
     keepdims: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is None:
         if x.dtype in [tf.int8, tf.int16, tf.int32]:
@@ -148,28 +148,17 @@ def var(
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    dtype = x.dtype
-    if isinstance(axis, tuple):
-        ret = []
-        for i in axis:
-            ret.append(
-                _new_var_fun(x, axis=i, correction=correction, dtype=dtype).numpy()
-            )
-        ret = tf.constant(ret, dtype=dtype)
-    elif isinstance(axis, int):
-        ret = _new_var_fun(x, axis=axis, correction=correction, dtype=dtype)
-    else:
-        size = tf.size(x).numpy()
-        ret = _new_var_fun(
-            tf.reshape(x, size), axis=0, correction=correction, dtype=dtype
-        )
-
-    if keepdims:
-        ret = tf.constant(ret, shape=x.shape)
-    return ret
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    return (size / (size - correction)) * tf.experimental.numpy.var(
+        x, axis=axis, out=out, keepdims=keepdims
+    )
 
 
 # Extra #
@@ -179,6 +168,6 @@ def var(
 def einsum(
     equation: str,
     *operands: Union[tf.Tensor, tf.Variable],
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.einsum(equation, *operands)
