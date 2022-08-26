@@ -21,6 +21,7 @@ def _squeeze_helper(draw):
     return draw(st.sampled_from(valid_axes))
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
@@ -48,6 +49,6 @@ def test_numpy_squeeze(
         fw=fw,
         frontend="numpy",
         fn_tree="squeeze",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        a=np.asarray(x, dtype=input_dtype[0]),
         axis=axis,
     )
