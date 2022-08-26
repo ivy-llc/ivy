@@ -151,6 +151,7 @@ def vdot(
     ret = ivy.multiply(a, b).sum()
     return ret
 
+#sum
 def sum(
     x,
     /,
@@ -163,7 +164,7 @@ def sum(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.sqrt(x, out=out)
+    ret = ivy.sum(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
