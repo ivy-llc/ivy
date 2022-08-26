@@ -1741,6 +1741,52 @@ def default(
     ret
         x if x exists (is not None), else default.
 
+    Functional Examples
+    ------------------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    default_string
+
+    >>> x = ""
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: ivy.array([1, 2, 3])
+    >>> y = ivy.default(x, ivy.array([4, 5, 6]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True, rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
     """
     with_callable = catch_exceptions or with_callable
     if rev:
@@ -2333,7 +2379,22 @@ def num_arrays_in_memory():
 
 
 def print_all_arrays_in_memory():
-    """Prints all arrays which are currently alive."""
+    """
+    Gets all the native Ivy arrays which are currently alive(in the garbage collector)
+    from get_all_arrays_in_memory() function and prints them to the console.
+
+    Parameters
+    ----------
+    None
+
+    Output
+    ------
+    Type and shape of all the Ivy native arrays which are currently alive.
+
+    Returns
+    -------
+    None
+    """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
@@ -2914,8 +2975,8 @@ def scatter_nd(
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Scatter updates into a new array according to indices.
 
     Parameters
@@ -2945,6 +3006,46 @@ def scatter_nd(
     ret
         New array of given shape, with the values scattered at the indices.
 
+    Examples
+    --------
+    scatter values into an empty array, With :code:`ivy.Array` input:
+
+    >> indices = ivy.array([[4], [3], [1], [7]])
+    >> updates = ivy.array([9, 10, 11, 12])
+    >> shape = ivy.array([8])
+    >> scatter = ivy.scatter_nd(indices, updates, shape)
+    >> print(scatter)
+    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
+
+    scatter into an empty array, With: `ivy.Container` input:
+
+    >> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+                        b=ivy.array([[5],[1],[2]]))
+    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+                        b=ivy.array([20, 30, 40]))
+    >> shape = ivy.Container(a=ivy.array([10]),
+                        b = ivy.array([10]))
+    >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    >> print(z)
+    {
+        a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
+        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
+    }
+
+    scatter into an array, With : `ivy.Container` and `ivy.Array` input:
+
+    >> indices = ivy.array([[4],[3],[1]])
+    >> updates = ivy.Container(a=ivy.array([10, 20, 30]),
+                    b=ivy.array([200, 300, 400]))
+    >> shape = ivy.array([10, 10])
+    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+                            b = ivy.array([10, 20, 30, 40, 50]))
+    >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
+    >> print(z)
+    {
+        a: ivy.array([1, 30, 3, 20, 10]),
+        b: ivy.array([10, 400, 30, 300, 200])
+    }
     """
     return current_backend(indices).scatter_nd(
         indices, updates, shape, tensor, reduction, out=out
