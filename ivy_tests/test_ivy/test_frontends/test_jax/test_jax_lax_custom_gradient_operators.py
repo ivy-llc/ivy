@@ -58,5 +58,10 @@ def test_custom_linear_solve(dtype_and_x, as_variable, num_positional_args,
         fw=fw,
         frontend="jax",
         fn_tree="lax.custom_linear_solve",
-        x=np.asarray(x, dtype=dtype),
+        matvec,
+        b,
+        solve,
+        transpose_solve=None,
+        symmetric=False,
+        has_aux=False
     )
