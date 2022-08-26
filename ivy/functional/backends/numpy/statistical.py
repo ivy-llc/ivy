@@ -148,8 +148,19 @@ def var(
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if isinstance(correction, int):
+        return np.asarray(
+            np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
+        )
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    return (size / (size - correction)) * np.asarray(
+        np.var(x, axis=axis, keepdims=keepdims, out=out)
+    )
 
 
 var.support_native_out = True
@@ -160,9 +171,7 @@ var.support_native_out = True
 
 
 def einsum(
-    equation: str,
-    *operands: np.ndarray, 
-    out: Optional[np.ndarray] = None
+    equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.einsum(equation, *operands, out=out))
 

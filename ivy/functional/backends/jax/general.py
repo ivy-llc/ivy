@@ -134,7 +134,7 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
@@ -151,7 +151,7 @@ def scatter_flat(
     tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     target = tensor
     target_given = ivy.exists(target)
@@ -194,7 +194,7 @@ def scatter_nd(
     tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
@@ -262,7 +262,7 @@ def gather(
     indices: JaxArray,
     axis: int = -1,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return _to_device(jnp.take_along_axis(params, indices, axis))
 
