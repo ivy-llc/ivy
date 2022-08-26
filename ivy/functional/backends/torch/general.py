@@ -71,11 +71,7 @@ def floormod(
     return ret
 
 
-def unstack(
-    x: torch.Tensor,
-    axis: int,
-    keepdims: bool = False
-) -> List[torch.Tensor]:
+def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))
@@ -93,13 +89,16 @@ def inplace_update(
     val: Union[ivy.Array, torch.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data = val_native
-    if ivy.is_ivy_array(x):
-        x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native.data = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
     else:
-        x = ivy.Array(x_native)
-    return x
+        return val
 
 
 def inplace_arrays_supported():

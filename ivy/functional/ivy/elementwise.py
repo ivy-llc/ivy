@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_array_to_float,
+    integer_arrays_to_float,
 )
 
 
@@ -179,7 +179,7 @@ def acos(
     return ivy.current_backend(x).acos(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -497,7 +497,7 @@ def asin(
     return ivy.current_backend(x).asin(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -666,7 +666,7 @@ def atan(
     return ivy.current_backend(x).atan(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -843,7 +843,7 @@ def atan2(
     return ivy.current_backend(x1).atan2(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1598,7 +1598,7 @@ def ceil(
 
 
 @to_native_arrays_and_back
-@integer_array_to_float
+@integer_arrays_to_float
 @handle_out_argument
 @handle_nestable
 def cos(
@@ -1671,7 +1671,7 @@ def cos(
     return ivy.current_backend(x).cos(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1925,7 +1925,7 @@ def equal(
     return ivy.current_backend(x1, x2).equal(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1976,7 +1976,7 @@ def exp(
     return ivy.current_backend(x).exp(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2642,7 +2642,7 @@ def multiply(
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2742,7 +2742,7 @@ def isfinite(
     return ivy.current_backend(x).isfinite(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2895,7 +2895,7 @@ def isinf(
     return ivy.current_backend(x).isinf(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3148,7 +3148,7 @@ def less(
     return ivy.current_backend(x1).less(x1, x2, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3191,7 +3191,7 @@ def log(
     return ivy.current_backend(x).log(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3278,7 +3278,7 @@ def log10(
     return ivy.current_backend(x).log10(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -3377,7 +3377,7 @@ def log1p(
     return ivy.current_backend(x).log1p(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -4359,11 +4359,40 @@ def pow(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def reciprocal(
+    x: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns a new array with the reciprocal of each element in ``x``.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A new array with the positive value of each element in ``x``.
+    
+    """
+    return ivy.current_backend(x).reciprocal(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def remainder(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    modulus: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the remainder of division for each element ``x1_i`` of the input array
@@ -4424,6 +4453,8 @@ def remainder(
     x2
         divisor input array. Must be compatible with ``x1`` (see  ref:`Broadcasting`).
         Should have a numeric data type.
+    modulus
+        whether to compute the modulus instead of the remainder. Default is True.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -4472,7 +4503,7 @@ def remainder(
         b: ivy.array([0., 2., 1.])
     }
     """
-    return ivy.current_backend(x1, x2).remainder(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).remainder(x1, x2, modulus=modulus, out=out)
 
 
 @to_native_arrays_and_back
@@ -4652,7 +4683,7 @@ def sign(
     return ivy.current_backend(x).sign(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -4742,7 +4773,7 @@ def sin(
     return ivy.current_backend(x).sin(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -4815,7 +4846,7 @@ def sinh(
     return ivy.current_backend(x).sinh(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -5148,7 +5179,7 @@ def tan(
     return ivy.current_backend(x).tan(x, out=out)
 
 
-@integer_array_to_float
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
