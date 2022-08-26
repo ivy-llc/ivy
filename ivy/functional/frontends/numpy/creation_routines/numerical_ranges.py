@@ -38,7 +38,6 @@ def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
 
 
 class nd_grid:
-    # Todo: add sparse support aka ogrid
     def __init__(self, sparse=False):
         self.sparse = sparse
         self.grids = []
