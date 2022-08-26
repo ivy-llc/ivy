@@ -105,11 +105,11 @@ class nd_grid:
         if current != total:
             array = self._init_array(array, current, total)
         while current != 1:
-            new_shape = (1,) + tuple(self.shapes[current - 1 : total])
+            new_shape = [1] + self.shapes[current - 1 : total]
             array = ivy.reshape(array, new_shape)
             array = ivy.repeat(array, self.shapes[current - 2], axis=0)
             current -= 1
-        array = ivy.reshape(array, (1,) + tuple(self.shapes))
+        array = ivy.reshape(array, [1] + self.shapes)
         return array
 
     def _ret_grids(self):
