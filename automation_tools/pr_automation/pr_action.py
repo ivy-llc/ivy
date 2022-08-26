@@ -1,6 +1,5 @@
 import sys
 import json
-from github import Github
 from process_pr import Process_pr
 
 
@@ -12,17 +11,9 @@ def import_file(file_path):
 
 def main():
     pr = Process_pr(int(sys.argv[1]), sys.argv[2])
-    token = str(sys.argv[3])
-    g = Github(token)
-    repo = g.get_repo("unifyai/ivy")
-    
-    interns_assigned_volunteers = repo.get_contents("/automation_tools/pr_automation/assets/volunteer_go_to_intern.json", ref="automations")
-    interns_assigned_volunteers = json.loads(interns_assigned_volunteers.decoded_content.decode('utf-8'))
-    intern_points_of_contact = repo.get_contents("/automation_tools/pr_automation/assets/intern_poc.json", ref="automations")
-    intern_points_of_contact = json.loads(intern_points_of_contact.decoded_content.decode('utf-8'))
-    intern_assign_rates = repo.get_contents("/automation_tools/pr_automation/assets/intern_assign_rate.json", ref="automations")
-    intern_assign_rates = json.loads(intern_assign_rates.decoded_content.decode('utf-8'))
-    
+    interns_assigned_volunteers = import_file("assets/volunteer_go_to_intern.json")
+    intern_points_of_contact = import_file("assets/intern_poc.json")
+    intern_assign_rates = import_file("assets/intern_assign_rate.json")
     interns_pocs = intern_points_of_contact.keys()
     interns = intern_points_of_contact.values()
 
