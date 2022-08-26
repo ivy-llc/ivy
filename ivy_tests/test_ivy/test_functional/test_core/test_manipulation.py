@@ -481,6 +481,7 @@ def test_stack(
 
 
 # clip
+@handle_cmd_line_args
 @given(
     x_min_n_max=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
@@ -488,7 +489,6 @@ def test_stack(
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_clip(
     *,
     data,
@@ -548,12 +548,12 @@ def _pad_helper(draw):
 
 
 # constant_pad
+@handle_cmd_line_args
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_constant_pad(
     *,
     data,
@@ -728,7 +728,6 @@ def _split_helper(draw):
 
 @handle_cmd_line_args
 @given(
-    noss_type=st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type"),
     dtype_value=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes,
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -748,11 +747,11 @@ def _split_helper(draw):
 def test_split(
     *,
     data,
-    noss_type,
     dtype_value,
     num_or_size_splits,
     axis,
     with_remainder,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -766,7 +765,7 @@ def test_split(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
