@@ -156,7 +156,7 @@ def cumprod(operand, axis=0, reverse=False):
     return ivy.cumprod(operand, axis, dtype=operand.dtype)
 
 
-cumprod.unsupported_dtypes = {"torch": ("float16",)}
+cumprod.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def cumsum(operand, axis=0, reverse=False):
@@ -165,7 +165,7 @@ def cumsum(operand, axis=0, reverse=False):
     return ivy.cumsum(operand, axis, dtype=operand.dtype)
 
 
-cumsum.unsupported_dtypes = {"torch": ("float16",)}
+cumsum.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def ge(x, y):

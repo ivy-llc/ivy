@@ -9,11 +9,6 @@ jobs:
     if: ${{ github.event.pull_request }}
     runs-on: ubuntu-latest
     steps:
-      - name: Install Libraries
-        uses: BSFishy/pip-action@v1
-        with:
-           packages: |
-             PyGithub
       - name: Checks
         uses: actions/checkout@v2
         with:
@@ -26,4 +21,4 @@ jobs:
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
             cd ivy/automation_tools/pr_automation
-            python3 pr_action.py $PR_NUMBER "$PR_AUTHOR" "$GITHUB_TOKEN"
+            python3 pr_action.py $PR_NUMBER "$PR_AUTHOR"
