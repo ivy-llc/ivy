@@ -62,35 +62,35 @@ import ivy
 import ivy.functional.backends.numpy as ivy_np
 
 
-def convertiontrue(argument):
+def convtrue(argument):
     """convert NativeClass in argument to true framework counter part"""
     if isinstance(argument, NativeClass):
         return argument._native_class
     return argument
 
 
-def convertionjax(argument):
+def convjax(argument):
     """convert NativeClass in argument to ivy frontend counter part for jax"""
     if isinstance(argument, NativeClass):
         return jax_classes_to_ivy_classes.get(argument._native_class)
     return argument
 
 
-def convertionnumpy(argument):
+def convnumpy(argument):
     """convert NativeClass in argument to ivy frontend counter part for numpt"""
     if isinstance(argument, NativeClass):
         return numpy_classes_to_ivy_classes.get(argument._native_class)
     return argument
 
 
-def convertiontorch(argument):
+def convtorch(argument):
     """convert NativeClass in argument to ivy frontend counter part for torch"""
     if isinstance(argument, NativeClass):
         return torch_classes_to_ivy_classes.get(argument._native_class)
     return argument
 
 
-def convertiontensor(argument):
+def convtensor(argument):
     """convert NativeClass in argument to ivy frontend counter part for tensorflow"""
     if isinstance(argument, NativeClass):
         return tensorflow_classes_to_ivy_classes.get(argument._native_class)
@@ -1804,17 +1804,25 @@ def test_frontend_function(
     
     # check and replace NativeClass object in arguments with ivy counterparts
     if frontend == "jax":
-        args = ivy.nested_map(args, fn=convertionjax, include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convertionjax, include_derived=True, max_depth=100)
+        args = ivy.nested_map(args, fn=convjax, 
+                              include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convjax, 
+                                include_derived=True, max_depth=100)
     elif frontend == "numpy":
-        args = ivy.nested_map(args, fn=convertionnumpy, include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convertionnumpy, include_derived=True, max_depth=100)
+        args = ivy.nested_map(args, fn=convnumpy, 
+                              include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convnumpy, 
+                                include_derived=True, max_depth=100)
     elif frontend == "tensorflow":
-        args = ivy.nested_map(args, fn=convertiontensor, include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convertiontensor, include_derived=True, max_depth=100)
+        args = ivy.nested_map(args, fn=convtensor, 
+                              include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convtensor, 
+                                include_derived=True, max_depth=100)
     elif frontend == "torch":
-        args = ivy.nested_map(args, fn=convertiontorch, include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convertiontorch, include_derived=True, max_depth=100)
+        args = ivy.nested_map(args, fn=convtorch, 
+                              include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convtorch, 
+                                include_derived=True, max_depth=100)
     else:
         args = args
         kwargs = kwargs
@@ -1886,8 +1894,10 @@ def test_frontend_function(
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
         
         # check and replace the NativeClass objects in arguments with true counterparts
-        args_frontend = ivy.nested_map(args_frontend, fn=convertiontrue, include_derived=True, max_depth=10)
-        kwargs_frontend = ivy.nested_map(kwargs_frontend, fn=convertiontrue, include_derived=True, max_depth=10)
+        args_frontend = ivy.nested_map(args_frontend, fn=convtrue, 
+                                       include_derived=True, max_depth=10)
+        kwargs_frontend = ivy.nested_map(kwargs_frontend, fn=convtrue, 
+                                         include_derived=True, max_depth=10)
         
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
