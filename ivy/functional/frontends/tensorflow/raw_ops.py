@@ -62,11 +62,11 @@ def sin(x, name="sin"):
     return ivy.sin(x)
 
 
-def square(x, name="square"):
+def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-def sqrt(x, name="sqrt"):
+def Sqrt(*, x, name="Sqrt"):
     return ivy.sqrt(x)
 
 

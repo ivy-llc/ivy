@@ -487,7 +487,7 @@ def test_tensorflow_tan(
     )
 
 
-# square
+# Square
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -498,10 +498,10 @@ def test_tensorflow_tan(
         ),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.square"
+        fn_name="ivy.functional.frontends.tensorflow.Square"
     ),
 )
-def test_tensorflow_square(
+def test_tensorflow_Square(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -513,12 +513,12 @@ def test_tensorflow_square(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="square",
+        fn_tree="raw_ops.Square",
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
-# sqrt
+# Sqrt
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -527,10 +527,10 @@ def test_tensorflow_square(
         ),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.sqrt"
+        fn_name="ivy.functional.frontends.tensorflow.Sqrt"
     ),
 )
-def test_tensorflow_sqrt(
+def test_tensorflow_Sqrt(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -542,7 +542,7 @@ def test_tensorflow_sqrt(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="sqrt",
+        fn_tree="raw_ops.Sqrt",
         x=np.asarray(x, dtype=input_dtype),
     )
 
