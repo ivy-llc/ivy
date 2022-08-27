@@ -22,6 +22,10 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
+def Cross(a, b, name="Cross"):
+    return ivy.cross(a, b)
+
+
 def fill(dims, value, name="full"):
     return ivy.full(dims, value)
 
