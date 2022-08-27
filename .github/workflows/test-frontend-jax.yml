@@ -15,6 +15,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: test-frontend-jax.yml
+          workflow_conclusion: completed
           name: hypothesis_frontend_jax_zip
           path: |
             ivy/.hypothesis/
@@ -26,6 +27,7 @@ jobs:
           rm examples.zip
 
       - name: Run Frontend Tests
+        id: tests
         run: |
           cd ivy
           docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend jax ivy/ivy_tests/test_ivy/test_frontends/test_jax
