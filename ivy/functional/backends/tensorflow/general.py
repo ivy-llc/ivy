@@ -165,6 +165,8 @@ def _infer_dtype(x_dtype: tf.DType):
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -172,9 +174,9 @@ def cumsum(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if x.dtype == dtype:
-        return tf.math.cumsum(x, axis)
-    return tf.math.cumsum(tf.cast(x, dtype), axis)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
 def cumprod(
@@ -188,9 +190,9 @@ def cumprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if x.dtype == dtype:
-        return tf.math.cumprod(x, axis, exclusive)
-    return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames

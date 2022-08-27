@@ -2761,20 +2761,20 @@ def cumsum(
         Whether to perform the cumsum from last to first element in the selected
         axis. Default is False (from first to last element)
     dtype
-        data type of the returned array. If None,
-        if the default data type corresponding to the data type “kind” (integer or
+        Data type of the returned array. Default is ``None``.
+        If None, if the default data type corresponding to the data type “kind” (integer or
         floating-point) of x has a smaller range of values than the data type of x
         (e.g., x has data type int64 and the default data type is int32, or x has data
         type uint64 and the default data type is int64), the returned array must have
-        the same data type as x. if x has a floating-point data type, the returned array
-        must have the default floating-point data type. if x has a signed integer data
+        the same data type as x. If x has a floating-point data type, the returned array
+        must have the default floating-point data type. If x has a signed integer data
         type (e.g., int16), the returned array must have the default integer data type.
-        if x has an unsigned integer data type (e.g., uint16), the returned array must
+        If x has an unsigned integer data type (e.g., uint16), the returned array must
         have an unsigned integer data type having the same number of bits as the default
         integer data type (e.g., if the default integer data type is int32, the returned
         array must have a uint32 data type). If the data type (either specified or
         resolved) differs from the data type of x, the input array should be cast to the
-        specified data type before computing the product. Default: None.
+        specified data type before computing the product.
     out
         Optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2794,34 +2794,43 @@ def cumsum(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 5, 2, 0])
-    >>> y = ivy.cumsum(x,reverse=False)
+    >>> y = ivy.cumsum(x, exclusive= True, reverse=False)
     >>> print(y)
-    ivy.array([1, 6, 8, 8])
+    ivy.array([0, 1, 6, 8])
 
-    >>> x = ivy.array([[6, 4, 2],
+    >>> x = ivy.array([[6, 4, 2], \
                        [1, 3, 0]])
-    >>> y = ivy.zeros((2,3), dtype= int)
-    >>> ivy.cumsum(x,axis=0,exclusive=True,reverse=bool,out=y)
+    >>> y = ivy.zeros((2,3))
+    >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
     >>> print(y)
-    ivy.array([[6, 4, 2],
-               [7, 7, 2]])
+    ivy.array([[7, 7, 2]
+               [1, 3, 0])
 
-    >>> x = ivy.array([[2, 4, 5], [3, 6, 5], [1, 3, 10]])
-    >>> ivy.cumsum(x,axis=1,reverse=bool,out=x)
+    >>> x = ivy.array([[1, 5, 2], \
+                       [4, 3, 0]])
+    >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
+    >>> print(y)
+    ivy.array([[4, 3, 0],
+               [0, 0, 0]])
+
+    >>> x = ivy.array([[2, 4, 5], \
+                       [3, 6, 5], \
+                       [1, 3, 10]])
+    >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
-    ivy.array([[ 2,  6, 11],
-               [ 3,  9, 14],
-               [ 1,  4, 14]])
+    ivy.array([[11,  9,  5],
+               [14, 11,  5],
+               [14, 13, 10]])
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
                           b=ivy.array([[3, 5, 7]]))
-    >>> y = ivy.cumsum(x,reverse=bool)
+    >>> y = ivy.cumsum(x, axis= 0)
     >>> print(y)
     {
-        a: ivy.array([1, 3, 5]),
-        b: ivy.array([3, 5, 7])
+        a: ivy.array([[1, 3, 5]]),
+        b: ivy.array([[3, 5, 7]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
@@ -2833,15 +2842,15 @@ def cumsum(
     >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
                           b = ivy.zeros((2, 3)), \
                           c = ivy.zeros((3,3)))
-    >>> ivy.cumsum(x,axis=1,reverse=bool,out=y)
+    >>> ivy.cumsum(x,axis=1,reverse=True, out=y)
     >>> print(y)
     {
-        a: ivy.array([[1, 4, 8]]),
-        b: ivy.array([[3, 8, 16],
-                      [5, 11, 16]]),
-        c: ivy.array([[2, 6, 7],
-                      [3, 9, 18],
-                      [0, 2, 5]])
+        a: ivy.array([[8, 7, 4]]),
+        b: ivy.array([[16, 13, 8],
+                      [16, 11, 5]]),
+        c: ivy.array([[7, 5, 1],
+                      [18, 15, 9],
+                      [5, 5, 3]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[0], \
@@ -2851,7 +2860,7 @@ def cumsum(
                           c=ivy.array([[1, 2], \
                                        [3, 4], \
                                        [6, 4]]))
-    >>> ivy.cumsum(x,axis=0,reverse=bool,out=x)
+    >>> ivy.cumsum(x,axis=0,out=x)
     >>> print(x)
     {
         a: ivy.array([[0],

@@ -145,14 +145,22 @@ def cumsum(
 ) -> np.ndarray:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if reverse:
-        x = np.flip(x, axis=axis)
-    if exclusive:
+    if exclusive and reverse:
+        x = np.cumsum(np.flip(x, axis=axis), axis=axis)
+        x = np.swapaxes(x, axis, -1)
+        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+        x = np.swapaxes(x, axis, -1)
+        return np.flip(x, axis=axis)
+    elif exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
         x = np.cumsum(x, -1, dtype=dtype, out=out)
         return np.swapaxes(x, axis, -1)
-    return np.cumsum(x, axis, dtype=dtype, out=out)
+    elif reverse:
+        x = np.cumsum(np.flip(x, axis=axis), axis=axis)
+        return np.flip(x, axis=axis)
+    else:
+        return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True
