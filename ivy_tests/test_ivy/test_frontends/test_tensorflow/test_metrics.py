@@ -11,21 +11,21 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def _get_dtype_y_true_y_pred(
-    draw,
-    *,
-    min_value=None,
-    max_value=None,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    allow_inf=False,
-    exclude_min=False,
-    exclude_max=False,
-    min_num_dims=0,
-    max_num_dims=5,
-    min_dim_size=1,
-    max_dim_size=10,
-    shape=None,
-    ret_shape=False,
+        draw,
+        *,
+        min_value=None,
+        max_value=None,
+        large_value_safety_factor=1.1,
+        small_value_safety_factor=1.1,
+        allow_inf=False,
+        exclude_min=False,
+        exclude_max=False,
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        shape=None,
+        ret_shape=False,
 ):
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
@@ -109,7 +109,7 @@ def _get_dtype_y_true_y_pred(
     native_array=st.booleans(),
 )
 def test_tensorflow_binary_accuracy(
-    dtype_y_true_y_pred, as_variable, num_positional_args, native_array, fw
+        dtype_y_true_y_pred, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, y_true_y_pred = dtype_y_true_y_pred
     y_true, y_pred = y_true_y_pred
@@ -144,13 +144,13 @@ def test_tensorflow_binary_accuracy(
     ),
 )
 def test_sparse_categorical_crossentropy(
-    y_true,
-    dtype_y_pred,
-    from_logits,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        y_true,
+        dtype_y_pred,
+        from_logits,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
@@ -172,7 +172,8 @@ def test_sparse_categorical_crossentropy(
         y_pred=y_pred,
         from_logits=from_logits,
     )
-    
+
+
 # mean_absolute_error
 @handle_cmd_line_args
 @given(
@@ -187,10 +188,8 @@ def test_sparse_categorical_crossentropy(
         fn_name="ivy.functional.frontends.tensorflow.mean_absolute_error"
     ),
 )
-
 def test_mean_absolute_error(
-    y_true,dtype_y_pred,as_variable,num_positional_args,native_array,fw):
-
+        y_true, dtype_y_pred, as_variable, num_positional_args, native_array, fw):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
 
