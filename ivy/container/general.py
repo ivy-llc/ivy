@@ -1614,6 +1614,24 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with einops.reduce having been applied.
 
+        Examples
+        --------
+        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],  
+                                           [0.735, -6.7, 13.27]],
+                                          [[-24.037, 8.5, 26.7],  
+                                           [0.451, 12.4, 1.7]],
+                                          [[-5.6, -18.19, -20.35],  
+                                           [2.58, -1.006, -9.973]]]),
+                            b=ivy.array([[[-4.47, 0.93, -3.34],  
+                                          [3.66, 24.29, 3.64]], 
+                                         [[4.96, 1.52, -10.67],  
+                                          [4.36, 13.96, 0.3]]]))
+        >> reduced = ivy.Container.static_einops_reduce(x, 'a b c -> () () c', 'mean')
+        >> print(reduced)
+        {
+            a: ivy.array([[[-2.87, -0.0277, 0.658]]]),
+            b: ivy.array([[[2.13, 10.2, -2.52]]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "einops_reduce",
@@ -1675,6 +1693,27 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with einops.reduce having been applied.
 
+        Examples
+        --------
+        >> x = ivy.Container(a=ivy.array([[[5, 4, 3],
+                                           [11, 2, 9]], 
+                                          [[3, 5, 7], 
+                                           [9, 7, 1]]]),
+                            b=ivy.array([[[9,7,6],
+                                          [5,2,1]],
+                                        [[4,1,2],
+                                         [2,3,6]],
+                                        [[1, 9, 6],
+                                         [0, 2, 1]]]))
+        >> reduced = x.einops_reduce('a b c -> a b', 'sum')
+        >> print(reduced)
+        {
+            a: ivy.array([[12, 22],
+                        [15, 17]]),
+            b: ivy.array([[22, 8],
+                        [7, 11],
+                        [16, 3]])
+        }
         """
         return self.static_einops_reduce(
             self,

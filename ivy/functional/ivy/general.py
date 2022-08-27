@@ -2112,6 +2112,26 @@ def einops_reduce(
     ret
         New array with einops.reduce having been applied.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >> x = ivy.array([[-4.47, 0.93, -3.34],  
+                      [3.66, 24.29, 3.64]])
+    >> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
+    >> print(reduced)
+    ivy.array([-0.405, 12.6  ,  0.15 ])
+
+    With :code:`ivy.Container` input:
+    >> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],  
+                                      [3.66, 24.29, 3.64]]), 
+                        b=ivy.array([[4.96, 1.52, -10.67],  
+                                     [4.36, 13.96, 0.3]]))
+    >> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
+    >> print(reduced)
+    {
+        a: ivy.array([-2.29, 10.5]),
+        b: ivy.array([-1.4, 6.21])
+    }
     """
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
     if ivy.exists(out):
