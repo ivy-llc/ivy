@@ -11,24 +11,23 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
-#       - name: Download artifact
-#         uses: dawidd6/action-download-artifact@v2
-#         with:
-#           workflow: test-array-api-jax.yml
-#           name: hypothesis_frontend_jax_zip
-#           path: |
-#             ivy/.hypothesis/
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-array-api-jax.yml
+          name: hypothesis_frontend_jax_zip
+          path: |
+            ivy/.hypothesis/
 
-#       - name: Unzip Hypothesis Examples
-#         run: |
-#           cd ivy/.hypothesis
-#           unzip examples.zip
-#           rm examples.zip
+      - name: Unzip Hypothesis Examples
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
 
       - name: Run Frontend Tests
         run: |
           cd ivy
-          mkdir -p .hypothesis
           docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend jax ivy/ivy_tests/test_ivy/test_frontends/test_jax
         continue-on-error: true
 
@@ -44,6 +43,6 @@ jobs:
           path: |
             ivy/.hypothesis/examples.zip
 
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
