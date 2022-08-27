@@ -30,5 +30,6 @@ def mean_absolute_error(y_true, y_pred):
 
 
 mean_absolute_error.unsupported_dtypes = {
-    "numpy": ("float16", "bfloat16", "float32", "float64"),
+    "numpy": ("int8", "float64"),
+    "torch": ("int8", "float64"),
 }
