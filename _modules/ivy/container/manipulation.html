@@ -455,6 +455,14 @@
 <span class="sd">        -------</span>
 <span class="sd">            A container with list of sub-arrays.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2, 5, 9]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.split()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[2], [5], [9]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_split</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
