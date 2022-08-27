@@ -44,6 +44,9 @@ jobs:
          run: |
            cd ivy
            mkdir -p .hypothesis
+           cd hypothesis
+           mkdir -p examples
+           cd ..
            ./test_ivy_core.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
 
