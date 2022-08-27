@@ -8,16 +8,11 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.jax as ivy_jax
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
+#svd
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
-        ),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
+        available_dtypes=ivy_jax.valid_float_dtypes),
     as_variable = helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.svd"
