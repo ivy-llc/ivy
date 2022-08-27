@@ -27,7 +27,6 @@ jobs:
          uses: dawidd6/action-download-artifact@v2
          with:
            workflow: test-ivy-core.yml
-           workflow_conclusion: completed
            name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
            path: |
              ivy/.hypothesis/
@@ -37,7 +36,6 @@ jobs:
            cd ivy/.hypothesis
            unzip examples.zip
            rm examples.zip
-
 
        - name: Run Functional-Core Tests
          id: tests
