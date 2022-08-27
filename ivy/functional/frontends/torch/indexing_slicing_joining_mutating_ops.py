@@ -37,5 +37,5 @@ def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)
 
 
-def squeeze(input, dim=None):
+def squeeze(input, dim):
     return ivy.squeeze(input, dim)
