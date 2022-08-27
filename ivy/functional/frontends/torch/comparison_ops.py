@@ -60,8 +60,7 @@ ge = greater_equal
 
 
 def greater(input, other, *, out=None):
-    ret = ivy.greater(input, other, out=out)
-    return ret
+    return ivy.greater(input, other, out=out)
 
 
 gt = greater
