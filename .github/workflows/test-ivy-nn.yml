@@ -45,6 +45,7 @@ jobs:
            mkdir -p examples
            cd ..
            ./test_ivy_nn.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+         continue-on-error: true
 
        - name: Zip Hypothesis Examples
          run: |
