@@ -3487,38 +3487,7 @@ def logaddexp(
     >>> print(x)
     ivy.array([[[8.4], [3.6], [1.6]]])
 
-    Instance Method Examples
-    ------------------------
-
-    >>> x = ivy.array([2., 5., 15.])
-    >>> y = ivy.array([3., 2., 4.])
-    >>> z = x.logaddexp(y)
-    >>> print(z)
-    ivy.array([ 3.31,  5.05, 15.  ])
-
-    >>> x = ivy.array([7., 11., 6.])
-    >>> y = ivy.array([6., 9., 4.])
-    >>> z = x.logaddexp(y)
-    >>> print(z)
-    ivy.array([ 7.31, 11.1 ,  6.13])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1., 2.])
-    >>> y = ivy.native_array([4., 5.])
-    >>> z = ivy.logaddexp(x, y)
-    >>> print(z)
-    ivy.array([4.05, 5.05])
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.array([1., 2., 3.])
-    >>> y = ivy.native_array([4., 5., 0.])
-    >>> z = ivy.logaddexp(x, y)
-    >>> print(z)
-    ivy.array([4.05, 5.05, 3.05])
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With one :code:`ivy.Container` input:
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
     >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
@@ -3534,7 +3503,7 @@ def logaddexp(
                   [7.14, 7.01, 7.]])
     }
     
-    With :code:`ivy.Container` input:
+    With multiple :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
                         b=ivy.array([2., 3., 4.]))
