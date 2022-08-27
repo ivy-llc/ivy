@@ -63,35 +63,35 @@ import ivy.functional.backends.numpy as ivy_np
 
 
 def convtrue(argument):
-    """convert NativeClass in argument to true framework counter part"""
+    """Convert NativeClass in argument to true framework counter part"""
     if isinstance(argument, NativeClass):
         return argument._native_class
     return argument
 
 
 def convjax(argument):
-    """convert NativeClass in argument to ivy frontend counter part for jax"""
+    """Convert NativeClass in argument to ivy frontend counter part for jax"""
     if isinstance(argument, NativeClass):
         return jax_classes_to_ivy_classes.get(argument._native_class)
     return argument
 
 
 def convnumpy(argument):
-    """convert NativeClass in argument to ivy frontend counter part for numpt"""
+    """Convert NativeClass in argument to ivy frontend counter part for numpt"""
     if isinstance(argument, NativeClass):
         return numpy_classes_to_ivy_classes.get(argument._native_class)
     return argument
 
 
 def convtorch(argument):
-    """convert NativeClass in argument to ivy frontend counter part for torch"""
+    """Convert NativeClass in argument to ivy frontend counter part for torch"""
     if isinstance(argument, NativeClass):
         return torch_classes_to_ivy_classes.get(argument._native_class)
     return argument
 
 
 def convtensor(argument):
-    """convert NativeClass in argument to ivy frontend counter part for tensorflow"""
+    """Convert NativeClass in argument to ivy frontend counter part for tensorflow"""
     if isinstance(argument, NativeClass):
         return tensorflow_classes_to_ivy_classes.get(argument._native_class)
     return argument
