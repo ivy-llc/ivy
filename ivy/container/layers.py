@@ -282,6 +282,7 @@ class ContainerWithLayers(ContainerBase):
         ivy.Container static method variant of ivy.conv2d. This method simply
         wraps the function, and so the docstring for ivy.conv2d also applies
         to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -300,10 +301,12 @@ class ContainerWithLayers(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        
         Returns
         -------
         ret
             The result of the convolution operation.
+        
         Examples
         --------
         >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
@@ -352,6 +355,7 @@ class ContainerWithLayers(ContainerBase):
         ivy.Container instance method variant of `ivy.conv2d`. This method simply
         wraps the function, and so the docstring for `ivy.conv2d` also applies
         to this method with minimal changes.
+        
         Parameters
         ----------
         x
@@ -370,10 +374,12 @@ class ContainerWithLayers(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        
         Returns
         -------
         ret
             The result of the convolution operation.
+        
         Examples
         --------
         >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
