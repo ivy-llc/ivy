@@ -1052,7 +1052,12 @@ def split(
         a: ivy.array([[2], [5], [9]])
     }
     """
-    return current_backend(x).split(x, num_or_size_splits, axis, with_remainder)
+    return current_backend(x).split(
+        x,
+        num_or_size_splits=num_or_size_splits,
+        axis=axis,
+        with_remainder=with_remainder,
+    )
 
 
 @to_native_arrays_and_back
