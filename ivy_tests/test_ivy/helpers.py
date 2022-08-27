@@ -26,6 +26,15 @@ from ivy.functional.backends.tensorflow.general import (
 from ivy.functional.backends.torch.general import (
     is_native_array as is_torch_native_array,
 )
+from ivy_tests.test_ivy.test_frontends import NativeClass
+from ivy_tests.test_ivy.test_frontends.test_torch import \
+    torch_classes_to_ivy_classes
+from ivy_tests.test_ivy.test_frontends.test_numpy import \
+    numpy_classes_to_ivy_classes
+from ivy_tests.test_ivy.test_frontends.test_tensorflow import \
+    tensorflow_classes_to_ivy_classes
+from ivy_tests.test_ivy.test_frontends.test_jax import \
+    jax_classes_to_ivy_classes
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -51,6 +60,41 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy.functional.backends.numpy as ivy_np
+
+
+def convertiontrue(argument):
+    """convert NativeClass in argument to true framework counter part"""
+    if isinstance(argument, NativeClass):
+        return argument._native_class
+    return argument
+
+
+def convertionjax(argument):
+    """convert NativeClass in argument to ivy frontend counter part for jax"""
+    if isinstance(argument, NativeClass):
+        return jax_classes_to_ivy_classes.get(argument._native_class)
+    return argument
+
+
+def convertionnumpy(argument):
+    """convert NativeClass in argument to ivy frontend counter part for numpt"""
+    if isinstance(argument, NativeClass):
+        return numpy_classes_to_ivy_classes.get(argument._native_class)
+    return argument
+
+
+def convertiontorch(argument):
+    """convert NativeClass in argument to ivy frontend counter part for torch"""
+    if isinstance(argument, NativeClass):
+        return torch_classes_to_ivy_classes.get(argument._native_class)
+    return argument
+
+
+def convertiontensor(argument):
+    """convert NativeClass in argument to ivy frontend counter part for tensorflow"""
+    if isinstance(argument, NativeClass):
+        return tensorflow_classes_to_ivy_classes.get(argument._native_class)
+    return argument
 
 
 def get_ivy_numpy():
@@ -1757,7 +1801,24 @@ def test_frontend_function(
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
-
+    
+    # check and replace NativeClass object in arguments with ivy counterparts
+    if frontend == "jax":
+        args = ivy.nested_map(args, fn=convertionjax, include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convertionjax, include_derived=True, max_depth=100)
+    elif frontend == "numpy":
+        args = ivy.nested_map(args, fn=convertionnumpy, include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convertionnumpy, include_derived=True, max_depth=100)
+    elif frontend == "tensorflow":
+        args = ivy.nested_map(args, fn=convertiontensor, include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convertiontensor, include_derived=True, max_depth=100)
+    elif frontend == "torch":
+        args = ivy.nested_map(args, fn=convertiontorch, include_derived=True, max_depth=100)
+        kwargs = ivy.nested_map(kwargs, fn=convertiontorch, include_derived=True, max_depth=100)
+    else:
+        args = args
+        kwargs = kwargs
+    
     # run from the Ivy API directly
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
@@ -1823,7 +1884,11 @@ def test_frontend_function(
         # change ivy device to native devices
         if "device" in kwargs_frontend:
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
-
+        
+        # check and replace the NativeClass objects in arguments with true counterparts
+        args_frontend = ivy.nested_map(args_frontend, fn=convertiontrue, include_derived=True, max_depth=10)
+        kwargs_frontend = ivy.nested_map(kwargs_frontend, fn=convertiontrue, include_derived=True, max_depth=10)
+        
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
