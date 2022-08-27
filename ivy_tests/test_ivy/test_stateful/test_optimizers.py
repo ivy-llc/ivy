@@ -1,320 +1,241 @@
 """Collection of tests for Ivy optimizers."""
 
 # global
-from hypothesis import given, strategies as st
+# from matplotlib.style import available
+# import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 import numpy as np
 
 # local
-import ivy
-from ivy.container import Container
+# import ivy
+# from ivy.container import Container
+import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # sgd
+@handle_cmd_line_args
 @given(
-    bs_ic_oc_target=st.sampled_from(
-        [
-            (
-                [1, 2],
-                4,
-                5,
-                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
-            ),
-        ]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
     ),
     with_v=st.booleans(),
+    lr=st.floats(min_value=0.0, max_value=1.0),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    stop_gradients=st.booleans(),
+    compile_on_next_step=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="SGD.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="SGD._step"),
 )
-def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        "float32",
+def test_sgd_optimizer(
+    dtype_and_x,
+    with_v,
+    lr,
+    inplace,
+    stop_gradients,
+    compile_on_next_step,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        num_positional_args_method=num_positional_args_method,
+        all_as_kwargs_np_init={
+            "lr": lr,
+            "inplace": inplace,
+            "stop_gradients": stop_gradients,
+            "compile_on_next_step": compile_on_next_step,
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        method_with_v=with_v,
+        all_as_kwargs_np_method={
+            "v": np.asarray(x[0], dtype=input_dtype[0]),
+            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+        },
+        fw=fw,
+        class_name="SGD",
+        method_name="_step",
     )
-    if with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(ivy.zeros([output_channels]))
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
-
-    def loss_fn(v_):
-        out = linear_layer(x, v=v_)
-        return ivy.mean(out)
-
-    # optimizer
-    optimizer = ivy.SGD(inplace=ivy.inplace_variables_supported() if inplace else False)
-
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
-        linear_layer.v = optimizer.step(linear_layer.v, grads)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.b)) > 0
-    assert ivy.max(ivy.abs(grads.w)) > 0
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
 
 
 # lars
+@handle_cmd_line_args
 @given(
-    bs_ic_oc_target=st.sampled_from(
-        [
-            (
-                [1, 2],
-                4,
-                5,
-                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
-            ),
-        ]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
     ),
     with_v=st.booleans(),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    lr=st.floats(min_value=0.0, max_value=1.0),
+    decay_lamda=st.floats(min_value=0.0, max_value=1.0),
+    stop_gradients=st.booleans(),
+    compile_on_next_step=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="LARS.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="LARS._step"),
 )
-def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        dtype="float32",
+def test_lars_optimizer(
+    dtype_and_x,
+    with_v,
+    lr,
+    decay_lamda,
+    inplace,
+    stop_gradients,
+    compile_on_next_step,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        num_positional_args_method=num_positional_args_method,
+        all_as_kwargs_np_init={
+            "lr": lr,
+            # "decay_lamda": decay_lamda,
+            "inplace": inplace,
+            "stop_gradients": stop_gradients,
+            "compile_on_next_step": compile_on_next_step,
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        method_with_v=with_v,
+        all_as_kwargs_np_method={
+            "v": np.asarray(x[0], dtype=input_dtype[0]),
+            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+        },
+        fw=fw,
+        class_name="LARS",
+        method_name="_step",
     )
-    if with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(ivy.zeros([output_channels]))
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
-
-    def loss_fn(v_):
-        out = linear_layer(x, v=v_)
-        return ivy.mean(out)
-
-    # optimizer
-    optimizer = ivy.LARS(
-        inplace=ivy.inplace_variables_supported() if inplace else False
-    )
-
-    # train
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
-        linear_layer.v = optimizer.step(linear_layer.v, grads)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.b)) > 0
-    assert ivy.max(ivy.abs(grads.w)) > 0
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
 
 
 # adam
+@handle_cmd_line_args
 @given(
-    bs_ic_oc_target=st.sampled_from(
-        [
-            (
-                [1, 2],
-                4,
-                5,
-                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
-            ),
-        ]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
     ),
-    with_v=st.booleans(),
+    lr=st.floats(min_value=0.0, max_value=1.0),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    stop_gradients=st.booleans(),
+    compile_on_next_step=st.booleans(),
+    device=st.sampled_from(["cpu", "cuda"]),
+    with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="Adam.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="Adam._step"),
 )
-def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        dtype="float32",
+def test_adam_optimizer(
+    dtype_and_x,
+    lr,
+    inplace,
+    stop_gradients,
+    compile_on_next_step,
+    device,
+    with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        num_positional_args_method=num_positional_args_method,
+        all_as_kwargs_np_init={
+            "lr": lr,
+            "inplace": inplace,
+            "stop_gradients": stop_gradients,
+            "compile_on_next_step": compile_on_next_step,
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        method_with_v=with_v,
+        device_=device,
+        all_as_kwargs_np_method={
+            "v": np.asarray(x[0], dtype=input_dtype[0]),
+            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+        },
+        fw=fw,
+        class_name="Adam",
+        method_name="_step",
     )
-    if with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(ivy.zeros([output_channels]))
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
-
-    def loss_fn(v_):
-        out = linear_layer(x, v=v_)
-        return ivy.mean(out)
-
-    # optimizer
-    optimizer = ivy.Adam(
-        device=device, inplace=ivy.inplace_variables_supported() if inplace else False
-    )
-
-    # train
-    loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
-    linear_layer.v = optimizer.step(linear_layer.v, grads)
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
-        linear_layer.v = optimizer.step(linear_layer.v, grads)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.b)) > 0
-    assert ivy.max(ivy.abs(grads.w)) > 0
 
 
 # lamb
+@handle_cmd_line_args
 @given(
-    bs_ic_oc_target=st.sampled_from(
-        [
-            (
-                [1, 2],
-                4,
-                5,
-                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
-            ),
-        ]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
     ),
-    with_v=st.booleans(),
+    lr=st.floats(min_value=0.0, max_value=1.0),
     inplace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    stop_gradients=st.booleans(),
+    compile_on_next_step=st.booleans(),
+    device=st.sampled_from(["cpu", "cuda"]),
+    with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="LAMB.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="LAMB._step"),
 )
-def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, device, compile_graph):
-    # smoke test
-    if ivy.current_backend_str() == "numpy":
-        # NumPy does not support gradients
-        return
-    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
-    x = ivy.astype(
-        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
-        dtype="float32",
+def test_lamb_optimizer(
+    dtype_and_x,
+    lr,
+    inplace,
+    stop_gradients,
+    compile_on_next_step,
+    device,
+    with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        num_positional_args_method=num_positional_args_method,
+        all_as_kwargs_np_init={
+            "lr": lr,
+            "inplace": inplace,
+            "stop_gradients": stop_gradients,
+            "compile_on_next_step": compile_on_next_step,
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=with_v,
+        native_array_flags_method=False,
+        container_flags_method=False,
+        method_with_v=with_v,
+        device_=device,
+        all_as_kwargs_np_method={
+            "v": np.asarray(x[0], dtype=input_dtype[0]),
+            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+        },
+        fw=fw,
+        class_name="LAMB",
+        method_name="_step",
     )
-    if with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.array(
-                np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                dtype="float32",
-                device=device,
-            )
-        )
-        b = ivy.variable(ivy.zeros([output_channels]))
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, device=device, v=v)
-
-    def loss_fn(v_):
-        out = linear_layer(x, v=v_)
-        return ivy.mean(out)
-
-    # optimizer
-    optimizer = ivy.LAMB(
-        device=device, inplace=ivy.inplace_variables_supported() if inplace else False
-    )
-
-    # train
-    loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
-    linear_layer.v = optimizer.step(linear_layer.v, grads)
-    loss_tm1 = 1e12
-    loss = None
-    grads = None
-    for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
-        linear_layer.v = optimizer.step(linear_layer.v, grads)
-        assert loss < loss_tm1
-        loss_tm1 = loss
-
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
-    # value test
-    assert ivy.max(ivy.abs(grads.b)) > 0
-    assert ivy.max(ivy.abs(grads.w)) > 0

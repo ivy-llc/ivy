@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Union, Tuple
 
+import ivy
 import tensorflow as tf
 
 
@@ -46,4 +47,5 @@ def where(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.where(condition, x1, x2)

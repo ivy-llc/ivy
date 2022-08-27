@@ -487,7 +487,7 @@ def test_bitwise_or(
         available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=0.9,
+        large_value_safety_factor=1.1,
         small_value_safety_factor=0.9,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
