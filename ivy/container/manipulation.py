@@ -326,6 +326,14 @@ class ContainerWithManipulation(ContainerBase):
         -------
             A container with list of sub-arrays.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
+        >>> y = x.split()
+        >>> print(y)
+        {
+            a: ivy.array([[2], [5], [9]])
+        }
         """
         return self.static_split(
             self,
