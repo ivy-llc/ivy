@@ -45,13 +45,6 @@ def expand_dims(
     return ret
 
 
-expand_dims.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
 def flip(
     x: torch.Tensor,
     /,
@@ -75,13 +68,6 @@ def flip(
     return ret
 
 
-flip.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
 def permute_dims(
     x: torch.Tensor,
     /,
@@ -91,13 +77,6 @@ def permute_dims(
 ) -> torch.Tensor:
     ret = torch.permute(x, axes)
     return ret
-
-
-permute_dims.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
 
 
 def reshape(
@@ -114,13 +93,6 @@ def reshape(
     return torch.reshape(x, shape)
 
 
-reshape.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
 def roll(
     x: torch.Tensor,
     /,
@@ -132,15 +104,7 @@ def roll(
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
         shift = [shift for _ in range(len(axis))]
-
     return torch.roll(x, shift, axis)
-
-
-roll.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
 
 
 def squeeze(
@@ -178,13 +142,6 @@ def squeeze(
         else:
             x = torch.squeeze(x, i)
     return x
-
-
-squeeze.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
 
 
 def stack(
@@ -271,14 +228,6 @@ def tile(
     return ret
 
 
-tile.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
-# noinspection PyUnresolvedReferences
 def constant_pad(
     x: torch.Tensor,
     /,
@@ -300,9 +249,6 @@ def constant_pad(
     return ret
 
 
-constant_pad.unsupported_dtypes = ("uint16", "uint32", "uint64")
-
-
 def zero_pad(
     x: torch.Tensor,
     /,
@@ -313,25 +259,11 @@ def zero_pad(
     return constant_pad(x, pad_width, value=0.0)
 
 
-zero_pad.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
 def swapaxes(
     x: torch.Tensor, axis0: int, axis1: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     ret = torch.transpose(x, axis0, axis1)
     return ret
-
-
-swapaxes.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
 
 
 def clip(
