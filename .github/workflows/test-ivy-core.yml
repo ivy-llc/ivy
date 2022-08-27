@@ -48,6 +48,7 @@ jobs:
            mkdir -p .hypothesis
            cd .hypothesis
            mkdir -p examples
+         continue-on-error: true
 
        - name: Run Functional-Core Tests
          id: tests
