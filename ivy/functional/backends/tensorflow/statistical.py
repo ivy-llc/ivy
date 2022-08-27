@@ -64,6 +64,15 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
+def _infer_dtype(x_dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def prod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -73,16 +82,9 @@ def prod(
     keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if dtype is None:
-        if x.dtype in [tf.int8, tf.int16, tf.int32]:
-            dtype = tf.int32
-        elif x.dtype in [tf.uint8, tf.uint16, tf.experimental.numpy.uint32]:
-            dtype = tf.experimental.numpy.uint32
-        elif x.dtype == tf.int64:
-            dtype = tf.int64
-        elif x.dtype == tf.uint64:
-            dtype = tf.uint64
     dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
 
@@ -127,16 +129,9 @@ def sum(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if dtype is None:
-        if x.dtype in [tf.int8, tf.int16, tf.int32]:
-            dtype = tf.int32
-        elif x.dtype in [tf.uint8, tf.uint16, tf.experimental.numpy.uint32]:
-            dtype = tf.experimental.numpy.uint32
-        elif x.dtype == tf.int64:
-            dtype = tf.int64
-        elif x.dtype == tf.uint64:
-            dtype = tf.uint64
     dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 

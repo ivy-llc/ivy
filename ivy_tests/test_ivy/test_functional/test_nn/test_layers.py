@@ -961,7 +961,7 @@ def x_and_lstm(draw, dtypes):
         dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
     ),
 )
-def test_lstm(
+def test_lstm_update(
     *,
     dtype_lstm,
     as_variable,

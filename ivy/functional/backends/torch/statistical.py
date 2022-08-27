@@ -92,6 +92,15 @@ def min(
 min.support_native_out = True
 
 
+def _infer_dtype(x_dtype: torch.dtype):
+    default_dtype = ivy.infer_default_dtype(x_dtype, as_native=True)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def prod(
     x: torch.Tensor,
     /,
@@ -100,18 +109,9 @@ def prod(
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
 ) -> torch.Tensor:
-    if dtype is None:
-        if x.dtype in [torch.int8, torch.int16]:
-            dtype = torch.int32
-        elif x.dtype == torch.uint8:
-            dtype = torch.uint8
-        elif x.dtype in [torch.int64, torch.int32]:
-            dtype = torch.int64
-        elif x.dtype == torch.bfloat16:
-            dtype = torch.float16
-
     dtype = ivy.as_native_dtype(dtype)
-
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         axis = x.dim() - 1
@@ -160,17 +160,9 @@ def sum(
     dtype: torch.dtype = None,
     keepdims: bool = False,
 ) -> torch.Tensor:
-    if dtype is None:
-        if x.dtype in [torch.int8, torch.int16]:
-            dtype = torch.int32
-        elif x.dtype == torch.uint8:
-            dtype = torch.uint8
-        elif x.dtype in [torch.int32, torch.int64]:
-            dtype = torch.int64
-        elif x.dtype == torch.float16:
-            dtype = torch.float16
-
     dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
