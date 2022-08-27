@@ -195,7 +195,7 @@ def test_mean_absolute_error(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32, dtype],
-        as_variable = as_variable,
+        as_variable=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
