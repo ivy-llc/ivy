@@ -206,13 +206,12 @@ stack.support_native_out = True
 
 
 def split(
-    x,
+    x: torch.Tensor,
     /,
     *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
-    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -224,7 +223,6 @@ def split(
         return [x]
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
-        # noinspection PyUnboundLocalVariable
         num_or_size_splits = 1
     elif isinstance(num_or_size_splits, int):
         if with_remainder:
