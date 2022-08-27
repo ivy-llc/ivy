@@ -16,12 +16,9 @@ def ceil(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.ceil(x, out=out)
-    if ivy.is_array(where):
-        if out is None:
-            out = ivy.empty(ret.shape)
-        ret = ivy.where(where, ret, out, out=out)
-    return ret
+    if out is None:
+        out = ivy.empty(x.shape)
+    return ivy.where(where, ivy.ceil(x, out=x), out, out=out)
 
 
 ceil.unsupported_dtypes = {"torch": ("float16",)}
