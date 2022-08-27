@@ -20,11 +20,11 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.acos"
+        fn_name="ivy.functional.frontends.tensorflow.Acos"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_acos(
+def test_tensorflow_Acos(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -36,7 +36,7 @@ def test_tensorflow_acos(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="acos",
+        fn_tree="raw_ops.Acos",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -51,11 +51,11 @@ def test_tensorflow_acos(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.acosh"
+        fn_name="ivy.functional.frontends.tensorflow.Acosh"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_acosh(
+def test_tensorflow_Acosh(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -67,7 +67,7 @@ def test_tensorflow_acosh(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="acosh",
+        fn_tree="raw_ops.Acosh",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -145,7 +145,7 @@ def test_tensorflow_concat(
     )
 
 
-# cos
+# Cos
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -155,11 +155,11 @@ def test_tensorflow_concat(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.cos"
+        fn_name="ivy.functional.frontends.tensorflow.Cos"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_cos(
+def test_tensorflow_Cos(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -171,12 +171,12 @@ def test_tensorflow_cos(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="cos",
+        fn_tree="raw_ops.Cos",
         x=np.asarray(x, dtype=input_dtype),
     )
 
 
-# cosh
+# Cosh
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -186,11 +186,11 @@ def test_tensorflow_cos(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.cosh"
+        fn_name="ivy.functional.frontends.tensorflow.Cosh"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_cosh(
+def test_tensorflow_Cosh(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -202,7 +202,7 @@ def test_tensorflow_cosh(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="cosh",
+        fn_tree="raw_ops.Cosh",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -267,7 +267,7 @@ def test_tensorflow_full(
     )
 
 
-# asin
+# Asin
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -277,11 +277,11 @@ def test_tensorflow_full(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.asin"
+        fn_name="ivy.functional.frontends.tensorflow.Asin"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_asin(
+def test_tensorflow_Asin(
     dtype_and_x, as_variable, num_positional_args, fw, native_array
 ):
     dtype, x = dtype_and_x
@@ -293,12 +293,12 @@ def test_tensorflow_asin(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="asin",
+        fn_tree="raw_ops.Asin",
         x=np.asarray(x, dtype=dtype),
     )
 
 
-# atan
+# Atan
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -308,11 +308,11 @@ def test_tensorflow_asin(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.atan"
+        fn_name="ivy.functional.frontends.tensorflow.Atan"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_atan(
+def test_tensorflow_Atan(
     dtype_and_x, as_variable, num_positional_args, fw, native_array
 ):
     dtype, x = dtype_and_x
@@ -324,7 +324,7 @@ def test_tensorflow_atan(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="atan",
+        fn_tree="raw_ops.Atan",
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -365,7 +365,7 @@ def test_tensorflow_BitwiseAnd(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",),
+        available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -425,7 +425,7 @@ def test_tensorflow_BitwiseXor(
     )
 
 
-# atanh
+# Atanh
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -435,11 +435,11 @@ def test_tensorflow_BitwiseXor(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.atanh"
+        fn_name="ivy.functional.frontends.tensorflow.Atanh"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_atanh(
+def test_tensorflow_Atanh(
     dtype_and_x, as_variable, num_positional_args, fw, native_array
 ):
     dtype, x = dtype_and_x
@@ -451,12 +451,12 @@ def test_tensorflow_atanh(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="atanh",
+        fn_tree="raw_ops.Atanh",
         x=np.asarray(x, dtype=dtype),
     )
 
 
-# tan
+# Tan
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -466,11 +466,11 @@ def test_tensorflow_atanh(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.tan"
+        fn_name="ivy.functional.frontends.tensorflow.Tan"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_tan(
+def test_tensorflow_Tan(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -482,7 +482,7 @@ def test_tensorflow_tan(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="tan",
+        fn_tree="raw_ops.Tan",
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -547,7 +547,7 @@ def test_tensorflow_Sqrt(
     )
 
 
-# tanh
+# Tanh
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -557,11 +557,11 @@ def test_tensorflow_Sqrt(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.tanh"
+        fn_name="ivy.functional.frontends.tensorflow.Tanh"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_tanh(
+def test_tensorflow_Tanh(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -573,7 +573,7 @@ def test_tensorflow_tanh(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="tanh",
+        fn_tree="raw_ops.Tanh",
         x=np.asarray(x, dtype=input_dtype),
     )
 
