@@ -4413,6 +4413,21 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a real-valued floating-point data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4., 5., .]),\
+                              b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([5., 6., 7.]))
+        >>> z = ivy.Container.static_logaddexp(y,x)
+        >>> print(z)
+        {
+            a: ivy.array([4.05, 5.05, 6.05]),
+            b: ivy.array([5.05, 6.05, 7.05])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logaddexp",
@@ -4469,6 +4484,21 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a real-valued floating-point data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
+        
+        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
+                              b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([5., 6., 7.]))
+        >>> z = ivy.logaddexp(y,x)
+        >>> print(z)
+        {
+            a: ivy.array([4.05, 5.05, 6.05]),
+            b: ivy.array([5.05, 6.05, 7.05])
+        }
         """
         return self.static_logaddexp(
             self,
@@ -5579,6 +5609,7 @@ class ContainerWithElementwise(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        modulus: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -5598,6 +5629,8 @@ class ContainerWithElementwise(ContainerBase):
             input array or container. Must be compatible with ``x1``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5657,6 +5690,7 @@ class ContainerWithElementwise(ContainerBase):
             "remainder",
             x1,
             x2,
+            modulus=modulus,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -5669,6 +5703,7 @@ class ContainerWithElementwise(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        modulus: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -5688,6 +5723,8 @@ class ContainerWithElementwise(ContainerBase):
             input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5746,6 +5783,7 @@ class ContainerWithElementwise(ContainerBase):
         return self.static_remainder(
             self,
             x2,
+            modulus=modulus,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

@@ -50,10 +50,13 @@ def conv1d_transpose(
         output_shape = list(
             ivy.deconv_length(x.shape[1], strides, filters.shape[0], padding, dilations)
         )
+        output_shape = [x.shape[0]], output_shape, [x.shape[-1]]
+    elif len(output_shape) == 1:
+        output_shape = [x.shape[0], output_shape[0], x.shape[-1]]
     res = tf.nn.conv1d_transpose(
         x,
         filters,
-        [x.shape[0], output_shape[0], x.shape[-1]],
+        output_shape,
         strides,
         padding,
         "NWC",
@@ -114,8 +117,9 @@ def conv2d_transpose(
         new_w = ivy.deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
-        output_shape = [new_h, new_w]
-    output_shape = [x.shape[0]] + output_shape + [x.shape[-1]]
+        output_shape = [x.shape[0], new_h, new_w, x.shape[-1]]
+    elif len(output_shape) == 2:
+        output_shape = [x.shape[0], output_shape[0], output_shape[1], x.shape[-1]]
     res = tf.nn.conv2d_transpose(
         x, filters, output_shape, strides, padding, "NHWC", dilations
     )
@@ -218,8 +222,15 @@ def conv3d_transpose(
         new_w = ivy.deconv_length(
             x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
         )
-        output_shape = [new_d, new_h, new_w]
-    output_shape = [x.shape[0]] + output_shape + [x.shape[-1]]
+        output_shape = [x.shape[0], new_d, new_h, new_w, x.shape[-1]]
+    elif len(output_shape) == 3:
+        output_shape = [
+            x.shape[0],
+            output_shape[0],
+            output_shape[1],
+            output_shape[2],
+            x.shape[-1],
+        ]
     res = tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, "NDHWC", dilations
     )
