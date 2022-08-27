@@ -31,6 +31,8 @@ prod.unsupported_dtypes = {"torch": ("float16",)}
 # sum
 def sum(
         x,
+        /,
+        *,
         axis=None,
         dtype=None,
         out=None,
