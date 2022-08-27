@@ -3,7 +3,7 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 import sys
-
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
@@ -175,4 +175,40 @@ def test_tensorflow_slogdet(
         frontend="tensorflow",
         fn_tree="linalg.slogdet",
         x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+#tensordot
+@given(
+dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
+as_variable=st.booleans(),
+num_positional_args=helpers.num_positional_args(
+    fn_name="ivy.functional.frontends.tensorflow.tensordot"
+),
+native_array=st.booleans(),
+)
+def test_tensorflow_tensordot(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype1, a = dtype_and_x
+    input_dtype2, b = dtype_and_x
+
+    a = np.asarray(a, dtype=input_dtype1)
+    b = np.asarray(b, dtype=input_dtype2)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="tensordot",
+        a=a,
+        b=b,
+        axes=[a.shape, b.shape]
     )
