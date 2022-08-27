@@ -189,7 +189,7 @@ def test_sparse_categorical_crossentropy(
     ),
 )
 def test_mean_absolute_error(
-        y_true_dtype_y_pred, as_variable, num_positional_args, native_array, fw):
+        y_true_dtype_y_pred, as_variable, num_positional_args, native_array, fw,with_out):
     dtype, y_true_y_pred = y_true_dtype_y_pred
     y_true_y_pred = ivy.array(y_true_y_pred, dtype=dtype)
     y_true, y_pred = y_true_y_pred
@@ -197,7 +197,7 @@ def test_mean_absolute_error(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
