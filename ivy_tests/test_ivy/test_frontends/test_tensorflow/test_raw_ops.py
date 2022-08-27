@@ -18,11 +18,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Acos"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Acos(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -49,11 +47,9 @@ def test_tensorflow_Acos(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Acosh"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Acosh(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -116,11 +112,9 @@ def _arrays_idx_n_dtypes(draw):
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.concat"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_tensorflow_concat(
     xs_n_input_dtypes_n_unique_idx,
@@ -153,11 +147,9 @@ def test_tensorflow_concat(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Cos"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Cos(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -184,11 +176,9 @@ def test_tensorflow_Cos(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Cosh"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Cosh(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -275,11 +265,9 @@ def test_tensorflow_full(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         )
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Asin"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Asin(
     dtype_and_x, as_variable, num_positional_args, fw, native_array
@@ -306,11 +294,9 @@ def test_tensorflow_Asin(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         )
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Atan"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Atan(
     dtype_and_x, as_variable, num_positional_args, fw, native_array
@@ -337,11 +323,9 @@ def test_tensorflow_Atan(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.BitwiseAnd"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_tensorflow_BitwiseAnd(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -369,11 +353,9 @@ def test_tensorflow_BitwiseAnd(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.BitwiseOr"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_tensorflow_BitwiseOr(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -401,11 +383,9 @@ def test_tensorflow_BitwiseOr(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.BitwiseXor"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_tensorflow_BitwiseXor(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -433,11 +413,9 @@ def test_tensorflow_BitwiseXor(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         )
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Atanh"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Atanh(
     dtype_and_x, as_variable, num_positional_args, fw, native_array
@@ -464,11 +442,9 @@ def test_tensorflow_Atanh(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Tan"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Tan(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -555,11 +531,9 @@ def test_tensorflow_Sqrt(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Tanh"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_Tanh(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -588,11 +562,9 @@ def test_tensorflow_Tanh(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Maximum"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_tensorflow_Maximum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -622,11 +594,9 @@ def test_tensorflow_Maximum(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Minimum"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_tensorflow_Minimum(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
