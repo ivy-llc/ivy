@@ -408,6 +408,24 @@ class ArrayWithGeneral(abc.ABC):
         ret
             New array with einops.repeat having been applied.
 
+        Examples
+        --------
+        >> x = ivy.array([5,4])
+        >> repeated = x.einops_repeat('a -> a c', c=3)
+        >> print(repeated)
+        ivy.array([[5, 4],
+                   [5, 4],    
+                  [5, 4]])  
+
+        >> x = ivy.array([[5,4],
+                    [2, 3]])
+        >> repeated = x.einops_repeat('a b ->  a b c', c=3)
+        >> print(repeated)
+        ivy.array([[[5, 5, 5],
+                    [4, 4, 4]],
+                   [[2, 2, 2],
+                    [3, 3, 3]]])
+
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
 

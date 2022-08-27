@@ -1771,6 +1771,23 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with einops.repeat having been applied.
 
+        Examples
+        --------
+        >> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
+                            b=ivy.array([[1, 2], [4, 5]]))
+        >> repeated = ivy.Container.static_einops_repeat(x, 'h w -> (tile h) w', tile=2)
+        >> print(repeated)
+        {
+            a: ivy.array([[30, 40],  
+                        [50, 75],  
+                        [30, 40],  
+                        [50, 75]]),
+            b: ivy.array([[1, 2],    
+                        [4, 5],    
+                        [1, 2],    
+                        [4, 5]])   
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "einops_repeat",
@@ -1826,6 +1843,19 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             New container with einops.repeat having been applied.
+        
+        Examples
+        --------
+        >> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
+                             b=ivy.array([[1, 2], [4, 5]]))
+        >> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
+        >> print(repeated)
+        {
+            a: ivy.array([[30, 30, 40, 40],  
+                          [50, 50, 75, 75]]),
+            b: ivy.array([[1, 1, 2, 2],      
+                          [4, 4, 5, 5]])     
+        }
 
         """
         return self.static_einops_repeat(

@@ -2147,7 +2147,7 @@ def einops_repeat(
     *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Perform einops repeat operation on input array x.
 
     Parameters
@@ -2166,6 +2166,29 @@ def einops_repeat(
     -------
     ret
         New array with einops.repeat having been applied.
+
+    Examples
+    --------
+    With :code:`ivy.array` input:
+    >> x = ivy.array([1, 2, 3, 4])
+    >> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
+    >> print(repeated)
+    ivy.array([[1, 2, 3, 4],
+               [1, 2, 3, 4]])
+
+    With :code:`ivy.Container` input:
+    >> x = ivy.Container(a=ivy.array([[4,5], 
+                                    [1, 3]]),
+                        b=ivy.array([[9, 10], 
+                                    [4, 2]]))
+    >> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
+    >> print(repeated)
+    {
+        a: ivy.array([[4, 5, 4, 5],   
+                      [1, 3, 1, 3]]), 
+        b: ivy.array([[9, 10, 9, 10], 
+                      [4, 2, 4, 2]])  
+    }
 
     """
     ret = einops.repeat(x, pattern, **axes_lengths)
