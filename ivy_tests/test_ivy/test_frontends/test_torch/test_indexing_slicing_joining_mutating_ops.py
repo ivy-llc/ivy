@@ -334,13 +334,15 @@ def test_torch_transpose(
                 set(ivy_torch.valid_float_dtypes)
             )
         ),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape_value"),
     ),
     source=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape_value"),
+        force_tuple=True,
     ),
     destination=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape_value"),
+        force_tuple=True,
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -358,10 +360,6 @@ def test_torch_movedim(
     fw,
 ):
     input_dtype, value = dtype_and_values
-    if isinstance(source, int) and not isinstance(destination, int):
-        destination = destination[0]
-    elif isinstance(destination, int) and not isinstance(source, int):
-        source = source[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
