@@ -113,6 +113,47 @@ def test_torch_concat(
     )
 
 
+# nonzero
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        ),
+    ),
+    as_tuple=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nonzero"
+    ),
+)
+def test_torch_nonzero(
+    *,
+    dtype_and_values,
+    as_tuple,
+    as_variable,
+    with_out,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, input = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nonzero",
+        input=np.asarray(input, dtype=dtype),
+        as_tuple=as_tuple
+    )
+
+
 # permute
 @handle_cmd_line_args
 @given(
