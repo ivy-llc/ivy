@@ -173,6 +173,7 @@ def test_sparse_categorical_crossentropy(
         from_logits=from_logits,
     )
 
+
 # mean_absolute_error
 @handle_cmd_line_args
 @given(
