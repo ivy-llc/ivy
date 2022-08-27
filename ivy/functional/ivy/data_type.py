@@ -95,7 +95,7 @@ def astype(
 
     >>> x = ivy.array([1, 2])
     >>> y = ivy.zeros_like(x)
-    >>> y = ivy.astype(x, dtype = ivy.float64)
+    >>> y = ivy.astype(x, ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
 
@@ -921,6 +921,47 @@ def default_float_dtype(
     if as_native:
         return ivy.as_native_dtype(ret)
     return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
+
+
+def infer_default_dtype(
+    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
+):
+    """Summary.
+
+    Parameters
+    ----------
+    dtype
+
+    as_native
+        (Default value = False)
+
+    Returns
+    -------
+        Return the default data type for the “kind” (integer or floating-point) of dtype
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype("int32")
+    >>> ivy.infer_default_dtype("int8")
+    'int8'
+
+    >>> ivy.set_default_float_dtype("float64")
+    >>> ivy.infer_default_dtype("float32")
+    'float64'
+
+    >>> ivy.set_default_uint_dtype("uint32")
+    >>> x = ivy.array([0], dtype="uint64")
+    >>> ivy.infer_default_dtype(x.dtype)
+    'uint32'
+
+    """
+    if ivy.is_float_dtype(dtype):
+        default_dtype = ivy.default_float_dtype(as_native=as_native)
+    elif ivy.is_uint_dtype(dtype):
+        default_dtype = ivy.default_uint_dtype(as_native=as_native)
+    else:
+        default_dtype = ivy.default_int_dtype(as_native=as_native)
+    return default_dtype
 
 
 # noinspection PyShadowingNames
