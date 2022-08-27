@@ -5579,6 +5579,7 @@ class ContainerWithElementwise(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        modulus: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -5598,6 +5599,8 @@ class ContainerWithElementwise(ContainerBase):
             input array or container. Must be compatible with ``x1``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5657,6 +5660,7 @@ class ContainerWithElementwise(ContainerBase):
             "remainder",
             x1,
             x2,
+            modulus=modulus,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -5669,6 +5673,7 @@ class ContainerWithElementwise(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        modulus: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -5688,6 +5693,8 @@ class ContainerWithElementwise(ContainerBase):
             input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -5746,6 +5753,7 @@ class ContainerWithElementwise(ContainerBase):
         return self.static_remainder(
             self,
             x2,
+            modulus=modulus,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

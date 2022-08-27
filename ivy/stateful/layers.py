@@ -15,6 +15,8 @@ class Linear(Module):
         self,
         input_channels,
         output_channels,
+        /,
+        *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
         with_bias=True,
@@ -91,17 +93,17 @@ class Linear(Module):
                 **v,
                 b=self._b_init.create_variables(
                     self._b_shape, device, self._output_channels, dtype=dtype
-                )
+                ),
             )
         return v
 
-    def _forward(self, inputs):
+    def _forward(self, x):
         """
         Perform forward pass of the Linear layer.
 
         Parameters
         ----------
-        inputs
+        x
             Inputs to process *[batch_shape, in]*.
 
         Returns
@@ -110,7 +112,7 @@ class Linear(Module):
             The outputs following the linear operation and bias addition
             *[batch_shape, out]*
         """
-        return ivy.linear(inputs, self.v.w, bias=self.v.b if self._with_bias else None)
+        return ivy.linear(x, self.v.w, bias=self.v.b if self._with_bias else None)
 
 
 # Dropout #

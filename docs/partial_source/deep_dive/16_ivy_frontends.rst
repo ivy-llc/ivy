@@ -149,7 +149,7 @@ invalid data types for any backend framework.
 
 .. code-block:: python
 
-    # in ivy/functional/frontends/tensorflow/functions.py
+    # in ivy/functional/frontends/tensorflow/math.py
     def add(x, y, name=None):
         return ivy.add(x, y)
 
@@ -165,7 +165,7 @@ also return :code:`ivy.add` for the linking of backend framework.
 
 .. code-block:: python
 
-    # in ivy/functional/frontends/tensorflow/functions.py
+    # in ivy/functional/frontends/tensorflow/math.py
     def tan(x, name=None):
         return ivy.tan(x)
 
@@ -259,7 +259,7 @@ required behaviour. For example, we can reverse the result by calling
 
 .. code-block:: python
 
-    # ivy/functional/frontends/tensorflow/math/general.py
+    # ivy/functional/frontends/tensorflow/math.py
     def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
         ret = ivy.cumprod(x, axis, exclusive)
         if reverse:
@@ -285,6 +285,43 @@ Sometimes Ivy's API is not ready to have a new function added. In such cases, th
 frontend function should be added as a heavy composition, but a :code:`#ToDo` comment
 should be added, explaining that this frontend implementation will be updated as soon as
 :code:`ivy.<func_name>` is implemented.
+
+Supported Data Types and Devices
+--------------------------------
+
+Sometimes, the corresponding function in the original framework might only support a
+subset of data types. For example, :code:`tf.math.logical_and` only supports inputs of
+type :code:`tf.bool`. However, Ivy's
+`implementation <https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L84>`_
+is as follows, with direct wrapping around :code:`ivy.logical_and`:
+
+.. code-block:: python
+
+    def logical_and(x, y, name="LogicalAnd"):
+        return ivy.logical_and(x, y)
+
+:code:`ivy.logical_and` supports all data types, and so
+:code:`ivy.functional.frontends.tensorflow.math.logical_and` can also easily support all
+data types. However, the primary purpose of these frontend functions if for code
+transpilations, and in such cases it would never be useful to support extra data types
+beyond :code:`tf.bool`, as the tensorflow code being transpiled would not support this.
+Additionally, the unit tests for all frontend functions use the original framework
+function as the ground truth, and so we can only test
+:code:`ivy.functional.frontends.tensorflow.math.logical_and` with boolean inputs anyway.
+
+
+For these reasons, all frontend functions which correspond to functions with limited
+data type support in the native framework (which go beyond the data type limitations of
+the framework itself) should be flagged
+`as such <https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88>`_
+in a manner like the following:
+
+.. code-block:: python
+    logical_and.supported_dtypes = ("bool",)
+
+The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
+more devices, we should still flag the frontend function devices to be the same as those
+supported by the function in the native framework.
 
 **Round Up**
 

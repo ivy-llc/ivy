@@ -513,11 +513,11 @@ def test_unstack(*, x_n_axis, dtype, tensor_fn, device):
         expected_shape = list(x.shape)
         expected_shape.pop(axis_val)
     assert ret[0].shape == tuple(expected_shape)
+    ret = ivy.unstack(x, axis)
+    ret_from_np = ivy.functional.backends.numpy.unstack(ivy.to_numpy(x), axis)
     # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.unstack(x, axis)),
-        np.asarray(ivy.functional.backends.numpy.unstack(ivy.to_numpy(x), axis)),
-    )
+    for ret_i, ret_from_np_i in zip(ret, ret_from_np):
+        assert np.allclose(ivy.to_numpy(ret_i), ret_from_np_i)
 
 
 # fourier_encode
@@ -1393,10 +1393,10 @@ def test_inplace_increment(*, x_n_inc, tensor_fn, device):
 
 
 @pytest.mark.parametrize(
-    "backend_str",
-    [None ,"numpy", "mxnet", "torch", "tensorflow", "jax"]
+    "backend_str", [None, "numpy", "mxnet", "torch", "tensorflow", "jax"]
 )
 def test_current_backend_str(backend_str):
+    ivy.unset_backend()
     if backend_str:
         ivy.set_backend(backend_str)
         cur_fw = ivy.current_backend_str()
@@ -1404,8 +1404,7 @@ def test_current_backend_str(backend_str):
         assert cur_fw == backend_str
     else:
         inital_fw = ivy.current_backend_str()
-        assert inital_fw == ''
-    pytest.skip()
+        assert inital_fw == ""
 
 
 # Still to Add #

@@ -57,11 +57,7 @@ class ContainerWithLayers(ContainerBase):
         >>> b = ivy.randint(0, 255, shape=(1, 128, 128, 3)).astype(ivy.float32) / 255.0
         >>> inp = ivy.Container(a=a, b=b)
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])
-        >>> y = ivy.Container.static_depthwise_conv2d( \
-                                                    inp, \
-                                                    filters, \
-                                                    strides=2, \
-                                                    padding='SAME')
+        >>> y = ivy.Container.static_depthwise_conv2d(inp, filters, 2, 'SAME')
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
@@ -274,15 +270,18 @@ class ContainerWithLayers(ContainerBase):
         padding: str,
         /,
         *,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=False,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        out: Optional[ivy.Array] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.conv2d. This method simply
         wraps the function, and so the docstring for ivy.conv2d also applies
         to this method with minimal changes.
-
         Parameters
         ----------
         x
@@ -301,12 +300,10 @@ class ContainerWithLayers(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ret
             The result of the convolution operation.
-
         Examples
         --------
         >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
@@ -320,7 +317,6 @@ class ContainerWithLayers(ContainerBase):
             a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
-
         """
         return ContainerBase.multi_map_in_static_method(
             "conv2d",
@@ -330,6 +326,10 @@ class ContainerWithLayers(ContainerBase):
             padding=padding,
             data_format=data_format,
             dilations=dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -340,15 +340,18 @@ class ContainerWithLayers(ContainerBase):
         padding: str,
         /,
         *,
+        key_chains=None,
+        to_apply=True,
+        prune_unapplied=False,
+        map_sequences=False,
         data_format: str = "NHWC",
         dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
-        out: Optional[ivy.Array] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of `ivy.conv2d`. This method simply
         wraps the function, and so the docstring for `ivy.conv2d` also applies
         to this method with minimal changes.
-
         Parameters
         ----------
         x
@@ -367,12 +370,10 @@ class ContainerWithLayers(ContainerBase):
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
         Returns
         -------
         ret
             The result of the convolution operation.
-
         Examples
         --------
         >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
@@ -386,8 +387,17 @@ class ContainerWithLayers(ContainerBase):
             a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
-
         """
         return self.static_conv2d(
-            self, filters, strides, padding, data_format, dilations, out=out
+            self,
+            filters,
+            strides,
+            padding,
+            data_format,
+            dilations,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
