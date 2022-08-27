@@ -1068,6 +1068,21 @@
 <span class="sd">    -------</span>
 <span class="sd">        Return the default data type for the “kind” (integer or floating-point) of dtype</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_int_dtype(&quot;int32&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.infer_default_dtype(&quot;int8&quot;)</span>
+<span class="sd">    &#39;int8&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_float_dtype(&quot;float64&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.infer_default_dtype(&quot;float32&quot;)</span>
+<span class="sd">    &#39;float64&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_uint_dtype(&quot;uint32&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0], dtype=&quot;uint64&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.infer_default_dtype(x.dtype)</span>
+<span class="sd">    &#39;uint32&#39;</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="n">default_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype</span><span class="p">(</span><span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
