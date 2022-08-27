@@ -3590,6 +3590,61 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        floating-point data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logaddexp.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([2., 5., 15.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([3., 2., 4.])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.logaddexp(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([ 3.31,  5.05, 15.  ])</span>
+
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1], [3.2], [-6.3]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[8.4], [2.5], [1.6]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.logaddexp(x, y, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[[8.4], [3.6], [1.6]]])</span>
+
+<span class="sd">    With one :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
+<span class="sd">                          b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.logaddexp(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">    a: ivy.array([[5.39, 4.17, 4.], </span>
+<span class="sd">                  [5.74, 5.07, 5.], </span>
+<span class="sd">                  [6.34, 6.02, 6.]]),</span>
+<span class="sd">    b: ivy.array([[5.74, 5.07, 5.], </span>
+<span class="sd">                  [6.34, 6.02, 6.], </span>
+<span class="sd">                  [7.14, 7.01, 7.]])</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4., 5., 6.]),\</span>
+<span class="sd">                        b=ivy.array([2., 3., 4.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
+<span class="sd">                        b=ivy.array([5., 6., 7.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.logaddexp(y,x)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([4.05, 5.05, 6.05]),</span>
+<span class="sd">        b: ivy.array([5.05, 6.05, 7.05])</span>
+<span class="sd">    }</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
