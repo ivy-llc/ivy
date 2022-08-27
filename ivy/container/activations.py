@@ -605,6 +605,12 @@ class ContainerWithActivations(ContainerBase):
         }
 
         """
+
+        exp_values = ivy.exp(self - ivy.max(self, axis = 1, keepdims = True))
+        sum_exp_values = ivy.sum(exp_values, axis = 1, keepdims = True)
+        probabilities = exp_values / sum_exp_values
+        self = probabilities
+
         return self.static_softmax(
             self,
             axis=axis,
