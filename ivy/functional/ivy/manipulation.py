@@ -323,7 +323,7 @@ def flip(
     }
 
     """
-    return current_backend(x).flip(x, axis, out=out)
+    return current_backend(x).flip(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -471,7 +471,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -537,14 +537,14 @@ def roll(
     >>> x = ivy.array([[0., 1., 2.], \
                        [3., 4., 5.]])
     >>> y = ivy.zeros((2, 3))
-    >>> ivy.roll(x, 2, -1, out=y)
+    >>> ivy.roll(x, 2, axis=-1, out=y)
     >>> print(y)
     ivy.array([[1., 2., 0.],
                 [4., 5., 3.]])
 
     >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
                        [[3., 9.], [4., 12.], [5., 15.]]])
-    >>> ivy.roll(x, (1, -1), (0, 2), out=x)
+    >>> ivy.roll(x, shift=(1, -1), axis=(0, 2), out=x)
     >>> print(x)
     ivy.array([[[ 9., 3.],
                 [12., 4.],
@@ -552,14 +552,6 @@ def roll(
                [[ 0., 0.],
                 [ 3., 1.],
                 [ 6., 2.]]])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.roll(x, 1)
-    >>> print(y)
-    ivy.array([2., 0., 1.])
-
 
     With one :code:`ivy.Container` input:
 
@@ -588,7 +580,7 @@ def roll(
     ------------------------
     >>> x = ivy.array([[0., 1., 2.], \
                        [3., 4., 5.]])
-    >>> y = x.roll(2, -1)
+    >>> y = x.roll(2, axis=-1)
     >>> print(y)
     ivy.array([[1., 2., 0.],
                 [4., 5., 3.]])
@@ -602,7 +594,7 @@ def roll(
         b: ivy.array([5., 3., 4.])
     }
     """
-    return current_backend(x).roll(x, shift, axis, out=out)
+    return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -669,20 +661,6 @@ def squeeze(
 
     >>> print(ivy.squeeze(x, axis=(0, 2)))
     ivy.array([0, 1, 2])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, 1, 2])
-    >>> print(ivy.squeeze(x))
-    ivy.array([0, 1, 2])
-
-    >>> x = ivy.native_array([[[3]]])
-    >>> print(ivy.squeeze(x, 2))
-    ivy.array([[3]])
-
-    >>> x = ivy.native_array(0)
-    >>> print(ivy.squeeze(x, 0))
-    ivy.array(0)
 
     With :code:`ivy.Container` input:
 
@@ -990,7 +968,7 @@ def repeat(
         b: ivy.array([0., 0., 1., 1., 2., 2.])
     }
     """
-    return current_backend(x).repeat(x, repeats, axis, out=out)
+    return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -1002,7 +980,7 @@ def split(
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Splits an array into multiple sub-arrays.
 
     Parameters
@@ -1059,22 +1037,13 @@ def split(
     >>> y = ivy.split(x)
     >>> print(y)
     {a:(list[3],<classivy.array.Array>shape=[1])}
-
-    Instance Method Examples
-    ------------------------
-    >>> x = ivy.array([4, 6, 5, 3])
-    >>> y = x.split()
-    >>> print(y)
-    [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]
-
-    >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
-    >>> y = x.split()
-    >>> print(y)
-    {
-        a: ivy.array([[2], [5], [9]])
-    }
     """
-    return current_backend(x).split(x, num_or_size_splits, axis, with_remainder)
+    return current_backend(x).split(
+        x,
+        num_or_size_splits=num_or_size_splits,
+        axis=axis,
+        with_remainder=with_remainder,
+    )
 
 
 @to_native_arrays_and_back

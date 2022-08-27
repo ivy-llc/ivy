@@ -6,7 +6,7 @@ from typing import List, Union, Optional
 import ivy
 from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
-    integer_array_to_float,
+    integer_arrays_to_float,
 )
 
 
@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
 
 
 @inputs_to_ivy_arrays
-@integer_array_to_float
+@integer_arrays_to_float
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],
