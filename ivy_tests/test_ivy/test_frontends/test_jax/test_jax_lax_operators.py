@@ -9,7 +9,7 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.jax as ivy_jax
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 #svd
-@handle_cmd_line_args
+'''@handle_cmd_line_args
 @given(
     array_shape=helpers.lists(
         st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
@@ -52,7 +52,7 @@ def test_jax_lax_svd(
         frontend="jax",
         fn_tree="lax.svd",
         x=x,
-    )
+    )'''
 # add
 @handle_cmd_line_args
 @given(
