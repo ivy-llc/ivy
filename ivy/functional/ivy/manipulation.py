@@ -980,7 +980,7 @@ def split(
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Splits an array into multiple sub-arrays.
 
     Parameters
@@ -1037,20 +1037,6 @@ def split(
     >>> y = ivy.split(x)
     >>> print(y)
     {a:(list[3],<classivy.array.Array>shape=[1])}
-
-    Instance Method Examples
-    ------------------------
-    >>> x = ivy.array([4, 6, 5, 3])
-    >>> y = x.split()
-    >>> print(y)
-    [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]
-
-    >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
-    >>> y = x.split()
-    >>> print(y)
-    {
-        a: ivy.array([[2], [5], [9]])
-    }
     """
     return current_backend(x).split(
         x,
