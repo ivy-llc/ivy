@@ -46,6 +46,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
@@ -96,6 +97,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)

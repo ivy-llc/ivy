@@ -142,6 +142,7 @@ def test_torch_fliplr(
 
 
 # cumsum
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(

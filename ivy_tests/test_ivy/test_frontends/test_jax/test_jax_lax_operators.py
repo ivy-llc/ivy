@@ -57,17 +57,13 @@ def test_jax_lax_svd(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
-        ),
+        available_dtypes=ivy.valid_numeric_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.add"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_jax_lax_add(
     dtype_and_x,
@@ -77,7 +73,6 @@ def test_jax_lax_add(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -95,12 +90,10 @@ def test_jax_lax_add(
 # tan
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.tan"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_tan(
     dtype_and_x,
@@ -110,7 +103,6 @@ def test_jax_lax_tan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -125,19 +117,16 @@ def test_jax_lax_tan(
 
 
 # max
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
-        ),
+        available_dtypes=ivy.valid_float_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.max"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_jax_lax_max(
     dtype_and_x,
@@ -298,12 +287,14 @@ def test_jax_lax_full(
 # abs
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy.valid_numeric_dtypes).difference(ivy.valid_uint_dtypes)
+        )
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.abs"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_abs(
     dtype_and_x,
@@ -313,7 +304,6 @@ def test_jax_lax_abs(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -330,12 +320,10 @@ def test_jax_lax_abs(
 # sqrt
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sqrt"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_sqrt(
     dtype_and_x,
@@ -345,7 +333,6 @@ def test_jax_lax_sqrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -362,12 +349,10 @@ def test_jax_lax_sqrt(
 # acos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.acos"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_acos(
     dtype_and_x,
@@ -377,7 +362,6 @@ def test_jax_lax_acos(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -392,13 +376,12 @@ def test_jax_lax_acos(
 
 
 # sin
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sin"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_sin(
     dtype_and_x,
@@ -408,7 +391,6 @@ def test_jax_lax_sin(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -423,13 +405,12 @@ def test_jax_lax_sin(
 
 
 # sign
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_numeric_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sign"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_sign(
     dtype_and_x,
@@ -439,7 +420,6 @@ def test_jax_lax_sign(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -454,13 +434,12 @@ def test_jax_lax_sign(
 
 
 # asin
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.asin"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_asin(
     dtype_and_x,
@@ -470,7 +449,6 @@ def test_jax_lax_asin(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -485,13 +463,12 @@ def test_jax_lax_asin(
 
 
 # sinh
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sinh"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_sinh(
     dtype_and_x,
@@ -516,19 +493,16 @@ def test_jax_lax_sinh(
 
 
 # atan2
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_jax.valid_float_dtypes))
-        ),
+        available_dtypes=ivy.valid_float_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.atan2"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_jax_lax_atan2(
     dtype_and_x,
@@ -538,7 +512,6 @@ def test_jax_lax_atan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -658,12 +631,10 @@ def test_jax_lax_mul(
 # atan
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.atan"
     ),
-    native_array=st.booleans(),
 )
 def test_jax_lax_atan(
     dtype_and_x,
@@ -673,7 +644,6 @@ def test_jax_lax_atan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -721,15 +691,13 @@ def test_jax_lax_ceil(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_int_dtypes,
+        available_dtypes=ivy.valid_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.bitwise_and"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_jax_lax_bitwise_and(
     dtype_and_x,
@@ -739,7 +707,6 @@ def test_jax_lax_bitwise_and(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -758,7 +725,7 @@ def test_jax_lax_bitwise_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_int_dtypes,
+        available_dtypes=ivy.valid_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -774,7 +741,6 @@ def test_jax_lax_bitwise_or(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -909,7 +875,7 @@ def test_jax_lax_argmin(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_int_dtypes,
+        available_dtypes=ivy.valid_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -925,7 +891,6 @@ def test_jax_lax_bitwise_xor(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1255,9 +1220,7 @@ def test_jax_lax_broadcast(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=list(
-            set(ivy_jax.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))
-        )
+        available_dtypes=ivy.valid_float_dtypes,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.reciprocal"
@@ -1282,7 +1245,7 @@ def test_jax_lax_reciprocal(
         fn_tree="lax.reciprocal",
         x=np.asarray(x, dtype=input_dtype),
     )
-    
+
 
 @handle_cmd_line_args
 @given(
@@ -1350,4 +1313,262 @@ def test_jax_lax_le(
         fn_tree="lax.le",
         x=xs[0],
         y=xs[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_numeric_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.ne"
+    ),
+)
+def test_jax_lax_ne(
+    dtypes_and_xs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.ne",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# cosh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.cosh"
+    ),
+)
+def test_jax_lax_cosh(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.cosh",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_numeric_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.lt"
+    ),
+)
+def test_jax_lax_lt(
+    dtypes_and_xs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.lt",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# round
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.round"
+    ),
+)
+def test_jax_lax_round(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.round",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_values=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_float_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.pow"
+    ),
+)
+def test_jax_lax_pow(
+    dtypes_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtypes_and_values
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.pow",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_numeric_dtypes,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.gt"
+    ),
+)
+def test_jax_lax_gt(
+    dtypes_and_xs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.gt",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# cos
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.cos"
+    ),
+)
+def test_jax_lax_cos(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.cos",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=ivy.valid_numeric_dtypes,
+        num_arrays=3,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.clamp"
+    ),
+)
+def test_jax_lax_clamp(
+    dtypes_and_xs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.clamp",
+        min=xs[0],
+        x=xs[1],
+        max=xs[2],
     )
