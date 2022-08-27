@@ -3,22 +3,15 @@ import ivy
 
 
 def cat(tensors, dim=0, *, out=None):
-    return ivy.concat(tensors, dim, out=out)
+    return ivy.concat(tensors, axis=dim, out=out)
 
 
 def concat(tensors, dim=0, *, out=None):
-    return ivy.concat(tensors, dim, out=out)
+    return ivy.concat(tensors, axis=dim, out=out)
 
 
 def permute(input, dims):
-    return ivy.permute_dims(input, dims)
-
-
-permute.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
+    return ivy.permute_dims(input, axes=dims)
 
 
 def swapdims(input, dim0, dim1):
@@ -30,6 +23,10 @@ swapdims.unsupported_dtypes = (
     "uint32",
     "uint64",
 )
+
+
+def transpose(input, dim0, dim1):
+    return ivy.swapaxes(input, dim0, dim1)
 
 
 def reshape(input, shape):
@@ -63,3 +60,7 @@ def moveaxis(input, source, destination):
         return input
 
     return ivy.swapaxes(input, source, destination)
+
+
+def stack(tensors, dim=0, *, out=None):
+    return ivy.stack(tensors, axis=dim, out=out)

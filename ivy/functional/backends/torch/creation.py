@@ -97,6 +97,17 @@ def asarray(
     else:
         dtype = as_native_dtype((default_dtype(dtype=dtype, item=object_in)))
 
+    if dtype == torch.bfloat16 and isinstance(object_in, np.ndarray):
+        if copy is True:
+            return (
+                torch.as_tensor(object_in.tolist(), dtype=dtype)
+                .clone()
+                .detach()
+                .to(device)
+            )
+        else:
+            return torch.as_tensor(object_in.tolist(), dtype=dtype).to(device)
+
     if copy is True:
         return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
     else:

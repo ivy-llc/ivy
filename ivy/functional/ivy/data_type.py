@@ -51,20 +51,21 @@ def astype(
     copy: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Copies an array to a specified data type irrespective of :ref:`type-promotion`
+    """
+    Copies an array to a specified data type irrespective of :ref:`type-promotion`
     rules.
 
     .. note::
-       Casting floating-point ``NaN`` and ``infinity`` values to integral data types is
-       not specified and is implementation-dependent.
+    Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+    is not specified and is implementation-dependent.
 
     .. note::
-       When casting a boolean input array to a numeric data type, a value of ``True``
-       must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
-       to a numeric value equal to ``0``.
+    When casting a boolean input array to a numeric data type, a value of ``True``
+    must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
+    to a numeric value equal to ``0``.
 
-       When casting a numeric input array to ``bool``, a value of ``0`` must cast to
-       ``False``, and a non-zero value must cast to ``True``.
+    When casting a numeric input array to ``bool``, a value of ``0`` must cast to
+    ``False``, and a non-zero value must cast to ``True``.
 
     Parameters
     ----------
@@ -73,27 +74,74 @@ def astype(
     dtype
         desired data type.
     copy
-        specifies whether to copy an array when the specified ``dtype`` matches the data
-        type of the input array ``x``. If ``True``, a newly allocated array must always
-        be returned. If ``False`` and the specified ``dtype`` matches the data type of
-        the input array, the input array must be returned; otherwise, a newly allocated
-        must be returned. Default: ``True``.
+        specifies whether to copy an array when the specified ``dtype`` matches 
+        the data type of the input array ``x``. If ``True``, a newly allocated 
+        array must always be returned. If ``False`` and the specified ``dtype``
+        matches the data type of the input array, the input array must be returned;
+        otherwise, a newly allocated must be returned. Default: ``True``.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to. It must have a shape 
+        that the inputs broadcast to.
 
     Returns
     -------
     ret
-        an array having the specified data type. The returned array must have the same
-        shape as ``x``.
+        an array having the specified data type. The returned array must have 
+        the same shape as ``x``.
 
     Examples
     --------
+    With :code:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2])
-    >>> y = ivy.astype(x, dtype = ivy.float64)
+    >>> y = ivy.zeros_like(x)
+    >>> y = ivy.astype(x, ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
+
+    >>> x = ivy.array([3.141, 2.718, 1.618])
+    >>> ivy.astype(x, ivy.int32, out=y)
+    >>> print(y)
+    ivy.array([3, 2, 1])
+
+    >>> x = ivy.array([[-1, -2], [0, 2]])
+    >>> ivy.astype(x, ivy.float64, out=x)
+    >>> print(x)
+    ivy.array([[-1., -2.],  [0.,  2.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([3.141, 2.718, 1.618])
+    >>> y = ivy.astype(x, ivy.int32)
+    >>> print(y)
+    ivy.array([3, 2, 1])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0,2,1]), \
+                            b=ivy.array([1,0,0]))
+    >>> print(ivy.astype(x, ivy.bool))
+    {
+        a: ivy.array([False, True, True]),
+        b: ivy.array([True, False, False])
+    }
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[-1, -2], [0, 2]])
+    >>> print(x.astype(ivy.float64))
+    ivy.array([[-1., -2.],  [0.,  2.]])
+
+    Using :code:`ivy.Container` instance method:
+    
+    >>> x = ivy.Container(a=ivy.array([False,True,True]), \
+                            b=ivy.array([3.14, 2.718, 1.618]))
+    >>> print(x.astype(ivy.int32))
+    {
+        a: ivy.array([0, 1, 1]),
+        b: ivy.array([3, 2, 1])
+    }
+
     """
     return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
@@ -352,7 +400,7 @@ def finfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
     in the standard.
 
     Examples
@@ -873,6 +921,47 @@ def default_float_dtype(
     if as_native:
         return ivy.as_native_dtype(ret)
     return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
+
+
+def infer_default_dtype(
+    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
+):
+    """Summary.
+
+    Parameters
+    ----------
+    dtype
+
+    as_native
+        (Default value = False)
+
+    Returns
+    -------
+        Return the default data type for the “kind” (integer or floating-point) of dtype
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype("int32")
+    >>> ivy.infer_default_dtype("int8")
+    'int8'
+
+    >>> ivy.set_default_float_dtype("float64")
+    >>> ivy.infer_default_dtype("float32")
+    'float64'
+
+    >>> ivy.set_default_uint_dtype("uint32")
+    >>> x = ivy.array([0], dtype="uint64")
+    >>> ivy.infer_default_dtype(x.dtype)
+    'uint32'
+
+    """
+    if ivy.is_float_dtype(dtype):
+        default_dtype = ivy.default_float_dtype(as_native=as_native)
+    elif ivy.is_uint_dtype(dtype):
+        default_dtype = ivy.default_uint_dtype(as_native=as_native)
+    else:
+        default_dtype = ivy.default_int_dtype(as_native=as_native)
+    return default_dtype
 
 
 # noinspection PyShadowingNames
@@ -1897,23 +1986,18 @@ def promote_types_of_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    try:
-        if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
-            not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
-        ):
-            x1 = ivy.asarray(x1)
-            x2 = ivy.asarray(x2)
-            promoted = promote_types(x1.dtype, x2.dtype)
-            x1 = ivy.asarray(x1, dtype=promoted)
-            x2 = ivy.asarray(x2, dtype=promoted)
-        else:
-            if hasattr(x1, "dtype"):
-                x1 = ivy.asarray(x1)
-                x2 = ivy.asarray(x2, dtype=x1.dtype)
-            else:
-                x1 = ivy.asarray(x1, dtype=x2.dtype)
-                x2 = ivy.asarray(x2)
-        x1, x2 = ivy.to_native(x1), ivy.to_native(x2)
-        return x1, x2
-    except Exception:
-        raise
+    if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
+        not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
+    ):
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2)
+        promoted = promote_types(x1.dtype, x2.dtype)
+        x1 = ivy.asarray(x1, dtype=promoted)
+        x2 = ivy.asarray(x2, dtype=promoted)
+    elif hasattr(x1, "dtype"):
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    else:
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x2 = ivy.asarray(x2)
+    return ivy.to_native(x1), ivy.to_native(x2)
