@@ -34,11 +34,20 @@ jobs:
          continue-on-error: true
 
        - name: Unzip Hypothesis Examples
+         id: unzip
          run: |
            cd ivy/.hypothesis
            unzip examples.zip
            rm examples.zip
          continue-on-error: true
+
+       - name: Create Hypothesis Directory
+         if: steps.unzip.outcome != 'success'
+         run: |
+           cd ivy
+           mkdir -p .hypothesis
+           cd .hypothesis
+           mkdir -p examples
 
        - name: Run Functional-Core Tests
          id: tests
