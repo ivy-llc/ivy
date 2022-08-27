@@ -73,7 +73,7 @@ def atan2(x, y):
     return ivy.atan2(x, y)
 
 
-atan2.unsupported_dtypes = {"torch": ("float16",)}
+atan2.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def min(x, y):

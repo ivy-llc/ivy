@@ -69,7 +69,7 @@ def test_native_array(
         max_dim_size=5,
         allow_inf=False,
         shared_dtype=True,
-        small_value_safety_factor=0.5,
+        small_value_safety_factor=1.5,
         large_value_safety_factor=1.5,
     ),
     num=helpers.ints(min_value=1, max_value=5),
