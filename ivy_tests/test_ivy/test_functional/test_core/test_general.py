@@ -20,6 +20,7 @@ import ivy.functional.backends.torch
 import ivy.functional.backends.mxnet
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # Helpers #
 # --------#
@@ -44,14 +45,16 @@ def _get_shape_of_list(lst, shape=()):
 # ------#
 
 # set_framework
+@handle_cmd_line_args
 @given(fw_str=st.sampled_from(["numpy", "jax", "torch", "mxnet"]))
-def test_set_framework(fw_str, device, call):
+def test_set_framework(*, fw_str, device):
     ivy.set_backend(fw_str)
     ivy.unset_backend()
 
 
 # use_framework
-def test_use_within_use_framework(device, call):
+@handle_cmd_line_args
+def test_use_within_use_framework(*, device):
     with ivy.functional.backends.numpy.use:
         pass
     with ivy.functional.backends.jax.use:
@@ -64,8 +67,9 @@ def test_use_within_use_framework(device, call):
     #     pass
 
 
+@handle_cmd_line_args
 @given(allow_duplicates=st.booleans())
-def test_match_kwargs(allow_duplicates):
+def test_match_kwargs(*, allow_duplicates):
     def func_a(a, b, c=2):
         pass
 
@@ -90,7 +94,8 @@ def test_match_kwargs(allow_duplicates):
         assert kwca == {"f": 5, "g": 6}
 
 
-def test_get_referrers_recursive(device, call):
+@handle_cmd_line_args
+def test_get_referrers_recursive(*, device):
     class SomeClass:
         def __init__(self):
             self.x = [1, 2]
@@ -116,8 +121,9 @@ def test_get_referrers_recursive(device, call):
 
 
 # copy array
+@handle_cmd_line_args
 @given(dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
-def test_copy_array(dtype_and_x, device, call, fw):
+def test_copy_array(*, dtype_and_x, device, fw):
     dtype, x = dtype_and_x
     assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
 
@@ -134,18 +140,16 @@ def test_copy_array(dtype_and_x, device, call, fw):
     # value test
     helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)
-    # compilation test
-    # pytorch scripting does not support numpy conversion
-    assume(not (fw == "torch"))
 
 
 # array_equal
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2
     )
 )
-def test_array_equal(x0_n_x1_n_res, device, call, fw):
+def test_array_equal(*, x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
 
@@ -182,12 +186,13 @@ def test_array_equal(x0_n_x1_n_res, device, call, fw):
 
 
 # arrays_equal
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=3
     )
 )
-def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
+def test_arrays_equal(*, x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
     dtype2, x2 = x0_n_x1_n_res[0][2], x0_n_x1_n_res[1][2]
@@ -230,15 +235,14 @@ def test_arrays_equal(x0_n_x1_n_res, device, call, fw):
 
 
 # to_numpy
+@handle_cmd_line_args
 @given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
-def test_to_numpy(x0_n_x1_n_res, device, call, fw):
+def test_to_numpy(*, x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
     assume(not (fw == "mxnet" and dtype == "int16"))
     # mxnet does not support int16
-    assume(not (fw == "tensorflow"))
-    # to_numpy() requires eager execution
     # smoke test
     ret = ivy.to_numpy(ivy.array(object_in, dtype=dtype, device=device))
     # type test
@@ -247,23 +251,19 @@ def test_to_numpy(x0_n_x1_n_res, device, call, fw):
     assert ret.shape == np.array(object_in).shape
     # value test
     helpers.assert_all_close(ret, np.array(object_in).astype(dtype))
-    # compilation test
-    # pytorch scripting does not support numpy conversion
-    assume(not (fw == "torch"))
 
 
 # to_scalar
+@handle_cmd_line_args
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
     dtype=st.sampled_from(ivy_np.valid_dtypes),
 )
-def test_to_scalar(object_in, dtype, device, call, fw):
+def test_to_scalar(*, object_in, dtype, device, fw):
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
     assume(not (fw == "mxnet" and dtype == "int16"))
     # mxnet does not support int16
-    assume(not (fw == "tensorflow"))
-    # to_scalar() requires eager execution
     # smoke test
     ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
@@ -271,18 +271,14 @@ def test_to_scalar(object_in, dtype, device, call, fw):
     assert isinstance(ret, type(true_val))
     # value test
     assert ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device)) == true_val
-    # compilation test
-    # pytorch scripting does not support scalar conversion
-    assume(not (fw == "torch"))
 
 
 # to_list
+@handle_cmd_line_args
 @given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
-def test_to_list(x0_n_x1_n_res, device, call, fw):
+def test_to_list(*, x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(dtype in ivy.valid_dtypes)
-    assume(not (fw == "tensorflow"))
-    # to_list() requires eager execution
     # smoke test
     arr = ivy.array(object_in, dtype=dtype, device=device)
     ret = ivy.to_list(arr)
@@ -300,12 +296,10 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
         ),
         np.nan_to_num(np.array(object_in).astype(dtype), posinf=np.inf, neginf=-np.inf),
     )
-    # compilation test
-    # pytorch scripting does not support list conversion
-    assume(not (fw == "torch"))
 
 
 # shape
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     as_array=st.booleans(),
@@ -314,6 +308,7 @@ def test_to_list(x0_n_x1_n_res, device, call, fw):
     native_array=st.booleans(),
     container=st.booleans(),
 )
+
 def test_shape(
     x0_n_x1_n_res,
     as_array,
@@ -342,14 +337,13 @@ def test_shape(
 
 
 # get_num_dims
-
-
+@handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
+def test_get_num_dims(*, x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(
         not (
@@ -377,12 +371,10 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, call, fw):
     assert np.array_equal(
         ivy.to_numpy(ret), np.asarray(len(np.asarray(object_in).shape), np.int32)
     )
-    # compilation test
-    # pytorch scripting does not support Union
-    assume(not (fw == "torch"))
 
 
 # clip_vector_norm
+@handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     max_norm=st.floats(),
@@ -1014,7 +1006,8 @@ def test_default(x, default_val, call):
         assert np.allclose(call(ivy.default, x, default_val), truth_val)
 
 
-def test_cache_fn(device, call):
+@handle_cmd_line_args
+def test_cache_fn(device):
     def func():
         return ivy.random_uniform()
 
@@ -1041,7 +1034,8 @@ def test_cache_fn(device, call):
     assert ret0 is not ret1
 
 
-def test_cache_fn_with_args(device, call):
+@handle_cmd_line_args
+def test_cache_fn_with_args(device):
     def func(_):
         return ivy.random_uniform()
 
@@ -1068,8 +1062,9 @@ def test_cache_fn_with_args(device, call):
     assert ret0 is not ret1
 
 
-def test_framework_setting_with_threading(device, call):
-    if call is helpers.jnp_call:
+@handle_cmd_line_args
+def test_framework_setting_with_threading(device):
+    if ivy.current_backend_str() == "jax":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
 
@@ -1100,9 +1095,10 @@ def test_framework_setting_with_threading(device, call):
     assert not thread.join()
 
 
-def test_framework_setting_with_multiprocessing(device, call):
+@handle_cmd_line_args
+def test_framework_setting_with_multiprocessing(device):
 
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
 
@@ -1137,9 +1133,10 @@ def test_framework_setting_with_multiprocessing(device, call):
     assert output_queue.get_nowait()
 
 
-def test_explicit_ivy_framework_handles(device, call):
+@handle_cmd_line_args
+def test_explicit_ivy_framework_handles(device):
 
-    if call is helpers.np_call:
+    if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
 
@@ -1172,6 +1169,8 @@ def test_explicit_ivy_framework_handles(device, call):
 
 # ToDo: re-add this test once ivy.get_backend is working correctly, with the returned
 #  ivy handle having no dependence on the globally set ivy
+# @handle_cmd_line_args
+#
 # def test_class_ivy_handles(device, call):
 #
 #     if call is helpers.np_call:
@@ -1351,7 +1350,8 @@ def test_einops_repeat(
 
 
 # container types
-def test_container_types(device, call):
+@handle_cmd_line_args
+def test_container_types(*, device):
     cont_types = ivy.container_types()
     assert isinstance(cont_types, list)
     for cont_type in cont_types:
@@ -1360,7 +1360,8 @@ def test_container_types(device, call):
         assert hasattr(cont_type, "items")
 
 
-def test_inplace_arrays_supported(device, call):
+@handle_cmd_line_args
+def test_inplace_arrays_supported(*, device):
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "mxnet", "torch"]:
         assert ivy.inplace_arrays_supported()
@@ -1370,7 +1371,8 @@ def test_inplace_arrays_supported(device, call):
         raise Exception("Unrecognized framework")
 
 
-def test_inplace_variables_supported(device, call):
+@handle_cmd_line_args
+def test_inplace_variables_supported(*, device):
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "mxnet", "torch", "tensorflow"]:
         assert ivy.inplace_variables_supported()

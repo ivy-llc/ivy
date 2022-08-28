@@ -19,10 +19,10 @@ from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
 def random_uniform(
+    *,
     low: Union[float, mx.nd.NDArray] = 0.0,
     high: Union[float, mx.nd.NDArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    *,
     device: mx.context.Context,
     dtype: type,
 ) -> mx.nd.NDArray:
@@ -39,10 +39,10 @@ def random_uniform(
 
 
 def random_normal(
+    *,
     mean: Union[float, mx.nd.NDArray] = 0.0,
     std: Union[float, mx.nd.NDArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    *,
     device: mx.context.Context,
     dtype: type,
 ) -> mx.nd.NDArray:
@@ -62,10 +62,11 @@ def random_normal(
 def multinomial(
     population_size: int,
     num_samples: int,
+    /,
+    *,
     batch_size: int = 1,
     probs: Optional[mx.nd.NDArray] = None,
     replace: bool = True,
-    *,
     device: mx.context.Context,
 ) -> mx.nd.NDArray:
     if not replace:
@@ -88,8 +89,9 @@ def multinomial(
 def randint(
     low: Union[float, mx.nd.NDArray],
     high: Union[float, mx.nd.NDArray],
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    /,
     *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: mx.context.Context,
     dtype: Optional[Union[type, ivy.Dtype]] = None,
     out: Optional[mx.nd.NDArray] = None,
@@ -110,9 +112,9 @@ def randint(
     return mx.nd.random.randint(low, high, shape, ctx=device, dtype=dtype)
 
 
-def seed(seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0) -> None:
     mx.random.seed(seed_value)
 
 
-def shuffle(x: mx.nd.NDArray) -> mx.nd.NDArray:
+def shuffle(x: mx.nd.NDArray, /) -> mx.nd.NDArray:
     return mx.nd.random.shuffle(x)

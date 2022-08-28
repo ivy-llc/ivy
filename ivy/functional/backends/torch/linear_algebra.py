@@ -4,6 +4,7 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
 
 # local
+import ivy
 from ivy import inf
 
 
@@ -138,7 +139,6 @@ matrix_power.unsupported_dtypes = ("float16",)
 matrix_power.support_native_out = True
 
 
-# noinspection PyPep8Naming
 def matrix_rank(
     x: torch.Tensor,
     rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -146,33 +146,24 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    return torch.linalg.matrix_rank(x, rtol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
+    ret = torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
+    return ret
 
 
 matrix_rank.support_native_out = True
 
 
-def matrix_transpose(x: torch.Tensor) -> torch.Tensor:
-    ret = torch.swapaxes(x, -1, -2)
-    return ret
-
-
-matrix_transpose.unsupported_dtypes = (
-    "float16",
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-)
+def matrix_transpose(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.swapaxes(x, -1, -2)
 
 
 def outer(
     x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.outer(x1, x2, out=out)
 
 
@@ -235,11 +226,7 @@ def solve(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if x1.dtype != torch.float:
-        x1 = x1.type(torch.float)
-    if x2.dtype != torch.float:
-        x2 = x2.type(torch.float)
-
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     expanded_last = False
     if len(x2.shape) <= 1:
         if x2.shape[-1] == x1.shape[-1]:
@@ -384,7 +371,7 @@ def vector_to_skew_symmetric_matrix(
     a2s = vector_expanded[..., 1:2, :]
     a3s = vector_expanded[..., 2:3, :]
     # BS x 1 x 1
-    zs = torch.zeros(batch_shape + [1, 1], device=vector.device)
+    zs = torch.zeros(batch_shape + [1, 1], device=vector.device, dtype=vector.dtype)
     # BS x 1 x 3
     row1 = torch.cat((zs, -a3s, a2s), -1)
     row2 = torch.cat((a3s, zs, -a1s), -1)

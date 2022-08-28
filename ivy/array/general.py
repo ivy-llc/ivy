@@ -36,6 +36,34 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
 
+    def has_nans(self: ivy.Array, include_infs: bool = True):
+        """
+        ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
+        function, and so the docstring for ivy.has_nans also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        include_infs
+            Whether to include ``+infinity`` and ``-infinity`` in the check.
+            Default is True.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the array contains nans.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.has_nans()
+        >>> print(y)
+        False
+        """
+        return ivy.has_nans(self, include_infs)
+
     def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
@@ -55,8 +83,67 @@ class ArrayWithGeneral(abc.ABC):
         ret
             List of arrays, unpacked along specified dimensions.
 
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=0)
+        >>> print(y)
+        [ivy.array([1, 2]), ivy.array([3, 4])]
+
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=1, keepdims=True)
+        >>> print(y)
+        [ivy.array([[1],
+                [3]]), ivy.array([[2],
+                [4]])]
         """
         return ivy.unstack(self._data, axis, keepdims)
+
+    def cumprod(
+        self: ivy.Array,
+        axis: int = 0,
+        exclusive: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cumprod. This method simply wraps the
+        function, and so the docstring for ivy.cumprod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        axis
+            int, axis along which to take the cumulative product. Default is 0.
+        exclusive
+            optional bool, whether to exclude the first value of the input array.
+            Default is False.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Input array with cumulatively multiplied elements along the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 4, 5])
+        >>> y = x.cumprod()
+        >>> print(y)
+        ivy.array([  1,   2,   6,  24, 120])
+
+        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
+        >>> y = ivy.zeros((3, 2))
+        >>> x.cumprod(axis=1, exclusive=True, out=y)
+        >>> print(y)
+        ivy.array([[ 1.,  2.],
+                   [ 1.,  5.],
+                   [ 1., 11.]])
+        """
+        return ivy.cumprod(self._data, axis, exclusive, out=out)
 
     def gather(
         self: ivy.Array,
@@ -88,7 +175,7 @@ class ArrayWithGeneral(abc.ABC):
             the specified axis.
         """
         return ivy.gather(self._data, indices, axis, out=out)
-
+    
     def gather_nd(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
@@ -127,7 +214,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
-
+        
     def einops_rearrange(
         self: ivy.Array,
         pattern: str,
@@ -267,6 +354,43 @@ class ArrayWithGeneral(abc.ABC):
             A list representation of the input array ``x``.
         """
         return ivy.to_list(self)
+
+    def inplace_decrement(
+        self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.inplace_decrement. This method simply
+        wraps the function, and so the docstring for ivy.inplace_decrement also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array to be decremented by the defined value.
+        val
+            The value of decrement.
+
+        Returns
+        -------
+        ret
+            The array following an in-place decrement.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
+        >>> y = x.inplace_decrement(1)
+        >>> print(y)
+        ivy.array([4.7, 3.3, 1.5, 0.9])
+
+        >>> x = ivy.asarray([4., 5., 6.])
+        >>> y = x.inplace_decrement(2.5)
+        >>> print(y)
+        ivy.array([1.5, 2.5, 3.5])
+
+        """
+        return ivy.inplace_decrement(self, val)
 
     def stable_divide(
         self,
@@ -685,7 +809,7 @@ class ArrayWithGeneral(abc.ABC):
         Parameters
         ----------
         self
-            input array
+            input array    
         axis
             int, Axis along which the cumulative sum is computed. By default 0.
         out
@@ -697,7 +821,48 @@ class ArrayWithGeneral(abc.ABC):
             Input array with cumulatively summed elements along axis
 
         """
-        return ivy.cumsum(self, axis=axis, out=out)
+        return ivy.cumsum(self, axis=axis, out=out)        
+
+    def clip_matrix_norm(
+        self: ivy.Array,
+        max_norm: float,
+        p: float = 2.0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.clip_matrix_norm. This method simply
+        wraps the function, and so the docstring for ivy.clip_matrix_norm also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        max_norm
+            The maximum value of the array norm.
+        p
+            The p-value for computing the p-norm. Default is 2.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the matrix norm downscaled to the max norm if needed.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[0., 1., 2.]])
+        >>> y = x.clip_matrix_norm(2.0)
+        >>> print(y)
+        ivy.array([[0.   , 0.894, 1.79 ]])
+
+        """
+        return ivy.clip_matrix_norm(self, max_norm, p, out=out)
 
     def scatter_flat(self: ivy.Array, updates: Union[ivy.Array, ivy.NativeArray], 
                      size: Optional[int] = None, reduction: str = "sum", *, 

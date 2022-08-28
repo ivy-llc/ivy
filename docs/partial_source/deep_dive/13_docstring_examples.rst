@@ -283,6 +283,7 @@ The signature for :code:`ivy.tan` is as follows:
 
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
@@ -433,9 +434,10 @@ The signature for :code:`ivy.roll` is as follows:
 
     def roll(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         shift: Union[int, Sequence[int]],
-        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
 
@@ -634,6 +636,7 @@ The signature for :code:`ivy.add` is as follows:
     def add(
         x1: Union[ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -987,6 +990,9 @@ Once you make the necessary changes and the function you are working on doesn't 
 tests to fail, you should be good to go. However, one of the reviewers might ask you to make additional
 changes involving examples. Passing docstring tests is a necessary but not sufficient condition for
 the completion of docstring formatting.
+
+.. note::
+   Docstring examples should not have code that imports ivy or sets a backend, otherwise it leads to segmentation faults.
 
 **Round Up**
 

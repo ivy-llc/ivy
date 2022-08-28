@@ -75,6 +75,7 @@ class Finfo:
 def astype(
     x: Union[tf.Tensor, tf.Variable],
     dtype: tf.DType,
+    /,
     *,
     copy: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:

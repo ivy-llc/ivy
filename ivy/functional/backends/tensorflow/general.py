@@ -3,7 +3,8 @@ signature.
 """
 
 # global
-from typing import Iterable, Optional, Union, Sequence
+from typing import Iterable, Optional, Union, Sequence, List
+
 
 _round = round
 import numpy as np
@@ -26,7 +27,7 @@ def is_native_array(x, exclusive=False):
 def copy_array(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.identity(x)
 
@@ -38,8 +39,11 @@ def array_equal(
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
-def to_numpy(x: Union[tf.Tensor, tf.Variable]) -> np.ndarray:
-    return np.asarray(tf.convert_to_tensor(x))
+def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(tf.convert_to_tensor(x))
+    else:
+        return np.asarray(tf.convert_to_tensor(x))
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
@@ -54,7 +58,7 @@ def floormod(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if hasattr(x, "dtype") and hasattr(y, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
@@ -64,7 +68,9 @@ def floormod(
     return ret
 
 
-def unstack(x: Union[tf.Tensor, tf.Variable], axis, keepdims=False):
+def unstack(
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]
     ret = tf.unstack(x, axis=axis)
@@ -82,20 +88,27 @@ def inplace_update(
     val: Union[ivy.Array, tf.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_variable(x_native):
-        x_native.assign(val_native)
-        if ivy.is_ivy_array(x):
-            x.data = x_native
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_variable(x_native):
+            x_native.assign(val_native)
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+            else:
+                x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            x = ivy.Array(x_native)
-    elif ensure_in_backend:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    elif ivy.is_ivy_array(x):
-        x.data = val_native
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        return x
     else:
-        raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-    return x
+        return val
 
 
 def inplace_arrays_supported():
@@ -105,7 +118,9 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: True
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native - val_native)
@@ -115,13 +130,15 @@ def inplace_decrement(x, val):
             x = ivy.Array(x_native)
     else:
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x.data -= val_native
         else:
             x = ivy.Array(val_native)
     return x
 
 
-def inplace_increment(x, val):
+def inplace_increment(
+    x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_variable(x_native):
         x_native.assign(x_native + val_native)
@@ -137,13 +154,28 @@ def inplace_increment(x, val):
     return x
 
 
+def _infer_dtype(x_dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumsum(x, axis)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if x.dtype == dtype:
+        return tf.math.cumsum(x, axis)
+    return tf.math.cumsum(tf.cast(x, dtype), axis)
 
 
 def cumprod(
@@ -151,9 +183,15 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumprod(x, axis, exclusive)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if x.dtype == dtype:
+        return tf.math.cumprod(x, axis, exclusive)
+    return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
 
 
 # noinspection PyShadowingNames
@@ -163,7 +201,7 @@ def scatter_flat(
     size: Optional[int] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if indices.dtype != tf.int32 or indices.dtype != tf.int64:
         if indices.dtype in [tf.int8, tf.int16, tf.uint8, tf.uint16]:
@@ -236,7 +274,7 @@ def scatter_nd(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
     if ivy.exists(out) and not isinstance(updates, Number):
@@ -336,7 +374,7 @@ def gather(
     indices: Union[tf.Tensor, tf.Variable],
     axis: Optional[int] = -1,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
     return tf.gather(params, indices, axis=axis, batch_dims=axis)
@@ -346,7 +384,7 @@ def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.gather_nd(params, indices)
 
@@ -356,6 +394,7 @@ def one_hot(
     depth: int,
     *,
     device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if indices.dtype == tf.int8:
         indices = tf.cast(indices, tf.uint8)
@@ -370,6 +409,9 @@ def one_hot(
     return tf.one_hot(indices, depth)
 
 
+one_hot.unsupported_dtypes = ("int8", "int16", "uint16", "uint32", "uint64")
+
+
 def current_backend_str():
     return "tensorflow"
 
@@ -380,12 +422,12 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    where_x = tf.experimental.numpy.where(x)
-    if len(where_x) == 1:
-        return tf.expand_dims(where_x[0], -1)
-    res = tf.experimental.numpy.concatenate([tf.expand_dims(item, -1) for item in where_x], -1)
-    return res
+def indices_where(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.where(x)
 
 def shape(
     x: Union[tf.Tensor, tf.Variable],

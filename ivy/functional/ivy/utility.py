@@ -19,9 +19,10 @@ from ivy.func_wrapper import (
 @handle_nestable
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests whether all input array elements evaluate to ``True`` along a specified
@@ -159,7 +160,7 @@ def all(
     y,but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return ivy.current_backend(x).all(x, axis, keepdims, out=out)
+    return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
@@ -167,9 +168,10 @@ def all(
 @handle_nestable
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Tests whether any input array element evaluates to ``True`` along a specified
@@ -257,7 +259,7 @@ def any(
         a: ivy.array(True),
         b: ivy.array(True)
     }
-    
+
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), \
                           b=ivy.array([3, 4, 5]))
     >>> y = x.any()
@@ -297,7 +299,7 @@ def any(
         b: ivy.array(True)
     }
     """
-    return ivy.current_backend(x).any(x, axis, keepdims, out=out)
+    return ivy.current_backend(x).any(x, axis=axis, keepdims=keepdims, out=out)
 
 
 # Extra #

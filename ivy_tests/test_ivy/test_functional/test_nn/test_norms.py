@@ -11,9 +11,10 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+@handle_cmd_line_args
 @given(
     dtype_x_normidxs=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes,
         allow_inf=False,
         min_num_dims=1,
         min_axis=1,
@@ -24,9 +25,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     offset=st.floats(min_value=0.0),
     epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
     new_std=st.floats(min_value=0.0, exclude_min=True),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_layer_norm(
     *,
     dtype_x_normidxs,

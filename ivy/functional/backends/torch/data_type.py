@@ -51,7 +51,9 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.Tensor:
+def astype(
+    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if isinstance(dtype, str):
         dtype = ivy.as_native_dtype(dtype)
@@ -163,6 +165,9 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
         raise TypeError(
             f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
+
+
+as_native_dtype.unsupported_dtypes = ("uint16",)
 
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:

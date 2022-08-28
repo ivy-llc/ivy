@@ -10,9 +10,10 @@ class ArrayWithLosses(abc.ABC):
     def cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.cross_entropy. This method simply
@@ -55,8 +56,9 @@ class ArrayWithLosses(abc.ABC):
     def binary_cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
-        epsilon: float = 1e-7,
+        /,
         *,
+        epsilon: float = 1e-7,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.binary_cross_entropy. This method
@@ -95,9 +97,10 @@ class ArrayWithLosses(abc.ABC):
     def sparse_cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

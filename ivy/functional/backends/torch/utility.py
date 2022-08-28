@@ -6,9 +6,10 @@ from typing import Union, Optional, Sequence
 
 def all(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = x.type(torch.bool)
@@ -30,9 +31,10 @@ all.support_native_out = True
 
 def any(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = ivy.asarray(x).type(torch.bool)

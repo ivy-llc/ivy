@@ -132,6 +132,7 @@ def matrix_rank(
         if x.ndim > 2:
             x = x.reshape([-1])
         ret = jnp.linalg.matrix_rank(x, rtol)
+    ret = jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
 
@@ -144,6 +145,7 @@ matrix_transpose.unsupported_dtypes = ("float16", "int8")
 
 
 def outer(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.outer(x1, x2)
 
 
@@ -187,6 +189,7 @@ slogdet.unsupported_dtypes = ("float16",)
 
 def solve(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     expanded_last = False
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if len(x2.shape) <= 1:
         if x2.shape[-1] == x1.shape[-1]:
             expanded_last = True
@@ -210,6 +213,7 @@ def solve(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxA
 
     if expanded_last:
         ret = jnp.squeeze(ret, axis=-1)
+    ret = jnp.asarray(ret, dtype=x1.dtype)
     return ret
 
 
@@ -296,7 +300,7 @@ def vector_to_skew_symmetric_matrix(
     a2s = vector_expanded[..., 1:2, :]
     a3s = vector_expanded[..., 2:3, :]
     # BS x 1 x 1
-    zs = jnp.zeros(batch_shape + [1, 1])
+    zs = jnp.zeros(batch_shape + [1, 1], dtype=vector.dtype)
     # BS x 1 x 3
     row1 = jnp.concatenate((zs, -a3s, a2s), -1)
     row2 = jnp.concatenate((a3s, zs, -a1s), -1)

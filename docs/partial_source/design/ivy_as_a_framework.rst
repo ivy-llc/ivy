@@ -13,15 +13,15 @@ Specifically, here we consider the :code:`ivy.Container` class, the :code:`ivy.A
    :align: center
    :width: 100%
 
-Some tools described here are works in progress, as indicated by the the construction signs 🚧. This is in keeping with the rest of the documentation.
+You may choose from the following upcoming discussions or click next.
 
-| (a) :ref:`Ivy Container` ✅
+| (a) :ref:`Ivy Container`
 | Hierarchical container solving almost everything behind the scenes in Ivy
 |
-| (b) :ref:`Ivy Stateful API` ✅
+| (b) :ref:`Ivy Stateful API`
 | Trainable Layers, Modules, Optimizers and more built on the functional API and the Ivy Container
 |
-| (c) :ref:`Ivy Array` 🚧
+| (c) :ref:`Ivy Array`
 | Bringing methods as array attributes to Ivy, cleaning up and simplifying code
 
 .. toctree::
