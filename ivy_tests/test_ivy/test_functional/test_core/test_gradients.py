@@ -62,7 +62,9 @@ def test_unset_with_grads(grads):
 # variable
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True)
+    ),
 )
 def test_variable(
     *,
@@ -90,7 +92,9 @@ def test_variable(
 # is_variable
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True)
+    ),
 )
 def test_is_variable(
     *,
@@ -118,7 +122,9 @@ def test_is_variable(
 # variable data
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True)
+    ),
 )
 def test_variable_data(dtype_and_x, native_array, container, instance_method, fw):
     dtype, x = dtype_and_x
@@ -139,7 +145,9 @@ def test_variable_data(dtype_and_x, native_array, container, instance_method, fw
 # stop_gradient
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True)
+    ),
     preserve_type=st.booleans(),
 )
 def test_stop_gradient(
@@ -165,7 +173,7 @@ def test_stop_gradient(
 @handle_cmd_line_args
 @given(
     dtype_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=1,
         min_dim_size=1,
         min_value=0,
