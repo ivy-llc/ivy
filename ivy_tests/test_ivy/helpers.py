@@ -116,7 +116,7 @@ _excluded = []
 
 
 @st.composite
-def get_dtype(draw, type, full=False):
+def get_dtype(draw, type, index=0, full=False):
     dtype_dict = {
         "valid": ivy.valid_dtypes,
         "numeric": ivy.valid_numeric_dtypes,
@@ -126,7 +126,7 @@ def get_dtype(draw, type, full=False):
     }
     if full:
         return dtype_dict[type]
-    return draw(st.sampled_from(dtype_dict[type]))
+    return draw(st.sampled_from(dtype_dict[type][index:]))
 
 
 def _convert_vars(
