@@ -778,6 +778,7 @@ def test_torch_arctanh(
 
 
 # log2
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
