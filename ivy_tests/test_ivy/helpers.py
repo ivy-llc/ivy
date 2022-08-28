@@ -115,20 +115,6 @@ _iterable_types = [list, tuple, dict]
 _excluded = []
 
 
-@st.composite
-def get_dtype(draw, type, index=0, full=False):
-    dtype_dict = {
-        "valid": ivy.valid_dtypes,
-        "numeric": ivy.valid_numeric_dtypes,
-        "float": ivy.valid_float_dtypes,
-        "integer": ivy.valid_int_dtypes,
-        "unsigned": ivy.valid_uint_dtypes,
-    }
-    if full:
-        return dtype_dict[type]
-    return draw(st.sampled_from(dtype_dict[type][index:]))
-
-
 def _convert_vars(
     *, vars_in, from_type, to_type_callable=None, keep_other=True, to_type=None
 ):
@@ -349,6 +335,38 @@ def docstring_examples_run(
 def var_fn(x, *, dtype=None, device=None):
     """Returns x as an Ivy Variable wrapping an Ivy Array with given dtype and device"""
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
+
+
+@st.composite
+def get_dtypes(draw, type, index=0, full=False):
+    """
+    Draws valid dtypes based on the backend set on the stack
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    type
+        Supported types are integer, float, valid, numeric, and unsigned
+    index
+        list indexing incase a test needs to be skipped for a particular dtype(s)
+    full
+        returns the complete list of valid types
+
+    Returns
+    -------
+
+    """
+    dtype_dict = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+    }
+    if full:
+        return dtype_dict[type][index:]
+    return draw(st.sampled_from(dtype_dict[type][index:]))
 
 
 @st.composite
