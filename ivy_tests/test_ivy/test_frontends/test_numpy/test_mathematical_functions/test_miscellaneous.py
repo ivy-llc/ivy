@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy import zeros_like
 
 
 @handle_cmd_line_args
@@ -53,7 +54,7 @@ def test_numpy_clip(
         x=np.asarray(x_list, dtype=input_dtype[0]),
         a_min=min_val_list,
         a_max=max_val_list,
-        out=None,
+        out=zeros_like(x_list),
         where=where,
         casting="same_kind",
         order="k",
@@ -95,7 +96,7 @@ def test_numpy_cbrt(
         frontend="numpy",
         fn_tree="cbrt",
         x=np.asarray(x, dtype=input_dtype),
-        out=None,
+        out=zeros_like(x),
         where=where,
         casting="same_kind",
         order="k",
@@ -138,7 +139,7 @@ def test_numpy_sqrt(
         frontend="numpy",
         fn_tree="sqrt",
         x=np.asarray(x, dtype=input_dtype),
-        out=None,
+        out=zeros_like(x),
         where=where,
         casting="same_kind",
         order="k",
@@ -181,7 +182,7 @@ def test_numpy_square(
         frontend="numpy",
         fn_tree="square",
         x=np.asarray(x, dtype=input_dtype),
-        out=None,
+        out=zeros_like(x),
         where=where,
         casting="same_kind",
         order="k",
@@ -223,7 +224,7 @@ def test_numpy_absolute(
         frontend="numpy",
         fn_tree="absolute",
         x=np.asarray(x, dtype=input_dtype),
-        out=None,
+        out=zeros_like(x),
         where=where,
         casting="same_kind",
         order="k",
@@ -265,7 +266,7 @@ def test_numpy_fabs(
         frontend="numpy",
         fn_tree="fabs",
         x=np.asarray(x, dtype=input_dtype),
-        out=None,
+        out=zeros_like(x),
         where=where,
         casting="same_kind",
         order="k",

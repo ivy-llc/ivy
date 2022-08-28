@@ -2,23 +2,24 @@
 platform linux -- Python 3.8.10, pytest-7.1.2, pluggy-1.0.0
 rootdir: /workspaces/ivy
 plugins: typeguard-2.13.3, hypothesis-6.48.2
-collected 6 items
+collected 6 items / 5 deselected / 1 selected
 
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py F [ 16%]
-FFF..                                                                    [100%]
+ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py F [100%]
 
 =================================== FAILURES ===================================
-____________________ test_numpy_clip[cpu-None-True-False-] _____________________
+_____ test_numpy_clip[cpu-ivy.functional.backends.numpy-True-False-numpy] ______
 
 get_command_line_flags = {'as_variable': None, 'container': None, 'instance_method': None, 'native_array': None, ...}
-device = 'cpu', f = None, fw = '', args = (), kwargs = {}
+device = 'cpu'
+f = <module 'ivy.functional.backends.numpy' from '/workspaces/ivy/ivy/functional/backends/numpy/__init__.py'>
+fw = 'numpy', args = (), kwargs = {}
 
     @given(data=st.data())
 >   @settings(max_examples=1)
 
-ivy_tests/test_ivy/helpers.py:3104: 
+ivy_tests/test_ivy/helpers.py:3109: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-ivy_tests/test_ivy/helpers.py:3131: in new_fn
+ivy_tests/test_ivy/helpers.py:3136: in new_fn
     return test_fn(*args, **kwargs)
 ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py:13: in test_numpy_clip
     @given(
@@ -26,8 +27,10 @@ ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_mi
     np_frontend_helpers.test_frontend_function(
 ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:47: in test_frontend_function
     _test_frontend_function_ignoring_unitialized(*args, **kwargs)
-ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:38: in _test_frontend_function_ignoring_unitialized
-    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
+ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:26: in _test_frontend_function_ignoring_unitialized
+    values = helpers.test_frontend_function(*args, **kwargs)
+ivy_tests/test_ivy/helpers.py:1879: in test_frontend_function
+    value_test(
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
     def value_test(
@@ -78,93 +81,99 @@ E       []
 E       
 E       ret_np_from_gt_flat:
 E       
-E       [array([0.], dtype=float16)]
+E       [array([-1.1875], dtype=float16)]
 
-ivy_tests/test_ivy/helpers.py:695: AssertionError
+ivy_tests/test_ivy/helpers.py:699: AssertionError
 ----------------------------- Captured stdout call -----------------------------
 ret 0.0
 args_frontend (array(0., dtype=float32), 0.0, 0.0)
 kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt -760.0 <class 'numpy.float16'>
-frontend_ret gt after fix [-760.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-760.], dtype=float16),)
+frontend_ret gt 3136.0 <class 'numpy.float16'>
+frontend_ret gt after fix [3136.] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([3136.], dtype=float16),)
 frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-760.], dtype=float16)]
+frontend_ret_flat [array([3136.], dtype=float16)]
+ret in flatten [[0.]]
+ret_flat [[0.]]
+ret_np_flat []
+ret ivy.array([-0.909])
+args_frontend (array([-0.90909091]), [-0.9090909090909091], [-0.9090909090909091])
+kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': array([False])}
+frontend_ret gt [-0.909] <class 'numpy.ndarray'>
+frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([-0.909], dtype=float16),)
+frontend_ret_idxs [[0]]
+frontend_ret_flat [array([-0.909], dtype=float16)]
+ret in flatten [[[-0.909]]]
+ret_flat [[[-0.909]]]
+ret_np_flat []
 ret 0.0
 args_frontend (array(0., dtype=float32), 0.0, 0.0)
 kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt -0.4023 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.4023] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.4023], dtype=float16),)
+frontend_ret gt 1.0 <class 'numpy.float16'>
+frontend_ret gt after fix [1.] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([1.], dtype=float16),)
 frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.4023], dtype=float16)]
+frontend_ret_flat [array([1.], dtype=float16)]
+ret in flatten [[0.]]
+ret_flat [[0.]]
+ret_np_flat []
 ret 0.0
 args_frontend (array(0., dtype=float32), 0.0, 0.0)
 kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.000351 <class 'numpy.float16'>
-frontend_ret gt after fix [0.000351] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.000351], dtype=float16),)
+frontend_ret gt -198.0 <class 'numpy.float16'>
+frontend_ret gt after fix [-198.] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([-198.], dtype=float16),)
 frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.000351], dtype=float16)]
+frontend_ret_flat [array([-198.], dtype=float16)]
+ret in flatten [[0.]]
+ret_flat [[0.]]
+ret_np_flat []
 ret 0.0
 args_frontend (array(0., dtype=float32), 0.0, 0.0)
 kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 444.0 <class 'numpy.float16'>
-frontend_ret gt after fix [444.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([444.], dtype=float16),)
+frontend_ret gt -0.00010586 <class 'numpy.float16'>
+frontend_ret gt after fix [-0.00010586] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([-0.00010586], dtype=float16),)
 frontend_ret_idxs [[0]]
-frontend_ret_flat [array([444.], dtype=float16)]
+frontend_ret_flat [array([-0.00010586], dtype=float16)]
+ret in flatten [[0.]]
+ret_flat [[0.]]
+ret_np_flat []
+ret ivy.array([-0.0867])
+args_frontend (array([-0.08664562]), [-0.08664561800393182], [-1.6342664862384688e+308])
+kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': array([False])}
+frontend_ret gt [-0.0867] <class 'numpy.ndarray'>
+frontend_ret gt after fix [-0.0867] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([-0.0867], dtype=float16),)
+frontend_ret_idxs [[0]]
+frontend_ret_flat [array([-0.0867], dtype=float16)]
+ret in flatten [[[-0.0867]]]
+ret_flat [[[-0.0867]]]
+ret_np_flat []
 ret 0.0
 args_frontend (array(0., dtype=float32), 0.0, 0.0)
 kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.03955 <class 'numpy.float16'>
-frontend_ret gt after fix [0.03955] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.03955], dtype=float16),)
+frontend_ret gt 1.0 <class 'numpy.float16'>
+frontend_ret gt after fix [1.] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([1.], dtype=float16),)
 frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.03955], dtype=float16)]
+frontend_ret_flat [array([1.], dtype=float16)]
+ret in flatten [[0.]]
+ret_flat [[0.]]
+ret_np_flat []
 ret 0.0
 args_frontend (array(0., dtype=float32), 0.0, 0.0)
 kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.2246 <class 'numpy.float16'>
-frontend_ret gt after fix [0.2246] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.2246], dtype=float16),)
+frontend_ret gt -1.1875 <class 'numpy.float16'>
+frontend_ret gt after fix [-1.1875] <class 'numpy.ndarray'>
+frontend_ret gt post tuple (array([-1.1875], dtype=float16),)
 frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.2246], dtype=float16)]
-ret 0.0
-args_frontend (array(0., dtype=float32), 0.0, 0.0)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.000618 <class 'numpy.float16'>
-frontend_ret gt after fix [0.000618] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.000618], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.000618], dtype=float16)]
-ret 0.0
-args_frontend (array(0., dtype=float32), 0.0, 0.0)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.0 <class 'numpy.float16'>
-frontend_ret gt after fix [0.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.], dtype=float16)]
-ret 0.0
-args_frontend (array(0., dtype=float32), 0.0, 0.0)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 3872.0 <class 'numpy.float16'>
-frontend_ret gt after fix [3872.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([3872.], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([3872.], dtype=float16)]
+frontend_ret_flat [array([-1.1875], dtype=float16)]
+ret in flatten [[0.]]
+ret_flat [[0.]]
+ret_np_flat []
 ---------------------------------- Hypothesis ----------------------------------
-Falsifying example: test_numpy_clip(
-    x_min_n_max=(['float32', 'float32', 'float32'], [0.0, 0.0, 0.0]),
-    dtype='float16',
-    where=False,
-    as_variable=[False],
-    with_out=False,
-    num_positional_args=3,
-    native_array=[False],
-    fw='numpy',
-)
 Falsifying example: test_numpy_clip(
     x_min_n_max=(['float32', 'float32', 'float32'], [0.0, 0.0, 0.0]),
     dtype='float16',
@@ -184,10 +193,9 @@ Falsifying example: new_fn(
      'instance_method': None,
      'test_gradients': None},
     device='cpu',
-    f=None,
-    fw='',
+    f=<module 'ivy.functional.backends.numpy' from '/workspaces/ivy/ivy/functional/backends/numpy/__init__.py'>,
+    fw='numpy',
 )
-Draw 1: 'numpy'
 Falsifying example: test_numpy_clip(
     x_min_n_max=(['float32', 'float32', 'float32'], [0.0, 0.0, 0.0]),
     dtype='float16',
@@ -198,661 +206,12 @@ Falsifying example: test_numpy_clip(
     native_array=[False],
     fw='numpy',
 )
-____________________ test_numpy_cbrt[cpu-None-True-False-] _____________________
-
-fw = ''
-
-    @given(
->       dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, num_arrays=1),
-        dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-        where=np_frontend_helpers.where(),
-        as_variable=st.booleans(),
-        with_out=st.booleans(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.cbrt"
-        ),
-        native_array=st.booleans(),
-    )
-
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py:67: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py:88: in test_numpy_cbrt
-    np_frontend_helpers.test_frontend_function(
-ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:47: in test_frontend_function
-    _test_frontend_function_ignoring_unitialized(*args, **kwargs)
-ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:38: in _test_frontend_function_ignoring_unitialized
-    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-    def value_test(
-        *,
-        ret_np_flat,
-        ret_np_from_gt_flat,
-        rtol=None,
-        atol=1e-6,
-        ground_truth_backend="TensorFlow",
-    ):
-        """Performs a value test for matching the arrays in ret_np_flat and
-        ret_from_np_flat.
-    
-        Parameters
-        ----------
-        ret_np_flat
-            A list (flattened) containing Numpy arrays. Return from the
-            framework to test.
-        ret_from_np_flat
-            A list (flattened) containing Numpy arrays. Return from the ground
-            truth framework.
-        rtol
-            Relative Tolerance Value.
-        atol
-            Absolute Tolerance Value.
-        ground_truth_backend
-            Ground Truth Backend Framework.
-    
-        Returns
-        -------
-        None if the value test passes, else marks the test as failed.
-        """
-        if type(ret_np_flat) != list:
-            ret_np_flat = [ret_np_flat]
-        if type(ret_np_from_gt_flat) != list:
-            ret_np_from_gt_flat = [ret_np_from_gt_flat]
->       assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
-            "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
-            "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-                ret_np_flat, ret_np_from_gt_flat
-            )
-        )
-E       AssertionError: len(ret_np_flat) != len(ret_np_from_gt_flat):
-E       
-E       ret_np_flat:
-E       
-E       []
-E       
-E       ret_np_from_gt_flat:
-E       
-E       [array([0.], dtype=float16)]
-
-ivy_tests/test_ivy/helpers.py:695: AssertionError
------------------------------ Captured stdout call -----------------------------
-ret 0.0
-args_frontend (array(0., dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.0 <class 'numpy.float16'>
-frontend_ret gt after fix [0.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.], dtype=float16)]
-ret 0.0
-args_frontend (array(0., dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.0 <class 'numpy.float16'>
-frontend_ret gt after fix [0.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.], dtype=float16)]
-ret 0.0
-args_frontend (array(0., dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': True, 'where': False}
-frontend_ret gt 0.0 <class 'numpy.float16'>
-frontend_ret gt after fix [0.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.], dtype=float16)]
----------------------------------- Hypothesis ----------------------------------
-Falsifying example: test_numpy_cbrt(
-    dtype_and_x=('float32', 0.0),
-    dtype='float16',
-    where=False,
-    as_variable=False,
-    with_out=False,
-    num_positional_args=1,
-    native_array=False,
-    fw='',
-)
-____________________ test_numpy_sqrt[cpu-None-True-False-] _____________________
-
-fw = ''
-
-    @given(
->       dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-        dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-        where=np_frontend_helpers.where(),
-        as_variable=st.booleans(),
-        with_out=st.booleans(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.sqrt"
-        ),
-        native_array=st.booleans(),
-    )
-
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py:110: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py:131: in test_numpy_sqrt
-    np_frontend_helpers.test_frontend_function(
-ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:47: in test_frontend_function
-    _test_frontend_function_ignoring_unitialized(*args, **kwargs)
-ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:38: in _test_frontend_function_ignoring_unitialized
-    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-    def value_test(
-        *,
-        ret_np_flat,
-        ret_np_from_gt_flat,
-        rtol=None,
-        atol=1e-6,
-        ground_truth_backend="TensorFlow",
-    ):
-        """Performs a value test for matching the arrays in ret_np_flat and
-        ret_from_np_flat.
-    
-        Parameters
-        ----------
-        ret_np_flat
-            A list (flattened) containing Numpy arrays. Return from the
-            framework to test.
-        ret_from_np_flat
-            A list (flattened) containing Numpy arrays. Return from the ground
-            truth framework.
-        rtol
-            Relative Tolerance Value.
-        atol
-            Absolute Tolerance Value.
-        ground_truth_backend
-            Ground Truth Backend Framework.
-    
-        Returns
-        -------
-        None if the value test passes, else marks the test as failed.
-        """
-        if type(ret_np_flat) != list:
-            ret_np_flat = [ret_np_flat]
-        if type(ret_np_from_gt_flat) != list:
-            ret_np_from_gt_flat = [ret_np_from_gt_flat]
->       assert len(ret_np_flat) == len(ret_np_from_gt_flat), (
-            "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
-            "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-                ret_np_flat, ret_np_from_gt_flat
-            )
-        )
-E       AssertionError: len(ret_np_flat) != len(ret_np_from_gt_flat):
-E       
-E       ret_np_flat:
-E       
-E       []
-E       
-E       ret_np_from_gt_flat:
-E       
-E       [array([0.], dtype=float16)]
-
-ivy_tests/test_ivy/helpers.py:695: AssertionError
------------------------------ Captured stdout call -----------------------------
-ret -0.9091796875
-args_frontend (array(-0.909, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
-ret -0.08636474609375
-args_frontend (array(-0.08636, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.08636 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.08636] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.08636], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.08636], dtype=float16)]
-ret -0.9091796875
-args_frontend (array(-0.909, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
-ret -233.625
-args_frontend (array(-233.6, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -233.6 <class 'numpy.float16'>
-frontend_ret gt after fix [-233.6] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-233.6], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-233.6], dtype=float16)]
-ret -0.9091796875
-args_frontend (array(-0.909, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float32'), 'subok': False, 'where': False}
-frontend_ret gt -0.9091797 <class 'numpy.float32'>
-frontend_ret gt after fix [-0.9091797] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.9091797], dtype=float32),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.9091797], dtype=float32)]
-ret -0.9091796875
-args_frontend (array(-0.909, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
-ret -0.9091796875
-args_frontend (array(-0.909, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
----------------------------------- Hypothesis ----------------------------------
-Falsifying example: test_numpy_sqrt(
-    dtype_and_x=('float16', -0.9090909090909091),
-    dtype='float16',
-    where=False,
-    as_variable=False,
-    with_out=False,
-    num_positional_args=1,
-    native_array=False,
-    fw='',
-)
-___________________ test_numpy_square[cpu-None-True-False-] ____________________
-
-fw = ''
-
-    @given(
->       dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, num_arrays=1),
-        dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-        where=np_frontend_helpers.where(),
-        as_variable=st.booleans(),
-        with_out=st.booleans(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.square"
-        ),
-        native_array=st.booleans(),
-    )
-
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py:153: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py:174: in test_numpy_square
-    np_frontend_helpers.test_frontend_function(
-ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:47: in test_frontend_function
-    _test_frontend_function_ignoring_unitialized(*args, **kwargs)
-ivy_tests/test_ivy/test_frontends/test_numpy/helpers.py:26: in _test_frontend_function_ignoring_unitialized
-    values = helpers.test_frontend_function(*args, **kwargs)
-ivy_tests/test_ivy/helpers.py:1874: in test_frontend_function
-    value_test(
-ivy_tests/test_ivy/helpers.py:705: in value_test
-    assert_all_close(
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-ret_np = array([-0.909], dtype=float16)
-ret_from_gt_np = array([0.8267], dtype=float16), rtol = 0.01, atol = 1e-06
-ground_truth_backend = 'numpy'
-
-    def assert_all_close(
-        ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
-    ):
-        """Matches the ret_np and ret_from_np inputs element-by-element to ensure that
-        they are the same.
-    
-        Parameters
-        ----------
-        ret_np
-            Return from the framework to test. Ivy Container or Numpy Array.
-        ret_from_gt_np
-            Return from the ground truth framework. Ivy Container or Numpy Array.
-        rtol
-            Relative Tolerance Value.
-        atol
-            Absolute Tolerance Value.
-        ground_truth_backend
-            Ground Truth Backend Framework.
-    
-        Returns
-        -------
-        None if the test passes, else marks the test as failed.
-        """
-        assert ret_np.dtype is ret_from_gt_np.dtype, (
-            "the return with a {} backend produced data type of {}, while the return with"
-            " a {} backend returned a data type of {}.".format(
-                ground_truth_backend,
-                ret_from_gt_np.dtype,
-                ivy.current_backend_str(),
-                ret_np.dtype,
-            )
-        )
-        if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
-            ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
-        else:
->           assert np.allclose(
-                np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
-            ), "{} != {}".format(ret_np, ret_from_gt_np)
-E           AssertionError: [-0.909] != [0.8267]
-
-ivy_tests/test_ivy/helpers.py:573: AssertionError
------------------------------ Captured stdout call -----------------------------
-ret ivy.array(-0.08636)
-args_frontend (array(-0.08636, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.08636 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.08636] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.08636], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.08636], dtype=float16)]
-ret ivy.array(-0.08636)
-args_frontend (array(-0.08636, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.08636 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.08636] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.08636], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.08636], dtype=float16)]
-ret ivy.array(-0.0867)
-args_frontend (array(-0.08664562),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.0867 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.0867] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.0867], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.0867], dtype=float16)]
-ret ivy.array(-0.0867)
-args_frontend (array(-0.08664562),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.0867 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.0867] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.0867], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.0867], dtype=float16)]
-ret ivy.array([-0.0867])
-args_frontend (array([-0.08664562]),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [-0.0867] <class 'numpy.ndarray'>
-frontend_ret gt after fix [-0.0867] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.0867], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.0867], dtype=float16)]
-ret ivy.array([-0.0867])
-args_frontend (array([-0.08664562]),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [-0.0867] <class 'numpy.ndarray'>
-frontend_ret gt after fix [-0.0867] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.0867], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.0867], dtype=float16)]
-ret ivy.array([-0.0864])
-args_frontend (array([-0.08636], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [0.007458] <class 'numpy.ndarray'>
-frontend_ret gt after fix [0.007458] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.007458], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.007458], dtype=float16)]
-ret ivy.array([ 1.07e-38,  4.55e-01,  4.55e-01,  1.00e+00, -3.84e+16])
-args_frontend (array([ 1.0686312e-38,  4.5454547e-01,  4.5454547e-01,  1.0000000e+00,
-       -3.8357223e+16], dtype=float32), None)
-kwargs_frontend {'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float64'), 'subok': False, 'where': [False, False, False, True, False]}
-frontend_ret gt [ 1.07e-38  4.55e-01  4.55e-01  1.00e+00 -3.84e+16] <class 'numpy.ndarray'>
-frontend_ret gt after fix [ 1.07e-38  4.55e-01  4.55e-01  1.00e+00 -3.84e+16] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([ 1.07e-38,  4.55e-01,  4.55e-01,  1.00e+00, -3.84e+16]),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([ 1.07e-38,  4.55e-01,  4.55e-01,  1.00e+00, -3.84e+16])]
-ret ivy.array([[1.17e-14, 1.14e-76, 2.94e-15, 1.00e+00, 1.14e-76, 9.57e+76,
-        1.86e+00],
-       [9.43e+32, 1.14e-76, 1.14e-76, 1.86e+00, 9.18e-02, 8.26e-01,
-        8.26e+13]])
-args_frontend (array([[ 1.08372085e-07, -1.06863119e-38,  5.41860423e-08,
-        -1.00000000e+00, -1.06863119e-38, -3.09347595e+38,
-         1.36363637e+00],
-       [-3.07126132e+16,  1.06863119e-38,  1.06863119e-38,
-        -1.36363637e+00, -3.03030312e-01,  9.09081817e-01,
-         9.09090900e+06]], dtype=float32),)
-kwargs_frontend {'out': array([[1.17445087e-14, 1.14197262e-76, 2.93612718e-15, 1.00000000e+00,
-        1.14197262e-76, 9.56959347e+76, 1.85950416e+00],
-       [9.43264610e+32, 1.14197262e-76, 1.14197262e-76, 1.85950416e+00,
-        9.18273700e-02, 8.26429749e-01, 8.26446264e+13]]), 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float64'), 'subok': False, 'where': True}
-frontend_ret gt [[1.17445087e-14 1.14197262e-76 2.93612718e-15 1.00000000e+00
-  1.14197262e-76 9.56959347e+76 1.85950416e+00]
- [9.43264610e+32 1.14197262e-76 1.14197262e-76 1.85950416e+00
-  9.18273700e-02 8.26429749e-01 8.26446264e+13]] <class 'numpy.ndarray'>
-frontend_ret gt after fix [[1.17445087e-14 1.14197262e-76 2.93612718e-15 1.00000000e+00
-  1.14197262e-76 9.56959347e+76 1.85950416e+00]
- [9.43264610e+32 1.14197262e-76 1.14197262e-76 1.85950416e+00
-  9.18273700e-02 8.26429749e-01 8.26446264e+13]] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([[1.17445087e-14, 1.14197262e-76, 2.93612718e-15, 1.00000000e+00,
-        1.14197262e-76, 9.56959347e+76, 1.85950416e+00],
-       [9.43264610e+32, 1.14197262e-76, 1.14197262e-76, 1.85950416e+00,
-        9.18273700e-02, 8.26429749e-01, 8.26446264e+13]]),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([[1.17445087e-14, 1.14197262e-76, 2.93612718e-15, 1.00000000e+00,
-        1.14197262e-76, 9.56959347e+76, 1.85950416e+00],
-       [9.43264610e+32, 1.14197262e-76, 1.14197262e-76, 1.85950416e+00,
-        9.18273700e-02, 8.26429749e-01, 8.26446264e+13]])]
-ret ivy.array([[1.17e-14, 1.14e-76, 2.94e-15, 1.00e+00, 1.14e-76, 9.57e+76,
-        1.86e+00],
-       [9.43e+32, 1.14e-76, 1.14e-76, 1.86e+00, 9.18e-02, 8.26e-01,
-        8.26e+13]])
-args_frontend (array([[ 1.08372085e-07, -1.06863119e-38,  5.41860423e-08,
-        -1.00000000e+00, -1.06863119e-38, -3.09347595e+38,
-         1.36363637e+00],
-       [-3.07126132e+16,  1.06863119e-38,  1.06863119e-38,
-        -1.36363637e+00, -3.03030312e-01,  9.09081817e-01,
-         9.09090900e+06]], dtype=float32),)
-kwargs_frontend {'out': array([[1.17445087e-14, 1.14197262e-76, 2.93612718e-15, 1.00000000e+00,
-        1.14197262e-76, 9.56959347e+76, 1.85950416e+00],
-       [9.43264610e+32, 1.14197262e-76, 1.14197262e-76, 1.85950416e+00,
-        9.18273700e-02, 8.26429749e-01, 8.26446264e+13]]), 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float64'), 'subok': False, 'where': True}
-frontend_ret gt [[1.17445087e-14 1.14197262e-76 2.93612718e-15 1.00000000e+00
-  1.14197262e-76 9.56959347e+76 1.85950416e+00]
- [9.43264610e+32 1.14197262e-76 1.14197262e-76 1.85950416e+00
-  9.18273700e-02 8.26429749e-01 8.26446264e+13]] <class 'numpy.ndarray'>
-frontend_ret gt after fix [[1.17445087e-14 1.14197262e-76 2.93612718e-15 1.00000000e+00
-  1.14197262e-76 9.56959347e+76 1.85950416e+00]
- [9.43264610e+32 1.14197262e-76 1.14197262e-76 1.85950416e+00
-  9.18273700e-02 8.26429749e-01 8.26446264e+13]] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([[1.17445087e-14, 1.14197262e-76, 2.93612718e-15, 1.00000000e+00,
-        1.14197262e-76, 9.56959347e+76, 1.85950416e+00],
-       [9.43264610e+32, 1.14197262e-76, 1.14197262e-76, 1.85950416e+00,
-        9.18273700e-02, 8.26429749e-01, 8.26446264e+13]]),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([[1.17445087e-14, 1.14197262e-76, 2.93612718e-15, 1.00000000e+00,
-        1.14197262e-76, 9.56959347e+76, 1.85950416e+00],
-       [9.43264610e+32, 1.14197262e-76, 1.14197262e-76, 1.85950416e+00,
-        9.18273700e-02, 8.26429749e-01, 8.26446264e+13]])]
-ret ivy.array([2.98])
-args_frontend (array([-1.7272727], dtype=float32), array([2.9834712], dtype=float32))
-kwargs_frontend {'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float32'), 'subok': False, 'where': [True]}
-frontend_ret gt [2.9834712] <class 'numpy.ndarray'>
-frontend_ret gt after fix [2.9834712] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([2.9834712], dtype=float32),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([2.9834712], dtype=float32)]
-ret ivy.array([2.98])
-args_frontend (array([-1.7272727], dtype=float32), array([2.9834712], dtype=float32))
-kwargs_frontend {'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float32'), 'subok': False, 'where': [True]}
-frontend_ret gt [2.9834712] <class 'numpy.ndarray'>
-frontend_ret gt after fix [2.9834712] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([2.9834712], dtype=float32),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([2.9834712], dtype=float32)]
-ret ivy.array([-0.0864])
-args_frontend (array([-0.08636], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [0.007458] <class 'numpy.ndarray'>
-frontend_ret gt after fix [0.007458] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.007458], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.007458], dtype=float16)]
-ret ivy.array([-0.0864])
-args_frontend (array([-0.08636], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [0.007458] <class 'numpy.ndarray'>
-frontend_ret gt after fix [0.007458] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.007458], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.007458], dtype=float16)]
-ret ivy.array(-0.08636)
-args_frontend (array(-0.08636, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.08636 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.08636] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.08636], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.08636], dtype=float16)]
-ret ivy.array(-0.08636)
-args_frontend (array(-0.08636, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.08636 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.08636] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.08636], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.08636], dtype=float16)]
-ret ivy.array(inf)
-args_frontend (array(4.479885e+14, dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': True}
-frontend_ret gt inf <class 'numpy.float16'>
-frontend_ret gt after fix [inf] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([inf], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([inf], dtype=float16)]
-ret ivy.array(inf)
-args_frontend (array(4.479885e+14, dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': True}
-frontend_ret gt inf <class 'numpy.float16'>
-frontend_ret gt after fix [inf] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([inf], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([inf], dtype=float16)]
-ret ivy.array([-0.909])
-args_frontend (array([-0.909], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [0.8267] <class 'numpy.ndarray'>
-frontend_ret gt after fix [0.8267] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.8267], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.8267], dtype=float16)]
-ret ivy.array([-0.909])
-args_frontend (array([-0.909], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float32'), 'subok': False, 'where': [False]}
-frontend_ret gt [-0.9091797] <class 'numpy.ndarray'>
-frontend_ret gt after fix [-0.9091797] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.9091797], dtype=float32),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.9091797], dtype=float32)]
-ret ivy.array([-0.909])
-args_frontend (array([-0.909], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float32'), 'subok': False, 'where': [False]}
-frontend_ret gt [-0.9091797] <class 'numpy.ndarray'>
-frontend_ret gt after fix [-0.9091797] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.9091797], dtype=float32),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.9091797], dtype=float32)]
-ret ivy.array([-0.909])
-args_frontend (array([-0.909], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [0.8267] <class 'numpy.ndarray'>
-frontend_ret gt after fix [0.8267] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.8267], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.8267], dtype=float16)]
-ret ivy.array(inf)
-args_frontend (array(2.5588635e+14, dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': True}
-frontend_ret gt inf <class 'numpy.float16'>
-frontend_ret gt after fix [inf] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([inf], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([inf], dtype=float16)]
-ret ivy.array(inf)
-args_frontend (array(2.5588635e+14, dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': True}
-frontend_ret gt inf <class 'numpy.float16'>
-frontend_ret gt after fix [inf] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([inf], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([inf], dtype=float16)]
-ret ivy.array(-0.909)
-args_frontend (array(-0.90909094, dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
-ret ivy.array(-0.909)
-args_frontend (array(-0.90909094, dtype=float32),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
-ret ivy.array(-0.909)
-args_frontend (array(-0.909, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
-ret ivy.array(-0.909)
-args_frontend (array(-0.909, dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': False}
-frontend_ret gt -0.909 <class 'numpy.float16'>
-frontend_ret gt after fix [-0.909] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([-0.909], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([-0.909], dtype=float16)]
-ret ivy.array([-234.])
-args_frontend (array([-233.6], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [54592.] <class 'numpy.ndarray'>
-frontend_ret gt after fix [54592.] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([54592.], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([54592.], dtype=float16)]
-ret ivy.array([-0.909])
-args_frontend (array([-0.909], dtype=float16),)
-kwargs_frontend {'out': None, 'casting': 'same_kind', 'order': 'k', 'dtype': dtype('float16'), 'subok': False, 'where': [False]}
-frontend_ret gt [0.8267] <class 'numpy.ndarray'>
-frontend_ret gt after fix [0.8267] <class 'numpy.ndarray'>
-frontend_ret gt post tuple (array([0.8267], dtype=float16),)
-frontend_ret_idxs [[0]]
-frontend_ret_flat [array([0.8267], dtype=float16)]
------------------------------ Captured stderr call -----------------------------
-WARNING:root:NumPy does not support autograd, declaring a 'variable' is identical to declaring an 'array' when using numpy backend.
------------------------------- Captured log call -------------------------------
-WARNING  root:gradients.py:9 NumPy does not support autograd, declaring a 'variable' is identical to declaring an 'array' when using numpy backend.
----------------------------------- Hypothesis ----------------------------------
-Falsifying example: test_numpy_square(
-    dtype_and_x=('float16', [-0.9090909090909091]),
-    dtype='float16',
-    where=[False],
-    as_variable=False,
-    with_out=False,
-    num_positional_args=1,
-    native_array=False,
-    fw='',
-)
 =============================== warnings summary ===============================
 ../../usr/local/lib/python3.8/dist-packages/flatbuffers/compat.py:19
   /usr/local/lib/python3.8/dist-packages/flatbuffers/compat.py:19: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
     import imp
 
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-  /workspaces/ivy/ivy/functional/backends/numpy/elementwise.py:604: RuntimeWarning: invalid value encountered in sqrt
-    return np.sqrt(x, out=out)
-
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
-FAILED ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_clip[cpu-None-True-False-]
-FAILED ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_cbrt[cpu-None-True-False-]
-FAILED ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_sqrt[cpu-None-True-False-]
-FAILED ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_square[cpu-None-True-False-]
-=================== 4 failed, 2 passed, 8 warnings in 4.81s ====================
+FAILED ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_miscellaneous.py::test_numpy_clip[cpu-ivy.functional.backends.numpy-True-False-numpy]
+================== 1 failed, 5 deselected, 1 warning in 3.29s ==================

@@ -645,7 +645,6 @@ def flatten(*, ret):
 def flatten_and_to_np(*, ret):
     # flatten the return
     ret_flat = flatten(ret=ret)
-    # convert the return to NumPy
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
@@ -1784,8 +1783,6 @@ def test_frontend_function(
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
-    print("ret", ret)
-
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtypes))
 
@@ -1801,6 +1798,7 @@ def test_frontend_function(
 
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
+    backend_returned_scalar = False
     try:
         # check for unsupported dtypes in frontend framework
         function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
@@ -1836,27 +1834,17 @@ def test_frontend_function(
             )
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
-
-        print("args_frontend", args_frontend)
-        print("kwargs_frontend", kwargs_frontend)
-        print("frontend_ret gt", frontend_ret, type(frontend_ret))
         
         if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
-            frontend_ret = np.asarray([frontend_ret])
-        
-        print("frontend_ret gt after fix", frontend_ret, type(frontend_ret))
-
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-
-        print("frontend_ret gt post tuple", frontend_ret)
-        # flatten the frontend return and convert to NumPy arrays
-        frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
-        print("frontend_ret_idxs", frontend_ret_idxs)
-        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        print("frontend_ret_flat", frontend_ret_flat)
-        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+            backend_returned_scalar = True
+            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+        else:
+            # tuplify the frontend return
+            if not isinstance(frontend_ret, tuple):
+                frontend_ret = (frontend_ret,)
+            frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
         ivy.unset_backend()
         raise e
@@ -1867,8 +1855,11 @@ def test_frontend_function(
     if not test_values:
         return ret, frontend_ret
 
-    # flatten the return
-    ret_np_flat = flatten_and_to_np(ret=ret)
+    if backend_returned_scalar:
+        assert ret.shape == ()
+        ret_np_flat = ivy.to_numpy([ret])
+    else:
+        ret_np_flat = flatten_and_to_np(ret=ret)
 
     # value tests, iterating through each array in the flattened returns
     value_test(

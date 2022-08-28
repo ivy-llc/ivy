@@ -25,14 +25,7 @@ def clip(a,
     
     if not dtype:
         dtype = a.dtype
-
-    ret = ivy.minimum(a_max, ivy.maximum(a, a_min), out=out)
-        
-    if where is not None:
-        ret = ivy.where(ivy.broadcast_to(where, a.shape), ret, ivy.default(ivy.default(out, a), ivy.zeros_like(ret)), out=out)
-    
-    ret = ivy.astype(ivy.array(ret), ivy.as_ivy_dtype(dtype), out=out)
-
+    ret = ivy.where(ivy.broadcast_to(where, a.shape), ivy.clip(a, a_min, a_max), ivy.default(out, a), out=out)
     return ret
 
 
