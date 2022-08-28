@@ -884,6 +884,8 @@ def test_floor_divide(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in input_dtype))
     # Make sure it's not dividing value too close to zero
     assume(not np.any(np.isclose(x2, 0)))
 
@@ -970,6 +972,9 @@ def test_greater_equal(
 
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in input_dtype))
 
     # make sure they're not too close together
     assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
