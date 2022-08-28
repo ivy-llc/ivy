@@ -454,4 +454,3 @@ def test_numpy_power(
         subok=True,
         test_values=False,
     )
-
