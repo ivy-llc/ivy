@@ -106,11 +106,30 @@ def sum(
     dtype: np.dtype = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
+    initial=None,
+    where=None,
 ) -> np.ndarray:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
+
+    if initial is None:
+        initial = np._NoValue
+
+    if where is None:
+        where = np._NoValue
+
+    return np.asarray(
+        np.sum(
+            a=x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+    )
 
 
 sum.support_native_out = True
