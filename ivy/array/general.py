@@ -175,8 +175,8 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([[1, 5, 2], \
                            [4, 3, 0], \
                            [4, 8, 2]])
-        >>> x.cumsum(axis=1, exclusive=True, reverse=True)
-        >>> print(x)
+        >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
+        >>> print(y)
         ivy.array([[ 7,  2,  0],
                    [ 3,  0,  0],
                    [10,  2,  0]])

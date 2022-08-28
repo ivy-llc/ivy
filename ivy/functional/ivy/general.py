@@ -2774,8 +2774,9 @@ def cumsum(
         array must have an unsigned integer data type having the same number of
         bits as the default integer data type (e.g., if the default integer data
         type is int32, the returned array must have a uint32 data type).
-        If the data type (either specified or resolved) differs from the data type of x,
-        the input array should be cast to the specified data type before computing the product.
+        If the data type (either specified or resolved) differs from the data type
+        of x, the input array should be cast to the specified data type before
+        computing the product.
     out
         Optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
