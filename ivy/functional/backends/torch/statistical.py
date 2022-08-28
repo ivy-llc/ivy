@@ -97,11 +97,23 @@ def prod(
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
-        return torch.prod(input=x, dtype=dtype)
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdims=keepdims)
+        if keepdims:
+            return torch.prod(x, 0, keepdim=keepdims, dtype=dtype)
+        return torch.prod(x, dtype=dtype)
+    elif isinstance(axis, tuple):
+        if len(axis) == 0:
+            if keepdims:
+                return torch.prod(x, 0, keepdim=keepdims, dtype=dtype)
+            ret = torch.unsqueeze(torch.prod(x, dtype=dtype), dim=0)
+            return ret
+        for i in axis:
+            x = torch.prod(x, i, keepdim=keepdims, dtype=dtype)
+        return x
+    else:
+        return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-prod.unsupported_dtypes = ("float16",)
+prod.unsupported_dtypes = ("float16", "uint16")
 
 
 def std(
