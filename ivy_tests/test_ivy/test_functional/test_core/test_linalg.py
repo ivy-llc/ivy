@@ -1188,7 +1188,7 @@ def test_cholesky(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=3,
