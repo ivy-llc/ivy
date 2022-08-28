@@ -324,3 +324,16 @@ def test_torch_transpose(
         dim0=dim0,
         dim1=dim1,
     )
+#chunk
+
+def test_torch_chunk(
+    dtype_and_values,
+    dim0,
+    dim1,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    inpu

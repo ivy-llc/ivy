@@ -9,7 +9,8 @@ def cat(tensors, dim=0, *, out=None):
 def concat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
-
+def chunk(input,chunks,dim=0):
+    return ivy.c
 def permute(input, dims):
     return ivy.permute_dims(input, axes=dims)
 
