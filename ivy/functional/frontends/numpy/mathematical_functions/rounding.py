@@ -20,7 +20,7 @@ def floor(
         dtype = x.dtype
     if out is None:
         out = ivy.empty(x.shape)
-    return ivy.astype(ivy.where(where, ivy.floor(x, out=x), out, out=out), dtype=dtype)
+    return ivy.astype(ivy.where(where, ivy.floor(x, out=x), out, out=out), dtype)
 
 
 floor.unsupported_dtypes = {"torch": ("float16",)}
