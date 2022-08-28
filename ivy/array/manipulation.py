@@ -362,6 +362,12 @@ class ArrayWithManipulation(abc.ABC):
         -------
             A list of sub-arrays.
 
+        Examples
+        --------
+        >>> x = ivy.array([4, 6, 5, 3])
+        >>> y = x.split()
+        >>> print(y)
+        [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]
         """
         return ivy.split(
             self._data,
