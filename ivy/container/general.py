@@ -726,14 +726,17 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_cumsum(
-            x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            axis: int = 0,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            *,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: int = 0,
+        exclusive: Optional[bool] = False,
+        reverse: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cumsum. This method
@@ -746,6 +749,11 @@ class ContainerWithGeneral(ContainerBase):
             Input array or container to apply cumsum.
         axis
             Axis along which the cumulative sum is computed. Default is 0.
+        exclusive
+            Whether to perform cumsum exclusively. Default is ``False``.
+        reverse
+            Whether to perform the cumsum from last to first element in the selected
+            axis. Default is False (from first to last element)
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -756,6 +764,8 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            Data type of the returned array. Default is ``None``.
         out
             Optional output container. Default is None.
 
@@ -780,18 +790,48 @@ class ContainerWithGeneral(ContainerBase):
                           [6, 8, 7]])
         }
 
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
+                              b=ivy.array([[3, 5, 7]]))
+        >>> y = ivy.Container.static_cumsum(x, axis=0,  \
+                              exclusive=False, reverse=True, dtype='float32')
+        >>> print(y)
+        {
+            a: ivy.array([[1., 3., 5.]]),
+            b: ivy.array([[3., 5., 7.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
+                              b=ivy.array([[3, 5, 8], \
+                                           [5, 6, 5]]), \
+                              c=ivy.array([[2, 4, 1], \
+                                           [3, 6, 9], \
+                                           [0, 2, 3]]))
+        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
+                              b = ivy.zeros((2, 3)), \
+                              c = ivy.zeros((3,3)))
+        >>> ivy.cumsum(x,axis=1,exclusive=True, reverse=False, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([[0, 1, 4]]),
+            b: ivy.array([[0, 3, 8],
+                          [0, 5, 11]]),
+            c: ivy.array([[0, 2, 6],
+                          [0, 3, 9],
+                          [0, 0, 2]])
+        }
+
         >>> x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]), \
                               b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))
         >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
-        >>> ivy.Container.static_cumsum(x, axis=1, out=y)
+        >>> ivy.Container.static_cumsum(x, axis=1, exclusive=True, reverse=True, out=y)
         >>> print(y)
         {
-            a: ivy.array([[1, 4, 8],
-                          [5, 12, 20],
-                          [9, 19, 30]]),
-            b: ivy.array([[3, 7, 12],
-                          [4, 9, 15],
-                          [5, 11, 18]])
+            a: ivy.array([[7, 4, 0],
+                          [15, 8, 0],
+                          [21, 11, 0]]),
+            b: ivy.array([[9, 5, 0],
+                          [11, 6, 0],
+                          [13, 7, 0]])
         }
         >>> x = ivy.Container(a=ivy.array([[1], \
                                            [1]]), \
@@ -816,21 +856,27 @@ class ContainerWithGeneral(ContainerBase):
             "cumsum",
             x,
             axis,
+            exclusive,
+            reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
+            dtype=dtype,
+            out=out
         )
 
     def cumsum(
         self: ivy.Container,
         axis: int = 0,
+        exclusive: Optional[bool] = False,
+        reverse: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -854,6 +900,8 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+           Dtype
         out
             Optional output container. Default is None.
 
@@ -867,29 +915,72 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With :code:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]), \
-                              b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
-        >>> y = x.cumsum(axis=0)
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], \
+                                          [2, 4, 5]]), \
+                              b=ivy.array([[4, 5, 6], \
+                                          [2, 3, 1 ]]))
+        >>> y = x.cumsum(axis=0, dtype='float64')
         >>> print(y)
         {
-            a: ivy.array([[1, 2, 3],
-                          [3, 6, 8]]),
-            b: ivy.array([[4, 5, 6],
-                          [6, 8, 7]])
+            a: ivy.array([[1., 2., 3.],
+                          [3., 6., 8.]]),
+            b: ivy.array([[4., 5., 6.],
+                          [6., 8., 7.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]), \
-                              b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], \
+                                           [5, 7, 8], \
+                                           [9, 10, 11]]), \
+                              b=ivy.array([[3, 4, 5], \
+                                           [4, 5, 6], \
+                                            [5, 6, 7]]))
         >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
-        >>> x.cumsum(axis=1, out=y)
+        >>> x.cumsum(axis=1, exclusive=False, reverse=True, out=y)
         >>> print(y)
         {
-            a: ivy.array([[1, 4, 8],
-                          [5, 12, 20],
-                          [9, 19, 30]]),
-            b: ivy.array([[3, 7, 12],
-                         [4, 9, 15],
-                         [5, 11, 18]])
+            a: ivy.array([[8, 7, 4],
+                          [20, 15, 8],
+                          [30, 21, 11]]),
+            b: ivy.array([[12, 9, 5],
+                          [15, 11, 6],
+                          [18, 13, 7]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
+                              b=ivy.array([[3, 5, 8], \
+                                           [5, 6, 5]]), \
+                              c=ivy.array([[2, 4, 1], \
+                                           [3, 6, 9], \
+                                           [0, 2, 3]]))
+        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
+                              b = ivy.zeros((2, 3)), \
+                              c = ivy.zeros((3,3)))
+        >>> x.cumsum(axis=1,exclusive=True, reverse=False, out=y)
+        >>> print(y)
+        {
+            a: ivy.array([[0, 1, 4]]),
+            b: ivy.array([[0, 3, 8],
+                          [0, 5, 11]]),
+            c: ivy.array([[0, 2, 6],
+                          [0, 3, 9],
+                          [0, 0, 2]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[0, 3, 2], \
+                                           [5, 10, 2], \
+                                           [1, 10, 1]]), \
+                              b=ivy.array([[2, 4, 5], \
+                                           [4, 5, 5], \
+                                           [0, 1, 3]]))
+        >>> y = x.cumsum(axis=1,exclusive=True, reverse=True, dtype='int64')
+        >>> print(y)
+        {
+            a: ivy.array([[5, 2, 0],
+                          [12, 2, 0],
+                          [11, 1, 0]]),
+            b: ivy.array([[9, 5, 0],
+                          [10, 5, 0],
+                          [4, 3, 0]])
         }
 
         >>> x = ivy.Container(a=ivy.array([[0], \
@@ -914,11 +1005,14 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_cumsum(
             self,
             axis,
+            exclusive,
+            reverse,
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences,
-            out=out,
+            dtype=dtype,
+            out=out
         )
 
     @staticmethod

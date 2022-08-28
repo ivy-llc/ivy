@@ -119,7 +119,10 @@ class ArrayWithGeneral(abc.ABC):
     def cumsum(
         self: ivy.Array,
         axis: int = 0,
+        exclusive: Optional[bool] = False,
+        reverse: Optional[bool] = False,
         *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -133,6 +136,13 @@ class ArrayWithGeneral(abc.ABC):
             Input array to apply cumsum.
         axis
             Axis along which the cumulative sum is computed. Default is 0.
+        exclusive
+            Whether to perform cumsum exclusively. Default is ``False``.
+        reverse
+            Whether to perform the cumsum from last to first element in the selected
+            axis. Default is False (from first to last element)
+        dtype
+            Data type of the returned array. Default is ``None``.
         out
             Optional array container. Default is None.
 
@@ -149,23 +159,35 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(y)
         ivy.array([ 1,  3,  6, 10, 15])
 
+        >>> x = ivy.array([2, 6, 4, 10])
+        >>> y = x.cumsum(axis=0, exclusive=False, reverse=True, dtype='float64')
+        >>> print(y)
+        ivy.array([22., 20., 14., 10.])
+
         >>> x = ivy.array([[2, 3], [4, 6], [8, 12]])
         >>> y = ivy.zeros((3, 2))
-        >>> x.cumsum(axis=1, out=y)
+        >>> x.cumsum(axis=1, exclusive=True, reverse=False, out=y)
         >>> print(y)
-        ivy.array([[ 2,  5],
-                   [ 4, 10],
-                   [ 8, 20]])
+        ivy.array([[0, 2],
+                   [0, 4],
+                   [0, 8]])
+
+        >>> x = ivy.array([[1, 5, 2], \
+                           [4, 3, 0], \
+                           [4, 8, 2]])
+        >>> x.cumsum(axis=1, exclusive=True, reverse=True)
+        ivy.array([[ 7,  2,  0],
+                   [ 3,  0,  0],
+                   [10,  2,  0]])
 
         >>> x = ivy.array([[1, 5, 10], [4, 8, 10], [2, 3, 5]])
-        >>> y = ivy.zeros((3, 2))
-        >>> x.cumsum(axis=0, out=x)
+        >>> x.cumsum(axis=0, dtype='float32', out=x)
         >>> print(x)
-        ivy.array([[ 1,  5, 10],
-                   [ 5, 13, 20],
-                   [ 7, 16, 25]])
+        ivy.array([[ 1.,  5., 10.],
+                   [ 5., 13., 20.],
+                   [ 7., 16., 25.]])
         """
-        return ivy.cumsum(self._data, axis, out=out)
+        return ivy.cumsum(self._data, axis, exclusive, reverse, dtype=dtype, out=out)
 
     def cumprod(
         self: ivy.Array,
