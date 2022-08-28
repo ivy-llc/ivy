@@ -408,7 +408,11 @@ function as the ground truth, and so we can only test
 <p>For these reasons, all frontend functions which correspond to functions with limited
 data type support in the native framework (which go beyond the data type limitations of
 the framework itself) should be flagged
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88">as such</a>.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88">as such</a>
+in a manner like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logical_and</span><span class="o">.</span><span class="n">supported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,)</span>
+</pre></div>
+</div>
 <p>The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
 more devices, we should still flag the frontend function devices to be the same as those
 supported by the function in the native framework.</p>
