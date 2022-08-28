@@ -7,7 +7,7 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
-from ivy_tests.test_ivy.helpers import dtype_and_values, handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # Acos
