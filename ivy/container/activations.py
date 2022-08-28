@@ -119,7 +119,7 @@ class ContainerWithActivations(ContainerBase):
 
         """
 
-        self = ivy.maximum(0, self)
+        self.static_relu = ivy.maximum(0, self)
 
         return self.static_relu(
             self,
