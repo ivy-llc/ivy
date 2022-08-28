@@ -326,3 +326,11 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
 
 
 logsumexp.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def swish(x):
+    ret = x / (1 + ivy.exp(-x))
+    return ivy.asarray(ret, dtype=x.dtype)
+
+
+swish.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
