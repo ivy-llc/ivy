@@ -8,6 +8,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -535,7 +536,7 @@ array_shape = st.shared(
     st.lists(helpers.ints(min_value=1, max_value=10), min_size=1, max_size=1),
     key="array_shape",
 )
-dtype_shared = st.shared(helpers.get_dtypes("numeric"), key="dtype")
+dtype_shared = st.shared(ivy_np.valid_numeric_dtypes, key="dtype")
 
 
 @handle_cmd_line_args
