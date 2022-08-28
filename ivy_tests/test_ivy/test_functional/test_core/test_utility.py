@@ -5,7 +5,6 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -14,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -57,7 +56,7 @@ def test_all(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_value=0,
         max_value=1,
         allow_inf=False,
