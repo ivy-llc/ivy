@@ -6,7 +6,6 @@ from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # Linear #
@@ -51,7 +50,7 @@ def x_and_linear(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_x_weight_bias=x_and_linear(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
@@ -99,7 +98,7 @@ def test_linear(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=50,
         allow_inf=False,
@@ -195,7 +194,7 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
@@ -281,7 +280,7 @@ def x_and_mha(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_mha=x_and_mha(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_multi_head_attention(
@@ -541,7 +540,7 @@ def _x_and_filters(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
         data_format=st.sampled_from(["NWC", "NCW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -590,7 +589,7 @@ def test_conv1d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
         data_format=st.sampled_from(["NWC", "NCW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -643,7 +642,7 @@ def test_conv1d_transpose(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -690,7 +689,7 @@ def test_conv2d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -744,7 +743,7 @@ def test_conv2d_transpose(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -795,7 +794,7 @@ def test_depthwise_conv2d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
         data_format=st.sampled_from(["NDHWC", "NCDHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -843,7 +842,7 @@ def test_conv3d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
         data_format=st.sampled_from(["NDHWC", "NCDHW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -958,7 +957,7 @@ def x_and_lstm(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_lstm=x_and_lstm(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_lstm_update(
