@@ -135,9 +135,9 @@ def var(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * np.asarray(
-        np.var(x, axis=axis, keepdims=keepdims, out=out)
-    )
+    return np.asarray(
+        np.var(x, axis=axis, keepdims=keepdims, out=out) * (size / (size - correction))
+    ).astype(x.dtype)
 
 
 var.support_native_out = True
