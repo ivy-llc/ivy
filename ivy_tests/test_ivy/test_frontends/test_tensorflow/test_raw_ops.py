@@ -196,6 +196,7 @@ def test_tensorflow_Cosh(
         x=np.asarray(x, dtype=input_dtype),
     )
 
+
 # Cross
 @handle_cmd_line_args
 @given(
