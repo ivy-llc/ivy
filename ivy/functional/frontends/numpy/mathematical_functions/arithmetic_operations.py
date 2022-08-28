@@ -150,3 +150,19 @@ def vdot(
 ):
     ret = ivy.multiply(a, b).sum()
     return ret
+
+def power(
+        x1,
+        x2,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting='same_kind',
+        order='K',
+        dtype=None,
+        subok=True,
+        signature=None,
+        extobj=None,
+):
+    return ivy.pow(x1, x2, out=out)
