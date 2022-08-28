@@ -2083,8 +2083,6 @@ def dtype_and_values(
         max_dim_size = draw(max_dim_size)
     if isinstance(available_dtypes, st._internal.SearchStrategy):
         available_dtypes = draw(available_dtypes)
-        print(f"\nCurrent Backend-: {ivy.current_backend_str()}")
-        print(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if dtype is None:
