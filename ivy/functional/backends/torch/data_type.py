@@ -51,7 +51,9 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.Tensor:
+def astype(
+    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if isinstance(dtype, str):
         dtype = ivy.as_native_dtype(dtype)

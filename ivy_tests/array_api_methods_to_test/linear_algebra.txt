@@ -3,7 +3,7 @@ cholesky
 det
 diagonal
 eigh
-eigvalsh
+#eigvalsh
 # inv  # failing sporadically for jax - https://github.com/data-apis/array-api-tests/issues/117
 #matmul # failing for torch and tensorflow. tf problem: https://github.com/data-apis/array-api-tests/issues/117
 #matrix_norm # failing for jax non-deterministically

@@ -88,7 +88,7 @@ def test_concat(
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=helpers.get_axis(
@@ -135,7 +135,7 @@ def test_expand_dims(
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=helpers.get_axis(
@@ -190,7 +190,7 @@ def _permute_dims_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     permutation=_permute_dims_helper(),
@@ -231,7 +231,7 @@ def test_permute_dims(
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     reshape=helpers.reshape_shapes(
@@ -289,10 +289,12 @@ def test_reshape(
     shift and axis must have the same length as per the array API standard for the roll
     function. 
 """
+
+
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     shift=helpers.dtype_and_values(
@@ -378,7 +380,7 @@ def _squeeze_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -479,14 +481,16 @@ def test_stack(
 
 
 # clip
+@handle_cmd_line_args
 @given(
     x_min_n_max=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        num_arrays=3,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_clip(
     *,
     data,
@@ -546,12 +550,12 @@ def _pad_helper(draw):
 
 
 # constant_pad
+@handle_cmd_line_args
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
     data=st.data(),
 )
-@handle_cmd_line_args
 def test_constant_pad(
     *,
     data,
@@ -614,7 +618,7 @@ def _repeat_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=st.shared(
@@ -726,9 +730,8 @@ def _split_helper(draw):
 
 @handle_cmd_line_args
 @given(
-    noss_type=st.shared(helpers.ints(min_value=1, max_value=2), key="noss_type"),
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     axis=st.shared(
@@ -746,11 +749,11 @@ def _split_helper(draw):
 def test_split(
     *,
     data,
-    noss_type,
     dtype_value,
     num_or_size_splits,
     axis,
     with_remainder,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
@@ -764,7 +767,7 @@ def test_split(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -782,7 +785,7 @@ def test_split(
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     axis0=helpers.get_axis(
@@ -838,10 +841,12 @@ def test_swapaxes(
         key of value_shape. Each integer is between 0 and 10, and represents how many
         time each dimension needs to be tiled 
 """
+
+
 @handle_cmd_line_args
 @given(
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     repeat=helpers.dtype_and_values(

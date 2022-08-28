@@ -530,14 +530,31 @@ pow.support_native_out = True
 
 
 @_handle_0_dim_output
+def reciprocal(
+    x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.reciprocal(x, out=out)
+
+
+reciprocal.support_native_out = True
+
+
+@_handle_0_dim_output
 def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     /,
     *,
+    modulus: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = np.where(res >= 0, np.floor(res), np.ceil(res))
+        diff = np.asarray(res - res_floored, dtype=res.dtype)
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return np.asarray(np.round(diff * x2), dtype=x1.dtype)
     return np.remainder(x1, x2, out=out)
 
 

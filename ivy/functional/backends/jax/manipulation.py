@@ -40,6 +40,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
         ret = jnp.expand_dims(x, axis)
@@ -72,6 +73,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if copy:
         newarr = jnp.copy(x)
@@ -132,7 +134,6 @@ def split(
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
-    out: Optional[JaxArray] = None,
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
