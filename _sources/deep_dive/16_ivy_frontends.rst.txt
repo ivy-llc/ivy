@@ -302,7 +302,7 @@ is as follows, with direct wrapping around :code:`ivy.logical_and`:
 
 :code:`ivy.logical_and` supports all data types, and so
 :code:`ivy.functional.frontends.tensorflow.math.logical_and` can also easily support all
-data types. However, the primary purpose of these frontend functions if for code
+data types. However, the primary purpose of these frontend functions is for code
 transpilations, and in such cases it would never be useful to support extra data types
 beyond :code:`tf.bool`, as the tensorflow code being transpiled would not support this.
 Additionally, the unit tests for all frontend functions use the original framework
@@ -313,8 +313,7 @@ function as the ground truth, and so we can only test
 For these reasons, all frontend functions which correspond to functions with limited
 data type support in the native framework (which go beyond the data type limitations of
 the framework itself) should be flagged
-`as such <https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88>`_
-in a manner like the following:
+`as such <https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88>`_.
 
 .. code-block:: python
     logical_and.supported_dtypes = ("bool",)
