@@ -15,16 +15,16 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_low=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=-1000,
         max_value=100,
     ),
     dtype_and_high=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=101,
         max_value=1000,
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", none=True),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
 )
 def test_random_uniform(
@@ -71,16 +71,16 @@ def test_random_uniform(
 @handle_cmd_line_args
 @given(
     dtype_and_mean=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=-1000,
         max_value=1000,
     ),
     dtype_and_std=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=1000,
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", none=True),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
 )
 def test_random_normal(
@@ -265,7 +265,7 @@ def test_seed(seed_val):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         allow_inf=False,
         min_num_dims=1,
         min_dim_size=2,
