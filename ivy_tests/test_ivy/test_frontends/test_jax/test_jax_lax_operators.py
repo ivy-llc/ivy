@@ -11,43 +11,32 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 #svd
 @handle_cmd_line_args
 @given(
-    array_shape=helpers.lists(
-        st.integers(1, 5), min_size="num_dims", max_size="num_dims", size_bounds=[1, 5]
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_jax.valid_float_dtypes,
+        num_arrays=1,
     ),
-    input_dtype=st.sampled_from(ivy_jax.valid_float_dtypes),
-    data=st.data(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.jax.lax.svd"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.svd"
+    ),
+
 )
 def test_jax_lax_svd(
-    array_shape,
-    input_dtype,
-    data,
+    dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
 ): 
-    x = data.draw(
-        helpers.nph.arrays(shape=array_shape, dtype=input_dtype).filter(
-            lambda x: not np.any(np.isnan(x))
-        )
-    )
-    helpers.test_function(
-        input_dtype,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtype=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        fw=fw,
         frontend="jax",
         fn_tree="lax.svd",
-        x=x,
+        x=np.asarray(x, dtype=input_dtype),
     )
 # add
 @handle_cmd_line_args
