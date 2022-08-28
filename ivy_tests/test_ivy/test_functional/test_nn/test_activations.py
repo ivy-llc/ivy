@@ -81,7 +81,9 @@ def test_leaky_relu(
 # gelu
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, large_value_safety_factor=2.0
+    ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
 )
