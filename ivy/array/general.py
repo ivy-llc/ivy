@@ -176,16 +176,17 @@ class ArrayWithGeneral(abc.ABC):
                            [4, 3, 0], \
                            [4, 8, 2]])
         >>> x.cumsum(axis=1, exclusive=True, reverse=True)
+        >>> print(x)
         ivy.array([[ 7,  2,  0],
                    [ 3,  0,  0],
                    [10,  2,  0]])
 
         >>> x = ivy.array([[1, 5, 10], [4, 8, 10], [2, 3, 5]])
-        >>> x.cumsum(axis=0, dtype='float32', out=x)
+        >>> x.cumsum(axis=0, out=x)
         >>> print(x)
-        ivy.array([[ 1.,  5., 10.],
-                   [ 5., 13., 20.],
-                   [ 7., 16., 25.]])
+        ivy.array([[ 1,  5, 10],
+                   [ 5, 13, 20],
+                   [ 7, 16, 25]])
         """
         return ivy.cumsum(self._data, axis, exclusive, reverse, dtype=dtype, out=out)
 

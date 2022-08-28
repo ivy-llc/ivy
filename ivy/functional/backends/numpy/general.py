@@ -169,6 +169,7 @@ def cumsum(
 
 cumsum.support_native_out = True
 
+
 def cumprod(
     x: np.ndarray,
     axis: int = 0,

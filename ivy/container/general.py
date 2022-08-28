@@ -890,6 +890,11 @@ class ContainerWithGeneral(ContainerBase):
             Input container to apply cumsum at leaves.
         axis
             Axis along which the cumulative sum is computed. Default is 0.
+        exclusive
+            Whether to perform cumsum exclusively. Default is ``False``.
+        reverse
+            Whether to perform the cumsum from last to first element in the selected
+            axis. Default is False (from first to last element)
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -901,7 +906,7 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         dtype
-           Dtype
+            Data type of the returned array. Default is ``None``.
         out
             Optional output container. Default is None.
 
