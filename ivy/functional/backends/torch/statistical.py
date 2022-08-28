@@ -129,15 +129,22 @@ def std(
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
-        return torch.std(x, dim=axis, unbiased=False, keepdims=keepdims)
+        ret = torch.std(x, dim=axis, unbiased=False, keepdim=keepdims)
+        return ret
     elif correction == 1:
-        return torch.std(x, dim=axis, unbiased=True, keepdims=keepdims)
+        return torch.std(x, dim=axis, unbiased=True, keepdim=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) ** 0.5 * torch.std(
-        x, dim=axis, unbiased=False, keepdims=keepdims
+    if size - correction <= 0:
+        ret = torch.std(x, dim=axis, unbiased=False, keepdim=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    ret = torch.mul(
+        torch.std(x, dim=axis, unbiased=False, keepdim=keepdims),
+        (size / (size - correction)) ** 0.5,
     )
+    return ret
 
 
 std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
