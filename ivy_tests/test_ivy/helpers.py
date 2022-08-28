@@ -352,6 +352,7 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
         list indexing incase a test needs to be skipped for a particular dtype(s)
     full
         returns the complete list of valid types
+        returns the complete list of valid types
     none
 
     Returns
