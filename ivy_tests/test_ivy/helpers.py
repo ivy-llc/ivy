@@ -338,7 +338,7 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=False):
+def get_dtypes(draw, kind, index=0, full=False, none=False):
     """
     Draws valid dtypes based on the backend set on the stack
     Parameters
@@ -352,6 +352,7 @@ def get_dtypes(draw, kind, index=0, full=False):
         list indexing incase a test needs to be skipped for a particular dtype(s)
     full
         returns the complete list of valid types
+    none
 
     Returns
     -------
@@ -364,6 +365,8 @@ def get_dtypes(draw, kind, index=0, full=False):
         "integer": ivy.valid_int_dtypes,
         "unsigned": ivy.valid_uint_dtypes,
     }
+    if none:
+        return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
     if full:
         return type_dict[kind][index:]
     return draw(st.sampled_from(type_dict[kind][index:]))
