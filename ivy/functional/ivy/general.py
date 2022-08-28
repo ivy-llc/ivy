@@ -15,7 +15,6 @@ import ivy
 from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
-    infer_dtype,
     infer_device,
     inputs_to_native_arrays,
     to_native_arrays_and_back,

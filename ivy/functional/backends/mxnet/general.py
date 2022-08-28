@@ -138,15 +138,29 @@ def inplace_increment(
 def cumsum(
     x: mx.nd.NDArray,
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
+    *,
     dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
-        )
-    else:
-        mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = mx.nd.cumsum(mx.nd.flip(x, axis=axis), axis=axis, dtype=dtype)
+            x = mx.nd.swapaxes(x, axis, -1)
+            x = mx.nd.concat(mx.nd.zeros_like(x[..., -1:]), x[..., :-1], dim=-1)
+            x = mx.nd.swapaxes(x, axis, -1)
+            res = mx.nd.flip(x, axis=axis)
+        elif exclusive:
+            x = mx.nd.swapaxes(x, axis, -1)
+            x = mx.nd.concat(mx.nd.zeros_like(x[..., -1:]), x[..., :-1], dim=-1)
+            x = mx.nd.cumsum(x, x.ndim - 1, dtype=dtype)
+            res = mx.nd.swapaxes(x, axis, -1)
+        elif reverse:
+            x = mx.nd.cumsum(mx.nd.flip(x, axis=axis), axis=axis, dtype=dtype)
+            res = mx.nd.flip(x, axis=axis)
+        return res
+    return mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape), dtype=dtype)
 
 
 def cumprod(

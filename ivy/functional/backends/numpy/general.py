@@ -145,26 +145,29 @@ def cumsum(
 ) -> np.ndarray:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if exclusive and reverse:
-        x = np.cumsum(np.flip(x, axis=axis), axis=axis)
-        x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-        x = np.swapaxes(x, axis, -1)
-        return np.flip(x, axis=axis)
-    elif exclusive:
-        x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-        x = np.cumsum(x, -1, dtype=dtype, out=out)
-        return np.swapaxes(x, axis, -1)
-    elif reverse:
-        x = np.cumsum(np.flip(x, axis=axis), axis=axis)
-        return np.flip(x, axis=axis)
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.swapaxes(x, axis, -1)
+            res = np.flip(x, axis=axis)
+        elif exclusive:
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.cumsum(x, -1, dtype=dtype)
+            res = np.swapaxes(x, axis, -1)
+        elif reverse:
+            x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+            res = np.flip(x, axis=axis)
+        if out is not None:
+            return ivy.inplace_update(out, res)
+        return res
     else:
         return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True
-
 
 def cumprod(
     x: np.ndarray,
