@@ -338,7 +338,7 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 @st.composite
-def get_dtypes(draw, type, index=0, full=False):
+def get_dtypes(draw, kind, index=0, full=False):
     """
     Draws valid dtypes based on the backend set on the stack
     Parameters
@@ -357,7 +357,7 @@ def get_dtypes(draw, type, index=0, full=False):
     -------
 
     """
-    dtype_dict = {
+    type_dict = {
         "valid": ivy.valid_dtypes,
         "numeric": ivy.valid_numeric_dtypes,
         "float": ivy.valid_float_dtypes,
@@ -365,8 +365,8 @@ def get_dtypes(draw, type, index=0, full=False):
         "unsigned": ivy.valid_uint_dtypes,
     }
     if full:
-        return dtype_dict[type][index:]
-    return draw(st.sampled_from(dtype_dict[type][index:]))
+        return type_dict[kind][index:]
+    return draw(st.sampled_from(type_dict[kind][index:]))
 
 
 @st.composite
@@ -1484,6 +1484,7 @@ def test_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+    # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtypes))
 
     fn = getattr(ivy, fn_name)

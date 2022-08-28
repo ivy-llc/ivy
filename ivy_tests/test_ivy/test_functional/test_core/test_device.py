@@ -78,7 +78,7 @@ def _empty_dir(path, recreate=False):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtype("numeric"),
+    dtype=helpers.get_dtypes("numeric"),
 )
 def test_dev(*, array_shape, dtype, as_variable, fw):
 
@@ -113,7 +113,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtype("numeric"),
+    dtype=helpers.get_dtypes("numeric"),
 )
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 
@@ -144,7 +144,7 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtype("float", index=1),
+    dtype=helpers.get_dtypes("float", index=1),
 )
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw):
 
@@ -218,7 +218,7 @@ def test_default_device(device):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtype("numeric"),
+    dtype=helpers.get_dtypes("numeric"),
     stream=helpers.ints(min_value=0, max_value=50),
 )
 def test_to_device(*, array_shape, dtype, as_variable, with_out, fw, device, stream):
@@ -285,7 +285,7 @@ def _axis(draw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtype("numeric"),
+    dtype=helpers.get_dtypes("numeric"),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=_axis(),
 )
@@ -331,7 +331,7 @@ def test_split_func_call(
         max_size="num_dims",
         size_bounds=[2, 3],
     ),
-    dtype=helpers.get_dtype("numeric"),
+    dtype=helpers.get_dtypes("numeric"),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=helpers.ints(min_value=0, max_value=1),
 )
