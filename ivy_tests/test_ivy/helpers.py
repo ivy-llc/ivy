@@ -98,6 +98,10 @@ def get_ivy_mxnet():
     return ivy.functional.backends.mxnet
 
 
+def get_valid_numeric_dtypes():
+    return ivy.valid_numeric_dtypes
+
+
 _ivy_fws_dict = {
     "numpy": lambda: get_ivy_numpy(),
     "jax": lambda: get_ivy_jax(),
@@ -109,6 +113,20 @@ _ivy_fws_dict = {
 
 _iterable_types = [list, tuple, dict]
 _excluded = []
+
+
+@st.composite
+def get_dtype(draw, type, full=False):
+    dtype_dict = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+    }
+    if full:
+        return dtype_dict[type]
+    return draw(st.sampled_from(dtype_dict[type]))
 
 
 def _convert_vars(
@@ -1448,6 +1466,7 @@ def test_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+    assume(not ("bfloat16" in input_dtypes))
 
     fn = getattr(ivy, fn_name)
     if gradient_incompatible_function(fn=fn):
@@ -2043,6 +2062,10 @@ def dtype_and_values(
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
         max_dim_size = draw(max_dim_size)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
+        print(f"\nCurrent Backend-: {ivy.current_backend_str()}")
+        print(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if dtype is None:
