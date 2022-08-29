@@ -48,7 +48,7 @@ def test_numpy_sum(
     fw,
 ):
     (input_dtype, x, axis), where = dtype_x_axis
-    if initial in None:
+    if initial is None:
         where = True
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -91,7 +91,7 @@ def test_numpy_prod(
     fw,
 ):
     (input_dtype, x, axis), where = dtype_x_axis
-    if initial in None:
+    if initial is None:
         where = True
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
