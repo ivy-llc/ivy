@@ -3138,7 +3138,7 @@ def handle_cmd_line_args(test_fn):
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
-    @settings(max_examples=1)
+    @settings(max_examples=50)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         gc.collect()
         flag, fw_string = (False, "")
