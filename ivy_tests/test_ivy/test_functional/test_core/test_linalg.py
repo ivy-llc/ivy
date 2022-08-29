@@ -810,9 +810,9 @@ def test_trace(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=6,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vecdot"),
 )
