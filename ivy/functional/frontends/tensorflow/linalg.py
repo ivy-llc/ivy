@@ -1,4 +1,9 @@
+# global
 import ivy
+
+
+def matrix_rank(a, tol=None, valiate_args=False, name=None):
+    return ivy.matrix_rank(a, tol)
 
 
 def det(input, name=None):
@@ -20,3 +25,10 @@ def solve(x, y):
 
 
 solve.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def slogdet(input, name=None):
+    return ivy.slogdet(input)
+
+
+slogdet.unsupported_dtypes = ("float16", "bfloat16")
