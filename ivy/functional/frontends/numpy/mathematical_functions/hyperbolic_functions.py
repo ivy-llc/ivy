@@ -47,4 +47,3 @@ def tanh(
 
 
 tanh.unsupported_dtypes = {"torch": ("float16",)}
-

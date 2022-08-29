@@ -239,9 +239,22 @@ def matrix_rank(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.matrix_rank(x, rtol)
-    return tf.cast(ret, ivy.default_int_dtype(as_native=True))
-
+    if rtol is None:
+        ret = tf.linalg.matrix_rank(x)
+    elif tf.size(x) == 0:
+        ret = 0
+    elif tf.size(x) == 1:
+        ret = tf.math.count_nonzero(x)
+    else:
+        rtol = tf.convert_to_tensor([rtol], dtype=tf.float32)
+        rtol = tf.reshape(rtol, [-1])
+        if (len(rtol) > 1):
+            rtol = rtol[0]
+        x, rtol = ivy.promote_types_of_inputs(x, rtol)
+        ret = tf.linalg.matrix_rank(x, rtol)
+    ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
+    return ret
+    
 
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
