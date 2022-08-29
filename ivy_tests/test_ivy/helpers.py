@@ -28,13 +28,13 @@ from ivy.functional.backends.torch.general import (
 )
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.test_frontends.test_torch import \
-    torch_classes_to_ivy_classes
+    convtorch
 from ivy_tests.test_ivy.test_frontends.test_numpy import \
-    numpy_classes_to_ivy_classes
+    convnumpy
 from ivy_tests.test_ivy.test_frontends.test_tensorflow import \
-    tensorflow_classes_to_ivy_classes
+    convtensor
 from ivy_tests.test_ivy.test_frontends.test_jax import \
-    jax_classes_to_ivy_classes
+    convjax
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -66,34 +66,6 @@ def convtrue(argument):
     """Convert NativeClass in argument to true framework counter part"""
     if isinstance(argument, NativeClass):
         return argument._native_class
-    return argument
-
-
-def convjax(argument):
-    """Convert NativeClass in argument to ivy frontend counter part for jax"""
-    if isinstance(argument, NativeClass):
-        return jax_classes_to_ivy_classes.get(argument._native_class)
-    return argument
-
-
-def convnumpy(argument):
-    """Convert NativeClass in argument to ivy frontend counter part for numpt"""
-    if isinstance(argument, NativeClass):
-        return numpy_classes_to_ivy_classes.get(argument._native_class)
-    return argument
-
-
-def convtorch(argument):
-    """Convert NativeClass in argument to ivy frontend counter part for torch"""
-    if isinstance(argument, NativeClass):
-        return torch_classes_to_ivy_classes.get(argument._native_class)
-    return argument
-
-
-def convtensor(argument):
-    """Convert NativeClass in argument to ivy frontend counter part for tensorflow"""
-    if isinstance(argument, NativeClass):
-        return tensorflow_classes_to_ivy_classes.get(argument._native_class)
     return argument
 
 
@@ -1850,29 +1822,11 @@ def test_frontend_function(
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
     
     # check and replace NativeClass object in arguments with ivy counterparts
-    if frontend == "jax":
-        args = ivy.nested_map(args, fn=convjax, 
-                              include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convjax, 
-                                include_derived=True, max_depth=100)
-    elif frontend == "numpy":
-        args = ivy.nested_map(args, fn=convnumpy, 
-                              include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convnumpy, 
-                                include_derived=True, max_depth=100)
-    elif frontend == "tensorflow":
-        args = ivy.nested_map(args, fn=convtensor, 
-                              include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convtensor, 
-                                include_derived=True, max_depth=100)
-    elif frontend == "torch":
-        args = ivy.nested_map(args, fn=convtorch, 
-                              include_derived=True, max_depth=100)
-        kwargs = ivy.nested_map(kwargs, fn=convtorch, 
-                                include_derived=True, max_depth=100)
-    else:
-        args = args
-        kwargs = kwargs
+    convs = {"jax": convjax, "numpy": convjax, "tensorflow": convjax, "torch": convjax}
+    if frontend in convs:
+        conv =  convs[frontend]
+        args = ivy.nested_map(args, fn=conv, include_derived=True)
+        kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
     
     # run from the Ivy API directly
     if test_unsupported:
