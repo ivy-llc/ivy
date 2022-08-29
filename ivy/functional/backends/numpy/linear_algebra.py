@@ -56,9 +56,8 @@ def diagonal(
 
 
 def dot(a: np.ndarray, b: np.ndarray, out=None) -> np.ndarray:
-    out = np.linalg.dot(a, b, out=out)
+    out = np.dot(a, b, out=out)
     return out
-
 
 
 def eigh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
