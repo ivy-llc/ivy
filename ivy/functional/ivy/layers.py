@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Any, Callable
+from typing import Optional, Tuple, Union, List, Callable
 
 # local
 import ivy
@@ -1121,7 +1121,7 @@ def lstm_update(
     *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
+) -> Tuple[ivy.Array, ivy.Array]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
