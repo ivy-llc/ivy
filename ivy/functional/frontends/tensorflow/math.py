@@ -42,7 +42,11 @@ negative.unsupported_dtypes = {
 
 
 def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
-    return ivy.where(input_tensor == 0, 0.0, 1 / input_tensor)
+    return ivy.where(
+        input_tensor == 0,
+        ivy.array(0.0, dtype=input_tensor.dtype),
+        ivy.ones_like(input_tensor, dtype=input_tensor.dtype) / input_tensor,
+    )
 
 
 def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
