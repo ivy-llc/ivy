@@ -15,7 +15,7 @@ def prod(
         out=None,
         keepdims=None,
         initial=None,
-        where=None
+        where=True
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
