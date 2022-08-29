@@ -221,7 +221,11 @@
             <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
                 <span class="o">**</span><span class="n">v</span><span class="p">,</span>
                 <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span>
+                    <span class="n">device</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">,</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
                 <span class="p">),</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span>
