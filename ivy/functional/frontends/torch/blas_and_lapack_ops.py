@@ -58,13 +58,12 @@ def pinverse(input, rcond=1e-15):
 
 def qr(input, some=True, *, out=None):
     if some:
-        return ivy.qr(input, mode="reduced")
-    return ivy.qr(input, mode="complete")
+        return ivy.qr(input, mode="reduced", out=out)
+    return ivy.qr(input, mode="complete", out=out)
 
 
-def solve():
-    pass
-
-
-def svd():
-    pass
+def svd(input, some=True, compute_uv=True, *, out=None):
+    # TODO: add compute_uv checks
+    if some:
+        return ivy.svd(input, full_matrices=False, out=out)
+    return ivy.svd(input, full_matrices=True, out=out)
