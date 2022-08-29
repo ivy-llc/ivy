@@ -1,8 +1,6 @@
-# For Review
 """Collection of tests for creation functions."""
 
 # global
-import hypothesis.extra.numpy as hnp
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -529,41 +527,34 @@ def test_full_like(
 
 
 # meshgrid
-
-
-# ToDo: create arrays which are not only 1-d
-array_shape = st.shared(
-    st.lists(helpers.ints(min_value=1, max_value=10), min_size=1, max_size=1),
-    key="array_shape",
-)
-dtype_shared = st.shared(ivy_np.valid_numeric_dtypes, key="dtype")
-
-
 @handle_cmd_line_args
 @given(
-    arrays=st.lists(
-        hnp.arrays(dtype=dtype_shared, shape=array_shape), min_size=1, max_size=5
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=5,
+        shared_dtype=True,
     ),
     indexing=st.sampled_from(["xy", "ij"]),
-    dtype=dtype_shared,
 )
 def test_meshgrid(
     *,
-    arrays,
+    dtype_and_arrays,
     indexing,
-    dtype,
     fw,
 ):
+    dtype, arrays = dtype_and_arrays
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype)
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype[i])
         i += 1
 
     num_positional_args = len(arrays)
 
     helpers.test_function(
-        input_dtypes=[dtype for _ in range(num_positional_args)],
+        input_dtypes=dtype,
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
