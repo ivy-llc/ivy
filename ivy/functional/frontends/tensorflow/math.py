@@ -223,4 +223,21 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
     return ivy.all(ivy.less(x, ivy.roll(x, -1)))
 
 
+def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
+    x = ivy.array(input)
+    if keepdims is None:
+        keepdims = False
+
+    zero = ivy.zeros(ivy.shape(x), dtype=x.dtype)
+    return ivy.astype(
+        ivy.sum(
+            ivy.astype(ivy.not_equal(x, zero), ivy.int64, copy=False),
+            axis=axis,
+            keepdims=keepdims,
+        ),
+        dtype,
+        copy=False,
+    )
+
+
 # TODO: Ibeta for Future Release
