@@ -445,9 +445,8 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+    ret = tf.tensordot(x1, x2, (axis, axis))
     return ret
 
 
