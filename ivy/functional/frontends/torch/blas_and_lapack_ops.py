@@ -56,8 +56,10 @@ def pinverse(input, rcond=1e-15):
     return ivy.pinv(input, rcond)
 
 
-def qr():
-    pass
+def qr(input, some=True, *, out=None):
+    if some:
+        return ivy.qr(input, mode="reduced")
+    return ivy.qr(input, mode="complete")
 
 
 def solve():
