@@ -52,8 +52,8 @@ def outer(input, vec2, *, out=None):
 outer.unsupported_dtypes = {"numpy": ("float16", "int8")}
 
 
-def pinverse():
-    pass
+def pinverse(input, rcond=1e-15):
+    return ivy.pinv(input, rcond)
 
 
 def qr():
