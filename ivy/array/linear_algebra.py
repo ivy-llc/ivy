@@ -116,7 +116,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         >>> x = ivy.array([1., 0., 0.])
         >>> y = ivy.array([0., 1., 0.])
-        >>> z = x.cross(x, y)
+        >>> z = x.cross(y)
         >>> print(z)
         ivy.array([0., 0., 1.])
 

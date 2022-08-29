@@ -214,7 +214,7 @@ def cross(
 
     >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), b=ivy.array([0., 0., 2.]))
     >>> y = ivy.Container(a=ivy.array([0., 7., 0.]), b=ivy.array([3., 0., 0.]))
-    >>> z = ivy.cross(x,y)
+    >>> z = ivy.cross(x, y)
     >>> print(z)
     {
     a: ivy.array([0., 0., 35.]),
@@ -226,7 +226,7 @@ def cross(
 
     >>> x = ivy.array([9., 0., 3.])
     >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), b=ivy.array([1., 0., 1.]))
-    >>> z = ivy.cross(x,y)
+    >>> z = ivy.cross(x, y)
     >>> print(z)
     {
     a: ivy.array([-3., 3., 9.]),
@@ -244,7 +244,7 @@ def cross(
     >>> y = ivy.array([[1.],\
                        [0.],\
                        [0.]])
-    >>> z = ivy.cross(x,y, axis = 0)
+    >>> z = ivy.cross(x, y, axis = 0)
     >>> print(z)
     ivy.array([[ 0.,  0.],
                [7.,  8.],
