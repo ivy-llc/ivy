@@ -248,3 +248,14 @@ def clamp(min, x, max):
 
 
 clamp.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def log(x):
+    return ivy.log(x)
+
+
+log.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def rev(operand, dimensions):
+    return ivy.flip(operand, axis=dimensions)
