@@ -80,3 +80,7 @@ def Minimum(*, x, y, name="Minimum"):
 
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
+
+
+def LessEqual(*, x, y, name="LessEqual"):
+    return ivy.less_equal(x, y)
