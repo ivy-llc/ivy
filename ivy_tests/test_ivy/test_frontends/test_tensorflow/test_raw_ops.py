@@ -224,8 +224,8 @@ def test_tensorflow_Cross(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Cross",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        a=np.asarray(x[0], dtype=input_dtype[0]),
+        b=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
