@@ -2,6 +2,8 @@ import numpy
 
 
 numpy_classes_to_ivy_classes = {numpy._NoValue: None}
+
+
 def convnumpy(argument):
     """Convert NativeClass in argument to ivy frontend counter part for numpt"""
     if isinstance(argument, NativeClass):
