@@ -13,8 +13,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_and_x1=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
             )
         ),
         # TODO: Find a better way to make sure that x1 and x2 are the same size
@@ -26,8 +26,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype_and_x2=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
             )
         ),
         # TODO: Find a better way to make sure that x1 and x2 are the same size
@@ -37,9 +37,11 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=3,
         max_dim_size=3,
     ),
-    # The following bounds are arbitrary (other than min_value = 0 for p)
+    # The following bounds are arbitrary
+    # (other than min_value = 0 for p,
+    # and a max_value = 10 for p causes overflow issues.)
     p=helpers.floats(
-        min_value=0, max_value=10.0, allow_nan=False, allow_inf=False, exclude_min=True
+        min_value=0, max_value=3.0, allow_nan=False, allow_inf=False, exclude_min=True
     ),
     eps=helpers.floats(
         min_value=1e-8, max_value=1e-4, allow_nan=False, allow_inf=False
@@ -74,7 +76,7 @@ def test_torch_pairwise_distance(
         frontend="torch",
         fn_tree="pairwise_distance",
         x1=np.asarray(x1, dtype=x1_dtype),
-        x2=np.asarray(x2, dtype=x1_dtype),
+        x2=np.asarray(x2, dtype=x2_dtype),
         p=p,
         keepdim=keepdims,
     )
