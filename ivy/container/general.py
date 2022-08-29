@@ -205,6 +205,7 @@ class ContainerWithGeneral(ContainerBase):
         )
         # inplace update the container
         x.cont_inplace_update(cont)
+        return x
 
     def inplace_update(
         self: ivy.Container,
