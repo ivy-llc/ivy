@@ -204,6 +204,8 @@ def test_tensorflow_Cosh(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
+        num_arrays=2,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Cross"
@@ -222,7 +224,8 @@ def test_tensorflow_Cross(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Cross",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
