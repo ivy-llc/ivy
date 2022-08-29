@@ -184,6 +184,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
