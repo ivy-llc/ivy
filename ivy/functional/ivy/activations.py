@@ -185,7 +185,7 @@ def gelu(
         The input array with gelu applied element-wise.
 
     """
-    return current_backend(x).gelu(x, approximate, out=out)
+    return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
 @integer_arrays_to_float

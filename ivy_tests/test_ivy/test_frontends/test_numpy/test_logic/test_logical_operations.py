@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
     ),
-    dtype=st.sampled_from((ivy_np.bool,) + (None,)),
+    dtype=st.sampled_from((ivy_np.bool, None)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
@@ -69,7 +69,7 @@ def test_numpy_logical_and(
         available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
     ),
-    dtype=st.sampled_from((ivy_np.bool,) + (None,)),
+    dtype=st.sampled_from((ivy_np.bool, None)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
@@ -119,7 +119,7 @@ def test_numpy_logical_or(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from((ivy_np.bool,) + (None,)),
+    dtype=st.sampled_from((ivy_np.bool, None)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
@@ -172,7 +172,7 @@ def test_numpy_logical_not(
         available_dtypes=ivy_np.valid_float_dtypes,
         num_arrays=2,
     ),
-    dtype=st.sampled_from((ivy_np.bool,) + (None,)),
+    dtype=st.sampled_from((ivy_np.bool, None)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(

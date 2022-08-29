@@ -52,7 +52,7 @@ def conv1d_transpose(
         )
         output_shape = [x.shape[0]], output_shape, [x.shape[-1]]
     elif len(output_shape) == 1:
-        output_shape = [x.shape[0]], [output_shape[0]], [x.shape[-1]]
+        output_shape = [x.shape[0], output_shape[0], x.shape[-1]]
     res = tf.nn.conv1d_transpose(
         x,
         filters,
@@ -117,8 +117,7 @@ def conv2d_transpose(
         new_w = ivy.deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
-        output_shape = [new_h, new_w]
-        output_shape = [x.shape[0]], output_shape, [x.shape[-1]]
+        output_shape = [x.shape[0], new_h, new_w, x.shape[-1]]
     elif len(output_shape) == 2:
         output_shape = [x.shape[0], output_shape[0], output_shape[1], x.shape[-1]]
     res = tf.nn.conv2d_transpose(
