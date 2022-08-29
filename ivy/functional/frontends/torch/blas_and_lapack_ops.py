@@ -58,12 +58,26 @@ def pinverse(input, rcond=1e-15):
 
 def qr(input, some=True, *, out=None):
     if some:
-        return ivy.qr(input, mode="reduced", out=out)
-    return ivy.qr(input, mode="complete", out=out)
+        ret = ivy.qr(input, mode="reduced")
+    else:
+        ret = ivy.qr(input, mode="complete")
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+qr.unsupported_dtypes = ("float16",)
 
 
 def svd(input, some=True, compute_uv=True, *, out=None):
     # TODO: add compute_uv checks
     if some:
-        return ivy.svd(input, full_matrices=False, out=out)
-    return ivy.svd(input, full_matrices=True, out=out)
+        ret = ivy.svd(input, full_matrices=False)
+    else:
+        ret = ivy.svd(input, full_matrices=True)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+svd.unsupported_dtypes = ("float16",)

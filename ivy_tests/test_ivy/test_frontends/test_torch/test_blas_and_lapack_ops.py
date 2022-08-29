@@ -190,3 +190,89 @@ def test_torch_outer(
         input=np.asarray(x1, dtype=type1),
         vec2=np.asarray(x2, dtype=type2),
     )
+
+
+# qr
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=2,
+        max_value=5,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.qr"
+    ),
+    some=st.booleans(),
+)
+def test_torch_qr(
+    dtype_and_x,
+    some,
+    as_variable,
+    with_out,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="qr",
+        rtol=1e-02,
+        input=np.array(x, dtype=dtype),
+        some=some,
+        out=None,
+    )
+
+
+# svd
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.svd"
+    ),
+    some=st.booleans(),
+    compute=st.booleans(),
+)
+def test_torch_svd(
+    dtype_and_x,
+    some,
+    compute,
+    as_variable,
+    with_out,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="svd",
+        input=np.array(x, dtype=dtype),
+        some=some,
+        compute_uv=compute,
+        out=None,
+    )
