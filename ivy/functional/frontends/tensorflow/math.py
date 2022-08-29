@@ -141,7 +141,6 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
-
 asinh.unsupported_dtypes = {"torch": ("float16",)}
 
 
@@ -181,6 +180,7 @@ scalar_mul.unsupported_dtypes = {
     "numpy": ("float16", "bfloat16", "float32", "float64"),
 }
 
+
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
 
@@ -193,6 +193,7 @@ def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
     if reverse:
         return ivy.flip(ret, axis)
     return ret
+
 
 def divide_no_nan(x, y, name="divide_no_nan"):
     return ivy.where(
