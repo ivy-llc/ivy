@@ -42,7 +42,7 @@ def get_DataFrame(result_dict: dict) -> pd.DataFrame:
         data.at[index_label] = [
             row_series.values[i][1]
             if len(row_series[i]) < 3
-            else row_series.values[i][1:]
+            else ('   ').join(row_series.values[i][1:])
             for i in range(4)
         ]
     return data
