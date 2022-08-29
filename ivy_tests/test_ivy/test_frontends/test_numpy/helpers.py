@@ -13,6 +13,13 @@ def where(draw):
     return draw(st.just(values) | st.just(True))
 
 
+@st.composite
+def dtype_x_bounded_axis(draw, **kwargs):
+    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
+    axis = draw(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)))
+    return dtype, x, axis
+
+
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = kwargs["where"]
@@ -28,7 +35,7 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
         np.where(where, x, np.zeros_like(x))
         for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
     ]
-    helpers.value_test(ret_np_flat=ret_flat, ret_from_np_flat=frontend_ret_flat)
+    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
 
 
 # noinspection PyShadowingNames

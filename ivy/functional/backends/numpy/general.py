@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, List
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -55,23 +55,28 @@ def inplace_update(
     val: Union[ivy.Array, np.ndarray],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
 
-    # make both arrays contiguous if not already
-    if not x_native.flags.c_contiguous:
-        x_native = np.ascontiguousarray(x_native)
-    if not val_native.flags.c_contiguous:
-        val_native = np.ascontiguousarray(val_native)
+        # make both arrays contiguous if not already
+        if not x_native.flags.c_contiguous:
+            x_native = np.ascontiguousarray(x_native)
+        if not val_native.flags.c_contiguous:
+            val_native = np.ascontiguousarray(val_native)
 
-    if val_native.shape == x_native.shape:
-        np.copyto(x_native, val_native)
+        if val_native.shape == x_native.shape:
+            if x_native.dtype != val_native.dtype:
+                x_native = x_native.astype(val_native.dtype)
+            np.copyto(x_native, val_native)
+        else:
+            x_native = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
     else:
-        x_native = val_native
-    if ivy.is_ivy_array(x):
-        x.data = x_native
-    else:
-        x = ivy.Array(x_native)
-    return x
+        return val
 
 
 def is_native_array(x, exclusive=False):
@@ -87,7 +92,7 @@ def floormod(
     return ret
 
 
-def unstack(x, axis, keepdims=False):
+def unstack(x: np.ndarray, axis: int, keepdims: bool = False) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
@@ -96,7 +101,9 @@ def unstack(x, axis, keepdims=False):
     return [np.squeeze(item, axis) for item in x_split]
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     x_native -= val_native
     if ivy.is_ivy_array(x):
@@ -118,10 +125,24 @@ def inplace_increment(
     return x
 
 
+def _infer_dtype(x_dtype: np.dtype):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
-    x: np.ndarray, axis: int = 0, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    axis: int = 0,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.cumsum(x, axis, out=out)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True
@@ -131,14 +152,20 @@ def cumprod(
     x: np.ndarray,
     axis: int = 0,
     exclusive: Optional[bool] = False,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     if exclusive:
         x = np.swapaxes(x, axis, -1)
         x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = np.cumprod(x, -1)
-        return np.swapaxes(res, axis, -1)
-    return np.cumprod(x, axis, out=out)
+        res = np.cumprod(x, -1, dtype=dtype)
+        res = np.swapaxes(res, axis, -1)
+        if out is not None:
+            return ivy.inplace_update(out, res)
+        return res
+    return np.cumprod(x, axis, dtype=dtype, out=out)
 
 
 cumprod.support_native_out = True
