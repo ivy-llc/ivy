@@ -1884,7 +1884,10 @@ def test_frontend_function(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
+            frontend_ret_idxs = ivy.nested_indices_where(
+                frontend_ret, 
+                ivy.is_native_array
+            )
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -1893,15 +1896,14 @@ def test_frontend_function(
     # unset frontend framework from backend
     ivy.unset_backend()
 
-    # assuming value test will be handled manually in the test function
-    if not test_values:
-        return ret, frontend_ret
-
     if backend_returned_scalar:
-        assert ret.shape == ()
         ret_np_flat = ivy.to_numpy([ret])
     else:
         ret_np_flat = flatten_and_to_np(ret=ret)
+
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return ret, frontend_ret
 
     # value tests, iterating through each array in the flattened returns
     value_test(
