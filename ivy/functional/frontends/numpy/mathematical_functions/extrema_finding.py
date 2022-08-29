@@ -1,9 +1,7 @@
 import ivy
 
-# local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
-
 #minimum
+
 def minimum(
     x1,
     x2,
