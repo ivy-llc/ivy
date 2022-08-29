@@ -197,7 +197,11 @@ def heaviside(
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
-    ret = ivy.where(ivy.equal(x1, x1.full_like(0.0)), x2, ivy.where(ivy.less(x1, 0.0), ivy.zeros_like(x1), ivy.ones_like(x1)))
+    ret = ivy.where(
+        ivy.equal(x1, x1.full_like(0.0)),
+        x2, 
+        ivy.where(ivy.less(x1, 0.0), ivy.zeros_like(x1), ivy.ones_like(x1))
+    )
     ret = ivy.where(
         ivy.broadcast_to(where, x1.shape),
         ret, 
@@ -218,9 +222,15 @@ def nan_to_num(
     bounds = ivy.finfo(x)
     pinf = posinf if posinf is not None else bounds.max
     ninf = neginf if neginf is not None else bounds.min
-    ivy.where(ivy.equal(ret, ret.full_like(math.nan)), ret.full_like(nan), ret, out=ret)
-    ivy.where(ivy.equal(ret, ret.full_like(math.inf)), ret.full_like(pinf), ret, out=ret)
-    ivy.where(ivy.equal(ret, ret.full_like(-math.inf)), ret.full_like(ninf), ret, out=ret)
+    ivy.where(
+        ivy.equal(ret, ret.full_like(math.nan)), ret.full_like(nan), ret, out=ret
+    )
+    ivy.where(
+        ivy.equal(ret, ret.full_like(math.inf)), ret.full_like(pinf), ret, out=ret
+    )
+    ivy.where(
+        ivy.equal(ret, ret.full_like(-math.inf)), ret.full_like(ninf), ret, out=ret
+    )
     return ret
 
 
@@ -229,30 +239,56 @@ def real_if_close(a, tol=100):
 
 
 def interp(x, xp, fp, left=None, right=None, period=None):
+    x_arr = ivy.array(x)
+    fix_later = False
+    if x_arr.shape == ():
+        x_arr = ivy.array([x])
+        fix_later = True
+    x = ivy.astype(x_arr, 'float64')
+    xp = ivy.astype(ivy.array(xp), 'float64')
+    fp = ivy.astype(ivy.array(fp), 'float64')
     assert xp.ndim == 1 and fp.ndim == 1
     assert xp.shape[0] == fp.shape[0]
     if period is not None:
         assert period != 0
         period = ivy.abs(period)
-        xp = ivy.remainer(xp, period)
-        yp = ivy.remainer(xp, period)
+        x = ivy.remainder(x, period)
+        xp = ivy.remainder(xp, period)
         asort_xp = ivy.argsort(xp)
         xp = xp[asort_xp]
-        yp = yp[asort_xp]
-        xp = ivy.concatenate((xp[-1:] - period, xp, xp[0:1] + period))
-        fp = ivy.concatenate((fp[-1:], fp, fp[0:1]))
+        fp = fp[asort_xp]
+        xp = ivy.concat((xp[-1:] - period, xp, xp[0:1] + period))
+        fp = ivy.concat((fp[-1:], fp, fp[0:1]))
 
-    lower = None
-    for i in range(0, xp.size[0] - 1):
-        if x == xp[i]:
-            return yp[i]
-        elif x == xp[i + 1]:
-            return yp[i + 1]
-        elif x > xp[1] and x < xp[i + 1]:
-            lower = i
-            break
-
-    assert lower is not None
-    
-    dist = (x - xp[i]) / (xp[i + 1] - xp[i])
-    return (fp[i + 1] - fp[i]) * dist
+    def interp_inner(value):
+        if value < xp[0]:
+            return left if left is not None else fp[0]
+        elif value > xp[-1]:
+            return right if right is not None else fp[-1]
+        else:
+            last = None
+            if xp.shape[0] < 3:
+                for i in range(xp.shape[0]):
+                    if xp[i] == value:
+                        return fp[i]
+                    elif xp[i] < value:
+                        last = i
+            else:
+                first = 0
+                last = xp.shape[0]
+                while first <= last:
+                    midpoint = (first + last) // 2
+                    if xp[midpoint] == value:
+                        return fp[midpoint]
+                    else:               
+                        if value < xp[midpoint]:
+                            last = midpoint - 1
+                        else:
+                            first = midpoint + 1
+            dist = (value - xp[last]) / (xp[last + 1] - xp[last])
+            return (fp[last + 1] - fp[last]) * dist + fp[last]
+    ret = ivy.map(interp_inner, unique={"value": x})
+    if fix_later:
+        return ivy.astype(ivy.array(ret[0]), 'float64')
+    else:
+        return ivy.astype(ivy.array(ret), 'float64')

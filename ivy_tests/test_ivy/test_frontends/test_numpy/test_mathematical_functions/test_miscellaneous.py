@@ -1,13 +1,13 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy import zeros_like
+from ivy import argsort, array
 
 
 @handle_cmd_line_args
@@ -64,6 +64,7 @@ def test_numpy_clip(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -106,7 +107,7 @@ def test_numpy_cbrt(
     )
 
 
-# sqrt
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -149,7 +150,7 @@ def test_numpy_sqrt(
     )
 
 
-# square
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -192,6 +193,7 @@ def test_numpy_square(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -234,6 +236,7 @@ def test_numpy_absolute(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -328,6 +331,8 @@ def test_numpy_heaviside(
         test_values=False,
     )
 
+
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     as_variable=helpers.array_bools(num_arrays=1),
@@ -364,6 +369,7 @@ def test_numpy_nan_to_num(
         neginf=neginf
     )
 
+
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     as_variable=st.booleans(),
@@ -390,4 +396,73 @@ def test_numpy_real_if_close(
         frontend="numpy",
         fn_tree="real_if_close",
         a=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    as_variable=helpers.array_bools(num_arrays=3),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.interp"
+    ),
+    native_array=helpers.array_bools(num_arrays=3),
+    xp_and_fp=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, 
+        num_arrays=2, 
+        min_num_dims=1, 
+        max_num_dims=1, 
+        min_dim_size=3, 
+        min_value=-10000, 
+        max_value=10000
+    ),
+    x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    left=st.one_of(st.none(), st.floats()),
+    right=st.one_of(st.none(), st.floats()),
+    period=st.one_of(
+        st.none(), 
+        st.floats(
+            allow_nan=False, 
+            allow_infinity=False, 
+            allow_subnormal=False, 
+            min_value=0.1, 
+            max_value=1.0e5, 
+            exclude_min=True
+        )
+    ),
+)
+def test_numpy_interp(
+    as_variable,
+    num_positional_args,
+    native_array,
+    xp_and_fp,
+    x,
+    left,
+    right,
+    period,
+    fw
+):
+    (xp_dtype, fp_dtype), (xp, fp) = xp_and_fp
+    xp_order = argsort(xp)
+    xp = array(xp)[xp_order]
+    fp = array(fp)[xp_order]
+    previous = xp[0]
+    for i in xp[1:]:
+        assume(i > previous)
+        previous = i
+    x_dtype, x = x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=[x_dtype, xp_dtype, fp_dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="interp",
+        x=np.asarray(x, dtype=x_dtype),
+        xp=np.asarray(xp, dtype=xp_dtype),
+        fp=np.asarray(fp, dtype=fp_dtype),
+        left=left,
+        right=right,
+        period=period
     )
