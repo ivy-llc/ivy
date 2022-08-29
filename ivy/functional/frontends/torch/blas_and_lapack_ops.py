@@ -41,8 +41,8 @@ def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
 
 
-def mm():
-    pass
+def mm(input, mat2, *, out=None):
+    return ivy.matmul(input, mat2, out=out)
 
 
 def outer(input, vec2, *, out=None):
