@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # helpers
 @st.composite
-def _get_dtype_and_matrix(draw):
+def _get_dtype_and_matrices(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
     arr_size = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1))
@@ -25,6 +25,18 @@ def _get_dtype_and_matrix(draw):
         )
     )
     return dtype, mat1, mat2
+
+
+@st.composite
+def _get_dtype_and_square_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1))
+    mat = draw(
+        helpers.array_values(
+            dtype=dtype, shape=(dim_size, dim_size), min_value=0, max_value=10
+        )
+    )
+    return dtype, mat
 
 
 # cholesky
@@ -152,10 +164,41 @@ def test_torch_inverse(
     )
 
 
+# det
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_get_dtype_and_square_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.det"
+    ),
+)
+def test_torch_det(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="det",
+        input=np.asarray(x, dtype=dtype),
+    )
+
+
 # matmul
 @handle_cmd_line_args
 @given(
-    dtype_xy=_get_dtype_and_matrix(),
+    dtype_xy=_get_dtype_and_matrices(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.matmul"
     ),
@@ -189,7 +232,7 @@ def test_torch_matmul(
 # mm
 @handle_cmd_line_args
 @given(
-    dtype_xy=_get_dtype_and_matrix(),
+    dtype_xy=_get_dtype_and_matrices(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.mm"
     ),
