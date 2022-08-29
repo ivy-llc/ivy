@@ -1822,7 +1822,7 @@ def test_frontend_function(
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
     
     # check and replace NativeClass object in arguments with ivy counterparts
-    convs = {"jax": convjax, "numpy": convjax, "tensorflow": convjax, "torch": convjax}
+    convs = {"jax": convjax, "numpy": convnumpy, "tensorflow": convtensor, "torch": convtorch}
     if frontend in convs:
         conv =  convs[frontend]
         args = ivy.nested_map(args, fn=conv, include_derived=True)
