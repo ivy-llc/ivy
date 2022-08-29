@@ -8,6 +8,7 @@ import sys
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _get_dtype_value1_value2_axis_for_tensordot
 
 
 @st.composite
@@ -180,13 +181,7 @@ def test_tensorflow_slogdet(
 
 # tensordot
 @given(
-    #dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
-        #available_dtypes=helpers.get_dtypes("numeric"),
-        #min_num_dims=3,
-        #max_num_dims=8,
-        #min_dim_size=1,
-        #max_dim_size=15,
-    #),
+    dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.tensordot"
