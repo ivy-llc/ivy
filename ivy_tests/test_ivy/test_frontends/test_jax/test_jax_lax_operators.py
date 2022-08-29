@@ -1535,11 +1535,11 @@ def test_jax_lax_clamp(
 def _log1p_get_dtype_and_data(draw):
 
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy.valid_float_dtypes), key="shared_dtype")
+        st.shared(st.sampled_from(ivy_jax.valid_float_dtypes), key="shared_dtype")
     )
     shape = draw(
         st.shared(
-            helpers.get_shape(),
+            helpers.get_shape(min_num_dims=1),
             key="shape",
         )
     )
@@ -1548,8 +1548,6 @@ def _log1p_get_dtype_and_data(draw):
         helpers.array_values(
             dtype=input_dtype,
             shape=shape,
-            min_value=-1,
-            exclude_min=True,
         )
     )
 
