@@ -175,6 +175,12 @@ function:
 #. each frontend function should be tested on all backends to ensure that conversions
    are working correctly.
 #. type hints, docstrings and examples are not required for frontend functions.
+#. some frontend functions shown in the ToDo list issues are aliases of other functions.
+   If you detect that this is the case, then you should add all aliases in your PR, with
+   a single implementation and then simple bindings to this implementation, such as
+   :code:`<alias_name> = <function_name>`. If you notice that an alias function has
+   already been implemented and pushed, then you can simply add this one-liner binding
+   and get this very simple PR merged.
 
 In the case where your chosen function exists in all frameworks by default, but
 is not implemented in Ivy's functional API, please convert your existing GitHub

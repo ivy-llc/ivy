@@ -74,7 +74,7 @@ def _x_and_filters(
             output_shape = [
                 x_shape[0],
                 ivy.deconv_length(x_w, stride, filter_shape[0], padding, dilations),
-                x_shape[-1],
+                d_in,
             ]
     elif type == "2d" or type == "depthwise":
         min_x_height = 1
@@ -138,7 +138,7 @@ def _x_and_filters(
             output_shape_w = ivy.deconv_length(
                 x_w, stride, filter_shape[1], padding, dilations
             )
-            output_shape = [x_shape[0], output_shape_h, output_shape_w, x_shape[-1]]
+            output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
     else:
         if not transpose:
             filter_shape = draw(
@@ -270,6 +270,7 @@ def test_tensorflow_atrous_conv2d(
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
         stride_max=1,
+        dilation_max=1,
         type="2d",
         transpose=True,
         atrous=True,
