@@ -73,7 +73,7 @@ def atan2(x, y):
     return ivy.atan2(x, y)
 
 
-atan2.unsupported_dtypes = {"torch": ("float16",)}
+atan2.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def min(x, y):
@@ -93,6 +93,13 @@ def atan(x):
 
 
 atan.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def cos(x):
+    return ivy.cos(x)
+
+
+cos.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def ceil(x):
@@ -145,24 +152,28 @@ def convert_element_type(operand, new_dtype):
 
 def cumprod(operand, axis=0, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis))
-    return ivy.cumprod(operand, axis)
+        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis, dtype=operand.dtype))
+    return ivy.cumprod(operand, axis, dtype=operand.dtype)
 
 
-cumprod.unsupported_dtypes = {"torch": ("float16",)}
+cumprod.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def cumsum(operand, axis=0, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis))
-    return ivy.cumsum(operand, axis)
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis, dtype=operand.dtype))
+    return ivy.cumsum(operand, axis, dtype=operand.dtype)
 
 
-cumsum.unsupported_dtypes = {"torch": ("float16",)}
+cumsum.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def ge(x, y):
     return ivy.greater_equal(x, y)
+
+
+def gt(x, y):
+    return ivy.greater(x, y)
 
 
 def reshape(operand, new_sizes, dimensions=None):
@@ -223,3 +234,14 @@ round.unsupported_dtypes = {"torch": ("float16",)}
 
 def lt(x, y):
     return ivy.less(x, y)
+
+
+def pow(x, y):
+    return ivy.pow(x, y)
+
+
+pow.unsupported_dtypes = ("int64", "int32", "int16", "uint64", "uint32", "uint16")
+
+
+def clamp(min, x, max):
+    return ivy.clip(x, min, max)
