@@ -720,5 +720,3 @@ def test_jax_nn_hard_swish(
         fn_tree="nn.hard_swish",
         x=np.asarray(x, dtype=input_dtype),
     )
-    
-
