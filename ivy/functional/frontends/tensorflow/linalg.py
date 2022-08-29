@@ -20,3 +20,10 @@ def solve(x, y):
 
 
 solve.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def slogdet(input, name=None):
+    return ivy.slogdet(input)
+
+
+slogdet.unsupported_dtypes = ("float16", "bfloat16")

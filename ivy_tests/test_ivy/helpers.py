@@ -98,6 +98,10 @@ def get_ivy_mxnet():
     return ivy.functional.backends.mxnet
 
 
+def get_valid_numeric_dtypes():
+    return ivy.valid_numeric_dtypes
+
+
 _ivy_fws_dict = {
     "numpy": lambda: get_ivy_numpy(),
     "jax": lambda: get_ivy_jax(),
@@ -334,6 +338,42 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 @st.composite
+def get_dtypes(draw, kind, index=0, full=False, none=False):
+    """
+    Draws valid dtypes based on the backend set on the stack
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    type
+        Supported types are integer, float, valid, numeric, and unsigned
+    index
+        list indexing incase a test needs to be skipped for a particular dtype(s)
+    full
+        returns the complete list of valid types
+        returns the complete list of valid types
+    none
+
+    Returns
+    -------
+
+    """
+    type_dict = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+    }
+    if none:
+        return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
+    if full:
+        return type_dict[kind][index:]
+    return draw(st.sampled_from(type_dict[kind][index:]))
+
+
+@st.composite
 def floats(
     draw,
     *,
@@ -536,7 +576,7 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
 
 
 def assert_all_close(
-    ret_np, ret_from_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
+    ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
     """Matches the ret_np and ret_from_np inputs element-by-element to ensure that
     they are the same.
@@ -545,7 +585,7 @@ def assert_all_close(
     ----------
     ret_np
         Return from the framework to test. Ivy Container or Numpy Array.
-    ret_from_np
+    ret_from_gt_np
         Return from the ground truth framework. Ivy Container or Numpy Array.
     rtol
         Relative Tolerance Value.
@@ -558,21 +598,21 @@ def assert_all_close(
     -------
     None if the test passes, else marks the test as failed.
     """
-    assert ret_np.dtype is ret_from_np.dtype, (
+    assert ret_np.dtype is ret_from_gt_np.dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_np.dtype,
+            ret_from_gt_np.dtype,
             ivy.current_backend_str(),
             ret_np.dtype,
         )
     )
-    if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_np):
-        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_np])
+    if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
+        ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     else:
         assert np.allclose(
-            np.nan_to_num(ret_np), np.nan_to_num(ret_from_np), rtol=rtol, atol=atol
-        ), "{} != {}".format(ret_np, ret_from_np)
+            np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
+        ), "{} != {}".format(ret_np, ret_from_gt_np)
 
 
 def assert_same_type_and_shape(values, this_key_chain):
@@ -1448,6 +1488,8 @@ def test_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in input_dtypes))
 
     fn = getattr(ivy, fn_name)
     if gradient_incompatible_function(fn=fn):
@@ -2043,6 +2085,8 @@ def dtype_and_values(
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
         max_dim_size = draw(max_dim_size)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if dtype is None:
@@ -2493,8 +2537,8 @@ def array_values(
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
+                        min_value=np.array(min_value, dtype=dtype).tolist(),
+                        max_value=np.array(max_value, dtype=dtype).tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2552,8 +2596,8 @@ def array_values(
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
+                        min_value=np.array(min_value, dtype=dtype).tolist(),
+                        max_value=np.array(max_value, dtype=dtype).tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2616,8 +2660,8 @@ def array_values(
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
+                        min_value=np.array(min_value).astype("float64").tolist(),
+                        max_value=np.array(max_value).astype("float64").tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,

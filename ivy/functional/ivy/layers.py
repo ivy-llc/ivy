@@ -868,8 +868,8 @@ def depthwise_conv2d(
 
     >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
     >>> a = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(axis=-1)
-    >>> b = ivy.array([[1., 1., 1.], 
-                       [1., 1., 1.], 
+    >>> b = ivy.array([[1., 1., 1.],\
+                       [1., 1., 1.],\
                        [1., 1., 1.]]).expand_dims(axis=-1) / 9.0
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.depthwise_conv2d(x, filters, 1, 'VALID', dilations=2)
@@ -891,8 +891,8 @@ def depthwise_conv2d(
     >>> x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC
     >>> y = ivy.native_array(ivy.eye(6, 6).reshape((1, 6, 6, 1)))
     >>> inp = ivy.Container(x = x, y = y)
-    >>> filter = ivy.array([[1., 1., 1.], 
-                            [1., -8., 1.], 
+    >>> filter = ivy.array([[1., 1., 1.],\
+                            [1., -8., 1.], \
                             [1., 1., 1.]]).expand_dims(axis=-1)
     >>> y = ivy.depthwise_conv2d(inp, filter, 1, 'VALID', dilations=2)
     >>> print(y)

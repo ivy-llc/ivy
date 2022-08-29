@@ -471,7 +471,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -968,7 +968,7 @@ def repeat(
         b: ivy.array([0., 0., 1., 1., 2., 2.])
     }
     """
-    return current_backend(x).repeat(x, repeats, axis, out=out)
+    return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -980,7 +980,7 @@ def split(
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
-) -> ivy.Array:
+) -> List[ivy.Array]:
     """Splits an array into multiple sub-arrays.
 
     Parameters
@@ -1037,22 +1037,13 @@ def split(
     >>> y = ivy.split(x)
     >>> print(y)
     {a:(list[3],<classivy.array.Array>shape=[1])}
-
-    Instance Method Examples
-    ------------------------
-    >>> x = ivy.array([4, 6, 5, 3])
-    >>> y = x.split()
-    >>> print(y)
-    [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]
-
-    >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
-    >>> y = x.split()
-    >>> print(y)
-    {
-        a: ivy.array([[2], [5], [9]])
-    }
     """
-    return current_backend(x).split(x, num_or_size_splits, axis, with_remainder)
+    return current_backend(x).split(
+        x,
+        num_or_size_splits=num_or_size_splits,
+        axis=axis,
+        with_remainder=with_remainder,
+    )
 
 
 @to_native_arrays_and_back
