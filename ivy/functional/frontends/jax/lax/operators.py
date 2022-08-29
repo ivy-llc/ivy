@@ -255,3 +255,7 @@ def log(x):
 
 
 log.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def rev(operand, dimensions):
+    return ivy.flip(operand, axis=dimensions)
