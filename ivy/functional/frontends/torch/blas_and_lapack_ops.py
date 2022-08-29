@@ -23,6 +23,20 @@ def inverse(input, *, out=None):
 inverse.unsupported_dtypes = ("float16",)
 
 
+def det(input):
+    return ivy.det(input)
+
+
+det.unsupported_dtypes = ("float16",)
+
+
+def slogdet(input):
+    return ivy.slogdet(input)
+
+
+slogdet.unsupported_dtypes = ("float16",)
+
+
 def outer(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 
