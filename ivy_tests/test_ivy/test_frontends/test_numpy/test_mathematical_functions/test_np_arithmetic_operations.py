@@ -402,7 +402,7 @@ def test_numpy_cbrt(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2, min_num_dims=1
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2,
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
@@ -421,13 +421,6 @@ def test_numpy_power(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    if type(input_dtype) != list:
-        input_dtype = [input_dtype]
-    if type(as_variable) != list:
-        as_variable = [as_variable]
-    if type(native_array) != list:
-        native_array = [native_array]
 
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
