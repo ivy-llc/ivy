@@ -40,7 +40,7 @@ def prod(
         axis=None,
         dtype=None,
         out=None,
-        keepdims=None,
+        keepdims=False,
         initial=None,
         where=True
 ):
