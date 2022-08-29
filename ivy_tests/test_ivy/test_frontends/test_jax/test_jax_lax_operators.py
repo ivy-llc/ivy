@@ -1518,13 +1518,34 @@ def test_jax_lax_cos(
     )
 
 
+@st.composite
+def _same_dims_min_x_max(draw):
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric", full=True),
+            num_arrays=3,
+            shared_dtype=True,
+        )
+    )
+
+
+@st.composite
+def _basic_min_x_max(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric", full=True),
+        )
+    )
+    min = draw(helpers.array_values(dtype=dtype, shape=()))
+    max = draw(helpers.array_values(dtype=dtype, shape=()))
+    dtypes = [dtype] * 3
+    values = [value, min, max]
+    return dtypes, values
+
+
 @handle_cmd_line_args
 @given(
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
-        num_arrays=3,
-        shared_dtype=True,
-    ),
+    dtypes_and_xs=(_same_dims_min_x_max() | _basic_min_x_max()),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.clamp"
     ),
@@ -1547,7 +1568,7 @@ def test_jax_lax_clamp(
         fw=fw,
         frontend="jax",
         fn_tree="lax.clamp",
-        min=xs[0],
-        x=xs[1],
+        min=xs[1],
+        x=xs[0],
         max=xs[2],
     )
