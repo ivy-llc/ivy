@@ -21,8 +21,8 @@ from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *
 from . import convolution_functions
 from .convolution_functions import *
-from . import distance_functions
-from .distance_functions import *
+from . import nn
+from .nn import *
 from . import dropout_functions
 from .dropout_functions import *
 from . import linear_functions
