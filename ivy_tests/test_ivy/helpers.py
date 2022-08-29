@@ -365,6 +365,9 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
         "float": ivy.valid_float_dtypes,
         "integer": ivy.valid_int_dtypes,
         "unsigned": ivy.valid_uint_dtypes,
+        "signed_integer": tuple(
+            set(ivy.valid_int_dtypes).difference(ivy.valid_uint_dtypes)
+        ),
     }
     if none:
         return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
