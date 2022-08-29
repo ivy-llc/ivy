@@ -56,6 +56,9 @@ def pinverse(input, rcond=1e-15):
     return ivy.pinv(input, rcond)
 
 
+pinverse.unsupported_dtypes = ("float16",)
+
+
 def qr(input, some=True, *, out=None):
     if some:
         ret = ivy.qr(input, mode="reduced")

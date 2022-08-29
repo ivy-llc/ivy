@@ -263,6 +263,47 @@ def test_torch_outer(
     )
 
 
+# pinverse
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.pinverse"
+    ),
+    rtol=st.floats(1e-5, 1e-3),
+)
+def test_torch_pinverse(
+    dtype_and_x,
+    rtol,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="pinverse",
+        rtol=1e-03,
+        input=np.asarray(x, dtype=dtype),
+        rcond=rtol,
+    )
+
+
 # qr
 @handle_cmd_line_args
 @given(
