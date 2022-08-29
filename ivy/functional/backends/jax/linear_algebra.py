@@ -261,7 +261,9 @@ trace.unsupported_dtypes = ("float16",)
 def vecdot(
     x1: JaxArray, x2: JaxArray, axis: int = -1, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.tensordot(x1, x2, (axis, axis))
+    x1 = jnp.array(jnp.array(x1).astype(jnp.float32))
+    x2 = jnp.array(jnp.array(x2).astype(jnp.float32))
+    ret = jnp.tensordot(x1, x2, (axis,axis))
     return ret
 
 
