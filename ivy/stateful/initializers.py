@@ -18,7 +18,9 @@ class Initalizer:
         Parameters
         ----------
         var_shape
-            Tuple representing the shape of the desired array. If considering the array as a rectangular matrix, this tuple is represented as '(ROWS, COLUMNS)'.
+            Tuple representing the shape of the desired array. If considering
+             the array as a rectangular matrix, this tuple is represented as
+             '(ROWS, COLUMNS)'.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
