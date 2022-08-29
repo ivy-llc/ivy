@@ -1,4 +1,5 @@
 # global
+from optparse import Option
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 # local
@@ -225,6 +226,52 @@ def cross(
     }
     """
     return current_backend(x1).cross(x1, x2, axis, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    """Transposes a matrix (or a stack of matrices) x.
+    
+    Parameters
+    ---------------
+            x - input array having shape (..., M, N) and whose innermost two dimensions form MxN matrices.
+            
+    Returns
+    ---------------
+            out - an array containing the transpose for each matrix and having shape (..., N, M). 
+            The returned array must have the same data type as x.
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the 
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matrix_transpose.html#signatures.linear_algebra_functions.matrix_transpose>`_ # noqa
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Examples
+    ------------
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1., 0., 0.], [0., 1., 0.]])
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    ivy.array([[1., 0.], [0., 1.], [0., 0.]])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), \
+                          b=ivy.array([0., 0., 2.]))
+    
+    >>> y = ivy.matrix_transpose(x)
+    >>> print(y)
+    {
+        a: ivy.array([[5., 0.], [0., 0.], [0., 2.]]),
+    }
+    """
+    return current_backend(x).transpose(x, out = out)
 
 
 @to_native_arrays_and_back
