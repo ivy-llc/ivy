@@ -339,6 +339,7 @@ def test_split_func_call_with_cont_input(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device
 ):
     # Skipping some dtype for certain frameworks
+    assume(not ("bfloat16" in dtype))
     assume(
         not (
             (fw == "torch" and "int" in dtype)

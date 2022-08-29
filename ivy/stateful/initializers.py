@@ -166,7 +166,13 @@ class KaimingNormal(Initalizer):
         self._fan_mode = fan_mode
 
     def create_variables(
-        self, var_shape, device, fan_out=None, fan_in=None, negative_slope=0.0
+        self,
+        var_shape,
+        device,
+        fan_out=None,
+        fan_in=None,
+        negative_slope=0.0,
+        dtype=None,
     ):
         """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
@@ -202,5 +208,7 @@ class KaimingNormal(Initalizer):
             )
         std = (2 / ((1 + negative_slope**2) * fan)) ** 0.5
         return ivy.variable(
-            ivy.random_normal(mean=self._mean, std=std, shape=var_shape, device=device)
+            ivy.random_normal(
+                mean=self._mean, std=std, shape=var_shape, device=device, dtype=dtype
+            )
         )
