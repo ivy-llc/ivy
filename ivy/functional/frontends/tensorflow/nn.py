@@ -53,5 +53,6 @@ def conv1d_transpose(
 conv1d_transpose.unsupported_dtypes = {"torch": ("float16",)}
 
 
-def gelu(feature , approximate=False, name=None):
- return ivy.gelu(feature ,approximate)
+def gelu(feature, approximate=False, name=None):
+ return ivy.gelu(feature, approximate)
+ 
