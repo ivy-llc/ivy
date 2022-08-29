@@ -342,6 +342,7 @@ def var_fn(x, *, dtype=None, device=None):
 def get_dtypes(draw, kind, index=0, full=False, none=False):
     """
     Draws valid dtypes based on the backend set on the stack
+
     Parameters
     ----------
     draw
@@ -358,7 +359,8 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
 
     Returns
     -------
-
+    ret
+        dtype string
     """
     type_dict = {
         "valid": ivy.valid_dtypes,
