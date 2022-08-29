@@ -2,6 +2,12 @@ lstm_update
 ===========
 
 .. autofunction:: ivy.functional.ivy.layers.lstm_update
+
+.. autofunction:: ivy.array.array_methods.lstm_update
+
+.. autofunction:: ivy.container.container_methods.lstm_update
+
+.. autofunction:: ivy.container.container_methods.static_lstm_update
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ lstm_update
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: lstm_update
+
+   lstm_update/lstm_update_functional.rst
+   lstm_update/lstm_update_array.rst
+   lstm_update/lstm_update_container.rst
+   lstm_update/static_lstm_update_container.rst
+

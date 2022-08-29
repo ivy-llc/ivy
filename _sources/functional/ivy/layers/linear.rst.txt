@@ -2,6 +2,12 @@ linear
 ======
 
 .. autofunction:: ivy.functional.ivy.layers.linear
+
+.. autofunction:: ivy.array.array_methods.linear
+
+.. autofunction:: ivy.container.container_methods.static_linear
+
+.. autofunction:: ivy.container.container_methods.linear
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ linear
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: linear
+
+   linear/linear_functional.rst
+   linear/linear_array.rst
+   linear/linear_container.rst
+   linear/static_linear_container.rst
+
