@@ -5,8 +5,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.torch as ivy_torch
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -33,9 +31,7 @@ def _get_dtype_and_matrix(draw):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(ivy_torch.valid_float_dtypes)
-        ),
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -82,11 +78,7 @@ def test_torch_cholesky(
 @handle_cmd_line_args
 @given(
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                ivy_torch.valid_numeric_dtypes
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         num_arrays=2,
         min_value=1,
         max_value=50,
@@ -127,9 +119,7 @@ def test_torch_ger(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(ivy_torch.valid_float_dtypes)
-        ),
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_value=0,
         max_value=25,
         shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
@@ -234,11 +224,7 @@ def test_torch_mm(
 @handle_cmd_line_args
 @given(
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                ivy_torch.valid_numeric_dtypes
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         num_arrays=2,
         min_value=1,
         max_value=50,
@@ -281,9 +267,7 @@ def test_torch_outer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(ivy_torch.valid_float_dtypes)
-        ),
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
@@ -326,9 +310,7 @@ def test_torch_qr(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(ivy_torch.valid_float_dtypes)
-        ),
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
