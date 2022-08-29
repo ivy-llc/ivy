@@ -652,7 +652,7 @@ def test_tensorflow_asinh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="asinh",
-        x=np.asarray(x, dtype=input_dtype)
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -724,14 +724,16 @@ def test_tensorflow_reduce_variance(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ), min_num_dims=1, min_dim_size=2
+        ),
+        min_num_dims=1,
+        min_dim_size=2,
     ),
     scalar_val=helpers.list_of_length(x=st.floats(), length=1),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.scalar_mul"
     ),
-    native_array=st.booleans()
+    native_array=st.booleans(),
 )
 def test_tensorflow_scalar_mul(
     dtype_and_x, scalar_val, as_variable, num_positional_args, native_array, fw
@@ -747,5 +749,132 @@ def test_tensorflow_scalar_mul(
         frontend="tensorflow",
         fn_tree="scalar_mul",
         scalar=scalar_val[0],
-        x=np.asarray(x, dtype=input_dtype)
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# divide_no_nan
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=2,
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+        shared_dtype=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.divide_no_nan"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_divide_no_nan(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtypes, xy = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.divide_no_nan",
+        x=np.asarray(xy[0], dtype=input_dtypes[0]),
+        y=np.asarray(xy[1], dtype=input_dtypes[1]),
+    )
+
+
+# erfcinv
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.erfcinv"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_erfcinv(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.erfcinv",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# is_non_decreasing
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.is_non_decreasing"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_is_non_decreasing(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.is_non_decreasing",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# is_strictly_increasing
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.is_strictly_increasing"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_is_strictly_increasing(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.is_strictly_increasing",
+        x=np.asarray(x, dtype=input_dtype),
     )
