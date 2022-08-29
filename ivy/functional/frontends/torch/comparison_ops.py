@@ -45,3 +45,22 @@ def equal(input, other):
 def eq(input, other, *, out=None):
     ret = ivy.equal(input, other, out=out)
     return ret
+
+
+def argsort(input, dim=-1, descending=False):
+    return ivy.argsort(input, axis=dim, descending=descending)
+
+
+def greater_equal(input, other, *, out=None):
+    ret = ivy.greater_equal(input, other, out=out)
+    return ret
+
+
+ge = greater_equal
+
+
+def greater(input, other, *, out=None):
+    return ivy.greater(input, other, out=out)
+
+
+gt = greater
