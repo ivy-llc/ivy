@@ -1,4 +1,4 @@
-# ToDo: Add allclose() to functional API
+# ToDo: Add allclose(), isclose() to functional API
 # global
 import ivy
 
