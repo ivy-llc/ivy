@@ -10,6 +10,25 @@ import ivy.functional.backends.torch as ivy_torch
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+# helpers
+@st.composite
+def _get_dtype_and_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1))
+    mat1 = draw(
+        helpers.array_values(
+            dtype=dtype, shape=(dim_size, arr_size), min_value=2, max_value=5
+        )
+    )
+    mat2 = draw(
+        helpers.array_values(
+            dtype=dtype, shape=(arr_size, dim_size), min_value=2, max_value=5
+        )
+    )
+    return dtype, mat1, mat2
+
+
 # cholesky
 @handle_cmd_line_args
 @given(
@@ -140,6 +159,74 @@ def test_torch_inverse(
         fn_tree="inverse",
         rtol=1e-03,
         input=np.asarray(x, dtype=dtype),
+    )
+
+
+# matmul
+@handle_cmd_line_args
+@given(
+    dtype_xy=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.matmul"
+    ),
+)
+def test_torch_matmul(
+    dtype_xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x, y = dtype_xy
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="matmul",
+        rtol=1e-03,
+        input=np.asarray(x, dtype=dtype),
+        other=np.asarray(y, dtype=dtype),
+        out=None,
+    )
+
+
+# mm
+@handle_cmd_line_args
+@given(
+    dtype_xy=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.mm"
+    ),
+)
+def test_torch_mm(
+    dtype_xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x, y = dtype_xy
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="mm",
+        rtol=1e-03,
+        input=np.asarray(x, dtype=dtype),
+        mat2=np.asarray(y, dtype=dtype),
+        out=None,
     )
 
 
