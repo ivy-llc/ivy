@@ -1,5 +1,6 @@
 """Collection of tests for unified linear algebra functions."""
 
+
 # global
 import sys
 
@@ -809,9 +810,9 @@ def test_trace(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=6,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vecdot"),
 )
@@ -1093,20 +1094,18 @@ def test_matrix_norm(
         keepdims=kd,
     )
 
-
+    
 # matrix_rank
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
-        min_num_dims=3,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=3,
-        min_value=0.1,
-        max_value=10.0,
+        min_num_dims=2,
+        min_value=-1e+05,
+        max_value=1e+05
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None)
 )
 def test_matrix_rank(
     *,
@@ -1118,6 +1117,7 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
+    rtol
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -1130,8 +1130,9 @@ def test_matrix_rank(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
+        atol_=1.0,
         x=np.asarray(x, dtype=dtype),
-        rtol=1e-04,
+        rtol=rtol,
     )
 
 
