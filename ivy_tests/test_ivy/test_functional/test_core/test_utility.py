@@ -24,7 +24,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     num_positional_args=helpers.num_positional_args(fn_name="all"),
 )
 def test_all(
-    *,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -67,7 +66,6 @@ def test_all(
     num_positional_args=helpers.num_positional_args(fn_name="any"),
 )
 def test_any(
-    *,
     dtype_x_axis,
     keepdims,
     as_variable,
