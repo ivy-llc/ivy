@@ -8,7 +8,6 @@ from typing import Dict, Union
 
 url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&per_page=100"
 
-
 headers = {
     "Accept": "application/vnd.github+json",
     "Authorization": "",
@@ -40,7 +39,12 @@ def get_DataFrame(result_dict: dict) -> pd.DataFrame:
     )
     data.index.names = ["Submodules"]
     for (index_label, row_series) in data.iterrows():
-        data.at[index_label] = [row_series.values[i][1] for i in range(4)]
+        data.at[index_label] = [
+            row_series.values[i][1]
+            if len(row_series[i]) < 3
+            else row_series.values[i][1:]
+            for i in range(4)
+        ]
     return data
 
 
@@ -71,42 +75,97 @@ def workflow_results(token):
     workflow_df = pd.DataFrame(
         results, columns=["id", "name", "jobs_url", "status", "created_at"]
     )
-    workflow_df = workflow_df.drop_duplicates(subset=["name"], keep="first")
-    return workflow_df
+    workflow_df_previous = workflow_df.iloc[3:6, :]
+    workflow_df_latest = workflow_df.drop_duplicates(subset=["name"], keep="first")
+    return workflow_df_previous, workflow_df_latest
+
+
+def get_previous_job_data(
+    workflow_df_prev, workflow_name, job_name, prev_action_link, prev_conclusion, token
+):
+    if workflow_df_prev.empty:
+        return (prev_action_link, prev_conclusion)
+    jobs_url_object = workflow_df_prev.loc[workflow_df_prev["name"] == workflow_name]
+    jobs_url = [url for url in jobs_url_object["jobs_url"]]
+    for info in get_api_results(jobs_url[0] + "?per_page=100", token, headers)["jobs"]:
+        if info["name"] == job_name:
+            # return when previous job is queued as well
+            if info["status"] in ("in_progress", "queued"):
+                return (prev_action_link, prev_conclusion)
+            return (info["html_url"], config[info["conclusion"]])
 
 
 def get_matrix_job_data(token):
     # list all workflows running for the branch
-    workflow_df = workflow_results(token)
+    workflow_df_prev, workflow_df_latest = workflow_results(token)
     # extract jobs from the workflows above
-    for name, jobs_url in zip(workflow_df["name"], workflow_df["jobs_url"]):
+    for name, jobs_url in zip(
+        workflow_df_latest["name"], workflow_df_latest["jobs_url"]
+    ):
         for info in get_api_results(jobs_url + "?per_page=100", token, headers)["jobs"]:
+            prev_action_link, prev_conclusion = (None, None)
             # extract backend and submodule name from json
             backend = info["name"].strip("run-nightly-tests")[2:-1].split(",")[0]
             submodule = info["name"].strip("run-nightly-tests")[2:-1].split(",")[1]
 
             if info["status"] in ("in_progress, queued"):
                 conclusion = config["in_progress"]
+                prev_action_link, prev_conclusion = get_previous_job_data(
+                    workflow_df_prev,
+                    name,
+                    info["name"],
+                    prev_action_link,
+                    prev_conclusion,
+                    token,
+                )
             else:
                 conclusion = config[info["conclusion"]]
 
             if name == "test-core-ivy":
                 if submodule not in functional_core_dict:
                     functional_core_dict[submodule] = []
-                functional_core_dict[submodule].append(
-                    (backend, make_clickable(info["html_url"], conclusion))
-                )
+                if prev_action_link and prev_conclusion is not None:
+                    functional_core_dict[submodule].append(
+                        (
+                            backend,
+                            make_clickable(prev_action_link, prev_conclusion),
+                            make_clickable(info["html_url"], conclusion),
+                        )
+                    )
+                else:
+                    functional_core_dict[submodule].append(
+                        (backend, make_clickable(info["html_url"], conclusion))
+                    )
             elif name == "test-nn-ivy":
                 if submodule not in functional_nn_dict:
                     functional_nn_dict[submodule] = []
-                functional_nn_dict[submodule].append(
-                    (backend, make_clickable(info["html_url"], conclusion))
-                )
+                if prev_action_link or prev_conclusion is not None:
+                    functional_nn_dict[submodule].append(
+                        (
+                            backend,
+                            make_clickable(prev_action_link, prev_conclusion),
+                            make_clickable(info["html_url"], conclusion),
+                        )
+                    )
+                else:
+                    functional_nn_dict[submodule].append(
+                        (backend, make_clickable(info["html_url"], conclusion))
+                    )
             elif name == "test-stateful-ivy":
                 if submodule not in stateful_dict:
                     stateful_dict[submodule] = []
-                stateful_dict[submodule].append(
-                    (backend, make_clickable(info["html_url"], conclusion)))
+                if prev_action_link or prev_conclusion is not None:
+                    stateful_dict[submodule].append(
+                        (
+                            backend,
+                            make_clickable(prev_action_link, prev_conclusion),
+                            make_clickable(info["html_url"], conclusion),
+                        )
+                    )
+                else:
+                    stateful_dict[submodule].append(
+                        (backend, make_clickable(info["html_url"], conclusion))
+                    )
 
     return (functional_core_dict, functional_nn_dict, stateful_dict)
 
