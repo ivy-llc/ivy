@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.prod"
     ),
     keepdims=st.booleans(),
-    initial=st.one_of(st.booleans(), st.integers(), st.floats(), st.complex_numbers())
+    initial=st.one_of(st.floats(), st.none())
 )
 def test_numpy_prod(
     dtype_and_x,
@@ -37,12 +37,15 @@ def test_numpy_prod(
 ):
     input_dtype, x, axis = dtype_and_x
     input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=[as_variable],
-        native_array=[native_array],
-    )
+    if initial:
+        where = np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtype,
+            as_variable=[as_variable],
+            native_array=[native_array],
+        )
+    else:
+        where = None
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
