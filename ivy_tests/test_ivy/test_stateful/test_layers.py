@@ -1,106 +1,113 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-from hypothesis import given, strategies as st
 import numpy as np
+from hypothesis import given, strategies as st
 
 # local
 import ivy
 from ivy.container import Container
+import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
+# Helpers #
+# --------#
+
+all_constant_initializers = (ivy.Zeros, ivy.Ones)
+all_uniform_initializers = (ivy.GlorotUniform, ivy.FirstLayerSiren, ivy.Siren)
+all_gaussian_initializers = (ivy.KaimingNormal, ivy.Siren)
+all_initializers = (
+    all_constant_initializers + all_uniform_initializers + all_gaussian_initializers
+)
+
+
+@st.composite
+def _sample_initializer(draw):
+    return draw(st.sampled_from(all_initializers))()
+
 
 # Linear #
 # -------#
 
 
+@st.composite
+def _bias_flag_and_initializer(draw):
+    with_bias = draw(st.booleans())
+    if with_bias:
+        return with_bias, draw(_sample_initializer())
+    return with_bias, None
+
+
+@st.composite
+def _input_channels_and_dtype_and_values(draw):
+    input_channels = draw(st.integers(min_value=1, max_value=10))
+    x_shape = draw(helpers.get_shape()) + (input_channels,)
+    dtype, vals = draw(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_float_dtypes, shape=x_shape
+        )
+    )
+    return input_channels, dtype, vals
+
+
 # linear
+@handle_cmd_line_args
 @given(
-    bs_ic_oc_target=st.sampled_from(
-        [
-            (
-                [1, 2],
-                4,
-                5,
-                [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]],
-            ),
-        ]
+    ic_n_dtype_n_vals=_input_channels_and_dtype_and_values(),
+    output_channels=st.shared(
+        st.integers(min_value=1, max_value=10), key="output_channels"
     ),
-    with_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    weight_initializer=_sample_initializer(),
+    wb_n_b_init=_bias_flag_and_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="Linear.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="Linear._forward"),
+    seed=helpers.seed(),
 )
 def test_linear_layer(
-    bs_ic_oc_target, with_v, dtype, as_variable, device, compile_graph
+    *,
+    ic_n_dtype_n_vals,
+    output_channels,
+    weight_initializer,
+    wb_n_b_init,
+    init_with_v,
+    method_with_v,
+    num_positional_args_init,
+    num_positional_args_method,
+    seed,
+    as_variable,
+    native_array,
+    container,
+    fw,
+    device,
 ):
-    # smoke test
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
-    if as_variable:
-        x = ivy.variable(
-            ivy.asarray(
-                ivy.linspace(
-                    ivy.zeros(batch_shape),
-                    ivy.ones(batch_shape),
-                    input_channels,
-                    axis=None,
-                    device=device,
-                ),
-                dtype=dtype,
-            )
-        )
-    else:
-        x = ivy.asarray(
-            ivy.linspace(
-                ivy.zeros(batch_shape),
-                ivy.ones(batch_shape),
-                input_channels,
-                axis=None,
-                device=device,
-            ),
-            dtype=dtype,
-        )
-
-    if with_v:
-        np.random.seed(0)
-        wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(
-            ivy.asarray(
-                np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                dtype=dtype,
-                device=device,
-            )
-        )
-        b = ivy.variable(
-            ivy.array(
-                ivy.zeros([output_channels], device=device), dtype=dtype, device=device
-            )
-        )
-        v = Container({"w": w, "b": b})
-    else:
-        v = None
-
-    linear_layer = ivy.Linear(
-        input_channels, output_channels, device=device, v=v, dtype=dtype
+    ivy.seed(seed_value=seed)
+    input_channels, input_dtype, x = ic_n_dtype_n_vals
+    with_bias, bias_initializer = wb_n_b_init
+    helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "input_channels": input_channels,
+            "output_channels": output_channels,
+            "weight_initializer": weight_initializer,
+            "bias_initializer": bias_initializer,
+            "with_bias": with_bias,
+            "device": device,
+            "dtype": input_dtype,
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"x": np.asarray(x, dtype=input_dtype)},
+        fw=fw,
+        class_name="Linear",
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
     )
-    ret = linear_layer(x)
-
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == tuple(batch_shape + [output_channels])
-
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(linear_layer(x)),
-        np.array(target, dtype=dtype),
-        rtol=tolerance_dict[dtype],
-    )
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
 
 
 # Dropout #

@@ -1,5 +1,6 @@
 from typing import Optional, Tuple
 
+import ivy
 import torch
 
 
@@ -50,7 +51,5 @@ def where(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.to(promoted_type)
-    x2 = x2.to(promoted_type)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.where(condition, x1, x2)

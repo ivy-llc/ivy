@@ -122,7 +122,11 @@ def test_get_referrers_recursive(*, device):
 
 # copy array
 @handle_cmd_line_args
-@given(dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    )
+)
 def test_copy_array(*, dtype_and_x, device, fw):
     dtype, x = dtype_and_x
     assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
@@ -146,13 +150,15 @@ def test_copy_array(*, dtype_and_x, device, fw):
 @handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     )
 )
 def test_array_equal(*, x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
 
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in (dtype0, dtype1)))
     # torch does not support those dtypes
     assume(
         not (
@@ -189,7 +195,7 @@ def test_array_equal(*, x0_n_x1_n_res, device, fw):
 @handle_cmd_line_args
 @given(
     x0_n_x1_n_res=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=3
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=3
     )
 )
 def test_arrays_equal(*, x0_n_x1_n_res, device, fw):
@@ -236,9 +242,15 @@ def test_arrays_equal(*, x0_n_x1_n_res, device, fw):
 
 # to_numpy
 @handle_cmd_line_args
-@given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
+@given(
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    )
+)
 def test_to_numpy(*, x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
     assume(not (fw == "mxnet" and dtype == "int16"))
@@ -257,9 +269,11 @@ def test_to_numpy(*, x0_n_x1_n_res, device, fw):
 @handle_cmd_line_args
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    dtype=helpers.get_dtypes("valid"),
 )
 def test_to_scalar(*, object_in, dtype, device, fw):
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
     assume(not (fw == "mxnet" and dtype == "int16"))
@@ -275,9 +289,15 @@ def test_to_scalar(*, object_in, dtype, device, fw):
 
 # to_list
 @handle_cmd_line_args
-@given(x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes))
+@given(
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    )
+)
 def test_to_list(*, x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
     assume(dtype in ivy.valid_dtypes)
     # smoke test
     arr = ivy.array(object_in, dtype=dtype, device=device)
@@ -301,7 +321,9 @@ def test_to_list(*, x0_n_x1_n_res, device, fw):
 # shape
 @handle_cmd_line_args
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    ),
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
@@ -339,7 +361,9 @@ def test_shape(*, x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 # get_num_dims
 @handle_cmd_line_args
 @given(
-    x0_n_x1_n_res=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    x0_n_x1_n_res=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    ),
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
@@ -513,11 +537,11 @@ def test_unstack(*, x_n_axis, dtype, tensor_fn, device):
         expected_shape = list(x.shape)
         expected_shape.pop(axis_val)
     assert ret[0].shape == tuple(expected_shape)
+    ret = ivy.unstack(x, axis)
+    ret_from_np = ivy.functional.backends.numpy.unstack(ivy.to_numpy(x), axis)
     # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.unstack(x, axis)),
-        np.asarray(ivy.functional.backends.numpy.unstack(ivy.to_numpy(x), axis)),
-    )
+    for ret_i, ret_from_np_i in zip(ret, ret_from_np):
+        assert np.allclose(ivy.to_numpy(ret_i), ret_from_np_i)
 
 
 # fourier_encode
