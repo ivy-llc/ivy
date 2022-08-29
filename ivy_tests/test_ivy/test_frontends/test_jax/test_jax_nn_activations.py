@@ -688,4 +688,3 @@ def test_jax_nn_swish(
         fn_tree="nn.swish",
         x=np.asarray(x, dtype=input_dtype),
     )
-    
