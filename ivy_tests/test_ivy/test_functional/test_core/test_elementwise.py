@@ -289,9 +289,6 @@ def test_atan2(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    x1 = _not_too_close_to_zero(x1)
-    x2 = _not_too_close_to_zero(x2)
-
     assume(not (np.any(np.isclose(x1, 0)) or np.any(np.isclose(x2, 0))))
 
     helpers.test_function(
@@ -1668,7 +1665,6 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    # input_dtype, x = (['int16', 'int8'], [[2], [64]])
 
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtype))
@@ -1684,11 +1680,6 @@ def test_pow(
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-
-    # Makesure it doesn't overflow
-    nt = np.promote_types(input_dtype[0], input_dtype[1])
-    size = nt.itemsize * 8 - 1
-    assume(np.all(np.log2(x[0]) * x[1] <= size))
 
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
