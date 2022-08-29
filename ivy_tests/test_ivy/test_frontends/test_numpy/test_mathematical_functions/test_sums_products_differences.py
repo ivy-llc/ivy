@@ -12,16 +12,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
-    if random.randint(0, 9) % 2 != 0:
-        axis = None
-    where = draw(
-        helpers.array_values(
-            dtype=ivy.bool,
-            shape=shape,
-        )
-    )
-    where = draw(st.sampled_from([where, np._NoValue]))
+    axis = draw(st.one_of(helpers.ints(min_value=0, max_value=len(shape) - 1), 
+                          st.none()))
+    where = draw(st.one_of(helpers.array_values(dtype=ivy.bool,shape=shape),
+                           st.none()))
     return (dtype, x, axis), where
 
 
