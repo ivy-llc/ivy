@@ -87,7 +87,7 @@ def concat(
                [3, 4],
                [5, 6]])
     """
-    return current_backend(xs[0]).concat(xs, axis, out=out)
+    return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -209,7 +209,7 @@ def expand_dims(
                       [5.]])
     }
     """
-    return current_backend(x).expand_dims(x, axis, out=out)
+    return current_backend(x).expand_dims(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -856,7 +856,6 @@ def clip(
     }
 
     """
-    assert ivy.all(ivy.less(x_min, x_max))
     res = current_backend(x).clip(x, x_min, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
