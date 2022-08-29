@@ -37,8 +37,32 @@ def slogdet(input):
 slogdet.unsupported_dtypes = ("float16",)
 
 
+def matmul(input, other, *, out=None):
+    return ivy.matmul(input, other, out=out)
+
+
+def mm():
+    pass
+
+
 def outer(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 
 
 outer.unsupported_dtypes = {"numpy": ("float16", "int8")}
+
+
+def pinverse():
+    pass
+
+
+def qr():
+    pass
+
+
+def solve():
+    pass
+
+
+def svd():
+    pass
