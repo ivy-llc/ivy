@@ -263,7 +263,7 @@ def vecdot(
 ) -> JaxArray:
     x1 = jnp.array(jnp.array(x1).astype(jnp.float32))
     x2 = jnp.array(jnp.array(x2).astype(jnp.float32))
-    ret = jnp.tensordot(x1, x2, (axis,axis))
+    ret = jnp.tensordot(x1, x2, (axis, axis))
     return ret
 
 
