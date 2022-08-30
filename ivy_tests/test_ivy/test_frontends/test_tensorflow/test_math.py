@@ -886,7 +886,7 @@ def test_tensorflow_is_strictly_increasing(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(ivy_tf.valid_numeric_dtypes), shape=(2, 3)
     ),
-    axis=helpers.get_axis(shape=(3, 2), max_size=2),
+    axis=helpers.get_axis(shape=(2, 3), max_size=2),
     keepdims=st.booleans(),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
