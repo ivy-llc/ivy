@@ -2,6 +2,10 @@
 import ivy
 
 
+def addmm(input, mat1, mat2, *, beta=1, alpha=1, out=None):
+    pass
+
+
 def cholesky(input, upper=False, *, out=None):
     return ivy.cholesky(input, upper, out=out)
 
@@ -42,6 +46,8 @@ def matmul(input, other, *, out=None):
 
 
 def mm(input, mat2, *, out=None):
+    if len(ivy.shape(input)) != 2 or len(ivy.shape(mat2)) != 2:
+        raise RuntimeError("input must be matrices")
     return ivy.matmul(input, mat2, out=out)
 
 
