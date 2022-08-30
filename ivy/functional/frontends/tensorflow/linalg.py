@@ -32,3 +32,9 @@ def slogdet(input, name=None):
 
 
 slogdet.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def cholesky_solve(chol, rhs, name=None):
+    return ivy.solve(chol, rhs)
+
+cholesky_solve.unsupported_dtypes = ("float16", "bfloat16")
