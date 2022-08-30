@@ -153,13 +153,28 @@ def inplace_increment(
     return x
 
 
+def _infer_dtype(x_dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
     *,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumsum(x, axis)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if x.dtype == dtype:
+        return tf.math.cumsum(x, axis)
+    return tf.math.cumsum(tf.cast(x, dtype), axis)
 
 
 def cumprod(
@@ -167,9 +182,15 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.cumprod(x, axis, exclusive)
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if x.dtype == dtype:
+        return tf.math.cumprod(x, axis, exclusive)
+    return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
 
 
 # noinspection PyShadowingNames
