@@ -220,7 +220,9 @@ def test_mean_absolute_error(
         max_value=10,
     ),
     from_logits=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.tensorflow.metrics.binary_crossentropy"),
+    num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.tensorflow.metrics.binary_crossentropy"
+    ),
     native_array=st.booleans(),
 )
 def test_binary_crossentropy(
