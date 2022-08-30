@@ -1,4 +1,4 @@
-# ToDo: Add allclose(), isclose(), isposinf() to functional API
+# ToDo: Add allclose(), isclose(), isposinf(), isneginf() to functional API
 # global
 import ivy
 
@@ -111,3 +111,9 @@ def isposinf(input, *, out=None):
     is_inf = ivy.isinf(input)
     pos_sign_bit = ivy.bitwise_invert(ivy.less(input, 0))
     return ivy.logical_and(is_inf, pos_sign_bit, out=out)
+
+
+def isneginf(input, *, out=None):
+    is_inf = ivy.isinf(input)
+    neg_sign_bit = ivy.less(input, 0)
+    return ivy.logical_and(is_inf, neg_sign_bit, out=out)
