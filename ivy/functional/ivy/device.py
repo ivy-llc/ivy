@@ -7,7 +7,8 @@ import abc
 import math
 import psutil
 import nvidia_smi
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Type
+from types import TracebackType
 
 # noinspection PyUnresolvedReferences
 try:
@@ -77,7 +78,9 @@ class DefaultDevice:
         ivy.set_default_device(self._dev)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> Union[ivy.Device, str]:
+    def __exit__(self, exc_type: Optional[Type[BaseException]],
+                    exc_val: Optional[BaseException],
+                    exc_tb: Optional[TracebackType]) -> Union[ivy.Device, str]:
         """
         Exit the runtime context related to the specified device.
 
