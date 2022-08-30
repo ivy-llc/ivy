@@ -3,7 +3,6 @@ import numpy as np
 from hypothesis import given, strategies as st
 import sys
 
-import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
