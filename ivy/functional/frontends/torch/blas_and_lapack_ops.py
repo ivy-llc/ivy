@@ -74,6 +74,15 @@ def mm(input, mat2, *, out=None):
     return ivy.matmul(input, mat2, out=out)
 
 
+def mv(input, vec, *, out=None):
+    if len(ivy.shape(input)) != 2 or len(ivy.shape(vec)) != 1:
+        raise RuntimeError("input must be 2D matrix and 1D vector")
+    return ivy.matmul(input, vec, out=out)
+
+
+mv.unsupported_dtypes = ("float16",)
+
+
 def outer(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 
