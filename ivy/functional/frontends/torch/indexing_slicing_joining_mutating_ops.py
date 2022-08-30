@@ -9,8 +9,11 @@ def cat(tensors, dim=0, *, out=None):
 def concat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
-def chunk(input,chunks,dim=0):
-    return ivy.c
+
+def chunk(input, chunks, dim=0):
+    return ivy.split(input, num_or_size_splits=chunks, dim=dim, with_remainder=True)
+
+
 def permute(input, dims):
     return ivy.permute_dims(input, axes=dims)
 
@@ -36,3 +39,4 @@ def reshape(input, shape):
 
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)
+
