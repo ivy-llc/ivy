@@ -3,7 +3,11 @@ import ivy
 
 
 def addmm(input, mat1, mat2, *, beta=1, alpha=1, out=None):
-    pass
+    if len(ivy.shape(mat1)) != 2 or len(ivy.shape(mat2)) != 2:
+        raise RuntimeError("input must be matrices")
+    ret = ivy.matmul(mat1, mat2, out=out)
+    ret = ivy.multiply(alpha, ret, out=out)
+    return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
 
 
 def cholesky(input, upper=False, *, out=None):

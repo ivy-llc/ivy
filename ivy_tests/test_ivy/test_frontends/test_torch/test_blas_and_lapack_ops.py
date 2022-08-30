@@ -10,19 +10,24 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # helpers
 @st.composite
-def _get_dtype_and_matrices(draw):
-    dim_size = draw(helpers.ints(min_value=2, max_value=5))
-    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+def _get_dtype_and_batch_matrices(draw):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1))
+    shape1 = (dim_size1, shared_size)
+    shape2 = (shared_size, dim_size2)
+    batched = draw(st.booleans())
+    if batched:
+        batch_size1 = draw(helpers.ints(min_value=2, max_value=4))
+        batch_size2 = draw(helpers.ints(min_value=2, max_value=4))
+        shape1 = (batch_size1, 1, dim_size1, shared_size)
+        shape2 = (batch_size2, shared_size, dim_size2)
     mat1 = draw(
-        helpers.array_values(
-            dtype=dtype, shape=(dim_size, arr_size), min_value=2, max_value=5
-        )
+        helpers.array_values(dtype=dtype, shape=shape1, min_value=2, max_value=5)
     )
     mat2 = draw(
-        helpers.array_values(
-            dtype=dtype, shape=(arr_size, dim_size), min_value=2, max_value=5
-        )
+        helpers.array_values(dtype=dtype, shape=shape2, min_value=2, max_value=5)
     )
     return dtype, mat1, mat2
 
@@ -37,6 +42,85 @@ def _get_dtype_and_square_matrix(draw):
         )
     )
     return dtype, mat
+
+
+@st.composite
+def _get_dtype_input_and_matrices(draw, with_input=False):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1))
+    mat1 = draw(
+        helpers.array_values(
+            dtype=dtype, shape=(dim_size1, shared_size), min_value=2, max_value=5
+        )
+    )
+    mat2 = draw(
+        helpers.array_values(
+            dtype=dtype, shape=(shared_size, dim_size2), min_value=2, max_value=5
+        )
+    )
+    if with_input:
+        input = draw(
+            helpers.array_values(
+                dtype=dtype, shape=(dim_size1, dim_size2), min_value=2, max_value=5
+            )
+        )
+        return dtype, input, mat1, mat2
+    return dtype, mat1, mat2
+
+
+# addmm
+@handle_cmd_line_args
+@given(
+    dtype_and_matrices=_get_dtype_input_and_matrices(with_input=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.addmm"
+    ),
+)
+def test_torch_addmm(
+    dtype_and_matrices,
+    beta,
+    alpha,
+    as_variable,
+    with_out,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, input, mat1, mat2 = dtype_and_matrices
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="addmm",
+        rtol=1e-02,
+        input=np.asarray(input, dtype=dtype),
+        mat1=np.asarray(mat1, dtype=dtype),
+        mat2=np.asarray(mat2, dtype=dtype),
+        beta=beta,
+        alpha=alpha,
+        out=None,
+    )
 
 
 # cholesky
@@ -229,7 +313,7 @@ def test_torch_slogdet(
 # matmul
 @handle_cmd_line_args
 @given(
-    dtype_xy=_get_dtype_and_matrices(),
+    dtype_xy=_get_dtype_and_batch_matrices(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.matmul"
     ),
@@ -263,7 +347,7 @@ def test_torch_matmul(
 # mm
 @handle_cmd_line_args
 @given(
-    dtype_xy=_get_dtype_and_matrices(),
+    dtype_xy=_get_dtype_input_and_matrices(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.mm"
     ),
