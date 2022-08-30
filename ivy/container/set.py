@@ -6,7 +6,6 @@ from ivy.container.base import ContainerBase
 import ivy
 
 
-# noinspection PyMissingConstructor
 class ContainerWithSet(ContainerBase):
     @staticmethod
     def static_unique_all(
@@ -274,19 +273,18 @@ class ContainerWithSet(ContainerBase):
               reconstruct ``x``. The array must have the same shape as ``x`` and
               must have the default array index data type.
 
-             Examples
-             --------
-             >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),\
-             b=ivy.array([7,6,4,5,6,3,2]))
-             >>> y = x.unique_inverse()
-             >>> print(y)
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),\
+        ... b=ivy.array([7,6,4,5,6,3,2]))
+        >>> y = x.unique_inverse()
+        >>> print(y)
              {
                a: (list[2], <class ivy.array.array.Array> shape=[5]),
                b: (list[2], <class ivy.array.array.Array> shape=[6])
              }
 
         """
-
         return self.static_unique_inverse(
             self,
             key_chains=key_chains,
