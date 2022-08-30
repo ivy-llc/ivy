@@ -37,7 +37,7 @@ mean_absolute_error.unsupported_dtypes = {
 
 def binary_crossentropy(y_true, 
                         y_pred,
-                        label_smoothing: float =0.) -> ivy.Array:
+                        label_smoothing: float = 0.) -> ivy.Array:
     """Computes the binary crossentropy loss.
     Parameters
     ----------
