@@ -46,6 +46,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
@@ -96,6 +97,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)
@@ -187,7 +189,6 @@ def split(
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -229,7 +230,13 @@ repeat.supported_dtypes = (
 )
 
 
-def tile(x, /, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def tile(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    reps: Sequence[int],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable] :
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
@@ -289,6 +296,7 @@ def clip(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    assert tf.reduce_all(tf.less(x_min, x_max)), "Min value must be less than max."
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)

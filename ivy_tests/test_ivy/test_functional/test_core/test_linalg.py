@@ -1,5 +1,6 @@
 """Collection of tests for unified linear algebra functions."""
 
+
 # global
 import sys
 
@@ -7,6 +8,7 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -43,7 +45,7 @@ def dtype_value1_value2_axis(
     shape = shape[:axis] + [specific_dim_size] + shape[axis:]
     shape = tuple(shape)
 
-    dtype = draw(st.sampled_from(available_dtypes))
+    dtype = draw(available_dtypes)
 
     values = []
     for i in range(2):
@@ -90,8 +92,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
         )
     )
     axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
-
-    dtype = draw(st.sampled_from(available_dtypes))
+    dtype = draw(available_dtypes)
 
     values = []
     for i in range(2):
@@ -257,7 +258,7 @@ def test_vector_to_skew_symmetric_matrix(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
@@ -448,7 +449,7 @@ def test_eigvalsh(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
@@ -518,7 +519,7 @@ def test_matrix_transpose(
 @handle_cmd_line_args
 @given(
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         num_arrays=2,
         min_value=1,
         max_value=50,
@@ -565,7 +566,7 @@ def test_outer(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
@@ -678,7 +679,7 @@ def test_solve(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=50,
         min_num_dims=2,
@@ -715,7 +716,7 @@ def test_svdvals(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=3,
         max_num_dims=8,
         min_dim_size=1,
@@ -741,6 +742,7 @@ def test_tensordot(
         x2,
         axis,
     ) = dtype_x1_x2_axis
+
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
     container = [container, container]
@@ -765,7 +767,7 @@ def test_tensordot(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=1,
@@ -806,11 +808,11 @@ def test_trace(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=6,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vecdot"),
 )
@@ -850,7 +852,7 @@ def test_vecdot(
 @handle_cmd_line_args
 @given(
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=2,
@@ -896,7 +898,7 @@ def test_vector_norm(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -936,13 +938,7 @@ def test_pinv(
 # qr
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=5,
-    ),
+    dtype_x=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(fn_name="qr"),
     mode=st.sampled_from(("reduced", "complete")),
 )
@@ -989,11 +985,13 @@ def test_qr(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=5,
+        min_value=0.1,
+        max_value=10.0,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="svd"),
     fm=st.booleans(),
@@ -1029,24 +1027,34 @@ def test_svd(
     if results is None:
         return
 
-    ret_np_flat, ret_from_np_flat = results
+    # value test based on recreating the original matrix and testing the consistency
+    ret_flat_np, ret_from_gt_flat_np = results
+    U, S, Vh = ret_flat_np
+    m = U.shape[-1]
+    n = Vh.shape[-1]
+    S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+    U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
+    S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
+
+    with ivy.functional.backends.numpy.use:
+        S_mat = S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+        S_mat_gt = (
+            S_gt
+            * ivy.eye(U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]).data
+        )
+    reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+    reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
 
     # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        num_cols = ret_np.shape[-2]
-        for col_idx in range(num_cols):
-            ret_np_col = ret_np[..., col_idx, :]
-            ret_from_np_col = ret_from_np[..., col_idx, :]
-            helpers.assert_all_close(
-                np.abs(ret_np_col), np.abs(ret_from_np_col), rtol=1e-1, atol=1e-1
-            )
+    helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
+    helpers.assert_all_close(reconstructed, np.asarray(x, dtype=dtype), atol=1e-04)
 
 
 # matrix_norm
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -1086,18 +1094,18 @@ def test_matrix_norm(
         keepdims=kd,
     )
 
-
+    
 # matrix_rank
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes[1:],
-        min_num_dims=3,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=3,
+        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        min_num_dims=2,
+        min_value=-1e+05,
+        max_value=1e+05
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None)
 )
 def test_matrix_rank(
     *,
@@ -1109,6 +1117,7 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
+    rtol
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -1121,8 +1130,9 @@ def test_matrix_rank(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
+        atol_=1.0,
         x=np.asarray(x, dtype=dtype),
-        rtol=1e-04,
+        rtol=rtol,
     )
 
 
@@ -1130,7 +1140,7 @@ def test_matrix_rank(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -1170,7 +1180,8 @@ def test_cholesky(
         fn_name="cholesky",
         x=x,
         upper=upper,
-        rtol=1e-3,
+        rtol_=1e-3,
+        atol_=1e-3,
     )
 
 
@@ -1178,7 +1189,7 @@ def test_cholesky(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=3,
@@ -1221,7 +1232,7 @@ def test_cross(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,

@@ -59,12 +59,21 @@ def asin(x):
     return ivy.asin(x)
 
 
+asin.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def sinh(x):
     return ivy.sinh(x)
 
 
+sinh.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def atan2(x, y):
     return ivy.atan2(x, y)
+
+
+atan2.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def min(x, y):
@@ -79,11 +88,18 @@ def eq(x, y):
     return ivy.equal(x, y)
 
 
-eq.unsupported_dtypes = {"torch": ("bfloat16",)}
-
-
 def atan(x):
     return ivy.atan(x)
+
+
+atan.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def cos(x):
+    return ivy.cos(x)
+
+
+cos.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def ceil(x):
@@ -105,21 +121,12 @@ def neg(x):
     return ivy.negative(x)
 
 
-neg.unsupported_dtypes = {"torch": ("bfloat16",)}
-
-
 def argmax(operand, axis, index_dtype):
     return ivy.astype(ivy.argmax(operand, axis=axis), index_dtype)
 
 
-argmax.unsupported_dtypes = {"torch": ("bfloat16",)}
-
-
 def argmin(operand, axis, index_dtype):
     return ivy.astype(ivy.argmin(operand, axis=axis), index_dtype)
-
-
-argmin.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 def bitwise_xor(x, y):
@@ -145,21 +152,124 @@ def convert_element_type(operand, new_dtype):
 
 def cumprod(operand, axis=0, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis))
-    return ivy.cumprod(operand, axis)
+        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis, dtype=operand.dtype))
+    return ivy.cumprod(operand, axis, dtype=operand.dtype)
 
 
-cumprod.unsupported_dtypes = {"torch": ("float16",)}
+cumprod.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def cumsum(operand, axis=0, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis))
-    return ivy.cumsum(operand, axis)
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis, dtype=operand.dtype))
+    return ivy.cumsum(operand, axis, dtype=operand.dtype)
 
 
-cumsum.unsupported_dtypes = {"torch": ("float16",)}
+cumsum.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def ge(x, y):
+    return ivy.greater_equal(x, y)
+
+
+def gt(x, y):
     return ivy.greater(x, y)
+
+
+def reshape(operand, new_sizes, dimensions=None):
+    if dimensions:
+        operand = ivy.permute_dims(operand, dimensions)
+    return ivy.reshape(operand, new_sizes)
+
+
+def reciprocal(x):
+    return ivy.reciprocal(x)
+
+
+reciprocal.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": (
+        "uint8",
+        "int8",
+        "uint16",
+        "int16",
+        "uint32",
+        "int32",
+        "uint64",
+        "int64",
+    ),
+}
+
+
+def broadcast(operand, sizes):
+    ret = ivy.zeros(tuple(sizes) + tuple(ivy.shape(operand)), dtype=ivy.dtype(operand))
+    return ret + operand
+
+
+def sort(operand, dimension=-1, is_stable=True, num_keys=1):
+    return ivy.sort(operand, axis=dimension, stable=is_stable)
+
+
+def le(x, y):
+    return ivy.less_equal(x, y)
+
+
+def ne(x, y):
+    return ivy.not_equal(x, y)
+
+
+def cosh(x):
+    return ivy.cosh(x)
+
+
+cosh.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def round(x):
+    return ivy.round(x)
+
+
+round.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def lt(x, y):
+    return ivy.less(x, y)
+
+
+def pow(x, y):
+    return ivy.pow(x, y)
+
+
+pow.unsupported_dtypes = ("int64", "int32", "int16", "uint64", "uint32", "uint16")
+
+
+def clamp(min, x, max):
+    return ivy.clip(x, min, max)
+
+
+clamp.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def log(x):
+    return ivy.log(x)
+
+
+log.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def rev(operand, dimensions):
+    return ivy.flip(operand, axis=dimensions)
+
+
+def div(x, y):
+    return ivy.astype(ivy.divide(x, y), x.dtype)
+
+
+def rsqrt(x):
+    return ivy.reciprocal(ivy.sqrt(x))
+
+
+rsqrt.unsupported_dtypes = {
+    "jax": ("int64", "int32", "int16", "uint64", "uint32", "uint16"),
+    "torch": ("float16",),
+}
