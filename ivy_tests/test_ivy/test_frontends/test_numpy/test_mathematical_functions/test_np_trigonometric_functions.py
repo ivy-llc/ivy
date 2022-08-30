@@ -182,7 +182,7 @@ def test_numpy_arccos(
     as_variable,
     with_out,
     num_positional_args,
-    native_array,
+    native_array, 
     fw,
 ):
     input_dtype, x = dtype_and_x
