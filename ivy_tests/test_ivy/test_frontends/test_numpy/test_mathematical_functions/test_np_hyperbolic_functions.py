@@ -113,12 +113,12 @@ def test_numpy_tanh(
 
 @st.composite
 def _dtype_x(draw, **kwargs):
-    dtype, x = draw(helpers.dtype_and_values(**kwargs))
+    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
     where = draw(
         st.one_of(
             helpers.array_values(
                 dtype=ivy.bool, 
-                shape=x.shape,
+                shape=shape,
             )
         )
     )
