@@ -80,3 +80,11 @@ def Minimum(*, x, y, name="Minimum"):
 
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
+
+
+def Floor(*, x, name="Floor"):
+    return ivy.floor(x)
+
+
+def FloorDiv(*, x, y, name="FloorDiv"):
+    return ivy.floor_divide(x, y)
