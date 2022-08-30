@@ -177,6 +177,7 @@ def test_tensorflow_slogdet(
         x=np.asarray(x, dtype=input_dtype)
     )
 
+
 # pinv
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
@@ -201,8 +202,7 @@ def test_tensorflow_pinv(
         frontend="tensorflow",
         fn_tree="linalg.pinv",
         a=np.asarray(x, dtype=input_dtype),
-        rcond = 1e-15,
+        rcond=1e-15,
         validate_args=False,
         name=None
-
     )
