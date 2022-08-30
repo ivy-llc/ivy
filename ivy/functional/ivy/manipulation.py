@@ -906,10 +906,7 @@ def clip(
     }
 
     """
-    res = current_backend(x).clip(x, x_min, x_max)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+    return current_backend(x).clip(x, x_min, x_max)
 
 
 @to_native_arrays_and_back
