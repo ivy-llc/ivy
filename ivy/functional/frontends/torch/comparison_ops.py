@@ -97,3 +97,11 @@ def isclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
 
 
 isclose.unsupported_dtypes = ("float16",)
+
+
+def isfinite(input):
+    return ivy.isfinite(input)
+
+
+def isinf(input):
+    return ivy.isinf(input)
