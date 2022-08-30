@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(st.one_of(helpers.ints(min_value=0, max_value=len(shape) - 1), 
+    axis = draw(st.one_of(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)), 
                           st.none()))
     where = draw(st.one_of(helpers.array_values(dtype=ivy.bool, shape=shape), 
                            st.none()))
