@@ -171,7 +171,13 @@ def repeat(
     return ret
 
 
-def tile(x: JaxArray, /, reps, *, out: Optional[JaxArray] = None) -> JaxArray:
+def tile(
+    x: JaxArray,
+    /,
+    reps: Iterable[int],
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     ret = jnp.tile(x, reps)
     return ret
 
