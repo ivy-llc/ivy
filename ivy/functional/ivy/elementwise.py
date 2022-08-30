@@ -5009,6 +5009,100 @@ def sqrt(
     return ivy.current_backend(x).sqrt(x, out=out)
 
 
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def round(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Rounds the values of a tensor to the nearest integer.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the round of each element in ``x``.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
+    in the standard.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0.4, 4.7, 8.])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([0., 5., 8.])
+
+    >>> x = ivy.array([1, 2.5, 4.03])
+    >>> y = ivy.zeros(3)
+    >>> ivy.round(x, out=y)
+    ivy.array([1., 2., 4.])
+
+    >>> x = ivy.array([40.99, 24.51, 100.])
+    >>> ivy.round(x, out=x)
+    ivy.array([ 41.,  25., 100.])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-50.33, 1000.0001, 34.6])
+    >>> y = ivy.round(x)
+    >>> print(y)
+    ivy.array([ -50., 1000.,   35.])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([44.02, 56.66, 169.]), b=ivy.array([[49.,1.], [0,20.]]))
+    >>> y = ivy.round(x)
+    >>> print(y)
+    {
+        a: ivy.array([44., 57., 169.]),
+        b: ivy.array([[49., 1.],
+                      [0., 20.]])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    Using :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([[1.3, 2.0],  [3.87, 4.]])
+    >>> y = x.round()
+    >>> print(y)
+    ivy.array([[1., 2.],
+           [4., 4.]])
+
+    Using :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([0.5, 100., 27.2356]), b=ivy.native_array([93.3, 54., 25.49]))
+    >>> y = x.round()
+    >>> print(y)
+    {
+        a: ivy.array([0., 100., 27.]),
+        b: ivy.array([93., 54., 25.])
+    }
+
+    """
+    return ivy.current_backend(x).round(x, out=out)
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

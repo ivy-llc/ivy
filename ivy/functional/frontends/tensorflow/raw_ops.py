@@ -70,6 +70,10 @@ def Sqrt(*, x, name="Sqrt"):
     return ivy.sqrt(x)
 
 
+def Round(*, x, name="Round"):
+    return ivy.round(x)
+
+
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
 
