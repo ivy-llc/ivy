@@ -28,7 +28,6 @@ def _broadcastable_trio(draw):
     ),
 )
 def test_numpy_where(
-    *,
     broadcastables,
     as_variable,
     with_out,
@@ -63,7 +62,6 @@ def test_numpy_where(
     ),
 )
 def test_numpy_nonzero(
-    *,
     dtype_and_a,
     native_array,
     num_positional_args,
