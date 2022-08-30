@@ -1,23 +1,27 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
-import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+# floor
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.current_backend().valid_float_dtypes,
+        available_dtypes=ivy_np.valid_float_dtypes,
     ),
-    dtype=st.sampled_from(ivy.current_backend().valid_float_dtypes + (None,)),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
+    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.floor"
     ),
+    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_floor(
     dtype_and_x,

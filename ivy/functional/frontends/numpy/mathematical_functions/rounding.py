@@ -1,4 +1,7 @@
+# global
 import ivy
+
+# local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
 
 
@@ -18,11 +21,10 @@ def floor(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    else:
-        dtype = x.dtype
-    if out is None:
-        out = ivy.empty(x.shape)
-    return ivy.astype(ivy.where(where, ivy.floor(x, out=x), out, out=out), dtype)
+    ret = ivy.floor(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
 
 
 floor.unsupported_dtypes = {"torch": ("float16",)}
