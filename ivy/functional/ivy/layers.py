@@ -20,7 +20,6 @@ from ivy.func_wrapper import (
 # Linear #
 
 
-@handle_nestable
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -92,7 +91,6 @@ def linear(
 # Dropout #
 
 
-@handle_nestable
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -1110,7 +1108,6 @@ def conv3d_transpose(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
