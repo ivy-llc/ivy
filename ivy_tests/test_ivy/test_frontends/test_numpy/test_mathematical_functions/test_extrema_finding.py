@@ -76,7 +76,7 @@ def test_numpy_minimum(
 )
 def test_numpy_amin(
     dtype_and_x,
-    keepdims
+    keepdims,
     initial,
     where,
     as_variable,
