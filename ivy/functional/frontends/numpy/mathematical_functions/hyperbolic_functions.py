@@ -71,3 +71,4 @@ def arcsinh(
 
 
 arcsinh.unsupported_dtypes = {"torch": ("float16",)}
+
