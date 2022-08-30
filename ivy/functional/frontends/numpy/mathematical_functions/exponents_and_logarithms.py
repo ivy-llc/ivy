@@ -7,8 +7,8 @@ from ivy.func_wrapper import from_zero_dim_arrays_to_float
 def exp(
     x,
     /,
-    out=None,
     *,
+    out=None,
     where=True,
     casting="same_kind",
     order="K",
