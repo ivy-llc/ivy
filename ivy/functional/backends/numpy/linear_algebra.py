@@ -257,7 +257,8 @@ trace.support_native_out = True
 def vecdot(
     x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    ret = np.tensordot(x1, x2, axes=(axis, axis))
+    x1, x2 = x1.astype(np.float32), x2.astype(np.float32)
+    ret = np.tensordot(x1, x2, (axis, axis))
     return ret
 
 
