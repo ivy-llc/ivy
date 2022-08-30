@@ -219,8 +219,7 @@ def clip(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     assert np.all(np.less(x_min, x_max)), "Min value must be less than max."
-    ret = np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
-    return ret
+    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 
 clip.support_native_out = True
