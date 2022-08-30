@@ -582,6 +582,10 @@
             <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">or</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;handles_out_arg&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+        <span class="c1"># Copy docstring</span>
+        <span class="n">docstring_attr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__annotations__&quot;</span><span class="p">,</span> <span class="s2">&quot;__doc__&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">docstring_attr</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
         <span class="c1"># wrap decorators (sequence matters)</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span>
             <span class="s2">&quot;infer_device&quot;</span><span class="p">,</span>
