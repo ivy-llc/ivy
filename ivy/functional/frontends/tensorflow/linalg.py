@@ -28,6 +28,7 @@ def slogdet(input, name=None):
 
 slogdet.unsupported_dtypes = ("float16", "bfloat16")
 
+
 def pinv(a, rcond=None, validate_args=False, name=None):
     return ivy.pinv(a, rcond)
 
