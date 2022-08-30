@@ -39,7 +39,7 @@ def test_torch_is_tensor(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="is_tensor",
+        fn_tree="is_tensor",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
