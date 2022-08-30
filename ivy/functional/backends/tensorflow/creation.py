@@ -57,6 +57,9 @@ def arange(
                 return tf.range(start, stop, delta=step, dtype=dtype)
 
 
+arange.unsupported_dtypes = ("float16",)
+
+
 def asarray(
     object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
     /,
