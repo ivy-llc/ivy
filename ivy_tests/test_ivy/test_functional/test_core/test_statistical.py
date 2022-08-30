@@ -30,11 +30,10 @@ def statistical_dtype_values(draw, *, function):
 
     values = draw(
         helpers.list_of_length(
-            x=st.floats(
-                -abs_value_limit,
-                abs_value_limit,
+            x=helpers.floats(
+                min_value=-abs_value_limit,
+                max_value=abs_value_limit,
                 allow_subnormal=False,
-                allow_infinity=False,
             ),
             length=size,
         )
@@ -43,26 +42,31 @@ def statistical_dtype_values(draw, *, function):
     size = np.asarray(values, dtype=dtype).size
     axis = draw(helpers.get_axis(shape=shape, allow_none=True))
     if function == "var" or function == "std":
-        if isinstance(axis, int):
+        if size == 1:
+            correction = 0
+        elif isinstance(axis, int):
             correction = draw(
-                st.integers(-shape[axis], shape[axis] - 1)
-                | st.floats(-shape[axis], shape[axis] - 1)
+                helpers.ints(min_value=0, max_value=shape[axis] - 1)
+                | helpers.floats(min_value=0, max_value=shape[axis] - 1)
             )
             return dtype, values, axis, correction
-        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
+        else:
+            correction = draw(
+                helpers.ints(min_value=0, max_value=size - 1)
+                | helpers.floats(min_value=0, max_value=size - 1)
+            )
         return dtype, values, axis, correction
     return dtype, values, axis
 
 
 # min
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="min"),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
-    data=st.data(),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@handle_cmd_line_args
 def test_min(
     *,
     dtype_and_x,
@@ -94,14 +98,13 @@ def test_min(
 
 
 # max
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="max"),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
-    data=st.data(),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@handle_cmd_line_args
 def test_max(
     *,
     dtype_and_x,
@@ -133,14 +136,13 @@ def test_max(
 
 
 # mean
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="mean"),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
-    data=st.data(),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@handle_cmd_line_args
 def test_mean(
     *,
     dtype_and_x,
@@ -172,14 +174,13 @@ def test_mean(
 
 
 # var
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="var"),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
-    data=st.data(),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@handle_cmd_line_args
 def test_var(
     *,
     dtype_and_x,
@@ -211,14 +212,13 @@ def test_var(
 
 
 # prod
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="prod"),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
-    data=st.data(),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@handle_cmd_line_args
 def test_prod(
     *,
     dtype_and_x,
@@ -232,10 +232,6 @@ def test_prod(
     keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-
-    # torch implementation exhibits strange behaviour
-    assume(not (fw == "torch" and (input_dtype == "float16")))
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -254,14 +250,13 @@ def test_prod(
 
 
 # sum
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="sum"),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
-    data=st.data(),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@handle_cmd_line_args
 def test_sum(
     *,
     dtype_and_x,
@@ -294,14 +289,13 @@ def test_sum(
 
 
 # std
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="std"),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
-    data=st.data(),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
-@handle_cmd_line_args
 def test_std(
     *,
     dtype_and_x,
@@ -315,13 +309,6 @@ def test_std(
     keep_dims,
 ):
     input_dtype, x, axis, correction = dtype_and_x
-    # torch implementation exhibits strange behaviour
-    assume(
-        not (
-            fw == "torch"
-            and (input_dtype == "float16" or ivy.is_int_dtype(input_dtype))
-        )
-    )
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -342,6 +329,7 @@ def test_std(
 
 
 # einsum
+@handle_cmd_line_args
 @given(
     eq_n_op_n_shp=st.sampled_from(
         [
@@ -350,13 +338,13 @@ def test_std(
             ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
         ]
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=helpers.get_dtypes("float"),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
-    data=st.data(),
 )
-@handle_cmd_line_args
-def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device, call):
+def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
@@ -371,7 +359,7 @@ def test_einsum(*, data, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device, 
     assert ret.shape == true_shape
     # value test
     assert np.allclose(
-        call(ivy.einsum, eq, *operands),
+        ivy.to_numpy(ivy.einsum(eq, *operands)),
         ivy.functional.backends.numpy.einsum(
             eq, *[ivy.to_numpy(op) for op in operands]
         ),

@@ -216,7 +216,6 @@ class SGD(Optimizer):
             v,
             grads,
             self._lr if isinstance(self._lr, float) else self._lr(),
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
 
@@ -296,7 +295,6 @@ class LARS(Optimizer):
             grads,
             self._lr if isinstance(self._lr, float) else self._lr(),
             decay_lambda=self._decay_lambda,
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
 
@@ -403,7 +401,6 @@ class Adam(Optimizer):
             beta1=self._beta1,
             beta2=self._beta2,
             epsilon=self._epsilon,
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
         return new_v
@@ -520,7 +517,6 @@ class LAMB(Optimizer):
             epsilon=self._epsilon,
             max_trust_ratio=self._max_trust_ratio,
             decay_lambda=self._decay_lambda,
-            inplace=self._inplace,
             stop_gradients=self._stop_gradients,
         )
         return new_v
