@@ -246,3 +246,35 @@ def test_tensorflow_pinv(
         validate_args=False,
         name=None
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_solve_get_dtype_and_data(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.tensordot"
+    ),
+)
+def test_tensorflow_tensordot(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    data1, data2 = dtype_and_x
+    input_dtype1, x = data1
+    input_dtype2, y = data2
+
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="linalg.tensordot",
+        x=np.asarray(x, dtype=input_dtype1),
+        y=np.asarray(y, dtype=input_dtype2),
+    )
