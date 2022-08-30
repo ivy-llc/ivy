@@ -284,3 +284,7 @@ def expm1(x):
 
 
 expm1.supported_dtypes = ("bfloat16", "float16", "float32", "float64")
+
+
+def log1p(x):
+    return ivy.log1p(x)
