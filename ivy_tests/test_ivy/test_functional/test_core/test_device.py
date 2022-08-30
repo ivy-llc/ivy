@@ -16,7 +16,6 @@ from hypothesis import strategies as st, given, assume
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -79,7 +78,7 @@ def _empty_dir(path, recreate=False):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric"),
 )
 def test_dev(*, array_shape, dtype, as_variable, fw):
 
@@ -114,7 +113,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric"),
 )
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
 
@@ -145,7 +144,7 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes[1:]),
+    dtype=helpers.get_dtypes("float", index=1),
 )
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw):
 
@@ -219,12 +218,10 @@ def test_default_device(device):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric"),
     stream=helpers.ints(min_value=0, max_value=50),
 )
-def test_to_device(
-    *, array_shape, dtype, as_variable, with_out, fw, device, stream
-):
+def test_to_device(*, array_shape, dtype, as_variable, with_out, fw, device, stream):
     assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
@@ -288,13 +285,14 @@ def _axis(draw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric"),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=_axis(),
 )
 def test_split_func_call(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device
 ):
+    assume(not ("bfloat16" in dtype))
     assume(not (fw == "torch" and "int" in dtype))
 
     # inputs
@@ -333,7 +331,7 @@ def test_split_func_call(
         max_size="num_dims",
         size_bounds=[2, 3],
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric"),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=helpers.ints(min_value=0, max_value=1),
 )
@@ -341,6 +339,7 @@ def test_split_func_call_with_cont_input(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device
 ):
     # Skipping some dtype for certain frameworks
+    assume(not ("bfloat16" in dtype))
     assume(
         not (
             (fw == "torch" and "int" in dtype)
