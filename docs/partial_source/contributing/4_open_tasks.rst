@@ -153,10 +153,11 @@ which would make your frontend function much simpler to implement,
 then you you should first do the following:
 
 #. create a new issue with the title :code:`ivy.<func_name>`, add the labels
-   :code:`Suggestion`, :code:`Extension` and :code:`Next Release` to it, and then simply
-   leave this issue open. At some point, a member of our team will assess whether it
-   should be added, and if so, they will add it to another appropriate ToDo list issue
-   (see the open task below). You do not need to wait for this in order to proceed.
+   :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`
+   to it, and then simply leave this issue open. At some point, a member of our team
+   will assess whether it should be added, and if so, they will add it to another
+   appropriate ToDo list issue (see the open task below).
+   You do not need to wait for this in order to proceed.
 
 After this, you then have two options for how to proceed:
 
@@ -174,7 +175,9 @@ After this, you then have two options for how to proceed:
    sub-task issue, and leave it open. This issue will then still show up as open in the
    original frontend ToDo list, helpfully preventing others from working on this
    problematic frontend function, which depends on the unimplemented
-   :code:`ivy.<func_name>`.
+   :code:`ivy.<func_name>`. Finally, you should add a comment to the issue with the
+   contents: :code:`pending <issue_link>`, which links to the :code:`ivy.<func_name>`
+   issue, making the "Pending other Issue" label more informative.
 
 There are a few other points to take note of when working on your chosen frontend
 function:
