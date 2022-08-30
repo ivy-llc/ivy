@@ -219,6 +219,8 @@ def test_mean_absolute_error(
         min_value=-10,
         max_value=10,
     ),
+    from_logits=st.booleans(),
+    label_smoothing=helpers.floats(min_value=0., max_value=1.)
     num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.tensorflow.metrics.binary_crossentropy"
     ),
@@ -226,7 +228,8 @@ def test_mean_absolute_error(
 )
 def test_binary_crossentropy(
     y_true,
-    dtype_y_pred,
+    dtype_y_pred, 
+    from_logits,
     label_smoothing,
     as_variable,
     num_positional_args,
@@ -235,6 +238,10 @@ def test_binary_crossentropy(
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
 
+    # Perform softmax on prediction if it's not a probability distribution.
+    if not from_logits:
+        y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
+        
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32, dtype],
         as_variable_flags=as_variable,
@@ -245,6 +252,7 @@ def test_binary_crossentropy(
         frontend="tensorflow",
         fn_tree="keras.metrics.BinaryAccuracy",
         y_true=y_true,
-        y_pred=y_pred,
-        label_smoothing=label_smoothing
+        y_pred=y_pred, 
+        from_logits=from_logits,
+        label_smoothing=label_smoothing,
     )
