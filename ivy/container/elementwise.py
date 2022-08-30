@@ -4413,6 +4413,21 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a real-valued floating-point data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4., 5., .]),\
+                              b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([5., 6., 7.]))
+        >>> z = ivy.Container.static_logaddexp(y,x)
+        >>> print(z)
+        {
+            a: ivy.array([4.05, 5.05, 6.05]),
+            b: ivy.array([5.05, 6.05, 7.05])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logaddexp",
@@ -4469,6 +4484,21 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a real-valued floating-point data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` input:
+        
+        >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
+                              b=ivy.array([2., 3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                              b=ivy.array([5., 6., 7.]))
+        >>> z = ivy.logaddexp(y,x)
+        >>> print(z)
+        {
+            a: ivy.array([4.05, 5.05, 6.05]),
+            b: ivy.array([5.05, 6.05, 7.05])
+        }
         """
         return self.static_logaddexp(
             self,
