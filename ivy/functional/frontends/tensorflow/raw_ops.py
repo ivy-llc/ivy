@@ -85,5 +85,5 @@ def Less(*, x, y, name="Less"):
 def Floor(*, x, name="Floor"):
     return ivy.floor(x)
 
-def FloorDiv(*, x, y, name="FloorDiv")
+def FloorDiv(*, x, y, name="FloorDiv"):
     return ivy.floor_divide(x, y)
