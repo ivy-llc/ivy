@@ -110,33 +110,32 @@ def test_numpy_tanh(
         test_values=False,
     )
 
+
 @st.composite
-def _dtype_x_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(st.one_of(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)),
-    st.none()))
-    
+def _dtype_x(draw, **kwargs):
+    dtype, x = draw(helpers.dtype_and_values(**kwargs))
     where = draw(
         st.one_of(
             helpers.array_values(
                 dtype=ivy.bool, 
-                shape=shape),
-            st.none()
+                shape=x.shape,
             )
         )
-    return (dtype, x, axis), where
+    )
+    return (dtype, x), where
+
 
 # arcsinh
 @handle_cmd_line_args
 @given(
-    dtype_x_axis =_dtype_x_axis(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype_and_x=_dtype_x(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arcsinh"
     ),
 )
 def test_numpy_arcsinh(
-    dtype_x_axis,
+    dtype_and_x,
     dtype,
     as_variable,
     with_out,
@@ -144,9 +143,14 @@ def test_numpy_arcsinh(
     native_array,
     fw,
 ):
-    (input_dtype, x, axis), where = dtype_x_axis
-    
-    helpers.test_frontend_function(
+    (input_dtype, x), where = dtype_and_x
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -156,7 +160,6 @@ def test_numpy_arcsinh(
         frontend="numpy",
         fn_tree="arcsinh",
         x=np.asarray(x, dtype=input_dtype[0]),
-        axis = axis,
         out=None,
         where=where,
         casting="same_kind",
