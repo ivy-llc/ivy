@@ -165,4 +165,3 @@ def test_numpy_arcsinh(
         subok=True,
         test_values=False,
     )
-    
