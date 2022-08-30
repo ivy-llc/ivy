@@ -246,13 +246,15 @@ def matrix_rank(
     elif tf.size(x) == 1:
         ret = tf.math.count_nonzero(x)
     else:
-        x = tf.reshape(x, [-1])
-        x = tf.expand_dims(x, 0)
+        rtol = tf.convert_to_tensor([rtol], dtype=tf.float32)
+        rtol = tf.reshape(rtol, [-1])
+        if (len(rtol) > 1):
+            rtol = rtol[0]
         x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.matrix_rank(x, rtol)
     ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
     return ret
-
+    
 
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
@@ -443,9 +445,8 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+    ret = tf.tensordot(x1, x2, (axis, axis))
     return ret
 
 

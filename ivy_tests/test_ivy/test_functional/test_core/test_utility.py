@@ -5,15 +5,15 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # all
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -22,11 +22,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="all"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_all(
-    *,
     dtype_x_axis,
     keepdims,
     as_variable,
@@ -55,9 +52,10 @@ def test_all(
 
 
 # any
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -66,11 +64,8 @@ def test_all(
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="any"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_any(
-    *,
     dtype_x_axis,
     keepdims,
     as_variable,

@@ -36,15 +36,16 @@ def execute_with_gradients(func, xs, retain_grads=False):
     if isinstance(func_ret, tuple):
         y = func_ret[0]
         rest = func_ret[1:]
-        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in)[0], []))
+        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(ivy.to_ivy(x_in))[0], []))
     else:
         y = func_ret
         rest = tuple()
-        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(x_in), []))
+        grad_fn = lambda x_in: ivy.to_native(ivy.reshape(func(ivy.to_ivy(x_in)), []))
     grad_func = jax.grad(grad_fn)
+    xs = ivy.to_native(xs)
     if isinstance(xs, ivy.Container):
         grads = grad_func(xs)
-        grads = ivy.to_ivy(grads, nested=True)
+        grads = ivy.to_ivy(grads)
         grads = Container(grads)
     else:
         grads = grad_func(xs)
