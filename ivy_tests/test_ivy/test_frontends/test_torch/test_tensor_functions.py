@@ -6,21 +6,22 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
 
-#is_tensor
+
+# is_tensor
 @given(
-dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=tuple(
-        set(ivy_np.valid_float_dtypes).intersection(
-            set(ivy_torch.valid_float_dtypes)
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
         )
-    )
-),
-as_variable=st.booleans(),
-with_out=st.booleans(),
-num_positional_args=helpers.num_positional_args(
-    fn_name="functional.frontends.torch.is_tensor"
-),
-native_array=st.booleans(),
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.is_tensor"
+    ),
+    native_array=st.booleans(),
 )
 def test_torch_is_tensor(
     dtype_and_x,
