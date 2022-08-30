@@ -2055,14 +2055,15 @@ def einops_rearrange(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-    """Perform einops rearrange operation on input array x.
+     """
+    Perform einops rearrange operation on input array x.
 
     Parameters
     ----------
     x
         Input array to be re-arranged.
     pattern
-        Rearrangement pattern.
+        Rearrangement pattern. b,h,w,c where b is batch, h is height, w is width and c is channels.
     axes_lengths
         Any additional specifications for dimensions.
     out
@@ -2073,6 +2074,43 @@ def einops_rearrange(
     -------
     ret
         New array with einops.rearrange having been applied.
+        
+    Examples
+    -----
+    # suppose we have a set of 32 images in "h w c" format (height-width-channel)
+    >>> images = [ivy.random.randn(30, 40, 3) for _ in range(32)]
+    >>> output = ivy.fill(images.shape, 0)
+
+    # stack along first (batch) axis, output is the same
+    >>> x=ivy.einops_rearrange(images, 'b h w c -> b h w c')
+    >>> print(x.shape)
+    (32, 30, 40, 3)
+
+    # concatenate images along vertical axis
+    >>> ivy.einops_rearrange(images, 'b h w c -> (b h) w c',out=output)
+    >>> print(output.shape)
+    (960, 40, 3)
+
+    # concatenated images along horizontal axis, 1280 = 32 * 40
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
+    >>> print(x.shape)
+    (30, 1280, 3)
+
+    # reordered axes to "b c h w" format for deep learning
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
+    >>> print(x.shape)
+    (32, 3, 30, 40)
+
+    # flattened each image into a vector, 3600 = 30 * 40 * 3
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
+    >>> print(x.shape)
+    (32, 3600)
+
+    # space-to-depth operation
+    >>> x = ivy.einops_rearrange(images, 'b (h h1) (w w1) c -> b h w (c h1 w1)', h1=2, w1=2)
+    >>> print(x.shape)
+    (32, 15, 20, 12)
+
 
     """
     ret = einops.rearrange(x, pattern, **axes_lengths)
