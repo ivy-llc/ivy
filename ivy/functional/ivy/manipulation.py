@@ -372,18 +372,18 @@ def permute_dims(
     ivy.array([[0., 0.],
                [0., 0.],
                [0., 0.]])
-    
+
     With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1. ,2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.permute_dims(x, axes=(1, 0))
     >>> print(y)
     {
-    a: ivy.array([[0.], 
-                  [1.], 
+    a: ivy.array([[0.],
+                  [1.],
                   [2.]]),
-    b: ivy.array([[3.], 
-                  [4.], 
+    b: ivy.array([[3.],
+                  [4.],
                   [5.]])
     }
 
@@ -391,11 +391,11 @@ def permute_dims(
     >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
     >>> print(y)
     {
-    a: ivy.array([[0.], 
-                  [1.], 
+    a: ivy.array([[0.],
+                  [1.],
                   [2.]]),
-    b: ivy.array([[3.], 
-                  [4.], 
+    b: ivy.array([[3.],
+                  [4.],
                   [5.]])
     }
 
@@ -404,7 +404,7 @@ def permute_dims(
     >>> print(y)
     ivy.array([[3.],
                [4.],
-               [5.]])    
+               [5.]])
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
