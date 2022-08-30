@@ -139,7 +139,7 @@ def test_torch_addmm(
         fw=fw,
         frontend="torch",
         fn_tree="addmm",
-        rtol=1e-02,
+        rtol=1e-01,
         input=np.asarray(input, dtype=dtype),
         mat1=np.asarray(mat1, dtype=dtype),
         mat2=np.asarray(mat2, dtype=dtype),
