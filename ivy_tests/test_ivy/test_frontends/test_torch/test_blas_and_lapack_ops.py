@@ -70,6 +70,32 @@ def _get_dtype_input_and_matrices(draw, with_input=False):
     return dtype, mat1, mat2
 
 
+@st.composite
+def _get_dtype_and_3dbatch_matrices(draw):
+    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    shared_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1))
+    batch_size = draw(helpers.ints(min_value=2, max_value=4))
+    mat1 = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=(batch_size, dim_size1, shared_size),
+            min_value=2,
+            max_value=5,
+        )
+    )
+    mat2 = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=(batch_size, shared_size, dim_size2),
+            min_value=2,
+            max_value=5,
+        )
+    )
+    return dtype, mat1, mat2
+
+
 # addmm
 @handle_cmd_line_args
 @given(
@@ -119,6 +145,40 @@ def test_torch_addmm(
         mat2=np.asarray(mat2, dtype=dtype),
         beta=beta,
         alpha=alpha,
+        out=None,
+    )
+
+
+# bmm
+@handle_cmd_line_args
+@given(
+    dtype_and_matrices=_get_dtype_and_3dbatch_matrices(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.bmm"
+    ),
+)
+def test_torch_bmm(
+    dtype_and_matrices,
+    as_variable,
+    with_out,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, mat1, mat2 = dtype_and_matrices
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bmm",
+        rtol=1e-02,
+        input=np.asarray(mat1, dtype=dtype),
+        mat2=np.asarray(mat2, dtype=dtype),
         out=None,
     )
 

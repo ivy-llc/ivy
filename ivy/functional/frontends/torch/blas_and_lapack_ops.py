@@ -4,10 +4,16 @@ import ivy
 
 def addmm(input, mat1, mat2, *, beta=1, alpha=1, out=None):
     if len(ivy.shape(mat1)) != 2 or len(ivy.shape(mat2)) != 2:
-        raise RuntimeError("input must be matrices")
+        raise RuntimeError("input must be 2D matrices")
     ret = ivy.matmul(mat1, mat2, out=out)
     ret = ivy.multiply(alpha, ret, out=out)
     return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
+
+
+def bmm(input, mat2, *, out=None):
+    if len(ivy.shape(input)) != 3 or len(ivy.shape(mat2)) != 3:
+        raise RuntimeError("input must be 3D matrices")
+    return ivy.matmul(input, mat2, out=out)
 
 
 def cholesky(input, upper=False, *, out=None):
@@ -51,7 +57,7 @@ def matmul(input, other, *, out=None):
 
 def mm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 2 or len(ivy.shape(mat2)) != 2:
-        raise RuntimeError("input must be matrices")
+        raise RuntimeError("input must be 2D matrices")
     return ivy.matmul(input, mat2, out=out)
 
 
