@@ -234,6 +234,59 @@ def test_torch_addmm(
     )
 
 
+# addmv
+@handle_cmd_line_args
+@given(
+    dtype_and_matrices=_get_dtype_input_and_mat_vec(with_input=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.addmv"
+    ),
+)
+def test_torch_addmv(
+    dtype_and_matrices,
+    beta,
+    alpha,
+    as_variable,
+    with_out,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, input, mat, vec = dtype_and_matrices
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="addmv",
+        rtol=1e-03,
+        input=np.asarray(input, dtype=dtype),
+        mat=np.asarray(mat, dtype=dtype),
+        vec=np.asarray(vec, dtype=dtype),
+        beta=beta,
+        alpha=alpha,
+        out=None,
+    )
+
+
 # bmm
 @handle_cmd_line_args
 @given(

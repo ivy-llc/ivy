@@ -19,6 +19,17 @@ def addmm(input, mat1, mat2, *, beta=1, alpha=1, out=None):
     return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
 
 
+def addmv(input, mat, vec, *, beta=1, alpha=1, out=None):
+    if len(ivy.shape(mat)) != 2 or len(ivy.shape(vec)) != 1:
+        raise RuntimeError("input must be 2D matrix and 1D vector")
+    ret = ivy.matmul(mat, vec, out=out)
+    ret = ivy.multiply(alpha, ret, out=out)
+    return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
+
+
+addmv.unsupported_dtypes = ("float16",)
+
+
 def bmm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 3 or len(ivy.shape(mat2)) != 3:
         raise RuntimeError("input must be 3D matrices")
