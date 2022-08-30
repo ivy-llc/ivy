@@ -675,7 +675,8 @@ def test_tensorflow_sub(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="sub",
+        fn_tree="raw_ops.sub",
         x=np.asarray(x[0], dtype=dtype[0]),
         y=np.asarray(x[1], dtype=dtype[1]),
     )
+
