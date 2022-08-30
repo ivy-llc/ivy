@@ -68,6 +68,7 @@ def arange(
 
 
 arange.support_native_out = True
+arange.unsupported_dtypes = ("float16",)
 
 
 def asarray(
