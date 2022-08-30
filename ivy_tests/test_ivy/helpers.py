@@ -10,6 +10,7 @@ import inspect
 import pytest
 import numpy as np
 import math
+import gc
 from typing import Union, List
 from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
@@ -341,6 +342,7 @@ def var_fn(x, *, dtype=None, device=None):
 def get_dtypes(draw, kind, index=0, full=False, none=False):
     """
     Draws valid dtypes based on the backend set on the stack
+
     Parameters
     ----------
     draw
@@ -357,7 +359,8 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
 
     Returns
     -------
-
+    ret
+        dtype string
     """
     type_dict = {
         "valid": ivy.valid_dtypes,
@@ -3137,6 +3140,7 @@ def handle_cmd_line_args(test_fn):
     @given(data=st.data())
     @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
+        gc.collect()
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":
