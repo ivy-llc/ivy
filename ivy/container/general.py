@@ -150,6 +150,115 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def static_inplace_update(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.inplace_update. This method
+        simply wraps the function, and so the docstring for ivy.inplace_update
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container to be updated inplace
+        val
+            value to update the input container with
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the vector norm downscaled to the max norm if needed.
+
+        """
+        # inplace update the leaves
+        cont = x
+        cont = ContainerBase.multi_map_in_static_method(
+            "inplace_update",
+            cont,
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+        # inplace update the container
+        x.cont_inplace_update(cont)
+        return x
+
+    def inplace_update(
+        self: ivy.Container,
+        val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.inplace_update. This method
+        simply wraps the function, and so the docstring for ivy.inplace_update
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container to be updated inplace
+        val
+            value to update the input container with
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the vector norm downscaled to the max norm if needed.
+
+        """
+        return self.static_inplace_update(
+            self,
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_inplace_decrement(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -992,6 +1101,213 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_has_nans(
             self, include_infs, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_scatter_nd(
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        reduction: str = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.scatter_nd. This method simply wraps
+        the function, and so the docstring for ivy.scatter_nd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        indices
+            Index array or container.
+        updates
+            values to update input tensor with
+        shape
+            The shape of the result. Default is None, in which case tensor argument 
+            must be provided.
+        tensor
+            The tensor in which to scatter the results, default is None, 
+            in which case the shape arg is used to scatter into a zeros array.
+        reduction
+            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            or 'replace'
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ref
+            New container of given shape, with the values updated at the indices.
+
+        Examples
+        --------
+        scatter into an empty array
+        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+                                    b=ivy.array([[2],[3],[4]]))
+        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+                                    b=ivy.array([20, 30, 40]))
+        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+        >> shape = ivy.Container(a=ivy.array([10]),
+                                b = ivy.array([10]))
+        z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
+        >> print(z)
+        {
+            a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
+            b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
+        }
+        
+        scatter into an array
+        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+                  b=ivy.array([[2],[3],[4]]))
+        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+                        b=ivy.array([20, 30, 40]))
+        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+
+        z = ivy.Container.static_scatter_nd(indices, updates, 
+                                            tensor=arr, reduction='replace')
+        >> print(z)
+        {
+            a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
+            b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
+        }
+
+        
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "scatter_nd",
+            indices,
+            updates,
+            shape, 
+            tensor,           
+            reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+    
+    def scatter_nd(
+        self: ivy.Container,
+        updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        reduction: str = "sum",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.scatter_nd.
+        This method simply wraps the function, and so the docstring
+        for ivy.scatter_nd also applies to this method
+        with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Index array or container.
+        updates
+            values to update input tensor with
+        shape
+            The shape of the result. Default is None, in which case tensor argument
+            must be provided.
+        tensor
+            The tensor in which to scatter the results, default is None, 
+            in which case the shape arg is used to scatter into a zeros array.
+        reduction
+            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            or 'replace'
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            ``x`` if None.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New container of given shape, with the values updated at the indices.
+
+        Examples
+        --------
+        scatter into an array
+        >> indices = ivy.Container(a=ivy.array([[3],[1],[2]]),
+                                    b=ivy.array([[4],[1],[3]]))
+        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+                                    b=ivy.array([20, 30, 40]))
+        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+                                b=ivy.array([11, 22, 33, 44, 55]))
+        >> z = indices.scatter_nd(updates, tensor=arr, reduction='replace')
+        >> print(z)
+        {
+            a: ivy.array([1, 60, 70, 50, 5]),
+            b: ivy.array([11, 30, 33, 40, 20])
+        }
+
+        scatter into an empty array
+        >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
+                                    b=ivy.array([[2],[3],[4]]))
+        >> updates = ivy.Container(a=ivy.array([50, 60, 70]),
+                                    b=ivy.array([20, 30, 40]))
+        >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+        >> shape = ivy.Container(a=ivy.array([10]),
+                                b = ivy.array([10]))
+        z = indices.scatter_nd(updates, shape=shape)
+        >> print(z)
+        {
+            a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
+            b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
+        }
+        """
+        return self.static_scatter_nd(
+            self, 
+            updates, 
+            shape, 
+            tensor, 
+            reduction, 
+            key_chains, 
+            to_apply, 
+            prune_unapplied, 
+            map_sequences, 
+            out=out
         )
 
     @staticmethod

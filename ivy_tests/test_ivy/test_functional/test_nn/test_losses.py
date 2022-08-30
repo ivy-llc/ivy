@@ -3,7 +3,6 @@ import numpy as np
 from hypothesis import given
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -12,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -21,7 +20,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=1.0013580322265625e-05,
         max_value=1,
         allow_inf=False,
@@ -36,7 +35,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
 )
 def test_cross_entropy(
-    *,
     dtype_and_true,
     dtype_and_pred,
     axis,
@@ -74,7 +72,7 @@ def test_cross_entropy(
 @handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -83,7 +81,7 @@ def test_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=1.0013580322265625e-05,
         max_value=1,
         allow_inf=False,
@@ -97,7 +95,6 @@ def test_cross_entropy(
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
 )
 def test_binary_cross_entropy(
-    *,
     dtype_and_true,
     dtype_and_pred,
     epsilon,
@@ -132,7 +129,7 @@ def test_binary_cross_entropy(
 @handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_value=0,
         max_value=2,
         allow_inf=False,
@@ -141,7 +138,7 @@ def test_binary_cross_entropy(
         min_dim_size=3,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=1.0013580322265625e-05,
         max_value=1,
         allow_inf=False,
@@ -156,7 +153,6 @@ def test_binary_cross_entropy(
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
 )
 def test_sparse_cross_entropy(
-    *,
     dtype_and_true,
     dtype_and_pred,
     axis,
