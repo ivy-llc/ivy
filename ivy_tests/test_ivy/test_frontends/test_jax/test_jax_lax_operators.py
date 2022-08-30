@@ -1627,3 +1627,48 @@ def test_jax_lax_rev(
         operand=np.asarray(x, dtype=input_dtype),
         dimensions=(axis,),
     )
+
+
+@st.composite
+def _div_dtypes_and_xs(draw):
+    dtype, dividend, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric", full=True), ret_shape=True
+        )
+    )
+    divisor = draw(
+        helpers.array_values(dtype=dtype, min_value=1, max_value=20, shape=shape)
+        | helpers.array_values(dtype=dtype, min_value=-20, max_value=-1, shape=shape)
+    )
+    return [dtype, dtype], [dividend, divisor]
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=_div_dtypes_and_xs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.div"
+    ),
+)
+def test_jax_lax_div(
+    dtypes_and_xs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.div",
+        x=xs[0],
+        y=xs[1],
+    )
