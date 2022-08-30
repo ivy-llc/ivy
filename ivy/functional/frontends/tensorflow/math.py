@@ -240,4 +240,37 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
+def confusion_matrix(
+    labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
+):
+    labels = ivy.astype(ivy.squeeze(ivy.array(labels)), ivy.int64, copy=False)
+    predictions = ivy.astype(ivy.squeeze(ivy.array(predictions)), ivy.int64, copy=False)
+    # Sanity check (potential optimization)
+    for _ in ivy.greater_equal(labels, 0):
+        assert _, "`labels` contains negative values"
+    for _ in ivy.greater_equal(predictions, 0):
+        assert _, "`predictions` contains negative values"
+
+    if num_classes is None:
+        num_classes = max(ivy.max(labels), ivy.max(predictions)) + 1
+    else:
+        num_classes_int64 = ivy.astype(ivy.array(num_classes), ivy.int64, copy=False)
+        for _ in ivy.less(labels, num_classes_int64):
+            assert _, "`labels` out of bound"
+        for _ in ivy.less(predictions, num_classes_int64):
+            assert _, "`predictions` out of bound"
+
+    if weights is not None:
+        weights = ivy.array(weights)
+        assert ivy.shape(predictions) == ivy.shape(
+            weights
+        ), "`weights` shape does not match `predictions`"
+        weights = ivy.astype(weights, dtype, copy=False)
+
+    shape = ivy.stack([num_classes, num_classes])
+    indices = ivy.stack([labels, predictions], axis=1)
+    values = ivy.ones_like(predictions, dtype=dtype) if weights is None else weights
+    return ivy.scatter_nd(indices=indices, updates=values, shape=shape)
+
+
 # TODO: Ibeta for Future Release
