@@ -124,6 +124,23 @@ def inplace_arrays_supported():
 
 inplace_variables_supported = lambda: False
 
+def inplace_decrement(
+    x : Union[ivy.Array, jax.numpy.array], val : Union[ivy.Array, jax.numpy.array]
+) -> ivy.Array:
+    
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    if ivy.is_variable(x_native):
+        x_native.assign(x_native - val_native)
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+    else:
+        if ivy.is_ivy_array(x):
+            x.data -= val_native
+        else:
+            x = ivy.Array(val_native)
+    return x
 
 def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
     default_dtype = ivy.infer_default_dtype(x_dtype)
@@ -342,15 +359,6 @@ def indices_where(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     where_x = jnp.where(x)
     ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
     return ret
-
-
-def inplace_decrement(x, val):
-    (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_ivy_array(x):
-        x.data -= val_native
-    else:
-        x = ivy.Array(val_native)
-    return x
 
 
 def inplace_increment(
