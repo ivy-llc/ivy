@@ -251,18 +251,96 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
 @to_native_arrays_and_back
 @handle_nestable
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
-    """Returns a tuple of two arrays, one being the unique elements of an input array x
-    and the other one the indices from the set of uniques elements that reconstruct x.
+    """Returns the unique elements of an input array ``x``, and the indices from the
+     set of unique elements that reconstruct ``x``.
+
+     .. admonition:: Data-dependent output shape
+        :class: important
+
+        The shapes of two of the output arrays for this function depend on the data
+        values in the input array; hence, array libraries which build computation graphs
+        (e.g., JAX, Dask, etc.) may find this function difficult to implement without
+        knowing array values. Accordingly, such libraries may choose to omit this
+        function. See :ref:`data-dependent-output-shapes` section for more details.
+
+     .. note::
+       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``).
+       For input arrays having floating-point data types, value-based equality implies
+       the following behavior.
+
+       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered
+           distinct.
+
+       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be
+           considered distinct, and the corresponding unique element will be
+           implementation-dependent (e.g., an implementation could choose to return
+           ``-0`` if ``-0`` occurs before ``+0``).
+
+       As signed zeros are not distinct, using ``inverse_indices`` to reconstruct the
+       input array is not guaranteed to return an array having the exact same values.
+
 
     Parameters
     ----------
     x
-        input array.
+        input array. If ``x`` has more than one dimension, the function must flatten
+        ``x`` and return the unique elements of the flattened array.
 
     Returns
     -------
     ret
-        tuple of two arrays (values, inverse_indices)
+
+        a namedtuple ``(values, inverse_indices)`` whose
+        - first element must have the field name ``values`` and must be an array
+          containing the unique elements of ``x``. The array must have the same data
+          type as ``x``.
+        - second element must have the field name ``inverse_indices`` and must be an
+          array containing the indices of ``values`` that reconstruct ``x``. The array
+          must have the same shape as ``x`` and must have the default array index data
+          type.
+
+        .. note::
+           The order of unique elements is not specified and may vary between
+           implementations.
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/
+    generated/signatures..set_functions.unique_inverse.html>`_
+    in the standard. The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+
+    Examples
+    --------
+    With :code: 'ivy.Array' input:
+
+    >>> x = ivy.array([4,5,3,2,4,1,3])
+    >>> y = ivy.unique_inverse(x)
+    >>> print(y)
+    unique_inverse(values=ivy.array([1, 2, 3, 4, 5]),
+    inverse_indices=ivy.array([3, 4, 2, 1, 3, 0, 2]))
+
+    With :code: 'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([0.5,0.3,0.8,0.2,1.2,2.4,0.3])
+    >>> y = ivy.ivy.unique_inverse(x)
+    >>> print(y)
+    unique_inverse(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
+    inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1., 4., 3. , 5. , 3. , 7.]), \
+                          b=ivy.array([3,2,6,3,7,4,9]))
+    >>> y = ivy.ivy.unique_inverse(x)
+    >>> print(y)
+    {
+        a: (list[2], <class ivy.array.array.Array> shape=[5]),
+        b: (list[2], <class ivy.array.array.Array> shape=[6])
+    }
+
+
 
     """
     return ivy.current_backend(x).unique_inverse(x)
@@ -377,10 +455,11 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`. This docstring is an extension of
     the `docstring <https://data-apis.org/array-api/latest/API_specification/
-    generated/signatures.set_functions.unique_counts.html>` in the standard. 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
+    generated/signatures.set_functions.unique_counts.html>` in the standard.
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
 
     Examples
     --------
