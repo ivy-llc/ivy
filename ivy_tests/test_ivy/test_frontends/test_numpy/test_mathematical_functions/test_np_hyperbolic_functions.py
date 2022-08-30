@@ -144,13 +144,8 @@ def test_numpy_arcsinh(
     fw,
 ):
     (input_dtype, x), where = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
-    np_frontend_helpers.test_frontend_function(
+    
+    helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
