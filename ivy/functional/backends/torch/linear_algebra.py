@@ -146,7 +146,7 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, atol=rtol, out=out)
     ret = torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
@@ -317,9 +317,8 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).type(dtype)
+    x1, x2 = x1.to(torch.float32), x2.to(torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
 
 
 vecdot.unsupported_dtypes = (

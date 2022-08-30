@@ -184,6 +184,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
@@ -214,8 +215,7 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x = jnp.asarray(x, dtype=promoted_type)
-    ret = jnp.clip(x, x_min, x_max)
-    return ret
+    return jnp.clip(x, x_min, x_max)
 
 
 def constant_pad(
