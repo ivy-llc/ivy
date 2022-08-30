@@ -1,0 +1,34 @@
+name: test-modified-docstrings
+on: [push, pull_request]
+jobs:
+  run-modified-docstring-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 0
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+
+      - name: Get Git Diff Filelist for PR
+        if: github.event_name == 'pull_request'
+        run: |
+          cd ivy
+          git --no-pager diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }} --name-only --diff-filter=ACMRT --output name-changed
+          python3 dump_diff.py ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+
+      - name: Get Git Diff Filelist for Push
+        if: github.event_name == 'push'
+        run: |
+          cd ivy
+          git --no-pager diff ${{ github.event.before }} ${{ github.sha }} --name-only --diff-filter=ACMRT --output name-changed
+          python3 dump_diff.py ${{ github.event.before }} ${{ github.sha }}
+
+      - name: Run Docstring Tests
+        run: |
+          cd ivy
+          docker run --rm -i -v "$(pwd)":/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_modified_docstrings.py -s
