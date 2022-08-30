@@ -338,11 +338,13 @@ def test_std(
             ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
         ]
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=helpers.get_dtypes("float"),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]

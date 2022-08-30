@@ -135,7 +135,6 @@ def matrix_power(
     return torch.linalg.matrix_power(x, n, out=out)
 
 
-matrix_power.unsupported_dtypes = ("float16",)
 matrix_power.support_native_out = True
 
 
@@ -146,11 +145,12 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, atol=rtol, out=out)
     ret = torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
     return ret
 
 
+matrix_rank.unsupported_dtypes = ("float16",)
 matrix_rank.support_native_out = True
 
 
@@ -307,9 +307,6 @@ def trace(
     return ret
 
 
-trace.unsupported_dtypes = ("float16",)
-
-
 def vecdot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -317,20 +314,8 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).type(dtype)
-
-
-vecdot.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "float16",
-    "float64",
-)
+    x1, x2 = x1.to(torch.float32), x2.to(torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
 
 
 vecdot.support_native_out = True
@@ -345,7 +330,6 @@ def vector_norm(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
-
     if py_normalized_vector.shape == ():
         ret = torch.unsqueeze(py_normalized_vector, 0)
     else:
@@ -381,4 +365,3 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
-vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "int8")
