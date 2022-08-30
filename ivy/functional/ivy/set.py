@@ -251,7 +251,6 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
 @to_native_arrays_and_back
 @handle_nestable
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
-
     """Returns the unique elements of an input array ``x``, and the indices from the
      set of unique elements that reconstruct ``x``.
 
