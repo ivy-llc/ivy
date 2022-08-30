@@ -263,3 +263,13 @@ def rev(operand, dimensions):
 
 def div(x, y):
     return ivy.astype(ivy.divide(x, y), x.dtype)
+
+
+def rsqrt(x):
+    return ivy.reciprocal(ivy.sqrt(x))
+
+
+rsqrt.unsupported_dtypes = {
+    "jax": ("int64", "int32", "int16", "uint64", "uint32", "uint16"),
+    "torch": ("float16",),
+}
