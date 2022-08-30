@@ -418,7 +418,7 @@ def test_tensorflow_conv1d_transpose(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy.valid_dtypes).intersection(set(ivy_tf.valid_dtypes))
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
     ),
     approximate=st.booleans(),
@@ -444,6 +444,6 @@ def test_gelu(
         fw=fw,
         frontend="tensorflow",
         fn_tree="nn.gelu",
-        feature=np.asarray(x, dtype=input_dtype),
+        features=np.asarray(x, dtype=input_dtype),
         approximate=approximate,
     )
