@@ -179,7 +179,13 @@ def repeat(
     return ret
 
 
-def tile(x: np.ndarray, /, reps, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def tile(
+    x: np.ndarray,
+    /,
+    reps: Sequence[int],
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     ret = np.tile(x, reps)
     return ret
 
