@@ -23,6 +23,7 @@ inf = float("inf")
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     upper: bool = False,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -153,6 +154,7 @@ def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -231,7 +233,7 @@ def cross(
 @handle_out_argument
 @handle_nestable
 def det(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
@@ -320,6 +322,7 @@ def diagonal(
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -485,14 +488,14 @@ def diagonal(
         b: ivy.array([4, 9, 6])
     }
     """
-    return current_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2, out=out)
+    return current_backend(x).diagonal(x, offset, axis1, axis2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -539,7 +542,7 @@ def eigh(
 @handle_out_argument
 @handle_nestable
 def eigvalsh(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
@@ -567,7 +570,7 @@ def eigvalsh(
 @handle_out_argument
 @handle_nestable
 def inv(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -612,6 +615,7 @@ def inv(
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -743,6 +747,7 @@ def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -778,7 +783,7 @@ def matrix_norm(
 @handle_out_argument
 @handle_nestable
 def matrix_power(
-    x: Union[ivy.Array, ivy.NativeArray], n: int, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
@@ -792,6 +797,7 @@ def matrix_power(
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

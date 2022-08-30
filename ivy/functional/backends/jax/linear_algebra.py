@@ -14,7 +14,7 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def cholesky(
-    x: JaxArray, upper: bool = False, *, out: Optional[JaxArray] = None
+    x: JaxArray, upper: bool = False, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -28,7 +28,7 @@ cholesky.unsupported_dtypes = ("float16",)
 
 
 def cross(
-    x1: JaxArray, x2: JaxArray, axis: int = -1, *, out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, axis: int = -1, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.cross(a=x1, b=x2, axis=axis)
     return ret
@@ -47,6 +47,7 @@ def diagonal(
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
+    /,
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -70,7 +71,7 @@ def eigh(x: JaxArray) -> JaxArray:
 eigh.unsupported_dtypes = ("float16",)
 
 
-def eigvalsh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.linalg.eigvalsh(x)
     return ret
 
@@ -78,7 +79,7 @@ def eigvalsh(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
-def inv(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         ret = x
     else:
@@ -89,7 +90,7 @@ def inv(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
 inv.unsupported_dtypes = ("float16",)
 
 
-def matmul(x1: JaxArray, x2: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def matmul(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jnp.matmul(x1, x2)
     return ret
 
@@ -98,6 +99,7 @@ def matrix_norm(
     x: JaxArray,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
+    /,
     *,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -114,7 +116,7 @@ def matrix_norm(
 matrix_norm.unsupported_dtypes = ("float16",)
 
 
-def matrix_power(x: JaxArray, n: int, *, out: Optional[JaxArray] = None) -> JaxArray:
+def matrix_power(x: JaxArray, n: int, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.matrix_power(x, n)
 
 
@@ -261,8 +263,13 @@ trace.unsupported_dtypes = ("float16",)
 def vecdot(
     x1: JaxArray, x2: JaxArray, axis: int = -1, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    x1 = jnp.array(jnp.array(x1).astype(jnp.float32))
-    x2 = jnp.array(jnp.array(x2).astype(jnp.float32))
+    # x1 = jnp.array(x1)
+    # dtype = jnp.dtype(x1)
+    # x1 = jnp.array(jnp.array(x1).astype(jnp.float32))
+    # x2 = jnp.array(jnp.array(x2).astype(jnp.float32))
+    # ret = jnp.tensordot(x1, x2, (axis, axis))
+    # ret = jnp.array(jnp.array(ret).astype(dtype))
+    # return ret
     ret = jnp.tensordot(x1, x2, (axis, axis))
     return ret
 
