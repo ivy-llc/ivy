@@ -1368,6 +1368,51 @@
 <span class="sd">    -------</span>
 <span class="sd">    retwaitin</span>
 <span class="sd">        The tiled output array.</span>
+<span class="sd">    </span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2,3,4])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.tile(x,(3))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([1,2,3,4,1,2,3,4,1,2,3,4])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2,3], \</span>
+<span class="sd">                       [4,5,6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.tile(x, (2,3))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[1,2,3,1,2,3,1,2,3],</span>
+<span class="sd">               [4,5,6,4,5,6,4,5,6],</span>
+<span class="sd">               [1,2,3,1,2,3,1,2,3],</span>
+<span class="sd">               [4,5,6,4,5,6,4,5,6]])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[0], \</span>
+<span class="sd">                               [1]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.tile(x,(2,2,3))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[[0,0,0],</span>
+<span class="sd">                [1,1,1],</span>
+<span class="sd">                [0,0,0],</span>
+<span class="sd">                [1,1,1]],</span>
+<span class="sd">               [[0,0,0],</span>
+<span class="sd">                [1,1,1],</span>
+<span class="sd">                [0,0,0],</span>
+<span class="sd">                [1,1,1]]])</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container( a = ivy.array([0,1,2]), b = ivy.array([[3],[4]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.tile(x, (1,2))</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[0,1,2,0,1,2]]),</span>
+<span class="sd">        b: ivy.array([[3,3],</span>
+<span class="sd">                      [4,4]])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>

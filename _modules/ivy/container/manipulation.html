@@ -1142,6 +1142,21 @@
 <span class="sd">        ivy.Container static method variant of ivy.tile. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.tile also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_tile((2,3))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0,1,0,1,0,1],</span>
+<span class="sd">                          [2,3,2,3,2,3],</span>
+<span class="sd">                          [0,1,0,1,0,1],</span>
+<span class="sd">                          [2,3,2,3,2,3]]),</span>
+<span class="sd">            b: ivy.array([[4,5,4,5,4,5],</span>
+<span class="sd">                          [4,5,4,5,4,5]])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;tile&quot;</span><span class="p">,</span>
@@ -1169,6 +1184,17 @@
 <span class="sd">        ivy.Container instance method variant of ivy.tile. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.tile also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.tile((2,3))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: (&lt;classivy.array.array.Array&gt;shape=[4,6]),</span>
+<span class="sd">            b: (&lt;classivy.array.array.Array&gt;shape=[2,6])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_tile</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
