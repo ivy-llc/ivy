@@ -250,7 +250,7 @@ def test_binary_crossentropy(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="keras.metrics.BinaryAccuracy",
+        fn_tree="keras.metrics.binary_crossentropy",
         y_true=y_true,
         y_pred=y_pred, 
         from_logits=from_logits,
