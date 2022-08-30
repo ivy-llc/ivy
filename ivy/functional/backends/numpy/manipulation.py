@@ -143,7 +143,6 @@ def split(
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
-    out: Optional[np.ndarray] = None,
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -219,6 +218,7 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    assert np.all(np.less(x_min, x_max)), "Min value must be less than max."
     ret = np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
     return ret
 

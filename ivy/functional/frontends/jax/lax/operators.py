@@ -245,3 +245,21 @@ pow.unsupported_dtypes = ("int64", "int32", "int16", "uint64", "uint32", "uint16
 
 def clamp(min, x, max):
     return ivy.clip(x, min, max)
+
+
+clamp.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def log(x):
+    return ivy.log(x)
+
+
+log.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def rev(operand, dimensions):
+    return ivy.flip(operand, axis=dimensions)
+
+
+def div(x, y):
+    return ivy.astype(ivy.divide(x, y), x.dtype)
