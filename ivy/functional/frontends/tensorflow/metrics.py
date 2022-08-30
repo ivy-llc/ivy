@@ -1,5 +1,6 @@
 import ivy
 
+
 def sparse_categorical_accuracy(y_true, y_pred):
     return ivy.cast(ivy.equal(ivy.max(y_true, axis=-1),
                               ivy.cast(ivy.argmax(y_pred, axis=-1), ivy.default_float_dtype(as_native=True))),
