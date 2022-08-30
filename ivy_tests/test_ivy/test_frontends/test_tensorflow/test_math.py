@@ -912,3 +912,35 @@ def test_tensorflow_count_nonzero(
         keepdims=keepdims,
         dtype=input_dtype,
     )
+
+
+# confusion_matrix
+@handle_cmd_line_args
+@given(
+    predictions=helpers.array_values(
+        dtype=ivy.int32, shape=(3,), min_value=0, max_value=3
+    ),
+    labels=helpers.array_values(dtype=ivy.int32, shape=(3,), min_value=0, max_value=3),
+    num_classes=st.integers(min_value=4, max_value=10),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.confusion_matrix"
+    ),
+    native_array=st.booleans(),
+)
+def test_confusion_matrix(
+    labels, predictions, num_classes, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.int32,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.confusion_matrix",
+        labels=labels,
+        predictions=predictions,
+        num_classes=num_classes,
+    )
