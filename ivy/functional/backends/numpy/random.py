@@ -26,7 +26,6 @@ def random_uniform(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     shape = _check_bounds_and_get_shape(low, high, shape)
-    print(shape)
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 
 
