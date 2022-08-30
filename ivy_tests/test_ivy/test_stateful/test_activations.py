@@ -49,7 +49,7 @@ def test_gelu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, min_num_dims=2, min_dim_size=2
+        available_dtypes=ivy_np.valid_numeric_dtypes,
     ),
     num_positional_args_init=helpers.num_positional_args(fn_name="GEGLU.__init__"),
     num_positional_args_method=helpers.num_positional_args(fn_name="GEGLU._forward"),

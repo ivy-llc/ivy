@@ -49,5 +49,4 @@ class GEGLU(Module):
             The outputs following the GEGLU activation *[batch_shape, d]*
 
         """
-        x, gates = ivy.split(inputs, num_or_size_splits=2, axis=-1)
-        return ivy.gelu(gates) * x
+        return ivy.gelu(inputs) * inputs
