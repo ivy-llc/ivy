@@ -28,3 +28,9 @@ def outer(input, vec2, *, out=None):
 
 
 outer.unsupported_dtypes = {"numpy": ("float16", "int8")}
+
+
+def dot(input, other, *, out=None):
+    return ivy.vecdot(input, other, out=out)
+
+dot.unsupported_dtypes = {"numpy": ("float16", "int8")}
