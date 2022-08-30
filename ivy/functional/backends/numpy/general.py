@@ -222,7 +222,7 @@ def scatter_nd(
 ) -> np.ndarray:
     target = out
     target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
+    if ivy.exists(shape) and target_given:
         assert ivy.Shape(target.shape) == ivy.Shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
@@ -239,16 +239,18 @@ def scatter_nd(
         target[indices_tuple] = updates
     elif reduction == "min":
         if not target_given:
-            target = np.ones(shape, dtype=updates.dtype) * 1e12
+            target = np.ones(shape) * 1e12
         np.minimum.at(target, indices_tuple, updates)
         if not target_given:
-            target = np.where(target == 1e12, 0.0, target)
+            target = np.where(target == 1e12, 0, target)
+            target = np.asarray(target, dtype=updates.dtype)
     elif reduction == "max":
         if not target_given:
             target = np.ones(shape, dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices_tuple, updates)
         if not target_given:
             target = np.where(target == -1e12, 0.0, target)
+            target = np.asarray(target, dtype=updates.dtype)            
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(

@@ -238,7 +238,7 @@ def scatter_flat(
             )
         else:
             res = tf.tensor_scatter_nd_update(
-                tf.zeros([size]), tf.expand_dims(indices, -1), updates
+                tf.zeros([size], dtype=updates.dtype), tf.expand_dims(indices, -1), updates
             )
     else:
         raise Exception(
@@ -342,16 +342,18 @@ def scatter_nd(
             res = tf.scatter_nd(indices, updates, shape)
     elif reduction == "min":
         if not target_given:
-            target = tf.fill(shape, tf.cast(1e12, dtype))
+            max_value = tf.cast(min(tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max, 1e12), updates.dtype)
+            target = tf.fill(shape, max_value)
         res = tf.tensor_scatter_nd_min(target, indices, updates)
         if not target_given:
-            res = tf.where(res == tf.cast(1e12, dtype), 0, res)
+            res = tf.where(res == max_value, 0, res)
     elif reduction == "max":
         if not target_given:
-            target = tf.fill(shape, tf.cast(-1e12, dtype))
+            min_value = tf.cast(max(tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min, -1e12), updates.dtype)
+            target = tf.fill(shape, min_value)
         res = tf.tensor_scatter_nd_max(target, indices, updates)
         if not target_given:
-            res = tf.where(res == tf.cast(-1e12, dtype), 0, res)
+            res = tf.where(res == min_value, 0, res)
     elif reduction == "replace":
         if target_given:
             res = tf.tensor_scatter_nd_update(out, indices, updates)
@@ -427,8 +429,12 @@ def indices_where(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.where(x)
-
+    where_x = tf.experimental.numpy.where(x)
+    if len(where_x) == 1:
+        return tf.expand_dims(where_x[0], -1)
+    res = tf.experimental.numpy.concatenate([tf.expand_dims(item, -1) for item in where_x], -1)
+    return res
+    
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
