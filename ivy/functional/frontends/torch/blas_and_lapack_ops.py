@@ -55,6 +55,10 @@ def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
 
 
+def matrix_power(input, n, *, out=None):
+    return ivy.matrix_power(input, n, out=out)
+
+
 def mm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 2 or len(ivy.shape(mat2)) != 2:
         raise RuntimeError("input must be 2D matrices")
