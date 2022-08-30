@@ -101,7 +101,7 @@ def test_numpy_amin(
         fw=fw,
         frontend="numpy",
         fn_tree="amin",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         initial=initial,
