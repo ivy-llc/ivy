@@ -220,7 +220,7 @@ def test_mean_absolute_error(
         max_value=10,
     ),
     from_logits=st.booleans(),
-    label_smoothing=helpers.floats(min_value=0., max_value=1.)
+    label_smoothing=helpers.floats(min_value=0., max_value=1.),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.binary_crossentropy"
     ),
