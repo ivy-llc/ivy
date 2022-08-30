@@ -683,6 +683,7 @@ def test_tensorflow_Floor(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
         ),
         num_arrays=2,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.FloorDiv"
