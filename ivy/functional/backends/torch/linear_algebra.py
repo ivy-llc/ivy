@@ -317,7 +317,6 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
     x1, x2 = x1.to(torch.float32), x2.to(torch.float32)
     return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
 
