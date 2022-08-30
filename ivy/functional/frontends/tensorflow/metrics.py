@@ -33,3 +33,11 @@ mean_absolute_error.unsupported_dtypes = {
     "numpy": ("int8", "float64"),
     "torch": ("int8", "float64"),
 }
+
+
+def mean_squared_logarithmic_error(y_true, y_pred):
+    y_pred = ivy.asarray(y_pred)
+    y_true = ivy.astype(y_true, y_pred.dtype)
+    first_log = ivy.log(ivy.maximum(y_pred, 1e-7) + 1.0)
+    second_log = ivy.log(ivy.maximum(y_true, 1e-7) + 1.0)
+    return ivy.mean(ivy.square(ivy.subtract(first_log, second_log)), axis=-1)
