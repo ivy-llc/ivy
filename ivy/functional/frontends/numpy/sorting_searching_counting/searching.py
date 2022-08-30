@@ -29,5 +29,5 @@ def nonzero(a):
     return ivy.nonzero(a)
 
 
-def argmax(a, axis=None, out=None, *, keepdims=False):
-    return ivy.argmax(a, axis=axis, out=out, keepdims=keepdims)
+def argmax(x, axis=None, out=None, *, keepdims=False):
+    return ivy.argmax(x, axis=axis, out=out, keepdims=keepdims)
