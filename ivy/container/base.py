@@ -19,7 +19,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union
+from typing import Union, Tuple
 from builtins import set
 
 # local
@@ -165,7 +165,7 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=None,
         out=None,
         **kwargs,
-    ) -> ivy.Container:
+    ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
         arg_cont_idxs = ivy.nested_indices_where(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
