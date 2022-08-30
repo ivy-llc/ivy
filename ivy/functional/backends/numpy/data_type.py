@@ -1,9 +1,10 @@
 # global
 import numpy as np
-from typing import Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 
 ivy_dtype_dict = {
@@ -15,7 +16,7 @@ ivy_dtype_dict = {
     np.dtype("uint16"): "uint16",
     np.dtype("uint32"): "uint32",
     np.dtype("uint64"): "uint64",
-    "bfloat16": "bfloat16",
+    np.dtype("bfloat16"): "bfloat16",
     np.dtype("float16"): "float16",
     np.dtype("float32"): "float32",
     np.dtype("float64"): "float64",
@@ -82,7 +83,14 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: np.ndarray, dtype: np.dtype, *, copy: bool = True) -> np.ndarray:
+def astype(
+    x: np.ndarray,
+    dtype: np.dtype,
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> np.ndarray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
@@ -119,12 +127,14 @@ def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
     return np.can_cast(from_, to)
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
     if isinstance(type, np.ndarray):
         type = type.dtype
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[np.dtype, str, np.ndarray]) -> np.iinfo:
     if isinstance(type, np.ndarray):
         type = type.dtype

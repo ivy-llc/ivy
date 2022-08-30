@@ -100,8 +100,67 @@ class ArrayWithGeneral(abc.ABC):
         ret
             List of arrays, unpacked along specified dimensions.
 
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=0)
+        >>> print(y)
+        [ivy.array([1, 2]), ivy.array([3, 4])]
+
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=1, keepdims=True)
+        >>> print(y)
+        [ivy.array([[1],
+                [3]]), ivy.array([[2],
+                [4]])]
         """
         return ivy.unstack(self._data, axis, keepdims)
+
+    def cumprod(
+        self: ivy.Array,
+        axis: int = 0,
+        exclusive: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cumprod. This method simply wraps the
+        function, and so the docstring for ivy.cumprod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        axis
+            int, axis along which to take the cumulative product. Default is 0.
+        exclusive
+            optional bool, whether to exclude the first value of the input array.
+            Default is False.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Input array with cumulatively multiplied elements along the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 4, 5])
+        >>> y = x.cumprod()
+        >>> print(y)
+        ivy.array([  1,   2,   6,  24, 120])
+
+        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
+        >>> y = ivy.zeros((3, 2))
+        >>> x.cumprod(axis=1, exclusive=True, out=y)
+        >>> print(y)
+        ivy.array([[ 1.,  2.],
+                   [ 1.,  5.],
+                   [ 1., 11.]])
+        """
+        return ivy.cumprod(self._data, axis, exclusive, out=out)
 
     def gather(
         self: ivy.Array,
@@ -134,6 +193,63 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.gather(self._data, indices, axis, out=out)
 
+    def scatter_nd(
+        self: ivy.Array, 
+        updates: Union[ivy.Array, ivy.NativeArray],
+        shape: Optional[ivy.Array] = None,
+        tensor: Union[ivy.Array, ivy.NativeArray] = None,
+        reduction: str = "sum",
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Scatter updates into an array according to indices.
+
+        Parameters
+        ----------
+        self
+            The tensor in which to scatter the results
+        indices
+            Tensor of indices
+        updates
+            values to update input tensor with
+        shape
+            The shape of the result. Default is None, in which case tensor argument must 
+            be provided.
+        reduction
+            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            or 'replace'
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            New array of given shape, with the values scattered at the indices.
+        
+        Examples
+        --------
+        scatter values into an array
+
+        >> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
+        >> indices = ivy.array([[4], [3], [1], [7]])
+        >> updates = ivy.array([9, 10, 11, 12])
+        >> scatter = indices.scatter_nd(updates, tensor=arr, reduction='replace')
+        >> print(scatter)
+        ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
+
+        scatter values into an empty array
+
+        >> shape = ivy.array([2, 5])
+        >> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
+        >> updates = ivy.array([25, 40, 21, 22])
+        >> scatter = indices.scatter_nd(updates, shape=shape)
+        >> print(scatter)
+        ivy.array([[ 0,  0, 22, 40,  0],
+                    [ 0, 21,  0,  0, 25]])
+        """
+        return ivy.scatter_nd(self, updates, shape, reduction, tensor=tensor, out=out)
+    
     def gather_nd(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
@@ -172,7 +288,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
-
+        
     def einops_rearrange(
         self: ivy.Array,
         pattern: str,
@@ -326,6 +442,43 @@ class ArrayWithGeneral(abc.ABC):
             A list representation of the input array ``x``.
         """
         return ivy.to_list(self)
+
+    def inplace_decrement(
+        self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.inplace_decrement. This method simply
+        wraps the function, and so the docstring for ivy.inplace_decrement also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array to be decremented by the defined value.
+        val
+            The value of decrement.
+
+        Returns
+        -------
+        ret
+            The array following an in-place decrement.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
+        >>> y = x.inplace_decrement(1)
+        >>> print(y)
+        ivy.array([4.7, 3.3, 1.5, 0.9])
+
+        >>> x = ivy.asarray([4., 5., 6.])
+        >>> y = x.inplace_decrement(2.5)
+        >>> print(y)
+        ivy.array([1.5, 2.5, 3.5])
+
+        """
+        return ivy.inplace_decrement(self, val)
 
     def stable_divide(
         self,
