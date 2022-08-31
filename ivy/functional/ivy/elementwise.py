@@ -5210,13 +5210,13 @@ def tan(
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.zeros(3)
-    >>> ivy.tan(x,out=y)
+    >>> ivy.tan(x, out=y)
     >>> print(y)
     ivy.array([0.546, -0.842, -0.916])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],\
                         [-4.4, -5.5, -6.6]])
-    >>> ivy.tan(x,out=x)
+    >>> ivy.tan(x, out=x)
     >>> print(x)
     ivy.array([[1.96, -1.37, 0.16],
         [-3.1, 0.996, -0.328]])

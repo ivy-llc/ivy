@@ -70,6 +70,7 @@ def tan(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
+
 tan.unsupported_dtypes = {"torch": ("float16",)}
 
 
