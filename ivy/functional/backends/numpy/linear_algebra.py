@@ -28,7 +28,12 @@ cholesky.unsupported_dtypes = ("float16",)
 
 
 def cross(
-    x1: np.ndarray, x2: np.ndarray, /, *, axis: int = -1, out: Optional[np.ndarray] = None
+    x1: np.ndarray, 
+    x2: np.ndarray, 
+    /, 
+    *, 
+    axis: int = -1, 
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.cross(a=x1, b=x2, axis=axis)
     return ret
