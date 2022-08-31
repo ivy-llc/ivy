@@ -1,6 +1,7 @@
 # global
+import hypothesis
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -190,11 +191,17 @@ def test_torch_cumsum(
 
 
 @handle_cmd_line_args
-# @settings(verbosity=hypothesis.Verbosity.verbose)
+@settings(verbosity=hypothesis.Verbosity.verbose)
 @given(
-    row=st.integers(min_value=0, max_value=None),
-    col=st.integers(min_value=0, max_value=None),
-    offset=st.integers(),
+    row=st.integers(
+        min_value=0, max_value=10
+    ),  # These values are small due to a bug in ivy.array
+    col=st.integers(
+        min_value=0, max_value=10
+    ),  # For large values this is incredibly slow.
+    offset=st.integers(
+        min_value=-10, max_value=10
+    ),  # If this bug has been fixed, edit these to be larger.
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.triu_indices"
     ),
