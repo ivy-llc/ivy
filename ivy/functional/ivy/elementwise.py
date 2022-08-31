@@ -5009,7 +5009,6 @@ def sqrt(
     return ivy.current_backend(x).sqrt(x, out=out)
 
 
-@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -5032,7 +5031,7 @@ def round(
     Returns
     -------
     ret
-        an array containing the round of each element in ``x``.
+        an array containing each element rounded in ``x``.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -5046,10 +5045,10 @@ def round(
     -------------------
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([0.4, 4.7, 8.])
+    >>> x = ivy.array([0.4, 4.7, 8])
     >>> y = ivy.round(x)
     >>> print(y)
-    ivy.array([0., 5., 8.])
+    ivy.array([0., 5., 8])
 
     >>> x = ivy.array([1, 2.5, 4.03])
     >>> y = ivy.zeros(3)

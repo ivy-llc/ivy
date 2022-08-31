@@ -74,6 +74,15 @@ def Round(*, x, name="Round"):
     return ivy.round(x)
 
 
+Round.unsupported_dtypes = {"torch": ("float16",),
+                            "tensorflow":
+                                ("uint8",
+                                 "uint16",
+                                 "uint32",
+                                 "uint64",),
+                            }
+
+
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
 

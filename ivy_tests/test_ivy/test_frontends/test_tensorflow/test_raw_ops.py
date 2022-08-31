@@ -523,7 +523,7 @@ def test_tensorflow_Sqrt(
     )
 
 
-# Rsqrt
+# Round
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
