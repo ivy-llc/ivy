@@ -216,7 +216,7 @@ def test_torch_greater_equal(
         other=np.asarray(inputs[1], dtype=input_dtype[1]),
         out=None,
     )
-
+    
 
 # greater
 @handle_cmd_line_args
@@ -443,4 +443,52 @@ def test_torch_isneginf(
         frontend="torch",
         fn_tree="isneginf",
         input=np.asarray(input, dtype=input_dtype),
+    )
+    
+  
+# sort
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+        min_num_dims=1,
+        min_dim_size=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    descending=st.booleans(),
+    stable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.sort"
+    ),
+)
+def test_torch_sort(
+    dtype_input_axis,
+    descending,
+    stable,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=1,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="sort",
+        input=np.asarray(input, dtype=input_dtype),
+        dim=axis,
+        descending=descending,
+        stable=stable,
+        out=None,
     )
