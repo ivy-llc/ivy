@@ -56,6 +56,7 @@ Status
 
 👉To view the status of the tests at any given time, head on to -:
 
+* `Array Api <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md>`_
 * `Ivy Functional Core <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_core_dashboard.md>`_
 * `Ivy Functional NN <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_nn_dashboard.md>`_
 * `Ivy Stateful <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/stateful_dashboard.md>`_ 
