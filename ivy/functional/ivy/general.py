@@ -1469,7 +1469,7 @@ def fourier_encode(
     """
     x_in = x
     dim = x.shape[-1]
-    x = ivy.expand_dims(x, -1)
+    x = ivy.expand_dims(x, axis=-1)
     orig_x = x
     if linear:
         scales = ivy.linspace(1.0, max_freq / 2, num_bands, device=dev(x))
@@ -1500,7 +1500,7 @@ def fourier_encode(
         sin_x = ivy.reshape(sin_x, [-1, num_bands * dim])
         cos_x = ivy.reshape(cos_x, [-1, num_bands * dim])
     if concat:
-        return ivy.concat([orig_x, sin_x, cos_x], -1)
+        return ivy.concat([orig_x, sin_x, cos_x], axis=-1)
     return sin_x, cos_x
 
 
@@ -1741,6 +1741,52 @@ def default(
     ret
         x if x exists (is not None), else default.
 
+    Functional Examples
+    ------------------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    default_string
+
+    >>> x = ""
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: ivy.array([1, 2, 3])
+    >>> y = ivy.default(x, ivy.array([4, 5, 6]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True, rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
     """
     with_callable = catch_exceptions or with_callable
     if rev:
@@ -1880,7 +1926,9 @@ def arg_names(receiver):
     return list(inspect.signature(receiver).parameters.keys())
 
 
-def match_kwargs(kwargs, *receivers, allow_duplicates=False):
+def match_kwargs(
+    kwargs: Dict, *receivers: Iterable[Callable], allow_duplicates: bool = False
+) -> Union[List[Dict], Dict]:
     """Match keyword arguments to either class or function receivers.
 
     Parameters
@@ -1897,6 +1945,20 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     -------
     ret
         Sequence of keyword arguments split as best as possible.
+
+    Examples
+    --------
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
+
+    >>> o = ivy.zeros(3, dtype=int)
+    >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
+    >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
+    >>> print(x)
+    [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
     split_kwargs = list()
@@ -2317,7 +2379,22 @@ def num_arrays_in_memory():
 
 
 def print_all_arrays_in_memory():
-    """Prints all arrays which are currently alive."""
+    """
+    Gets all the native Ivy arrays which are currently alive(in the garbage collector)
+    from get_all_arrays_in_memory() function and prints them to the console.
+
+    Parameters
+    ----------
+    None
+
+    Output
+    ------
+    Type and shape of all the Ivy native arrays which are currently alive.
+
+    Returns
+    -------
+    None
+    """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
@@ -2664,6 +2741,7 @@ def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
@@ -2674,6 +2752,21 @@ def cumsum(
         Input array.
     axis
         int, Axis along which the cumulative sum is computed. By default 0.
+    dtype
+        data type of the returned array. If None,
+        if the default data type corresponding to the data type “kind” (integer or
+        floating-point) of x has a smaller range of values than the data type of x
+        (e.g., x has data type int64 and the default data type is int32, or x has data
+        type uint64 and the default data type is int64), the returned array must have
+        the same data type as x. if x has a floating-point data type, the returned array
+        must have the default floating-point data type. if x has a signed integer data
+        type (e.g., int16), the returned array must have the default integer data type.
+        if x has an unsigned integer data type (e.g., uint16), the returned array must
+        have an unsigned integer data type having the same number of bits as the default
+        integer data type (e.g., if the default integer data type is int32, the returned
+        array must have a uint32 data type). If the data type (either specified or
+        resolved) differs from the data type of x, the input array should be cast to the
+        specified data type before computing the product. Default: None.
     out
         optional output array, for writing the result to.
 
@@ -2694,6 +2787,7 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative product of the elements along a given axis.
@@ -2706,6 +2800,21 @@ def cumprod(
         int , axis along which the cumulative product is computed. By default 0.
     exclusive
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    dtype
+        data type of the returned array. If None,
+        if the default data type corresponding to the data type “kind” (integer or
+        floating-point) of x has a smaller range of values than the data type of x
+        (e.g., x has data type int64 and the default data type is int32, or x has data
+        type uint64 and the default data type is int64), the returned array must have
+        the same data type as x. if x has a floating-point data type, the returned array
+        must have the default floating-point data type. if x has a signed integer data
+        type (e.g., int16), the returned array must have the default integer data type.
+        if x has an unsigned integer data type (e.g., uint16), the returned array must
+        have an unsigned integer data type having the same number of bits as the default
+        integer data type (e.g., if the default integer data type is int32, the returned
+        array must have a uint32 data type). If the data type (either specified or
+        resolved) differs from the data type of x, the input array should be cast to the
+        specified data type before computing the product. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2807,7 +2916,7 @@ def cumprod(
                       [15, 42]])
     }
     """
-    return current_backend(x).cumprod(x, axis, exclusive, out=out)
+    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back
@@ -2866,8 +2975,8 @@ def scatter_nd(
     tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Scatter updates into a new array according to indices.
 
     Parameters
@@ -2897,6 +3006,46 @@ def scatter_nd(
     ret
         New array of given shape, with the values scattered at the indices.
 
+    Examples
+    --------
+    scatter values into an empty array, With :code:`ivy.Array` input:
+
+    >> indices = ivy.array([[4], [3], [1], [7]])
+    >> updates = ivy.array([9, 10, 11, 12])
+    >> shape = ivy.array([8])
+    >> scatter = ivy.scatter_nd(indices, updates, shape)
+    >> print(scatter)
+    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
+
+    scatter into an empty array, With: `ivy.Container` input:
+
+    >> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+                        b=ivy.array([[5],[1],[2]]))
+    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+                        b=ivy.array([20, 30, 40]))
+    >> shape = ivy.Container(a=ivy.array([10]),
+                        b = ivy.array([10]))
+    >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    >> print(z)
+    {
+        a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
+        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
+    }
+
+    scatter into an array, With : `ivy.Container` and `ivy.Array` input:
+
+    >> indices = ivy.array([[4],[3],[1]])
+    >> updates = ivy.Container(a=ivy.array([10, 20, 30]),
+                    b=ivy.array([200, 300, 400]))
+    >> shape = ivy.array([10, 10])
+    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+                            b = ivy.array([10, 20, 30, 40, 50]))
+    >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
+    >> print(z)
+    {
+        a: ivy.array([1, 30, 3, 20, 10]),
+        b: ivy.array([10, 400, 30, 300, 200])
+    }
     """
     return current_backend(indices).scatter_nd(
         indices, updates, shape, tensor, reduction, out=out

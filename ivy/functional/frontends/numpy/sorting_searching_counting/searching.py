@@ -61,3 +61,4 @@ def argmin(x, /, *, axis=None, keepdims=False, out=None):
 
 def argmax(x, axis=None, out=None, *, keepdims=False):
     return ivy.argmax(x, axis=axis, out=out, keepdims=keepdims)
+

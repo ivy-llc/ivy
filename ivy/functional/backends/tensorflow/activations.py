@@ -30,7 +30,7 @@ def gelu(
 
 def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     if not ivy.is_array(x):
-        x=float(x)
+        x = float(x)
     return tf.nn.sigmoid(x)
 
 
