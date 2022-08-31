@@ -620,13 +620,13 @@ def test_tensorflow_Minimum(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes, 
+        available_dtypes=ivy.valid_numeric_dtypes,
         num_arrays=2,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.Less"
-    )
+    ),
 )
 def test_tensorflow_Less(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -645,7 +645,7 @@ def test_tensorflow_Less(
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
-    
+
 # Floor
 @handle_cmd_line_args
 @given(
@@ -674,7 +674,7 @@ def test_tensorflow_Floor(
         x=np.asarray(x, dtype=input_dtype),
     )
 
-    
+
 # FloorDiv
 @handle_cmd_line_args
 @given(
