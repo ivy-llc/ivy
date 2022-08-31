@@ -1094,18 +1094,18 @@ def test_matrix_norm(
         keepdims=kd,
     )
 
-    
+
 # matrix_rank
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_num_dims=2,
-        min_value=-1e+05,
-        max_value=1e+05
+        min_value=-1e05,
+        max_value=1e05,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None)
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
     *,
@@ -1117,7 +1117,7 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
-    rtol
+    rtol,
 ):
     dtype, x = dtype_x
     helpers.test_function(
