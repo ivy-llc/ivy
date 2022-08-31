@@ -172,7 +172,8 @@ def test_numpy_log10(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        small_value_safety_factor=1.2,
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
