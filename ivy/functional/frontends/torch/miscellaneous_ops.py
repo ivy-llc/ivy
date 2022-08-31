@@ -41,7 +41,21 @@ cumsum.unsupported_dtypes = (
 
 
 def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
-    # THIS IS JUST TO TEST THE TEST
-    import torch as not_torch
+    lowest_included_diagonal = [
+        [i, i - offset] for i in range(-abs(offset), max(row, col) + abs(offset))
+    ]
 
-    return ivy.array(not_torch.triu_indices(row, col, offset), dtype="int64")
+    # all_indices = []
+    all_indices = [
+        [i, index[1]]
+        for index in lowest_included_diagonal
+        for i in range(0, index[0] + 1)
+    ]
+    # for index in lowest_included_diagonal:
+    # [X, increasing_number] until intersects lowest_included_diagonal
+    # all_indices.append([index[0], i] for i in range(0, index[1]+1))
+    #    all_indices += [[i, index[1]] for i in range(0, index[0] + 1)]
+
+    data = ivy.asarray(all_indices, copy=False)
+    return data.matrix_transpose()
+    # return ivy.array(all_indices).matrix_transpose()
