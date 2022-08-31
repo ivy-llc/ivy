@@ -88,3 +88,11 @@ def Floor(*, x, name="Floor"):
 
 def FloorDiv(*, x, y, name="FloorDiv"):
     return ivy.floor_divide(x, y)
+
+
+def Exp(*, x, name="Exp"):
+    return ivy.exp(x)
+
+
+def Expm1(*, x, name="Expm1"):
+    return ivy.expm1(x)

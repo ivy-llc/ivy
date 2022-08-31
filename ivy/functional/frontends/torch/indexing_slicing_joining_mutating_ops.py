@@ -31,7 +31,7 @@ swapdims.unsupported_dtypes = (
 
 def swapaxes(input, axis0, axis1):
     return ivy.swapaxes(input, axis0, axis1)
-    
+
 
 swapaxes.unsupported_dtypes = (
     "uint16",
