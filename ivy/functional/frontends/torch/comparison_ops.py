@@ -1,6 +1,9 @@
-# ToDo: Add allclose(), isclose() to functional API
+# ToDo: Add allclose(), isclose(), isposinf(), isneginf() to functional API
 # global
 import ivy
+
+# local
+from collections import namedtuple
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
@@ -105,3 +108,50 @@ def isfinite(input):
 
 def isinf(input):
     return ivy.isinf(input)
+
+
+def isposinf(input, *, out=None):
+    is_inf = ivy.isinf(input)
+    pos_sign_bit = ivy.bitwise_invert(ivy.less(input, 0))
+    return ivy.logical_and(is_inf, pos_sign_bit, out=out)
+
+
+def isneginf(input, *, out=None):
+    is_inf = ivy.isinf(input)
+    neg_sign_bit = ivy.less(input, 0)
+    return ivy.logical_and(is_inf, neg_sign_bit, out=out)
+
+
+def sort(input, dim=-1, descending=False, stable=False, out=None):
+    values = ivy.sort(input, axis=dim, descending=descending, stable=stable, out=out)
+
+    indices = ivy.argsort(input, axis=dim, descending=descending)
+
+    ret = namedtuple("sort", ["values", "indices"])(values, indices)
+
+    return ret
+
+
+def isnan(input):
+    return ivy.isnan(input)
+
+
+def less_equal(input, other, *, out=None):
+    return ivy.less_equal(input, other, out=out)
+
+
+le = less_equal
+
+
+def less(input, other, *, out=None):
+    return ivy.less(input, other, out=out)
+
+
+lt = less
+
+
+def not_equal(input, other, *, out=None):
+    return ivy.not_equal(input, other, out=out)
+
+
+ne = not_equal
