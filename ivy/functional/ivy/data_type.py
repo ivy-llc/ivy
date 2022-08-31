@@ -1334,8 +1334,8 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
             "supported_dtypes and unsupported_dtypes attributes cannot both \
              exist in a particular backend"
         )
-    supported_dtypes = _get_dtypes(fn, complement=True)
 
+    supported_dtypes = _get_dtypes(fn, complement=False)
     res = set(supported_dtypes)
     if recurse:
         res = _nested_get_dtype(fn, res, set.intersection, function_supported_dtypes)
