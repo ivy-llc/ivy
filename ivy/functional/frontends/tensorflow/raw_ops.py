@@ -78,7 +78,7 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-def sub(x, y, name="sub"):
+def Sub(x, y, name="Sub"):
     return ivy.subtract(x, y)
 
 
