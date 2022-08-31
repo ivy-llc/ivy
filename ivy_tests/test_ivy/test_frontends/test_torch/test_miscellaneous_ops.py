@@ -1,7 +1,6 @@
 # global
-import hypothesis
 import numpy as np
-from hypothesis import given, strategies as st, settings
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -194,7 +193,6 @@ def test_torch_cumsum(
 # For large values the tested function is incredibly slow.
 # If this bug has since been fixed, edit these to be larger.
 @handle_cmd_line_args
-@settings(verbosity=hypothesis.Verbosity.verbose)
 @given(
     row=st.integers(min_value=0, max_value=10),
     col=st.integers(min_value=0, max_value=10),
