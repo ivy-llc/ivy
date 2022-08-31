@@ -14,7 +14,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
-    x: np.ndarray, upper: bool = False, /, *, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -28,7 +28,7 @@ cholesky.unsupported_dtypes = ("float16",)
 
 
 def cross(
-    x1: np.ndarray, x2: np.ndarray, axis: int = -1, /, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, axis: int = -1, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.cross(a=x1, b=x2, axis=axis)
     return ret
@@ -45,11 +45,11 @@ det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: np.ndarray,
+    /,
+    *,
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    /,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
@@ -95,10 +95,10 @@ matmul.support_native_out = True
 @_handle_0_dim_output
 def matrix_norm(
     x: np.ndarray,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    keepdims: bool = False,
     /,
     *,
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
@@ -259,10 +259,7 @@ trace.support_native_out = True
 def vecdot(
     x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    dtype = np.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = x1.astype(np.float32), x2.astype(np.float32)
-    ret = np.tensordot(x1, x2, (axis, axis))
-    ret = ret.astype(dtype)
+    ret = np.tensordot(x1, x2, axes=(axis, axis))
     return ret
 
 

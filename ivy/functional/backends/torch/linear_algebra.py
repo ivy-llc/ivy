@@ -13,7 +13,7 @@ from ivy import inf
 
 
 def cholesky(
-    x: torch.Tensor, upper: bool = False, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if not upper:
         ret = torch.linalg.cholesky(x, out=out)
@@ -38,9 +38,9 @@ cholesky.support_native_out = True
 def cross(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axis: int = -1,
     /,
     *,
+    axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -66,11 +66,11 @@ det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: torch.Tensor,
+    /,
+    *,
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    /,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
@@ -117,10 +117,10 @@ matmul.support_native_out = True
 
 def matrix_norm(
     x: torch.Tensor,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    keepdims: bool = False,
     /,
     *,
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out=out)
@@ -318,9 +318,9 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).type(dtype)
+    # dtype = torch.promote_types(x1.dtype, x2.dtype)
+    # x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
 
 
 vecdot.support_native_out = True

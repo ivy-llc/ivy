@@ -14,9 +14,9 @@ from ivy import inf
 
 def cholesky(
     x: Union[tf.Tensor, tf.Variable],
-    upper: bool = False,
     /,
     *,
+    upper: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -33,9 +33,9 @@ cholesky.unsupported_dtypes = ("float16",)
 def cross(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
-    axis: int = -1,
     /,
     *,
+    axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
@@ -57,11 +57,11 @@ det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    /,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
@@ -172,10 +172,10 @@ def matmul(
 
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    keepdims: bool = False,
     /,
     *,
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axes = (-2, -1)
@@ -455,12 +455,15 @@ def vecdot(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    if dtype != 'float64':
+        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    if dtype == 'float64':
+        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
     return ret
 
 
-vecdot.unsupported_dtypes = ("int8",)
+vecdot.unsupported_dtypes = ("int8", "int16")
 
 
 def vector_norm(

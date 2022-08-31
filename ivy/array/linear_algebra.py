@@ -12,6 +12,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def matmul(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
@@ -31,8 +32,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def cholesky(
         self: ivy.Array,
-        upper: bool = False,
+        /,
         *,
+        upper: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -70,7 +72,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
                        [2.0, 0.0, 3.0, 0.0, 0.0], \
                        [0.5, 0.0, 0.0, 0.625, 0.0], \
                        [2.0, 0.0, 0.0, 0.0, 16.0]])
-        >>> y = x.cholesky('false')
+        >>> y = x.cholesky(upper='false')
         >>> print(y)
         ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
                    [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
@@ -78,13 +80,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
                    [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
                    [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
         """
-        return ivy.cholesky(self._data, upper, out=out)
+        return ivy.cholesky(self._data, upper=upper, out=out)
 
     def cross(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
-        axis: int = -1,
+        /,
         *,
+        axis: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -124,40 +127,42 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(z)
         ivy.array([0., 0., 1.])
         """
-        return ivy.cross(self._data, x2, axis, out=out)
+        return ivy.cross(self._data, x2, axis=axis, out=out)
 
-    def det(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def det(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.det(self._data, out=out)
 
     def diagonal(
         self: ivy.Array,
+        /,
+        *,
         offset: int = 0,
         axis1: int = -2,
         axis2: int = -1,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.diagonal(self._data, offset, axis1, axis2, out=out)
+        return ivy.diagonal(self._data, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
     def eigh(
         self: ivy.Array,
     ) -> NamedTuple:
         return ivy.eigh(self._data)
 
-    def eigvalsh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def eigvalsh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.eigvalsh(self._data, out=out)
 
-    def inv(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.inv(self._data, out=out)
 
     def matrix_norm(
         self: ivy.Array,
+        /,
+        *,
         ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.matrix_norm(self._data, ord, keepdims, out=out)
+        return ivy.matrix_norm(self._data, ord=ord, keepdims=keepdims, out=out)
 
     def matrix_rank(
         self: ivy.Array,
