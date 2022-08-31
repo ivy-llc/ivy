@@ -215,7 +215,7 @@ def test_module_w_partial_v(batch_shape,input_channels,output_channels, device, 
                 "b": ivy.variable(ivy.random_uniform(shape=[64])),
             },
             "linear1": {"w": ivy.variable(ivy.random_uniform(shape=[64, 64]))},
-            "linear2": {"b": ivy.variable(ivy.random_uniform(shape=[5]))},
+            "linear2": {"b": ivy.variable(ivy.random_uniform(shape=[output_channels]))},
         }
     )
     try:
@@ -226,10 +226,10 @@ def test_module_w_partial_v(batch_shape,input_channels,output_channels, device, 
         )
     except AssertionError:
         pass
-    # module = TrainableModule(
-    #     input_channels, output_channels, device=device, v=v, with_partial_v=True
-    # )
-    # module(x)
+    module = TrainableModule(
+        input_channels, output_channels, device=device, v=v, with_partial_v=True
+    )
+    module(x)
 
 
 class ModuleWithNoneAttribute(ivy.Module):
@@ -353,12 +353,17 @@ class TrainableModuleWithDict(ivy.Module):
 
 # module with dict training
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_dict_training(bs_ic_oc, device, compile_graph):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_module_w_dict_training(batch_shape,input_channels,output_channels, device, compile_graph):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -417,12 +422,17 @@ class WithCustomVarStructure(ivy.Module):
 
 # with custom var structure
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_with_custom_var_structure(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_with_custom_var_structure(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithCustomVarStructure(input_channels, output_channels, device=device)
     assert "x" in module.v
     assert "y" in module.v
@@ -456,12 +466,17 @@ class WithNestedModules(ivy.Module):
 
 # top variables
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_top_variables(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_top_variables(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithNestedModules(input_channels, output_channels, device=device)
     for key_chain in [
         "dl0",
@@ -493,12 +508,17 @@ def test_top_variables(bs_ic_oc, device):
 
 # top module
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_top_module(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_top_module(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # full depth
@@ -519,12 +539,17 @@ def test_top_module(bs_ic_oc, device):
 
 # v with top v key chains
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_v_with_top_v_key_chains(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_v_with_top_v_key_chains(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # full depth
@@ -577,12 +602,17 @@ def test_v_with_top_v_key_chains(bs_ic_oc, device):
 
 # module depth
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_depth(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_module_depth(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 0
@@ -601,12 +631,17 @@ def test_module_depth(bs_ic_oc, device):
 
 # module height
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_height(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_module_height(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # height 2
@@ -625,12 +660,17 @@ def test_module_height(bs_ic_oc, device):
 
 # sub modules
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_sub_modules(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_sub_modules(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 0
@@ -655,12 +695,17 @@ def test_sub_modules(bs_ic_oc, device):
 
 # track submod returns
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_track_submod_rets(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_module_track_submod_rets(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -669,18 +714,18 @@ def test_module_track_submod_rets(bs_ic_oc, device):
 
     # depth 1
     ret = module(x, track_submod_rets=True, submod_depth=1)
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets = module.submod_rets
     for submod in [module._dl0, module._dl1]:
         for ret in sm_rets[submod.get_mod_key()]:
             assert isinstance(ret, np.ndarray)
-            assert ret.shape == tuple(batch_shape + [64])
+            assert ret.shape == tuple(list(batch_shape) + [64])
     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
         assert ivy.Container.flatten_key_chain(submod.__repr__(), "_") not in sm_rets
 
     # depth 2 (full)
     ret = module(x, track_submod_rets=True)
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets = module.submod_rets
     for submod in [
         module._dl0,
@@ -692,30 +737,35 @@ def test_module_track_submod_rets(bs_ic_oc, device):
     ]:
         for ret in sm_rets[submod.get_mod_key()]:
             assert isinstance(ret, np.ndarray)
-            assert ret.shape == tuple(batch_shape + [64])
+            assert ret.shape == tuple(list(batch_shape) + [64])
 
     # partial submodules
     ret = module(
         x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0]
     )
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets = module.submod_rets
     for submod in [module._dl1, module._dl0._l0]:
         for ret in sm_rets[submod.get_mod_key()]:
             assert isinstance(ret, np.ndarray)
-            assert ret.shape == tuple(batch_shape + [64])
+            assert ret.shape == tuple(list(batch_shape) + [64])
     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
         assert ivy.Container.flatten_key_chain(submod.__repr__(), "_") not in sm_rets
 
 
 # check submod returns
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_check_submod_rets(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_module_check_submod_rets(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -724,13 +774,12 @@ def test_module_check_submod_rets(bs_ic_oc, device):
 
     # depth 1
     ret = module(x, track_submod_rets=True, submod_depth=1)
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets = module.submod_rets
     module(x, expected_submod_rets=sm_rets)
     for i in sm_rets:
         print(len(sm_rets[i]))
     sm_rets.random_uniform(map_sequences=True)
-    print("ketchup")
     try:
         module(x, expected_submod_rets=sm_rets.random_uniform(map_sequences=True))
         raise Exception(
@@ -799,12 +848,17 @@ def test_module_check_submod_rets(bs_ic_oc, device):
 
 # track submod call order
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_track_submod_call_order(bs_ic_oc, device):
+@given(
+    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
+    input_channels=st.integers(min_value=2,max_value=5),
+    output_channels=st.integers(min_value=2,max_value=5),
+)
+def test_module_track_submod_call_order(batch_shape,input_channels,output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    batch_shape, input_channels, output_channels = bs_ic_oc
+        return
+    # batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -832,7 +886,7 @@ def test_module_track_submod_call_order(bs_ic_oc, device):
 
     # depth 1
     ret = module(x, track_submod_call_order=True, submod_depth=1)
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
 
     sm_co = module.submod_call_order
 
@@ -863,7 +917,7 @@ def test_module_track_submod_call_order(bs_ic_oc, device):
 
     # depth 2 (full)
     ret = module(x, track_submod_call_order=True)
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
 
     sm_co = module.submod_call_order
 
@@ -921,7 +975,7 @@ def test_module_track_submod_call_order(bs_ic_oc, device):
     ret = module(
         x, track_submod_call_order=True, submods_to_track=[module._dl1, module._dl0._l0]
     )
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
 
     sm_co = module.submod_call_order
 
