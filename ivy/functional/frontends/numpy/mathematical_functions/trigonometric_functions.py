@@ -59,7 +59,7 @@ def tan(
     *,
     where=True,
     casting="same_kind",
-    order="k",
+    order="K",
     dtype=None,
     subok=True,
 ):
