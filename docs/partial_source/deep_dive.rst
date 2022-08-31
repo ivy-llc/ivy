@@ -84,9 +84,9 @@ We're excited for you to get involved!  🦾
    deep_dive/8_inplace_updates.rst
    deep_dive/9_formatting.rst
    deep_dive/10_function_arguments.rst
-   deep_dive/12_docstrings.rst
-   deep_dive/13_docstring_examples.rst
-   deep_dive/14_array_api_tests.rst
-   deep_dive/15_ivy_tests.rst
-   deep_dive/16_ivy_frontends.rst
-   deep_dive/17_ivy_frontends_tests.rst
+   deep_dive/11_docstrings.rst
+   deep_dive/12_docstring_examples.rst
+   deep_dive/13_array_api_tests.rst
+   deep_dive/14_ivy_tests.rst
+   deep_dive/15_ivy_frontends.rst
+   deep_dive/16_ivy_frontends_tests.rst
