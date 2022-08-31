@@ -3210,7 +3210,7 @@
 
 
 <div class="viewcode-block" id="scatter_nd"><a class="viewcode-back" href="../../../functional/ivy/general/scatter_nd/scatter_nd_array.html#ivy.array.array_methods.scatter_nd">[docs]</a><span class="k">def</span> <span class="nf">scatter_nd</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> 
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">updates</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">tensor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3230,10 +3230,10 @@
 <span class="sd">    updates</span>
 <span class="sd">        values to update input tensor with</span>
 <span class="sd">    shape</span>
-<span class="sd">        The shape of the result. Default is None, in which case tensor argument must </span>
+<span class="sd">        The shape of the result. Default is None, in which case tensor argument must</span>
 <span class="sd">        be provided.</span>
 <span class="sd">    reduction</span>
-<span class="sd">        The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39; </span>
+<span class="sd">        The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;</span>
 <span class="sd">        or &#39;replace&#39;</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
@@ -3242,7 +3242,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array of given shape, with the values scattered at the indices.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    scatter values into an array</span>
@@ -3305,7 +3305,7 @@
 <span class="sd">    ivy.array(2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="einops_rearrange"><a class="viewcode-back" href="../../../functional/ivy/general/einops_rearrange/einops_rearrange_array.html#ivy.array.array_methods.einops_rearrange">[docs]</a><span class="k">def</span> <span class="nf">einops_rearrange</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -4380,7 +4380,7 @@
 <span class="sd">    &gt;&gt;&gt; z = x.matmul(y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array(11.)</span>
-<span class="sd">    &quot;&quot;&quot;</span>        
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -4447,7 +4447,7 @@
 <span class="sd">    ivy.Array instance method variant of ivy.cross. This method simply wraps the</span>
 <span class="sd">    function, and so the docstring for ivy.cross also applies to this method</span>
 <span class="sd">    with minimal changes.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    self</span>
@@ -4456,24 +4456,24 @@
 <span class="sd">        second input array. Must be compatible with ``self``</span>
 <span class="sd">        (see :ref:`broadcasting`). Should have a numeric data type.</span>
 <span class="sd">    axis</span>
-<span class="sd">        the axis (dimension) of x1 and x2 containing the vectors for which to </span>
-<span class="sd">        compute (default: -1) the cross product.vIf set to -1, the function </span>
+<span class="sd">        the axis (dimension) of x1 and x2 containing the vectors for which to</span>
+<span class="sd">        compute (default: -1) the cross product.vIf set to -1, the function</span>
 <span class="sd">        computes the cross product for vectors defined by the last axis (dimension).</span>
 <span class="sd">        Default: -1.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">        the inputs broadcast to.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the element-wise products. The returned array must </span>
+<span class="sd">        an array containing the element-wise products. The returned array must</span>
 <span class="sd">        have a data type determined by :ref:`type-promotion`.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` inputs:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 0., 0.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 1., 0.])</span>
 <span class="sd">    &gt;&gt;&gt; z = x.cross(y)</span>
