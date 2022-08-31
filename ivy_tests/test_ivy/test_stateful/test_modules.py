@@ -460,8 +460,11 @@ class WithNestedModules(ivy.Module):
 
     def _forward(self, x):
         x = self._dl0(x)
+        print(x.shape)
         x = self._dl1(x)
+        print(x.shape)
         x = self._dl1(x)
+        print(x.shape)
         return x
 
 
@@ -786,6 +789,7 @@ def test_module_check_submod_rets(batch_shape,input_channels,output_channels, de
     assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets = module.submod_rets
     module(x, expected_submod_rets=sm_rets)
+    sm_rets.random_uniform(map_sequences=True)
     try:
         module(x, expected_submod_rets=sm_rets.random_uniform(map_sequences=True))
         raise Exception(
@@ -797,7 +801,7 @@ def test_module_check_submod_rets(batch_shape,input_channels,output_channels, de
 
     # depth 2 (full)
     ret = module(x, track_submod_rets=True)
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets = module.submod_rets
     module(x, expected_submod_rets=sm_rets)
     try:
@@ -813,7 +817,7 @@ def test_module_check_submod_rets(batch_shape,input_channels,output_channels, de
     ret = module(
         x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0]
     )
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets = module.submod_rets
     module(x, expected_submod_rets=sm_rets)
     try:
@@ -827,7 +831,7 @@ def test_module_check_submod_rets(batch_shape,input_channels,output_channels, de
 
     # with tolerances
     ret = module(x, track_submod_rets=True)
-    assert ret.shape == tuple(batch_shape + [64])
+    assert ret.shape == tuple(list(batch_shape) + [64])
     sm_rets_orig = module.submod_rets
     sm_rets = ivy.Container(
         {
