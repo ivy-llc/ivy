@@ -180,7 +180,7 @@ def x_and_scaled_attention(draw, dtypes):
             shape=mask_shape,
             min_value=0,
             max_value=1,
-            large_value_safety_factor=2,
+            large_value_safety_factor=1,
         )
     )
     return dtype, q, k, v, mask, scale
