@@ -190,18 +190,15 @@ def test_torch_cumsum(
     )
 
 
+# These bounds are small due to a bug in ivy.array
+# For large values the tested function is incredibly slow.
+# If this bug has since been fixed, edit these to be larger.
 @handle_cmd_line_args
 @settings(verbosity=hypothesis.Verbosity.verbose)
 @given(
-    row=st.integers(
-        min_value=0, max_value=10
-    ),  # These values are small due to a bug in ivy.array
-    col=st.integers(
-        min_value=0, max_value=10
-    ),  # For large values this is incredibly slow.
-    offset=st.integers(
-        min_value=-10, max_value=10
-    ),  # If this bug has been fixed, edit these to be larger.
+    row=st.integers(min_value=0, max_value=10),
+    col=st.integers(min_value=0, max_value=10),
+    offset=st.integers(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.triu_indices"
     ),
