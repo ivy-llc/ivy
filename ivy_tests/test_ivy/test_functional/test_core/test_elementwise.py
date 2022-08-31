@@ -928,8 +928,8 @@ def test_greater(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    # make sure they're not too close together
-    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
+    # bfloat16 is not supported
+    assume(not ("bfloat16" in input_dtype))
 
     helpers.test_function(
         input_dtypes=input_dtype,
