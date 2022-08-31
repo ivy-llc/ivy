@@ -78,5 +78,6 @@ def test_torch_pairwise_distance(
         x1=np.asarray(x1, dtype=x1_dtype),
         x2=np.asarray(x2, dtype=x2_dtype),
         p=p,
+        eps=eps,
         keepdim=keepdims,
     )
