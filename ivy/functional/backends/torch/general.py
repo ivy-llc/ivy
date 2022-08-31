@@ -43,10 +43,11 @@ def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
     elif torch.is_tensor(x):
         if copy:
             if x.dtype is torch.bfloat16:
-                if ivy.default_float_dtype(as_native=True) is torch.bfloat16:
+                default_dtype = ivy.default_float_dtype(as_native=True)
+                if default_dtype is torch.bfloat16:
                     x = x.to(torch.float32)
                 else:
-                    x = x.to(ivy.default_float_dtype(as_native=True))
+                    x = x.to(default_dtype)
                 return x.detach().cpu().numpy().astype("bfloat16")
             return x.detach().cpu().numpy()
         else:
