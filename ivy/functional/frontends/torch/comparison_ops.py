@@ -60,7 +60,7 @@ def eq(input, other, *, out=None):
 def argsort(input, dim=-1, descending=False):
     return ivy.argsort(input, axis=dim, descending=descending)
 
-    
+
 def greater_equal(input, other, *, out=None):
     ret = ivy.greater_equal(input, other, out=out)
     return ret
@@ -127,7 +127,6 @@ def sort(input, dim=-1, descending=False, stable=False, out=None):
 
     indices = ivy.argsort(input, axis=dim, descending=descending)
 
-    ret = namedtuple('sort', ['values', 'indices'])(values, indices)
+    ret = namedtuple("sort", ["values", "indices"])(values, indices)
 
     return ret
-    

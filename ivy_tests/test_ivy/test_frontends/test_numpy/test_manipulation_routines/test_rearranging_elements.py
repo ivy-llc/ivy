@@ -1,17 +1,17 @@
-import hypothesis.extra.numpy as hnp
 from hypothesis import given, strategies as st
 import numpy as np
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
 
 @st.composite
 def _dtype_x_bounded_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
     axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
     return dtype, x, axis
+
 
 @handle_cmd_line_args
 @given(
@@ -22,14 +22,9 @@ def _dtype_x_bounded_axis(draw, **kwargs):
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.flip"
-    )
+    ),
 )
-def test_numpy_flip(
-    dtype_x_axis,
-    num_positional_args,
-    native_array,
-    fw
-):
+def test_numpy_flip(dtype_x_axis, num_positional_args, native_array, fw):
     input_dtype, m, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -41,5 +36,5 @@ def test_numpy_flip(
         frontend="numpy",
         fn_tree="flip",
         m=np.asarray(m, dtype=input_dtype),
-        axis=axis
+        axis=axis,
     )
