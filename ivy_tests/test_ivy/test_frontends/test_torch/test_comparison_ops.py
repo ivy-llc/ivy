@@ -216,7 +216,7 @@ def test_torch_greater_equal(
         other=np.asarray(inputs[1], dtype=input_dtype[1]),
         out=None,
     )
-    
+
 
 # greater
 @handle_cmd_line_args
@@ -444,8 +444,8 @@ def test_torch_isneginf(
         fn_tree="isneginf",
         input=np.asarray(input, dtype=input_dtype),
     )
-    
-  
+
+
 # sort
 @handle_cmd_line_args
 @given(

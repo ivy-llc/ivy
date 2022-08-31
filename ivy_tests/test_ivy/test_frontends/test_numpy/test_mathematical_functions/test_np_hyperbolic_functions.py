@@ -117,7 +117,7 @@ def _dtype_x(draw, **kwargs):
     where = draw(
         st.one_of(
             helpers.array_values(
-                dtype=ivy.bool, 
+                dtype=ivy.bool,
                 shape=shape,
             )
         )
@@ -144,7 +144,7 @@ def test_numpy_arcsinh(
     fw,
 ):
     (input_dtype, x), where = dtype_and_x
-    
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

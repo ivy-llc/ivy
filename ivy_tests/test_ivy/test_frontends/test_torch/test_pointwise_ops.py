@@ -1017,7 +1017,7 @@ def test_torch_trunc(
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
-    
+
 
 # sqrt
 @handle_cmd_line_args
