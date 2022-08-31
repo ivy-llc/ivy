@@ -372,18 +372,18 @@ def permute_dims(
     ivy.array([[0., 0.],
                [0., 0.],
                [0., 0.]])
-    
+
     With one :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[0., 1. ,2.]]), b=ivy.array([[3., 4., 5.]]))
     >>> y = ivy.permute_dims(x, axes=(1, 0))
     >>> print(y)
     {
-    a: ivy.array([[0.], 
-                  [1.], 
+    a: ivy.array([[0.],
+                  [1.],
                   [2.]]),
-    b: ivy.array([[3.], 
-                  [4.], 
+    b: ivy.array([[3.],
+                  [4.],
                   [5.]])
     }
 
@@ -391,11 +391,11 @@ def permute_dims(
     >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
     >>> print(y)
     {
-    a: ivy.array([[0.], 
-                  [1.], 
+    a: ivy.array([[0.],
+                  [1.],
                   [2.]]),
-    b: ivy.array([[3.], 
-                  [4.], 
+    b: ivy.array([[3.],
+                  [4.],
                   [5.]])
     }
 
@@ -404,7 +404,7 @@ def permute_dims(
     >>> print(y)
     ivy.array([[3.],
                [4.],
-               [5.]])    
+               [5.]])
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -780,7 +780,7 @@ def stack(
     instances in place of any of the arguments.
 
     """
-    return current_backend(arrays).stack(arrays, axis, out=out)
+    return current_backend(arrays).stack(arrays, axis=axis, out=out)
 
 
 # Extra #
@@ -906,10 +906,7 @@ def clip(
     }
 
     """
-    res = current_backend(x).clip(x, x_min, x_max)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+    return current_backend(x).clip(x, x_min, x_max)
 
 
 @to_native_arrays_and_back
@@ -1242,6 +1239,51 @@ def tile(
     -------
     retwaitin
         The tiled output array.
+    
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([1,2,3,4])
+    >>> y = ivy.tile(x,(3))
+    >>> print(y)
+    ivy.array([1,2,3,4,1,2,3,4,1,2,3,4])
+
+    >>> x = ivy.array([[1,2,3], \
+                       [4,5,6]])
+    >>> y = ivy.tile(x, (2,3))
+    >>> print(y)
+    ivy.array([[1,2,3,1,2,3,1,2,3],
+               [4,5,6,4,5,6,4,5,6],
+               [1,2,3,1,2,3,1,2,3],
+               [4,5,6,4,5,6,4,5,6]])
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([[[0], \
+                               [1]]])
+    >>> y = ivy.tile(x,(2,2,3))
+    >>> print(y)
+    ivy.array([[[0,0,0],
+                [1,1,1],
+                [0,0,0],
+                [1,1,1]],
+               [[0,0,0],
+                [1,1,1],
+                [0,0,0],
+                [1,1,1]]])
+
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container( a = ivy.array([0,1,2]), b = ivy.array([[3],[4]]))
+    >>> y = ivy.tile(x, (1,2))
+    >>> print(y)
+    {
+        a: ivy.array([[0,1,2,0,1,2]]),
+        b: ivy.array([[3,3],
+                      [4,4]])
+    }
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
