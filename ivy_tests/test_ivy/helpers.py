@@ -10,6 +10,7 @@ import inspect
 import pytest
 import numpy as np
 import math
+import gc
 from typing import Union, List
 from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
@@ -341,6 +342,7 @@ def var_fn(x, *, dtype=None, device=None):
 def get_dtypes(draw, kind, index=0, full=False, none=False):
     """
     Draws valid dtypes based on the backend set on the stack
+
     Parameters
     ----------
     draw
@@ -357,7 +359,8 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
 
     Returns
     -------
-
+    ret
+        dtype string
     """
     type_dict = {
         "valid": ivy.valid_dtypes,
@@ -365,6 +368,9 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
         "float": ivy.valid_float_dtypes,
         "integer": ivy.valid_int_dtypes,
         "unsigned": ivy.valid_uint_dtypes,
+        "signed_integer": tuple(
+            set(ivy.valid_int_dtypes).difference(ivy.valid_uint_dtypes)
+        ),
     }
     if none:
         return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
@@ -1299,12 +1305,14 @@ def test_method(
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     v_np = None
     if isinstance(ins, ivy.Module):
-        v = ivy.Container(
-            ins._create_variables(device=device_, dtype=input_dtypes_method[0])
-        )
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if init_with_v:
+            v = ivy.Container(
+                ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+            )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
+        else:
+            v = ins.__getattribute__("v")
+        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -3132,6 +3140,7 @@ def handle_cmd_line_args(test_fn):
     @given(data=st.data())
     @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
+        gc.collect()
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":

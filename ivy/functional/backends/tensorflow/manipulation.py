@@ -230,7 +230,13 @@ repeat.supported_dtypes = (
 )
 
 
-def tile(x, /, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def tile(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    reps: Sequence[int],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable] :
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
@@ -290,6 +296,7 @@ def clip(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    assert tf.reduce_all(tf.less(x_min, x_max)), "Min value must be less than max."
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
