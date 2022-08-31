@@ -39,7 +39,7 @@ def array_equal(
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
-    # TensorFlow fails to convert bfloat16 when it has 0 dimensions
+    # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if get_num_dims(x) == 0 and ivy.as_native_dtype(x.dtype) is tf.bfloat16:
         x = tf.expand_dims(x, 0)
         if copy:
