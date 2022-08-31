@@ -11,8 +11,9 @@ def std(
     correction=0.0,
     keepdims=False,
     out=None,
-    where=True,
     dtype=None,
+    where=True,
+
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))

@@ -6,12 +6,14 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-import ivy
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy
 
 
+# mean
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_int_dtypes, num_arrays = 1,),
+    dtype_and_x=helpers.statistical_dtype_values(function="std"),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
@@ -20,8 +22,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.std"
     ),
     native_array=helpers.array_bools(num_arrays=1),
-    keep_dims=st.booleans(),
-    correction=st.floats(0.0,1.0),
+    keep_dims=st.booleans()
 )
 def test_numpy_std(
     dtype_and_x,
@@ -33,9 +34,18 @@ def test_numpy_std(
     native_array,
     fw,
     keep_dims,
-    correction,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis,correction = dtype_and_x
+    x_array = ivy.array(x)
+
+    if len(x_array.shape) == 2:
+        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
+    elif len(x_array.shape) == 1:
+        where = True
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
     input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
@@ -43,6 +53,7 @@ def test_numpy_std(
         as_variable=as_variable,
         native_array=native_array,
     )
+
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -53,10 +64,11 @@ def test_numpy_std(
         frontend="numpy",
         fn_tree="std",
         x=np.asarray(x, dtype=input_dtype[0]),
-        out=None,
-        where=where,
+        axis=axis,
         dtype=dtype,
+        out=None,
         keepdims=keep_dims,
         correction=correction,
+        where=where,
         test_values=False,
     )
