@@ -33,3 +33,11 @@ mean_absolute_error.unsupported_dtypes = {
     "numpy": ("int8", "float64"),
     "torch": ("int8", "float64"),
 }
+
+
+def binary_crossentropy(
+    y_true, y_pred, from_logits: bool = False, label_smoothing: float = 0.0
+):
+    if from_logits:
+        y_pred = ivy.softmax(y_pred)
+    return ivy.mean(ivy.binary_cross_entropy(y_true, y_pred, label_smoothing))

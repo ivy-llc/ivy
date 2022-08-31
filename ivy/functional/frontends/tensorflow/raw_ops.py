@@ -76,3 +76,23 @@ def Maximum(*, x, y, name="Maximum"):
 
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
+
+
+def Less(*, x, y, name="Less"):
+    return ivy.less(x, y)
+
+
+def Floor(*, x, name="Floor"):
+    return ivy.floor(x)
+
+
+def FloorDiv(*, x, y, name="FloorDiv"):
+    return ivy.floor_divide(x, y)
+
+
+def Exp(*, x, name="Exp"):
+    return ivy.exp(x)
+
+
+def Expm1(*, x, name="Expm1"):
+    return ivy.expm1(x)

@@ -268,7 +268,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.gather(self._data, indices, axis, out=out)
 
     def scatter_nd(
-        self: ivy.Array, 
+        self: ivy.Array,
         updates: Union[ivy.Array, ivy.NativeArray],
         shape: Optional[ivy.Array] = None,
         tensor: Union[ivy.Array, ivy.NativeArray] = None,
@@ -288,10 +288,10 @@ class ArrayWithGeneral(abc.ABC):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument must 
+            The shape of the result. Default is None, in which case tensor argument must
             be provided.
         reduction
-            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         out
             optional output array, for writing the result to.
@@ -300,7 +300,7 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array of given shape, with the values scattered at the indices.
-        
+
         Examples
         --------
         scatter values into an array
@@ -323,7 +323,7 @@ class ArrayWithGeneral(abc.ABC):
                     [ 0, 21,  0,  0, 25]])
         """
         return ivy.scatter_nd(self, updates, shape, reduction, tensor=tensor, out=out)
-    
+
     def gather_nd(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
@@ -362,7 +362,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
-        
+
     def einops_rearrange(
         self: ivy.Array,
         pattern: str,

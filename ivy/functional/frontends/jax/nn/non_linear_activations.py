@@ -334,3 +334,11 @@ def swish(x):
 
 
 swish.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def hard_swish(x):
+    res = (x * ivy.minimum(ivy.maximum(x + 3, 0.0), 6.0)) / 6
+    return ivy.asarray(res, dtype=x.dtype)
+
+
+hard_swish.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
