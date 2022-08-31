@@ -8,7 +8,7 @@ def std(
     /,
     *,
     axis=None,
-    correction=0,
+    correction=0.0,
     keepdims=False,
     out=None,
     dtype=None,
