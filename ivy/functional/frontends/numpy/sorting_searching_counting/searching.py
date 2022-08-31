@@ -29,5 +29,35 @@ def nonzero(a):
     return ivy.nonzero(a)
 
 
+def argmin(x, /, *, axis=None, keepdims=False, out=None):
+    """
+    Returns the indices of the minimum values along a specified axis. When the
+    minimum value occurs multiple times, only the indices corresponding to the first
+    occurrence are returned.
+    Parameters
+    ----------
+    x
+        input array. Should have a numeric data type.
+    axis
+        axis along which to search. If None, the function must return the index of the
+        minimum value of the flattened array. Default = None.
+    keepdims
+        if True, the reduced axes (dimensions) must be included in the result as
+        singleton dimensions, and, accordingly, the result must be compatible with the
+        input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default = False.
+    out
+        if axis is None, a zero-dimensional array containing the index of the first
+        occurrence of the minimum value; otherwise, a non-zero-dimensional array
+        containing the indices of the minimum values. The returned array must have the
+        default array index data type.
+    Returns
+    -------
+    ret
+        Array containing the indices of the minimum values across the specified axis.
+    """
+    return ivy.argmin(x, axis=axis, out=out, keepdims=keepdims)
+
+
 def argmax(x, axis=None, out=None, *, keepdims=False):
     return ivy.argmax(x, axis=axis, out=out, keepdims=keepdims)
