@@ -707,6 +707,64 @@ def test_tensorflow_FloorDiv(
     )
 
 
+# Exp
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Tanh"
+    ),
+)
+def test_tensorflow_Exp(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Exp",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# Expm1
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Expm1"
+    ),
+)
+def test_tensorflow_Expm1(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Expm1",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
 # Log
 @handle_cmd_line_args
 @given(
@@ -732,5 +790,5 @@ def test_tensorflow_Log(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Log",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype)
     )
