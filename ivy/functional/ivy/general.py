@@ -2062,7 +2062,7 @@ def einops_rearrange(
     x
         Input array to be re-arranged.
     pattern
-        Rearrangement pattern.
+        Rearrangement pattern b is for batch, h is for height, w is for width and c is for channels.
     axes_lengths
         Any additional specifications for dimensions.
     out
@@ -2073,8 +2073,39 @@ def einops_rearrange(
     -------
     ret
         New array with einops.rearrange having been applied.
+      
+    Examples
+    -----
+    # suppose we have a set of 32 images in "h w c" format (height-width-channel)
+    >>> images = [ivy.random.randn(30, 40, 3) for _ in range(32)]
+    >>> output = ivy.fill(images.shape, 0)
+
+    # stack along first (batch) axis, output is the same
+    >>> x=ivy.einops_rearrange(images, 'b h w c -> b h w c')
+    >>> print(x.shape)
+    (32, 30, 40, 3)
+    # concatenate images along vertical axis
+    >>> ivy.einops_rearrange(images, 'b h w c -> (b h) w c',out=output)
+    >>> print(output.shape)
+    (960, 40, 3)
+
+    # concatenated images along horizontal axis, 1280 = 32 * 40
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
+    >>> print(x.shape)
+    (30, 1280, 3)
+
+    # reordered axes to "b c h w" format for deep learning
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
+    >>> print(x.shape)
+    (32, 3, 30, 40)
+
+    # flattened each image into a vector, 3600 = 30 * 40 * 3
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
+    >>> print(x.shape)
+    (32, 3600)
 
     """
+    
     ret = einops.rearrange(x, pattern, **axes_lengths)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
