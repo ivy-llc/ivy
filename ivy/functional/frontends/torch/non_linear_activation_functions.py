@@ -34,3 +34,10 @@ def gelu(input, approximate="none"):
 
 
 gelu.unsupported_dtypes = ("float16",)
+
+
+def logsigmoid(input):
+    return ivy.log(ivy.sigmoid(input))
+
+
+logsigmoid.unsupported_dtypes = ("float16",)
