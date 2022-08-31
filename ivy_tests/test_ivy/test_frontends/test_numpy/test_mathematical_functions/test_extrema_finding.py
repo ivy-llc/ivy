@@ -60,6 +60,7 @@ def test_numpy_minimum(
         test_values=False,
     )
 
+
 # amin
 @handle_cmd_line_args
 @given(
