@@ -1,6 +1,9 @@
-# ToDo: Add allclose(), isclose() to functional API
+# ToDo: Add allclose(), isclose(), isposinf(), isneginf() to functional API
 # global
 import ivy
+
+# local
+from collections import namedtuple
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
@@ -57,7 +60,7 @@ def eq(input, other, *, out=None):
 def argsort(input, dim=-1, descending=False):
     return ivy.argsort(input, axis=dim, descending=descending)
 
-
+    
 def greater_equal(input, other, *, out=None):
     ret = ivy.greater_equal(input, other, out=out)
     return ret
@@ -97,3 +100,34 @@ def isclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
 
 
 isclose.unsupported_dtypes = ("float16",)
+
+
+def isfinite(input):
+    return ivy.isfinite(input)
+
+
+def isinf(input):
+    return ivy.isinf(input)
+
+
+def isposinf(input, *, out=None):
+    is_inf = ivy.isinf(input)
+    pos_sign_bit = ivy.bitwise_invert(ivy.less(input, 0))
+    return ivy.logical_and(is_inf, pos_sign_bit, out=out)
+
+
+def isneginf(input, *, out=None):
+    is_inf = ivy.isinf(input)
+    neg_sign_bit = ivy.less(input, 0)
+    return ivy.logical_and(is_inf, neg_sign_bit, out=out)
+
+
+def sort(input, dim=-1, descending=False, stable=False, out=None):
+    values = ivy.sort(input, axis=dim, descending=descending, stable=stable, out=out)
+
+    indices = ivy.argsort(input, axis=dim, descending=descending)
+
+    ret = namedtuple('sort', ['values', 'indices'])(values, indices)
+
+    return ret
+    
