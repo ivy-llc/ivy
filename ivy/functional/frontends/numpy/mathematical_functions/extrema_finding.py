@@ -2,6 +2,7 @@
 import ivy
 import numpy as np
 
+
 def minimum(
     x1,
     x2,
@@ -22,17 +23,17 @@ def minimum(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
+
 def amin(
     a,
     axis=None,
     out=None,
     keepdims=None,
     initial=None,
-    where=None,
+    where=None, 
 ):
     a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(ivy.dtype(a[0])))
     ret=np.amin(a, axis=axis, out=out, keepdims=keepdims, initial=initial,where=where)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
