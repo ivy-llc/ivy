@@ -35,7 +35,7 @@ def test_numpy_std(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis,correction = dtype_and_x
+    input_dtype, x, axis, correction = dtype_and_x
     x_array = ivy.array(x)
 
     if len(x_array.shape) == 2:
@@ -47,9 +47,6 @@ def test_numpy_std(
         axis = axis[0]
 
     input_dtype = [input_dtype]
-    axis=[axis]
-    correction=[correction]
-
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -68,10 +65,10 @@ def test_numpy_std(
         fn_tree="std",
         x=np.asarray(x, dtype=input_dtype[0]),
         axis=axis,
+        correction=correction,
         dtype=dtype,
         out=None,
         keepdims=keep_dims,
-        correction=correction,
         where=where,
         test_values=False,
     )
