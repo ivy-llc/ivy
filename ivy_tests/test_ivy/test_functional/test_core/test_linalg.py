@@ -403,14 +403,8 @@ def test_eigh(
     )
     if results is None:
         return
-
     ret_np_flat, ret_from_np_flat = results
-
-    # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        helpers.assert_all_close(
-            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
-        )
+    helpers.assert_same_type_and_shape([ret_np_flat, ret_from_np_flat])
 
 
 # eigvalsh
