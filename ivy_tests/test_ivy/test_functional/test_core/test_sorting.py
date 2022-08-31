@@ -6,7 +6,6 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -14,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -62,7 +61,7 @@ def test_argsort(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,

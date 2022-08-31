@@ -254,9 +254,9 @@ def divide(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = torch.div(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
-        ret = torch.tensor(ret, dtype=x1.dtype)
+        ret = ret.to(x1.dtype)
     else:
-        ret = torch.tensor(ret, dtype=ivy.default_float_dtype(as_native=True))
+        ret = ret.to(ivy.default_float_dtype(as_native=True))
     return ret
 
 
@@ -439,6 +439,17 @@ def pow(
 pow.support_native_out = True
 
 
+def reciprocal(
+    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
+    return torch.reciprocal(x, out=out)
+
+
+reciprocal.support_native_out = True
+reciprocal.unsupported_dtypes = ("float16",)
+
+
 def round(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
@@ -556,11 +567,12 @@ def remainder(
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return torch.mul(diff, x2, out=out)
+        return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
     return torch.remainder(x1, x2, out=out)
 
 
 remainder.support_native_out = True
+remainder.unsupported_dtypes = ("float16",)
 
 
 def atanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:

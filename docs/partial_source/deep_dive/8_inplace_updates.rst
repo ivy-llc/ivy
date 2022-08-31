@@ -177,7 +177,7 @@ Most functions in Ivy support inplace updates via the inclusion of a keyword-onl
 This enables users to specify the array to which they would like the output of a function to be written.
 This could for example be the input array itself, but can also be any other array of choice.
 
-All Ivy functions which return a single array should support inplace updates.
+All Ivy functions which return a single array should support inplace updates via the :code:`out` argument.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
 However, as discussed above, if the function is *nestable* then :code:`ivy.Container` instances are also supported.
 :code:`ivy.Container` is omitted from the type hint in such cases,
@@ -384,3 +384,12 @@ This should have hopefully given you a good feel for inplace updates, and how th
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `inplace updates discussion`_,
 or reach out on `discord`_ in the `inplace updates channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
+    </iframe>
