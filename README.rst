@@ -33,9 +33,10 @@
     <br clear="all" />
 CI Dashboard
 ---------------------
-Currently we are running the unit tests🧪 for all submodules(functional and stateful), for all backends
+Currently we are running the unit tests🧪 for all submodules(functional and stateful and array api modules), for all backends
 parallely in three Github Action workflow files using a :code:`matrix` strategy here -:
 
+* `test-array-api <https://github.com/unifyai/ivy/blob/1474e8bb894a12ddcd2dd19973789bd5e235f66a/.github/workflows/test-array-api.yml>`_
 * `test-core <https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/.github/workflows/test-ivy-core.yml>`_
 * `test-nn   <https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/.github/workflows/test-ivy-nn.yml>`_
 * `test-stateful <https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/.github/workflows/test-ivy-stateful.yml>`_
