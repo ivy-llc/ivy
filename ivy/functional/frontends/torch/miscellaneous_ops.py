@@ -38,3 +38,10 @@ cumsum.unsupported_dtypes = (
     "uint32",
     "uint64",
 )
+
+
+def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
+    # THIS IS JUST TO TEST THE TEST
+    import torch as not_torch
+
+    return ivy.array(not_torch.triu_indices(row, col, offset), dtype="int64")
