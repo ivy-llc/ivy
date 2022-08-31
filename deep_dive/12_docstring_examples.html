@@ -68,9 +68,12 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="13_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -104,14 +107,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -372,6 +375,7 @@ examples that should be included in the docstring!</p>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -491,9 +495,10 @@ point 11.</p>
 <p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">roll</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
@@ -655,6 +660,7 @@ in order to satisfy point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
     <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -937,6 +943,36 @@ docstring, with the operator called with a <code class="code docutils literal no
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Docstring Tests</strong></p>
+<p>After making a Pull Request, each time you make a commit, then a number of checks are run on it to ensure everything’s working fine.
+One of these checks is the docstring tests named as <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code> in the GitHub actions. The docstring
+tests check whether the docstring examples for a given function are valid or not. It basically checks if the output upon
+execution of the examples that are documented match exactly with the ones shown in the docstrings. Therefore each time you
+make a commit, you must ensure that the <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code> are working correctly at least for the
+function you are making changes to. To check whether the docstring tests are passing you need to check the logs for <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code>:</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/docstring_examples/docstring_failing_test_logs.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/docstring_examples/docstring_failing_test_logs.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/docstring_examples/docstring_failing_test_logs.png?raw=true" style="width: 420px;" /></a>
+</div></blockquote>
+<p>You will need to go through the logs and see if the list of functions for which the docstring tests are
+failing also has the function you are working with.</p>
+<p>If the docstring tests are failing the  logs show a list of functions having issues along with a diff message:
+<code class="code docutils literal notranslate"><span class="pre">output</span> <span class="pre">for</span> <span class="pre">failing_fn_name</span> <span class="pre">on</span> <span class="pre">run:</span> <span class="pre">......</span></code>
+<code class="code docutils literal notranslate"><span class="pre">output</span> <span class="pre">in</span> <span class="pre">docs:</span> <span class="pre">........</span></code>
+as shown below:</p>
+<blockquote>
+<div><a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docstring_examples/docstring_log.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docstring_examples/docstring_log.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docstring_examples/docstring_log.png" style="width: 420px;" /></a>
+</div></blockquote>
+<p>It can be quite tedious to go through the output diffs and spot the exact error, so you can
+take help of online tools like <a class="reference external" href="https://text-compare.com/">text compare</a> to spot the minutest
+of differences.</p>
+<p>Once you make the necessary changes and the function you are working on doesn’t cause the docstring
+tests to fail, you should be good to go. However, one of the reviewers might ask you to make additional
+changes involving examples. Passing docstring tests is a necessary but not sufficient condition for
+the completion of docstring formatting.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Docstring examples should not have code that imports ivy or sets a backend, otherwise it leads to segmentation faults.</p>
+</div>
 <p><strong>Round Up</strong></p>
 <p>These three examples should give you a good understanding of what is required when
 adding docstring examples.</p>
@@ -960,7 +996,7 @@ src="https://www.youtube.com/embed/rtce8XthiKA" class="video">
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Ivy Team.</p>
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
