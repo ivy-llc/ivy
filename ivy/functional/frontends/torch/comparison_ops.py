@@ -130,3 +130,14 @@ def sort(input, dim=-1, descending=False, stable=False, out=None):
     ret = namedtuple("sort", ["values", "indices"])(values, indices)
 
     return ret
+
+
+def isnan(input):
+    return ivy.isnan(input)
+
+
+def less_equal(input, other, *, out=None):
+    return ivy.less_equal(input, other, out=out)
+
+
+le = less_equal
