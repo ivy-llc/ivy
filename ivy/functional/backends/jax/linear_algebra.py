@@ -90,7 +90,13 @@ def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 inv.unsupported_dtypes = ("float16",)
 
 
-def matmul(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def matmul(
+    x1: JaxArray, 
+    x2: JaxArray, 
+    /, 
+    *, 
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     ret = jnp.matmul(x1, x2)
     return ret
 
