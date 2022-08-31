@@ -137,7 +137,6 @@ def dropout(
 # Attention #
 
 
-@handle_nestable
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
