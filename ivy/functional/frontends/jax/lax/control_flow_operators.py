@@ -33,10 +33,6 @@ def switch(index, branches, *operands, operand=None):
 
 
 def while_loop(cond_fun, body_fun, init_val):
-    # compile
-    cond_fun = ivy.compile(cond_fun, example_inputs=[init_val])
-    body_fun = ivy.compile(body_fun, example_inputs=[init_val])
-    # function body
     val = init_val
     while ivy.all(cond_fun(val)):
         val = body_fun(val)
