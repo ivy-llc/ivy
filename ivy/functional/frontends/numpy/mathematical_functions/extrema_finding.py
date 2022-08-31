@@ -30,8 +30,9 @@ def amin(
          out=None,
          keepdims=_NoValue,
          initial=_NoValue,
-         where=_NoValue
+         where=_NoValue,
          ):
+  a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(ivy.dtype(a)))
   ret=np.amin(a, axis=axis, out=out, keepdims=keepdims, initial=initial,where=where)
   if ivy.is_array(where):
       ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
