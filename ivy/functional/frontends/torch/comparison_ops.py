@@ -141,3 +141,17 @@ def less_equal(input, other, *, out=None):
 
 
 le = less_equal
+
+
+def less(input, other, *, out=None):
+    return ivy.less(input, other, out=out)
+
+
+lt = less
+
+
+def not_equal(input, other, *, out=None):
+    return ivy.not_equal(input, other, out=out)
+
+
+ne = not_equal

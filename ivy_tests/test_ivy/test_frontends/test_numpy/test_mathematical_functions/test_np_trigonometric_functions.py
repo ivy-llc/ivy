@@ -104,7 +104,7 @@ def test_numpy_tan(
         out=None,
         where=where,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=dtype,
         subok=True,
         test_values=False,
