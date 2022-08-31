@@ -1,6 +1,7 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
@@ -12,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+        available_dtypes=ivy_np.valid_float_dtypes,
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
@@ -33,7 +34,14 @@ def test_numpy_ceil(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
+
+    if type(input_dtype) != list:
+        input_dtype = [input_dtype]
+    if type(as_variable) != list:
+        as_variable = [as_variable]
+    if type(native_array) != list:
+        native_array = [native_array]
+
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
