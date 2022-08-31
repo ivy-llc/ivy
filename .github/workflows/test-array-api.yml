@@ -8,6 +8,7 @@ on:
 jobs:
   run-array-api-tests:
     strategy:
+      max-parallel: 10
       matrix:
         backends: [numpy, torch, jax, tensorflow]
         submodules: [test_array_object, test_constants, test_creation_functions, test_data_type_functions
