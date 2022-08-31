@@ -35,6 +35,7 @@ def test_numpy_clip(
     fw,
 ):
     (x_dtype, min_dtype, max_dtype), (x_list, min_val_list, max_val_list) = x_min_n_max
+    assume(np.all(np.less(np.asarray(min_val_list), np.asarray(max_val_list))))
     input_dtype = [x_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
