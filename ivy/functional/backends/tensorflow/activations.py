@@ -9,6 +9,7 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
+import ivy
 
 
 def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
@@ -28,6 +29,8 @@ def gelu(
 
 
 def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    if not ivy.is_array(x):
+        x = float(x)
     return tf.nn.sigmoid(x)
 
 

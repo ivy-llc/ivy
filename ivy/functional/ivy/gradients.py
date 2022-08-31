@@ -1,8 +1,10 @@
 """Collection of gradient Ivy functions."""
 
+# global
+from typing import Union, Optional, Tuple
+
 # local
 import ivy
-from typing import Union, Optional
 from ivy.backend_handler import current_backend
 
 from ivy.func_wrapper import (
@@ -136,10 +138,6 @@ def unset_with_grads():
     """
     Enter a nested code space where gradients are computed. This method
     deletes the with_grads component from the global list with_grads_stack
-
-    Parameters
-    ----------
-        No Paramters(Void function)
 
     Returns
     -------
@@ -525,7 +523,7 @@ def adam_step(
     beta2: float = 0.999,
     epsilon: float = 1e-7,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """Compute adam step delta, given the derivatives of some cost c with respect
     to weights ws, using ADAM update. `[reference]
 
@@ -651,10 +649,11 @@ def adam_step(
     mw = ivy.add(beta1 * mw, (1 - beta1) * dcdw)
     dcdw_sqrd = dcdw**2
     vw = ivy.add(beta2 * vw, (1 - beta2) * dcdw_sqrd)
+    vw_sqrt = ivy.maximum(vw, 0.0) ** 0.5
     beta1_pow = beta1**step
     beta2_pow = beta2**step
     alpha = (1 - beta2_pow) ** 0.5 / (1 - beta1_pow + epsilon)
-    return ivy.divide(alpha * mw, vw**0.5 + epsilon, out=out), mw, vw
+    return ivy.divide(alpha * mw, vw_sqrt + epsilon, out=out), mw, vw
 
 
 adam_step.out_index = 0

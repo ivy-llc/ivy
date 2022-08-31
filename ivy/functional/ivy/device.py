@@ -319,6 +319,7 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
+@handle_nestable
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -1037,9 +1038,13 @@ def split_func_call(
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [
-        ivy.split(inp, chunk_sizes, input_axes[i], True)
+        ivy.split(
+            inp, num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        )
         if ivy.is_array(inp)
-        else inp.split(chunk_sizes, input_axes[i], True)
+        else inp.split(
+            num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        )
         for i, inp in enumerate(inputs)
     ]
     is_mean = mode == "mean"
@@ -1074,7 +1079,10 @@ def split_func_call(
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
+    ret = [
+        ivy.concat([r[i] for r in rets], axis=output_axes[i])
+        for i in range(num_outputs)
+    ]
     return ret[0] if len(ret) == 1 else ret
 
 

@@ -4,6 +4,7 @@ from typing import Union, Sequence, List
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -51,7 +52,9 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: torch.Tensor, dtype: torch.dtype, *, copy: bool = True) -> torch.Tensor:
+def astype(
+    x: torch.Tensor, dtype: torch.dtype, /, *, copy: bool = True
+) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if isinstance(dtype, str):
         dtype = ivy.as_native_dtype(dtype)
@@ -104,12 +107,14 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
     return True
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype

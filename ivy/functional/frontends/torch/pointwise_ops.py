@@ -133,6 +133,13 @@ def arctanh(input, *, out=None):
 arctanh.unsupported_dtypes = ("float16",)
 
 
+def log2(input, *, out=None):
+    return ivy.log2(input, out=out)
+
+
+log2.unsupported_dtypes = ("float16",)
+
+
 def square(input, *, out=None):
     return ivy.square(input, out=out)
 
@@ -163,6 +170,13 @@ def log10(input, *, out=None):
 
 
 log10.unsupported_dtypes = ("float16",)
+
+
+def trunc(input, *, out=None):
+    return ivy.trunc(input, out=out)
+
+
+trunc.unsupported_dtypes = ("float16",)
 
 
 def sqrt(input, *, out=None):

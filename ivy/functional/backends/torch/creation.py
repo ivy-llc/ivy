@@ -68,6 +68,7 @@ def arange(
 
 
 arange.support_native_out = True
+arange.unsupported_dtypes = ("float16",)
 
 
 def asarray(
@@ -96,6 +97,17 @@ def asarray(
         dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))
     else:
         dtype = as_native_dtype((default_dtype(dtype=dtype, item=object_in)))
+
+    if dtype == torch.bfloat16 and isinstance(object_in, np.ndarray):
+        if copy is True:
+            return (
+                torch.as_tensor(object_in.tolist(), dtype=dtype)
+                .clone()
+                .detach()
+                .to(device)
+            )
+        else:
+            return torch.as_tensor(object_in.tolist(), dtype=dtype).to(device)
 
     if copy is True:
         return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
@@ -374,7 +386,7 @@ def ones(
 ones.support_native_out = True
 
 
-def ones_like(
+def ones_like_v_0p4p0_and_above(
     x: torch.Tensor,
     /,
     *,
@@ -383,6 +395,17 @@ def ones_like(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, dtype=dtype, device=device)
+
+
+def ones_like_v_0p3p0_to_0p3p1(
+    x: torch.Tensor,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.ones_like(x, out=out)
 
 
 def tril(
