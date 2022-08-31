@@ -780,7 +780,7 @@ def stack(
     instances in place of any of the arguments.
 
     """
-    return current_backend(arrays).stack(arrays, axis, out=out)
+    return current_backend(arrays).stack(arrays, axis=axis, out=out)
 
 
 # Extra #
