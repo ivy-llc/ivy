@@ -6,7 +6,6 @@ from ivy.container.base import ContainerBase
 import ivy
 
 
-# noinspection PyMissingConstructor
 class ContainerWithSet(ContainerBase):
     @staticmethod
     def static_unique_all(
@@ -239,6 +238,53 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.unique_inverse. This method simply
+        wraps the function, and so the docstring for ivy.unique_inverse also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+             input container. If ``x`` has more than one dimension, the function must
+             flatten ``x`` and return the unique elements of the flattened array.
+        key_chains
+             The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+             If True, the method will be applied to key_chains, otherwise key_chains
+             will be skipped. Default is True.
+        prune_unapplied
+             Whether to prune key_chains for which the function was not applied.
+             Default is False.
+        map_sequences
+             Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+
+             a namedtuple ``(values, inverse_indices)`` whose
+
+             - first element must have the field name ``values`` and must be an array
+             containing the unique elements of ``x``. The array must have the same data
+             type as ``x``.
+             - second element must have the field name ``inverse_indices`` and
+              must be an array containing the indices of ``values`` that
+              reconstruct ``x``. The array must have the same shape as ``x`` and
+              must have the default array index data type.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4.,8.,3.,5.,9.,4.]),\
+        ... b=ivy.array([7,6,4,5,6,3,2]))
+        >>> y = x.unique_inverse()
+        >>> print(y)
+             {
+               a: (list[2], <class ivy.array.array.Array> shape=[5]),
+               b: (list[2], <class ivy.array.array.Array> shape=[6])
+             }
+
+        """
         return self.static_unique_inverse(
             self,
             key_chains=key_chains,

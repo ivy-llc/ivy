@@ -10,6 +10,7 @@ import inspect
 import pytest
 import numpy as np
 import math
+import gc
 from typing import Union, List
 from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
@@ -96,6 +97,10 @@ def get_ivy_mxnet():
     except ImportError:
         return None
     return ivy.functional.backends.mxnet
+
+
+def get_valid_numeric_dtypes():
+    return ivy.valid_numeric_dtypes
 
 
 _ivy_fws_dict = {
@@ -331,6 +336,47 @@ def docstring_examples_run(
 def var_fn(x, *, dtype=None, device=None):
     """Returns x as an Ivy Variable wrapping an Ivy Array with given dtype and device"""
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
+
+
+@st.composite
+def get_dtypes(draw, kind, index=0, full=False, none=False):
+    """
+    Draws valid dtypes based on the backend set on the stack
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    type
+        Supported types are integer, float, valid, numeric, and unsigned
+    index
+        list indexing incase a test needs to be skipped for a particular dtype(s)
+    full
+        returns the complete list of valid types
+        returns the complete list of valid types
+    none
+
+    Returns
+    -------
+    ret
+        dtype string
+    """
+    type_dict = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "signed_integer": tuple(
+            set(ivy.valid_int_dtypes).difference(ivy.valid_uint_dtypes)
+        ),
+    }
+    if none:
+        return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
+    if full:
+        return type_dict[kind][index:]
+    return draw(st.sampled_from(type_dict[kind][index:]))
 
 
 @st.composite
@@ -1259,12 +1305,14 @@ def test_method(
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     v_np = None
     if isinstance(ins, ivy.Module):
-        v = ivy.Container(
-            ins._create_variables(device=device_, dtype=input_dtypes_method[0])
-        )
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if init_with_v:
+            v = ivy.Container(
+                ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+            )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
+        else:
+            v = ins.__getattribute__("v")
+        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -1448,6 +1496,8 @@ def test_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in input_dtypes))
 
     fn = getattr(ivy, fn_name)
     if gradient_incompatible_function(fn=fn):
@@ -2043,6 +2093,8 @@ def dtype_and_values(
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
         max_dim_size = draw(max_dim_size)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if dtype is None:
@@ -2325,6 +2377,16 @@ def _zeroing(x):
         return 0.0
 
 
+def _clamp_value(x, dtype):
+    if ivy.is_int_dtype(dtype):
+        d_info = ivy.iinfo(dtype)
+    elif ivy.is_float_dtype(dtype):
+        d_info = ivy.finfo(dtype)
+    if x > d_info.max or x < d_info.min:
+        return None  # Calculated later using safety factor
+    return x
+
+
 @st.composite
 def array_values(
     draw,
@@ -2385,6 +2447,8 @@ def array_values(
         for dim in shape:
             size *= dim
     values = None
+    min_value = _clamp_value(min_value, dtype) if ivy.exists(min_value) else None
+    max_value = _clamp_value(max_value, dtype) if ivy.exists(max_value) else None
     if "uint" in dtype:
         if dtype == "uint8":
             min_value = ivy.default(
@@ -2616,8 +2680,8 @@ def array_values(
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=np.array(min_value, dtype=dtype).tolist(),
-                        max_value=np.array(max_value, dtype=dtype).tolist(),
+                        min_value=np.array(min_value).astype("float64").tolist(),
+                        max_value=np.array(max_value).astype("float64").tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -3088,6 +3152,7 @@ def handle_cmd_line_args(test_fn):
     @given(data=st.data())
     @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
+        gc.collect()
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":
