@@ -34,13 +34,7 @@ def test_numpy_deg2rad(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    if type(input_dtype) != list:
-        input_dtype = [input_dtype]
-    if type(as_variable) != list:
-        as_variable = [as_variable]
-    if type(native_array) != list:
-        native_array = [native_array]
+    input_dtype = [input_dtype]
 
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
