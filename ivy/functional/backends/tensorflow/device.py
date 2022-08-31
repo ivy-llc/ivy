@@ -21,10 +21,10 @@ def _same_device(dev_a, dev_b):
 
 
 def dev(
-        x: Union[tf.Tensor, tf.Variable],
-        /,
-        *,
-        as_native: bool = False,
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    as_native: bool = False,
 ) -> Union[ivy.Device, str]:
     dv = x.device
     if as_native:
@@ -33,11 +33,11 @@ def dev(
 
 
 def to_device(
-        x: Union[tf.Tensor, tf.Variable],
-        device: str,
-        /,
-        *,
-        stream: Optional[int] = None,
+    x: Union[tf.Tensor, tf.Variable],
+    device: str,
+    /,
+    *,
+    stream: Optional[int] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if device is None:
         return x
