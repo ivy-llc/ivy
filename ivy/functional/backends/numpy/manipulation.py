@@ -180,11 +180,7 @@ def repeat(
 
 
 def tile(
-    x: np.ndarray,
-    /,
-    reps: Sequence[int],
-    *,
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.tile(x, reps)
     return ret
