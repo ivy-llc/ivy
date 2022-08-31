@@ -102,8 +102,8 @@ def get_previous_job_data(
         if info["name"] == job_name:
             # return when previous job is queued as well
             if info["status"] in ("in_progress", "queued"):
-                return prev_action_link, prev_conclusion
-            return info["html_url"], config[info["conclusion"]]
+                return (prev_action_link, prev_conclusion)
+            return (info["html_url"], config[info["conclusion"]])
 
 
 def get_matrix_job_data(token):
@@ -127,16 +127,17 @@ def get_matrix_job_data(token):
                 )
                 backend, submodule = backend_submod[0], backend_submod[1]
 
-            if info["status"] in ("in_progress, queued") and not workflow_df_prev.empty:
+            if info["status"] in ("in_progress, queued"):
                 conclusion = config["in_progress"]
-                prev_action_link, prev_conclusion = get_previous_job_data(
-                    workflow_df_prev,
-                    name,
-                    info["name"],
-                    prev_action_link,
-                    prev_conclusion,
-                    token,
-                )
+                if workflow_df_prev is not None:
+                    prev_action_link, prev_conclusion = get_previous_job_data(
+                        workflow_df_prev,
+                        name,
+                        info["name"],
+                        prev_action_link,
+                        prev_conclusion,
+                        token,
+                    )
             else:
                 conclusion = config[info["conclusion"]]
 
