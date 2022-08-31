@@ -580,7 +580,6 @@ def test_torch_less_equal(
             ),
         ),
         num_arrays=2,
-        allow_inf=False,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -621,7 +620,6 @@ def test_torch_less(
             ),
         ),
         num_arrays=2,
-        allow_inf=False,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
