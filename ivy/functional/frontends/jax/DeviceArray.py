@@ -1,40 +1,23 @@
-# global
-import ivy
-
-
 # local
+import ivy
 import ivy.functional.frontends.jax as ivy_frontend
-import ivy.functional.frontends.frontend_array as ivy_frontend_array
 
 
-class DeviceArray(ivy_frontend_array.frontend_array):
+class DeviceArray:
     def __init__(self, data):
-        ivy.set_current_backend("jax")
         self._init(data)
-        ivy.unset_backend()
 
-    @property
-    def T(self):
-        return DeviceArray(ivy_frontend.transpose(self))
+    def _init(self, data):
+        if ivy.is_ivy_array(data):
+            self.data = data.data
+        else:
+            assert ivy.is_native_array(data)
+            self.data = data
 
-    # ToDo: Implement these properties
-    @property
-    def at(self, idx):
-        return None
-
-    @property
-    def imag(self, val):
-        return None
-
-    @property
-    def real(self, val):
-        return None
-
-    # Instance Methods
-    # ---------------#
-
+    # Instance Methoods #
+    # -------------------#
     def reshape(self, new_sizes, dimensions=None):
-        return ivy_frontend.reshape(self, new_sizes, dimensions)
+        return ivy_frontend.reshape(self.data, new_sizes, dimensions)
 
     def add(self, other):
-        return ivy_frontend.add(self, other)
+        return ivy_frontend.add(self.data, other)
