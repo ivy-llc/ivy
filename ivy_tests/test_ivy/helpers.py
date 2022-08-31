@@ -10,6 +10,7 @@ import inspect
 import pytest
 import numpy as np
 import math
+import gc
 from typing import Union, List
 from hypothesis import assume, given, settings
 import hypothesis.extra.numpy as nph  # noqa
@@ -341,6 +342,7 @@ def var_fn(x, *, dtype=None, device=None):
 def get_dtypes(draw, kind, index=0, full=False, none=False):
     """
     Draws valid dtypes based on the backend set on the stack
+
     Parameters
     ----------
     draw
@@ -357,7 +359,8 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
 
     Returns
     -------
-
+    ret
+        dtype string
     """
     type_dict = {
         "valid": ivy.valid_dtypes,
@@ -365,6 +368,9 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
         "float": ivy.valid_float_dtypes,
         "integer": ivy.valid_int_dtypes,
         "unsigned": ivy.valid_uint_dtypes,
+        "signed_integer": tuple(
+            set(ivy.valid_int_dtypes).difference(ivy.valid_uint_dtypes)
+        ),
     }
     if none:
         return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
@@ -615,7 +621,7 @@ def assert_all_close(
         ), "{} != {}".format(ret_np, ret_from_gt_np)
 
 
-def assert_same_type_and_shape(values, this_key_chain):
+def assert_same_type_and_shape(values, this_key_chain=None):
     x, y = values
     assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
     if isinstance(x, np.ndarray):
@@ -685,7 +691,6 @@ def flatten(*, ret):
 def flatten_and_to_np(*, ret):
     # flatten the return
     ret_flat = flatten(ret=ret)
-    # convert the return to NumPy
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
@@ -1299,12 +1304,14 @@ def test_method(
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     v_np = None
     if isinstance(ins, ivy.Module):
-        v = ivy.Container(
-            ins._create_variables(device=device_, dtype=input_dtypes_method[0])
-        )
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if init_with_v:
+            v = ivy.Container(
+                ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+            )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
+        else:
+            v = ins.__getattribute__("v")
+        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -1841,6 +1848,7 @@ def test_frontend_function(
 
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
+    backend_returned_scalar = False
     try:
         # check for unsupported dtypes in frontend framework
         function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
@@ -1876,27 +1884,34 @@ def test_frontend_function(
             )
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
-
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-
-        # flatten the frontend return and convert to NumPy arrays
-        frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
-        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+        
+        if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
+            backend_returned_scalar = True
+            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+        else:
+            # tuplify the frontend return
+            if not isinstance(frontend_ret, tuple):
+                frontend_ret = (frontend_ret,)
+            frontend_ret_idxs = ivy.nested_indices_where(
+                frontend_ret, 
+                ivy.is_native_array
+            )
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
         ivy.unset_backend()
         raise e
     # unset frontend framework from backend
     ivy.unset_backend()
 
+    if backend_returned_scalar:
+        ret_np_flat = ivy.to_numpy([ret])
+    else:
+        ret_np_flat = flatten_and_to_np(ret=ret)
+
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret
-
-    # flatten the return
-    ret_np_flat = flatten_and_to_np(ret=ret)
 
     # value tests, iterating through each array in the flattened returns
     value_test(
@@ -1904,6 +1919,7 @@ def test_frontend_function(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
+        ground_truth_backend=frontend
     )
 
 
@@ -2369,6 +2385,16 @@ def _zeroing(x):
         return 0.0
 
 
+def _clamp_value(x, dtype):
+    if ivy.is_int_dtype(dtype):
+        d_info = ivy.iinfo(dtype)
+    elif ivy.is_float_dtype(dtype):
+        d_info = ivy.finfo(dtype)
+    if x > d_info.max or x < d_info.min:
+        return None  # Calculated later using safety factor
+    return x
+
+
 @st.composite
 def array_values(
     draw,
@@ -2429,6 +2455,8 @@ def array_values(
         for dim in shape:
             size *= dim
     values = None
+    min_value = _clamp_value(min_value, dtype) if ivy.exists(min_value) else None
+    max_value = _clamp_value(max_value, dtype) if ivy.exists(max_value) else None
     if "uint" in dtype:
         if dtype == "uint8":
             min_value = ivy.default(
@@ -3132,6 +3160,7 @@ def handle_cmd_line_args(test_fn):
     @given(data=st.data())
     @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
+        gc.collect()
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":
