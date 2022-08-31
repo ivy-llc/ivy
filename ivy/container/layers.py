@@ -856,8 +856,9 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        recurrent_bias: Optional[Union[ivy.Array,
-                                       ivy.NativeArray, ivy.Container]] = None,
+        recurrent_bias: Optional[
+            Union[ivy.Array, ivy.NativeArray, ivy.Container]
+        ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -887,8 +888,9 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        recurrent_bias: Optional[Union[ivy.Array,
-                                       ivy.NativeArray, ivy.Container]] = None,
+        recurrent_bias: Optional[
+            Union[ivy.Array, ivy.NativeArray, ivy.Container]
+        ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
