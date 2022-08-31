@@ -52,7 +52,6 @@ def x_and_linear(draw, dtypes):
     dtype_x_weight_bias=x_and_linear(
         dtypes=helpers.get_dtypes("float"),
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
 )
 def test_linear(
@@ -109,9 +108,6 @@ def test_linear(
     prob=helpers.floats(min_value=0, max_value=0.9, width=64),
     scale=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="dropout"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_dropout(
     *,
@@ -184,13 +180,13 @@ def x_and_scaled_attention(draw, dtypes):
             shape=mask_shape,
             min_value=0,
             max_value=1,
-            large_value_safety_factor=2,
+            large_value_safety_factor=1,
         )
     )
     return dtype, q, k, v, mask, scale
 
 
-# # scaled_dot_product_attention
+# scaled_dot_product_attention
 @handle_cmd_line_args
 @given(
     dtype_q_k_v_mask_scale=x_and_scaled_attention(

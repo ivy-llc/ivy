@@ -313,7 +313,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
         A tuple of tuples of indices for the indices at which to update.
     fn
         The function to perform on the nest at the given index.
-    
+
     Examples
     --------
     With :code:`List` inputs:

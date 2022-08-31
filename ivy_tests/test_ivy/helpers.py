@@ -621,7 +621,7 @@ def assert_all_close(
         ), "{} != {}".format(ret_np, ret_from_gt_np)
 
 
-def assert_same_type_and_shape(values, this_key_chain):
+def assert_same_type_and_shape(values, this_key_chain=None):
     x, y = values
     assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
     if isinstance(x, np.ndarray):
@@ -2377,6 +2377,16 @@ def _zeroing(x):
         return 0.0
 
 
+def _clamp_value(x, dtype):
+    if ivy.is_int_dtype(dtype):
+        d_info = ivy.iinfo(dtype)
+    elif ivy.is_float_dtype(dtype):
+        d_info = ivy.finfo(dtype)
+    if x > d_info.max or x < d_info.min:
+        return None  # Calculated later using safety factor
+    return x
+
+
 @st.composite
 def array_values(
     draw,
@@ -2437,6 +2447,8 @@ def array_values(
         for dim in shape:
             size *= dim
     values = None
+    min_value = _clamp_value(min_value, dtype) if ivy.exists(min_value) else None
+    max_value = _clamp_value(max_value, dtype) if ivy.exists(max_value) else None
     if "uint" in dtype:
         if dtype == "uint8":
             min_value = ivy.default(

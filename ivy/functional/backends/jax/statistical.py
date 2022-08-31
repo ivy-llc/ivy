@@ -95,7 +95,6 @@ def sum(
     dtype: Optional[jnp.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
-
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
