@@ -2055,8 +2055,7 @@ def einops_rearrange(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-     """
-    Perform einops rearrange operation on input array x.
+     """Perform einops rearrange operation on input array x.
 
     Parameters
     ----------
