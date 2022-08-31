@@ -171,7 +171,9 @@ def repeat(
     return ret
 
 
-def tile(x: JaxArray, /, reps, *, out: Optional[JaxArray] = None) -> JaxArray:
+def tile(
+    x: JaxArray, /, reps: Iterable[int], *, out: Optional[JaxArray] = None
+) -> JaxArray:
     ret = jnp.tile(x, reps)
     return ret
 
@@ -215,8 +217,7 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x = jnp.asarray(x, dtype=promoted_type)
-    ret = jnp.clip(x, x_min, x_max)
-    return ret
+    return jnp.clip(x, x_min, x_max)
 
 
 def constant_pad(

@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.prod"
     ),
     keepdims=st.booleans(),
-    initial=st.one_of(st.booleans(), st.integers(), st.floats(), st.complex_numbers())
+    initial=st.one_of(st.booleans(), st.integers(), st.floats(), st.complex_numbers()),
 )
 def test_numpy_prod(
     dtype_and_x,
@@ -33,7 +33,7 @@ def test_numpy_prod(
     native_array,
     fw,
     keepdims,
-    initial
+    initial,
 ):
     input_dtype, x, axis = dtype_and_x
     input_dtype = [input_dtype]
