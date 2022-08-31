@@ -4,7 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -13,12 +12,15 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_num_dims=2,
+        max_num_dims=2,
         min_dim_size=2,
+        min_value=0,
+        max_value=1,
         allow_inf=False,
-        min_axis=-1,
-        max_axis=1,
+        min_axis=0,
+        max_axis=0,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
@@ -41,7 +43,7 @@ def test_numpy_all(
     input_dtype, x, axis = dtype_x_axis
     input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
+        where=where[0] if isinstance(where, list) else where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -68,12 +70,15 @@ def test_numpy_all(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         min_num_dims=2,
+        max_num_dims=2,
         min_dim_size=2,
+        min_value=0,
+        max_value=1,
         allow_inf=False,
-        min_axis=-1,
-        max_axis=1,
+        min_axis=0,
+        max_axis=0,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
@@ -96,7 +101,7 @@ def test_numpy_any(
     input_dtype, x, axis = dtype_x_axis
     input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
+        where=where[0] if isinstance(where, list) else where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
