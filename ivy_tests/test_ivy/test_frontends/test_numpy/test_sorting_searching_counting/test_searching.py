@@ -99,7 +99,7 @@ def _dtype_x_bounded_axis(draw, **kwargs):
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.argmin"
     ),
-    keep_dims=st.booleans()
+    keep_dims=st.booleans(),
 )
 def test_numpy_argmin(
     dtype_x_axis,
@@ -123,5 +123,5 @@ def test_numpy_argmin(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
-        out=None
+        out=None,
     )
