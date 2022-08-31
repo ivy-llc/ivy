@@ -28,9 +28,9 @@ def amin(
          a,
          axis=None,
          out=None,
-         keepdims=_NoValue,
-         initial=_NoValue,
-         where=_NoValue,
+         keepdims=True,
+         initial=None,
+         where=True,
          ):
   a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(ivy.dtype(a)))
   ret=np.amin(a, axis=axis, out=out, keepdims=keepdims, initial=initial,where=where)
