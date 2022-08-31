@@ -1,4 +1,4 @@
-name: test-array-api-jax
+name: test-array-api-meta
 on:
   push:
   pull_request:
@@ -6,7 +6,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-jax-array-api-tests:
+  run-array-api-meta-tests:
+    strategy:
+      matrix:
+        backends: [numpy, torch, jax, tensorflow]
+        submodules: [test_array_helpers, test_broadcasting, test_equality_mapping
+                     test_hypothesis_helpers, test_partial_adopters, test_pytest_helpers,
+                     test_signatures, test_special_cases, test_utils]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -19,9 +25,9 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: test-array-api-jax.yml
+          workflow: test-array-api-meta.yml
           workflow_conclusion: completed
-          name: hypothesis_jax_zip
+          name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
           path: |
             ivy/.hypothesis/
         continue-on-error: true
@@ -43,11 +49,11 @@ jobs:
           mkdir -p examples
         continue-on-error: true
 
-      - name: Run Frontend Tests
+      - name: Run Array Api Tests
         id: tests
         run: |
           cd ivy
-          ./test_array_api.sh jax
+          ./test_array_api_meta.sh ${{matrix.backends}} ${{matrix.submodules}}
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
@@ -59,7 +65,7 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis_jax_zip
+          name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
           path: |
             ivy/.hypothesis/examples.zip
         continue-on-error: true
