@@ -2447,20 +2447,8 @@ def array_values(
         for dim in shape:
             size *= dim
     values = None
-    if min_value:
-        if ivy.is_int_dtype(dtype):
-            imin = ivy.iinfo(dtype).min
-            min_value = None if imin > min_value else min_value
-        elif ivy.is_float_dtype(dtype):
-            fmin = ivy.finfo(dtype).min
-            min_value = None if fmin > min_value else min_value
-    if max_value:
-        if ivy.is_int_dtype(dtype):
-            imax = ivy.iinfo(dtype).max
-            max_value = None if imax < max_value else max_value
-        elif ivy.is_float_dtype(dtype):
-            fmax = ivy.finfo(dtype).max
-            max_value = None if fmax < max_value else max_value
+    min_value = _clamp_value(min_value) if ivy.exists(min_value) else None
+    max_value = _clamp_value(max_value) if ivy.exists(max_value) else None
     if "uint" in dtype:
         if dtype == "uint8":
             min_value = ivy.default(
