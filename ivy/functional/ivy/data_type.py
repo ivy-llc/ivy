@@ -1,8 +1,11 @@
 # global
+import ast
+import inspect
 import math
-import numpy as np
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable
+
+import numpy as np
 
 # local
 import ivy
@@ -31,6 +34,59 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
             if isinstance(fn_unsupported_dtypes, tuple):
                 return False
     return True
+
+
+# Get the list of function used the function
+def _get_function_list(func):
+    tree = ast.parse(inspect.getsource(func).lstrip())
+    names = set()
+    # Extract all the call names
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            nodef = node.func
+            if isinstance(nodef, ast.Name):
+                names.add(nodef.id)
+            elif isinstance(nodef, ast.Attribute):
+                names.add(nodef.attr)
+
+    return names
+
+
+# Get the reference of the functions from string
+def _get_functions_from_string(func_names, module):
+    ret = set()
+    # We only care about the functions in the ivy or the same module
+    for func_name in func_names:
+        if hasattr(ivy, func_name):
+            ret.add(getattr(ivy, func_name))
+        elif hasattr(module, func_name):
+            ret.add(getattr(module, func_name))
+    return ret
+
+
+# Get dtypes of nested functions, used for unsupported and supported dtypes
+def _nested_get_dtype(f, base_set, merge_fn, get_dtypes):
+    visited = set()
+    to_visit = [f]
+    out = base_set
+
+    while to_visit:
+        fn = to_visit.pop()
+        if fn in visited:
+            continue
+        visited.add(fn)
+
+        # Assuming that it's set in backend or the ivy functional module
+        if "backend" in fn.__module__ or "functional.ivy" in fn.__module__:
+            f_suported = set(get_dtypes(fn, False))
+            out = merge_fn(f_suported, out)
+            continue
+
+        fl = _get_function_list(fn)
+        res = _get_functions_from_string(fl, __import__(fn.__module__))
+        to_visit.extend(res)
+
+    return out
 
 
 # Array API Standard #
@@ -1225,13 +1281,15 @@ def dtype(
 
 
 @handle_nestable
-def function_supported_dtypes(fn: Callable) -> Tuple:
+def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the supported data types of the current backend's function.
 
     Parameters
     ----------
     fn
         The function to check for the supported dtype attribute
+    recurse
+        Whether or not to recurse into used ivy functions. Default is True.
 
     Returns
     -------
@@ -1260,17 +1318,24 @@ def function_supported_dtypes(fn: Callable) -> Tuple:
                 supported_dtypes += fn_supported_dtypes["all"]
         else:
             supported_dtypes += fn_supported_dtypes
-    return tuple(set(supported_dtypes))
+
+    res = set(supported_dtypes)
+    if recurse:
+        res = _nested_get_dtype(fn, res, set.intersection, function_supported_dtypes)
+
+    return tuple(res)
 
 
 @handle_nestable
-def function_unsupported_dtypes(fn: Callable) -> Tuple:
+def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
     ----------
     fn
         The function to check for the unsupported dtype attribute
+    recurse
+        Whether or not to recurse into used ivy functions. Default is True.
 
     Returns
     -------
@@ -1300,7 +1365,12 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
                 unsupported_dtypes += fn_unsupported_dtypes["all"]
         else:
             unsupported_dtypes += fn_unsupported_dtypes
-    return tuple(set(unsupported_dtypes))
+
+    res = set(unsupported_dtypes)
+    if recurse:
+        res = _nested_get_dtype(fn, res, set.union, function_unsupported_dtypes)
+
+    return tuple(res)
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
