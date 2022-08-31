@@ -445,12 +445,16 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    ret = tf.tensordot(x1, x2, (axis, axis))
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    if dtype != 'float64':
+        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    if dtype == 'float64':
+        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
+    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
     return ret
 
 
-vecdot.unsupported_dtypes = ("int8",)
+vecdot.unsupported_dtypes = ("int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64")
 
 
 def vector_norm(
