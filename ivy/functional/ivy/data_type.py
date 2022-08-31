@@ -85,7 +85,7 @@ def _get_dtypes(fn, complement=True):
                 v = merge_fn(set(vb), v.get("all", base))
             supported = merge_fn(supported, set(v))
 
-    if not complement:
+    if complement:
         supported = set(ivy.all_dtypes).difference(supported)
 
     return tuple(supported)
