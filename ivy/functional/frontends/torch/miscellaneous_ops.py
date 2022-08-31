@@ -48,31 +48,14 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
         [i - offset, i] for i in range(-abs(offset), max(row, col) + abs(offset))
     ]
 
-    # all_indices = []
-    all_indices = [
-        (i, index[1])
-        for index in lowest_included_diagonal
-        for i in range(0, index[0] + 1)
-        # if 0 <= i < row and 0 <= index[1] < col
-    ]
-
     all_indices = [
         (i, index[1])
         for i in range(
             0, lowest_included_diagonal[-1][1] + 1
         )  # The largest possible value is in the last item, and we wish to include it.
         for index in lowest_included_diagonal
-        if 0 <= i < row
-        and 0 <= index[1] < col
-        and i <= index[0]  # THIS LAST AND IS NEW AND SKETCH
+        if 0 <= i < row and 0 <= index[1] < col and i <= index[0]
     ]
-
-    # all_indices = list(dict.fromkeys(all_indices)) # Remove duplicate entries.
-    # all_indices.sort()
-    # all_indices = list(k for k, _ in itertools.groupby(all_indices))
-
-    # all_indices_filtered = list(filter(lambda i: 0 <= i[0] < row and 0 <= i[1] < col,
-    #   all_indices))
 
     if len(all_indices) == 0:
         return ivy.array([], dtype=dtype)
