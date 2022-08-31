@@ -16,7 +16,7 @@ def equal(
     casting="samekind",
     order="K",
     dtype=None,
-    subok=True
+    subok=True,
 ):
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))

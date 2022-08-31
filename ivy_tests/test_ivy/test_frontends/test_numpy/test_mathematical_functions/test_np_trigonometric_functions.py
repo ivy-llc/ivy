@@ -262,7 +262,7 @@ def test_numpy_arctan(
         test_values=False,
     )
 
-    
+
 # cosh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
