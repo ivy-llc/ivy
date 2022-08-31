@@ -235,8 +235,8 @@ def tile(
     /,
     reps: Sequence[int],
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None
-) -> Union[tf.Tensor, tf.Variable] :
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):

@@ -16,7 +16,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)),
+                set(ivy_torch.valid_float_dtypes)
+            ),
         ),
     ),
     axis=helpers.get_axis(
@@ -30,12 +31,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     native_array=st.booleans(),
 )
 def test_torch_flip(
-        dtype_and_values,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -57,7 +58,8 @@ def test_torch_flip(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes))
+                set(ivy_torch.valid_float_dtypes)
+            )
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
@@ -110,7 +112,8 @@ def test_torch_roll(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)),
+                set(ivy_torch.valid_float_dtypes)
+            ),
         ),
         shape=helpers.get_shape(min_num_dims=2),
     ),
@@ -147,7 +150,8 @@ def test_torch_fliplr(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)),
+                set(ivy_torch.valid_float_dtypes)
+            ),
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
@@ -161,12 +165,12 @@ def test_torch_fliplr(
     native_array=st.booleans(),
 )
 def test_torch_cumsum(
-        dtype_and_values,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
