@@ -59,7 +59,7 @@ def tan(
     *,
     where=True,
     casting="same_kind",
-    order="k",
+    order="K",
     dtype=None,
     subok=True,
 ):
@@ -69,7 +69,6 @@ def tan(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
 
 tan.unsupported_dtypes = {"torch": ("float16",)}
 

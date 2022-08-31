@@ -73,6 +73,7 @@ def test_numpy_cos(
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
+
 def test_numpy_tan(
     dtype_and_x,
     dtype,
@@ -104,7 +105,7 @@ def test_numpy_tan(
         out=None,
         where=where,
         casting="same_kind",
-        order="k",
+        order="K",
         dtype=dtype,
         subok=True,
         test_values=False,
