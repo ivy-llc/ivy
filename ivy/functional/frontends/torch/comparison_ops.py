@@ -155,3 +155,7 @@ def not_equal(input, other, *, out=None):
 
 
 ne = not_equal
+
+
+def maximum(input, other, *, out=None):
+    return ivy.maximum(input, other, out=out)
