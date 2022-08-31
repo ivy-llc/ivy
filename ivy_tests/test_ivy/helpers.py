@@ -2377,6 +2377,16 @@ def _zeroing(x):
         return 0.0
 
 
+def _clamp_value(x):
+    if ivy.is_int_dtype(x.dtype):
+        d_info = ivy.iinfo(x.dtype)
+    elif ivy.is_float_dtype(x.dtype):
+        d_info = ivy.finfo(x.dtype)
+    if x > d_info.max or x < d_info.min:
+        return None  # Calculated later using safety factor
+    return x
+
+
 @st.composite
 def array_values(
     draw,
