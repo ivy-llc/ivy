@@ -39,10 +39,16 @@ def array_equal(
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
+    dtype = None
+    if ivy.as_native_dtype(x.dtype) == tf.bfloat16:
+        if ivy.default_float_dtype(as_native=True) == tf.bfloat16:
+            dtype = tf.float32
+        else:
+            dtype = ivy.default_float_dtype(as_native=True)
     if copy:
-        return np.array(tf.convert_to_tensor(x))
+        return np.array(tf.convert_to_tensor(x, dtype=dtype))
     else:
-        return np.asarray(tf.convert_to_tensor(x))
+        return np.asarray(tf.convert_to_tensor(x, dtype=dtype))
 
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
