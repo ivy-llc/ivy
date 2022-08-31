@@ -602,17 +602,13 @@ def test_indices_where(
 
 
 # one_hot
+@handle_cmd_line_args
 @given(
     depth=st.integers(min_value=10000, max_value=20000),
     x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_int_dtypes, min_value=1, max_value=10000
     ),
-    with_out=st.booleans(),
-    as_variable=st.booleans(),
     num_positional_args=st.integers(0, 3),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_one_hot(
     depth,
@@ -1184,6 +1180,7 @@ def test_explicit_ivy_framework_handles(device):
 
 
 # einops_rearrange
+@handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -1202,12 +1199,7 @@ def test_explicit_ivy_framework_handles(device):
         ('b (h1 h) (w1 w) c -> (b h1 w1) h w c', {'h1': 2, 'w1': 2}),
         ('b (h h1) (w w1) c -> b h w (c h1 w1)', {'h1': 2, 'w1': 2}),
     ]),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name='einops_rearrange'),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans()
 )
 def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw, device):
     pattern, axes_lengths = pattern_and_axes_lengths
