@@ -117,6 +117,10 @@ def bitwise_or(x, y):
     return ivy.bitwise_or(x, y)
 
 
+def bitwise_not(x):
+    return ivy.bitwise_invert(x)
+
+
 def neg(x):
     return ivy.negative(x)
 
@@ -273,3 +277,14 @@ rsqrt.unsupported_dtypes = {
     "jax": ("int64", "int32", "int16", "uint64", "uint32", "uint16"),
     "torch": ("float16",),
 }
+
+
+def expm1(x):
+    return ivy.expm1(x)
+
+
+expm1.supported_dtypes = ("bfloat16", "float16", "float32", "float64")
+
+
+def log1p(x):
+    return ivy.log1p(x)
