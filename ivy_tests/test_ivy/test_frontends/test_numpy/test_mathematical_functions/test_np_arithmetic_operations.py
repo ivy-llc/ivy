@@ -400,8 +400,8 @@ def test_numpy_cbrt(
 
 #positive
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(),
     with_out=st.booleans(),
