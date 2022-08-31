@@ -141,7 +141,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
             axis2: int = -1,
             out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.diagonal(self._data, offset=offset, axis1=axis1, axis2=axis2, out=out)
+        return ivy.diagonal(
+            self._data, 
+            offset=offset, 
+            axis1=axis1, 
+            axis2=axis2, 
+            out=out
+        )
 
     def eigh(
             self: ivy.Array,
