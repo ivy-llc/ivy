@@ -3,7 +3,16 @@ from typing import Tuple, Union
 import ivy
 
 
-class Initalizer:
+class Initializer:
+    """
+    An initializer for internal variables for a layer.
+
+    Note that a neuron is a function of the form :math:`a = g(z)`, where `g` is the 
+    activation functions and :math:`z = w_1x_1 + w_2x_2 + ... + w_nx_n` where the
+    :math:`w_i` are the weights and the :math:`x_i` are the inputs. To prevent this
+    `z` from vanishing (getting too small) or exploding (getting too big), the 
+    initial weights must be picked carefully. 
+    """
     def create_variables(
         self, 
         var_shape: Tuple[int, int], 
@@ -38,7 +47,7 @@ class Initalizer:
 # ---------#
 
 
-class Constant(Initalizer):
+class Constant(Initializer):
     def __init__(self, constant):
         """
         Constant initializer, will fill in all values with the value of `constant`.
@@ -83,8 +92,37 @@ class Ones(Constant):
 # --------#
 
 
-class Uniform(Initalizer):
+class Uniform(Initializer):
     def __init__(self, numerator, fan_mode, power, gain):
+        """
+        A initializer based on a uniform distribution, will fill in all values with 
+        values drawn from a uniform (all values have an equal probability) distribution
+        with range `[-wlim, wlim]` (endpoints included) with `wlim` being calculated as 
+        `gain * (numerator / fan)**power`. This distribution helps with issues when trying
+        to optimize and train networks. The expected value of this distribution is `0`
+        and the variance is 
+        :math:`\frac{1}{4}\left(\text{gain} * \left(\frac{\text{numerator}}{\text{fan}})**\text{power}\right)\right)`.
+                
+        This is intended as a base-class for special predefined initialzers.
+
+        Parameters
+        ----------
+        numerator 
+        fan_mode
+            Determines how `fan` is calculated.
+            - `fan_out` sets `fan` to the number of output features of this neuron. 
+              This is useful when training using back-propogation.
+            - `fan_in` sets `fan` to the number of input features of this neuron. 
+              This is useful when training using forward-propogation.
+            - `fan_sum` sets `fan` to the sum of the number of input features and 
+              output features of this neuron. 
+            - `fan_sum` sets `fan` to the average of the number of input features and 
+              output features of this neuron. 
+        power
+            Sets the drop-off factor for the calculated `fan`. 
+        gain
+            Scales the output of the distribution.
+        """
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
                 "Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | "
@@ -98,7 +136,6 @@ class Uniform(Initalizer):
     def create_variables(
         self, var_shape, device, fan_out=None, fan_in=None, dtype=None
     ):
-        """Create internal variables for the layer"""
         if self._fan_mode == "fan_in":
             if fan_in is None:
                 raise Exception(
@@ -140,24 +177,40 @@ class Uniform(Initalizer):
 
 class GlorotUniform(Uniform):
     def __init__(self):
-        super().__init__(6, "fan_sum", 0.5, 1)
+        """
+        The Glorot uniform initializer, also known as the Xavier uniform initializer.
+        It draws values from a uniform distribtion `[-limit, limit]` where 
+        `limit = sqrt(6 / (fan_in + fan_out))` where `fan_in` and `fan_out` are the
+        number of input and output features respectively.
+        """
+        super().__init__(numerator=6, fan_mode="fan_sum", power=0.5, gain=1)
 
 
 class FirstLayerSiren(Uniform):
     def __init__(self):
-        super().__init__(1, "fan_in", 1, 1)
+        """
+        The Siren uniform initializer for the first layer. It draws values from a
+        uniform distribtion `[-limit, limit]` where `limit=fan_in` where `fan_in`
+        is the number of input features.
+        """
+        super().__init__(numerator=1, fan_mode="fan_in", power=1, gain=1)
 
 
 class Siren(Uniform):
     def __init__(self, w0=30):
-        super().__init__(6, "fan_in", 0.5, 1 / w0)
+        """
+        The Siren uniform initializer for the first layer. It draws values from a
+        uniform distribtion `[-limit, limit]` where `limit=sqrt(fan_in) / w0`
+        where `fan_in` is the number of input features.
+        """
+        super().__init__(numerator=6, fan_mode="fan_in",power= 0.5, gain=1 / w0)
 
 
 # Gaussian #
 # ---------#
 
 
-class KaimingNormal(Initalizer):
+class KaimingNormal(Initializer):
     def __init__(self, mean=0, fan_mode="fan_in"):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
