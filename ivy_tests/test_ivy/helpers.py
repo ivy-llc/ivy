@@ -621,7 +621,7 @@ def assert_all_close(
         ), "{} != {}".format(ret_np, ret_from_gt_np)
 
 
-def assert_same_type_and_shape(values, this_key_chain):
+def assert_same_type_and_shape(values, this_key_chain=None):
     x, y = values
     assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
     if isinstance(x, np.ndarray):
