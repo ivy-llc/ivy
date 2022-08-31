@@ -11,8 +11,8 @@ jobs:
       max-parallel: 10
       matrix:
         backends: [numpy, torch, jax, tensorflow]
-        submodules: [test_array_object, test_constants, test_creation_functions, test_data_type_functions
-                    test_linalg, test_manipulation_functions, test_operators_and_elementwise_functions
+        submodules: [test_array_object, test_constants, test_creation_functions, test_data_type_functions,
+                    test_linalg, test_manipulation_functions, test_operators_and_elementwise_functions,
                     test_searching_functions, test_set_functions, test_signatures, test_sorting_functions,
                     test_special_cases, test_statistical_functions, test_type_promotion, test_utility_functions]
     continue-on-error: true
