@@ -129,21 +129,65 @@
              
   <h1>Source code for ivy.stateful.initializers</h1><div class="highlight"><pre>
 <span></span><span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+
+
+<div class="viewcode-block" id="Initalizer"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Initalizer">[docs]</a><span class="k">class</span> <span class="nc">Initalizer</span><span class="p">:</span>
+<div class="viewcode-block" id="Initalizer.create_variables"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Initalizer.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">var_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> 
+        <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> 
+        <span class="n">fan_out</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">fan_in</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create internal variables for the layer</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        var_shape</span>
+<span class="sd">            Tuple representing the shape of the desired array. If considering</span>
+<span class="sd">             the array as a rectangular matrix, this tuple is represented as</span>
+<span class="sd">             &#39;(ROWS, COLUMNS)&#39;.</span>
+<span class="sd">        device</span>
+<span class="sd">            Device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39;</span>
+<span class="sd">            etc. Default is cpu.</span>
+<span class="sd">        fan_out</span>
+<span class="sd">            The number of nodes in the next layer.</span>
+<span class="sd">        fan_in</span>
+<span class="sd">            The number of nodes in the previous layer.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            Desired data type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
 <span class="c1"># Constant #</span>
 <span class="c1"># ---------#</span>
 
 
-<div class="viewcode-block" id="Constant"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Constant">[docs]</a><span class="k">class</span> <span class="nc">Constant</span><span class="p">:</span>
-<div class="viewcode-block" id="Constant.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Constant.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constant</span><span class="p">):</span>
+<div class="viewcode-block" id="Constant"><a class="viewcode-back" href="../../../stateful/initializers/Constant.html#ivy.stateful.initializers.Constant">[docs]</a><span class="k">class</span> <span class="nc">Constant</span><span class="p">(</span><span class="n">Initalizer</span><span class="p">):</span>
+<div class="viewcode-block" id="Constant.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Constant.html#ivy.stateful.initializers.Constant.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constant</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constant initializer, will fill in all values with the value of `constant`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        constant</span>
+<span class="sd">            Constant value for initialization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_constant</span> <span class="o">=</span> <span class="n">constant</span></div>
 
-<div class="viewcode-block" id="Constant.create_variables"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Constant.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">fan_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fan_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create internal variables for the layer&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Constant.create_variables"><a class="viewcode-back" href="../../../stateful/initializers/Constant.html#ivy.stateful.initializers.Constant.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">var_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> 
+        <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> 
+        <span class="n">fan_out</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">fan_in</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">var_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constant</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span>
         <span class="p">)</span></div></div>
@@ -151,11 +195,17 @@
 
 <div class="viewcode-block" id="Zeros"><a class="viewcode-back" href="../../../stateful/initializers/Zeros.html#ivy.stateful.initializers.Zeros">[docs]</a><span class="k">class</span> <span class="nc">Zeros</span><span class="p">(</span><span class="n">Constant</span><span class="p">):</span>
 <div class="viewcode-block" id="Zeros.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Zeros.html#ivy.stateful.initializers.Zeros.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A constant initalizer that fills with the constant value `0.0`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Ones"><a class="viewcode-back" href="../../../stateful/initializers/Ones.html#ivy.stateful.initializers.Ones">[docs]</a><span class="k">class</span> <span class="nc">Ones</span><span class="p">(</span><span class="n">Constant</span><span class="p">):</span>
 <div class="viewcode-block" id="Ones.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Ones.html#ivy.stateful.initializers.Ones.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A constant initalizer that fills with the constant value `1.0`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span></div></div>
 
 
@@ -163,8 +213,8 @@
 <span class="c1"># --------#</span>
 
 
-<div class="viewcode-block" id="Uniform"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Uniform">[docs]</a><span class="k">class</span> <span class="nc">Uniform</span><span class="p">:</span>
-<div class="viewcode-block" id="Uniform.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Uniform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numerator</span><span class="p">,</span> <span class="n">fan_mode</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
+<div class="viewcode-block" id="Uniform"><a class="viewcode-back" href="../../../stateful/initializers/Uniform.html#ivy.stateful.initializers.Uniform">[docs]</a><span class="k">class</span> <span class="nc">Uniform</span><span class="p">(</span><span class="n">Initalizer</span><span class="p">):</span>
+<div class="viewcode-block" id="Uniform.__init__"><a class="viewcode-back" href="../../../stateful/initializers/Uniform.html#ivy.stateful.initializers.Uniform.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numerator</span><span class="p">,</span> <span class="n">fan_mode</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | &quot;</span>
@@ -175,7 +225,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_power</span> <span class="o">=</span> <span class="n">power</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">=</span> <span class="n">gain</span></div>
 
-<div class="viewcode-block" id="Uniform.create_variables"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.Uniform.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
+<div class="viewcode-block" id="Uniform.create_variables"><a class="viewcode-back" href="../../../stateful/initializers/Uniform.html#ivy.stateful.initializers.Uniform.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">var_shape</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">fan_out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fan_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create internal variables for the layer&quot;&quot;&quot;</span>
@@ -186,7 +236,7 @@
                 <span class="p">)</span>
             <span class="n">fan</span> <span class="o">=</span> <span class="n">fan_in</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">==</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">fan_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fan_out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                     <span class="s2">&quot;output_channels must be specified for fan_out denominator mode.&quot;</span>
                 <span class="p">)</span>
@@ -237,8 +287,8 @@
 <span class="c1"># ---------#</span>
 
 
-<div class="viewcode-block" id="KaimingNormal"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal">[docs]</a><span class="k">class</span> <span class="nc">KaimingNormal</span><span class="p">:</span>
-<div class="viewcode-block" id="KaimingNormal.__init__"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s2">&quot;fan_in&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="KaimingNormal"><a class="viewcode-back" href="../../../stateful/initializers/KaimingNormal.html#ivy.stateful.initializers.KaimingNormal">[docs]</a><span class="k">class</span> <span class="nc">KaimingNormal</span><span class="p">(</span><span class="n">Initalizer</span><span class="p">):</span>
+<div class="viewcode-block" id="KaimingNormal.__init__"><a class="viewcode-back" href="../../../stateful/initializers/KaimingNormal.html#ivy.stateful.initializers.KaimingNormal.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s2">&quot;fan_in&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">fan_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fan_in&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_out&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_sum&quot;</span><span class="p">,</span> <span class="s2">&quot;fan_avg&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | &quot;</span>
@@ -247,7 +297,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fan_mode</span> <span class="o">=</span> <span class="n">fan_mode</span></div>
 
-<div class="viewcode-block" id="KaimingNormal.create_variables"><a class="viewcode-back" href="../../../stateful/initializers.html#ivy.stateful.initializers.KaimingNormal.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
+<div class="viewcode-block" id="KaimingNormal.create_variables"><a class="viewcode-back" href="../../../stateful/initializers/KaimingNormal.html#ivy.stateful.initializers.KaimingNormal.create_variables">[docs]</a>    <span class="k">def</span> <span class="nf">create_variables</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">var_shape</span><span class="p">,</span>
         <span class="n">device</span><span class="p">,</span>
