@@ -1,0 +1,16 @@
+Extensions
+==========
+
+.. automodule:: ivy.functional.ivy.extensions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Extensions
+
+
