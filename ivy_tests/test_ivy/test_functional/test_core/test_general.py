@@ -249,6 +249,8 @@ def test_arrays_equal(*, x0_n_x1_n_res, device, fw):
 )
 def test_to_numpy(*, x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
     # smoke test
     ret = ivy.to_numpy(ivy.array(object_in, dtype=dtype, device=device))
     # type test
