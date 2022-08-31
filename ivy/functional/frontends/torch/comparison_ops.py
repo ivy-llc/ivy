@@ -2,7 +2,7 @@
 # global
 import ivy
 
-#local
+# local
 from collections import namedtuple
 
 
