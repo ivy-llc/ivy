@@ -15,14 +15,17 @@ headers = {
 functional_nn_dict = dict()
 functional_core_dict = dict()
 stateful_dict = dict()
+array_api_dict = dict()
 
 config: Dict[Union[str, int], Union[str, type(emoji)]] = {
     0: "functional_core_dashboard",
     1: "functional_nn_dashboard",
     2: "stateful_dashboard",
+    3: "array_api_dashboard",
     "success": emoji.emojize(":white_check_mark:", language="alias"),
     "failure": emoji.emojize(":x:", language="alias"),
     "in_progress": emoji.emojize(":hourglass:", language="alias"),
+    "cancelled": emoji.emojize(":red_circle:", language="alias"),
 }
 results = []
 
@@ -42,7 +45,7 @@ def get_DataFrame(result_dict: dict) -> pd.DataFrame:
         data.at[index_label] = [
             row_series.values[i][1]
             if len(row_series[i]) < 3
-            else ('   ').join(row_series.values[i][1:])
+            else ("   ").join(row_series.values[i][1:])
             for i in range(4)
         ]
     return data
@@ -54,6 +57,15 @@ def make_clickable(url, name):
     )
 
 
+def get_previous_workflow(workflow_df):
+    grouped = workflow_df.groupby("created_at")
+    if len(grouped) <= 1:
+        return None
+    for i, (name, group) in enumerate(grouped):
+        if i == 1:
+            return group
+
+
 def workflow_results(token):
     output = get_api_results(url, token, headers)
     for info in output["workflow_runs"]:
@@ -61,6 +73,7 @@ def workflow_results(token):
             "test-core-ivy",
             "test-stateful-ivy",
             "test-nn-ivy",
+            "test-array-api",
         ):
             continue
         results.append(
@@ -75,24 +88,22 @@ def workflow_results(token):
     workflow_df = pd.DataFrame(
         results, columns=["id", "name", "jobs_url", "status", "created_at"]
     )
-    workflow_df_previous = workflow_df.iloc[3:6, :]
+    workflow_df_prev = get_previous_workflow(workflow_df)
     workflow_df_latest = workflow_df.drop_duplicates(subset=["name"], keep="first")
-    return workflow_df_previous, workflow_df_latest
+    return workflow_df_prev, workflow_df_latest
 
 
 def get_previous_job_data(
     workflow_df_prev, workflow_name, job_name, prev_action_link, prev_conclusion, token
 ):
-    if workflow_df_prev.empty:
-        return (prev_action_link, prev_conclusion)
     jobs_url_object = workflow_df_prev.loc[workflow_df_prev["name"] == workflow_name]
     jobs_url = [url for url in jobs_url_object["jobs_url"]]
     for info in get_api_results(jobs_url[0] + "?per_page=100", token, headers)["jobs"]:
         if info["name"] == job_name:
             # return when previous job is queued as well
             if info["status"] in ("in_progress", "queued"):
-                return (prev_action_link, prev_conclusion)
-            return (info["html_url"], config[info["conclusion"]])
+                return prev_action_link, prev_conclusion
+            return info["html_url"], config[info["conclusion"]]
 
 
 def get_matrix_job_data(token):
@@ -105,10 +116,18 @@ def get_matrix_job_data(token):
         for info in get_api_results(jobs_url + "?per_page=100", token, headers)["jobs"]:
             prev_action_link, prev_conclusion = (None, None)
             # extract backend and submodule name from json
-            backend = info["name"].strip("run-nightly-tests")[2:-1].split(",")[0]
-            submodule = info["name"].strip("run-nightly-tests")[2:-1].split(",")[1]
+            if name == "test-array-api":
+                backend_submod = (
+                    info["name"].strip("run-array-api-tests")[2:-1].split(",")
+                )
+                backend, submodule = backend_submod[0], backend_submod[1]
+            else:
+                backend_submod = (
+                    info["name"].strip("run-nightly-tests")[2:-1].split(",")
+                )
+                backend, submodule = backend_submod[0], backend_submod[1]
 
-            if info["status"] in ("in_progress, queued"):
+            if info["status"] in ("in_progress, queued") and not workflow_df_prev.empty:
                 conclusion = config["in_progress"]
                 prev_action_link, prev_conclusion = get_previous_job_data(
                     workflow_df_prev,
@@ -120,6 +139,22 @@ def get_matrix_job_data(token):
                 )
             else:
                 conclusion = config[info["conclusion"]]
+
+            if name == "test-array-api":
+                if submodule not in array_api_dict:
+                    array_api_dict[submodule] = []
+                if prev_action_link and prev_conclusion is not None:
+                    array_api_dict[submodule].append(
+                        (
+                            backend,
+                            make_clickable(prev_action_link, prev_conclusion),
+                            make_clickable(info["html_url"], conclusion),
+                        )
+                    )
+                else:
+                    array_api_dict[submodule].append(
+                        (backend, make_clickable(info["html_url"], conclusion))
+                    )
 
             if name == "test-core-ivy":
                 if submodule not in functional_core_dict:
@@ -167,7 +202,7 @@ def get_matrix_job_data(token):
                         (backend, make_clickable(info["html_url"], conclusion))
                     )
 
-    return (functional_core_dict, functional_nn_dict, stateful_dict)
+    return (functional_core_dict, functional_nn_dict, stateful_dict, array_api_dict)
 
 
 def main():
