@@ -47,6 +47,9 @@ def test_numpy_std(
         axis = axis[0]
 
     input_dtype = [input_dtype]
+    axis=[axis]
+    correction=[correction]
+
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
