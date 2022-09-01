@@ -3138,6 +3138,8 @@ def num_positional_args(draw, *, fn_name: str = None):
             num_positional_only += 1
         elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
+        elif param.kind == param.VAR_KEYWORD:
+            num_keyword_only += 1
     return draw(
         ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
