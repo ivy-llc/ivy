@@ -136,13 +136,13 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="kn">import</span> <span class="nn">nvidia_smi</span>
+<span class="kn">import</span> <span class="nn">pynvml</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="c1"># noinspection PyUnresolvedReferences</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
-<span class="k">except</span> <span class="p">(</span><span class="n">nvidia_smi</span><span class="o">.</span><span class="n">NVMLError_LibraryNotFound</span><span class="p">,</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">NVMLError_DriverNotLoaded</span><span class="p">):</span>
+    <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">NVMLError</span><span class="p">:</span>
     <span class="k">pass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span>
 
@@ -245,7 +245,7 @@
     <span class="k">if</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">dev_handles</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dev_handles</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
     <span class="n">gpu_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">handle</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
+    <span class="n">handle</span> <span class="o">=</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
     <span class="n">dev_handles</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">handle</span>
     <span class="k">return</span> <span class="n">handle</span>
 
@@ -610,7 +610,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;gpu&quot;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span> <span class="o">/</span> <span class="mf">1e9</span>
     <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span> <span class="o">/</span> <span class="mf">1e9</span>
@@ -646,7 +646,7 @@
         <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;process-specific GPU queries are currently not supported&quot;</span><span class="p">)</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">used</span> <span class="o">/</span> <span class="mf">1e9</span>
     <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
@@ -703,7 +703,7 @@
         <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;process-specific GPU queries are currently not supported&quot;</span><span class="p">)</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">used</span> <span class="o">/</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
         <span class="n">vm</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
@@ -752,7 +752,7 @@
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
     <span class="k">elif</span> <span class="s2">&quot;gpu&quot;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetUtilizationRates</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">gpu</span>
+        <span class="k">return</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetUtilizationRates</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">gpu</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
             <span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
