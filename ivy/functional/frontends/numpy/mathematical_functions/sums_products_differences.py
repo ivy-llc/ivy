@@ -24,4 +24,5 @@ def cumsum(a, /, axis=None, dtype=None, out=None):
     return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
 
 
-cumsum.unsupported_dtypes = {"torch": ("float16",)}
+def cumprod(a, /, axis=None, dtype=None, out=None):
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
