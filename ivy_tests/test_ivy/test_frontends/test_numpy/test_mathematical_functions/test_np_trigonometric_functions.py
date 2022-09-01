@@ -261,8 +261,7 @@ def test_numpy_arctan(
         subok=True,
         test_values=False,
     )
-
-   
+ 
 
 # cosh
 @given(
