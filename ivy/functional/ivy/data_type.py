@@ -81,7 +81,7 @@ def _get_functions_from_string(func_names, module):
 
 
 # Get dtypes/device of nested functions, used for unsupported and supported dtypes
-def _nested_get(f, base_set, merge_fn, get_fn):
+def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
     visited = set()
     to_visit = [f]
     out = base_set
@@ -94,7 +94,7 @@ def _nested_get(f, base_set, merge_fn, get_fn):
 
         # Assuming that it's set in backend or the ivy functional module
         if "backend" in fn.__module__ or "functional.ivy" in fn.__module__:
-            f_suported = set(get_fn(fn, False))
+            f_suported = wrapper(get_fn(fn, False))
             out = merge_fn(f_suported, out)
             continue
 

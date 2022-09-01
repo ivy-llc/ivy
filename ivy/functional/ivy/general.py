@@ -3538,14 +3538,54 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     return True
 
 
-def _get_devices_and_dtypes(fn, complement=True):
-    # TODO: Not hardcode this
+def _all_dnd_combinations():
+    # TODO: not hard code this
+
     VALID_DEVICES = ("cpu",)
     INVALID_DEVICES = ("gpu", "tpu")
     ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
 
-    supported_devices = ivy.function_supported_devices(fn, complement=False)
-    supported_dtypes = ivy.function_supported_dtypes(fn, complement=False)
+    all_comb = {}
+    for device in ALL_DEVICES:
+        all_comb[device] = ivy.valid_dtypes
+    return all_comb
+
+
+def _dnd_dict_intersection(a, b):
+    res = {}
+    for device in a:
+        if device in b:
+            intersection = set.intersection(set(a[device]), set(b[device]))
+            if intersection:
+                res[device] = tuple(intersection)
+    return res
+
+
+def _dnd_dict_difference(a, b):
+    res = a
+    for device in list(a):
+        if device in b:
+            difference = set.difference(set(a[device]), set(b[device]))
+            if difference:
+                res[device] = tuple(difference)
+            else:
+                del res[device]
+    return res
+
+
+def _dnd_dict_union(a, b):
+    res = {}
+    for device in set(list(a) + list(b)):
+        u1 = set(a.get(device, ()))
+        u2 = set(b.get(device, ()))
+        res[device] = tuple(set.union(u1, u2))
+
+    return res
+
+
+def _get_devices_and_dtypes(fn, complement=True):
+    supported_devices = ivy.function_supported_devices(fn)
+    supported_dtypes = ivy.function_supported_dtypes(fn)
 
     supported = {}
     # Generate a base supported set from other attributes
@@ -3555,23 +3595,30 @@ def _get_devices_and_dtypes(fn, complement=True):
     # Their values are formated like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
     # 2. fn.supported_devices = {"numpy": {"cpu":("float16",},)}
-    # Could also have the "all" value for the framework
-    basic = [
-        ("supported_devices", set.intersection, VALID_DEVICES),
-        ("unsupported_devices", set.difference, INVALID_DEVICES),
-    ]
-    for (key, merge_fn, base) in basic:
-        if hasattr(fn, key):
-            v = getattr(fn, key)
-            if isinstance(v, dict):
-                vb = v.get(ivy.current_backend_str(), base)
-                v = merge_fn(set(vb), v.get("all", base))
-            supported = merge_fn(supported, set(v))
+    backend = ivy.current_backend_str()
+
+    if hasattr(fn, "supported_device_and_dtype"):
+        fn_supported_dnd = fn.supported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_supported_dnd.values())[0], dict):
+            fn_supported_dnd = fn_supported_dnd.get(backend, {})
+
+        supported = _dnd_dict_intersection(supported, fn_supported_dnd)
+
+    if hasattr(fn, "unsupported_device_and_dtype"):
+        fn_unsupported_dnd = fn.unsupported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
+            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+
+        # dict difference
+        supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
     if complement:
-        supported = set(ALL_DEVICES).difference(supported)
-
-    return tuple(supported)
+        # dict difference
+        all_comb = _all_dnd_combinations()
+        supported = _dnd_dict_difference(all_comb, supported)
+    return supported
 
 
 @handle_nestable
@@ -3597,38 +3644,17 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    supported_devices_dtype = {"devices": (), "dtypes": ()}
-    if hasattr(fn, "supported_device_and_dtype"):
-        fn_supported_devices_dtypes = fn.supported_device_and_dtype
-        if isinstance(fn_supported_devices_dtypes, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_supported_devices_dtypes:
-                fn_supported_devices_dtypes = fn_supported_devices_dtypes[backend_str]
-            elif "devices" not in fn_supported_devices_dtypes:
-                return supported_devices_dtype
-            keys = list(fn_supported_devices_dtypes.keys())
-            if "dtypes" in keys and "devices" in keys:
-                supported_devices_dtype["devices"] += fn_supported_devices_dtypes[
-                    "devices"
-                ]
+    supported_devices_dtype = _get_devices_and_dtypes(fn, complement=False)
 
-                if isinstance(fn_supported_devices_dtypes["dtypes"][0], tuple):
-                    for dtypes in fn_supported_devices_dtypes["dtypes"]:
-                        supported_devices_dtype["dtypes"] += dtypes
-                else:
-                    supported_devices_dtype["dtypes"] += (
-                        fn_supported_devices_dtypes["dtypes"],
-                    )
-            else:
-                raise Exception(
-                    "'supported_device_and_dtype' attr must have keys \
-                     'devices' and 'dtypes'"
-                )
-        else:
-            raise Exception(
-                "Have to provide a dictionary to 'supported_device_and_dtype' attr \
-                 with keys 'devices' and 'dtypes'"
-            )
+    if recurse:
+        supported_devices_dtype = ivy.functional.data_type._nested_get(
+            fn,
+            _all_dnd_combinations(),
+            _dnd_dict_intersection,
+            function_supported_devices_and_dtypes,
+            wrapper=lambda x: x,
+        )
+
     return supported_devices_dtype
 
 
@@ -3655,40 +3681,15 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    unsupported_devices_dtype = {"devices": (), "dtypes": ()}
-    if hasattr(fn, "unsupported_device_and_dtype"):
-        fn_unsupported_devices_dtypes = fn.unsupported_device_and_dtype
-        if isinstance(fn_unsupported_devices_dtypes, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_unsupported_devices_dtypes:
-                fn_unsupported_devices_dtypes = fn_unsupported_devices_dtypes[
-                    backend_str
-                ]
+    unsupported_devices_dtype = _get_devices_and_dtypes(fn, complement=True)
 
-            elif "devices" not in fn_unsupported_devices_dtypes:
-                return unsupported_devices_dtype
+    if recurse:
+        unsupported_devices_dtype = ivy.functional.data_type._nested_get(
+            fn,
+            {},
+            _dnd_dict_union,
+            function_unsupported_devices_and_dtypes,
+            wrapper=lambda x: x,
+        )
 
-            keys = list(fn_unsupported_devices_dtypes.keys())
-            if "dtypes" in keys and "devices" in keys:
-                unsupported_devices_dtype["devices"] += fn_unsupported_devices_dtypes[
-                    "devices"
-                ]
-
-                if isinstance(fn_unsupported_devices_dtypes["dtypes"][0], tuple):
-                    for dtypes in fn_unsupported_devices_dtypes["dtypes"]:
-                        unsupported_devices_dtype["dtypes"] += (dtypes,)
-                else:
-                    unsupported_devices_dtype["dtypes"] += (
-                        fn_unsupported_devices_dtypes["dtypes"],
-                    )
-            else:
-                raise Exception(
-                    "'unsupported_device_and_dtype' attr must have keys \
-                     'devices' and 'dtypes'"
-                )
-        else:
-            raise Exception(
-                "Have to provide a dictionary to 'unsupported_device_and_dtype' attr \
-                 with keys 'devices' and 'dtypes'"
-            )
     return unsupported_devices_dtype
