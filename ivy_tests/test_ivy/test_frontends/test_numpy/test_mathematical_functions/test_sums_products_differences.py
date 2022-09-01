@@ -5,6 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -108,6 +109,7 @@ def test_numpy_prod(
     )
 
 
+# cumsum
 @handle_cmd_line_args
 @given(
     dtype_and_x=np_frontend_helpers.dtype_x_bounded_axis(
@@ -141,10 +143,10 @@ def test_numpy_cumsum(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         dtype=None,
-        out=None,
     )
 
 
+# cumprod
 @handle_cmd_line_args
 @given(
     dtype_and_x=np_frontend_helpers.dtype_x_bounded_axis(
@@ -178,5 +180,4 @@ def test_numpy_cumprod(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         dtype=None,
-        out=None,
     )
