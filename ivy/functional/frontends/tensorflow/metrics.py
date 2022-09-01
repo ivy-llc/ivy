@@ -1,10 +1,20 @@
 import ivy
 
+def sparse_categorical_accuracy(
+        y_true,
+        y_pred,
+        sample_weight=None
+):
+    y_true = ivy.array(y_true)
+    y_pred = ivy.array(y_pred)
 
-def sparse_categorical_accuracy(y_true, y_pred):
-    return ivy.cast(ivy.equal(ivy.max(y_true, axis=-1),
-                              ivy.cast(ivy.argmax(y_pred, axis=-1), ivy.default_float_dtype(as_native=True))),
-                    ivy.default_float_dtype(as_native=True))
+    if sample_weight == None:
+        sample_weight: ndarray = ivy.ones(y_true.shape)
+    count = ivy.sum(sample_weight)
+    total = ivy.dot(sample_weight, ivy.equal(y_true, ivy.argmax(y_pred, axis=1)))
+
+    return ivy.divide(total, count)
+
 
 def sparse_categorical_crossentropy(
     y_true,
