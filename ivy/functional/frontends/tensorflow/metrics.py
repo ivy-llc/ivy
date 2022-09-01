@@ -35,6 +35,13 @@ mean_absolute_error.unsupported_dtypes = {
 }
 
 
+def binary_crossentropy(
+    y_true, y_pred, from_logits: bool = False, label_smoothing: float = 0.0
+):
+    if from_logits:
+        y_pred = ivy.softmax(y_pred)
+    return ivy.mean(ivy.binary_cross_entropy(y_true, y_pred, label_smoothing))
+
 def mean_squared_logarithmic_error(y_true, y_pred):
     y_pred = ivy.asarray(y_pred)
     y_true = ivy.astype(y_true, y_pred.dtype)

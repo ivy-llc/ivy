@@ -376,7 +376,8 @@ def unset_backend():
         for k, v in new_backend_dict.items():
             if backend_stack and k in ivy.__dict__:
                 v = _wrap_function(k, v, ivy.__dict__[k])
-            ivy.__dict__[k] = v
+            if k in ivy.__dict__:
+                ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend
