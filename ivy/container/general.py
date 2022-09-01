@@ -886,7 +886,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather(
-        params : ivy.Container,
+        params: ivy.Container,
         indices: ivy.Container,
         axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -931,7 +931,7 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def gather(
@@ -1306,7 +1306,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather_nd(
-        params : ivy.Container,
+        params: ivy.Container,
         indices: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1346,7 +1346,7 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def gather_nd(
@@ -1409,6 +1409,7 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_gather_nd(
             self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
+
     @staticmethod
     def static_einops_rearrange(
         x: ivy.Container,
@@ -1456,7 +1457,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            **axes_lengths
+            **axes_lengths,
         )
 
     @staticmethod
@@ -1470,7 +1471,7 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-        axes_lengths: Dict[str, int]
+        axes_lengths: Dict[str, int],
     ) -> ivy.Container:
         """Perform einops reduce operation on each sub array in the container.
 
@@ -1510,7 +1511,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            **axes_lengths
+            **axes_lengths,
         )
 
     def einops_reduce(
@@ -1609,8 +1610,7 @@ class ContainerWithGeneral(ContainerBase):
         -------
             ivy.Container with each array having einops.repeat applied.
 
-        """ 
-
+        """
         return ContainerBase.multi_map_in_static_method(
             "einops_repeat",
             x,
@@ -1620,7 +1620,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            **axes_lengths
+            **axes_lengths,
         )
 
     def einops_repeat(
@@ -2120,10 +2120,15 @@ class ContainerWithGeneral(ContainerBase):
 
         """
         return self.static_einops_rearrange(
-            self, pattern, key_chains, to_apply, prune_unapplied, map_sequences, out=out, **axes_lengths
+            self,
+            pattern,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
+            **axes_lengths,
         )
-
-
 
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],

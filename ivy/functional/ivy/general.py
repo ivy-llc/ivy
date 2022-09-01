@@ -141,7 +141,9 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False) -> bool:
+def is_ivy_array(
+    x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False
+) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -360,6 +362,7 @@ def copy_array(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
@@ -1264,6 +1267,7 @@ def clip_vector_norm(
         ret = ivy.inplace_update(out, ret)
     return ret
 
+
 clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
 
 
@@ -1365,7 +1369,13 @@ def clip_matrix_norm(
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
 
-clip_matrix_norm.unsupported_dtypes = { 'jax': ('float16',), 'numpy': ('float16',), 'tensorflow': ('float16',), "torch": ("float16",)}
+
+clip_matrix_norm.unsupported_dtypes = {
+    "jax": ("float16",),
+    "numpy": ("float16",),
+    "tensorflow": ("float16",),
+    "torch": ("float16",),
+}
 
 
 @to_native_arrays_and_back
@@ -2100,7 +2110,7 @@ def einops_rearrange(
 
     Parameters
     ----------
-    x 
+    x
         Input array to be re-arranged.
     pattern
         Rearrangement pattern.
