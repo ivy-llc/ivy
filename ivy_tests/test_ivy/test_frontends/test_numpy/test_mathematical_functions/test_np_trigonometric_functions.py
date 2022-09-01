@@ -314,6 +314,7 @@ def test_numpy_cosh(
 
     
 # arctan2
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes,num_arrays=2),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -336,7 +337,6 @@ def test_numpy_arctan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
