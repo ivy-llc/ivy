@@ -251,10 +251,6 @@ def test_to_numpy(*, x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in dtype))
-    assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
-    # torch does not support those dtypes
-    assume(not (fw == "mxnet" and dtype == "int16"))
-    # mxnet does not support int16
     # smoke test
     ret = ivy.to_numpy(ivy.array(object_in, dtype=dtype, device=device))
     # type test
@@ -767,10 +763,10 @@ def test_cumsum(*, x_n_axis, dtype, with_out, tensor_fn, device):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.cumsum(x, axis)),
-        np.asarray(ivy.functional.backends.numpy.cumsum(ivy.to_numpy(x), axis)),
-    )
+    x_np = ivy.to_numpy(x)
+    with ivy.functional.backends.numpy.use:
+        true_np = ivy.cumsum(x_np, axis).data
+    assert np.allclose(ivy.to_numpy(ivy.cumsum(x, axis)), true_np)
     # out test
     if with_out:
         if not ivy.current_backend_str() in ["tensorflow", "jax"]:
@@ -810,12 +806,10 @@ def test_cumprod(*, x_n_axis, exclusive, dtype, with_out, tensor_fn, device):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.cumprod(x, axis, exclusive)),
-        np.asarray(
-            ivy.functional.backends.numpy.cumprod(ivy.to_numpy(x), axis, exclusive)
-        ),
-    )
+    x_np = ivy.to_numpy(x)
+    with ivy.functional.backends.numpy.use:
+        true_np = ivy.cumprod(x_np, axis, exclusive).data
+    assert np.allclose(ivy.to_numpy(ivy.cumprod(x, axis, exclusive)), true_np)
     # out test
     if with_out:
         if not ivy.current_backend_str() in ["tensorflow", "jax"]:

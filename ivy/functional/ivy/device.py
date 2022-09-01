@@ -319,6 +319,7 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
+@handle_nestable
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
