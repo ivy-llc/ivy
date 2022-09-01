@@ -57,3 +57,11 @@ def prod(
 
 
 prod.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def cumsum(a, /, axis=None, dtype=None, out=None):
+    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+def cumprod(a, /, axis=None, dtype=None, out=None):
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
