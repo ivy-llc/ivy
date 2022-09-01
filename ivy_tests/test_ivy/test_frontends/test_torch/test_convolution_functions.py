@@ -1,7 +1,5 @@
 # global
 import random
-
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -55,7 +53,10 @@ def test_torch_conv1d_1(
         padding,
         fw
 ):
-    dtype = random.choice(list(set(ivy_torch.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))))
+    dtype = random.choice(
+        list(set(ivy_torch.valid_float_dtypes).intersection(
+            set(ivy_np.valid_float_dtypes))
+        ))
     groups = 3
     dtypes = [dtype] * 3
     helpers.test_frontend_function(
@@ -120,7 +121,9 @@ def test_torch_conv1d_2(
         padding,
         fw
 ):
-    dtype = random.choice(list(set(ivy_torch.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))))
+    dtype = random.choice(list(set(ivy_torch.valid_float_dtypes).intersection(
+        set(ivy_np.valid_float_dtypes))
+    ))
     groups = 1
     dtypes = [dtype] * 3
     helpers.test_frontend_function(
