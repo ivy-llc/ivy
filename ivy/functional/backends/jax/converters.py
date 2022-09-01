@@ -39,7 +39,7 @@ class IvyModule(ivy.Module):
         self._kwargs = kwargs
         ivy.Module.__init__(self, build_mode="on_call", device=device, devices=devices)
 
-    def _create_variables(self, device):
+    def _create_variables(self, device, dtype):
         return self._hk_params
 
     def _build(self, *a, **kw):
