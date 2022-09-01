@@ -14,15 +14,15 @@ inf = float("inf")
 # noinspection PyMissingConstructor,PyMethodParameters
 class ContainerWithLinearAlgebra(ContainerBase):
     def matmul(
-            self: ivy.Container,
-            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_nests: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_nests: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         Examples
@@ -62,15 +62,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_cholesky(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            /,
-            *,
-            upper: Union[int, Tuple[int, ...], ivy.Container] = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        upper: Union[int, Tuple[int, ...], ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cholesky. This method simply wraps
@@ -148,15 +148,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def cholesky(
-            self: ivy.Container,
-            /,
-            *,
-            upper: Union[int, Tuple[int, ...], ivy.Container] = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        /,
+        *,
+        upper: Union[int, Tuple[int, ...], ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.cholesky. This method simply wraps
@@ -221,16 +221,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_cross(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            axis: int = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cross.
@@ -306,16 +306,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def cross(
-            self: ivy.Container,
-            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            axis: int = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.cross.
@@ -378,14 +378,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_det(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "det",
@@ -398,14 +398,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def det(
-            self: ivy.Container,
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_det(
             self,
@@ -418,17 +418,17 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_diagonal(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            /,
-            *,
-            offset: int = 0,
-            axis1: int = -2,
-            axis2: int = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        offset: int = 0,
+        axis1: int = -2,
+        axis2: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "diagonal",
@@ -444,17 +444,17 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def diagonal(
-            self: ivy.Container,
-            /,
-            *,
-            offset: int = 0,
-            axis1: int = -2,
-            axis2: int = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        /,
+        *,
+        offset: int = 0,
+        axis1: int = -2,
+        axis2: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_diagonal(
             self,
@@ -469,13 +469,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def eigh(
-            self: ivy.Container,
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> NamedTuple:
         return self.handle_inplace(
             self.map(
@@ -490,14 +490,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_inv(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "inv",
@@ -510,14 +510,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def inv(
-            self: ivy.Container,
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_inv(
             self,
@@ -530,16 +530,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_matrix_norm(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            /,
-            *,
-            ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-            keepdims: bool = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.matrix_norm.
@@ -589,16 +589,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def matrix_norm(
-            self: ivy.Container,
-            /,
-            *,
-            ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-            keepdims: bool = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        /,
+        *,
+        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.matrix_norm.
@@ -648,15 +648,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     @staticmethod
     def static_matrix_power(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            n: int,
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        n: int,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "matrix_power",
@@ -670,15 +670,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     def matrix_power(
-            self: ivy.Container,
-            n: int,
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        n: int,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_matrix_power(
             self,

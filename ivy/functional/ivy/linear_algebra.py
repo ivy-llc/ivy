@@ -21,11 +21,11 @@ inf = float("inf")
 @handle_out_argument
 @handle_nestable
 def cholesky(
-        x: Union[ivy.Array, ivy.NativeArray],
-        upper: bool = False,
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    upper: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
 
@@ -64,7 +64,7 @@ def cholesky(
                        [2.0, 0.0, 3.0, 0.0, 0.0], \
                        [0.5, 0.0, 0.0, 0.625, 0.0], \
                        [2.0, 0.0, 0.0, 0.0, 16.0]])
-    >>> l = ivy.cholesky(x, 'false')
+    >>> l = ivy.cholesky(x, upper='false')
     >>> print(l)
     ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
                [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
@@ -78,7 +78,7 @@ def cholesky(
                        [0.5, 0.0, 0.0, 0.625, 0.0], \
                        [2.0, 0.0, 0.0, 0.0, 16.0]])
     >>> y = ivy.zeros([5,5])
-    >>> ivy.cholesky(x, 'false', out=y)
+    >>> ivy.cholesky(x, upper='false', out=y)
     >>> print(y)
     ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
                [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
@@ -91,7 +91,7 @@ def cholesky(
                        [2.0, 0.0, 3.0, 0.0, 0.0], \
                        [0.5, 0.0, 0.0, 0.625, 0.0], \
                        [2.0, 0.0, 0.0, 0.0, 16.0]])
-    >>> ivy.cholesky(x, 'false', out=x)
+    >>> ivy.cholesky(x, upper='false', out=x)
     >>> print(x)
     ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
                [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
@@ -102,7 +102,7 @@ def cholesky(
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
-    >>> u = ivy.cholesky(x, 'false')
+    >>> u = ivy.cholesky(x, upper='false')
     >>> print(u)
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
@@ -111,7 +111,7 @@ def cholesky(
 
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
-    >>> y = ivy.cholesky(x, 'false')
+    >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     {
         a: ivy.array([[1.73, -0.577],
@@ -125,7 +125,7 @@ def cholesky(
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
     >>> upper = ivy.Container(a=1, b=-1)
-    >>> y = ivy.cholesky(x, 'false')
+    >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     {
         a: ivy.array([[1.73, -0.577],
@@ -138,25 +138,25 @@ def cholesky(
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> upper = ivy.Container(a=1, b=-1)
-    >>> y = ivy.cholesky(x, 'false')
+    >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
 
     """
-    return current_backend(x).cholesky(x, upper, out=out)
+    return current_backend(x).cholesky(x, upper=upper, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def cross(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
-        axis: int = -1,
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
     arrays (i.e., both have a rank greater than 1), then the cross- product of each pair
@@ -226,14 +226,14 @@ def cross(
         b: ivy.array([0., -6., 0.])
     }
     """
-    return current_backend(x1).cross(x1, x2, axis, out=out)
+    return current_backend(x1).cross(x1, x2, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def det(
-        x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
@@ -318,13 +318,13 @@ def det(
 @handle_out_argument
 @handle_nestable
 def diagonal(
-        x: Union[ivy.Array, ivy.NativeArray],
-        offset: int = 0,
-        axis1: int = -2,
-        axis2: int = -1,
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    offset: int = 0,
+    axis1: int = -2,
+    axis2: int = -1,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
 
@@ -395,7 +395,7 @@ def diagonal(
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
 
-    >>> d = ivy.diagonal(x, 1)
+    >>> d = ivy.diagonal(x, offset=1)
     >>> print(d)
     ivy.array([2.])
 
@@ -403,7 +403,7 @@ def diagonal(
     >>> x = ivy.array([[0, 1, 2],\
                        [3, 4, 5],\
                        [6, 7, 8]])
-    >>> d = ivy.diagonal(x, -1, 0)
+    >>> d = ivy.diagonal(x, offset=-1, axis1=0)
     >>> print(d)
     ivy.array([3, 7])
 
@@ -416,7 +416,7 @@ def diagonal(
                        [[18, 19, 20],\
                         [21, 22, 23],\
                         [24, 25, 26]]])
-    >>> d = ivy.diagonal(x, 1, -3)
+    >>> d = ivy.diagonal(x, offset=1, axis1=-3)
     >>> print(d)
     ivy.array([[1, 11],
                [4, 14],
@@ -426,7 +426,7 @@ def diagonal(
                         [2, 3]],\
                        [[4, 5],\
                         [6, 7]]])
-    >>> d = ivy.diagonal(x, 0, 0, 1)
+    >>> d = ivy.diagonal(x, offset=0, axis1=0, axis2=1)
     >>> print(d)
     ivy.array([[0, 6],
                [1, 7]])
@@ -457,7 +457,7 @@ def diagonal(
                               [[18, 19, 20],\
                                [21, 22, 23],\
                                [24, 25, 26]]])
-    >>> d = ivy.diagonal(x, 1, 1, -1)
+    >>> d = ivy.diagonal(x, offset=1, axis1=1, axis2=-1)
     >>> print(d)
     ivy.array([[ 1,  5],
                [10, 14],
@@ -488,14 +488,14 @@ def diagonal(
         b: ivy.array([4, 9, 6])
     }
     """
-    return current_backend(x).diagonal(x, offset, axis1, axis2, out=out)
+    return current_backend(x).diagonal(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def eigh(
-        x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -542,7 +542,7 @@ def eigh(
 @handle_out_argument
 @handle_nestable
 def eigvalsh(
-        x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
@@ -570,7 +570,7 @@ def eigvalsh(
 @handle_out_argument
 @handle_nestable
 def inv(
-        x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -613,11 +613,11 @@ def inv(
 @handle_out_argument
 @handle_nestable
 def matmul(
-        x1: Union[ivy.Array, ivy.NativeArray],
-        x2: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the matrix product.
 
@@ -744,12 +744,12 @@ def matmul(
 @handle_out_argument
 @handle_nestable
 def matrix_norm(
-        x: Union[ivy.Array, ivy.NativeArray],
-        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        keepdims: bool = False,
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the matrix p-norm.
 
@@ -776,18 +776,18 @@ def matrix_norm(
         Matrix norm of the array at specified axes.
 
     """
-    return current_backend(x).matrix_norm(x, ord, keepdims, out=out)
+    return current_backend(x).matrix_norm(x, ord=ord, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def matrix_power(
-        x: Union[ivy.Array, ivy.NativeArray], 
-        n: int, 
-        /, 
-        *, 
-        out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    n: int,
+    /,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
