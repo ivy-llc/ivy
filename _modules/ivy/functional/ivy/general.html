@@ -271,7 +271,9 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="is_ivy_array"><a class="viewcode-back" href="../../../../functional/ivy/general/is_ivy_array/is_ivy_array_functional.html#ivy.functional.ivy.general.is_ivy_array">[docs]</a><span class="k">def</span> <span class="nf">is_ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="is_ivy_array"><a class="viewcode-back" href="../../../../functional/ivy/general/is_ivy_array/is_ivy_array_functional.html#ivy.functional.ivy.general.is_ivy_array">[docs]</a><span class="k">def</span> <span class="nf">is_ivy_array</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether the input x is an Ivy Array.</span>
 
@@ -490,6 +492,7 @@
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
@@ -1394,6 +1397,7 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
+
 <span class="n">clip_vector_norm</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
 
 
@@ -1495,7 +1499,13 @@
     <span class="n">ratios</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">max_norm</span><span class="p">,</span> <span class="n">norms</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<span class="n">clip_matrix_norm</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">,),</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">,),</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">,),</span> <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)}</span>
+
+<span class="n">clip_matrix_norm</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,),</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="floormod"><a class="viewcode-back" href="../../../../functional/ivy/general/floormod/floormod_functional.html#ivy.functional.ivy.general.floormod">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -2230,7 +2240,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x </span>
+<span class="sd">    x</span>
 <span class="sd">        Input array to be re-arranged.</span>
 <span class="sd">    pattern</span>
 <span class="sd">        Rearrangement pattern.</span>
