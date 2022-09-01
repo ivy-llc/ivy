@@ -2,14 +2,16 @@
 
 # local
 import ivy
-import ivy.functional.frontends.numpy as ivy_frontend
+import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
     def __init__(self, data):
-        self._init(data)
-
-    def _init(self, data):
+        if ivy.is_ivy_array(data):
+            self.data = data.data
+        else:
+            assert ivy.is_native_array(data)
+            self.data = data
         if ivy.is_ivy_array(data):
             self.data = data.data
         else:
@@ -20,7 +22,7 @@ class ndarray:
     # -------------------#
 
     def reshape(self, newshape, order="C"):
-        return ivy_frontend.reshape(self, newshape, order)
+        return np_frontend.reshape(self, newshape, order)
 
     def add(
         self,
@@ -34,7 +36,7 @@ class ndarray:
         dtype=None,
         subok=True,
     ):
-        return ivy_frontend.add(
+        return np_frontend.add(
             self,
             x2,
             out=out,
