@@ -42,8 +42,8 @@ class IvyModule(ivy.Module):
     def _create_variables(self, device, dtype):
         return self._hk_params
 
-    def _build(self, *a, **kw):
-        a, kw = ivy.args_to_native(*a, **kw)
+    def _build(self, *args, **kwargs):
+        a, kw = ivy.args_to_native(*args, **kwargs)
         # noinspection PyUnresolvedReferences
         params_hk = self._native_module.init(ivy.RNG, *a, **kw)
         params_dict = _hk_flat_map_to_dict(params_hk)
