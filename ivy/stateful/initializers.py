@@ -237,7 +237,7 @@ class KaimingNormal(Initializer):
         A Kaiming normal initializer, also known as He Initialization, is an 
         method for initializing layers that takes into account the non-linearity
         of activation functions. It uses a normal distibution centered at `mean` with
-        standard distribution `sqrt(2 / fan)`.
+        standard distribution `sqrt(2 / ((1 + negative_slope^2) * fan))`.
 
         Parameters
         ----------
@@ -288,6 +288,8 @@ class KaimingNormal(Initializer):
         fan_in
             The number of nodes in the previous layer.
         negative_slope
+            How much a higher `fan` should lower the standard deviation. A value of `0`
+            gives a relationship proportional to `1/fan`.
         dtype
             Desired data type.
         """
