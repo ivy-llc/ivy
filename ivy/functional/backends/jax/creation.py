@@ -65,6 +65,7 @@ def asarray(
             )
         else:
             return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
+
     else:
         dtype = default_dtype(dtype=dtype, item=object_in)
 

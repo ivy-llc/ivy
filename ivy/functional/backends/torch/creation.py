@@ -14,7 +14,10 @@ from ivy import (
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
 # noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+from ivy.functional.ivy.creation import (
+    _assert_fill_value_and_dtype_are_compatible,
+    _is_raw_python_list_or_scalar,
+)
 
 
 # Array API Standard #
@@ -87,6 +90,12 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
+        if _is_raw_python_list_or_scalar(object_in):
+            if copy is True:
+                return torch.as_tensor(object_in).clone().detach().to(device)
+            else:
+                return torch.as_tensor(object_in).to(device)
+
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
             return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
