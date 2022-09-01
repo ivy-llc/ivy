@@ -195,13 +195,17 @@ def scatter_flat(
             target = np.ones([size], dtype=updates.dtype) * 1e12
         np.minimum.at(target, indices, updates)
         if not target_given:
-            target = np.asarray(np.where(target == 1e12, 0.0, target), dtype=updates.dtype)
+            target = np.asarray(
+                np.where(target == 1e12, 0.0, target), dtype=updates.dtype
+            )
     elif reduction == "max":
         if not target_given:
             target = np.ones([size], dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices, updates)
         if not target_given:
-            target = np.asarray(np.where(target == -1e12, 0.0, target), dtype=updates.dtype)
+            target = np.asarray(
+                np.where(target == -1e12, 0.0, target), dtype=updates.dtype
+            )
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -250,7 +254,7 @@ def scatter_nd(
         np.maximum.at(target, indices_tuple, updates)
         if not target_given:
             target = np.where(target == -1e12, 0.0, target)
-            target = np.asarray(target, dtype=updates.dtype)            
+            target = np.asarray(target, dtype=updates.dtype)
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -258,10 +262,12 @@ def scatter_nd(
             )
         )
     if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))        
+        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
 
+
 scatter_nd.support_native_out = True
+
 
 def gather(
     params: np.ndarray,
