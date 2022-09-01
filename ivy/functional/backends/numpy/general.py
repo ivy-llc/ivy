@@ -168,19 +168,15 @@ def cumprod(
     return np.cumprod(x, axis, dtype=dtype, out=out)
 
 
-cumprod.support_native_out = True
-
-
 def scatter_flat(
     indices: np.ndarray,
     updates: np.ndarray,
     size: Optional[int] = None,
-    tensor: Optional[np.ndarray] = None,
     reduction: str = "sum",
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -199,13 +195,17 @@ def scatter_flat(
             target = np.ones([size], dtype=updates.dtype) * 1e12
         np.minimum.at(target, indices, updates)
         if not target_given:
-            target = np.where(target == 1e12, 0.0, target)
+            target = np.asarray(
+                np.where(target == 1e12, 0.0, target), dtype=updates.dtype
+            )
     elif reduction == "max":
         if not target_given:
             target = np.ones([size], dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices, updates)
         if not target_given:
-            target = np.where(target == -1e12, 0.0, target)
+            target = np.asarray(
+                np.where(target == -1e12, 0.0, target), dtype=updates.dtype
+            )
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -220,16 +220,15 @@ def scatter_nd(
     indices: np.ndarray,
     updates: np.ndarray,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor: Optional[np.ndarray] = None,
     reduction: str = "sum",
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
+    if ivy.exists(shape) and target_given:
+        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == "sum":
@@ -244,23 +243,30 @@ def scatter_nd(
         target[indices_tuple] = updates
     elif reduction == "min":
         if not target_given:
-            target = np.ones(shape, dtype=updates.dtype) * 1e12
+            target = np.ones(shape) * 1e12
         np.minimum.at(target, indices_tuple, updates)
         if not target_given:
-            target = np.where(target == 1e12, 0.0, target)
+            target = np.where(target == 1e12, 0, target)
+            target = np.asarray(target, dtype=updates.dtype)
     elif reduction == "max":
         if not target_given:
             target = np.ones(shape, dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices_tuple, updates)
         if not target_given:
             target = np.where(target == -1e12, 0.0, target)
+            target = np.asarray(target, dtype=updates.dtype)
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
+
+
+scatter_nd.support_native_out = True
 
 
 def gather(
@@ -309,7 +315,7 @@ def multiprocessing(context=None):
     )
 
 
-def indices_where(x, out: Optional[np.ndarray] = None):
+def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     where_x = np.where(x)
     if len(where_x) == 1:
         return np.expand_dims(where_x[0], -1)
