@@ -252,7 +252,7 @@ def test_numpy_arctan(
         fw=fw,
         frontend="numpy",
         fn_tree="arctan",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype[0]), 
         out=None,
         where=where,
         casting="same_kind",
@@ -262,7 +262,8 @@ def test_numpy_arctan(
         test_values=False,
     )
 
-    
+   
+
 # cosh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
