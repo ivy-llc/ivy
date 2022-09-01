@@ -1,7 +1,8 @@
 # global
 import abc
+import numpy as np
 from numbers import Number
-from typing import Any, Iterable, Union, Optional, Dict, Callable
+from typing import Any, Iterable, Union, Optional, Dict, Callable, List, Tuple
 
 # ToDo: implement all methods here as public instance methods
 
@@ -10,7 +11,9 @@ import ivy
 
 
 class ArrayWithGeneral(abc.ABC):
-    def all_equal(self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False):
+    def all_equal(
+        self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False
+    ) -> Union[bool, ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.all_equal. This method simply wraps the
         function, and so the docstring for ivy.all_equal also applies to this method
@@ -31,24 +34,6 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not the inputs are equal, or matrix array of booleans if
             equality_matrix=True is set.
-
-        Examples
-        --------
-        With :code:`ivy.Array` instance method:
-
-        >>> x1 = ivy.array([1, 2, 3])
-        >>> x2 = ivy.array([1, 0, 1])
-        >>> y = x1.all_equal(x2, equality_matrix= False)
-        >>> print(y)
-        False
-
-        With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instance method:
-
-        >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
-        >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
-        >>> y = x1.all_equal(x2, equality_matrix= True)
-        >>> print(y)
-        ivy.array([[ True,  True], [ True,  True]])
 
         """
         return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
@@ -194,10 +179,9 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.gather(self._data, indices, axis, out=out)
 
     def scatter_nd(
-        self: ivy.Array, 
+        self: ivy.Array,
         updates: Union[ivy.Array, ivy.NativeArray],
         shape: Optional[ivy.Array] = None,
-        tensor: Union[ivy.Array, ivy.NativeArray] = None,
         reduction: str = "sum",
         *,
         out: Optional[ivy.Array] = None,
@@ -214,10 +198,10 @@ class ArrayWithGeneral(abc.ABC):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument must 
+            The shape of the result. Default is None, in which case tensor argument must
             be provided.
         reduction
-            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         out
             optional output array, for writing the result to.
@@ -226,7 +210,7 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array of given shape, with the values scattered at the indices.
-        
+
         Examples
         --------
         scatter values into an array
@@ -248,8 +232,8 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([[ 0,  0, 22, 40,  0],
                     [ 0, 21,  0,  0, 25]])
         """
-        return ivy.scatter_nd(self, updates, shape, reduction, tensor=tensor, out=out)
-    
+        return ivy.scatter_nd(self, updates, shape, reduction, out=out)
+
     def gather_nd(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
@@ -288,7 +272,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array(2)
         """
         return ivy.gather_nd(self, indices, out=out)
-        
+
     def einops_rearrange(
         self: ivy.Array,
         pattern: str,
@@ -392,7 +376,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
 
-    def to_numpy(self: ivy.Array):
+    def to_numpy(self: ivy.Array) -> np.ndarray:
         """
         ivy.Array instance method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
@@ -408,24 +392,10 @@ class ArrayWithGeneral(abc.ABC):
         ret
             a numpy array copying all the element of the array ``self``.
 
-        Examples
-        --------
-        With :code:`ivy.Array` instance methods:
-
-        >>> x = ivy.array([1, 0, 1, 1])
-        >>> y = x.to_numpy()
-        >>> print(y)
-        [1 0 1 1]
-
-        >>> x = ivy.array([1, 0, 0, 1])
-        >>> y = x.to_numpy()
-        >>> print(y)
-        [1 0 0 1]
-
         """
         return ivy.to_numpy(self)
 
-    def to_list(self: ivy.Array):
+    def to_list(self: ivy.Array) -> List:
         """
         ivy.Array instance method variant of ivy.to_list. This method simply wraps
         the function, and so the docstring for ivy.to_list also applies to this method
@@ -507,25 +477,6 @@ class ArrayWithGeneral(abc.ABC):
             a numpy array containing the elements of numerator divided by
             the corresponding element of denominator
 
-        Examples
-        --------
-        >>> x = ivy.asarray([4., 5., 6.])
-        >>> y = x.stable_divide(2)
-        >>> print(y)
-        ivy.array([2., 2.5, 3.])
-
-        >>> x = ivy.asarray([4, 5, 6])
-        >>> y = x.stable_divide(4, min_denominator=1)
-        >>> print(y)
-        ivy.array([0.8, 1. , 1.2])
-
-        >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
-        >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
-        >>> z = x.stable_divide(y)
-        >>> print(z)
-        ivy.array([[4.  , 2.5 , 2.  ],
-               [3.5 , 2.67, 2.25]])
-
         """
         return ivy.stable_divide(self, denominator, min_denominator=min_denominator)
 
@@ -540,7 +491,6 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Array instance method variant of ivy.clip_vector_norm. This method simply
         wraps the function, and so the docstring for ivy.clip_vector_norm also applies
         to this method with minimal changes.
-
 
         Parameters
         ----------
@@ -559,17 +509,402 @@ class ArrayWithGeneral(abc.ABC):
         ret
             An array with the vector norm downscaled to the max norm if needed.
 
-        Examples
-        --------
-        With :code:`ivy.Array` instance method:
-
-        >>> x = ivy.array([0., 1., 2.])
-        >>> y = x.clip_vector_norm(2.0)
-        >>> print(y)
-        ivy.array([0.   , 0.894, 1.79 ])
-
         """
         return ivy.clip_vector_norm(self, max_norm, p, out=out)
+
+    def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray]) -> bool:
+        """
+        ivy.Array instance method variant of ivy.array_equal. This method simply wraps
+        the function, and so the docstring for ivy.array_equal also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        x
+            input array to compare to ``self``
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not the input arrays are equal
+
+        """
+        return ivy.array_equal(self, x)
+
+    def arrays_equal(
+        self: ivy.Array, x: List[Union[ivy.Array, ivy.NativeArray]]
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.arrays_equal. This method simply wraps
+        the function, and so the docstring for ivy.arrays_equal also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        x
+            input list of arrays to compare to ``self``
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not the input arrays are equal
+
+        """
+        return ivy.arrays_equal(List[self] + x)
+
+    def assert_supports_inplace(self: ivy.Array) -> bool:
+        """
+        ivy.Array instance method variant of ivy.assert_supports_inplace. This method
+        simply wraps the function, and so the docstring for ivy.assert_supports_inplace
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+
+        Returns
+        -------
+        ret
+            True if support, raises exception otherwise
+
+        """
+        return ivy.assert_supports_inplace(self)
+
+    def is_ivy_array(self: ivy.Array, exclusive: Optional[bool] = False) -> bool:
+        """
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply wraps
+        the function, and so the docstring for ivy.is_ivy_array also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy array.
+
+        """
+        return ivy.is_ivy_array(self, exclusive)
+
+    def copy_array(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.copy_array. This method simply wraps
+        the function, and so the docstring for ivy.copy_array also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a copy of the input array ``x``.
+
+        """
+        return ivy.copy_array(self, out=out)
+
+    def to_scalar(self: ivy.Array) -> Number:
+        """
+        ivy.Array instance method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        Returns
+        -------
+        ret
+            a scalar copying the element of the array ``x``.
+
+        """
+        return ivy.to_scalar(self)
+
+    def floormod(
+        self: ivy.Array,
+        x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.floormod. This method simply wraps the
+        function, and so the docstring for ivy.floormod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        x
+            input array for the denominator
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array of the same shape and type as x, with the elements floor modded.
+
+        """
+        return ivy.floormod(self, x, out=out)
+
+    def fourier_encode(
+        self: ivy.Array,
+        max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        num_bands: int = 4,
+        linear: bool = False,
+        concat: bool = True,
+        flatten: bool = False,
+    ) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
+        """
+        ivy.Array instance method variant of ivy.fourier_encode. This method simply
+        wraps the function, and so the docstring for ivy.fourier_encode also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to encode
+        max_freq
+            The maximum frequency of the encoding.
+        num_bands
+            The number of frequency bands for the encoding. Default is 4.
+        linear
+            Whether to space the frequency bands linearly as opposed to geometrically.
+            Default is False.
+        concat
+            Whether to concatenate the position, sin and cos values, or return
+            seperately. Default is True.
+        flatten
+            Whether to flatten the position dimension into the batch dimension.
+            Default is False.
+
+        Returns
+        -------
+        ret
+            New array with the final dimension expanded, and the encodings stored in
+            this channel.
+
+        """
+        return ivy.fourier_encode(self, max_freq, num_bands, linear, concat, flatten)
+
+    def value_is_nan(self: ivy.Array, include_infs: Optional[bool] = True) -> bool:
+        """
+        ivy.Array instance method variant of ivy.value_is_nan. This method simply wraps
+        the function, and so the docstring for ivy.value_is_nan also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        include_infs
+            Whether to include infs and -infs in the check. Default is True.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the input value is a nan or not.
+
+        """
+        return ivy.value_is_nan(self, include_infs)
+
+    def exists(self: ivy.Array) -> bool:
+        """
+        ivy.Array instance method variant of ivy.exists. This method simply wraps
+        the function, and so the docstring for ivy.exists also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        Returns
+        -------
+        ret
+            True if x is not None, else False.
+
+        """
+        return ivy.exists(self)
+
+    def default(
+        self: ivy.Array,
+        default_val: Union[ivy.Array, ivy.NativeArray],
+        catch_exceptions: bool = False,
+        rev: bool = False,
+        with_callable: bool = False,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.default. This method simply wraps the
+        function, and so the docstring for ivy.default also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        default_val
+            The default value.
+        catch_exceptions
+            Whether to catch exceptions from callable x. Default is False.
+        rev
+            Whether to reverse the input x and default_val. Default is False.
+        with_callable
+            Whether either of the arguments might be callable functions.
+            Default is False.
+
+        Returns
+        -------
+        ret
+            x if x exists (is not None), else default.
+
+        """
+        return ivy.default(self, default_val, catch_exceptions, rev, with_callable)
+
+    def stable_pow(
+        self: ivy.Array,
+        exponent: Union[Number, ivy.Array, ivy.NativeArray],
+        min_base: float = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
+        the function, and so the docstring for ivy.stable_pow also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array, used as the base.
+        exponent
+            The exponent number.
+        min_base
+            The minimum base to use, use global ivy._MIN_BASE by default.
+
+        Returns
+        -------
+        ret
+            The new item following the numerically stable power.
+
+        """
+        return ivy.stable_pow(self, exponent, min_base=min_base)
+
+    def supports_inplace(self: ivy.Array) -> bool:
+        """
+        ivy.Array instance method variant of ivy.supports_inplace. This method simply
+        wraps the function, and so the docstring for ivy.supports_inplace also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not inplace operations are supported for x.
+
+        """
+        return ivy.supports_inplace(self)
+
+    def inplace_update(
+        self: ivy.Array,
+        val: Union[ivy.Array, ivy.NativeArray],
+        ensure_in_backend: bool = False,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.inplace_update. This method simply
+        wraps the function, and so the docstring for ivy.inplace_update also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to update
+        val
+            The array to update the variable with.
+        ensure_in_backend
+            Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
+            In cases where it should be, backends which do not natively support inplace
+            updates will raise an exception.
+
+        Returns
+        -------
+        ret
+            The array following the in-place update.
+
+        """
+        return ivy.inplace_update(self, val, ensure_in_backend=ensure_in_backend)
+
+    def inplace_increment(
+        self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.inplace_increment. This method simply
+        wraps the function, and so the docstring for ivy.inplace_increment also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to increment
+        val
+            The array to increment the variable with.
+
+        Returns
+        -------
+        ret
+            The array following the in-place increment.
+
+        """
+        return ivy.inplace_increment(self, val)
+
+    def cumsum(
+        self: ivy.Array,
+        axis: int = 0,
+        *,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.cumsum. This method simply
+        wraps the function, and so the docstring for ivy.cumsum also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        axis
+            int, Axis along which the cumulative sum is computed. By default 0.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Input array with cumulatively summed elements along axis
+
+        """
+        return ivy.cumsum(self, axis=axis, out=out)
 
     def clip_matrix_norm(
         self: ivy.Array,
@@ -611,3 +946,121 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.clip_matrix_norm(self, max_norm, p, out=out)
+
+    def scatter_flat(
+        self: ivy.Array,
+        updates: Union[ivy.Array, ivy.NativeArray],
+        size: Optional[int] = None,
+        reduction: str = "sum",
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.scatter_flat. This method simply wraps
+        the function, and so the docstring for ivy.scatter_flat also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing the indices where the new values will occupy
+        updates
+            Values for the new array to hold.
+        size
+            The size of the result.
+        reduction
+            The reduction method for the scatter, one of 'sum', 'min', 'max' or
+            'replace'
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
+            updates if None.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            New array of given shape, with the values scattered at the indices.
+
+        """
+        return ivy.scatter_flat(self, updates, size=size, reduction=reduction, out=out)
+
+    def indices_where(
+        self: ivy.Array, *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.indices_where. This method simply
+        wraps the function, and so the docstring for ivy.indices_where also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array for which indices are desired
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+
+        """
+        return ivy.indices_where(self, out=out)
+
+    def one_hot(
+        self: ivy.Array,
+        depth: int,
+        *,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.one_hot. This method simply wraps the
+        function, and so the docstring for ivy.one_hot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing the indices for which the ones should be scattered
+        depth
+            Scalar defining the depth of the one-hot dimension.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            Same as x if None.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Tensor of zeros with the same shape and type as a, unless dtype provided
+            which overrides.
+
+        """
+        return ivy.one_hot(self, depth, device=device, out=out)
+
+    def get_num_dims(self: ivy.Array, as_array: bool = False) -> int:
+        """
+        ivy.Array instance method variant of ivy.shape. This method simply wraps the
+        function, and so the docstring for ivy.shape also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to infer the number of dimensions  for
+        as_array
+            Whether to return the shape as a array, default False.
+
+        Returns
+        -------
+        ret
+            Shape of the array
+
+        """
+        return ivy.get_num_dims(self, as_array)
