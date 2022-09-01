@@ -3,6 +3,8 @@ inplace_update
 
 .. autofunction:: ivy.functional.ivy.general.inplace_update
 
+.. autofunction:: ivy.array.array_methods.inplace_update
+
 .. autofunction:: ivy.container.container_methods.inplace_update
 
 .. autofunction:: ivy.container.container_methods.static_inplace_update
@@ -33,6 +35,7 @@ inplace_update
    :caption: inplace_update
 
    inplace_update/inplace_update_functional.rst
+   inplace_update/inplace_update_array.rst
    inplace_update/inplace_update_container.rst
    inplace_update/static_inplace_update_container.rst
 

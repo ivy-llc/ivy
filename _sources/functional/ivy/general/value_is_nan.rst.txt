@@ -2,6 +2,8 @@ value_is_nan
 ============
 
 .. autofunction:: ivy.functional.ivy.general.value_is_nan
+
+.. autofunction:: ivy.array.array_methods.value_is_nan
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ value_is_nan
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: value_is_nan
+
+   value_is_nan/value_is_nan_functional.rst
+   value_is_nan/value_is_nan_array.rst
+

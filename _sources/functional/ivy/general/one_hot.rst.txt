@@ -2,6 +2,8 @@ one_hot
 =======
 
 .. autofunction:: ivy.functional.ivy.general.one_hot
+
+.. autofunction:: ivy.array.array_methods.one_hot
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ one_hot
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: one_hot
+
+   one_hot/one_hot_functional.rst
+   one_hot/one_hot_array.rst
+
