@@ -127,6 +127,10 @@ investigate!
 Finally, we limit the maximum number of *open* and *incomplete* sub-task issues at *three* per person.
 This is to prevent anyone from self-allocating many sub-tasks,
 preventing others in the community from engaging, and then not being able to complete them.
+Even though the limit is three, sub-tasks should only be self-assigned using **one comment per sub-task**.
+For example, a sequence of comments like this :code:`- [ ] #Issue_number` will register
+correctly whereas a single comment like this :code:`- [ ] #Issue_number, - [ ] #Issue_number, - [ ] #Issue_number` or
+this :code:`- [ ] #Issue_number #Issue_number #Issue_number` etc. will not.
 
 **Video**
 

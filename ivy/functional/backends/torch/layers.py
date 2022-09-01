@@ -70,10 +70,12 @@ def conv1d_transpose(
         new_w = ivy.deconv_length(
             x.shape[2], strides, filter_shape[0], padding, dilations
         )
-        output_shape = [new_w]
+        output_shape = [x.shape[0], new_w, x.shape[1]]
+    elif len(output_shape) == 1:
+        output_shape = [x.shape[0], output_shape[0], x.shape[1]]
     not_valid_h = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-    pad_w = ivy.handle_padding(output_shape[0], strides, filter_shape[0], padding)
+    pad_w = ivy.handle_padding(output_shape[1], strides, filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0]
     elif padding == "SAME":
@@ -88,7 +90,7 @@ def conv1d_transpose(
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     out_w = _out_shape(x.shape[2], strides, pad_w, dilations, filters.shape[2])
-    output_padding = [max(output_shape[0] - out_w, 0)]
+    output_padding = [max(output_shape[1] - out_w, 0)]
     res = torch.nn.functional.conv_transpose1d(
         x,
         filters,
@@ -186,13 +188,15 @@ def conv2d_transpose(
         new_w = ivy.deconv_length(
             x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
         )
-        output_shape = [new_h, new_w]
+        output_shape = [x.shape[0], new_h, new_w, x.shape[1]]
+    elif len(output_shape) == 2:
+        output_shape = [x.shape[0]] + output_shape + [x.shape[1]]
     not_valid_h = False
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
     pad_w = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
-    pad_h = ivy.handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[2], strides[0], filter_shape[0], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0]
     elif padding == "SAME":
@@ -215,8 +219,8 @@ def conv2d_transpose(
     out_h = _out_shape(x.shape[2], strides[0], pad_h, dilations[0], filters.shape[2])
     out_w = _out_shape(x.shape[3], strides[1], pad_w, dilations[1], filters.shape[3])
     output_padding = [
-        max(output_shape[0] - out_h, 0),
-        max(output_shape[1] - out_w, 0),
+        max(output_shape[1] - out_h, 0),
+        max(output_shape[2] - out_w, 0),
     ]
     res = torch.nn.functional.conv_transpose2d(
         x,
@@ -376,16 +380,24 @@ def conv3d_transpose(
         new_w = ivy.deconv_length(
             x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
         )
-        output_shape = [new_d, new_h, new_w]
+        output_shape = [x.shape[0], new_d, new_h, new_w, x.shape[1]]
+    elif len(output_shape) == 3:
+        output_shape = [
+            x.shape[0],
+            output_shape[0],
+            output_shape[1],
+            output_shape[2],
+            x.shape[1],
+        ]
     not_valid_h = False
     not_valid_d = False
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
     filter_shape[1] = filter_shape[1] + (filter_shape[1] - 1) * (dilations[1] - 1)
     filter_shape[2] = filter_shape[2] + (filter_shape[2] - 1) * (dilations[2] - 1)
-    pad_d = ivy.handle_padding(output_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = ivy.handle_padding(output_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = ivy.handle_padding(output_shape[1], strides[0], filter_shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[2], strides[1], filter_shape[1], padding)
+    pad_w = ivy.handle_padding(output_shape[3], strides[2], filter_shape[2], padding)
     if padding == "VALID":
         padding_list: List[int] = [0, 0, 0]
     elif padding == "SAME":
@@ -412,9 +424,9 @@ def conv3d_transpose(
     out_h = _out_shape(x.shape[3], strides[1], pad_h, dilations[1], filters.shape[3])
     out_w = _out_shape(x.shape[4], strides[2], pad_w, dilations[2], filters.shape[4])
     output_padding = [
-        max(output_shape[0] - out_d, 0),
-        max(output_shape[1] - out_h, 0),
-        max(output_shape[2] - out_w, 0),
+        max(output_shape[1] - out_d, 0),
+        max(output_shape[2] - out_h, 0),
+        max(output_shape[3] - out_w, 0),
     ]
     res = torch.nn.functional.conv_transpose3d(
         x,
