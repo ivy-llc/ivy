@@ -272,8 +272,6 @@ def matrix_transpose(x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.
     """
     return current_backend(x).matrix_transpose(x, out = out)
 
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

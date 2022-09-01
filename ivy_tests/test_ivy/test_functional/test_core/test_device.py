@@ -9,7 +9,7 @@ import shutil
 import sys
 
 import numpy as np
-import nvidia_smi
+import pynvml
 import psutil
 import pytest
 from hypothesis import strategies as st, given, assume
@@ -488,7 +488,7 @@ def test_total_mem_on_dev(device):
     if "cpu" in device:
         assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
     elif "gpu" in device:
-        gpu_mem = nvidia_smi.nvmlDeviceGetMemoryInfo(device)
+        gpu_mem = pynvml.nvmlDeviceGetMemoryInfo(device)
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
@@ -527,11 +527,8 @@ def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
         try:
-            nvidia_smi.nvmlInit()
-        except (
-            nvidia_smi.NVMLError_LibraryNotFound,
-            nvidia_smi.NVMLError_DriverNotLoaded,
-        ):
+            pynvml.nvmlInit()
+        except pynvml.NVMLError:
             assert False
 
 
