@@ -1,7 +1,7 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
-
+from numpy import _NoValue
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
@@ -104,7 +104,7 @@ def test_numpy_amin(
         fn_tree="amin",
         x=np.asarray(x, dtype=input_dtype),
         out=None,
-        where=where,
-        initial=initial,
-        keepdims=keepdims,
+        where=_NoValue,
+        initial=_NoValue,
+        keepdims=_NoValue,
     )
