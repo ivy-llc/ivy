@@ -311,7 +311,8 @@ def test_numpy_cosh(
         subok=True,
         test_values=False,
     )
-    
+  
+
 # arctan2
 @handle_cmd_line_args
 @given(
