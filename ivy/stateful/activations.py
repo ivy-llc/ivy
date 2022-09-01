@@ -34,7 +34,7 @@ class GEGLU(Module):
         """Applies the GEGLU activation function."""
         Module.__init__(self)
 
-    def _forward(self, inputs):
+    def _forward(self, inputs, gates):
         """
         Perform forward pass of the GEGLU activation.
 
@@ -49,4 +49,4 @@ class GEGLU(Module):
             The outputs following the GEGLU activation *[batch_shape, d]*
 
         """
-        return ivy.gelu(inputs) * inputs
+        return ivy.gelu(inputs) * gates

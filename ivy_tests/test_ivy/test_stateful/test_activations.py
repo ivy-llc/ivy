@@ -49,7 +49,7 @@ def test_gelu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2
     ),
     num_positional_args_init=helpers.num_positional_args(fn_name="GEGLU.__init__"),
     num_positional_args_method=helpers.num_positional_args(fn_name="GEGLU._forward"),
@@ -64,15 +64,17 @@ def test_geglu(
     container,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtypes, x = dtype_and_x
+    inputs = np.asarray(x[0], dtype=input_dtypes[0])
+    gates = np.asarray(x[1], dtype=input_dtypes[1])
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
-        input_dtypes_method=input_dtype,
+        input_dtypes_method=input_dtypes,
         as_variable_flags_method=as_variable,
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": np.asarray(x, dtype=input_dtype)},
+        all_as_kwargs_np_method={"inputs": inputs, "gates": gates},
         fw=fw,
         class_name="GEGLU",
     )
