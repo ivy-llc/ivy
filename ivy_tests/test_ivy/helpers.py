@@ -2991,6 +2991,7 @@ def get_axis(
     draw,
     *,
     shape,
+    allow_neg=True,
     allow_none=False,
     sorted=True,
     unique=True,
@@ -3049,6 +3050,7 @@ def get_axis(
         max_size = draw(max_size)
 
     axes = len(shape)
+    lower_axes_bound = axes if allow_neg else 0
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
@@ -3063,7 +3065,7 @@ def get_axis(
         if axes == 0:
             valid_strategies.append(st.just(0))
         else:
-            valid_strategies.append(st.integers(-axes, axes - 1))
+            valid_strategies.append(st.integers(-lower_axes_bound, axes - 1))
     if not force_int:
         if axes == 0:
             valid_strategies.append(
@@ -3072,7 +3074,7 @@ def get_axis(
         else:
             valid_strategies.append(
                 st.lists(
-                    st.integers(-axes, axes - 1),
+                    st.integers(-lower_axes_bound, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
