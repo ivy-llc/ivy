@@ -166,4 +166,5 @@ def fmax(input, other, *, out=None):
         ivy.bitwise_or(ivy.greater(input, other), ivy.isnan(other)),
         input,
         other,
+        out=out,
     )
