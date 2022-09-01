@@ -302,7 +302,7 @@ is as follows, with direct wrapping around :code:`ivy.logical_and`:
 
 :code:`ivy.logical_and` supports all data types, and so
 :code:`ivy.functional.frontends.tensorflow.math.logical_and` can also easily support all
-data types. However, the primary purpose of these frontend functions if for code
+data types. However, the primary purpose of these frontend functions is for code
 transpilations, and in such cases it would never be useful to support extra data types
 beyond :code:`tf.bool`, as the tensorflow code being transpiled would not support this.
 Additionally, the unit tests for all frontend functions use the original framework
@@ -317,7 +317,8 @@ the framework itself) should be flagged
 in a manner like the following:
 
 .. code-block:: python
-    logical_and.supported_dtypes = ("bool",)
+    
+   logical_and.supported_dtypes = ("bool",)
 
 The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
 more devices, we should still flag the frontend function devices to be the same as those

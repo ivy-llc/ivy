@@ -172,3 +172,88 @@ def test_sparse_categorical_crossentropy(
         y_pred=y_pred,
         from_logits=from_logits,
     )
+
+
+# mean_absolute_error
+@handle_cmd_line_args
+@given(
+    y_true_dtype_y_pred=helpers.dtype_and_values(
+        min_value=0,
+        max_value=1,
+        shape=(2, 2),
+        dtype=ivy.current_backend().valid_dtypes,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.mean_absolute_error"
+    ),
+)
+def test_mean_absolute_error(
+    y_true_dtype_y_pred, as_variable, num_positional_args, native_array, fw, with_out
+):
+    dtype, y_true_y_pred = y_true_dtype_y_pred
+    y_true_y_pred = ivy.array(y_true_y_pred, dtype=dtype)
+    y_true, y_pred = y_true_y_pred
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.mean_absolute_error",
+        y_true=y_true,
+        y_pred=y_pred,
+    )
+
+
+# binary_crossentropy
+@handle_cmd_line_args
+@given(
+    y_true=st.lists(st.integers(min_value=0, max_value=4), min_size=1, max_size=1),
+    dtype_y_pred=helpers.dtype_and_values(
+        available_dtypes=ivy_tf.valid_float_dtypes,
+        shape=(5,),
+        min_value=-10,
+        max_value=10,
+    ),
+    from_logits=st.booleans(),
+    label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.binary_crossentropy"
+    ),
+    native_array=st.booleans(),
+)
+def test_binary_crossentropy(
+    y_true,
+    dtype_y_pred,
+    from_logits,
+    label_smoothing,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    y_true = ivy.array(y_true, dtype=ivy.int32)
+    dtype, y_pred = dtype_y_pred
+
+    # Perform softmax on prediction if it's not a probability distribution.
+    if not from_logits:
+        y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
+
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int32, dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.binary_crossentropy",
+        y_true=y_true,
+        y_pred=y_pred,
+        from_logits=from_logits,
+        label_smoothing=label_smoothing,
+    )

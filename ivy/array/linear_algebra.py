@@ -26,7 +26,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> z = x.matmul(y)
         >>> print(z)
         ivy.array(11.)
-        """        
+        """
         return ivy.matmul(self._data, x2, out=out)
 
     def cholesky(
@@ -91,7 +91,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.Array instance method variant of ivy.cross. This method simply wraps the
         function, and so the docstring for ivy.cross also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -100,24 +100,24 @@ class ArrayWithLinearAlgebra(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
         axis
-            the axis (dimension) of x1 and x2 containing the vectors for which to 
-            compute (default: -1) the cross product.vIf set to -1, the function 
+            the axis (dimension) of x1 and x2 containing the vectors for which to
+            compute (default: -1) the cross product.vIf set to -1, the function
             computes the cross product for vectors defined by the last axis (dimension).
             Default: -1.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
-            
+
         Returns
         -------
         ret
-            an array containing the element-wise products. The returned array must 
+            an array containing the element-wise products. The returned array must
             have a data type determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         With :code:`ivy.Array` inputs:
-        
+
         >>> x = ivy.array([1., 0., 0.])
         >>> y = ivy.array([0., 1., 0.])
         >>> z = x.cross(y)

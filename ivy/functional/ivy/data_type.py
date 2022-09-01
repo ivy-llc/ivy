@@ -15,6 +15,10 @@ from ivy.func_wrapper import (
 )
 
 
+# Helpers #
+# --------#
+
+
 def _is_valid_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "supported_dtypes") and hasattr(fn, "unsupported_dtypes"):
         fn_supported_dtypes = fn.supported_dtypes
@@ -31,6 +35,18 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
             if isinstance(fn_unsupported_dtypes, tuple):
                 return False
     return True
+
+
+def _handle_nestable_dtype_info(fn):
+    def new_fn(type):
+        if isinstance(type, ivy.Container):
+            type = type.map(lambda x, kc: fn(x))
+            type.__dict__["max"] = type.map(lambda x, kc: x.max)
+            type.__dict__["min"] = type.map(lambda x, kc: x.min)
+            return type
+        return fn(type)
+
+    return new_fn
 
 
 # Array API Standard #
@@ -360,7 +376,6 @@ def can_cast(
 
 
 @inputs_to_native_arrays
-@handle_nestable
 def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -461,7 +476,6 @@ def finfo(
 
 
 @inputs_to_native_arrays
-@handle_nestable
 def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -938,6 +952,21 @@ def infer_default_dtype(
     Returns
     -------
         Return the default data type for the “kind” (integer or floating-point) of dtype
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype("int32")
+    >>> ivy.infer_default_dtype("int8")
+    'int8'
+
+    >>> ivy.set_default_float_dtype("float64")
+    >>> ivy.infer_default_dtype("float32")
+    'float64'
+
+    >>> ivy.set_default_uint_dtype("uint32")
+    >>> x = ivy.array([0], dtype="uint64")
+    >>> ivy.infer_default_dtype(x.dtype)
+    'uint32'
 
     """
     if ivy.is_float_dtype(dtype):

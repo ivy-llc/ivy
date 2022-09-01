@@ -205,6 +205,7 @@ class ContainerWithGeneral(ContainerBase):
         )
         # inplace update the container
         x.cont_inplace_update(cont)
+        return x
 
     def inplace_update(
         self: ivy.Container,
@@ -1128,13 +1129,13 @@ class ContainerWithGeneral(ContainerBase):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument 
+            The shape of the result. Default is None, in which case tensor argument
             must be provided.
         tensor
-            The tensor in which to scatter the results, default is None, 
+            The tensor in which to scatter the results, default is None,
             in which case the shape arg is used to scatter into a zeros array.
         reduction
-            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1175,7 +1176,7 @@ class ContainerWithGeneral(ContainerBase):
             a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
             b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
         }
-        
+
         scatter into an array
         >> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),
                   b=ivy.array([[2],[3],[4]]))
@@ -1184,7 +1185,7 @@ class ContainerWithGeneral(ContainerBase):
         >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
 
-        z = ivy.Container.static_scatter_nd(indices, updates, 
+        z = ivy.Container.static_scatter_nd(indices, updates,
                                             tensor=arr, reduction='replace')
         >> print(z)
         {
@@ -1192,14 +1193,14 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
 
-        
+
         """
         return ContainerBase.multi_map_in_static_method(
             "scatter_nd",
             indices,
             updates,
-            shape, 
-            tensor,           
+            shape,
+            tensor,
             reduction,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1207,7 +1208,7 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     def scatter_nd(
         self: ivy.Container,
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1226,7 +1227,7 @@ class ContainerWithGeneral(ContainerBase):
         This method simply wraps the function, and so the docstring
         for ivy.scatter_nd also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -1237,10 +1238,10 @@ class ContainerWithGeneral(ContainerBase):
             The shape of the result. Default is None, in which case tensor argument
             must be provided.
         tensor
-            The tensor in which to scatter the results, default is None, 
+            The tensor in which to scatter the results, default is None,
             in which case the shape arg is used to scatter into a zeros array.
         reduction
-            The reduction method for the scatter, one of 'sum', 'min', 'max' 
+            The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1297,16 +1298,16 @@ class ContainerWithGeneral(ContainerBase):
         }
         """
         return self.static_scatter_nd(
-            self, 
-            updates, 
-            shape, 
-            tensor, 
-            reduction, 
-            key_chains, 
-            to_apply, 
-            prune_unapplied, 
-            map_sequences, 
-            out=out
+            self,
+            updates,
+            shape,
+            tensor,
+            reduction,
+            key_chains,
+            to_apply,
+            prune_unapplied,
+            map_sequences,
+            out=out,
         )
 
     @staticmethod
