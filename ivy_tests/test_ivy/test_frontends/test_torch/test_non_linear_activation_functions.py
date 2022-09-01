@@ -186,12 +186,9 @@ def test_torch_leaky_relu(
             )
         )
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.tanh"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_tanh(
     dtype_and_x,
@@ -204,7 +201,7 @@ def test_torch_tanh(
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
