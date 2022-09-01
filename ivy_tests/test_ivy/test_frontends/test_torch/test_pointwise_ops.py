@@ -1055,6 +1055,7 @@ def test_torch_sqrt(
         out=None,
     )
 
+
 # absolute
 @handle_cmd_line_args
 @given(

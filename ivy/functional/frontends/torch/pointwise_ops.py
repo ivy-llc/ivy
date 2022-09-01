@@ -178,6 +178,7 @@ def sqrt(input, *, out=None):
 
 sqrt.unsupported_dtypes = ("float16",)
 
+
 def absolute(input, *, out=None):
     return ivy.abs(input, out=out)
 
