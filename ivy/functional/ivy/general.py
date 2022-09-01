@@ -1,18 +1,19 @@
 """Collection of general Ivy functions."""
 
+import builtins
+
 # global
 import gc
-import math
-import einops
 import inspect
-import builtins
-import numpy as np
+import math
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 
+import einops
+import numpy as np
+
 # local
 import ivy
-from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
     infer_device,
@@ -21,6 +22,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.functional.ivy.device import dev
 
 FN_CACHE = dict()
 INF = float("inf")
@@ -3491,30 +3493,147 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
     return {"idx": idx, "param": list(params.values())[idx]}
 
 
+def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_attr_name):
+    attr_list = ()
+    if hasattr(fn, "other_attr_name"):
+        supported_devices = fn.supported_devices
+        if isinstance(supported_devices, dict):
+            attr_list = supported_devices.get(backend, ())
+    if dnd_dict and attr_list:
+        raise Exception(
+            f"Cannot specify both {first_attr_name} and {other_attr_name} "
+            "cannot both be defined for the same function"
+        )
+
+
 def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
-    if hasattr(fn, "unsupported_device_and_dtype") and hasattr(
-        fn, "supported_device_and_dtype"
-    ):
-        fn_unsupported_device_and_dtype = fn.unsupported_device_and_dtype
-        fn_supported_device_and_dtype = fn.supported_device_and_dtype
-        if isinstance(fn_unsupported_device_and_dtype, dict):
-            if isinstance(fn_supported_device_and_dtype, dict):
-                backend_str = ivy.current_backend_str()
-                if (
-                    backend_str in fn_unsupported_device_and_dtype
-                    and backend_str in fn_supported_device_and_dtype
-                ):
-                    return False
-                elif (
-                    "devices" in fn_unsupported_device_and_dtype
-                    and "devices" in fn_supported_device_and_dtype
-                ):
-                    return False
+    fn_unsupported_dnd = {}
+    fn_supported_dnd = {}
+    backend = ivy.current_backend_str()
+    if hasattr(fn, "unsupported_device_and_dtype"):
+        fn_unsupported_dnd = fn.unsupported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
+            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+    if hasattr(fn, "supported_device_and_dtype"):
+        fn_supported_dnd = fn.supported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_supported_dnd.values())[0], dict):
+            fn_supported_dnd = fn_supported_dnd.get(backend, {})
+
+    if fn_unsupported_dnd and fn_supported_dnd:
+        raise Exception(
+            "unsupported_device_and_dtype and supported_device_and_dtype "
+            "cannot both be defined for the same function"
+        )
+
+    us = "unsupported_device_and_dtype"
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_device")
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_dtype")
+
+    ss = "supported_device_and_dtype"
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, ss, "supported_device")
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, ss, "supported_device")
+
     return True
 
 
+def _get_devices_and_dtypes(fn, complement=True):
+    # TODO: Not hardcode this
+    VALID_DEVICES = ("cpu",)
+    INVALID_DEVICES = ("gpu", "tpu")
+    ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
+
+    supported_devices = ivy.function_supported_devices(fn, complement=False)
+    supported_dtypes = ivy.function_supported_dtypes(fn, complement=False)
+
+    supported = {}
+    # Generate a base supported set from other attributes
+    for device in supported_devices:
+        supported[device] = supported_dtypes
+
+    # Their values are formated like either
+    # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
+    # 2. fn.supported_devices = {"numpy": {"cpu":("float16",},)}
+    # Could also have the "all" value for the framework
+    basic = [
+        ("supported_devices", set.intersection, VALID_DEVICES),
+        ("unsupported_devices", set.difference, INVALID_DEVICES),
+    ]
+    for (key, merge_fn, base) in basic:
+        if hasattr(fn, key):
+            v = getattr(fn, key)
+            if isinstance(v, dict):
+                vb = v.get(ivy.current_backend_str(), base)
+                v = merge_fn(set(vb), v.get("all", base))
+            supported = merge_fn(supported, set(v))
+
+    if complement:
+        supported = set(ALL_DEVICES).difference(supported)
+
+    return tuple(supported)
+
+
 @handle_nestable
-def function_unsupported_devices_and_dtypes(fn: Callable) -> Dict:
+def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
+    """Returns the supported combination of devices and dtypes
+     of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the supported device and dtype attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
+
+    Returns
+    -------
+    ret
+        The unsupported devices of the function
+    """
+    if not _is_valid_device_and_dtypes_attributes(fn):
+        raise Exception(
+            "supported_device_and_dtypes and unsupported_device_and_dtypes \
+             attributes cannot both exist in a particular backend"
+        )
+
+    supported_devices_dtype = {"devices": (), "dtypes": ()}
+    if hasattr(fn, "supported_device_and_dtype"):
+        fn_supported_devices_dtypes = fn.supported_device_and_dtype
+        if isinstance(fn_supported_devices_dtypes, dict):
+            backend_str = ivy.current_backend_str()
+            if backend_str in fn_supported_devices_dtypes:
+                fn_supported_devices_dtypes = fn_supported_devices_dtypes[backend_str]
+            elif "devices" not in fn_supported_devices_dtypes:
+                return supported_devices_dtype
+            keys = list(fn_supported_devices_dtypes.keys())
+            if "dtypes" in keys and "devices" in keys:
+                supported_devices_dtype["devices"] += fn_supported_devices_dtypes[
+                    "devices"
+                ]
+
+                if isinstance(fn_supported_devices_dtypes["dtypes"][0], tuple):
+                    for dtypes in fn_supported_devices_dtypes["dtypes"]:
+                        supported_devices_dtype["dtypes"] += dtypes
+                else:
+                    supported_devices_dtype["dtypes"] += (
+                        fn_supported_devices_dtypes["dtypes"],
+                    )
+            else:
+                raise Exception(
+                    "'supported_device_and_dtype' attr must have keys \
+                     'devices' and 'dtypes'"
+                )
+        else:
+            raise Exception(
+                "Have to provide a dictionary to 'supported_device_and_dtype' attr \
+                 with keys 'devices' and 'dtypes'"
+            )
+    return supported_devices_dtype
+
+
+@handle_nestable
+def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     """Returns the unsupported combination of devices and dtypes
      of the current backend's function.
 
@@ -3522,6 +3641,8 @@ def function_unsupported_devices_and_dtypes(fn: Callable) -> Dict:
     ----------
     fn
         The function to check for the unsupported device and dtype attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
 
     Returns
     -------
@@ -3571,59 +3692,3 @@ def function_unsupported_devices_and_dtypes(fn: Callable) -> Dict:
                  with keys 'devices' and 'dtypes'"
             )
     return unsupported_devices_dtype
-
-
-@handle_nestable
-def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
-    """Returns the supported combination of devices and dtypes
-     of the current backend's function.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the supported device and dtype attribute
-
-    Returns
-    -------
-    ret
-        The unsupported devices of the function
-    """
-    if not _is_valid_device_and_dtypes_attributes(fn):
-        raise Exception(
-            "supported_device_and_dtypes and unsupported_device_and_dtypes \
-             attributes cannot both exist in a particular backend"
-        )
-
-    supported_devices_dtype = {"devices": (), "dtypes": ()}
-    if hasattr(fn, "supported_device_and_dtype"):
-        fn_supported_devices_dtypes = fn.supported_device_and_dtype
-        if isinstance(fn_supported_devices_dtypes, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_supported_devices_dtypes:
-                fn_supported_devices_dtypes = fn_supported_devices_dtypes[backend_str]
-            elif "devices" not in fn_supported_devices_dtypes:
-                return supported_devices_dtype
-            keys = list(fn_supported_devices_dtypes.keys())
-            if "dtypes" in keys and "devices" in keys:
-                supported_devices_dtype["devices"] += fn_supported_devices_dtypes[
-                    "devices"
-                ]
-
-                if isinstance(fn_supported_devices_dtypes["dtypes"][0], tuple):
-                    for dtypes in fn_supported_devices_dtypes["dtypes"]:
-                        supported_devices_dtype["dtypes"] += dtypes
-                else:
-                    supported_devices_dtype["dtypes"] += (
-                        fn_supported_devices_dtypes["dtypes"],
-                    )
-            else:
-                raise Exception(
-                    "'supported_device_and_dtype' attr must have keys \
-                     'devices' and 'dtypes'"
-                )
-        else:
-            raise Exception(
-                "Have to provide a dictionary to 'supported_device_and_dtype' attr \
-                 with keys 'devices' and 'dtypes'"
-            )
-    return supported_devices_dtype
