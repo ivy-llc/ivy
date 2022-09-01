@@ -1,6 +1,7 @@
 # global
 import ivy
 import numpy as np
+from numpy import _NoValue
 
 
 def minimum(
@@ -28,9 +29,9 @@ def amin(
     a,
     axis=None,
     out=None,
-    keepdims=None,
-    initial=None,
-    where=None, 
+    keepdims=_NoValue,
+    initial=_NoValue,
+    where=_NoValue, 
 ):
     a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(ivy.dtype(a[0])))
     ret=np.amin(a, axis=axis, out=out, keepdims=keepdims, initial=initial,where=where)
