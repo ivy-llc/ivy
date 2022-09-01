@@ -182,7 +182,7 @@ def test_numpy_arccos(
     as_variable,
     with_out,
     num_positional_args,
-    native_array, 
+    native_array,
     fw,
 ):
     input_dtype, x = dtype_and_x
@@ -252,7 +252,7 @@ def test_numpy_arctan(
         fw=fw,
         frontend="numpy",
         fn_tree="arctan",
-        x=np.asarray(x, dtype=input_dtype[0]), 
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
@@ -261,8 +261,8 @@ def test_numpy_arctan(
         subok=True,
         test_values=False,
     )
- 
 
+    
 # cosh
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
@@ -316,7 +316,7 @@ def test_numpy_cosh(
 # arctan2
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes,num_arrays=2),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=2),
