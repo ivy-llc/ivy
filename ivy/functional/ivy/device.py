@@ -7,7 +7,8 @@ import abc
 import math
 import psutil
 import pynvml
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Type
+from types import TracebackType
 
 # noinspection PyUnresolvedReferences
 try:
