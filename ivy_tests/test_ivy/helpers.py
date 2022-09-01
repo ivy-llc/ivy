@@ -1884,7 +1884,7 @@ def test_frontend_function(
             )
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
-        
+
         if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
             backend_returned_scalar = True
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
@@ -1893,8 +1893,7 @@ def test_frontend_function(
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
             frontend_ret_idxs = ivy.nested_indices_where(
-                frontend_ret, 
-                ivy.is_native_array
+                frontend_ret, ivy.is_native_array
             )
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
@@ -1919,7 +1918,7 @@ def test_frontend_function(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
-        ground_truth_backend=frontend
+        ground_truth_backend=frontend,
     )
 
 
