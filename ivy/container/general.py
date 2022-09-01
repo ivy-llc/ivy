@@ -407,7 +407,7 @@ class ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.all_equal. This method simply wraps
-        the function, and so the docstring for ivy.add also applies to this method
+        the function, and so the docstring for ivy.all_equal also applies to this method
         with minimal changes.
 
         Parameters
@@ -1182,9 +1182,9 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather(
-        params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Union[int, ivy.Container] = -1,
+        params : ivy.Container,
+        indices: ivy.Container,
+        axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1192,48 +1192,42 @@ class ContainerWithGeneral(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.gather. This method simply wraps
-        the function, and so the docstring for ivy.gather also applies to this method
-        with minimal changes.
+        """Perform einops rearrange operation on each sub array in the container.
 
         Parameters
         ----------
-        param
-            the array or container from which to gather values.
-        indices
-            index array or container
-        axis
-            optional int, the axis from which to gather from. Default is -1.
+        pattern
+            Rearrangement pattern.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
+
 
         Returns
         -------
-        ret
-            New container with the values gathered at the specified indices along
-            the specified axis.
+            ivy.Container with each array having einops.rearrange applied.
+
         """
         return ContainerBase.multi_map_in_static_method(
             "gather",
             params,
             indices,
-            axis=axis,
+            axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
+            out=out
         )
 
     def gather(
@@ -1608,8 +1602,8 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather_nd(
-        params: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        params : ivy.Container,
+        indices: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1617,65 +1611,28 @@ class ContainerWithGeneral(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.gather_nd. This method simply wraps
-        the function, and so the docstring for ivy.gather_nd also applies to this
-        method with minimal changes.
+        """Gather slices from all container params into a arrays with shape specified by
+        indices.
 
         Parameters
         ----------
-        params
-            The container from which to gather values.
         indices
-            Index array or container.
+            Index array.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            ``x`` if None.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
 
         Returns
         -------
-        ret
-            New container of given shape, with the values gathered at the indices.
+            Container object with all sub-array dimensions gathered.
 
-        Examples
-        --------
-        With one :code:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([4., 5., 6.]))
-        >>> y = ivy.array([1])
-        >>> print(ivy.static_gather_nd(x, y))
-        >>> print(z)
-        {
-            a: ivy.array(1.),
-            b: ivy.array(5.)
-        }
-
-        With multiple :code:`ivy.Container` inputs:
-
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                              b=ivy.array([3., 4., 5.]))
-        >>> y = ivy.Container(a=ivy.array([0]), \
-                              b=ivy.array([1]))
-        >>> y = ivy.Container.static_gather_nd(x, y)
-        >>> print(y)
-        {
-                a: ivy.array(0.),
-                b: ivy.array(4.)
-        }
         """
         return ContainerBase.multi_map_in_static_method(
             "gather_nd",
@@ -1685,7 +1642,7 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
+            out=out
         )
 
     def gather_nd(
@@ -1748,11 +1705,10 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_gather_nd(
             self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
-
     @staticmethod
     def static_einops_rearrange(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        pattern: Union[str, ivy.Container],
+        x: ivy.Container,
+        pattern: str,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1761,38 +1717,30 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.einops_rearrange.
-        This method simply wraps the function, and so the docstring
-        for ivy.einops_rearrange also applies to this method
-        with minimal changes.
+        """Perform einops rearrange operation on each sub array in the container.
 
         Parameters
         ----------
-        x
-            Input array or container to be re-arranged.
         pattern
             Rearrangement pattern.
-        axes_lengths
-            Any additional specifications for dimensions.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
+
 
         Returns
         -------
-        ret
-            New container with einops.rearrange having been applied.
+            ivy.Container with each array having einops.rearrange applied.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1804,112 +1752,48 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            **axes_lengths,
-        )
-
-    def einops_rearrange(
-        self: ivy.Container,
-        pattern: Union[str, ivy.Container],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.einops_rearrange.
-        This method simply wraps the function, and so the docstring
-        for ivy.einops_rearrange also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        x
-            Input container to be re-arranged.
-        pattern
-            Rearrangement pattern.
-        axes_lengths
-            Any additional specifications for dimensions.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a
-            shape that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            New container with einops.rearrange having been applied.
-
-        """
-        return self.static_einops_rearrange(
-            self,
-            pattern,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            out=out,
-            **axes_lengths,
+            **axes_lengths
         )
 
     @staticmethod
     def static_einops_reduce(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x: ivy.Container,
         pattern: str,
-        reduction: Union[str, Callable],
+        reduction: str,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-        **axes_lengths: Dict[str, int],
+        axes_lengths: Dict[str, int]
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.einops_reduce. This method simply
-        wraps the function, and so the docstring for ivy.einops_reduce also applies
-        to this method with minimal changes.
+        """Perform einops reduce operation on each sub array in the container.
 
         Parameters
         ----------
-        x
-            Input array or container to be reduced.
         pattern
             Reduction pattern.
         reduction
             One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
             callable.
-        axes_lengths
-            Any additional specifications for dimensions.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
 
         Returns
         -------
-        ret
-            New container with einops.reduce having been applied.
+            ivy.Container with each array having einops.reduce applied.
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1922,7 +1806,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            **axes_lengths,
+            **axes_lengths
         )
 
     def einops_reduce(
@@ -1987,7 +1871,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_einops_repeat(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x: ivy.Container,
         pattern: str,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1997,39 +1881,32 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.einops_repeat. This method simply
-        wraps the function, and so the docstring for ivy.einops_repeat also applies
-        to this method with minimal changes.
+        """Perform einops repeat operation on each sub array in the container.
 
         Parameters
         ----------
-        x
-            Input array or container to be repeated.
         pattern
             Rearrangement pattern.
-        axes_lengths
-            Any additional specifications for dimensions.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
 
         Returns
         -------
-        ret
-            New container with einops.repeat having been applied.
+            ivy.Container with each array having einops.repeat applied.
 
-        """
+        """ 
+
         return ContainerBase.multi_map_in_static_method(
             "einops_repeat",
             x,
@@ -2039,7 +1916,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            **axes_lengths,
+            **axes_lengths
         )
 
     def einops_repeat(
@@ -2501,7 +2378,49 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences=map_sequences,
         )
 
-    @staticmethod
+    def einops_rearrange(
+        self: ivy.Container,
+        pattern: str,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+        **axes_lengths: Dict[str, int],
+    ):
+        """Perform einops rearrange operation on each sub array in the container.
+
+        Parameters
+        ----------
+        pattern
+            Rearrangement pattern.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
+
+
+        Returns
+        -------
+            ivy.Container with each array having einops.rearrange applied.
+
+        """
+        return self.static_einops_rearrange(
+            self, pattern, key_chains, to_apply, prune_unapplied, map_sequences, out=out, **axes_lengths
+        )
+
+
+
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,

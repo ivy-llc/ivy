@@ -30,9 +30,9 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: test-array-api-meta.yml
+          workflow: test-array-api.yml
           workflow_conclusion: completed
-          name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
           path: |
             ivy/.hypothesis/
         continue-on-error: true
@@ -70,7 +70,7 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
           path: |
             ivy/.hypothesis/examples.zip
         continue-on-error: true
