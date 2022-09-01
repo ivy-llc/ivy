@@ -46,7 +46,7 @@ def test_tensorflow_det(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.det",
-        input=np.asarray(x, dtype=input_dtype),   
+        input=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -79,8 +79,8 @@ def test_tensorflow_eigvalsh(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes[1:],
         min_num_dims=2,
-        min_value=-1e+05,
-        max_value=1e+05
+        min_value=-1e05,
+        max_value=1e05,
     ),
     as_variables=st.booleans(),
     native_array=st.booleans(),
@@ -88,19 +88,12 @@ def test_tensorflow_eigvalsh(
         fn_name="ivy.functional.frontends.tensorflow.matrix_rank"
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
-    data=st.data()
+    data=st.data(),
 )
 def test_matrix_rank(
-    *,
-    data,
-    dtype_x,
-    as_variables,
-    num_positional_args,
-    native_array,
-    tolr,
-    fw
+    *, data, dtype_x, as_variables, num_positional_args, native_array, tolr, fw
 ):
-    input_dtype , x = dtype_x
+    input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variables,
@@ -112,7 +105,7 @@ def test_matrix_rank(
         fn_tree="linalg.matrix_rank",
         atol=1.0,
         a=np.asarray(x, dtype=input_dtype),
-        tol=tolr,   
+        tol=tolr,
     )
 
 
@@ -214,7 +207,7 @@ def test_tensorflow_slogdet(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.slogdet",
-        x=np.asarray(x, dtype=input_dtype)
+        x=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -228,7 +221,7 @@ def test_tensorflow_slogdet(
     native_array=st.booleans(),
 )
 def test_tensorflow_pinv(
-        dtype_and_input, as_variable, num_positional_args, native_array, fw
+    dtype_and_input, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_input
 
@@ -244,5 +237,5 @@ def test_tensorflow_pinv(
         a=np.asarray(x, dtype=input_dtype),
         rcond=1e-15,
         validate_args=False,
-        name=None
+        name=None,
     )

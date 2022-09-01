@@ -121,40 +121,6 @@ def test_gelu(
     )
 
 
-# tanh
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="tanh"),
-)
-def test_tanh(
-    *,
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    container,
-    instance_method,
-    native_array,
-    fw,
-):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
-        fw=fw,
-        num_positional_args=num_positional_args,
-        container_flags=container,
-        instance_method=instance_method,
-        fn_name="tanh",
-        x=np.asarray(x, dtype=dtype),
-    )
-
-
 # sigmoid
 @handle_cmd_line_args
 @given(

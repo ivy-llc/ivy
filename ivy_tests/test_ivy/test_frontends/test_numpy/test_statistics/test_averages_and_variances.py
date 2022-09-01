@@ -22,7 +22,7 @@ import ivy
         fn_name="ivy.functional.frontends.numpy.mean"
     ),
     native_array=helpers.array_bools(num_arrays=1),
-    keep_dims=st.booleans()
+    keep_dims=st.booleans(),
 )
 def test_numpy_mean(
     dtype_and_x,
