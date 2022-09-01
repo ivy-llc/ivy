@@ -1884,7 +1884,7 @@ def test_frontend_function(
             )
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
-        
+
         if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
             backend_returned_scalar = True
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
@@ -1893,8 +1893,7 @@ def test_frontend_function(
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
             frontend_ret_idxs = ivy.nested_indices_where(
-                frontend_ret, 
-                ivy.is_native_array
+                frontend_ret, ivy.is_native_array
             )
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
@@ -1919,7 +1918,7 @@ def test_frontend_function(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
-        ground_truth_backend=frontend
+        ground_truth_backend=frontend,
     )
 
 
@@ -2992,6 +2991,7 @@ def get_axis(
     draw,
     *,
     shape,
+    allow_neg=True,
     allow_none=False,
     sorted=True,
     unique=True,
@@ -3050,6 +3050,7 @@ def get_axis(
         max_size = draw(max_size)
 
     axes = len(shape)
+    lower_axes_bound = axes if allow_neg else 0
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
@@ -3064,7 +3065,7 @@ def get_axis(
         if axes == 0:
             valid_strategies.append(st.just(0))
         else:
-            valid_strategies.append(st.integers(-axes, axes - 1))
+            valid_strategies.append(st.integers(-lower_axes_bound, axes - 1))
     if not force_int:
         if axes == 0:
             valid_strategies.append(
@@ -3073,7 +3074,7 @@ def get_axis(
         else:
             valid_strategies.append(
                 st.lists(
-                    st.integers(-axes, axes - 1),
+                    st.integers(-lower_axes_bound, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
