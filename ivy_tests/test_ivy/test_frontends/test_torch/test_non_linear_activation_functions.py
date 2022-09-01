@@ -179,16 +179,16 @@ def test_torch_leaky_relu(
 
 @handle_cmd_line_args
 @given(
-dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=tuple(
-        set(ivy_np.valid_float_dtypes).intersection(
-            set(ivy_torch.valid_float_dtypes)
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
         )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.logsigmoid"
     )
-),
-num_positional_args=helpers.num_positional_args(
-    fn_name="functional.frontends.torch.logsigmoid"
-)
 )
 def test_torch_logsigmoid(
     dtype_and_x,
