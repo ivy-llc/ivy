@@ -126,11 +126,12 @@ def std(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        axis = tuple(range(len(x.shape)))
+        axis = list(range(len(x.shape)))
+    if axis == ():
+        return x
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
-        ret = torch.std(x, dim=axis, unbiased=False, keepdim=keepdims)
-        return ret
+        return torch.std(x, dim=axis, unbiased=False, keepdim=keepdims)
     elif correction == 1:
         return torch.std(x, dim=axis, unbiased=True, keepdim=keepdims)
     size = 1
