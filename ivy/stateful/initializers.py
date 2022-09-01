@@ -16,16 +16,16 @@ class Initializer:
     initial weights must be picked carefully. 
     """
     def create_variables(
-        self, 
-        var_shape: Tuple[int, int], 
-        device: Union[ivy.Device, ivy.NativeDevice], 
-        fan_out: float = None, 
-        fan_in: float = None, 
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None
+        self,
+        var_shape: Tuple[int, int],
+        device: Union[ivy.Device, ivy.NativeDevice],
+        fan_out: float = None,
+        fan_in: float = None,
+        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
     ) -> ivy.Variable:
         """
         Create internal variables for the layer
-        
+
         Parameters
         ----------
         var_shape
@@ -62,12 +62,12 @@ class Constant(Initializer):
         self._constant = constant
 
     def create_variables(
-        self, 
-        var_shape: Tuple[int, int], 
-        device: Union[ivy.Device, ivy.NativeDevice], 
-        fan_out: float = None, 
-        fan_in: float = None, 
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None
+        self,
+        var_shape: Tuple[int, int],
+        device: Union[ivy.Device, ivy.NativeDevice],
+        fan_out: float = None,
+        fan_in: float = None,
+        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
     ) -> ivy.Variable:
         return ivy.variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
@@ -76,17 +76,13 @@ class Constant(Initializer):
 
 class Zeros(Constant):
     def __init__(self):
-        """
-        A constant initalizer that fills with the constant value `0.0`.
-        """
+        """A constant initalizer that fills with the constant value `0.0`."""
         super().__init__(0.0)
 
 
 class Ones(Constant):
     def __init__(self):
-        """
-        A constant initalizer that fills with the constant value `1.0`.
-        """
+        """A constant initalizer that fills with the constant value `1.0`."""
         super().__init__(1.0)
 
 

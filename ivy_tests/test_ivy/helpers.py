@@ -616,6 +616,9 @@ def assert_all_close(
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     else:
+        if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
+            ret_np = ret_np.astype("float64")
+            ret_from_gt_np = ret_from_gt_np.astype("float64")
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
         ), "{} != {}".format(ret_np, ret_from_gt_np)
@@ -1495,8 +1498,6 @@ def test_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     fn = getattr(ivy, fn_name)
     if gradient_incompatible_function(fn=fn):
@@ -1833,8 +1834,6 @@ def test_frontend_function(
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -1884,7 +1883,7 @@ def test_frontend_function(
             )
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
-        
+
         if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
             backend_returned_scalar = True
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
@@ -1893,8 +1892,7 @@ def test_frontend_function(
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
             frontend_ret_idxs = ivy.nested_indices_where(
-                frontend_ret, 
-                ivy.is_native_array
+                frontend_ret, ivy.is_native_array
             )
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
@@ -1919,7 +1917,7 @@ def test_frontend_function(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
-        ground_truth_backend=frontend
+        ground_truth_backend=frontend,
     )
 
 
@@ -2992,6 +2990,7 @@ def get_axis(
     draw,
     *,
     shape,
+    allow_neg=True,
     allow_none=False,
     sorted=True,
     unique=True,
@@ -3050,6 +3049,7 @@ def get_axis(
         max_size = draw(max_size)
 
     axes = len(shape)
+    lower_axes_bound = axes if allow_neg else 0
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
@@ -3064,7 +3064,7 @@ def get_axis(
         if axes == 0:
             valid_strategies.append(st.just(0))
         else:
-            valid_strategies.append(st.integers(-axes, axes - 1))
+            valid_strategies.append(st.integers(-lower_axes_bound, axes - 1))
     if not force_int:
         if axes == 0:
             valid_strategies.append(
@@ -3073,7 +3073,7 @@ def get_axis(
         else:
             valid_strategies.append(
                 st.lists(
-                    st.integers(-axes, axes - 1),
+                    st.integers(-lower_axes_bound, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
@@ -3137,6 +3137,8 @@ def num_positional_args(draw, *, fn_name: str = None):
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1
         elif param.kind == param.KEYWORD_ONLY:
+            num_keyword_only += 1
+        elif param.kind == param.VAR_KEYWORD:
             num_keyword_only += 1
     return draw(
         ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
