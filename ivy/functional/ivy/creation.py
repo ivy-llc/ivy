@@ -21,6 +21,20 @@ from ivy.func_wrapper import (
 # Helpers #
 # --------#
 
+# Used to speed up asarray in each of the backends.
+def _is_raw_python_list_or_scalar(array):
+    if isinstance(array, (list, tuple, dict)):
+        is_list_or_python_data = [_is_raw_python_list_or_scalar(item) for item in array]
+        return all(is_list_or_python_data)  # If every item in there is True
+    elif isinstance(
+        array, (float, int, bool)
+    ):  # If this is the first input that's fine,
+        return (
+            True  # If this is not the first input, it means we've found a "leaf" item.
+        )
+    else:
+        return False
+
 
 def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
     assert (
