@@ -159,3 +159,11 @@ ne = not_equal
 
 def minimum(input, other, *, out=None):
     return ivy.minimum(input, other, out=out)
+
+
+def fmax(input, other, *, out=None):
+    return ivy.where(
+        ivy.bitwise_or(ivy.greater(input, other), ivy.isnan(other)),
+        input,
+        other,
+    )
