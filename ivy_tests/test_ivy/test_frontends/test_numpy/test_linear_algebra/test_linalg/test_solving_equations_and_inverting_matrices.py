@@ -23,13 +23,13 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.linalg.inv"
     ),
 )
-def test_numpy_inv(dtype_and_x, num_positional_args, fw):
+def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args, fw):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=False,
+        as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=False,
+        native_array_flags=native_array,
         num_positional_args=num_positional_args,
         fw=fw,
         frontend="numpy",
@@ -52,13 +52,13 @@ def test_numpy_inv(dtype_and_x, num_positional_args, fw):
         fn_name="ivy.functional.frontends.numpy.linalg.pinv"
     ),
 )
-def test_numpy_pinv(dtype_and_x, num_positional_args, fw):
+def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args, fw):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=False,
+        as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=False,
+        native_array_flags=native_array,
         num_positional_args=num_positional_args,
         fw=fw,
         frontend="numpy",
