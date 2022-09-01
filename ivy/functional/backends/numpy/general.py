@@ -140,11 +140,9 @@ def cumsum(
     exclusive: Optional[bool] = False,
     reverse: Optional[bool] = False,
     *,
-    dtype: Optional[np.dtype] = None,
+    dtype: np.dtype,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
@@ -160,11 +158,8 @@ def cumsum(
         elif reverse:
             x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
             res = np.flip(x, axis=axis)
-        if out is not None:
-            return ivy.inplace_update(out, res)
         return res
-    else:
-        return np.cumsum(x, axis, dtype=dtype, out=out)
+    return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True

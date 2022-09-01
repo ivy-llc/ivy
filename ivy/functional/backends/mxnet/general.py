@@ -141,7 +141,7 @@ def cumsum(
     exclusive: Optional[bool] = False,
     reverse: Optional[bool] = False,
     *,
-    dtype: Optional[type] = None,
+    dtype: type,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if exclusive or reverse:
@@ -160,7 +160,7 @@ def cumsum(
             x = mx.nd.cumsum(mx.nd.flip(x, axis=axis), axis=axis, dtype=dtype)
             res = mx.nd.flip(x, axis=axis)
         return res
-    return mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape), dtype=dtype)
+    return mx.nd.cumsum(x, axis=axis, dtype=dtype)
 
 
 def cumprod(

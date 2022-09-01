@@ -149,12 +149,9 @@ def cumsum(
     exclusive: Optional[bool] = False,
     reverse: Optional[bool] = False,
     *,
-    dtype: Optional[torch.dtype] = None,
+    dtype: torch.dtype,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
@@ -170,11 +167,8 @@ def cumsum(
         elif reverse:
             x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
             res = torch.flip(x, dims=(axis,))
-        if out is not None:
-            return ivy.inplace_update(out, res)
         return res
-    else:
-        return torch.cumsum(x, axis, dtype=dtype, out=out)
+    return torch.cumsum(x, axis, dtype=dtype, out=out)
 
 
 cumsum.support_native_out = True
