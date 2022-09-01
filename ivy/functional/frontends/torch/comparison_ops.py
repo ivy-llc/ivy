@@ -159,3 +159,7 @@ ne = not_equal
 
 def maximum(input, other, *, out=None):
     return ivy.maximum(input, other, out=out)
+
+
+def minimum(input, other, *, out=None):
+    return ivy.minimum(input, other, out=out)
