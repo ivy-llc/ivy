@@ -337,7 +337,6 @@ def test_numpy_arctan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
