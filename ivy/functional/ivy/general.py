@@ -3495,10 +3495,10 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
 
 def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_attr_name):
     attr_list = ()
-    if hasattr(fn, "other_attr_name"):
-        supported_devices = fn.supported_devices
-        if isinstance(supported_devices, dict):
-            attr_list = supported_devices.get(backend, ())
+    if hasattr(fn, other_attr_name):
+        attr_list = getattr(fn, other_attr_name)
+        if isinstance(attr_list, dict):
+            attr_list = attr_list.get(backend, ())
     if dnd_dict and attr_list:
         raise Exception(
             f"Cannot specify both {first_attr_name} and {other_attr_name} "
@@ -3528,12 +3528,12 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
         )
 
     us = "unsupported_device_and_dtype"
-    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_device")
-    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_dtype")
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_devices")
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_dtypes")
 
     ss = "supported_device_and_dtype"
-    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, ss, "supported_device")
-    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, ss, "supported_device")
+    _valid_attrib_combinations(fn, backend, fn_supported_dnd, ss, "unsupported_device")
+    _valid_attrib_combinations(fn, backend, fn_supported_dnd, ss, "unsupported_dtypes")
 
     return True
 
