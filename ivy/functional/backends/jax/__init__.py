@@ -44,6 +44,8 @@ NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
 NativeShape = tuple
 
+NativeSparseArray = None
+
 # native data types
 native_int8 = jnp.dtype("int8")
 native_int16 = jnp.dtype("int16")

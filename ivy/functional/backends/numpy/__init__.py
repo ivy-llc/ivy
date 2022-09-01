@@ -14,6 +14,8 @@ NativeDevice = str
 NativeDtype = np.dtype
 NativeShape = tuple
 
+NativeSparseArray = None
+
 # data types (preventing cyclic imports)
 int8 = ivy.IntDtype("int8")
 int16 = ivy.IntDtype("int16")
