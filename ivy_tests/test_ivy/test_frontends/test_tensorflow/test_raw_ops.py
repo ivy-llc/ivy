@@ -197,7 +197,6 @@ def test_tensorflow_Cosh(
     )
 
 
-# full
 @st.composite
 def _dtypes(draw):
     return draw(
@@ -220,6 +219,7 @@ def _fill_value(draw):
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
+# fill
 @handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
@@ -235,19 +235,22 @@ def _fill_value(draw):
         fn_name="ivy.functional.frontends.tensorflow.fill"
     ),
 )
-def test_tensorflow_full(
+def test_tensorflow_fill(
     shape,
     fill_value,
     dtypes,
+    with_out,
+    as_variable,
+    native_array,
     num_positional_args,
     fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
         fn_tree="fill",
