@@ -155,3 +155,7 @@ def not_equal(input, other, *, out=None):
 
 
 ne = not_equal
+
+
+def minimum(input, other, *, out=None):
+    return ivy.minimum(input, other, out=out)
