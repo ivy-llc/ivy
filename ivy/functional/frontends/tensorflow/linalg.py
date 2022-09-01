@@ -37,4 +37,12 @@ slogdet.unsupported_dtypes = ("float16", "bfloat16")
 def cholesky_solve(chol, rhs, name=None):
     return ivy.solve(chol, rhs)
 
+
 cholesky_solve.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def pinv(a, rcond=None, validate_args=False, name=None):
+    return ivy.pinv(a, rcond)
+
+
+pinv.unsupported_dtypes = ("float16", "bfloat16")
