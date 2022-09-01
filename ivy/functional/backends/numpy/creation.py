@@ -12,7 +12,7 @@ from ivy.functional.backends.numpy.device import _to_device
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
-
+from ivy.functional.ivy.creation import _is_raw_python_list_or_scalar
 
 # Array API Standard #
 # -------------------#
@@ -56,6 +56,13 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
+        # In the case that this is a raw python list (not a numpy array or similar)
+        # Then numpy can do the datatype inference much more quickly than we can.
+        if _is_raw_python_list_or_scalar(object_in):
+            if copy is True:
+                return _to_device(np.copy(np.asarray(object_in), device=device))
+            else:
+                return _to_device(np.asarray(object_in), device=device)
         dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
             return _to_device(

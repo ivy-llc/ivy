@@ -22,7 +22,7 @@ from ivy.func_wrapper import (
 # --------#
 
 # Used to speed up asarray in each of the backends.
-def _is_raw_python_list_or_scalar(array):
+def _is_raw_python_list_or_scalar(array) -> bool:
     if isinstance(array, (list, tuple, dict)):
         is_list_or_python_data = [_is_raw_python_list_or_scalar(item) for item in array]
         return all(is_list_or_python_data)  # If every item in there is True
