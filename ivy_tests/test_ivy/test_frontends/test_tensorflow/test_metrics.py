@@ -242,9 +242,7 @@ def test_binary_crossentropy(
     # Perform softmax on prediction if it's not a probability distribution.
     if not from_logits:
         y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
-
         
-
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32, dtype],
