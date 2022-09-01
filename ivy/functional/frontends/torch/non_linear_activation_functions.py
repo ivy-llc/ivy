@@ -38,4 +38,4 @@ def tanh(input, *, out=None):
     return ivy.tanh(input, out=out)
 
 
-tanh.unsupported_dtypes = ("float16",)
+tanh.unsupported_dtypes = {"torch": ("float16",)}
