@@ -209,4 +209,3 @@ def test_torch_logsigmoid(
         fn_tree="nn.functional.logsigmoid",
         input=np.asarray(x, dtype=input_dtype)
     )
-
