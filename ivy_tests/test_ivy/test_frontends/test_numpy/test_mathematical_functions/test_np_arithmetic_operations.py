@@ -250,7 +250,8 @@ def test_numpy_multiply(
         subok=True,
         test_values=False,
     )
-    
+
+
 # square
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
@@ -397,7 +398,8 @@ def test_numpy_cbrt(
         test_values=False,
     )
 
-#positive
+
+# positive
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
