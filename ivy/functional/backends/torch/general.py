@@ -41,9 +41,14 @@ def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
         else:
             return x
     elif torch.is_tensor(x):
-        if x.dtype is torch.bfloat16:
-            x = x.to(torch.float16)
         if copy:
+            if x.dtype is torch.bfloat16:
+                default_dtype = ivy.default_float_dtype(as_native=True)
+                if default_dtype is torch.bfloat16:
+                    x = x.to(torch.float32)
+                else:
+                    x = x.to(default_dtype)
+                return x.detach().cpu().numpy().astype("bfloat16")
             return x.detach().cpu().numpy()
         else:
             raise ValueError("Overwriting the same address is not supported for torch.")
