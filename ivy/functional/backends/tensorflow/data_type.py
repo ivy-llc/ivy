@@ -6,6 +6,7 @@ from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 ivy_dtype_dict = {
     tf.int8: "int8",
@@ -143,12 +144,16 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
     return True
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
+    if ivy.as_native_dtype(type) == tf.bfloat16:
+        return Finfo(tf.experimental.numpy.finfo(tf.float32))
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype

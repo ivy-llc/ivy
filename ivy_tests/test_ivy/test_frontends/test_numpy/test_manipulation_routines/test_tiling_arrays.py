@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -12,16 +12,16 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=1,
-        max_num_dims=1,
+        available_dtypes=ivy_np.valid_dtypes,
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     dtype_and_repeats=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_value=2,
-        max_value=5,
+        available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
+            lambda rep: (len(rep),)
+        ),
+        min_value=0,
+        max_value=10,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.tile"

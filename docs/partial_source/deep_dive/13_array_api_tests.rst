@@ -57,6 +57,31 @@ the following code:
 After that, you can run the API test files as you typically would with other tests. Just make sure to not add these
 changes to your commit.
 
+Re-Running Failed Array API Tests
+****
+
+When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
+For example, in the :code:`test_trace` Array API Test, we find the following output on running the test:
+
+.. code-block::
+
+        Falsifying example: test_trace(
+            x=ivy.array([[1.e-05]]), kw={},
+        )
+
+It is always efficient to fix this particular example first, before running any other examples.
+In order to achieve this functionality, we can use the :code:`@example` Hypothesis decorator.
+The :code:`@example` decorator ensures that a specific example is always tested, on running a particular test.
+The decorator requires the test arguments as parameters.
+For the :code:`test_trace` Array API Test, we can add the decorator as follows:
+
+.. code-block::
+
+        @example(x=ivy.array([[3.5e-46]]), kw={})
+        def test_trace(x, kw):
+
+This ensures that the given example is always tested while running the test, allowing one to debug the failure
+efficiently.
 
 **Round Up**
 

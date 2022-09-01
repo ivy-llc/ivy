@@ -7,7 +7,7 @@ def _get_reduction_func(reduction):
         ret = lambda x: x
     elif reduction == 'mean':
         ret = ivy.mean
-    elif reduction == 'sum':
+    elif reduction == "sum":
         ret = ivy.sum
     else:
         raise ValueError("{} is not a valid value for reduction".format(reduction))
@@ -20,11 +20,11 @@ def _legacy_get_string(size_average, reduce):
     if reduce is None:
         reduce = True
     if size_average and reduce:
-        ret = 'mean'
+        ret = "mean"
     elif reduce:
-        ret = 'sum'
+        ret = "sum"
     else:
-        ret = 'none'
+        ret = "none"
     return ret
 
 
@@ -120,3 +120,4 @@ def smooth_l1_loss(
 ):
     reduction = _get_reduction(reduction)
     return reduction(ivy.smooth_l1_loss(input, target, beta))
+
