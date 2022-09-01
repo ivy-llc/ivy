@@ -200,10 +200,10 @@ class Siren(Uniform):
     def __init__(self, w0=30):
         """
         The Siren uniform initializer for the first layer. It draws values from a
-        uniform distribtion `[-limit, limit]` where `limit=sqrt(fan_in) / w0`
+        uniform distribtion `[-limit, limit]` where `limit=sqrt(6 / fan_in) / w0`
         where `fan_in` is the number of input features.
         """
-        super().__init__(numerator=6, fan_mode="fan_in",power= 0.5, gain=1 / w0)
+        super().__init__(numerator=6, fan_mode="fan_in", power=0.5, gain=1 / w0)
 
 
 # Gaussian #
