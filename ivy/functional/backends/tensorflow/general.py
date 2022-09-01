@@ -15,7 +15,7 @@ import tensorflow as tf
 import ivy
 
 
-def is_native_array(x, exclusive=False):
+def is_native_array(x: Union[tf.Tensor, tf.Variable], exclusive: bool =False) -> bool:
     if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
         if exclusive and isinstance(x, tf.Variable):
             return False
@@ -113,8 +113,9 @@ def inplace_update(
 def inplace_arrays_supported():
     return False
 
-
-inplace_variables_supported = lambda: True
+def true_func():
+    return True
+inplace_variables_supported = true_func #replaced lambda binding of lambda: True with true_func()
 
 
 def inplace_decrement(
@@ -244,7 +245,7 @@ def scatter_flat(
     return res
 
 
-def _parse_ellipsis(so, ndims):
+def _parse_ellipsis(so: list, ndims: Number):
     pre = list()
     for s in so:
         if s is Ellipsis:
@@ -420,5 +421,5 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-def get_num_dims(x, as_tensor=False):
+def get_num_dims(x: Union[tf.Tensor, tf.Variable], as_tensor: bool =False) -> Union[tf.Tensor, Number]:
     return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))

@@ -46,8 +46,10 @@ def container_types():
 def inplace_arrays_supported():
     return True
 
+def true_func():
+    return True
 
-inplace_variables_supported = lambda: True
+inplace_variables_supported = true_func #replaced lambda binding with true_func()
 
 
 def inplace_update(
@@ -79,7 +81,7 @@ def inplace_update(
         return val
 
 
-def is_native_array(x, exclusive=False):
+def is_native_array(x: np.ndarray, exclusive: bool =False) -> bool:
     if isinstance(x, np.ndarray):
         return True
     return False
@@ -336,7 +338,7 @@ def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
         return ivy.Shape(x.shape)
 
 
-def get_num_dims(x, as_tensor=False):
+def get_num_dims(x: np.ndarray, as_tensor: bool =False) -> Union[np.ndarray, Number]:
     return np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
 
 

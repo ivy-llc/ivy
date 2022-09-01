@@ -13,7 +13,7 @@ from numbers import Number
 torch_scatter = None
 
 
-def is_native_array(x, exclusive=False):
+def is_native_array(x: torch.Tensor, exclusive: bool =False) -> bool:
     if isinstance(x, torch.Tensor):
         if exclusive and x.requires_grad:
             return False
@@ -104,8 +104,9 @@ def inplace_update(
 def inplace_arrays_supported():
     return True
 
-
-inplace_variables_supported = lambda: True
+def true_func():
+    return True
+inplace_variables_supported = true_func  #replaced the lambda: True call with def function true_func
 
 
 def inplace_decrement(

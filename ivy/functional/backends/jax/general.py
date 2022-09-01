@@ -76,7 +76,7 @@ def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
         return ivy.Shape(x.shape)
 
 
-def get_num_dims(x, as_tensor=False):
+def get_num_dims(x: JaxArray, as_tensor: bool =False) -> Union[JaxArray, Number]:
     return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
 
@@ -121,8 +121,10 @@ def inplace_update(
 def inplace_arrays_supported():
     return False
 
+def false_func():
+    return False
 
-inplace_variables_supported = lambda: False
+inplace_variables_supported = false_func()
 
 def inplace_decrement(
     x : Union[ivy.Array, jax.numpy.array], val : Union[ivy.Array, jax.numpy.array]
