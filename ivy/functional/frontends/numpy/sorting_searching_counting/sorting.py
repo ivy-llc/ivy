@@ -1,3 +1,4 @@
+# global
 import ivy
 
 
@@ -6,8 +7,7 @@ def argsort(
     /,
     *,
     axis=-1,
-    descending=False,
-    stable=True,
-    out=None,
+    kind=None,
+    order=None,
 ):
-    return ivy.argsort(x, axis=axis, descending=descending, stable=stable, out=out)
+    return ivy.argsort(x, axis=axis)
