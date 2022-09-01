@@ -1,0 +1,141 @@
+# global
+import random
+
+import numpy as np
+from hypothesis import given, strategies as st
+
+# local
+import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
+import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy
+
+
+@handle_cmd_line_args
+@given(
+    input=helpers.array_values(  # input
+        dtype=ivy.float32,
+        shape=(4, 3, 10) # (batch_size, d_in, w)
+    ),
+    weight=helpers.array_values(  # weight
+        dtype=ivy.float32,
+        shape=(9, 1, 3) # (d_out, d_in/groups, fw)
+    ),
+    bias=helpers.array_values(
+        dtype=ivy.float32,
+        shape=(9)
+    ),
+    stride=helpers.ints(  # stride
+        min_value=1,
+        max_value=3
+    ),
+    dilation=helpers.ints(  # dilation
+        min_value=1,
+        max_value=3
+    ),
+    padding=st.sampled_from(
+        [
+            1,
+            2,
+            3,
+            4,
+            5,
+            "same",
+            "valid"
+        ]
+    )
+)
+def test_torch_conv1d_1(
+        input,
+        weight,
+        bias,
+        stride,
+        dilation,
+        padding,
+        fw
+):
+    dtype = random.choice(list(set(ivy_torch.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))))
+    groups = 3
+    dtypes = [dtype]*3
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        num_positional_args=7,
+        as_variable_flags=False,
+        with_out=False,
+        native_array_flags=False,
+        fw=fw,
+        frontend="torch",
+        fn_tree="conv1d",
+        input=ivy.array(input, dtype=dtype),
+        weight=ivy.array(weight, dtype=dtype),
+        bias=ivy.array(bias, dtype=dtype),
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        groups=groups
+    )
+
+@handle_cmd_line_args
+@given(
+    input=helpers.array_values(  # input
+        dtype=ivy.float32,
+        shape=(6, 3, 8) # (batch_size, d_in, w)
+    ),
+    weight=helpers.array_values(  # weight
+        dtype=ivy.float32,
+        shape=(6, 3, 5) # (d_out, d_in/groups, fw)
+    ),
+    bias=helpers.array_values(
+        dtype=ivy.float32,
+        shape=(6)
+    ),
+    stride=helpers.ints(  # stride
+        min_value=1,
+        max_value=3
+    ),
+    dilation=helpers.ints(  # dilation
+        min_value=1,
+        max_value=3
+    ),
+    padding=st.sampled_from(
+        [
+            1,
+            2,
+            3,
+            4,
+            5,
+            "same",
+            "valid"
+        ]
+    )
+)
+def test_torch_conv1d_2(
+        input,
+        weight,
+        bias,
+        stride,
+        dilation,
+        padding,
+        fw
+):
+    dtype = random.choice(list(set(ivy_torch.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))))
+    groups = 1
+    dtypes = [dtype]*3
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        num_positional_args=7,
+        as_variable_flags=False,
+        with_out=False,
+        native_array_flags=False,
+        fw=fw,
+        frontend="torch",
+        fn_tree="conv1d",
+        input=ivy.array(input, dtype=dtype),
+        weight=ivy.array(weight, dtype=dtype),
+        bias=ivy.array(bias, dtype=dtype),
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        groups=groups
+    )
