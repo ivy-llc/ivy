@@ -165,7 +165,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.matrix_rank(self._data, rtol, out=out)
+        return ivy.matrix_rank(self._data, rtol=rtol, out=out)
         """
         ivy.Array instance method variant of ivy.matrix_rank. This method returns 
         the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
@@ -238,17 +238,18 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def pinv(
         self: ivy.Array,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
         *,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.pinv(self._data, rtol, out=out)
+        return ivy.pinv(self._data, rtol=rtol, out=out)
 
     def qr(
         self: ivy.Array,
+        *,
         mode: str = "reduced",
     ) -> NamedTuple:
-        return ivy.qr(self._data, mode)
+        return ivy.qr(self._data, mode=mode)
 
     def solve(
         self: ivy.Array,
@@ -260,9 +261,10 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def svd(
         self: ivy.Array,
+        *,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-        return ivy.svd(self._data, full_matrices)
+        return ivy.svd(self._data, full_matrices=full_matrices)
 
     def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)
@@ -270,38 +272,40 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def tensordot(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
-        axes: Union[int, Tuple[List[int], List[int]]] = 2,
         *,
+        axes: Union[int, Tuple[List[int], List[int]]] = 2,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.tensordot(self._data, x2, axes, out=out)
+        return ivy.tensordot(self._data, x2, axes=axes, out=out)
 
     def trace(
         self: ivy.Array,
-        offset: int = 0,
         *,
+        offset: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.trace(self._data, offset, out=out)
+        return ivy.trace(self._data, offset=offset, out=out)
 
     def vecdot(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
-        axis: int = -1,
         *,
+        axis: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.vecdot(self._data, x2, axis, out=out)
+        return ivy.vecdot(self._data, x2, axis=axis, out=out)
 
     def vector_norm(
         self: ivy.Array,
+        *,
         axis: Optional[Union[int, Tuple[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.vector_norm(self._data, axis, keepdims, ord, out=out)
+        return ivy.vector_norm(
+            self._data, axis=axis, keepdims=keepdims, ord=ord, out=out
+        )
 
     def vector_to_skew_symmetric_matrix(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
