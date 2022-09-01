@@ -240,7 +240,7 @@ def test_tensorflow_cholesky_solve(
         frontend="tensorflow",
         fn_tree="linalg.cholesky_solve",
         chol=np.asarray(x, dtype=input_dtype1),
-        rhs=np.asarray(y, dtype=input_dtype1),
+        rhs=np.asarray(y, dtype=input_dtype2),
     )
 
 
