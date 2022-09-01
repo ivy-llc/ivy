@@ -719,7 +719,9 @@ def test_divide(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        num_arrays=2,
+        small_value_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="equal"),
 )
