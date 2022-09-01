@@ -113,7 +113,7 @@ def prod(
         return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-prod.unsupported_dtypes = ("float16", "uint16")
+prod.unsupported_dtypes = ("float16",)
 
 
 def std(
@@ -178,18 +178,26 @@ def var(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        axis = tuple(range(len(x.shape)))
+        axis = list(range(len(x.shape)))
+    if axis == ():
+        return x
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
-        return torch.var(x, dim=axis, unbiased=False, keepdims=keepdims)
+        return torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
     elif correction == 1:
-        return torch.var(x, dim=axis, unbiased=True, keepdims=keepdims)
+        return torch.var(x, dim=axis, unbiased=True, keepdim=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * torch.var(
-        x, dim=axis, unbiased=False, keepdims=keepdims
-    )
+    if size - correction <= 0:
+        ret = torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    else:
+        return torch.mul(
+            torch.var(x, dim=axis, unbiased=False, keepdim=keepdims),
+            (size / (size - correction)) ** 0.5,
+        )
 
 
 # Extra #
