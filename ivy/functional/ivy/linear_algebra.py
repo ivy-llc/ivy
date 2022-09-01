@@ -864,7 +864,7 @@ def matrix_rank(
 
 
     """
-    return current_backend(x).matrix_rank(x, rtol, out=out)
+    return current_backend(x).matrix_rank(x, rtol=rtol, out=out)
 
 
 @to_native_arrays_and_back
@@ -1013,7 +1013,7 @@ def pinv(
         two dimensions must be transposed).
 
     """
-    return current_backend(x).pinv(x, rtol, out=out)
+    return current_backend(x).pinv(x, rtol=rtol, out=out)
 
 
 @to_native_arrays_and_back
@@ -1059,7 +1059,7 @@ def qr(
           dimensions must have the same size as those of the input x.
 
     """
-    return current_backend(x).qr(x, mode)
+    return current_backend(x).qr(x, mode=mode)
 
 
 @to_native_arrays_and_back
@@ -1211,7 +1211,7 @@ def svd(
     ivy.array(0)
 
     """
-    return current_backend(x).svd(x, full_matrices)
+    return current_backend(x).svd(x, full_matrices=full_matrices)
 
 
 @to_native_arrays_and_back
@@ -1396,7 +1396,7 @@ def tensordot(
 
 
     """
-    return current_backend(x1, x2).tensordot(x1, x2, axes, out=out)
+    return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
 
 
 @to_native_arrays_and_back
@@ -1446,12 +1446,12 @@ def trace(
     --------
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> offset = 0
-    >>> y = ivy.trace(x, offset)
+    >>> y = ivy.trace(x, offset=offset)
     >>> print(y)
     ivy.array(5.)
 
     """
-    return current_backend(x).trace(x, offset, out=out)
+    return current_backend(x).trace(x, offset=offset, out=out)
 
 
 @to_native_arrays_and_back
@@ -1502,7 +1502,7 @@ def vecdot(
         for both ``x1`` and ``x2``.
 
     """
-    return current_backend(x1).vecdot(x1, x2, axis, out=out)
+    return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -1582,7 +1582,9 @@ def vector_norm(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return current_backend(x).vector_norm(x, axis, keepdims, ord, out=out)
+    return current_backend(x).vector_norm(
+        x, axis=axis, keepdims=keepdims, ord=ord, out=out
+    )
 
 
 # Extra #
