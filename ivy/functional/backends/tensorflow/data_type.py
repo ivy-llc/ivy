@@ -148,6 +148,8 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
 def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
+    if ivy.as_native_dtype(type) == tf.bfloat16:
+        return Finfo(tf.experimental.numpy.finfo(tf.float32))
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 

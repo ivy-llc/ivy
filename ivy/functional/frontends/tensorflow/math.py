@@ -231,7 +231,7 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     zero = ivy.zeros(ivy.shape(x), dtype=x.dtype)
     return ivy.astype(
         ivy.sum(
-            ivy.astype(ivy.not_equal(x, zero), ivy.int64, copy=False),
+            ivy.astype(ivy.not_equal(x, zero), ivy.int64),
             axis=axis,
             keepdims=keepdims,
         ),
@@ -271,6 +271,20 @@ def confusion_matrix(
     indices = ivy.stack([labels, predictions], axis=1)
     values = ivy.ones_like(predictions, dtype=dtype) if weights is None else weights
     return ivy.scatter_nd(indices=indices, updates=values, shape=shape)
+
+
+def polyval(coeffs, x, name=None):
+    assert isinstance(
+        coeffs, list
+    ), f"Argument coeffs must be list type. Received type {type(coeffs)}"
+    x = ivy.array(x)
+    if len(coeffs) < 1:
+        return ivy.zeros_like(x)
+    coeffs = [ivy.array(_) for _ in coeffs]
+    p = coeffs[0]
+    for c in coeffs[1:]:
+        p = c + p * x
+    return p
 
 
 # TODO: Ibeta for Future Release

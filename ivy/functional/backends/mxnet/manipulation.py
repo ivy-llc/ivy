@@ -160,9 +160,7 @@ def repeat(x, repeats, axis=None, out: Optional[mx.nd.NDArray] = None):
 
 
 def tile(
-    x: mx.nd.NDArray, 
-    reps: Sequence[int],
-    out: Optional[mx.nd.NDArray] = None
+    x: mx.nd.NDArray, reps: Sequence[int], out: Optional[mx.nd.NDArray] = None
 ) -> mx.nd.NDArray:
     if isinstance(reps, mx.nd.ndarray.NDArray):
         reps = reps.asnumpy().tolist()
