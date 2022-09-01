@@ -30,8 +30,19 @@ config: Dict[Union[str, int], Union[str, type(emoji)]] = {
 results = []
 
 
-def get_api_results(url, token, headers):
+def get_api_results(token, headers, workflows=None):
+    final_res = []
     headers["Authorization"] = "Bearer " + token
+    if workflows:
+        for workflow in workflows:
+            flow_res = []
+            for name, jobs_url in zip(workflow["name"], workflow["jobs_url"]):
+                response = requests.request(
+                    "GET", jobs_url + "?per_page=100", headers=headers
+                )
+                flow_res.append((name, json.loads(response.text)["jobs"]))
+            final_res.append(flow_res)
+        return final_res
     response = requests.request("GET", url, headers=headers)
     return json.loads(response.text)
 
@@ -67,7 +78,7 @@ def get_previous_workflow(workflow_df):
 
 
 def workflow_results(token):
-    output = get_api_results(url, token, headers)
+    output = get_api_results(token, headers)
     for info in output["workflow_runs"]:
         if info["name"] not in (
             "test-core-ivy",
@@ -94,26 +105,30 @@ def workflow_results(token):
 
 
 def get_previous_job_data(
-    workflow_df_prev, workflow_name, job_name, prev_action_link, prev_conclusion, token
+    prev_jobs_res, workflow_name, job_name, prev_action_link, prev_conclusion
 ):
-    jobs_url_object = workflow_df_prev.loc[workflow_df_prev["name"] == workflow_name]
-    jobs_url = [url for url in jobs_url_object["jobs_url"]]
-    for info in get_api_results(jobs_url[0] + "?per_page=100", token, headers)["jobs"]:
-        if info["name"] == job_name:
-            # return when previous job is queued as well
-            if info["status"] in ("in_progress", "queued"):
-                return (prev_action_link, prev_conclusion)
-            return (info["html_url"], config[info["conclusion"]])
+    for data in prev_jobs_res:
+        if data[0] == workflow_name:
+            for info in data[1]:
+                if info["name"] == job_name:
+                    # return when previous job is queued as well
+                    if info["status"] in ("in_progress", "queued"):
+                        return prev_action_link, prev_conclusion
+                    return info["html_url"], config[info["conclusion"]]
 
 
 def get_matrix_job_data(token):
     # list all workflows running for the branch
+    prev_job_res, cur_job_res = (None, None)
     workflow_df_prev, workflow_df_latest = workflow_results(token)
-    # extract jobs from the workflows above
-    for name, jobs_url in zip(
-        workflow_df_latest["name"], workflow_df_latest["jobs_url"]
-    ):
-        for info in get_api_results(jobs_url + "?per_page=100", token, headers)["jobs"]:
+    if workflow_df_prev is not None:
+        prev_job_res, cur_job_res = get_api_results(
+            token, headers, (workflow_df_prev, workflow_df_latest))
+    else:
+        cur_job_res = get_api_results(token, headers, workflow_df_latest)
+    for i, data in enumerate(cur_job_res):
+        for info in data[1]:
+            name = data[0]
             prev_action_link, prev_conclusion = (None, None)
             # extract backend and submodule name from json
             if name == "test-array-api":
@@ -129,14 +144,13 @@ def get_matrix_job_data(token):
 
             if info["status"] in ("in_progress, queued"):
                 conclusion = config["in_progress"]
-                if workflow_df_prev is not None:
+                if prev_job_res:
                     prev_action_link, prev_conclusion = get_previous_job_data(
-                        workflow_df_prev,
+                        prev_job_res,
                         name,
                         info["name"],
                         prev_action_link,
                         prev_conclusion,
-                        token,
                     )
             else:
                 conclusion = config[info["conclusion"]]
