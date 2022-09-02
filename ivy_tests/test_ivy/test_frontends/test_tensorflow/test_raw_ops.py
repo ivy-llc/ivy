@@ -324,7 +324,7 @@ def test_tensorflow_ArgMax(
         fn_tree="raw_ops.ArgMax",
         input=np.asarray(x, dtype=dtype),
         dimension=axis,
-        output_type=None,
+        output_type=output_type,
     )
 
 

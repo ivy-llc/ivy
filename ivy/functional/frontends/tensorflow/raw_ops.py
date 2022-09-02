@@ -15,7 +15,12 @@ def concat(values, axis, name="concat"):
 
 
 def ArgMax(*, input, dimension, output_type=None, name=None):
-    if output_type:
+    if (
+        output_type == ivy.int16
+        or output_type == ivy.uint16
+        or output_type == ivy.int32
+        or output_type == ivy.int64
+    ):
         return ivy.astype(ivy.argmax(input, axis=dimension), output_type)
     else:
         return ivy.astype(ivy.argmax(input, axis=dimension), "int64")
