@@ -12,7 +12,7 @@ import numpy as np
 import math
 import gc
 from typing import Union, List
-from hypothesis import assume, given, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 
@@ -616,6 +616,9 @@ def assert_all_close(
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     else:
+        if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
+            ret_np = ret_np.astype("float64")
+            ret_from_gt_np = ret_from_gt_np.astype("float64")
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
         ), "{} != {}".format(ret_np, ret_from_gt_np)
@@ -1495,8 +1498,6 @@ def test_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     fn = getattr(ivy, fn_name)
     if gradient_incompatible_function(fn=fn):
@@ -1833,9 +1834,6 @@ def test_frontend_function(
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
-
     # create NumPy args
     args_np = ivy.nested_map(
         args_ivy,
@@ -1910,7 +1908,7 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, frontend_ret
+        return ret_np_flat, frontend_ret_np_flat
 
     # value tests, iterating through each array in the flattened returns
     value_test(
@@ -2170,6 +2168,11 @@ def dtype_values_axis(
     shared_dtype=False,
     min_axis=None,
     max_axis=None,
+    valid_axis=False,
+    allow_neg_axes=True,
+    min_axes_size=1,
+    max_axes_size=None,
+    force_int_axis=False,
     ret_shape=False,
 ):
     """Draws an array with elements from the given data type, and a random axis of
@@ -2200,6 +2203,16 @@ def dtype_values_axis(
         minimum value of each integer in the shape tuple.
     max_dim_size
         maximum value of each integer in the shape tuple.
+    valid_axis
+        if True, a valid axis will be drawn from the array dimensions.
+    allow_neg_axes
+        if True, returned axes may include negative axes.
+    min_axes_size
+        minimum size of the axis tuple.
+    max_axes_size
+        maximum size of the axis tuple.
+    force_int_axis
+        if True, and only one axis is drawn, the returned axis will be an integer.
     shape
         shape of the array. if None, a random shape is drawn.
     shared_dtype
@@ -2229,18 +2242,27 @@ def dtype_values_axis(
             max_dim_size=max_dim_size,
             shape=shape,
             shared_dtype=shared_dtype,
-            ret_shape=ret_shape,
+            ret_shape=True,
         )
     )
-    if ret_shape:
-        dtype, values, shape = results
+    dtype, values, arr_shape = results
+    if valid_axis or shape:
+        if not isinstance(values, list):
+            axis = None
+        else:
+            axis = draw(
+                get_axis(
+                    shape=arr_shape,
+                    min_size=min_axes_size,
+                    max_size=max_axes_size,
+                    allow_neg=allow_neg_axes,
+                    force_int=force_int_axis,
+                )
+            )
     else:
-        dtype, values = results
-    if not isinstance(values, list):
-        return dtype, values, None
-    if shape is not None:
-        return dtype, values, draw(get_axis(shape=shape))
-    axis = draw(ints(min_value=min_axis, max_value=max_axis))
+        axis = draw(ints(min_value=min_axis, max_value=max_axis))
+    if ret_shape:
+        return dtype, values, axis, shape
     return dtype, values, axis
 
 
@@ -3010,6 +3032,8 @@ def get_axis(
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
+    allow_neg
+        boolean; if True, allow negative axes to be drawn
     allow_none
         boolean; if True, allow None to be drawn
     sorted

@@ -71,7 +71,7 @@ def to_list(x: JaxArray) -> list:
 
 def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(jnp.shape(x))
+        return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 
