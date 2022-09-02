@@ -23,8 +23,6 @@ def _outer_get_dtype_and_data(draw):
         helpers.array_values(
             dtype=input_dtype,
             shape=shape,
-            min_value=-10,
-            max_value=10,
         )
     )
 
@@ -38,8 +36,6 @@ def _outer_get_dtype_and_data(draw):
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_numeric_dtypes,
             shape=shape,
-            min_value=-10,
-            max_value=10,
         )
     )
 
