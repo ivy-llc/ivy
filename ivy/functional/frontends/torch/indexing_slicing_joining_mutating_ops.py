@@ -31,7 +31,7 @@ swapdims.unsupported_dtypes = (
 
 def swapaxes(input, axis0, axis1):
     return ivy.swapaxes(input, axis0, axis1)
-    
+
 
 swapaxes.unsupported_dtypes = (
     "uint16",
@@ -46,3 +46,7 @@ def transpose(input, dim0, dim1):
 
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)
+
+
+def dsplit(input, indices_or_sections):
+    return ivy.split(input, indices_or_sections, dim=2)

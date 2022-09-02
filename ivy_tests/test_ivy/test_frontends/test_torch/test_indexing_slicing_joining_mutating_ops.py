@@ -56,12 +56,12 @@ def _arrays_idx_n_dtypes(draw):
     ),
 )
 def test_torch_cat(
-    xs_n_input_dtypes_n_unique_idx,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
-    fw,
+        xs_n_input_dtypes_n_unique_idx,
+        as_variable,
+        num_positional_args,
+        native_array,
+        with_out,
+        fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
@@ -89,12 +89,12 @@ def test_torch_cat(
     ),
 )
 def test_torch_concat(
-    xs_n_input_dtypes_n_unique_idx,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
-    fw,
+        xs_n_input_dtypes_n_unique_idx,
+        as_variable,
+        num_positional_args,
+        native_array,
+        with_out,
+        fw,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
@@ -255,13 +255,13 @@ def test_torch_reshape(
     ),
 )
 def test_torch_stack(
-    dtype_value_shape,
-    dim,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
-    fw,
+        dtype_value_shape,
+        dim,
+        as_variable,
+        num_positional_args,
+        native_array,
+        with_out,
+        fw,
 ):
     input_dtype, value = dtype_value_shape
     tensors = [np.asarray(x, dtype=dtype) for x, dtype in zip(value, input_dtype)]
@@ -349,13 +349,13 @@ def test_torch_transpose(
     native_array=st.booleans(),
 )
 def test_torch_swapaxes(
-    dtype_and_values,
-    axis0,
-    axis1,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        axis0,
+        axis1,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -370,4 +370,42 @@ def test_torch_swapaxes(
         input=np.asarray(value, dtype=input_dtype),
         axis0=axis0,
         axis1=axis1,
+    )
+
+
+# dsplit
+@handle_cmd_line_args
+@given(
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            ),
+        ),
+        ret_shape=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.dsplit"
+    ),
+)
+def test_torch_dsplit(
+        dtype_value_shape,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+):
+    input_dtype, value, shape = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="dsplit",
+        input=np.asarray(value, dtype=input_dtype),
+        shape=shape,
     )
