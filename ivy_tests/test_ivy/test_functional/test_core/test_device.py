@@ -292,9 +292,6 @@ def _axis(draw):
 def test_split_func_call(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device
 ):
-    assume(not ("bfloat16" in dtype))
-    assume(not (fw == "torch" and "int" in dtype))
-
     # inputs
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
@@ -318,9 +315,9 @@ def test_split_func_call(
     a_true, b_true, c_true = func(x1, x2)
 
     # value test
-    assert np.allclose(ivy.to_numpy(a), ivy.to_numpy(a_true))
-    assert np.allclose(ivy.to_numpy(b), ivy.to_numpy(b_true))
-    assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
+    helpers.assert_all_close(ivy.to_numpy(a), ivy.to_numpy(a_true))
+    helpers.assert_all_close(ivy.to_numpy(b), ivy.to_numpy(b_true))
+    helpers.assert_all_close(ivy.to_numpy(c), ivy.to_numpy(c_true))
 
 
 @handle_cmd_line_args
@@ -338,16 +335,6 @@ def test_split_func_call(
 def test_split_func_call_with_cont_input(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device
 ):
-    # Skipping some dtype for certain frameworks
-    assume(not ("bfloat16" in dtype))
-    assume(
-        not (
-            (fw == "torch" and "int" in dtype)
-            or (fw == "numpy" and "float16" in dtype)
-            or (fw == "tensorflow" and "u" in dtype)
-        )
-    )
-
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
     x2 = np.random.uniform(size=shape).astype(dtype)
@@ -375,9 +362,9 @@ def test_split_func_call_with_cont_input(
     a_true, b_true, c_true = func(in0, in1)
 
     # value test
-    assert np.allclose(ivy.to_numpy(a.cont_key), ivy.to_numpy(a_true.cont_key))
-    assert np.allclose(ivy.to_numpy(b.cont_key), ivy.to_numpy(b_true.cont_key))
-    assert np.allclose(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
+    helpers.assert_all_close(ivy.to_numpy(a.cont_key), ivy.to_numpy(a_true.cont_key))
+    helpers.assert_all_close(ivy.to_numpy(b.cont_key), ivy.to_numpy(b_true.cont_key))
+    helpers.assert_all_close(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
 
 
 # profiler
