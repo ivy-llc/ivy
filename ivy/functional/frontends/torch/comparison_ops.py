@@ -119,29 +119,5 @@ def isneginf(input, *, out=None):
     return ivy.logical_and(is_inf, neg_sign_bit, out=out)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def fmin(input, other, *, out=None):
     return ivy.minimum(input, other, out=out)
