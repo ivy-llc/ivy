@@ -120,4 +120,3 @@ def smooth_l1_loss(
 ):
     reduction = _get_reduction(reduction)
     return reduction(ivy.smooth_l1_loss(input, target, beta))
-

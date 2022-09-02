@@ -285,7 +285,8 @@ def smooth_l1_loss(
         beta: float = 1.0
 ) -> ivy.Array:
     """Computes smooth_l1_loss between predicted and true discrete distributions.
-       smooth_l1_loss creates a criterion that uses a squared term if the absolute element-wise error falls below beta and an L1 term otherwise.
+       smooth_l1_loss creates a criterion that uses a squared term if the absolute
+       element-wise error falls below beta and an L1 term otherwise.
 
     Parameters
     ----------
@@ -314,6 +315,6 @@ def smooth_l1_loss(
     """
     assert beta > 0, "the parameter beta must be non-negative."
     ret = 0.5 * (pred - true) ** 2 / beta
-    ret[abs(pred - true) >= beta] = abs(pred[abs(pred - true) >= beta] - true[abs(pred - true) >= beta]) - 0.5 * beta
+    ret[abs(pred - true) >= beta] = abs(pred[abs(pred - true) >= beta]
+                                        - true[abs(pred - true) >= beta]) - 0.5 * beta
     return ret
-
