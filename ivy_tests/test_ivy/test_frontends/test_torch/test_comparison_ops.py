@@ -740,7 +740,6 @@ def test_torch_fmax(
                 set(ivy_torch.valid_numeric_dtypes)
             ),
         ),
-        allow_inf=True,
         min_num_dims=2,
         min_dim_size=2,
     ),
