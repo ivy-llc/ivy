@@ -11,21 +11,21 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def _get_dtype_y_true_y_pred(
-        draw,
-        *,
-        min_value=None,
-        max_value=None,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=1.1,
-        allow_inf=False,
-        exclude_min=False,
-        exclude_max=False,
-        min_num_dims=0,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-        shape=None,
-        ret_shape=False,
+    draw,
+    *,
+    min_value=None,
+    max_value=None,
+    large_value_safety_factor=1.1,
+    small_value_safety_factor=1.1,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    shape=None,
+    ret_shape=False,
 ):
     if isinstance(min_dim_size, st._internal.SearchStrategy):
         min_dim_size = draw(min_dim_size)
@@ -109,7 +109,7 @@ def _get_dtype_y_true_y_pred(
     native_array=st.booleans(),
 )
 def test_tensorflow_binary_accuracy(
-        dtype_y_true_y_pred, as_variable, num_positional_args, native_array, fw
+    dtype_y_true_y_pred, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, y_true_y_pred = dtype_y_true_y_pred
     y_true, y_pred = y_true_y_pred
@@ -144,13 +144,13 @@ def test_tensorflow_binary_accuracy(
     ),
 )
 def test_sparse_categorical_crossentropy(
-        y_true,
-        dtype_y_pred,
-        from_logits,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    y_true,
+    dtype_y_pred,
+    from_logits,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
@@ -182,15 +182,15 @@ def test_sparse_categorical_crossentropy(
         max_value=1,
         shape=(2, 2),
         dtype=ivy.current_backend().valid_dtypes,
-        shared_dtype=True
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.mean_absolute_error"
     ),
 )
 def test_mean_absolute_error(
-        y_true_dtype_y_pred, as_variable, num_positional_args,
-        native_array, fw, with_out):
+    y_true_dtype_y_pred, as_variable, num_positional_args, native_array, fw, with_out
+):
     dtype, y_true_y_pred = y_true_dtype_y_pred
     y_true_y_pred = ivy.array(y_true_y_pred, dtype=dtype)
     y_true, y_pred = y_true_y_pred
@@ -206,4 +206,84 @@ def test_mean_absolute_error(
         fn_tree="keras.metrics.mean_absolute_error",
         y_true=y_true,
         y_pred=y_pred,
+    )
+
+
+# binary_crossentropy
+@handle_cmd_line_args
+@given(
+    y_true=st.lists(st.integers(min_value=0, max_value=4), min_size=1, max_size=1),
+    dtype_y_pred=helpers.dtype_and_values(
+        available_dtypes=ivy_tf.valid_float_dtypes,
+        shape=(5,),
+        min_value=-10,
+        max_value=10,
+    ),
+    from_logits=st.booleans(),
+    label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.binary_crossentropy"
+    ),
+    native_array=st.booleans(),
+)
+def test_binary_crossentropy(
+    y_true,
+    dtype_y_pred,
+    from_logits,
+    label_smoothing,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    y_true = ivy.array(y_true, dtype=ivy.int32)
+    dtype, y_pred = dtype_y_pred
+
+    # Perform softmax on prediction if it's not a probability distribution.
+    if not from_logits:
+        y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
+
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int32, dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.binary_crossentropy",
+        y_true=y_true,
+        y_pred=y_pred,
+        from_logits=from_logits,
+        label_smoothing=label_smoothing,
+    )
+
+
+# sparse_top_k_categorical_accuracy
+@handle_cmd_line_args
+@given(
+    y_true=helpers.array_values(shape=(5,), dtype=ivy.int32),
+    y_pred=helpers.array_values(shape=(5, 10), dtype=ivy.float16),
+    k=st.integers(min_value=3, max_value=10),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.sparse_top_k_categorical_accuracy"
+    ),
+    native_array=st.booleans(),
+)
+def test_sparse_top_k_categorical_accuracy(
+    y_true, y_pred, k, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.float32,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.sparse_top_k_categorical_accuracy",
+        y_true=y_true,
+        y_pred=y_pred,
+        k=k,
     )

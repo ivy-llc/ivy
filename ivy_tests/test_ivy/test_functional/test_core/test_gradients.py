@@ -18,7 +18,8 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_float_dtypes,
             num_arrays=num_arrays,
-            small_value_safety_factor=1.2,
+            small_value_safety_factor=4.0,
+            large_value_safety_factor=20.0,
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
