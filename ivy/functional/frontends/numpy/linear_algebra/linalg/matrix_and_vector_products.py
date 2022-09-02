@@ -8,4 +8,4 @@ def matrix_power(a, n):
     return ivy.matrix_power(a, n)
 
 
-matrix_power.unsupported_dtypes =  ("float16",)
+matrix_power.unsupported_dtypes = ("float16",)
