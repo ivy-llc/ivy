@@ -6,30 +6,32 @@ import ivy
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
 
 
-def convolve(a, v, mode='full'):
+def convolve(a, v, mode="full"):
     pass
 
 
 @from_zero_dim_arrays_to_float
-def clip(a, 
-         a_min, 
-         a_max, 
-         /,
-         out=None,
-         *,
-         where=True,
-         casting="same_kind",
-         order="k",
-         dtype=None,
-         subok=True,):
-    
+def clip(
+    a,
+    a_min,
+    a_max,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
+
     if not dtype:
         dtype = a.dtype
     ret = ivy.where(
-        ivy.broadcast_to(where, a.shape), 
-        ivy.clip(a, a_min, a_max), 
-        ivy.default(out, a), 
-        out=out
+        ivy.broadcast_to(where, a.shape),
+        ivy.clip(a, a_min, a_max),
+        ivy.default(out, a),
+        out=out,
     )
     ret = ivy.astype(ret, dtype, out=out)
     return ret
@@ -52,10 +54,7 @@ def sqrt(
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), 
-        ivy.sqrt(x), 
-        ivy.default(out, x), 
-        out=out
+        ivy.broadcast_to(where, x.shape), ivy.sqrt(x), ivy.default(out, x), out=out
     )
     return ret
 
@@ -75,12 +74,9 @@ def cbrt(
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     all_positive = ivy.pow(ivy.abs(x), 1.0 / 3.0)
-    fixed_signs = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive) 
+    fixed_signs = ivy.where(ivy.less(x, 0.0), ivy.negative(all_positive), all_positive)
     ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), 
-        fixed_signs, 
-        ivy.default(out, x), 
-        out=out
+        ivy.broadcast_to(where, x.shape), fixed_signs, ivy.default(out, x), out=out
     )
     return ret
 
@@ -100,10 +96,7 @@ def square(
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), 
-        ivy.square(x), 
-        ivy.default(out, x), 
-        out=out
+        ivy.broadcast_to(where, x.shape), ivy.square(x), ivy.default(out, x), out=out
     )
     return ret
 
@@ -123,10 +116,7 @@ def absolute(
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), 
-        ivy.abs(x), 
-        ivy.default(out, x), 
-        out=out
+        ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
     return ret
 
@@ -146,10 +136,7 @@ def fabs(
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), 
-        ivy.abs(x), 
-        ivy.default(out, x), 
-        out=out
+        ivy.broadcast_to(where, x.shape), ivy.abs(x), ivy.default(out, x), out=out
     )
     return ret
 
@@ -171,10 +158,7 @@ def sign(
     ret = ivy.sign(x, out=out)
     if where is not None:
         ret = ivy.where(
-            ivy.broadcast_to(where, x.shape), 
-            ret, 
-            ivy.default(out, x), 
-            out=out
+            ivy.broadcast_to(where, x.shape), ret, ivy.default(out, x), out=out
         )
     return ret
 
@@ -199,32 +183,21 @@ def heaviside(
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
         ivy.equal(x1, x1.full_like(0.0)),
-        x2, 
-        ivy.where(ivy.less(x1, 0.0), ivy.zeros_like(x1), ivy.ones_like(x1))
+        x2,
+        ivy.where(ivy.less(x1, 0.0), ivy.zeros_like(x1), ivy.ones_like(x1)),
     )
     ret = ivy.where(
-        ivy.broadcast_to(where, x1.shape),
-        ret, 
-        ivy.default(out, x1),
-        out=out
+        ivy.broadcast_to(where, x1.shape), ret, ivy.default(out, x1), out=out
     )
     return ret
 
 
-def nan_to_num(
-    x, 
-    copy=True, 
-    nan=0.0, 
-    posinf=None, 
-    neginf=None
-): 
+def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.array(x, copy=copy)
     bounds = ivy.finfo(x)
     pinf = posinf if posinf is not None else bounds.max
     ninf = neginf if neginf is not None else bounds.min
-    ivy.where(
-        ivy.equal(ret, ret.full_like(math.nan)), ret.full_like(nan), ret, out=ret
-    )
+    ivy.where(ivy.equal(ret, ret.full_like(math.nan)), ret.full_like(nan), ret, out=ret)
     ivy.where(
         ivy.equal(ret, ret.full_like(math.inf)), ret.full_like(pinf), ret, out=ret
     )
@@ -244,9 +217,9 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     if x_arr.shape == ():
         x_arr = ivy.array([x])
         fix_later = True
-    x = ivy.astype(x_arr, 'float64')
-    xp = ivy.astype(ivy.array(xp), 'float64')
-    fp = ivy.astype(ivy.array(fp), 'float64')
+    x = ivy.astype(x_arr, "float64")
+    xp = ivy.astype(ivy.array(xp), "float64")
+    fp = ivy.astype(ivy.array(fp), "float64")
     assert xp.ndim == 1 and fp.ndim == 1
     assert xp.shape[0] == fp.shape[0]
     if period is not None:
@@ -280,15 +253,16 @@ def interp(x, xp, fp, left=None, right=None, period=None):
                     midpoint = (first + last) // 2
                     if xp[midpoint] == value:
                         return fp[midpoint]
-                    else:               
+                    else:
                         if value < xp[midpoint]:
                             last = midpoint - 1
                         else:
                             first = midpoint + 1
             dist = (value - xp[last]) / (xp[last + 1] - xp[last])
             return (fp[last + 1] - fp[last]) * dist + fp[last]
+
     ret = ivy.map(interp_inner, unique={"value": x})
     if fix_later:
-        return ivy.astype(ivy.array(ret[0]), 'float64')
+        return ivy.astype(ivy.array(ret[0]), "float64")
     else:
-        return ivy.astype(ivy.array(ret), 'float64')
+        return ivy.astype(ivy.array(ret), "float64")
