@@ -168,9 +168,7 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(
-    indices, updates, size=None, out=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, out=None, reduction="sum", device=None):
     if ivy.exists(out):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
@@ -219,7 +217,9 @@ def scatter_nd(
             "but {} selected.".format(reduction)
         )
 
+
 scatter_nd.support_native_out = True
+
 
 def gather(
     params: mx.nd.NDArray,
@@ -236,7 +236,7 @@ def gather(
             mx.nd.expand_dims(mx.nd.pick(params, idx_slice, axis), -1)
             for idx_slice in index_slices
         ],
-        dim=-1
+        dim=-1,
     )
     res = mx.nd.reshape(res, indices.shape)
     if ivy.exists(out):
