@@ -2127,7 +2127,7 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
       
     Examples
-    -----
+    --------
     # suppose we have a set of 32 images in "h w c" format (height-width-channel)
     >>> images = [ivy.random.randn(30, 40, 3) for _ in range(32)]
     >>> output = ivy.fill(images.shape, 0)
@@ -2155,9 +2155,7 @@ def einops_rearrange(
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
     (32, 3600)
-
     """
-    
     x = ivy.to_native(x)
     ret = einops.rearrange(x, pattern, **axes_lengths)
     ret = ivy.array(ret)
