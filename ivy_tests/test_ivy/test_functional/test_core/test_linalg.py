@@ -993,11 +993,16 @@ def test_qr(
 
     ret_np_flat, ret_from_np_flat = results
 
+    q_np_flat, r_np_flat = ret_np_flat
+    q_from_np_flat, r_from_np_flat = ret_from_np_flat
+
+    reconstructed_np_flat = np.matmul(q_np_flat, r_np_flat)
+    reconstructed_from_np_flat = np.matmul(q_from_np_flat, r_from_np_flat)
+
     # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        helpers.assert_all_close(
-            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
-        )
+    helpers.assert_all_close(
+        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-2, atol=1e-2
+    )
 
 
 # svd
