@@ -2574,12 +2574,6 @@ def get_queue_timeout():
 
     Examples
     --------
-    To get the default timeout value
-    >>> x = ivy.get_queue_timeout()
-    >>> print(x)
-    15.0
-
-    To set and get the default timeout value
     >>> ivy.set_queue_timeout(10.0)
     >>> y = ivy.get_queue_timeout()
     >>> print(y)
