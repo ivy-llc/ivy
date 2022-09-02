@@ -38,3 +38,14 @@ cumsum.unsupported_dtypes = (
     "uint32",
     "uint64",
 )
+
+
+def cumprod(input, dim, *, dtype=None, out=None):
+    return ivy.cumprod(x=input, axis=dim, out=out)
+
+
+cumprod.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
