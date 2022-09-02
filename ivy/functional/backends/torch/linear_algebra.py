@@ -29,7 +29,7 @@ def cholesky(
     return ret
 
 
-cholesky.unsupported_dtypes = ("float16",)
+cholesky.unsupported_dtypes = ("float16", "bfloat16")
 
 
 cholesky.support_native_out = True
@@ -123,7 +123,7 @@ def matrix_norm(
     return torch.linalg.matrix_norm(x, ord=ord, dim=[-2, -1], keepdim=keepdims, out=out)
 
 
-matrix_norm.unsupported_dtypes = ("float16",)
+matrix_norm.unsupported_dtypes = ("float16", "bfloat16")
 
 
 matrix_norm.support_native_out = True
@@ -181,7 +181,7 @@ def pinv(
     return torch.linalg.pinv(x, rtol, out=out)
 
 
-pinv.unsupported_dtypes = ("float16",)
+pinv.unsupported_dtypes = ("float16", "bfloat16")
 
 
 pinv.support_native_out = True
@@ -215,7 +215,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = ("float16",)
+slogdet.unsupported_dtypes = ("float16", "bfloat16")
 
 slogdet.support_native_out = True
 
@@ -264,14 +264,14 @@ def svd(
     return ret
 
 
-svd.unsupported_dtypes = ("float16",)
+svd.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.svdvals(x, out=out)
 
 
-svdvals.unsupported_dtypes = ("float16",)
+svdvals.unsupported_dtypes = ("float16", "bfloat16")
 
 svdvals.support_native_out = True
 
