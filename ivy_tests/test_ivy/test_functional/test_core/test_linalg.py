@@ -460,6 +460,7 @@ def test_eigvalsh(
         instance_method=instance_method,
         fw=fw,
         fn_name="eigvalsh",
+        rtol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
     )
 
