@@ -129,12 +129,12 @@ def test_torch_concat(
     ),
 )
 def test_torch_permute(
-    dtype_values_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_values_axis,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     dtype, value, axis = dtype_values_axis
     helpers.test_frontend_function(
@@ -173,14 +173,14 @@ def test_torch_permute(
     ),
 )
 def test_torch_swapdims(
-    dtype_and_values,
-    dim0,
-    dim1,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        dim0,
+        dim1,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -214,12 +214,12 @@ def test_torch_swapdims(
     ),
 )
 def test_torch_reshape(
-    dtype_value_shape,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_value_shape,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value, shape = dtype_value_shape
     helpers.test_frontend_function(
@@ -302,14 +302,14 @@ def test_torch_stack(
     ),
 )
 def test_torch_transpose(
-    dtype_and_values,
-    dim0,
-    dim1,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        dim0,
+        dim1,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -407,6 +407,44 @@ def test_torch_dsplit(
         fw=fw,
         frontend="torch",
         fn_tree="dsplit",
+        input=np.asarray(value, dtype=input_dtype),
+        shape=shape,
+    )
+
+
+# split
+@handle_cmd_line_args
+@given(
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            ),
+        ),
+        ret_shape=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.split"
+    ),
+)
+def test_torch_split(
+        dtype_value_shape,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+):
+    input_dtype, value, shape = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="split",
         input=np.asarray(value, dtype=input_dtype),
         shape=shape,
     )

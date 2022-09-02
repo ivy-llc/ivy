@@ -50,3 +50,7 @@ def stack(tensors, dim=0, *, out=None):
 
 def dsplit(input, indices_or_sections):
     return ivy.split(input, indices_or_sections, dim=2)
+
+
+def split(input, indices_or_sections,*, dim=0):
+    return ivy.split(input, indices_or_sections, dim)
