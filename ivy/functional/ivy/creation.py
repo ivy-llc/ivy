@@ -121,12 +121,12 @@ def arange(
     )
 
 
-@outputs_to_ivy_arrays
+# @outputs_to_ivy_arrays
 # @to_native_arrays_and_back
 # @asarray_to_native_arrays_and_back
-@handle_out_argument
+# @handle_out_argument
 @infer_device
-@handle_nestable
+# @handle_nestable
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -168,6 +168,47 @@ def asarray(
     instances in place of any of the arguments.
 
     """
+
+    # TODO: Does @handle_nestable get implicitly covered here?
+    if _is_raw_python_list_or_scalar(x):
+        return _asarray_for_raw_python_list(x, copy=copy, dtype=dtype, device=device)
+
+    return _asarray_typical(x, copy=copy, dtype=dtype, device=device)
+    # return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
+
+
+# Under these conditions, inputs_to_ivy_arrays is an expensive identity function.
+@outputs_to_ivy_arrays
+# @to_native_arrays_and_back
+# @asarray_to_native_arrays_and_back
+@handle_out_argument
+@infer_device
+# @handle_nestable
+def _asarray_for_raw_python_list(
+    x: Union[List[Number], Tuple[Number]],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> ivy.Array:
+    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
+
+
+# @outputs_to_ivy_arrays
+@to_native_arrays_and_back
+# @asarray_to_native_arrays_and_back
+@handle_out_argument
+@infer_device
+@handle_nestable
+def _asarray_typical(
+    x: Union[ivy.Array, ivy.NativeArray, np.ndarray],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+) -> ivy.Array:
     return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
