@@ -1821,9 +1821,13 @@ def test_set_queue_timeout(x):
 
 
 @handle_cmd_line_args
-def test_get_queue_timeout():
+@given(
+    x=st.floats(allow_nan=False, allow_infinity=False),
+)
+def test_get_queue_timeout(x):
+    ivy.set_queue_timeout(x)
     ret = ivy.get_queue_timeout()
-    assert ret == 15.0
+    assert ret == x
 
 
 @handle_cmd_line_args
