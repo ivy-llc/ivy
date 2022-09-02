@@ -3547,7 +3547,7 @@ def _all_dnd_combinations():
 
     all_comb = {}
     for device in ALL_DEVICES:
-        all_comb[device] = ivy.valid_dtypes
+        all_comb[device] = ivy.all_dtypes
     return all_comb
 
 
