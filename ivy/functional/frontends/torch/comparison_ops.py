@@ -1,4 +1,9 @@
-# ToDo: Add allclose(), isclose(), isposinf(), isneginf(), fmax() to functional API
+"""
+ToDo:
+----
+Add allclose(), isclose(), isposinf(), isneginf(), fmax(), msort()
+to ivy functional API
+"""
 # global
 import ivy
 
