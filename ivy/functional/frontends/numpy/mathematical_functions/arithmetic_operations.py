@@ -1,6 +1,5 @@
 # global
 import ivy
-from ivy.functional.ivy.general import is_array
 
 
 def add(
@@ -94,6 +93,7 @@ def vdot(
 ):
     ret = ivy.multiply(a, b).sum()
     return ret
+
 
 def positive(
     x,
