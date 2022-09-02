@@ -208,7 +208,7 @@ def test_torch_tanh(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_name="tanh",
+        fn_tree="tanh",
         input=np.asarray(x, dtype=input_dtype),
         out=None,
     )
