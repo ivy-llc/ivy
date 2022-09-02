@@ -109,7 +109,7 @@ def argmax(
     ivy.array(2)
 
     """
-    return current_backend(x).argmax(x, axis, keepdims, out=out)
+    return current_backend(x).argmax(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
