@@ -290,6 +290,8 @@ def test_matrix_power(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_power",
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=dtype),
         n=n,
     )
