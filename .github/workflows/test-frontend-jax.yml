@@ -19,12 +19,24 @@ jobs:
           name: hypothesis_frontend_jax_zip
           path: |
             ivy/.hypothesis/
+        continue-on-error: true
 
       - name: Unzip Hypothesis Examples
+        id: unzip
         run: |
           cd ivy/.hypothesis
           unzip examples.zip
           rm examples.zip
+        continue-on-error: true
+
+      - name: Create Hypothesis Directory
+        if: steps.unzip.outcome != 'success'
+        run: |
+          cd ivy
+          mkdir -p .hypothesis
+          cd .hypothesis
+          mkdir -p examples
+        continue-on-error: true
 
       - name: Run Frontend Tests
         id: tests
@@ -37,6 +49,7 @@ jobs:
         run: |
           cd ivy/.hypothesis
           zip -r examples.zip examples
+        continue-on-error: true
 
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
@@ -44,6 +57,7 @@ jobs:
           name: hypothesis_frontend_jax_zip
           path: |
             ivy/.hypothesis/examples.zip
+        continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
