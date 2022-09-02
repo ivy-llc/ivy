@@ -85,6 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../initializers.html">Initializers</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Initializer.html">Initializer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Constant.html">Constant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Zeros.html">Zeros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Ones.html">Ones</a></li>
@@ -150,7 +151,10 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.Siren.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#Siren.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Siren.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The Siren uniform initializer for the first layer. It draws values from a
+uniform distribtion <cite>[-limit, limit]</cite> where <cite>limit=sqrt(6 / fan_in) / w0</cite>
+where <cite>fan_in</cite> is the number of input features.</p>
+</dd></dl>
 
 </dd></dl>
 

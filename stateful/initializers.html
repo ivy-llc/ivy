@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Constant" href="initializers/Constant.html" />
+    <link rel="next" title="Initializer" href="initializers/Initializer.html" />
     <link rel="prev" title="add_ivy_array_instance_methods" href="../data_classes/array/wrapping/add_ivy_array_instance_methods.html" /> 
 </head>
 
@@ -85,6 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Initializers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="initializers/Initializer.html">Initializer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="initializers/Constant.html">Constant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="initializers/Zeros.html">Zeros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="initializers/Ones.html">Ones</a></li>
@@ -145,7 +146,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.Constant">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">Constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constant</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Constant" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Initalizer" title="ivy.stateful.initializers.Initalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initalizer</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="initializers/Initializer.html#ivy.stateful.initializers.Initializer" title="ivy.stateful.initializers.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.Constant.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constant</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Constant.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Constant.__init__" title="Permalink to this definition"></a></dt>
@@ -192,7 +193,10 @@ etc. Default is cpu.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.FirstLayerSiren.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#FirstLayerSiren.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.FirstLayerSiren.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The Siren uniform initializer for the first layer. It draws values from a
+uniform distribtion <cite>[-limit, limit]</cite> where <cite>limit=fan_in</cite> where <cite>fan_in</cite>
+is the number of input features.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -203,17 +207,27 @@ etc. Default is cpu.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.GlorotUniform.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#GlorotUniform.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.GlorotUniform.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The Glorot uniform initializer, also known as the Xavier uniform initializer.
+It draws values from a uniform distribtion <cite>[-limit, limit]</cite> where
+<cite>limit = sqrt(6 / (fan_in + fan_out))</cite> where <cite>fan_in</cite> and <cite>fan_out</cite> are the
+number of input and output features respectively.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="ivy.stateful.initializers.Initalizer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">Initalizer</span></span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Initalizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Initalizer" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dt class="sig sig-object py" id="ivy.stateful.initializers.Initializer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">Initializer</span></span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Initializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Initializer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>An initializer for internal variables for a layer.
+A neuron is a function of the form <cite>a = g(z)</cite>, where <cite>g</cite> is the
+activation functions and <cite>z = w_1x_1 + w_2x_2 + … + w_nx_n</cite> where the
+<cite>w_i</cite> are the weights and the <cite>x_i</cite> are the inputs. To prevent this
+<cite>z</cite> from vanishing (getting too small) or exploding (getting too big), the
+initial weights must be picked carefully.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.initializers.Initalizer.create_variables">
-<span class="sig-name descname"><span class="pre">create_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Initalizer.create_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Initalizer.create_variables" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.stateful.initializers.Initializer.create_variables">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Initializer.create_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Initializer.create_variables" title="Permalink to this definition"></a></dt>
 <dd><p>Create internal variables for the layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -242,16 +256,60 @@ etc. Default is cpu.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.KaimingNormal">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">KaimingNormal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fan_in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#KaimingNormal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Initalizer" title="ivy.stateful.initializers.Initalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initalizer</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="initializers/Initializer.html#ivy.stateful.initializers.Initializer" title="ivy.stateful.initializers.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.KaimingNormal.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fan_in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#KaimingNormal.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>A Kaiming normal initializer, also known as He Initialization, is an
+method for initializing layers that takes into account the non-linearity
+of activation functions. It uses a normal distibution centered at <cite>mean</cite> with
+standard distribution <cite>sqrt(2 / ((1 + negative_slope^2) * fan))</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean</strong> – Sets the expected value, average, and center of the normal distribution.</p></li>
+<li><p><strong>fan_mode</strong> – <p>Determines how <cite>fan</cite> is calculated.
+- <cite>fan_out</cite> sets <cite>fan</cite> to the number of output features of this neuron.</p>
+<blockquote>
+<div><p>This is useful when training using back-propogation.</p>
+</div></blockquote>
+<ul>
+<li><p><cite>fan_in</cite> sets <cite>fan</cite> to the number of input features of this neuron.
+This is useful when training using forward-propogation.</p></li>
+<li><p><cite>fan_sum</cite> sets <cite>fan</cite> to the sum of the number of input features and
+output features of this neuron.</p></li>
+<li><p><cite>fan_sum</cite> sets <cite>fan</cite> to the average of the number of input features and
+output features of this neuron.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.KaimingNormal.create_variables">
 <span class="sig-name descname"><span class="pre">create_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_slope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#KaimingNormal.create_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal.create_variables" title="Permalink to this definition"></a></dt>
 <dd><p>Create internal variables for the layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var_shape</strong> – <dl class="simple">
+<dt>Tuple representing the shape of the desired array. If considering</dt><dd><p>the array as a rectangular matrix, this tuple is represented as
+‘(ROWS, COLUMNS)’.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>device</strong> – Device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc. Default is cpu.</p></li>
+<li><p><strong>fan_out</strong> – The number of nodes in the next layer.</p></li>
+<li><p><strong>fan_in</strong> – The number of nodes in the previous layer.</p></li>
+<li><p><strong>negative_slope</strong> – How much a higher <cite>fan</cite> should lower the standard deviation. A value of <cite>0</cite>
+gives a relationship proportional to <cite>1/fan</cite>.</p></li>
+<li><p><strong>dtype</strong> – Desired data type.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -275,23 +333,74 @@ etc. Default is cpu.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.Siren.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Siren.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Siren.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>The Siren uniform initializer for the first layer. It draws values from a
+uniform distribtion <cite>[-limit, limit]</cite> where <cite>limit=sqrt(6 / fan_in) / w0</cite>
+where <cite>fan_in</cite> is the number of input features.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.Uniform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">Uniform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numerator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Uniform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ivy.stateful.initializers.Initalizer" title="ivy.stateful.initializers.Initalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initalizer</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="initializers/Initializer.html#ivy.stateful.initializers.Initializer" title="ivy.stateful.initializers.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.Uniform.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numerator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Uniform.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>A initializer based on a uniform distribution, will fill in all values with
+values drawn from a uniform (all values have an equal probability) distribution
+with range <cite>[-wlim, wlim]</cite> (endpoints included) with <cite>wlim</cite> being calculated as
+<cite>gain * (numerator / fan)**power</cite>. This distribution helps with issues when
+trying to optimize and train networks. The expected value of this distribution
+is <cite>0</cite> and the variance is
+<cite>(gain * numerator / fan)^power / 4</cite>.</p>
+<p>This is intended as a base-class for special predefined initialzers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numerator</strong> – </p></li>
+<li><p><strong>fan_mode</strong> – <p>Determines how <cite>fan</cite> is calculated.
+- <cite>fan_out</cite> sets <cite>fan</cite> to the number of output features of this neuron.</p>
+<blockquote>
+<div><p>This is useful when training using back-propogation.</p>
+</div></blockquote>
+<ul>
+<li><p><cite>fan_in</cite> sets <cite>fan</cite> to the number of input features of this neuron.
+This is useful when training using forward-propogation.</p></li>
+<li><p><cite>fan_sum</cite> sets <cite>fan</cite> to the sum of the number of input features and
+output features of this neuron.</p></li>
+<li><p><cite>fan_sum</cite> sets <cite>fan</cite> to the average of the number of input features and
+output features of this neuron.</p></li>
+</ul>
+</p></li>
+<li><p><strong>power</strong> – Sets the drop-off factor for the calculated <cite>fan</cite>.</p></li>
+<li><p><strong>gain</strong> – Scales the output of the distribution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.initializers.Uniform.create_variables">
 <span class="sig-name descname"><span class="pre">create_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/initializers.html#Uniform.create_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform.create_variables" title="Permalink to this definition"></a></dt>
 <dd><p>Create internal variables for the layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var_shape</strong> – <dl class="simple">
+<dt>Tuple representing the shape of the desired array. If considering</dt><dd><p>the array as a rectangular matrix, this tuple is represented as
+‘(ROWS, COLUMNS)’.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>device</strong> – Device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc. Default is cpu.</p></li>
+<li><p><strong>fan_out</strong> – The number of nodes in the next layer.</p></li>
+<li><p><strong>fan_in</strong> – The number of nodes in the previous layer.</p></li>
+<li><p><strong>dtype</strong> – Desired data type.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -317,7 +426,7 @@ etc. Default is cpu.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../data_classes/array/wrapping/add_ivy_array_instance_methods.html" class="btn btn-neutral float-left" title="add_ivy_array_instance_methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="initializers/Constant.html" class="btn btn-neutral float-right" title="Constant" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="initializers/Initializer.html" class="btn btn-neutral float-right" title="Initializer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
