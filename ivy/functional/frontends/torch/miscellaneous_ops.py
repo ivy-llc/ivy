@@ -45,6 +45,7 @@ def cumprod(input, dim, *, dtype=None, out=None):
 
 
 cumprod.unsupported_dtypes = (
+    "float16",
     "uint16",
     "uint32",
     "uint64",
