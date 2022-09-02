@@ -53,7 +53,8 @@ def test_constant(
 
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    assert ivy.all(ivy.equal(ivy.abs(ret_ivy), constant))
+    print(ret_ivy, constant, ret_gt)
+    assert ivy.all(ivy.equal(ret_ivy, ivy.array(constant)))
 
 
 @handle_cmd_line_args
@@ -97,7 +98,7 @@ def test_zeros(
 
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    assert ivy.all(ivy.equal(ivy.abs(ret_ivy), 0.0))
+    assert ivy.all(ivy.equal(ret_ivy, ivy.array(0.0)))
 
 
 @handle_cmd_line_args
@@ -141,7 +142,7 @@ def test_ones(
 
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    assert ivy.all(ivy.equal(ivy.abs(ret_ivy), 1.0))
+    assert ivy.all(ivy.equal(ret_ivy, ivy.array(1.0)))
 
 
 @handle_cmd_line_args
@@ -213,7 +214,7 @@ def test_uniform(
     bound = gain * (numerator / fan)**power
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    assert ivy.all(ivy.less(ivy.abs(ret_ivy), bound))
+    assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
 @handle_cmd_line_args
@@ -264,7 +265,7 @@ def test_glorot_uniform(
     bound = (6 / (fan_in + fan_out))**0.5
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    assert ivy.all(ivy.less(ivy.abs(ret_ivy), bound))
+    assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
 @handle_cmd_line_args
@@ -312,7 +313,7 @@ def test_first_layer_siren(
     bound = fan_in
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    assert ivy.all(ivy.less(ivy.abs(ret_ivy), bound))
+    assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
 @handle_cmd_line_args
@@ -364,7 +365,7 @@ def test_siren(
     bound = ((6 / fan_in)**0.5) / w0
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
-    assert ivy.all(ivy.less(ivy.abs(ret_ivy), bound))
+    assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
 @handle_cmd_line_args

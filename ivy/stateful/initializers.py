@@ -1,12 +1,13 @@
 # local
 from typing import Tuple, Union
 import ivy
+import abc
 
 # Initializer #
 # ----------- #
 
 
-class Initializer:
+class Initializer(abc.ABC):
     """
     An initializer for internal variables for a layer.
     A neuron is a function of the form `a = g(z)`, where `g` is the 
@@ -15,6 +16,7 @@ class Initializer:
     `z` from vanishing (getting too small) or exploding (getting too big), the 
     initial weights must be picked carefully. 
     """
+    @abc.abstractmethod
     def create_variables(
         self,
         var_shape: Tuple[int, int],
