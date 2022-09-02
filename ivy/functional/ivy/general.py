@@ -2167,6 +2167,26 @@ def einops_reduce(
     ret
         New array with einops.reduce having been applied.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >> x = ivy.array([[-4.47, 0.93, -3.34],  
+                      [3.66, 24.29, 3.64]])
+    >> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
+    >> print(reduced)
+    ivy.array([-0.405, 12.6  ,  0.15 ])
+
+    With :code:`ivy.Container` input:
+    >> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],  
+                                      [3.66, 24.29, 3.64]]), 
+                        b=ivy.array([[4.96, 1.52, -10.67],  
+                                     [4.36, 13.96, 0.3]]))
+    >> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
+    >> print(reduced)
+    {
+        a: ivy.array([-2.29, 10.5]),
+        b: ivy.array([-1.4, 6.21])
+    }
     """
     x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
@@ -2186,7 +2206,7 @@ def einops_repeat(
     *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Perform einops repeat operation on input array x.
 
     Parameters
@@ -2205,6 +2225,29 @@ def einops_repeat(
     -------
     ret
         New array with einops.repeat having been applied.
+
+    Examples
+    --------
+    With :code:`ivy.array` input:
+    >> x = ivy.array([1, 2, 3, 4])
+    >> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
+    >> print(repeated)
+    ivy.array([[1, 2, 3, 4],
+               [1, 2, 3, 4]])
+
+    With :code:`ivy.Container` input:
+    >> x = ivy.Container(a=ivy.array([[4,5], 
+                                    [1, 3]]),
+                        b=ivy.array([[9, 10], 
+                                    [4, 2]]))
+    >> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
+    >> print(repeated)
+    {
+        a: ivy.array([[4, 5, 4, 5],   
+                      [1, 3, 1, 3]]), 
+        b: ivy.array([[9, 10, 9, 10], 
+                      [4, 2, 4, 2]])  
+    }
 
     """
     x = ivy.to_native(x)
