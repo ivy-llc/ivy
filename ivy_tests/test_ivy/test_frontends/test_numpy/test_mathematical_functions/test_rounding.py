@@ -60,15 +60,14 @@ def test_numpy_ceil(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes,
     ),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.fix"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_fix(
     dtype_and_x,
@@ -87,6 +86,6 @@ def test_numpy_fix(
         fw=fw,
         frontend="numpy",
         fn_tree="fix",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=np.asarray(x, dtype=input_dtype),
         test_values=False,
     )
