@@ -791,8 +791,9 @@ def matrix_power(
 @handle_nestable
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the rank (i.e., number of non-zero singular values) of a matrix (or a
@@ -870,7 +871,7 @@ def matrix_rank(
 @handle_out_argument
 @handle_nestable
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Transposes a matrix (or a stack of matrices) ``x``.
 
@@ -899,6 +900,7 @@ def matrix_transpose(
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -974,8 +976,9 @@ def outer(
 @handle_nestable
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
@@ -1017,6 +1020,8 @@ def pinv(
 @handle_nestable
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     mode: str = "reduced",
 ) -> NamedTuple:
     """
@@ -1061,7 +1066,7 @@ def qr(
 @handle_out_argument
 @handle_nestable
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Computes the sign and natural logarithm of the determinant of an array.
 
@@ -1093,6 +1098,7 @@ def slogdet(
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1132,6 +1138,8 @@ def solve(
 @handle_nestable
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Returns a singular value decomposition A = USVh of a matrix (or a stack of
@@ -1210,7 +1218,7 @@ def svd(
 @handle_out_argument
 @handle_nestable
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the singular values of a matrix (or a stack of matrices) ``x``.
 
@@ -1324,8 +1332,9 @@ def svdvals(
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a tensor contraction of x1 and x2 over specific axes.
@@ -1395,8 +1404,9 @@ def tensordot(
 @handle_nestable
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
-    offset: int = 0,
+    /,
     *,
+    offset: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
@@ -1450,8 +1460,9 @@ def trace(
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the (vector) dot product of two arrays.
@@ -1499,10 +1510,11 @@ def vecdot(
 @handle_nestable
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
@@ -1581,7 +1593,7 @@ def vector_norm(
 @handle_out_argument
 @handle_nestable
 def vector_to_skew_symmetric_matrix(
-    vector: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     r"""Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric
     matrix :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying
