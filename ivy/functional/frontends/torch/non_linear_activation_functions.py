@@ -41,4 +41,4 @@ def softmin(input, dim=None, dtype=None):
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     return ivy.softmax(-input, axis=dim)
 
-softmin.unsupported_dtypes = ("float16", "float64")
+softmin.unsupported_dtypes = ("float16",)
