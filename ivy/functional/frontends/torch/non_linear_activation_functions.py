@@ -48,3 +48,12 @@ def logsigmoid(input):
 
 
 logsigmoid.unsupported_dtypes = ("float16",)
+
+
+def softmin(input, dim=None, dtype=None):
+    if dtype:
+        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+    return ivy.softmax(-input, axis=dim)
+
+
+softmin.unsupported_dtypes = ("float16",)
