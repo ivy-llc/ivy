@@ -12,7 +12,7 @@ import numpy as np
 import math
 import gc
 from typing import Union, List
-from hypothesis import assume, given, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 
@@ -1833,7 +1833,6 @@ def test_frontend_function(
         if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-
 
     # create NumPy args
     args_np = ivy.nested_map(
