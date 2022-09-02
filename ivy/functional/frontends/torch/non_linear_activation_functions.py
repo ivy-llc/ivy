@@ -41,3 +41,10 @@ def tanh(input, *, out=None):
 
 
 tanh.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def logsigmoid(input):
+    return -ivy.softplus(-input)
+
+
+logsigmoid.unsupported_dtypes = ("float16",)
