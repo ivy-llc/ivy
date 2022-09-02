@@ -962,7 +962,6 @@ def test_function_supported_dtypes(func, expected):
 
 
 # function_unsupported_dtypes
-# function_unsupported_dtypes
 @pytest.mark.parametrize(
     "func, expected",
     [
