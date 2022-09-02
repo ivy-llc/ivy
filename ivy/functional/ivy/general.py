@@ -2130,7 +2130,7 @@ def einops_rearrange(
     --------
     # suppose we have a set of 32 images in "h w c" format (height-width-channel)
     >>> images = [np.random.randn(30, 40, 3) for _ in range(32)]
-    >>> output = np.fill(images.shape, 0)
+    >>> output = np.zeros_like(images)
 
     # stack along first (batch) axis, output is the same
     >>> x=ivy.einops_rearrange(images, 'b h w c -> b h w c')
