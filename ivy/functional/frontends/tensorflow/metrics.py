@@ -78,7 +78,7 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
             [
                 (
                     0 <= res < labels
-                    and ivy.min(top_k[ind] - predictions[ind, res]) < 1e-3
+                    and ivy.min(top_k[ind] - predictions[ind, res]) < 1e-6
                 )
                 for ind, res in enumerate(targets)
             ]
