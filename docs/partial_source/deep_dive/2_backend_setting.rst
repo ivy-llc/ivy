@@ -64,7 +64,7 @@ recommended way of doing things would be set the backend explicitly.
 
 
 Backend and Frontend Version Support
-====================================
+------------------------------------
 
 Each time a new ivy backend is set, the backend_handler modifies the :code:`ivy.__dict__` to support the multiple
 versions of functions that are not forward compatible. For example, :code:`torch.ones_like` in the latest stable version :code:`1.12`
@@ -77,12 +77,11 @@ versions. However, such forward-breaking changes are in the vast minority.
 We currently use a naming convention for such functions and name them as :code:`fn_name_v_1p12_and_above` which means that this particular
 implementation of the function is valid for versions :code:`1.12` and above. Similarly, :code:`fn_name_v_1p01_to_1p1` means that the function is
 valid for versions between :code:`1.01` and :code:`1.1` both inclusive. Each time a backend is set, we go through the :code:`backend.__dict__` and
-for the functions for which multiple verisons are detected, we simply import and assign the original :code:`fn_name` to the version
-specific one. We do so by detecting the version of the backend installed on the user's end.
+for all functions for which multiple versions are detected, we simply import and assign the original :code:`fn_name` to the version
+specific one. We do so by detecting the version of the backend framework installed on the user's end.
 
-We follow the same workflow for providing version support to the frontend functions. The only difference being that the version is
-inferred by importing the specific backend at the user's system. If the user's system doesn't have the backend installed, we default
-to the latest version.
+We follow the same workflow for providing version support to the frontend functions. Again the version is inferred by importing the corresponding
+framework on the user's system . If the user's system doesn't have the backend framework installed, we default to the latest version.
 
 
 
