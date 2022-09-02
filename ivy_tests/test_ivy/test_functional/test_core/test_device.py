@@ -551,7 +551,7 @@ def _composition_2():
     return ivy.ceil() or a
 
 
-# function_unsupported_dtypes
+# function_unsupported_devices
 @pytest.mark.parametrize(
     "func, expected",
     [(_composition_1, ["cpu"]), (_composition_2, ["cpu"])],
@@ -563,7 +563,7 @@ def test_function_supported_devices(func, expected):
     assert sorted(tuple(exp)) == sorted(res)
 
 
-# function_unsupported_dtypes
+# function_unsupported_devices
 @pytest.mark.parametrize(
     "func, expected",
     [(_composition_1, ["gpu", "tpu"]), (_composition_2, ["gpu", "tpu"])],

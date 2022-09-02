@@ -1,26 +1,29 @@
 """Collection of tests for unified general functions."""
 
-# global
-import time
-import einops
-import jax.numpy as jnp
-import pytest
-from hypothesis import given, assume, strategies as st
-import numpy as np
-from numbers import Number
-from collections.abc import Sequence
-import torch.multiprocessing as multiprocessing
-
 # local
 import threading
+
+# global
+import time
+from collections.abc import Sequence
+from numbers import Number
+
+import einops
+import jax.numpy as jnp
+import numpy as np
+import pytest
+import torch.multiprocessing as multiprocessing
+from hypothesis import given, assume, strategies as st
+
 import ivy
 import ivy.functional.backends.jax
+import ivy.functional.backends.mxnet
+import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
-import ivy.functional.backends.mxnet
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
 
 # Helpers #
 # --------#
@@ -1147,7 +1150,6 @@ def test_framework_setting_with_threading(device):
 
 @handle_cmd_line_args
 def test_framework_setting_with_multiprocessing(device):
-
     if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
@@ -1185,7 +1187,6 @@ def test_framework_setting_with_multiprocessing(device):
 
 @handle_cmd_line_args
 def test_explicit_ivy_framework_handles(device):
-
     if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
@@ -1427,6 +1428,100 @@ def test_current_backend_str(backend_str):
     else:
         inital_fw = ivy.current_backend_str()
         assert inital_fw == ""
+
+
+def _composition_1():
+    return ivy.relu().argmax()
+
+
+def _composition_2():
+    return ivy.ceil() or ivy.linspace()
+
+
+# function_supported_devices_and_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (
+            _composition_1,
+            {
+                "cpu": (
+                    "bool",
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "bfloat16",
+                    "float16",
+                    "float32",
+                    "float64",
+                )
+            },
+        ),
+        (
+            _composition_2,
+            {
+                "cpu": (
+                    "bool",
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "bfloat16",
+                    "float16",
+                    "float32",
+                    "float64",
+                )
+            },
+        ),
+    ],
+)
+def test_function_supported_device_and_dtype(func, expected):
+    res = ivy.function_supported_devices_and_dtypes(func)
+    exp = {}
+    for dev in expected:
+        exp[dev] = tuple((set(ivy.valid_dtypes).intersection(expected[dev])))
+        if ivy.current_backend_str() == "torch":
+            exp[dev] = tuple((set(exp[dev]).difference({"float16"})))
+
+    all_key = set(res.keys()).union(set(exp.keys()))
+    for key in all_key:
+        assert key in res
+        assert key in exp
+        assert sorted(res[key]) == sorted(exp[key])
+
+
+# function_unsupported_devices_and_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (_composition_1, {"gpu": ivy.all_dtypes, "tpu": ivy.all_dtypes}),
+        # (_composition_2, {'gpu': ivy.all_dtypes, 'tpu': ivy.all_dtypes})
+    ],
+)
+def test_function_unsupported_devices(func, expected):
+    res = ivy.function_unsupported_devices_and_dtypes(func)
+
+    exp = expected.copy()
+
+    if ivy.invalid_dtypes:
+        exp["cpu"] = ivy.invalid_dtypes
+    if ivy.current_backend_str() == "torch":
+        exp["cpu"] = tuple((set(exp["cpu"]).union({"float16"})))
+
+    all_key = set(res.keys()).union(set(exp.keys()))
+    for key in all_key:
+        assert key in res
+        assert key in exp
+        assert sorted(res[key]) == sorted(exp[key])
 
 
 # Still to Add #
