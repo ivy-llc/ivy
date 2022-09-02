@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Iterable, Optional, Union, Sequence, List
+from typing import Optional, Union, Sequence, List
 
 
 _round = round
@@ -173,16 +173,15 @@ def _infer_dtype(x_dtype: tf.DType):
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
     *,
-    dtype: Optional[tf.DType] = None,
+    dtype: tf.DType,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if x.dtype == dtype:
-        return tf.math.cumsum(x, axis)
-    return tf.math.cumsum(tf.cast(x, dtype), axis)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
 def cumprod(
@@ -196,9 +195,9 @@ def cumprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if x.dtype == dtype:
-        return tf.math.cumprod(x, axis, exclusive)
-    return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
@@ -222,9 +221,7 @@ def scatter_flat(
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
-            return tf.tensor_scatter_nd_add(
-                out, tf.expand_dims(indices, -1), updates
-            )
+            return tf.tensor_scatter_nd_add(out, tf.expand_dims(indices, -1), updates)
         return tf.scatter_nd(tf.expand_dims(indices, -1), updates, [size])
     elif reduction == "min":
         if not target_given:
@@ -240,12 +237,12 @@ def scatter_flat(
             res = tf.where(res == tf.cast(-1e12, dtype), 0, res)
     elif reduction == "replace":
         if target_given:
-            res = tf.tensor_scatter_nd_update(
-                out, tf.expand_dims(indices, -1), updates
-            )
+            res = tf.tensor_scatter_nd_update(out, tf.expand_dims(indices, -1), updates)
         else:
             res = tf.tensor_scatter_nd_update(
-                tf.zeros([size], dtype=updates.dtype), tf.expand_dims(indices, -1), updates
+                tf.zeros([size], dtype=updates.dtype),
+                tf.expand_dims(indices, -1),
+                updates,
             )
     else:
         raise Exception(
@@ -303,38 +300,49 @@ def scatter_nd(
     # hanle non-tensor indices
     if indices == ():
         return updates
-    
+
     elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
         if updates.shape == () and ivy.exists(out) and out.shape == ():
             return updates
         shape = out.shape if ivy.exists(out) else updates.shape
-        indices =  tf.stack([tf.reshape(value, (-1,)) for value in tf.meshgrid(
-                    *[
-                        tf.range(shape[0])  
-                    ], indexing ='ij'
-        )], axis=-1)
+        indices = tf.stack(
+            [
+                tf.reshape(value, (-1,))
+                for value in tf.meshgrid(*[tf.range(shape[0])], indexing="ij")
+            ],
+            axis=-1,
+        )
 
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
         shape = out.shape if ivy.exists(out) else updates.shape
         indices = _parse_ellipsis(indices, len(shape))
-        indices =   tf.stack([tf.reshape(value, (-1,)) for value in tf.meshgrid(
+        indices = tf.stack(
+            [
+                tf.reshape(value, (-1,))
+                for value in tf.meshgrid(
                     *[
-                        tf.range(s) if idx == slice(None, None, None) else tf.constant([idx % s])
+                        tf.range(s)
+                        if idx == slice(None, None, None)
+                        else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
-                    ], indexing ='ij'
-        )], axis=-1)        
+                    ],
+                    indexing="ij",
+                )
+            ],
+            axis=-1,
+        )
     else:
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
-                indices = tf.expand_dims(indices, -1)
-        
+            indices = tf.expand_dims(indices, -1)
+
         if len(updates.shape) < 2:
             updates = tf.expand_dims(updates, 0)
-    
+
     # broadcast updates to indices
-    if  updates.shape == ():
-        updates = tf.broadcast_to(updates, indices.shape[:1])        
+    if updates.shape == ():
+        updates = tf.broadcast_to(updates, indices.shape[:1])
     # implementation
     target = out
     target_given = ivy.exists(target)
@@ -349,14 +357,24 @@ def scatter_nd(
             res = tf.scatter_nd(indices, updates, shape)
     elif reduction == "min":
         if not target_given:
-            max_value = tf.cast(min(tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max, 1e12), updates.dtype)
+            max_value = tf.cast(
+                min(
+                    tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max, 1e12
+                ),
+                updates.dtype,
+            )
             target = tf.fill(shape, max_value)
         res = tf.tensor_scatter_nd_min(target, indices, updates)
         if not target_given:
             res = tf.where(res == max_value, 0, res)
     elif reduction == "max":
         if not target_given:
-            min_value = tf.cast(max(tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min, -1e12), updates.dtype)
+            min_value = tf.cast(
+                max(
+                    tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min, -1e12
+                ),
+                updates.dtype,
+            )
             target = tf.fill(shape, min_value)
         res = tf.tensor_scatter_nd_max(target, indices, updates)
         if not target_given:
@@ -365,7 +383,9 @@ def scatter_nd(
         if target_given:
             res = tf.tensor_scatter_nd_update(out, indices, updates)
         else:
-            res = tf.tensor_scatter_nd_update(tf.zeros(shape, dtype=dtype), indices, updates)
+            res = tf.tensor_scatter_nd_update(
+                tf.zeros(shape, dtype=dtype), indices, updates
+            )
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -376,7 +396,9 @@ def scatter_nd(
         return ivy.inplace_update(out, res)
     return res
 
+
 scatter_nd.support_native_out = True
+
 
 def gather(
     params: Union[tf.Tensor, tf.Variable],
@@ -411,9 +433,9 @@ def one_hot(
         indices = tf.cast(indices, tf.int32)
     else:
         indices = tf.cast(indices, tf.int64)
-    device = default_device(device)
+    device = ivy.default_device(device)
     if device is not None:
-        with tf.device(as_native_dev(device)):
+        with tf.device(ivy.as_native_dev(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
 
@@ -439,15 +461,18 @@ def indices_where(
     where_x = tf.experimental.numpy.where(x)
     if len(where_x) == 1:
         return tf.expand_dims(where_x[0], -1)
-    res = tf.experimental.numpy.concatenate([tf.expand_dims(item, -1) for item in where_x], -1)
+    res = tf.experimental.numpy.concatenate(
+        [tf.expand_dims(item, -1) for item in where_x], -1
+    )
     return res
-    
+
+
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
 ) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(tf.shape(x))
+        return ivy.array(tf.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 

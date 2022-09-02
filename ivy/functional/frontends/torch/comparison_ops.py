@@ -168,3 +168,7 @@ def fmax(input, other, *, out=None):
         other,
         out=out,
     )
+
+
+def fmin(input, other, *, out=None):
+    return ivy.minimum(input, other, out=out)
