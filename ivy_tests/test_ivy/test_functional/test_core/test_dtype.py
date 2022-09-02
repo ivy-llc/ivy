@@ -1,23 +1,23 @@
 """Collection of tests for unified dtype functions."""
 
-# global
-import numpy as np
-from hypothesis import given, assume, strategies as st
-
-
-# local
-import ivy
-import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.jax as ivy_jax
-import ivy.functional.backends.tensorflow as ivy_tf
-import ivy.functional.backends.torch as ivy_torch
-import ivy.functional.backends.mxnet as ivy_mxn
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from functools import reduce  # for making strategy
 from operator import mul  # for making strategy
 from typing import Tuple
+
+# global
+import numpy as np
 import pytest
+from hypothesis import given, assume, strategies as st
+
+# local
+import ivy
+import ivy.functional.backends.jax as ivy_jax
+import ivy.functional.backends.mxnet as ivy_mxn
+import ivy.functional.backends.numpy as ivy_np
+import ivy.functional.backends.tensorflow as ivy_tf
+import ivy.functional.backends.torch as ivy_torch
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # dtype objects
@@ -899,34 +899,86 @@ def dtypes_list(draw):
     )
 
 
-# function_unsupported_dtypes
-@handle_cmd_line_args
-@given(supported_dtypes=dtypes_list())
-def test_function_supported_dtypes(
-    supported_dtypes,
-):
-    def func():
-        return
+def _composition_1():
+    return ivy.relu().argmax()
 
-    func.supported_dtypes = tuple(supported_dtypes)
+
+def _composition_2():
+    a = ivy.floor
+    return ivy.ceil() or a
+
+
+# function_unsupported_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (
+            _composition_1,
+            [
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+            ],
+        ),
+        (
+            _composition_2,
+            [
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+            ],
+        ),
+    ],
+)
+def test_function_supported_dtypes(func, expected):
     res = ivy.function_supported_dtypes(func)
-    supported_dtypes_true = tuple(set(func.supported_dtypes))
-    assert sorted(supported_dtypes_true) == sorted(res)
+    exp = set.intersection(set(expected), set(ivy.valid_dtypes))
+
+    # Since float16 is only not valid for the torch backend, we remove from expected
+    if "torch" in ivy.current_backend_str():
+        exp.remove("float16")
+
+    assert sorted(tuple(exp)) == sorted(res)
 
 
 # function_unsupported_dtypes
-@handle_cmd_line_args
-@given(unsupported_dtypes=dtypes_list())
-def test_function_unsupported_dtypes(
-    unsupported_dtypes,
-):
-    def func():
-        return
-
-    func.unsupported_dtypes = tuple(unsupported_dtypes)
+# function_unsupported_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (_composition_1, []),
+        (_composition_2, []),
+    ],
+)
+def test_function_unsupported_dtypes(func, expected):
     res = ivy.function_unsupported_dtypes(func)
-    unsupported_dtypes_true = tuple(set(ivy.invalid_dtypes + func.unsupported_dtypes))
-    assert sorted(unsupported_dtypes_true) == sorted(res)
+    exp = set.union(set(expected), set(ivy.invalid_dtypes))
+
+    # Since float16 is only not valid for the torch backend, we add to expected
+    if "torch" in ivy.current_backend_str():
+        exp.add("float16")
+
+    assert sorted(tuple(exp)) == sorted(res)
 
 
 # invalid_dtype
