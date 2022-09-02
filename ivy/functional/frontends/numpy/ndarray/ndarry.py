@@ -12,11 +12,6 @@ class ndarray:
         else:
             assert ivy.is_native_array(data)
             self.data = data
-        if ivy.is_ivy_array(data):
-            self.data = data.data
-        else:
-            assert ivy.is_native_array(data)
-            self.data = data
 
     # Instance Methoods #
     # -------------------#
