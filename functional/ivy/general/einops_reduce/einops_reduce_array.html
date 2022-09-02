@@ -242,6 +242,39 @@ that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New array with einops.reduce having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl>
+<dt>&gt;&gt; x = ivy.array([[[5,4],</dt><dd><blockquote>
+<div><p>[11, 2]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[3, 5],</dt><dd><p>[9, 7]]])</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; b c’, ‘max’)
+&gt;&gt; print(reduced)
+ivy.array([[ 5,  5],</p>
+<blockquote>
+<div><p>[11,  7]])</p>
+</div></blockquote>
+<dl>
+<dt>&gt;&gt; x = ivy.array([[[5, 4, 3],</dt><dd><blockquote>
+<div><p>[11, 2, 9]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[3, 5, 7],</dt><dd><p>[9, 7, 1]]])</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; a () c’, ‘min’)
+&gt;&gt; print(reduced)
+ivy.array([[[5, 2, 3]],</p>
+<blockquote>
+<div><p>[[3, 5, 1]]])</p>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

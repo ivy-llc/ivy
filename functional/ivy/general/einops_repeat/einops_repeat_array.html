@@ -240,6 +240,33 @@ that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New array with einops.repeat having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>&gt;&gt; x = ivy.array([5,4])
+&gt;&gt; repeated = x.einops_repeat(‘a -&gt; a c’, c=3)
+&gt;&gt; print(repeated)
+ivy.array([[5, 4],</p>
+<blockquote>
+<div><blockquote>
+<div><p>[5, 4],</p>
+</div></blockquote>
+<p>[5, 4]])</p>
+</div></blockquote>
+<dl class="simple">
+<dt>&gt;&gt; x = ivy.array([[5,4],</dt><dd><p>[2, 3]])</p>
+</dd>
+</dl>
+<p>&gt;&gt; repeated = x.einops_repeat(‘a b -&gt;  a b c’, c=3)
+&gt;&gt; print(repeated)
+ivy.array([[[5, 5, 5],</p>
+<blockquote>
+<div><blockquote>
+<div><p>[4, 4, 4]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[2, 2, 2],</dt><dd><p>[3, 3, 3]]])</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <div class="line-block">

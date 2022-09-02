@@ -432,6 +432,44 @@ shape that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New container with einops.reduce having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl>
+<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[[5, 4, 3],</dt><dd><blockquote>
+<div><blockquote>
+<div><p>[11, 2, 9]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[3, 5, 7],</dt><dd><p>[9, 7, 1]]]),</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>b=ivy.array([[[9,7,6],</dt><dd><blockquote>
+<div><p>[5,2,1]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[4,1,2],</dt><dd><p>[2,3,6]],</p>
+</dd>
+<dt>[[1, 9, 6],</dt><dd><p>[0, 2, 1]]]))</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; a b’, ‘sum’)
+&gt;&gt; print(reduced)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[12, 22],</dt><dd><p>[15, 17]]),</p>
+</dd>
+<dt>b: ivy.array([[22, 8],</dt><dd><p>[7, 11],
+[16, 3]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <dl class="py method">
@@ -463,6 +501,23 @@ shape that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New container with einops.repeat having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl class="simple">
+<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),</dt><dd><p>b=ivy.array([[1, 2], [4, 5]]))</p>
+</dd>
+</dl>
+<p>&gt;&gt; repeated = x.einops_repeat(‘h w -&gt;  h  (w tile)’, tile=2)
+&gt;&gt; print(repeated)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[30, 30, 40, 40],</dt><dd><p>[50, 50, 75, 75]]),</p>
+</dd>
+<dt>b: ivy.array([[1, 1, 2, 2],</dt><dd><p>[4, 4, 5, 5]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1042,6 +1097,39 @@ is False.</p></li>
 <dd class="field-odd"><p><em>ivy.Container with each array having einops.reduce applied.</em></p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl>
+<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],</dt><dd><blockquote>
+<div><blockquote>
+<div><p>[0.735, -6.7, 13.27]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[-24.037, 8.5, 26.7],</dt><dd><p>[0.451, 12.4, 1.7]],</p>
+</dd>
+<dt>[[-5.6, -18.19, -20.35],</dt><dd><p>[2.58, -1.006, -9.973]]]),</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>b=ivy.array([[[-4.47, 0.93, -3.34],</dt><dd><blockquote>
+<div><p>[3.66, 24.29, 3.64]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[4.96, 1.52, -10.67],</dt><dd><p>[4.36, 13.96, 0.3]]]))</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>&gt;&gt; reduced = ivy.Container.static_einops_reduce(x, ‘a b c -&gt; () () c’, ‘mean’)
+&gt;&gt; print(reduced)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[[-2.87, -0.0277, 0.658]]]),
+b: ivy.array([[[2.13, 10.2, -2.52]]])</p>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1069,6 +1157,27 @@ is False.</p></li>
 <dd class="field-odd"><p><em>ivy.Container with each array having einops.repeat applied.</em></p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl class="simple">
+<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),</dt><dd><p>b=ivy.array([[1, 2], [4, 5]]))</p>
+</dd>
+</dl>
+<p>&gt;&gt; repeated = ivy.Container.static_einops_repeat(x, ‘h w -&gt; (tile h) w’, tile=2)
+&gt;&gt; print(repeated)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[30, 40],</dt><dd><p>[50, 75],
+[30, 40],
+[50, 75]]),</p>
+</dd>
+<dt>b: ivy.array([[1, 2],</dt><dd><p>[4, 5],
+[1, 2],
+[4, 5]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <dl class="py method">

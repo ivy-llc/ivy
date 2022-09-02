@@ -474,6 +474,39 @@ that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New array with einops.reduce having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl>
+<dt>&gt;&gt; x = ivy.array([[[5,4],</dt><dd><blockquote>
+<div><p>[11, 2]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[3, 5],</dt><dd><p>[9, 7]]])</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; b c’, ‘max’)
+&gt;&gt; print(reduced)
+ivy.array([[ 5,  5],</p>
+<blockquote>
+<div><p>[11,  7]])</p>
+</div></blockquote>
+<dl>
+<dt>&gt;&gt; x = ivy.array([[[5, 4, 3],</dt><dd><blockquote>
+<div><p>[11, 2, 9]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[3, 5, 7],</dt><dd><p>[9, 7, 1]]])</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; a () c’, ‘min’)
+&gt;&gt; print(reduced)
+ivy.array([[[5, 2, 3]],</p>
+<blockquote>
+<div><p>[[3, 5, 1]]])</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
@@ -499,6 +532,33 @@ that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New array with einops.repeat having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>&gt;&gt; x = ivy.array([5,4])
+&gt;&gt; repeated = x.einops_repeat(‘a -&gt; a c’, c=3)
+&gt;&gt; print(repeated)
+ivy.array([[5, 4],</p>
+<blockquote>
+<div><blockquote>
+<div><p>[5, 4],</p>
+</div></blockquote>
+<p>[5, 4]])</p>
+</div></blockquote>
+<dl class="simple">
+<dt>&gt;&gt; x = ivy.array([[5,4],</dt><dd><p>[2, 3]])</p>
+</dd>
+</dl>
+<p>&gt;&gt; repeated = x.einops_repeat(‘a b -&gt;  a b c’, c=3)
+&gt;&gt; print(repeated)
+ivy.array([[[5, 5, 5],</p>
+<blockquote>
+<div><blockquote>
+<div><p>[4, 4, 4]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[2, 2, 2],</dt><dd><p>[3, 3, 3]]])</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">

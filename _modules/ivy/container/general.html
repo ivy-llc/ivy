@@ -1630,6 +1630,24 @@
 <span class="sd">        -------</span>
 <span class="sd">            ivy.Container with each array having einops.reduce applied.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt; x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],  </span>
+<span class="sd">                                           [0.735, -6.7, 13.27]],</span>
+<span class="sd">                                          [[-24.037, 8.5, 26.7],  </span>
+<span class="sd">                                           [0.451, 12.4, 1.7]],</span>
+<span class="sd">                                          [[-5.6, -18.19, -20.35],  </span>
+<span class="sd">                                           [2.58, -1.006, -9.973]]]),</span>
+<span class="sd">                            b=ivy.array([[[-4.47, 0.93, -3.34],  </span>
+<span class="sd">                                          [3.66, 24.29, 3.64]], </span>
+<span class="sd">                                         [[4.96, 1.52, -10.67],  </span>
+<span class="sd">                                          [4.36, 13.96, 0.3]]]))</span>
+<span class="sd">        &gt;&gt; reduced = ivy.Container.static_einops_reduce(x, &#39;a b c -&gt; () () c&#39;, &#39;mean&#39;)</span>
+<span class="sd">        &gt;&gt; print(reduced)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[[-2.87, -0.0277, 0.658]]]),</span>
+<span class="sd">            b: ivy.array([[[2.13, 10.2, -2.52]]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;einops_reduce&quot;</span><span class="p">,</span>
@@ -1691,6 +1709,27 @@
 <span class="sd">        ret</span>
 <span class="sd">            New container with einops.reduce having been applied.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt; x = ivy.Container(a=ivy.array([[[5, 4, 3],</span>
+<span class="sd">                                           [11, 2, 9]], </span>
+<span class="sd">                                          [[3, 5, 7], </span>
+<span class="sd">                                           [9, 7, 1]]]),</span>
+<span class="sd">                            b=ivy.array([[[9,7,6],</span>
+<span class="sd">                                          [5,2,1]],</span>
+<span class="sd">                                        [[4,1,2],</span>
+<span class="sd">                                         [2,3,6]],</span>
+<span class="sd">                                        [[1, 9, 6],</span>
+<span class="sd">                                         [0, 2, 1]]]))</span>
+<span class="sd">        &gt;&gt; reduced = x.einops_reduce(&#39;a b c -&gt; a b&#39;, &#39;sum&#39;)</span>
+<span class="sd">        &gt;&gt; print(reduced)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[12, 22],</span>
+<span class="sd">                        [15, 17]]),</span>
+<span class="sd">            b: ivy.array([[22, 8],</span>
+<span class="sd">                        [7, 11],</span>
+<span class="sd">                        [16, 3]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_einops_reduce</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1739,6 +1778,23 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            ivy.Container with each array having einops.repeat applied.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt; x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),</span>
+<span class="sd">                            b=ivy.array([[1, 2], [4, 5]]))</span>
+<span class="sd">        &gt;&gt; repeated = ivy.Container.static_einops_repeat(x, &#39;h w -&gt; (tile h) w&#39;, tile=2)</span>
+<span class="sd">        &gt;&gt; print(repeated)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[30, 40],  </span>
+<span class="sd">                        [50, 75],  </span>
+<span class="sd">                        [30, 40],  </span>
+<span class="sd">                        [50, 75]]),</span>
+<span class="sd">            b: ivy.array([[1, 2],    </span>
+<span class="sd">                        [4, 5],    </span>
+<span class="sd">                        [1, 2],    </span>
+<span class="sd">                        [4, 5]])   </span>
+<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
@@ -1795,6 +1851,19 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            New container with einops.repeat having been applied.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt; x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),</span>
+<span class="sd">                             b=ivy.array([[1, 2], [4, 5]]))</span>
+<span class="sd">        &gt;&gt; repeated = x.einops_repeat(&#39;h w -&gt;  h  (w tile)&#39;, tile=2)</span>
+<span class="sd">        &gt;&gt; print(repeated)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[30, 30, 40, 40],  </span>
+<span class="sd">                          [50, 50, 75, 75]]),</span>
+<span class="sd">            b: ivy.array([[1, 1, 2, 2],      </span>
+<span class="sd">                          [4, 4, 5, 5]])     </span>
+<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_einops_repeat</span><span class="p">(</span>

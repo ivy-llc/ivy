@@ -248,6 +248,44 @@ shape that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New container with einops.reduce having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl>
+<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[[5, 4, 3],</dt><dd><blockquote>
+<div><blockquote>
+<div><p>[11, 2, 9]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[3, 5, 7],</dt><dd><p>[9, 7, 1]]]),</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>b=ivy.array([[[9,7,6],</dt><dd><blockquote>
+<div><p>[5,2,1]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[4,1,2],</dt><dd><p>[2,3,6]],</p>
+</dd>
+<dt>[[1, 9, 6],</dt><dd><p>[0, 2, 1]]]))</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; a b’, ‘sum’)
+&gt;&gt; print(reduced)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[12, 22],</dt><dd><p>[15, 17]]),</p>
+</dd>
+<dt>b: ivy.array([[22, 8],</dt><dd><p>[7, 11],
+[16, 3]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <div class="line-block">

@@ -242,6 +242,27 @@ is False.</p></li>
 <dd class="field-odd"><p><em>ivy.Container with each array having einops.repeat applied.</em></p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<dl class="simple">
+<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),</dt><dd><p>b=ivy.array([[1, 2], [4, 5]]))</p>
+</dd>
+</dl>
+<p>&gt;&gt; repeated = ivy.Container.static_einops_repeat(x, ‘h w -&gt; (tile h) w’, tile=2)
+&gt;&gt; print(repeated)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[30, 40],</dt><dd><p>[50, 75],
+[30, 40],
+[50, 75]]),</p>
+</dd>
+<dt>b: ivy.array([[1, 2],</dt><dd><p>[4, 5],
+[1, 2],
+[4, 5]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <div class="line-block">

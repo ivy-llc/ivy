@@ -239,6 +239,34 @@ inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New array with einops.reduce having been applied.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
+&gt;&gt; x = ivy.array([[-4.47, 0.93, -3.34],</p>
+<blockquote>
+<div><p>[3.66, 24.29, 3.64]])</p>
+</div></blockquote>
+<p>&gt;&gt; reduced = ivy.einops_reduce(x, ‘a b -&gt; b’, ‘mean’)
+&gt;&gt; print(reduced)
+ivy.array([-0.405, 12.6  ,  0.15 ])</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt; x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],</p>
+<blockquote>
+<div><blockquote>
+<div><p>[3.66, 24.29, 3.64]]),</p>
+</div></blockquote>
+<dl class="simple">
+<dt>b=ivy.array([[4.96, 1.52, -10.67],</dt><dd><p>[4.36, 13.96, 0.3]]))</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>&gt;&gt; reduced = ivy.einops_reduce(x, ‘a b -&gt; a’, ‘mean’)
+&gt;&gt; print(reduced)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([-2.29, 10.5]),
+b: ivy.array([-1.4, 6.21])</p>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <div class="line-block">
