@@ -956,7 +956,7 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
     if "device" in all_as_kwargs_np and "dtype" in all_as_kwargs_np:
         dev = all_as_kwargs_np["device"]
         dtype = all_as_kwargs_np["dtype"]
-        if dtype in unsupported_devices_dtypes_fn[dev]:
+        if dtype in unsupported_devices_dtypes_fn.get(dev, []):
             return True
 
     return False
