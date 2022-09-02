@@ -326,13 +326,14 @@ def test_torch_transpose(
         dim1=dim1,
     )
 
-    
+
 # squeeze
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes))
+                set(ivy_torch.valid_float_dtypes)
+            )
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
@@ -365,8 +366,9 @@ def test_torch_squeeze(
         frontend="torch",
         fn_tree="squeeze",
         input=np.asarray(value, dtype=input_dtype),
-        dim=dim
+        dim=dim,
     )
+
 
 # swapaxes
 @given(
