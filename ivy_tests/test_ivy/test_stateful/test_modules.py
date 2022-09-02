@@ -470,11 +470,8 @@ class WithNestedModules(ivy.Module):
 
     def _forward(self, x):
         x = self._dl0(x)
-        print(x.shape)
         x = self._dl1(x)
-        print(x.shape)
         x = self._dl1(x)
-        print(x.shape)
         return x
 
 

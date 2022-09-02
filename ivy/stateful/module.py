@@ -525,7 +525,7 @@ class Module(abc.ABC):
     def _add_submod_ret(self, ret):
         top_mod = self.top_mod()
         sr = top_mod.submod_rets
-        ret = ivy.to_native(ret)
+        ret = ivy.to_numpy(ret)
         key = self.get_mod_key(top_mod)
         if key in sr:
             sr[key].append(ret)
