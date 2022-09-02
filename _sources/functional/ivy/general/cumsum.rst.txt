@@ -4,6 +4,10 @@ cumsum
 .. autofunction:: ivy.functional.ivy.general.cumsum
 
 .. autofunction:: ivy.array.array_methods.cumsum
+
+.. autofunction:: ivy.container.container_methods.cumsum
+
+.. autofunction:: ivy.container.container_methods.static_cumsum
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ cumsum
 
    cumsum/cumsum_functional.rst
    cumsum/cumsum_array.rst
+   cumsum/cumsum_container.rst
+   cumsum/static_cumsum_container.rst
 
