@@ -175,5 +175,9 @@ def fmax(input, other, *, out=None):
     )
 
 
+def fmin(input, other, *, out=None):
+    return ivy.minimum(input, other, out=out)
+
+
 def msort(input, *, out=None):
     return ivy.sort(input, axis=0, out=out)
