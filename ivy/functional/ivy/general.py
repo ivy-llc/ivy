@@ -2129,8 +2129,8 @@ def einops_rearrange(
     Examples
     --------
     # suppose we have a set of 32 images in "h w c" format (height-width-channel)
-    >>> images = [ivy.random.randn(30, 40, 3) for _ in range(32)]
-    >>> output = ivy.fill(images.shape, 0)
+    >>> images = [np.random.randn(30, 40, 3) for _ in range(32)]
+    >>> output = np.fill(images.shape, 0)
 
     # stack along first (batch) axis, output is the same
     >>> x=ivy.einops_rearrange(images, 'b h w c -> b h w c')
