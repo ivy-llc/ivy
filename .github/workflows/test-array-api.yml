@@ -1,7 +1,23 @@
-name: test-frontend-torch
-on: [push, pull_request, workflow_dispatch]
+name: test-array-api
+on:
+  push:
+  pull_request:
+    types: [labeled, review_requested]
+  workflow_dispatch:
+
 jobs:
-  run-nightly-tests:
+  run-array-api-tests:
+    strategy:
+      matrix:
+        backends: [numpy, torch, jax, tensorflow]
+        submodules: [test_array_object, test_constants, test_creation_functions, test_data_type_functions,
+                    test_linalg, test_manipulation_functions, test_operators_and_elementwise_functions,
+                    test_searching_functions, test_set_functions, test_signatures, test_sorting_functions,
+                    test_special_cases, test_statistical_functions, test_type_promotion, test_utility_functions,
+                     meta/test_array_helpers, meta/test_broadcasting, meta/test_equality_mapping,
+                     meta/test_hypothesis_helpers, meta/test_partial_adopters, meta/test_pytest_helpers,
+                     meta/test_signatures, meta/test_special_cases, meta/test_utils]
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -9,14 +25,14 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
-          submodules: "recursive"
+          submodules: 'recursive'
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: test-frontend-torch.yml
+          workflow: test-array-api.yml
           workflow_conclusion: completed
-          name: hypothesis_frontend_torch_zip
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
           path: |
             ivy/.hypothesis/
         continue-on-error: true
@@ -38,11 +54,11 @@ jobs:
           mkdir -p examples
         continue-on-error: true
 
-      - name: Run Frontend Tests
+      - name: Run Array Api Tests
         id: tests
         run: |
           cd ivy
-          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend torch ivy/ivy_tests/test_ivy/test_frontends/test_torch
+          ./test_array_api.sh ${{matrix.backends}} ${{matrix.submodules}}
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
@@ -54,7 +70,7 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: hypothesis_frontend_torch_zip
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
           path: |
             ivy/.hypothesis/examples.zip
         continue-on-error: true

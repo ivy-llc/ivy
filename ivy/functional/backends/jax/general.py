@@ -125,7 +125,27 @@ def inplace_arrays_supported():
 inplace_variables_supported = lambda: False
 
 
-def cumsum(x: JaxArray, axis: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
+def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
+def cumsum(
+    x: JaxArray,
+    axis: int = 0,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(dtype, x.dtype)
+    if dtype != x.dtype:
+        x = x.astype(dtype)
     return jnp.cumsum(x, axis)
 
 
@@ -134,8 +154,14 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(dtype, x.dtype)
+    if dtype != x.dtype:
+        x = x.astype(dtype)
     if exclusive:
         x = jnp.swapaxes(x, axis, -1)
         x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
@@ -148,12 +174,11 @@ def scatter_flat(
     indices: JaxArray,
     updates: JaxArray,
     size: Optional[int] = None,
-    tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -191,11 +216,11 @@ def scatter_nd(
     indices: JaxArray,
     updates: JaxArray,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor: Optional[JaxArray] = None,
-    reduction: str = "sum",
+    reduction="sum",
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
         isinstance(indices, Iterable) and Ellipsis in indices
@@ -210,8 +235,8 @@ def scatter_nd(
 
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(tensor, as_native=True)
-        if ivy.exists(tensor)
+        dtype=ivy.dtype(out, as_native=True)
+        if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
 
@@ -223,11 +248,11 @@ def scatter_nd(
         indices_tuple = tuple(indices_flat) + (Ellipsis,)
 
     # implementation
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
+        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros(shape, dtype=updates.dtype)
@@ -254,7 +279,12 @@ def scatter_nd(
                 reduction
             )
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
+
+
+scatter_nd.support_native_out = True
 
 
 def gather(
@@ -312,7 +342,7 @@ def one_hot(
     return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
-def indices_where(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def indices_where(x: JaxArray) -> JaxArray:
     where_x = jnp.where(x)
     ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
     return ret

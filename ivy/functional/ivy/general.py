@@ -17,6 +17,7 @@ from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
     infer_device,
     inputs_to_native_arrays,
+    outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -140,7 +141,9 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
+def is_ivy_array(
+    x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False
+) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -355,8 +358,7 @@ def copy_array(
     Parameters
     ----------
     x
-        input array.
-
+        array, input array containing elements to copy.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -487,6 +489,22 @@ def array_equal(
     >>> k = ivy.array_equal(i,j)
     >>> print(k)
     False
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([1, 0, 1])
+    >>> y = x1.array_equal(x2)
+    >>> print(y)
+    False
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instance method:
+
+    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
+    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
+    >>> y = x1.all_equal(x2)
+    >>> print(y)
+    True
 
     """
     return current_backend(x0).array_equal(x0, x1)
@@ -661,6 +679,22 @@ def all_equal(
         a: true,
         b: false
     }
+
+    With :code:`ivy.Array` instance method:
+
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([1, 0, 1])
+    >>> y = x1.all_equal(x2, equality_matrix= False)
+    >>> print(y)
+    False
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` instance method:
+
+    >>> x1 = ivy.array([1, 1, 0, 0.5, 1])
+    >>> x2 = ivy.native_array([1, 1, 0, 0.5, 1])
+    >>> y = x1.all_equal(x2, equality_matrix= True)
+    >>> print(y)
+    ivy.array([[ True,  True], [ True,  True]])
 
     """
     equality_fn = ivy.array_equal if ivy.is_native_array(xs[0]) else lambda a, b: a == b
@@ -1119,6 +1153,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 
 
 @handle_nestable
+@outputs_to_ivy_arrays
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -1214,19 +1249,28 @@ def clip_vector_norm(
         b: ivy.array([0.849, 1.13, 1.41])
     }
 
+    With :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = x.clip_vector_norm(2.0)
+    >>> print(y)
+    ivy.array([0., 0.894, 1.79])
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
         ret = ratio * x
     else:
-        ret = x
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        ret = ivy.copy_array(x)
+    if out is not None:
+        ret = ivy.inplace_update(out, ret)
     return ret
 
 
-@to_native_arrays_and_back
+clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
+
+
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1324,6 +1368,14 @@ def clip_matrix_norm(
     norms = ivy.matrix_norm(x, p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
+
+
+clip_matrix_norm.unsupported_dtypes = {
+    "jax": ("float16",),
+    "numpy": ("float16",),
+    "tensorflow": ("float16",),
+    "torch": ("float16",),
+}
 
 
 @to_native_arrays_and_back
@@ -1507,7 +1559,7 @@ def fourier_encode(
 @inputs_to_native_arrays
 @handle_nestable
 def value_is_nan(
-    x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True
+    x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: Optional[bool] = True
 ) -> bool:
     """Determine whether the single valued array or scalar is of nan type.
 
@@ -1740,6 +1792,52 @@ def default(
     -------
     ret
         x if x exists (is not None), else default.
+
+    Functional Examples
+    ------------------
+    With :code:`Any` input:
+
+    >>> x = None
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    default_string
+
+    >>> x = ""
+    >>> y = ivy.default(x, "default_string")
+    >>> print(y)
+    
+
+    >>> x = ivy.array([4, 5, 6])
+    >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: ivy.array([1, 2, 3])
+    >>> y = ivy.default(x, ivy.array([4, 5, 6]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda: None
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
+
+    >>> x = lambda a, b: a + b
+    >>> y = ivy.default(x, lambda: ivy.array([1, 2, 3]), with_callable=True,\
+                        catch_exceptions=True, rev=True)
+    >>> print(y)
+    ivy.array([1, 2, 3])
 
     """
     with_callable = catch_exceptions or with_callable
@@ -2000,7 +2098,6 @@ def current_backend_str() -> Union[str, None]:
     return fw.current_backend_str()
 
 
-@to_native_arrays_and_back
 @handle_nestable
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2029,13 +2126,17 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
 
     """
+    x = ivy.to_native(x)
     ret = einops.rearrange(x, pattern, **axes_lengths)
+    ret = ivy.array(ret)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-@to_native_arrays_and_back
+einops_rearrange.unsupported_dtypes = {"torch": ("uint16",)}
+
+
 @handle_nestable
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2067,13 +2168,17 @@ def einops_reduce(
         New array with einops.reduce having been applied.
 
     """
+    x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
+    ret = ivy.array(ret)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
-@to_native_arrays_and_back
+einops_reduce.unsupported_dtypes = {"torch": ("uint16",)}
+
+
 @handle_nestable
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2102,10 +2207,16 @@ def einops_repeat(
         New array with einops.repeat having been applied.
 
     """
+    x = ivy.to_native(x)
     ret = einops.repeat(x, pattern, **axes_lengths)
+    ret = ivy.array(ret)
+
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+einops_repeat.unsupported_dtypes = {"tensorflow": ("uint16",)}
 
 
 def get_min_denominator() -> float:
@@ -2199,11 +2310,13 @@ def set_min_base(val: float) -> None:
     ivy._MIN_BASE = val
 
 
+@inputs_to_native_arrays
+@handle_nestable
 def stable_divide(
-    numerator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-    denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-    min_denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
-) -> Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]:
+    numerator: Union[Number, ivy.Array, ivy.NativeArray],
+    denominator: Union[Number, ivy.Array, ivy.NativeArray],
+    min_denominator: Union[Number, ivy.Array, ivy.NativeArray] = None,
+) -> Union[Number, ivy.Array]:
     """Divide the numerator by the denominator, with min denominator added to the
     denominator for numerical stability.
 
@@ -2283,30 +2396,53 @@ def stable_divide(
         b: ivy.array([0.857, 10.])
     }
 
+    With :code:`ivy.Array` instance method:
 
+    >>> x = ivy.asarray([4., 5., 6.])
+    >>> y = x.stable_divide(2)
+    >>> print(y)
+    ivy.array([2., 2.5, 3.])
+
+    >>> x = ivy.asarray([4, 5, 6])
+    >>> y = x.stable_divide(4, min_denominator=1)
+    >>> print(y)
+    ivy.array([0.8, 1. , 1.2])
+
+    >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
+    >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
+    >>> z = x.stable_divide(y)
+    >>> print(z)
+    ivy.array([[4.  , 2.5 , 2.  ],
+            [3.5 , 2.67, 2.25]])
 
     """
     # noinspection PyProtectedMember
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-def stable_pow(base: Any, exponent: Any, min_base: float = None) -> Any:
+@inputs_to_native_arrays
+@handle_nestable
+def stable_pow(
+    base: Union[Number, ivy.Array, ivy.NativeArray],
+    exponent: Union[Number, ivy.Array, ivy.NativeArray],
+    min_base: float = None,
+) -> Any:
     """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
     for numerical stability.
 
     Parameters
     ----------
     base
-        The numerator of the division.
+        The base number.
     exponent
-        The denominator of the division.
+        The exponent number.
     min_base
         The minimum base to use, use global ivy._MIN_BASE by default.
 
     Returns
     -------
     ret
-        The new item following the numerically stable division.
+        The new item following the numerically stable power.
 
 
     """
@@ -2333,7 +2469,22 @@ def num_arrays_in_memory():
 
 
 def print_all_arrays_in_memory():
-    """Prints all arrays which are currently alive."""
+    """
+    Gets all the native Ivy arrays which are currently alive(in the garbage collector)
+    from get_all_arrays_in_memory() function and prints them to the console.
+
+    Parameters
+    ----------
+    None
+
+    Output
+    ------
+    Type and shape of all the Ivy native arrays which are currently alive.
+
+    Returns
+    -------
+    None
+    """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
@@ -2368,7 +2519,7 @@ def set_queue_timeout(timeout):
     TIMEOUT = timeout
 
 
-def queue_timeout():
+def get_queue_timeout():
     """Get the global queue timeout values (in seconds).
 
     Default value without this function being called is 10 seconds.
@@ -2378,7 +2529,7 @@ def queue_timeout():
     return TIMEOUT
 
 
-def tmp_dir():
+def get_tmp_dir():
     """Get the path for directory that saves temporary files.
 
     Returns
@@ -2456,7 +2607,7 @@ def inplace_variables_supported(f=None):
 
 @inputs_to_native_arrays
 @handle_nestable
-def supports_inplace(x):
+def supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     """Determine whether inplace operations are supported for the data type of x.
 
     Parameters
@@ -2479,7 +2630,7 @@ def supports_inplace(x):
 
 @inputs_to_native_arrays
 @handle_nestable
-def assert_supports_inplace(x):
+def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     """Asserts that inplace operations are supported for x, else raises exception.
 
     Parameters
@@ -2680,6 +2831,7 @@ def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
@@ -2690,6 +2842,21 @@ def cumsum(
         Input array.
     axis
         int, Axis along which the cumulative sum is computed. By default 0.
+    dtype
+        data type of the returned array. If None,
+        if the default data type corresponding to the data type “kind” (integer or
+        floating-point) of x has a smaller range of values than the data type of x
+        (e.g., x has data type int64 and the default data type is int32, or x has data
+        type uint64 and the default data type is int64), the returned array must have
+        the same data type as x. if x has a floating-point data type, the returned array
+        must have the default floating-point data type. if x has a signed integer data
+        type (e.g., int16), the returned array must have the default integer data type.
+        if x has an unsigned integer data type (e.g., uint16), the returned array must
+        have an unsigned integer data type having the same number of bits as the default
+        integer data type (e.g., if the default integer data type is int32, the returned
+        array must have a uint32 data type). If the data type (either specified or
+        resolved) differs from the data type of x, the input array should be cast to the
+        specified data type before computing the product. Default: None.
     out
         optional output array, for writing the result to.
 
@@ -2710,6 +2877,7 @@ def cumprod(
     axis: int = 0,
     exclusive: Optional[bool] = False,
     *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative product of the elements along a given axis.
@@ -2722,6 +2890,21 @@ def cumprod(
         int , axis along which the cumulative product is computed. By default 0.
     exclusive
         optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    dtype
+        data type of the returned array. If None,
+        if the default data type corresponding to the data type “kind” (integer or
+        floating-point) of x has a smaller range of values than the data type of x
+        (e.g., x has data type int64 and the default data type is int32, or x has data
+        type uint64 and the default data type is int64), the returned array must have
+        the same data type as x. if x has a floating-point data type, the returned array
+        must have the default floating-point data type. if x has a signed integer data
+        type (e.g., int16), the returned array must have the default integer data type.
+        if x has an unsigned integer data type (e.g., uint16), the returned array must
+        have an unsigned integer data type having the same number of bits as the default
+        integer data type (e.g., if the default integer data type is int32, the returned
+        array must have a uint32 data type). If the data type (either specified or
+        resolved) differs from the data type of x, the input array should be cast to the
+        specified data type before computing the product. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2823,7 +3006,7 @@ def cumprod(
                       [15, 42]])
     }
     """
-    return current_backend(x).cumprod(x, axis, exclusive, out=out)
+    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back
@@ -2833,11 +3016,10 @@ def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
     size: Optional[int] = None,
-    tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Scatter flat updates into a new flat array according to flat indices.
 
     Parameters
@@ -2848,10 +3030,6 @@ def scatter_flat(
         Values for the new array to hold.
     size
         The size of the result.
-    tensor
-        The tensor in which to scatter the results, default is None, in which case the
-        size is used to
-        scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     device
@@ -2868,22 +3046,20 @@ def scatter_flat(
 
     """
     return current_backend(indices).scatter_flat(
-        indices, updates, size, tensor, reduction, out=out
+        indices, updates, size, reduction, out=out
     )
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Scatter updates into a new array according to indices.
 
     Parameters
@@ -2913,9 +3089,49 @@ def scatter_nd(
     ret
         New array of given shape, with the values scattered at the indices.
 
+    Examples
+    --------
+    scatter values into an empty array, With :code:`ivy.Array` input:
+
+    >> indices = ivy.array([[4], [3], [1], [7]])
+    >> updates = ivy.array([9, 10, 11, 12])
+    >> shape = ivy.array([8])
+    >> scatter = ivy.scatter_nd(indices, updates, shape)
+    >> print(scatter)
+    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
+
+    scatter into an empty array, With: `ivy.Container` input:
+
+    >> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+                        b=ivy.array([[5],[1],[2]]))
+    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+                        b=ivy.array([20, 30, 40]))
+    >> shape = ivy.Container(a=ivy.array([10]),
+                        b = ivy.array([10]))
+    >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    >> print(z)
+    {
+        a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
+        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
+    }
+
+    scatter into an array, With : `ivy.Container` and `ivy.Array` input:
+
+    >> indices = ivy.array([[4],[3],[1]])
+    >> updates = ivy.Container(a=ivy.array([10, 20, 30]),
+                    b=ivy.array([200, 300, 400]))
+    >> shape = ivy.array([10, 10])
+    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+                            b = ivy.array([10, 20, 30, 40, 50]))
+    >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
+    >> print(z)
+    {
+        a: ivy.array([1, 30, 3, 20, 10]),
+        b: ivy.array([10, 400, 30, 300, 200])
+    }
     """
     return current_backend(indices).scatter_nd(
-        indices, updates, shape, tensor, reduction, out=out
+        indices, updates, shape, reduction, out=out
     )
 
 
