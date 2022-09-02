@@ -1,7 +1,7 @@
 """
 ToDo
 ----
-Add allclose(), isclose(), isposinf(), isneginf(), fmax(), msort()
+Add allclose(), isclose(), isposinf(), isneginf(), fmax()
 to ivy functional API
 """
 # global
