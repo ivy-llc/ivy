@@ -337,7 +337,7 @@ def one_hot(
 
 def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(np.shape(x))
+        return ivy.array(np.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 
