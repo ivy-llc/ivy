@@ -1,12 +1,11 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _get_dtype_and_matrix
 
 # slogdet
 
