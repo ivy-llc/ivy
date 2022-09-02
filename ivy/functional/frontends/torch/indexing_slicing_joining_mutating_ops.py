@@ -51,5 +51,5 @@ def stack(tensors, dim=0, *, out=None):
 def squeeze(input, dim):
     if isinstance(dim, int):
         if input.shape[dim] > 1:
-            return input
+            return input if ivy.is_ivy_array(input) else ivy.array(input)
     return ivy.squeeze(input, dim)
