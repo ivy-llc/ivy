@@ -9,6 +9,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _get_dtype_and_matrix
 
 # slogdet
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -27,7 +29,7 @@ def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_ar
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_ars=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
