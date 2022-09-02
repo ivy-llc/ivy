@@ -262,7 +262,7 @@ def test_binary_crossentropy(
 # sparse_top_k_categorical_accuracy
 @handle_cmd_line_args
 @given(
-    y_true=helpers.array_values(shape=(5,), dtype=ivy.float16),
+    y_true=helpers.array_values(shape=(5,), dtype=ivy.int32),
     y_pred=helpers.array_values(shape=(5, 10), dtype=ivy.float16),
     k=st.integers(min_value=3, max_value=10),
     as_variable=st.booleans(),
