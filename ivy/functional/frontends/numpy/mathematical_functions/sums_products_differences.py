@@ -18,3 +18,19 @@ def prod(
 
 
 prod.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def sum(x, /, *, axis=None, dtype=None, out=None, keepdims=None, where=None):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    if ivy.is_array(where):
+        x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
+    return ivy.sum(x, axis=axis, keepdims=keepdims, out=out)
+
+
+def cumsum(a, /, axis=None, dtype=None, out=None):
+    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+def cumprod(a, /, axis=None, dtype=None, out=None):
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)

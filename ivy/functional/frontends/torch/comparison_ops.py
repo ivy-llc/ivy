@@ -1,4 +1,4 @@
-# ToDo: Add allclose(), isclose(), isposinf(), isneginf() to functional API
+# ToDo: Add allclose(), isclose(), isposinf(), isneginf(), fmax() to functional API
 # global
 import ivy
 
@@ -130,3 +130,45 @@ def sort(input, dim=-1, descending=False, stable=False, out=None):
     ret = namedtuple("sort", ["values", "indices"])(values, indices)
 
     return ret
+
+
+def isnan(input):
+    return ivy.isnan(input)
+
+
+def less_equal(input, other, *, out=None):
+    return ivy.less_equal(input, other, out=out)
+
+
+le = less_equal
+
+
+def less(input, other, *, out=None):
+    return ivy.less(input, other, out=out)
+
+
+lt = less
+
+
+def not_equal(input, other, *, out=None):
+    return ivy.not_equal(input, other, out=out)
+
+
+ne = not_equal
+
+
+def minimum(input, other, *, out=None):
+    return ivy.minimum(input, other, out=out)
+
+
+def fmax(input, other, *, out=None):
+    return ivy.where(
+        ivy.bitwise_or(ivy.greater(input, other), ivy.isnan(other)),
+        input,
+        other,
+        out=out,
+    )
+
+
+def fmin(input, other, *, out=None):
+    return ivy.minimum(input, other, out=out)
