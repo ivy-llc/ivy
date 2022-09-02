@@ -304,13 +304,19 @@ def test_tensorflow_Asin(
     ),
 )
 def test_tensorflow_ArgMax(
-    dtype_x_axis, as_variable, num_positional_args, fw, native_array, output_type
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    fw,
+    native_array,
+    output_type,
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
