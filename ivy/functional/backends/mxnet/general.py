@@ -168,10 +168,8 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(
-    indices, updates, size=None, tensor=None, reduction="sum", device=None
-):
-    if ivy.exists(tensor):
+def scatter_flat(indices, updates, size=None, out=None, reduction="sum", device=None):
+    if ivy.exists(out):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
             "an pre-existing tensor."
@@ -192,11 +190,12 @@ def scatter_nd(
     indices,
     updates,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor=None,
     reduction="sum",
+    *,
+    out=None,
     device=None,
 ):
-    if ivy.exists(tensor):
+    if ivy.exists(out):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
             "an pre-existing tensor."
@@ -219,6 +218,9 @@ def scatter_nd(
         )
 
 
+scatter_nd.support_native_out = True
+
+
 def gather(
     params: mx.nd.NDArray,
     indices: mx.nd.NDArray,
@@ -234,7 +236,7 @@ def gather(
             mx.nd.expand_dims(mx.nd.pick(params, idx_slice, axis), -1)
             for idx_slice in index_slices
         ],
-        dim=-1
+        dim=-1,
     )
     res = mx.nd.reshape(res, indices.shape)
     if ivy.exists(out):
