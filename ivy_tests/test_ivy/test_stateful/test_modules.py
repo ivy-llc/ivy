@@ -438,7 +438,8 @@ class WithCustomVarStructure(ivy.Module):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_with_custom_var_structure(batch_shape, input_channels, output_channels, device):
+def test_with_custom_var_structure(batch_shape, input_channels, 
+                                   output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -621,11 +622,12 @@ def test_v_with_top_v_key_chains(batch_shape, input_channels, output_channels, d
 # @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
-    batch_shape=helpers.get_shape(min_num_dims=2,max_num_dims=2,min_dim_size=1,max_dim_size=2),
-    input_channels=st.integers(min_value=2,max_value=5),
-    output_channels=st.integers(min_value=2,max_value=5),
+    batch_shape=helpers.get_shape(min_num_dims=2, max_num_dims=2, 
+                                  min_dim_size=1, max_dim_size=2),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_depth(batch_shape,input_channels,output_channels, device):
+def test_module_depth(batch_shape, input_channels, output_channels, device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
