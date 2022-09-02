@@ -8,7 +8,7 @@ def inv(a):
     return ivy.inv(a)
 
 
-inv.unsupported_dtypes = {"torch": ("float16",)}
+inv.unsupported_dtypes = ("float16",)
 
 # pinv
 
