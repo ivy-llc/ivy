@@ -289,6 +289,39 @@ def test_tensorflow_Asin(
     )
 
 
+# argmax
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+    output_type=helpers.get_dtypes("numeric"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.ArgMax"
+    ),
+)
+def test_tensorflow_ArgMax(
+    dtype_x_axis, as_variable, num_positional_args, fw, native_array, output_type
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.ArgMax",
+        input=np.asarray(x, dtype=dtype),
+        dimension=axis,
+        output_type=None,
+    )
+
+
 # Atan
 @handle_cmd_line_args
 @given(

@@ -14,7 +14,7 @@ def concat(values, axis, name="concat"):
     return ivy.concat(values, axis=axis)
 
 
-def ArgMax(input, dimension, output_type=None, name=None):
+def ArgMax(*, input, dimension, output_type=None, name=None):
     if output_type:
         return ivy.astype(ivy.argmax(input, axis=dimension), output_type)
     else:
