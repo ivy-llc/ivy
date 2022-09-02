@@ -597,11 +597,11 @@ def test_indices_where(
 # one_hot
 @handle_cmd_line_args
 @given(
-    depth=st.integers(min_value=10000, max_value=20000),
+    depth=helpers.ints(min_value=0, max_value=100),
     x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes, min_value=1, max_value=10000
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
 def test_one_hot(
     depth,
@@ -616,8 +616,6 @@ def test_one_hot(
     fw,
 ):
     dtype, x = x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -636,16 +634,19 @@ def test_one_hot(
 # cumsum
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=5,
-        min_axis=-1,
-        max_axis=4,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=st.integers(0, 3),
 )
 def test_cumsum(
-    x,
+    dtype_x_axis,
     with_out,
     as_variable,
     num_positional_args,
@@ -655,7 +656,7 @@ def test_cumsum(
     device,
     fw,
 ):
-    dtype, x, axis = x
+    dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -674,16 +675,19 @@ def test_cumsum(
 # cumprod
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=5,
-        min_axis=-1,
-        max_axis=4,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
 )
 def test_cumprod(
-    x,
+    dtype_x_axis,
     with_out,
     as_variable,
     num_positional_args,
@@ -693,7 +697,7 @@ def test_cumprod(
     device,
     fw,
 ):
-    dtype, x, axis = x
+    dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1815,9 +1819,13 @@ def test_set_queue_timeout(x):
 
 
 @handle_cmd_line_args
-def test_get_queue_timeout():
+@given(
+    x=st.floats(allow_nan=False, allow_infinity=False),
+)
+def test_get_queue_timeout(x):
+    ivy.set_queue_timeout(x)
     ret = ivy.get_queue_timeout()
-    assert ret == 15.0
+    assert ret == x
 
 
 @handle_cmd_line_args
