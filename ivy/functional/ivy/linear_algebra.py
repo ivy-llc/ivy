@@ -1211,7 +1211,7 @@ def svd(
     ivy.array(0)
 
     """
-    return current_backend(x).svd(x, full_matrices)
+    return current_backend(x).svd(x, full_matrices=full_matrices)
 
 
 @to_native_arrays_and_back
@@ -1396,7 +1396,7 @@ def tensordot(
 
 
     """
-    return current_backend(x1, x2).tensordot(x1, x2, axes, out=out)
+    return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
 
 
 @to_native_arrays_and_back
@@ -1451,7 +1451,7 @@ def trace(
     ivy.array(5.)
 
     """
-    return current_backend(x).trace(x, offset, out=out)
+    return current_backend(x).trace(x, offset=offset, out=out)
 
 
 @to_native_arrays_and_back
