@@ -259,6 +259,34 @@ def test_binary_crossentropy(
         label_smoothing=label_smoothing,
     )
 
+# sparse_top_k_categorical_accuracy
+@handle_cmd_line_args
+@given(
+    y_true=helpers.array_values(shape=(5,), dtype=ivy.int32),
+    y_pred=helpers.array_values(shape=(5, 10), dtype=ivy.float16),
+    k=st.integers(min_value=3, max_value=10),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.sparse_top_k_categorical_accuracy"
+    ),
+    native_array=st.booleans(),
+)
+def test_sparse_top_k_categorical_accuracy(
+    y_true, y_pred, k, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.float32,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.sparse_top_k_categorical_accuracy",
+        y_true=y_true,
+        y_pred=y_pred,
+        k=k,
+    )
 
 # mean_squared_logarithmic_error
 @handle_cmd_line_args

@@ -390,7 +390,7 @@ def test_eigh(
     results = helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -404,7 +404,32 @@ def test_eigh(
     if results is None:
         return
     ret_np_flat, ret_from_np_flat = results
-    helpers.assert_same_type_and_shape([ret_np_flat, ret_from_np_flat])
+    eigenvalues_np, eigenvectors_np = ret_np_flat
+    reconstructed_np = None
+    for eigenvalue, eigenvector in zip(eigenvalues_np, eigenvectors_np):
+        if reconstructed_np is not None:
+            reconstructed_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+    eigenvalues_from_np, eigenvectors_from_np = ret_from_np_flat
+    reconstructed_from_np = None
+    for eigenvalue, eigenvector in zip(eigenvalues_from_np, eigenvectors_from_np):
+        if reconstructed_from_np is not None:
+            reconstructed_from_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_from_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+    # value test
+    helpers.assert_all_close(
+        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
+    )
 
 
 # eigvalsh
@@ -968,11 +993,16 @@ def test_qr(
 
     ret_np_flat, ret_from_np_flat = results
 
+    q_np_flat, r_np_flat = ret_np_flat
+    q_from_np_flat, r_from_np_flat = ret_from_np_flat
+
+    reconstructed_np_flat = np.matmul(q_np_flat, r_np_flat)
+    reconstructed_from_np_flat = np.matmul(q_from_np_flat, r_from_np_flat)
+
     # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        helpers.assert_all_close(
-            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
-        )
+    helpers.assert_all_close(
+        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-2, atol=1e-2
+    )
 
 
 # svd

@@ -161,6 +161,7 @@ def set_nest_at_index(
         ivy.set_nest_at_index(ret, index[1:], value)
         nest[index[0]] = ret
 
+
 def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
     if len(index) == 1:
         idx = index[0]
