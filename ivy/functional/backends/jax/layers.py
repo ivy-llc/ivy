@@ -58,20 +58,19 @@ def conv1d_transpose(
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
+    filters = jnp.swapaxes(filters, -1, -2)
     if data_format == "NWC":
         x_shape = list(x.shape[1:2])
-        channel = x.shape[-1]
     else:
         x_shape = list(x.shape[2:])
-        channel = x.shape[1]
     out_w = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
 
     if output_shape is None:
-        output_shape = [x_shape[0], out_w, channel]
+        output_shape = [x_shape[0], out_w, filters.shape[-1]]
     elif len(output_shape) == 1:
-        output_shape = [x_shape[0], output_shape[0], channel]
+        output_shape = [x_shape[0], output_shape[0], filters.shape[-1]]
     diff_w = -(output_shape[1] - out_w)
     pad_w_before, pad_w_after = _conv_transpose_padding(
         filters.shape[0], strides[0], padding, dilations[0], diff_w
@@ -155,12 +154,11 @@ def conv2d_transpose(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = jnp.swapaxes(filters, -1, -2)
     if data_format == "NHWC":
         x_shape = list(x.shape[1:3])
-        channel = x.shape[-1]
     else:
         x_shape = list(x.shape[2:])
-        channel = x.shape[1]
     out_h = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
@@ -168,9 +166,9 @@ def conv2d_transpose(
         x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
     )
     if output_shape is None:
-        output_shape = [x.shape[0], out_h, out_w, channel]
+        output_shape = [x.shape[0], out_h, out_w, filters.shape[-2]]
     elif len(output_shape) == 2:
-        output_shape = [x.shape[0], output_shape[0], output_shape[1], channel]
+        output_shape = [x.shape[0], output_shape[0], output_shape[1], filters.shape[-2]]
     diff_h = -(output_shape[1] - out_h)
     diff_w = -(output_shape[2] - out_w)
     pad_h_before, pad_h_after = _conv_transpose_padding(
@@ -228,12 +226,11 @@ def conv3d_transpose(
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    filters = jnp.swapaxes(filters, -1, -2)
     if data_format == "NDHWC":
         x_shape = list(x.shape[1:4])
-        channel = x.shape[-1]
     else:
         x_shape = list(x.shape[2:])
-        channel = x.shape[1]
     out_d = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
@@ -244,14 +241,14 @@ def conv3d_transpose(
         x_shape[2], strides[2], filters.shape[2], padding, dilations[2]
     )
     if output_shape is None:
-        output_shape = [x.shape[0], out_d, out_h, out_w, channel]
+        output_shape = [x.shape[0], out_d, out_h, out_w, filters.shape[-2]]
     elif len(output_shape) == 3:
         output_shape = [
             x.shape[0],
             output_shape[0],
             output_shape[1],
             output_shape[2],
-            channel,
+            filters.shape[-2],
         ]
     diff_d = -(output_shape[1] - out_d)
     diff_h = -(output_shape[2] - out_h)
