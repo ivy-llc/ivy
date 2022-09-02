@@ -56,16 +56,33 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
             f"must match length of targets {targets_batch}"
         )
 
+        # return array of top k values from the input
         def _top_k(input, topk):
             x = ivy.array(input)
             sort = ivy.argsort(x, descending=True)
             topk = min(x.shape[-1], topk)
 
-            return sort[..., :topk]
+            # Safety check for equal values
+            result = []
+            for ind, li in enumerate(sort):
+                temp = [x[ind, _] for _ in li[:topk]]
+                result.append(temp)
+
+            return ivy.array(result)
 
         top_k = _top_k(predictions, topk)
 
-        return ivy.array([res in top_k[ind] for ind, res in enumerate(targets)])
+        labels = predictions.shape[1]
+        # float comparison?
+        return ivy.array(
+            [
+                (
+                    0 <= res < labels
+                    and ivy.min(top_k[ind] - predictions[ind, res]) < 1e-3
+                )
+                for ind, res in enumerate(targets)
+            ]
+        )
 
     reshape = False
     y_true = ivy.array(y_true)
