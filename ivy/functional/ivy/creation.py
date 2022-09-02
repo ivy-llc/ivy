@@ -124,7 +124,7 @@ def arange(
 # @outputs_to_ivy_arrays
 # @to_native_arrays_and_back
 # @asarray_to_native_arrays_and_back
-# @handle_out_argument
+@handle_out_argument
 @infer_device
 # @handle_nestable
 def asarray(
