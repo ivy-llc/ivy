@@ -174,6 +174,9 @@ def depthwise_conv2d(
     return res
 
 
+depthwise_conv2d.unsupported_dtypes = ("bfloat16",)
+
+
 # noinspection PyDefaultArgument
 def conv3d(
     x,
