@@ -229,7 +229,7 @@ def min(
         as x.
 
     """
-    return current_backend.min(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
