@@ -168,3 +168,7 @@ def fmax(input, other, *, out=None):
         other,
         out=out,
     )
+
+
+def msort(input, *, out=None):
+    return ivy.sort(input, axis=0, out=out)

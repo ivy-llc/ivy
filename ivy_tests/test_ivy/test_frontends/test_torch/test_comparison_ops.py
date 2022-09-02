@@ -729,3 +729,42 @@ def test_torch_fmax(
         other=np.asarray(inputs[1], dtype=input_dtype[1]),
         out=None,
     )
+
+
+# msort
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+        allow_inf=True,
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.msort"
+    ),
+)
+def test_torch_msort(
+    dtype_and_input,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="msort",
+        input=np.asarray(input, dtype=input_dtype),
+    )
