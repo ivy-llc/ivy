@@ -296,13 +296,14 @@ def smooth_l1_loss(
         input array containinf the predicted labels.
     beta
         Threshold between L1 loss and L2 loss. The Value must be non-negative.
+
     Returns
     -------
     ret
         The smooth_l1_loss between the given distributions.
 
     Examples
-    -------
+    --------
     >>> a = array([0, 0, 1.5, 0])
     >>> b = array([0.25, 0.25, 0.25, 0.25])
     >>> print(ivy.smooth_l1_loss(a, b))
