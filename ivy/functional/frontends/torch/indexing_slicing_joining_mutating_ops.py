@@ -49,4 +49,7 @@ def stack(tensors, dim=0, *, out=None):
 
 
 def squeeze(input, dim):
+    if isinstance(dim, int):
+        if input.shape[dim] > 1:
+            return input
     return ivy.squeeze(input, dim)
