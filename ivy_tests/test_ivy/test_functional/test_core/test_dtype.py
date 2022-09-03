@@ -419,14 +419,11 @@ def test_iinfo(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
         shared_dtype=False,
     ),
     as_variable=st.booleans(),
-    num_positional_args=st.shared(
-        helpers.ints(min_value=2, max_value=5), key="num_arrays"
-    ),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -434,7 +431,6 @@ def test_iinfo(
 def test_result_type(
     dtype_and_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -448,7 +444,7 @@ def test_result_type(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=len(x),
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
