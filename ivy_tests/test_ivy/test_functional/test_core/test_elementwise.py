@@ -336,6 +336,8 @@ def test_atanh(
         instance_method=instance_method,
         fw=fw,
         fn_name="atanh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
