@@ -2585,13 +2585,13 @@ def array_values(
                     length=size,
                 )
             )
-    elif dtype == "float16":
+    elif dtype in ["float16", "bfloat16"]:
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=np.array(min_value, dtype=dtype).tolist(),
-                        max_value=np.array(max_value, dtype=dtype).tolist(),
+                        min_value=np.array(min_value, dtype="float16").tolist(),
+                        max_value=np.array(max_value, dtype="float16").tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2610,7 +2610,7 @@ def array_values(
             min_value_pos = round(limit, 3)
             max_value_pos = max_value
             max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+                np.array([max_value_neg, min_value_pos]).astype("float16").tolist()
             )
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = min_value_pos
@@ -2708,13 +2708,13 @@ def array_values(
                 )
             )
         values = [v / large_value_safety_factor for v in values]
-    elif dtype in ["float64", "bfloat16"]:
+    elif dtype == "float64":
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=np.array(min_value).astype("float64").tolist(),
-                        max_value=np.array(max_value).astype("float64").tolist(),
+                        min_value=np.array(min_value).astype(dtype).tolist(),
+                        max_value=np.array(max_value).astype(dtype).tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2732,7 +2732,7 @@ def array_values(
             min_value_pos = round(limit, 15)
             max_value_pos = max_value
             max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype("float64").tolist()
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
             )
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = min_value_pos
