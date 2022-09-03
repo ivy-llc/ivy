@@ -2,12 +2,10 @@
 
 # global
 import time
-import einops
 import jax.numpy as jnp
 import pytest
 from hypothesis import given, assume, strategies as st
 import numpy as np
-from numbers import Number
 from collections.abc import Sequence
 import torch.multiprocessing as multiprocessing
 
@@ -319,9 +317,8 @@ def test_to_list(x0_n_x1_n_res, device, fw):
         available_dtypes=helpers.get_dtypes("valid", full=True)
     ),
     as_array=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name='shape'),
+    num_positional_args=helpers.num_positional_args(fn_name="shape"),
 )
-
 def test_shape(
     x0_n_x1_n_res,
     as_array,
@@ -600,11 +597,11 @@ def test_indices_where(
 # one_hot
 @handle_cmd_line_args
 @given(
-    depth=st.integers(min_value=10000, max_value=20000),
+    depth=helpers.ints(min_value=0, max_value=100),
     x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes, min_value=1, max_value=10000
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
 def test_one_hot(
     depth,
@@ -619,8 +616,6 @@ def test_one_hot(
     fw,
 ):
     dtype, x = x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -639,16 +634,19 @@ def test_one_hot(
 # cumsum
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=5,
-        min_axis=-1,
-        max_axis=4,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=st.integers(0, 3),
 )
 def test_cumsum(
-    x,
+    dtype_x_axis,
     with_out,
     as_variable,
     num_positional_args,
@@ -658,7 +656,7 @@ def test_cumsum(
     device,
     fw,
 ):
-    dtype, x, axis = x
+    dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -677,16 +675,19 @@ def test_cumsum(
 # cumprod
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        min_num_dims=5,
-        min_axis=-1,
-        max_axis=4,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
 )
 def test_cumprod(
-    x,
+    dtype_x_axis,
     with_out,
     as_variable,
     num_positional_args,
@@ -696,7 +697,7 @@ def test_cumprod(
     device,
     fw,
 ):
-    dtype, x, axis = x
+    dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -859,7 +860,8 @@ def test_scatter_nd(
 #     container=helpers.list_of_length(x=st.booleans(), length=2),
 #     instance_method=st.booleans(),
 # )
-# def test_gather(params_n_indices_n_axis, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+# def test_gather(params_n_indices_n_axis, as_variable, with_out,
+#                 num_positional_args, native_array, container, instance_method , fw):
 #     params, indices, axis = params_n_indices_n_axis
 #     params_dtype, params = params
 #     indices_dtype, indices = indices
@@ -896,7 +898,8 @@ def test_scatter_nd(
 #     container=helpers.list_of_length(st.booleans(), 2),
 #     instance_method=st.booleans(),
 # )
-# def test_gather_nd(params_n_ndindices, ndindices_dtype, as_variable, with_out, num_positional_args, native_array, container, instance_method , fw):
+# def test_gather_nd(params_n_ndindices, ndindices_dtype, as_variable,
+#         with_out, num_positional_args, native_array, container, instance_method , fw):
 #     params, ndindices = params_n_ndindices
 #     params_dtype, params = params
 #     helpers.test_function(
@@ -915,21 +918,23 @@ def test_scatter_nd(
 
 # exists
 
+
 @handle_cmd_line_args
 @given(
     x=st.one_of(
-        st.none(), 
+        st.none(),
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_numeric_dtypes,
             allow_inf=False,
             min_num_dims=0,
-            min_dim_size=1), 
-        st.sampled_from([ivy.array])
+            min_dim_size=1,
+        ),
+        st.sampled_from([ivy.array]),
     )
 )
 def test_exists(x):
     if x is not None:
-        if not hasattr(x, '__call__'):
+        if not hasattr(x, "__call__"):
             dtype, x = x
     ret = ivy.exists(x)
     assert isinstance(ret, bool)
@@ -941,38 +946,40 @@ def test_exists(x):
 @handle_cmd_line_args
 @given(
     x=st.one_of(
-        st.none(), 
+        st.none(),
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_numeric_dtypes,
             allow_inf=False,
             min_num_dims=0,
-            min_dim_size=2), 
-        st.sampled_from([ivy.array])
-    ), 
+            min_dim_size=2,
+        ),
+        st.sampled_from([ivy.array]),
+    ),
     default_val=st.one_of(
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_numeric_dtypes,
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
-        ), 
-        st.sampled_from([ivy.array])),
+        ),
+        st.sampled_from([ivy.array]),
+    ),
 )
 def test_default(x, default_val):
     with_callable = False
-    if (x is not None):
-        if hasattr(x, '__call__'):
+    if x is not None:
+        if hasattr(x, "__call__"):
             with_callable = True
         else:
             x_dtype, x = x
     else:
-        if hasattr(default_val, '__call__'):
+        if hasattr(default_val, "__call__"):
             with_callable = True
         else:
             dv_dtype, default_val = default_val
 
     truth_val = ivy.to_native(x if x is not None else default_val)
-    if(with_callable):
+    if with_callable:
         assert ivy.default(x, default_val) == truth_val
     else:
         assert np.allclose(ivy.default(x, default_val), truth_val)
@@ -1185,19 +1192,35 @@ def test_explicit_ivy_framework_handles(device):
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=2,
-    ).filter(lambda x : (ivy.array([x[1]], dtype='float32').shape[2] % 2 == 0) and (ivy.array([x[1]], dtype='float32').shape[3] % 2 == 0)), 
-    pattern_and_axes_lengths=st.sampled_from([
-        ('b h w c -> b h w c', {}),
-        ('b h w c -> (b h) w c', {}),
-        ('b h w c -> b c h w', {}),
-        ('b h w c -> h (b w) c', {}),
-        ('b h w c -> b (c h w)', {}),
-        ('b (h1 h) (w1 w) c -> (b h1 w1) h w c', {'h1': 2, 'w1': 2}),
-        ('b (h h1) (w w1) c -> b h w (c h1 w1)', {'h1': 2, 'w1': 2}),
-    ]),
-    num_positional_args=helpers.num_positional_args(fn_name='einops_rearrange'),
+    ).filter(
+        lambda x: (ivy.array([x[1]], dtype="float32").shape[2] % 2 == 0)
+        and (ivy.array([x[1]], dtype="float32").shape[3] % 2 == 0)
+    ),
+    pattern_and_axes_lengths=st.sampled_from(
+        [
+            ("b h w c -> b h w c", {}),
+            ("b h w c -> (b h) w c", {}),
+            ("b h w c -> b c h w", {}),
+            ("b h w c -> h (b w) c", {}),
+            ("b h w c -> b (c h w)", {}),
+            ("b (h1 h) (w1 w) c -> (b h1 w1) h w c", {"h1": 2, "w1": 2}),
+            ("b (h h1) (w w1) c -> b h w (c h1 w1)", {"h1": 2, "w1": 2}),
+        ]
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="einops_rearrange"),
 )
-def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw, device):
+def test_einops_rearrange(
+    x,
+    pattern_and_axes_lengths,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = x
     x = [x]
@@ -1216,6 +1239,7 @@ def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, nu
         **axes_lengths
     )
 
+
 @handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
@@ -1225,20 +1249,36 @@ def test_einops_rearrange(x, pattern_and_axes_lengths, with_out, as_variable, nu
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=2,
-    ).filter(lambda x : ivy.array([x[1]], dtype='float32').shape[2] % 2 == 0 and ivy.array([x[1]], dtype='float32').shape[3] % 2 == 0), 
-    pattern_and_axes_lengths=st.sampled_from([
-        # ('t b  -> b', {}),
-        ('b c (h1 h2) (w1 w2) -> b c h1 w1', {'h2': 2, 'w2': 2}),
-    ]),
-    reduction=st.sampled_from(['min', 'max', 'sum', 'mean', 'prod']),
-    num_positional_args=helpers.num_positional_args(fn_name='einops_reduce'),
+    ).filter(
+        lambda x: ivy.array([x[1]], dtype="float32").shape[2] % 2 == 0
+        and ivy.array([x[1]], dtype="float32").shape[3] % 2 == 0
+    ),
+    pattern_and_axes_lengths=st.sampled_from(
+        [
+            # ('t b  -> b', {}),
+            ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
+        ]
+    ),
+    reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
+    num_positional_args=helpers.num_positional_args(fn_name="einops_reduce"),
 )
-def test_einops_reduce(x, pattern_and_axes_lengths, reduction, with_out, as_variable, num_positional_args, native_array, container, instance_method, fw):
+def test_einops_reduce(
+    x,
+    pattern_and_axes_lengths,
+    reduction,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = x
     x = [x]
-    if (reduction in ['mean', 'prod']) and (dtype not in ivy_np.valid_float_dtypes):
-        dtype = 'float32'
+    if (reduction in ["mean", "prod"]) and (dtype not in ivy_np.valid_float_dtypes):
+        dtype = "float32"
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1340,6 +1380,7 @@ def test_inplace_variables_supported(device):
     else:
         raise Exception("Unrecognized framework")
 
+
 @handle_cmd_line_args
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
@@ -1353,13 +1394,9 @@ def test_inplace_variables_supported(device):
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_inplace_update(
-    x_val_and_dtypes, 
-    tensor_fn, 
-    device
-):
-    # ToDo: Ask Daniel about tensor_fn, we use it here since we don't use helpers.test_function
-    dtypes = x_val_and_dtypes[0]
+def test_inplace_update(x_val_and_dtypes, tensor_fn, device):
+    # ToDo: Ask Daniel about tensor_fn, we use it here since
+    #  we don't use helpers.test_function
     x, val = x_val_and_dtypes[1]
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
@@ -1370,6 +1407,7 @@ def test_inplace_update(
         assert id(x_inplace) == id(x)
         assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(val))
         return
+
 
 @handle_cmd_line_args
 @given(
@@ -1385,7 +1423,6 @@ def test_inplace_update(
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
-    dtypes = x_val_and_dtypes[0]
     x, val = x_val_and_dtypes[1]
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
@@ -1397,6 +1434,7 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
         assert id(x_inplace) == id(x)
         assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
         return
+
 
 @handle_cmd_line_args
 @given(
@@ -1412,7 +1450,6 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
-    dtypes = x_val_and_dtypes[0]
     x, val = x_val_and_dtypes[1]
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
@@ -1425,112 +1462,137 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
         assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
         return
 
+
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes
-        ),
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     exclusive=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_ivy_array"),
 )
-def test_is_ivy_array(x_val_and_dtypes, exclusive, as_variable, num_positional_args, native_array, container, fw):
+def test_is_ivy_array(
+    x_val_and_dtypes,
+    exclusive,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
     dtype = x_val_and_dtypes[0]
     x = x_val_and_dtypes[1]
     helpers.test_function(
-    input_dtypes=dtype,
-    as_variable_flags=as_variable,
-    with_out=False,
-    num_positional_args=num_positional_args,
-    native_array_flags=native_array,
-    container_flags=container,
-    instance_method=False,
-    fw=fw,
-    fn_name='is_ivy_array',
-    x=np.asarray(x, dtype=dtype),
-    exclusive=exclusive
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="is_ivy_array",
+        x=np.asarray(x, dtype=dtype),
+        exclusive=exclusive,
     )
+
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes
-        ),
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     exclusive=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_array"),
 )
-def test_is_array(x_val_and_dtypes, exclusive, as_variable, num_positional_args, native_array, container, fw):
+def test_is_array(
+    x_val_and_dtypes,
+    exclusive,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
     dtype = x_val_and_dtypes[0]
     x = x_val_and_dtypes[1]
     helpers.test_function(
-    input_dtypes=dtype,
-    as_variable_flags=as_variable,
-    with_out=False,
-    num_positional_args=num_positional_args,
-    native_array_flags=native_array,
-    container_flags=container,
-    instance_method=False,
-    fw=fw,
-    fn_name='is_array',
-    x=np.asarray(x, dtype=dtype),
-    exclusive=exclusive
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="is_array",
+        x=np.asarray(x, dtype=dtype),
+        exclusive=exclusive,
     )
+
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes
-        ),
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="is_ivy_container"),
 )
-def test_is_ivy_container(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+def test_is_ivy_container(
+    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+):
     dtype = x_val_and_dtypes[0]
     x = x_val_and_dtypes[1]
     helpers.test_function(
-    input_dtypes=dtype,
-    as_variable_flags=as_variable,
-    with_out=False,
-    num_positional_args=num_positional_args,
-    native_array_flags=native_array,
-    container_flags=container,
-    instance_method=False,
-    fw=fw,
-    fn_name='is_ivy_container',
-    x=np.asarray(x, dtype=dtype),
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="is_ivy_container",
+        x=np.asarray(x, dtype=dtype),
     )
+
 
 @handle_cmd_line_args
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
-        num_arrays=2,
-        min_num_dims=1
-        ),
+        available_dtypes=ivy_np.valid_dtypes, num_arrays=2, min_num_dims=1
+    ),
     equality_matrix=st.booleans(),
     num_positional_args=st.integers(min_value=2, max_value=3),
 )
-def test_all_equal(x_val_and_dtypes, equality_matrix, as_variable, num_positional_args, native_array, container, fw):
+def test_all_equal(
+    x_val_and_dtypes,
+    equality_matrix,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
     dtype = x_val_and_dtypes[0]
     x = x_val_and_dtypes[1]
     helpers.test_function(
-    input_dtypes=dtype,
-    as_variable_flags=as_variable,
-    with_out=False,
-    num_positional_args=num_positional_args,
-    native_array_flags=native_array,
-    container_flags=container,
-    instance_method=False,
-    fw=fw,
-    fn_name='all_equal',
-    x0=np.asarray(x[0], dtype=dtype[0]),
-    x1=np.asarray(x[1], dtype=dtype[1]),
-    equality_matrix=equality_matrix
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="all_equal",
+        x0=np.asarray(x[0], dtype=dtype[0]),
+        x1=np.asarray(x[1], dtype=dtype[1]),
+        equality_matrix=equality_matrix,
     )
+
 
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=2),
+    x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=2
+    ),
     max_norm=st.floats(),
-    p=st.sampled_from([ 1, 2, float('inf'), 'fro', 'nuc']),
+    p=st.sampled_from([1, 2, float("inf"), "fro", "nuc"]),
     num_positional_args=helpers.num_positional_args(fn_name="clip_matrix_norm"),
 )
 def test_clip_matrix_norm(
@@ -1563,27 +1625,39 @@ def test_clip_matrix_norm(
         p=p,
     )
 
+
 @handle_cmd_line_args
-@given(x_n_include_inf_n_value=st.sampled_from([
-    [ivy.array([1]),True,False],
-    [ivy.array(ivy.nan),False,True],
-    [ivy.native_array(ivy.inf),True,True],
-    [ivy.array(ivy.inf),False,False]
-    ]))
+@given(
+    x_n_include_inf_n_value=st.sampled_from(
+        [
+            [ivy.array([1]), True, False],
+            [ivy.array(ivy.nan), False, True],
+            [ivy.native_array(ivy.inf), True, True],
+            [ivy.array(ivy.inf), False, False],
+        ]
+    )
+)
 def test_value_is_nan(x_n_include_inf_n_value):
     x, include_inf, value = x_n_include_inf_n_value
     ret = ivy.value_is_nan(x, include_inf)
     assert ret == value
 
+
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes
-    ),
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     include_infs=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="has_nans"),
 )
-def test_has_nans(x_val_and_dtypes, include_infs, as_variable, num_positional_args, native_array, container, fw):
+def test_has_nans(
+    x_val_and_dtypes,
+    include_infs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
     dtype = x_val_and_dtypes[0]
     x = x_val_and_dtypes[1]
     helpers.test_function(
@@ -1595,10 +1669,11 @@ def test_has_nans(x_val_and_dtypes, include_infs, as_variable, num_positional_ar
         container_flags=container,
         instance_method=True,
         fw=fw,
-        fn_name='has_nans',
+        fn_name="has_nans",
         x=np.asarray(x, dtype=dtype),
-        include_infs=include_infs
+        include_infs=include_infs,
     )
+
 
 @handle_cmd_line_args
 @given(
@@ -1606,30 +1681,37 @@ def test_has_nans(x_val_and_dtypes, include_infs, as_variable, num_positional_ar
 )
 def test_try_else_none(x):
     if x:
-        fn = ivy.try_else_none(lambda : True)
+        fn = ivy.try_else_none(lambda: True)
         assert fn() is True
     else:
         fn = ivy.try_else_none(lambda x: x)
         assert fn is None
 
+
 @handle_cmd_line_args
 @given(
-    x_n_value=st.sampled_from([
-        [ivy.value_is_nan, ['x', 'include_infs']],
-        [ivy.clip_matrix_norm, ['x', 'max_norm', 'p', 'out']],
-    ]))
+    x_n_value=st.sampled_from(
+        [
+            [ivy.value_is_nan, ["x", "include_infs"]],
+            [ivy.clip_matrix_norm, ["x", "max_norm", "p", "out"]],
+        ]
+    )
+)
 def test_arg_names(x_n_value):
-    x, value = x_n_value 
+    x, value = x_n_value
     ret = ivy.arg_names(x)
     assert ret == value
+
 
 @handle_cmd_line_args
 def test_current_backend_str(fw):
     assert ivy.current_backend_str() == fw
 
+
 @handle_cmd_line_args
 def test_get_min_denominator():
     assert ivy.get_min_denominator() == 1e-12
+
 
 @handle_cmd_line_args
 @given(x=st.floats(allow_nan=False, allow_infinity=False))
@@ -1637,15 +1719,18 @@ def test_set_min_denominator(x):
     ivy.set_min_denominator(x)
     assert ivy.get_min_denominator() == x
 
+
 @handle_cmd_line_args
 def test_get_min_base():
-    assert ivy.get_min_base() == 1e-5 
+    assert ivy.get_min_base() == 1e-5
+
 
 @handle_cmd_line_args
 @given(x=st.floats(allow_nan=False, allow_infinity=False))
 def test_set_min_base(x):
     ivy.set_min_base(x)
     assert ivy.get_min_base() == x
+
 
 @handle_cmd_line_args
 @given(
@@ -1654,7 +1739,9 @@ def test_set_min_base(x):
     ),
     num_positional_args=helpers.num_positional_args(fn_name="stable_divide"),
 )
-def test_stable_divide(dtype_and_x, as_variable, num_positional_args, native_array, container, fw):
+def test_stable_divide(
+    dtype_and_x, as_variable, num_positional_args, native_array, container, fw
+):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -1665,11 +1752,12 @@ def test_stable_divide(dtype_and_x, as_variable, num_positional_args, native_arr
         container_flags=container,
         instance_method=False,
         fw=fw,
-        fn_name='stable_divide',
+        fn_name="stable_divide",
         numerator=np.asarray(x[0], dtype=input_dtype[0]),
         denominator=np.asarray(x[1], dtype=input_dtype[1]),
-        min_denominator=np.asarray(x[2], dtype=input_dtype[2])
+        min_denominator=np.asarray(x[2], dtype=input_dtype[2]),
     )
+
 
 @handle_cmd_line_args
 @given(
@@ -1704,13 +1792,16 @@ def test_stable_pow(
         min_base=np.asarray(x[2], dtype=input_dtype[2]),
     )
 
+
 @handle_cmd_line_args
 def test_get_all_arrays_in_memory():
     return
 
+
 @handle_cmd_line_args
 def test_num_arrays_in_memory():
     return
+
 
 @handle_cmd_line_args
 def test_print_all_arrays_in_memory():
@@ -1726,31 +1817,38 @@ def test_set_queue_timeout(x):
     ret = ivy.get_queue_timeout()
     assert ret == x
 
+
 @handle_cmd_line_args
-def test_get_queue_timeout():
+@given(
+    x=st.floats(allow_nan=False, allow_infinity=False),
+)
+def test_get_queue_timeout(x):
+    ivy.set_queue_timeout(x)
     ret = ivy.get_queue_timeout()
-    assert ret == 15.0
+    assert ret == x
+
 
 @handle_cmd_line_args
 def test_get_tmp_dir():
     ret = ivy.get_tmp_dir()
-    assert ret == '/tmp'
+    assert ret == "/tmp"
+
 
 @handle_cmd_line_args
 def test_set_tmp_dir():
-    ivy.set_tmp_dir('/new_dir')
+    ivy.set_tmp_dir("/new_dir")
     ret = ivy.get_tmp_dir()
-    assert ret == '/new_dir'
+    assert ret == "/new_dir"
 
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes
-    ),
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="supports_inplace"),
 )
-def test_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+def test_supports_inplace(
+    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+):
     dtype = x_val_and_dtypes[0]
     x = x_val_and_dtypes[1]
     helpers.test_function(
@@ -1762,18 +1860,19 @@ def test_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, na
         container_flags=container,
         instance_method=True,
         fw=fw,
-        fn_name='supports_inplace',
-        x=np.asarray(x, dtype=dtype)
+        fn_name="supports_inplace",
+        x=np.asarray(x, dtype=dtype),
     )
+
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes
-    ),
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
     num_positional_args=helpers.num_positional_args(fn_name="assert_supports_inplace"),
 )
-def test_assert_supports_inplace(x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw):
+def test_assert_supports_inplace(
+    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+):
     dtype = x_val_and_dtypes[0]
     x = x_val_and_dtypes[1]
     if fw == "tensorflow" or fw == "jax":
@@ -1787,10 +1886,11 @@ def test_assert_supports_inplace(x_val_and_dtypes, as_variable, num_positional_a
         container_flags=container,
         instance_method=True,
         fw=fw,
-        fn_name='assert_supports_inplace',
-        ground_truth_backend='numpy',
-        x=np.asarray(x, dtype=dtype)
+        fn_name="assert_supports_inplace",
+        ground_truth_backend="numpy",
+        x=np.asarray(x, dtype=dtype),
     )
+
 
 @handle_cmd_line_args
 def test_arg_info():
