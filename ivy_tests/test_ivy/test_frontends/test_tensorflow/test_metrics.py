@@ -315,3 +315,31 @@ def test_categorical_accuracy(
         y_true=y_true,
         y_pred=y_pred,
     )
+
+
+# kl_divergence
+@handle_cmd_line_args
+@given(
+    y_true=helpers.array_values(shape=(2, 5), dtype=ivy.float16),
+    y_pred=helpers.array_values(shape=(2, 5), dtype=ivy.float16),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.kl_divergence"
+    ),
+    native_array=st.booleans(),
+)
+def test_kl_divergence(
+    y_true, y_pred, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.float16,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.kl_divergence",
+        y_true=y_true,
+        y_pred=y_pred,
+    )
