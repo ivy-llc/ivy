@@ -1908,7 +1908,7 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, frontend_ret
+        return ret_np_flat, frontend_ret_np_flat
 
     # value tests, iterating through each array in the flattened returns
     value_test(
@@ -2168,6 +2168,11 @@ def dtype_values_axis(
     shared_dtype=False,
     min_axis=None,
     max_axis=None,
+    valid_axis=False,
+    allow_neg_axes=True,
+    min_axes_size=1,
+    max_axes_size=None,
+    force_int_axis=False,
     ret_shape=False,
 ):
     """Draws an array with elements from the given data type, and a random axis of
@@ -2227,18 +2232,27 @@ def dtype_values_axis(
             max_dim_size=max_dim_size,
             shape=shape,
             shared_dtype=shared_dtype,
-            ret_shape=ret_shape,
+            ret_shape=True,
         )
     )
-    if ret_shape:
-        dtype, values, shape = results
+    dtype, values, arr_shape = results
+    if valid_axis or shape:
+        if not isinstance(values, list):
+            axis = None
+        else:
+            axis = draw(
+                get_axis(
+                    shape=arr_shape,
+                    min_size=min_axes_size,
+                    max_size=max_axes_size,
+                    allow_neg=allow_neg_axes,
+                    force_int=force_int_axis,
+                )
+            )
     else:
-        dtype, values = results
-    if not isinstance(values, list):
-        return dtype, values, None
-    if shape is not None:
-        return dtype, values, draw(get_axis(shape=shape))
-    axis = draw(ints(min_value=min_axis, max_value=max_axis))
+        axis = draw(ints(min_value=min_axis, max_value=max_axis))
+    if ret_shape:
+        return dtype, values, axis, shape
     return dtype, values, axis
 
 
