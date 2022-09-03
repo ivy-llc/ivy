@@ -24,6 +24,7 @@ def _get_dtype_and_matrix(draw):
         )
     )
 
+
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
@@ -47,6 +48,7 @@ def test_tensorflow_det(
         fn_tree="linalg.det",
         input=np.asarray(x, dtype=input_dtype),
     )
+
 
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
@@ -201,6 +203,7 @@ def test_tensorflow_adjoint(
         fn_tree="linalg.adjoint",
         matrix=np.asarray(x, dtype=input_dtype),
     )
+
 
 # slogdet
 @given(
