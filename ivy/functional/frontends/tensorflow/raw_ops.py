@@ -34,6 +34,10 @@ def Atan(*, x, name="atan"):
     return ivy.atan(x)
 
 
+def Atan2(*, y, x, name="atan2"):
+    return ivy.atan2(y, x)
+
+
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     return ivy.bitwise_and(x, y)
 
