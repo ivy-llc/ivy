@@ -133,6 +133,20 @@ class Module(abc.ABC):
         return new_fn
 
     def _top_v_fn(self, depth=None, flatten_key_chains=False):
+        """
+        The method helps in visualising the top view of a nested network upto
+        a certain depth
+        Parameters
+        ----------
+        depth
+            depth upto which we want to visualise
+        flatten_key_chains
+            If True, returns a flattened view of the structure. Default is
+            False
+        Returns
+        -------
+
+        """
         if ivy.exists(self.top_v):
             if ivy.exists(depth):
                 ret = self.top_v(depth - 1) if depth > 1 else self.v
@@ -153,6 +167,10 @@ class Module(abc.ABC):
 
     # noinspection PyProtectedMember
     def track_submod_rets(self):
+        """
+        Tracks the returns of the submodules if track_submod_returns argument is set True
+        during call
+        """
         if not ivy.exists(self.top_mod):
             return False
         top_mod = self.top_mod()
@@ -170,6 +188,9 @@ class Module(abc.ABC):
         return top_mod._track_submod_rets
 
     def check_submod_rets(self):
+        """
+        compares the submodule returns with the expected submodule returns passed during call
+        """
         if not ivy.exists(self.top_mod):
             return False
         if ivy.exists(self.top_mod().expected_submod_rets):
@@ -178,6 +199,9 @@ class Module(abc.ABC):
 
     # noinspection PyProtectedMember
     def track_submod_call_order(self):
+        """
+        Tracks the order in which the submodules are called.
+        """
         if not ivy.exists(self.top_mod):
             return False
         top_mod = self.top_mod()
@@ -195,6 +219,9 @@ class Module(abc.ABC):
         return top_mod._track_submod_call_order
 
     def mod_depth(self):
+        """
+        Returns the depth of the module in the network.
+        """
         depth = 0
         mod_above = self
         while True:
@@ -206,9 +233,26 @@ class Module(abc.ABC):
         return depth
 
     def mod_height(self):
+        """
+
+        Returns
+        -------
+        The height of the network
+        """
         return self.sub_mods().max_depth - 1
 
     def _find_variables(self, obj=None):
+        """
+
+        Parameters
+        ----------
+        obj
+            The submodule whose internal variables are to be returned.
+
+        Returns
+        -------
+            The internal variables of the submodule passed in the argument.
+        """
         vs = Container()
         # ToDo: add support for finding local variables, if/when JAX supports
         #  uniquely flagging variables
@@ -572,6 +616,10 @@ class Module(abc.ABC):
 
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
+        """
+        checks if the submodule is the leaf node of the network.
+
+        """
         submod_depth = self.top_mod()._submod_depth
         submods_to_track = self.top_mod()._submods_to_track
         return (
@@ -755,6 +803,9 @@ class Module(abc.ABC):
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
     def show_structure(self):
+        """
+        Prints the structure of the layer network.
+        """
         this_repr = termcolor.colored(object.__repr__(self), "green")
         sub_mod_repr = self.sub_mods(False).__repr__()
         if sub_mod_repr == "''":
