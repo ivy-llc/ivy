@@ -12,6 +12,321 @@ import ivy
 # noinspection PyMissingConstructor
 class ContainerWithGeneral(ContainerBase):
     @staticmethod
+    def static_is_native_array(
+        x: ivy.Container,
+        /,
+        *,
+        exclusive: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.is_native_array.
+        This method simply wraps the function, and so the docstring for
+        ivy.is_native_array also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is a native array.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "is_native_array",
+            x,
+            exclusive=exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def is_native_array(
+        self: ivy.Container,
+        *,
+        exclusive: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.is_native_array.
+        This method simply wraps the function, and so the docstring for
+        ivy.ivy.is_native_array also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is a native array.
+        """
+        return self.static_is_native_array(
+            self,
+            exclusive=exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_is_ivy_array(
+        x: ivy.Container,
+        /,
+        *,
+        exclusive: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.is_ivy_array.
+        This method simply wraps the function, and so the docstring for
+        ivy.is_ivy_array also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an array.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "is_ivy_array",
+            x,
+            exclusive=exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def is_ivy_array(
+        self: ivy.Container,
+        *,
+        exclusive: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.is_native_array.
+        This method simply wraps the function, and so the docstring for
+        ivy.ivy.is_native_array also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an array.
+        """
+        return self.static_is_ivy_array(
+            self,
+            exclusive=exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_is_array(
+        x: ivy.Container,
+        /,
+        *,
+        exclusive: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.is_array.
+        This method simply wraps the function, and so the docstring for
+        ivy.ivy.is_array also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an array.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "is_array",
+            x,
+            exclusive=exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def is_array(
+        self: ivy.Container,
+        *,
+        exclusive: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.is_array.
+        This method simply wraps the function, and so the docstring for
+        ivy.is_array also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an array.
+        """
+        return self.static_is_array(
+            self,
+            exclusive=exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_clip_vector_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
