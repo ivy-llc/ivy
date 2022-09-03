@@ -147,9 +147,12 @@ def dtypes_shared(draw, num_dtypes):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=1
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        num_arrays=1,
+        small_value_safety_factor=1.5,
+        large_value_safety_factor=10,
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
+    dtype=helpers.get_dtypes("valid"),
 )
 def test_astype(
     dtype_and_x,
@@ -212,7 +215,6 @@ def test_broadcast_arrays(
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     num_positional_args = len(kw)
-    print("input: ", kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -282,9 +284,9 @@ def test_broadcast_to(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=1
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=1
     ),
-    to_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    to_dtype=helpers.get_dtypes("valid"),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
     native_array=st.booleans(),
@@ -527,7 +529,7 @@ def test_closest_valid_dtype(
 # default_dtype
 @handle_cmd_line_args
 @given(
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=helpers.get_dtypes("valid"),
     as_native=st.booleans(),
 )
 def test_default_dtype(
@@ -595,7 +597,7 @@ def test_dtype(
 # dtype_bits
 @handle_cmd_line_args
 @given(
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=helpers.get_dtypes("valid"),
     num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
 )
 def test_dtype_bits(
@@ -796,7 +798,7 @@ def test_promote_types(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         num_arrays=2,
         shared_dtype=False,
     ),
