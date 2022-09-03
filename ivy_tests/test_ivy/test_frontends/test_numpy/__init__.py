@@ -1,4 +1,4 @@
-import numpy
+# import numpy
 from ivy_tests.test_ivy.test_frontends import NativeClass
 
 
