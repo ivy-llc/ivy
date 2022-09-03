@@ -212,7 +212,6 @@ def test_broadcast_arrays(
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     num_positional_args = len(kw)
-    print("input: ", kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
