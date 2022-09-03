@@ -552,6 +552,9 @@ def remainder(
     return tf.experimental.numpy.remainder(x1, x2)
 
 
+remainder.unsupported_dtypes = ("bfloat16",)
+
+
 def round(
     x: Union[tf.Tensor, tf.Variable],
     /,
