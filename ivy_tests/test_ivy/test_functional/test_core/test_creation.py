@@ -94,6 +94,8 @@ def test_linspace(
         instance_method=False,
         fw=fw,
         fn_name="linspace",
+        rtol_=1e-2,
+        atol_=1e-2,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
         stop=np.asarray(start_stop[1], dtype=dtype[1]),
         num=num,
