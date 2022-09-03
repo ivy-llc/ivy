@@ -102,15 +102,34 @@ def sum(
     x: np.ndarray,
     /,
     *,
-    axis: Union[int, Tuple[int]] = None,
-    dtype: np.dtype = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
+    initial=None,
+    where=None,
 ) -> np.ndarray:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
+
+    if initial is None:
+        initial = np._NoValue
+
+    if where is None:
+        where = np._NoValue
+
+    return np.asarray(
+        np.sum(
+            a=x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+    )
 
 
 sum.support_native_out = True
@@ -135,9 +154,9 @@ def var(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * np.asarray(
-        np.var(x, axis=axis, keepdims=keepdims, out=out)
-    )
+    return np.asarray(
+        np.var(x, axis=axis, keepdims=keepdims, out=out) * (size / (size - correction))
+    ).astype(x.dtype)
 
 
 var.support_native_out = True

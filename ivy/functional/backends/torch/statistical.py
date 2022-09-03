@@ -7,23 +7,6 @@ from typing import Tuple, Union, Optional, Sequence
 import ivy
 
 
-def _new_var_fun(x, *, axis, correction, dtype):
-    output = x.to(dtype)
-    length = output.shape[axis]
-    divisor = length - correction
-    mean = torch.sum(output, dim=axis) / length
-    output = torch.abs(output.to(dtype=dtype) - torch.unsqueeze(mean, dim=axis))
-    output = output**2
-    output = torch.sum(output, axis=axis) / divisor
-    return output
-
-
-def _new_std_fun(x, *, axis, correction, dtype):
-    output = torch.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
-    output = output.to(dtype=dtype)
-    return output
-
-
 # Array API Standard #
 # -------------------#
 
@@ -139,14 +122,23 @@ def std(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    correction: Union[int] = 0,
+    correction: Union[int, float] = 0,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis is not None:
-        axis = tuple(axis)
-        return torch.std(x, dim=axis, correction=correction, keepdims=keepdims)
-    return torch.std(x)
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if correction == 0:
+        return torch.std(x, dim=axis, unbiased=False, keepdims=keepdims)
+    elif correction == 1:
+        return torch.std(x, dim=axis, unbiased=True, keepdims=keepdims)
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    return (size / (size - correction)) ** 0.5 * torch.std(
+        x, dim=axis, unbiased=False, keepdims=keepdims
+    )
 
 
 std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
@@ -156,9 +148,10 @@ def sum(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: torch.dtype = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
