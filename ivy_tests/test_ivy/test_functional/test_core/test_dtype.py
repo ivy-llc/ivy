@@ -147,7 +147,10 @@ def dtypes_shared(draw, num_dtypes):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=1
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        num_arrays=1,
+        small_value_safety_factor=1.5,
+        large_value_safety_factor=10,
     ),
     dtype=helpers.get_dtypes("valid"),
 )
