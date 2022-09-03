@@ -295,7 +295,10 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
 @handle_nestable
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
+    device: Union[ivy.Device, ivy.NativeDevice], 
+    /, 
+    *, 
+    attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -305,8 +308,30 @@ def print_all_ivy_arrays_on_dev(
     ----------
     device
         The device on which to print the arrays
+    
     attr_only
         Whether or not to only print the `shape` and `dtype` attributes of the array
+    
+    Examples
+    --------
+
+    With attr_only = True
+
+    >>> x = ivy.array([1,0,2], [3,2])
+    >>> y = ivy.dev(x)
+    >>> ivy.print_all_ivy_arrays_on_dev(y)
+    ((3,), 'int32')
+    ((2,), 'int32')
+    
+    
+
+    With attr_only = False:
+    
+    >>> x = ivy.array([1,0,2], [3,2])
+    >>> y = ivy.dev(x)
+    >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
+    [1,0,2]
+    [3,2]
 
     """
     arrs = ivy.get_all_ivy_arrays_on_dev(device).values()
