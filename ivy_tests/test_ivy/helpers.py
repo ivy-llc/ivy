@@ -10,8 +10,9 @@ import inspect
 import pytest
 import numpy as np
 import math
+import gc
 from typing import Union, List
-from hypothesis import assume, given, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 
@@ -96,6 +97,10 @@ def get_ivy_mxnet():
     except ImportError:
         return None
     return ivy.functional.backends.mxnet
+
+
+def get_valid_numeric_dtypes():
+    return ivy.valid_numeric_dtypes
 
 
 _ivy_fws_dict = {
@@ -331,6 +336,47 @@ def docstring_examples_run(
 def var_fn(x, *, dtype=None, device=None):
     """Returns x as an Ivy Variable wrapping an Ivy Array with given dtype and device"""
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
+
+
+@st.composite
+def get_dtypes(draw, kind, index=0, full=False, none=False):
+    """
+    Draws valid dtypes based on the backend set on the stack
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    type
+        Supported types are integer, float, valid, numeric, and unsigned
+    index
+        list indexing incase a test needs to be skipped for a particular dtype(s)
+    full
+        returns the complete list of valid types
+        returns the complete list of valid types
+    none
+
+    Returns
+    -------
+    ret
+        dtype string
+    """
+    type_dict = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "signed_integer": tuple(
+            set(ivy.valid_int_dtypes).difference(ivy.valid_uint_dtypes)
+        ),
+    }
+    if none:
+        return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
+    if full:
+        return type_dict[kind][index:]
+    return draw(st.sampled_from(type_dict[kind][index:]))
 
 
 @st.composite
@@ -570,12 +616,15 @@ def assert_all_close(
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
         ivy.Container.multi_map(assert_all_close, [ret_np, ret_from_gt_np])
     else:
+        if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
+            ret_np = ret_np.astype("float64")
+            ret_from_gt_np = ret_from_gt_np.astype("float64")
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
         ), "{} != {}".format(ret_np, ret_from_gt_np)
 
 
-def assert_same_type_and_shape(values, this_key_chain):
+def assert_same_type_and_shape(values, this_key_chain=None):
     x, y = values
     assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
     if isinstance(x, np.ndarray):
@@ -645,7 +694,6 @@ def flatten(*, ret):
 def flatten_and_to_np(*, ret):
     # flatten the return
     ret_flat = flatten(ret=ret)
-    # convert the return to NumPy
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
@@ -1259,12 +1307,14 @@ def test_method(
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     v_np = None
     if isinstance(ins, ivy.Module):
-        v = ivy.Container(
-            ins._create_variables(device=device_, dtype=input_dtypes_method[0])
-        )
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if init_with_v:
+            v = ivy.Container(
+                ins._create_variables(device=device_, dtype=input_dtypes_method[0])
+            )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
+        else:
+            v = ins.__getattribute__("v")
+        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -1784,9 +1834,6 @@ def test_frontend_function(
             # these backends do not always support native inplace updates
             assert ret.data is out.data
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
-
     # create NumPy args
     args_np = ivy.nested_map(
         args_ivy,
@@ -1799,6 +1846,7 @@ def test_frontend_function(
 
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
+    backend_returned_scalar = False
     try:
         # check for unsupported dtypes in frontend framework
         function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
@@ -1835,26 +1883,32 @@ def test_frontend_function(
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
 
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-
-        # flatten the frontend return and convert to NumPy arrays
-        frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_native_array)
-        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+        if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
+            backend_returned_scalar = True
+            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+        else:
+            # tuplify the frontend return
+            if not isinstance(frontend_ret, tuple):
+                frontend_ret = (frontend_ret,)
+            frontend_ret_idxs = ivy.nested_indices_where(
+                frontend_ret, ivy.is_native_array
+            )
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
         ivy.unset_backend()
         raise e
     # unset frontend framework from backend
     ivy.unset_backend()
 
+    if backend_returned_scalar:
+        ret_np_flat = ivy.to_numpy([ret])
+    else:
+        ret_np_flat = flatten_and_to_np(ret=ret)
+
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, frontend_ret
-
-    # flatten the return
-    ret_np_flat = flatten_and_to_np(ret=ret)
+        return ret_np_flat, frontend_ret_np_flat
 
     # value tests, iterating through each array in the flattened returns
     value_test(
@@ -1862,6 +1916,7 @@ def test_frontend_function(
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol,
         atol=atol,
+        ground_truth_backend=frontend,
     )
 
 
@@ -2043,6 +2098,8 @@ def dtype_and_values(
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
         max_dim_size = draw(max_dim_size)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
     if dtype is None:
@@ -2111,6 +2168,11 @@ def dtype_values_axis(
     shared_dtype=False,
     min_axis=None,
     max_axis=None,
+    valid_axis=False,
+    allow_neg_axes=True,
+    min_axes_size=1,
+    max_axes_size=None,
+    force_int_axis=False,
     ret_shape=False,
 ):
     """Draws an array with elements from the given data type, and a random axis of
@@ -2141,6 +2203,16 @@ def dtype_values_axis(
         minimum value of each integer in the shape tuple.
     max_dim_size
         maximum value of each integer in the shape tuple.
+    valid_axis
+        if True, a valid axis will be drawn from the array dimensions.
+    allow_neg_axes
+        if True, returned axes may include negative axes.
+    min_axes_size
+        minimum size of the axis tuple.
+    max_axes_size
+        maximum size of the axis tuple.
+    force_int_axis
+        if True, and only one axis is drawn, the returned axis will be an integer.
     shape
         shape of the array. if None, a random shape is drawn.
     shared_dtype
@@ -2170,18 +2242,27 @@ def dtype_values_axis(
             max_dim_size=max_dim_size,
             shape=shape,
             shared_dtype=shared_dtype,
-            ret_shape=ret_shape,
+            ret_shape=True,
         )
     )
-    if ret_shape:
-        dtype, values, shape = results
+    dtype, values, arr_shape = results
+    if valid_axis or shape:
+        if not isinstance(values, list):
+            axis = None
+        else:
+            axis = draw(
+                get_axis(
+                    shape=arr_shape,
+                    min_size=min_axes_size,
+                    max_size=max_axes_size,
+                    allow_neg=allow_neg_axes,
+                    force_int=force_int_axis,
+                )
+            )
     else:
-        dtype, values = results
-    if not isinstance(values, list):
-        return dtype, values, None
-    if shape is not None:
-        return dtype, values, draw(get_axis(shape=shape))
-    axis = draw(ints(min_value=min_axis, max_value=max_axis))
+        axis = draw(ints(min_value=min_axis, max_value=max_axis))
+    if ret_shape:
+        return dtype, values, axis, shape
     return dtype, values, axis
 
 
@@ -2325,6 +2406,16 @@ def _zeroing(x):
         return 0.0
 
 
+def _clamp_value(x, dtype):
+    if ivy.is_int_dtype(dtype):
+        d_info = ivy.iinfo(dtype)
+    elif ivy.is_float_dtype(dtype):
+        d_info = ivy.finfo(dtype)
+    if x > d_info.max or x < d_info.min:
+        return None  # Calculated later using safety factor
+    return x
+
+
 @st.composite
 def array_values(
     draw,
@@ -2385,6 +2476,8 @@ def array_values(
         for dim in shape:
             size *= dim
     values = None
+    min_value = _clamp_value(min_value, dtype) if ivy.exists(min_value) else None
+    max_value = _clamp_value(max_value, dtype) if ivy.exists(max_value) else None
     if "uint" in dtype:
         if dtype == "uint8":
             min_value = ivy.default(
@@ -2493,8 +2586,8 @@ def array_values(
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
+                        min_value=np.array(min_value, dtype=dtype).tolist(),
+                        max_value=np.array(max_value, dtype=dtype).tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2552,8 +2645,8 @@ def array_values(
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
+                        min_value=np.array(min_value, dtype=dtype).tolist(),
+                        max_value=np.array(max_value, dtype=dtype).tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2616,8 +2709,8 @@ def array_values(
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=min_value,
-                        max_value=max_value,
+                        min_value=np.array(min_value).astype("float64").tolist(),
+                        max_value=np.array(max_value).astype("float64").tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2920,6 +3013,7 @@ def get_axis(
     draw,
     *,
     shape,
+    allow_neg=True,
     allow_none=False,
     sorted=True,
     unique=True,
@@ -2938,6 +3032,8 @@ def get_axis(
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
+    allow_neg
+        boolean; if True, allow negative axes to be drawn
     allow_none
         boolean; if True, allow None to be drawn
     sorted
@@ -2978,6 +3074,7 @@ def get_axis(
         max_size = draw(max_size)
 
     axes = len(shape)
+    lower_axes_bound = axes if allow_neg else 0
     unique_by = (lambda x: shape[x]) if unique else None
 
     if max_size is None and unique:
@@ -2992,7 +3089,7 @@ def get_axis(
         if axes == 0:
             valid_strategies.append(st.just(0))
         else:
-            valid_strategies.append(st.integers(-axes, axes - 1))
+            valid_strategies.append(st.integers(-lower_axes_bound, axes - 1))
     if not force_int:
         if axes == 0:
             valid_strategies.append(
@@ -3001,7 +3098,7 @@ def get_axis(
         else:
             valid_strategies.append(
                 st.lists(
-                    st.integers(-axes, axes - 1),
+                    st.integers(-lower_axes_bound, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
                     unique_by=unique_by,
@@ -3066,6 +3163,8 @@ def num_positional_args(draw, *, fn_name: str = None):
             num_positional_only += 1
         elif param.kind == param.KEYWORD_ONLY:
             num_keyword_only += 1
+        elif param.kind == param.VAR_KEYWORD:
+            num_keyword_only += 1
     return draw(
         ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
@@ -3088,6 +3187,7 @@ def handle_cmd_line_args(test_fn):
     @given(data=st.data())
     @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
+        gc.collect()
         flag, fw_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":

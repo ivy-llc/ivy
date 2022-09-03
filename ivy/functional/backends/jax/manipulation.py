@@ -40,6 +40,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
         ret = jnp.expand_dims(x, axis)
@@ -72,6 +73,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if copy:
         newarr = jnp.copy(x)
@@ -132,7 +134,6 @@ def split(
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
-    out: Optional[JaxArray] = None,
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -170,7 +171,9 @@ def repeat(
     return ret
 
 
-def tile(x: JaxArray, /, reps, *, out: Optional[JaxArray] = None) -> JaxArray:
+def tile(
+    x: JaxArray, /, reps: Iterable[int], *, out: Optional[JaxArray] = None
+) -> JaxArray:
     ret = jnp.tile(x, reps)
     return ret
 
@@ -183,6 +186,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
@@ -213,8 +217,7 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x = jnp.asarray(x, dtype=promoted_type)
-    ret = jnp.clip(x, x_min, x_max)
-    return ret
+    return jnp.clip(x, x_min, x_max)
 
 
 def constant_pad(
