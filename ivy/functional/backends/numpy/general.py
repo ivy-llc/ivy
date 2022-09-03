@@ -293,7 +293,7 @@ def gather(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return _to_device(np.take_along_axis(params, indices, axis))
+    return _to_device(np.take(params, indices, axis))
 
 
 def gather_nd(

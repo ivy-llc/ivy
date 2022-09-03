@@ -429,7 +429,9 @@ def gather(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.gather(params, axis, indices.type(torch.int64))
+    sl = [slice(None)] * params.ndim
+    sl[axis] = ivy.native_array(indices, dtype=torch.int64)
+    return params[tuple(sl)]
 
 
 # noinspection PyShadowingNames

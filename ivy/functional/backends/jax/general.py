@@ -307,7 +307,7 @@ def gather(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.take_along_axis(params, indices, axis))
+    return _to_device(jnp.take(params, indices, axis))
 
 
 def gather_nd(
