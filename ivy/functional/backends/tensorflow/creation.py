@@ -57,7 +57,10 @@ def arange(
                 return tf.range(start, stop, delta=step, dtype=dtype)
 
 
-arange.unsupported_dtypes = ("float16",)
+arange.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def asarray(
