@@ -41,3 +41,12 @@ def tanh(input, *, out=None):
 
 
 tanh.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def softmin(input, dim=None, dtype=None):
+    if dtype:
+        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+    return ivy.softmax(-input, axis=dim)
+
+
+softmin.unsupported_dtypes = ("float16",)
