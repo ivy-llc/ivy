@@ -183,18 +183,16 @@ def test_tensorflow_slogdet(
 # tensordot
 @handle_cmd_line_args
 @given(
-    dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
+    dtype_x_y_axes=_get_dtype_value1_value2_axis_for_tensordot(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.tensordot"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_tensordot(
     *,
-    dtype_x1_x2_axis,
+    dtype_x_y_axes,
     as_variable,
     num_positional_args,
     native_array,
@@ -202,10 +200,10 @@ def test_tensorflow_tensordot(
 ):
     (
         dtype,
-        x1,
-        x2,
-        axis,
-    ) = dtype_x1_x2_axis
+        x,
+        y,
+        axes,
+    ) = dtype_x_y_axes
 
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
@@ -219,7 +217,7 @@ def test_tensorflow_tensordot(
         fw=fw,
         frontend="tensorflow",
         fn_tree="tensordot",
-        x=x1,
-        x2=x2,
-        axes=axis,
+        x=x,
+        y=y,
+        axes=axes,
     )
