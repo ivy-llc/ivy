@@ -452,18 +452,18 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.asarray([4., 5., 6.])
+        >>> x = ivy.array([4., 5., 6.])
         >>> y = x.stable_divide(2)
         >>> print(y)
         ivy.array([2., 2.5, 3.])
 
-        >>> x = ivy.asarray([4, 5, 6])
+        >>> x = ivy.array([4, 5, 6])
         >>> y = x.stable_divide(4, min_denominator=1)
         >>> print(y)
         ivy.array([0.8, 1. , 1.2])
 
-        >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
-        >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
+        >>> x = ivy.array([[4., 5., 6.], [7., 8., 9.]])
+        >>> y = ivy.array([[1., 2., 3.], [2., 3., 4.]])
         >>> z = x.stable_divide(y)
         >>> print(z)
         ivy.array([[4.  , 2.5 , 2.  ],
@@ -498,19 +498,19 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.asarray([2, 4, 5])
+        >>> x = ivy.array([2, 4, 5])
         >>> y = x.stable_pow(2)
         >>> print(y)
         ivy.array([ 4, 16, 25])
 
-        >>> x = ivy.asarray([2, 4, 5])
-        >>> y = ivy.Array.stable_pow(x, 4, min_base=1)
+        >>> x = ivy.array([2, 4, 5])
+        >>> y = x.stable_pow(x, 4, min_base=1)
         >>> print(y)
         ivy.array([  81,  625, 1300])
 
-        >>> x = ivy.asarray([[4, 5, 6], [7, 8, 9]])
-        >>> y = ivy.asarray([[1, 2,3], [2, 3, 4]])
-        >>> z = ivy.Array.stable_pow(x, y)
+        >>> x = ivy.array([[4, 5, 6], [7, 8, 9]])
+        >>> y = ivy.array([[1, 2,3], [2, 3, 4]])
+        >>> z = x.stable_pow(x, y)
         >>> print(z)
         ivy.array([[   4,   25,  216],
                [  49,  512, 6560]])

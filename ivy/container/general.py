@@ -2179,8 +2179,8 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
-        >>> y = ivy.Container.static_stable_pow(x, 3)
+        >>> x = ivy.Container(a=ivy.array([10., 15.]), b=ivy.array([20., 25.]))
+        >>> y = x.static_stable_pow(3)
         >>> print(y)
         {
             a: ivy.array([1000., 3380.]),
@@ -2188,36 +2188,27 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         >>> x = ivy.Container(a=3, b=10)
-        >>> y = ivy.asarray([4, 5])
-        >>> z = ivy.Container.static_stable_pow(x, y)
+        >>> y = ivy.array([4, 5])
+        >>> z = x.static_stable_pow(y)
         >>> print(z)
         {
             a: array([81.00108001, 243.00405003]),
             b: array([10000.04000006, 100000.500001])
         }
 
-        >>> x = ivy.Container(a=3, b=10)
-        >>> y = np.array((4.5, 9))
-        >>> z = ivy.Container.static_stable_pow(x, y)
-        >>> print(z)
-        {
-            a: array([140.29821987, 19683.59049787]),
-            b: array([3.16229189e+04, 1.00000900e+09])
-        }
-
-        >>> x = ivy.Container(a=ivy.asarray([7., 2.]), b=ivy.asarray([3., 4.]))
-        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
-        >>> z = ivy.Container.static_stable_pow(x, y)
+        >>> x = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([0.5, 2.5]), b=ivy.array([3.5, 1.5]))
+        >>> z = x.static_stable_pow(y)
         >>> print(z)
         {
             a: ivy.array([2.65, 5.66]),
             b: ivy.array([46.8, 8.])
         }
 
-        >>> x = ivy.Container(a=ivy.asarray([1.5, 2.], [3., 4.]),\
-        ... b=ivy.asarray([5., 6.], [7., 8.]))
-        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
-        >>> z = ivy.Container.static_stable_pow(x, y, min_base=2)
+        >>> x = ivy.Container(a=ivy.array([1.5, 2.], [3., 4.]),\
+                              b=ivy.array([5., 6.], [7., 8.]))
+        >>> y = ivy.Container(a=ivy.array([0.5, 2.5]), b=ivy.array([3.5, 1.5]))
+        >>> z = x.static_stable_pow(y, min_base=2)
         >>> print(z)
         {
             a: ivy.array([1.87, 32.]),
@@ -2277,8 +2268,8 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
-        >>> y = ivy.Container.stable_pow(x, 3)
+        >>> x = ivy.Container(a=ivy.array([10., 15.]), b=ivy.array([20., 25.]))
+        >>> y = x.stable_pow(3)
         >>> print(y)
         {
             a: ivy.array([1000., 3380.]),
@@ -2286,36 +2277,27 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         >>> x = ivy.Container(a=3, b=10)
-        >>> y = ivy.asarray([4, 5])
-        >>> z = ivy.Container.stable_pow(x, y)
+        >>> y = ivy.array([4, 5])
+        >>> z = x.stable_pow(y)
         >>> print(z)
         {
             a: array([81.00108001, 243.00405003]),
             b: array([10000.04000006, 100000.500001])
         }
 
-        >>> x = ivy.Container(a=3, b=10)
-        >>> y = np.array((4.5, 9))
-        >>> z = ivy.Container.stable_pow(x, y)
-        >>> print(z)
-        {
-            a: array([140.29821987, 19683.59049787]),
-            b: array([3.16229189e+04, 1.00000900e+09])
-        }
-
-        >>> x = ivy.Container(a=ivy.asarray([7., 2.]), b=ivy.asarray([3., 4.]))
-        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
-        >>> z = ivy.Container.stable_pow(x, y)
+        >>> x = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 4.]))
+        >>> y = ivy.Container(a=ivy.array([0.5, 2.5]), b=ivy.array([3.5, 1.5]))
+        >>> z = x.stable_pow(y)
         >>> print(z)
         {
             a: ivy.array([2.65, 5.66]),
             b: ivy.array([46.8, 8.])
         }
 
-        >>> x = ivy.Container(a=ivy.asarray([1.5, 2.], [3., 4.]),\
-        ... b=ivy.asarray([5., 6.], [7., 8.]))
-        >>> y = ivy.Container(a=ivy.asarray([0.5, 2.5]), b=ivy.asarray([3.5, 1.5]))
-        >>> z = ivy.Container.stable_pow(x, y, min_base=2)
+        >>> x = ivy.Container(a=ivy.array([1.5, 2.], [3., 4.]),\
+                              b=ivy.array([5., 6.], [7., 8.]))
+        >>> y = ivy.Container(a=ivy.array([0.5, 2.5]), b=ivy.array([3.5, 1.5]))
+        >>> z = x.stable_pow(y, min_base=2)
         >>> print(z)
         {
             a: ivy.array([1.87, 32.]),

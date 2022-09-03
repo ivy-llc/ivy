@@ -2316,7 +2316,7 @@ def stable_pow(
 
     Examples
     --------
-    With :code:`int` input:
+    With :code:`Number` input:
 
     >>> x = ivy.stable_pow(3, 5)
     >>> print(x)
@@ -2326,13 +2326,9 @@ def stable_pow(
     >>> print(x)
     256
 
-    With :code:`float` input:
-
     >>> x = ivy.stable_pow(3.05, 5.55)
     >>> print(x)
     487.38483402344497
-
-    With :code:`complex` input:
 
     >>> x = ivy.stable_pow(1+1, 1-1j)
     >>> print(x)
@@ -2340,26 +2336,20 @@ def stable_pow(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.asarray([2, 3, 4])
+    >>> x = ivy.array([2, 3, 4])
     >>> y = ivy.stable_pow(x, 2)
     >>> print(y)
     ivy.array([ 4,  9, 16])
 
-    >>> x = ivy.asarray([2., 4., 6.])
-    >>> y = np.array((4, 3, 2))
-    >>> z = ivy.stable_pow(x, y)
-    >>> print(z)
-    ivy.array([16., 64., 36.])
-
-    >>> x = ivy.asarray([2.0, 4.0, 81.0])
-    >>> y = ivy.asarray([2, 0.5, 3])
-    >>> z = ivy.asarray([0.1, 0.2, 0.3])
+    >>> x = ivy.array([2.0, 4.0, 81.0])
+    >>> y = ivy.array([2, 0.5, 3])
+    >>> z = ivy.array([0.1, 0.2, 0.3])
     >>> print(ivy.stable_pow(x, y, min_base = z))
     ivy.array([4.41e+00, 2.05e+00, 5.37e+05])
 
-    With :code:`ivy.Container` input:
+    With one :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a = ivy.asarray([2., 4.]), b = ivy.asarray([3., 6.]))
+    >>> x = ivy.Container(a = ivy.array([2., 4.]), b = ivy.array([3., 6.]))
     >>> y = ivy.stable_pow(x, 2)
     >>> print(y)
     {
@@ -2367,8 +2357,10 @@ def stable_pow(
         b: ivy.array([9., 36.])
     }
 
-    >>> x = ivy.Container(a = ivy.asarray([3., 4.]), b = ivy.asarray([9., 6.]))
-    >>> y = ivy.Container(a = ivy.asarray([2, 3]), b = ivy.asarray([0.5, 4]))
+    With multiple :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([3., 4.]), b = ivy.array([9., 6.]))
+    >>> y = ivy.Container(a = ivy.array([2, 3]), b = ivy.array([0.5, 4]))
     >>> z = ivy.stable_pow(x, y)
     >>> print(z)
     {
