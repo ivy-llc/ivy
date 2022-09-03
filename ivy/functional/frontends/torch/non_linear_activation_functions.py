@@ -50,3 +50,21 @@ def softmin(input, dim=None, dtype=None):
 
 
 softmin.unsupported_dtypes = ("float16",)
+
+
+def hardtanh(input, min_val=-1., max_val=1., inplace=False):
+    import torch
+    assert max_val > min_val
+    if inplace:
+        result = torch._C._nn.hardtanh_(input, min_val, max_val)
+    else:
+        if input > max_val:
+            result = max_val
+        elif input < min_val:
+            result = min_val
+        else:
+            result = input
+
+    return result
+
+hardtanh.unsupported_dtypes = {"torch": ("float16",)}
