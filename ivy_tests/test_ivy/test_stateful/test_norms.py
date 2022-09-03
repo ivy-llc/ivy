@@ -50,7 +50,3 @@ def test_layer_norm_layer(
     if not with_v:
         return
     assert np.allclose(ivy.to_numpy(norm_layer(x)), ivy.to_numpy(target))
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # this is not a backend implemented function
-        return
