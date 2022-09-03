@@ -7,7 +7,7 @@ def matrix_rank(a, tol=None, valiate_args=False, name=None):
 
 
 def adjoint(matrix, name=None):
-    matrix = ivy.Array.matrix_transpose(matrix)
+    matrix = ivy.matrix_transpose(matrix)
     return ivy.adjoint(matrix, conjugate=True)
 
 
