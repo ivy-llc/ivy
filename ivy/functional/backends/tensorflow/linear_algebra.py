@@ -180,7 +180,9 @@ def matrix_norm(
             tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes
         )
     elif ord == -2:
-        ret = tf.reduce_min(x, axis=(-2, -1), keepdims=keepdims)
+        ret = tf.reduce_min(
+            tf.linalg.svd(x, compute_uv=False), axis=(-2, -1), keepdims=keepdims
+        )
     elif ord == "nuc":
         if tf.size(x).numpy() == 0:
             ret = x
@@ -239,8 +241,21 @@ def matrix_rank(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.matrix_rank(x, rtol)
-    return tf.cast(ret, ivy.default_int_dtype(as_native=True))
+    if rtol is None:
+        ret = tf.linalg.matrix_rank(x)
+    elif tf.size(x) == 0:
+        ret = 0
+    elif tf.size(x) == 1:
+        ret = tf.math.count_nonzero(x)
+    else:
+        rtol = tf.convert_to_tensor([rtol], dtype=tf.float32)
+        rtol = tf.reshape(rtol, [-1])
+        if len(rtol) > 1:
+            rtol = rtol[0]
+        x, rtol = ivy.promote_types_of_inputs(x, rtol)
+        ret = tf.linalg.matrix_rank(x, rtol)
+    ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
+    return ret
 
 
 def matrix_transpose(
@@ -432,9 +447,8 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+    ret = tf.tensordot(x1, x2, (axis, axis))
     return ret
 
 
@@ -451,17 +465,18 @@ def vector_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ord == -float("inf"):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-    elif ord < 1:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-            1.0 / ord
+    elif ord == -2:
+        tn_normalized_vector = 1.0 / tf.sqrt(
+            tf.reduce_sum(1.0 / tf.abs(x) ** 2, axis, keepdims)
         )
-
+    elif ord == -1:
+        tn_normalized_vector = 1.0 / tf.reduce_sum(1.0 / tf.abs(x), axis, keepdims)
     elif ord == 0:
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
-
+    elif ord < 1:
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord) ** (1.0 / ord)
     else:
         tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
-
     if tn_normalized_vector.shape == tuple():
         ret = tf.expand_dims(tn_normalized_vector, 0)
     else:
