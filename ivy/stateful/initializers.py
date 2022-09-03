@@ -16,6 +16,7 @@ class Initializer(abc.ABC):
     `z` from vanishing (getting too small) or exploding (getting too big), the 
     initial weights must be picked carefully. 
     """
+    
     @abc.abstractmethod
     def create_variables(
         self,
