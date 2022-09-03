@@ -5,8 +5,8 @@ import numpy as np
 from hypothesis import given, strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # Linear #
@@ -48,18 +48,15 @@ def x_and_linear(draw, dtypes):
 
 
 # linear
+@handle_cmd_line_args
 @given(
     dtype_x_weight_bias=x_and_linear(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_linear(
     *,
-    data,
     dtype_x_weight_bias,
     as_variable,
     with_out,
@@ -98,9 +95,10 @@ def test_linear(
 # --------#
 
 # dropout
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=50,
         allow_inf=False,
@@ -108,18 +106,12 @@ def test_linear(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    data=st.data(),
-    prob=st.floats(min_value=0, max_value=0.9, width=64),
+    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
     scale=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="dropout"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
-@handle_cmd_line_args
 def test_dropout(
     *,
-    data,
     dtype_and_x,
     prob,
     scale,
@@ -132,7 +124,6 @@ def test_dropout(
     fw,
     device,
 ):
-
     dtype, x = dtype_and_x
     x = np.asarray(x, dtype=dtype)
     ret = helpers.test_function(
@@ -174,7 +165,7 @@ def x_and_scaled_attention(draw, dtypes):
     num_queries = draw(helpers.ints(min_value=1, max_value=3))
     num_keys = draw(helpers.ints(min_value=1, max_value=3))
     feat_dim = draw(helpers.ints(min_value=1, max_value=3))
-    scale = draw(st.floats(min_value=0.1, max_value=1, width=64))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
 
     q_shape = batch_shape + (num_queries,) + (feat_dim,)
     k_shape = batch_shape + (num_keys,) + (feat_dim,)
@@ -190,26 +181,24 @@ def x_and_scaled_attention(draw, dtypes):
             shape=mask_shape,
             min_value=0,
             max_value=1,
-            large_value_safety_factor=2,
+            large_value_safety_factor=1,
         )
     )
     return dtype, q, k, v, mask, scale
 
 
-# # scaled_dot_product_attention
+# scaled_dot_product_attention
+@handle_cmd_line_args
 @given(
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
     ),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_scaled_dot_product_attention(
     *,
-    data,
     dtype_q_k_v_mask_scale,
     as_variable,
     num_positional_args,
@@ -256,7 +245,7 @@ def x_and_mha(draw, dtypes):
     x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
     context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
     mask_shape = (num_queries,) + (num_keys,)
-    scale = draw(st.floats(min_value=0.1, max_value=1, width=64))
+    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
     x_mha = draw(
         helpers.array_values(
             dtype=dtype,
@@ -285,20 +274,16 @@ def x_and_mha(draw, dtypes):
 
 
 # multi_head_attention
+@handle_cmd_line_args
 @given(
     dtype_mha=x_and_mha(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="multi_head_attention"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_multi_head_attention(
     *,
-    data,
     dtype_mha,
     as_variable,
-    num_positional_args,
     with_out,
     native_array,
     container,
@@ -316,7 +301,7 @@ def test_multi_head_attention(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=3,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -354,217 +339,91 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
 
 
 @st.composite
-def _x_and_filters(
-    draw,
-    dtypes,
-    data_format,
-    padding,
-    stride_min,
-    stride_max,
-    type: str = "2d",
-    transpose=False,
-):
-    data_format = draw(data_format)
-    dtype = draw(dtypes)
-    padding = draw(padding)
-    stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
-    dilations = draw(helpers.ints(min_value=1, max_value=3))
-    if type == "1d":
-        if not transpose:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-            min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-        else:
-            filter_shape = draw(
-                st.tuples(
-                    st.integers(min_value=3, max_value=5),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                )
-            )
-            min_x_width = 1
-        d_in = filter_shape[1]
-        if data_format == "NWC":
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                )
-            )
-            x_w = x_shape[1]
-        else:
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                )
-            )
-            x_w = x_shape[2]
-        if transpose:
-            output_shape = [
-                _deconv_length(x_w, stride, filter_shape[0], padding, dilations)
-            ]
-    elif type == "2d" or type == "depthwise":
-        min_x_height = 1
-        min_x_width = 1
-        if type == "depthwise":
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-        elif not transpose:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-        else:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                )
-            )
-        if not transpose:
-            min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-            min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
-        d_in = filter_shape[2]
-        if data_format == "NHWC":
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=min_x_height, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                )
-            )
-            x_h = x_shape[1]
-            x_w = x_shape[2]
-        else:
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                    helpers.ints(min_value=min_x_height, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                )
-            )
-            x_h = x_shape[2]
-            x_w = x_shape[3]
-        if transpose:
-            output_shape_h = _deconv_length(
-                x_h, stride, filter_shape[0], padding, dilations
-            )
-            output_shape_w = _deconv_length(
-                x_w, stride, filter_shape[1], padding, dilations
-            )
-            output_shape = [output_shape_h, output_shape_w]
-    else:
-        if not transpose:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-            min_x_depth = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-            min_x_height = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
-            min_x_width = filter_shape[2] + (filter_shape[2] - 1) * (dilations - 1)
-        else:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                )
-            )
-            min_x_depth = 1
-            min_x_height = 1
-            min_x_width = 1
-        d_in = filter_shape[3]
-        if data_format == "NDHWC":
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_height, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                )
-            )
-            x_d = x_shape[1]
-            x_h = x_shape[2]
-            x_w = x_shape[3]
-        else:
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                    helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                )
-            )
-            x_d = x_shape[2]
-            x_h = x_shape[3]
-            x_w = x_shape[4]
-        if transpose:
-            output_shape_d = _deconv_length(
-                x_d, stride, filter_shape[0], padding, dilations
-            )
-            output_shape_h = _deconv_length(
-                x_h, stride, filter_shape[1], padding, dilations
-            )
-            output_shape_w = _deconv_length(
-                x_w, stride, filter_shape[2], padding, dilations
-            )
-            output_shape = [output_shape_d, output_shape_h, output_shape_w]
-    x = draw(helpers.array_values(dtype=dtype, shape=x_shape, min_value=0, max_value=1))
-    filters = draw(
-        helpers.array_values(dtype=dtype, shape=filter_shape, min_value=0, max_value=1)
+def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+    strides = draw(st.integers(min_value=1, max_value=2))
+    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    batch_size = draw(st.integers(1, 5))
+    filter_shape = draw(
+        helpers.get_shape(
+            min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+        )
     )
-    if not transpose:
-        return dtype, x, filters, dilations, data_format, stride, padding
-    return dtype, x, filters, dilations, data_format, stride, padding, output_shape
+    input_channels = draw(st.integers(1, 5))
+    output_channels = draw(st.integers(1, 5))
+    dilations = draw(st.integers(1, 2))
+    dtype = draw(helpers.get_dtypes("float"))
+    if dim == 2:
+        data_format = draw(st.sampled_from(["NCHW"]))
+    elif dim == 1:
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    else:
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
+
+    x_dim = []
+    if transpose:
+        output_shape = []
+        x_dim = draw(
+            helpers.get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=20
+            )
+        )
+        for i in range(dim):
+            output_shape.append(
+                ivy.deconv_length(
+                    x_dim[i], strides, filter_shape[i], padding, dilations
+                )
+            )
+    else:
+        for i in range(dim):
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            x_dim.append(draw(st.integers(min_x, 100)))
+        x_dim = tuple(x_dim)
+    if not depthwise:
+        filter_shape = filter_shape + (input_channels, output_channels)
+    else:
+        filter_shape = filter_shape + (input_channels,)
+    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+        x_shape = (batch_size,) + x_dim + (input_channels,)
+    else:
+        x_shape = (batch_size, input_channels) + x_dim
+    vals = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=x_shape,
+            large_value_safety_factor=10,
+            small_value_safety_factor=0.1,
+        )
+    )
+    filters = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=filter_shape,
+            large_value_safety_factor=10,
+            small_value_safety_factor=0.1,
+        )
+    )
+    if transpose:
+        return (
+            dtype,
+            vals,
+            filters,
+            dilations,
+            data_format,
+            strides,
+            padding,
+            output_shape,
+        )
+    return dtype, vals, filters, dilations, data_format, strides, padding
 
 
 # conv1d
-@given(
-    x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        data_format=st.sampled_from(["NWC", "NCW"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=4,
-        type="1d",
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    x_f_d_df=x_and_filters(dim=1),
+    num_positional_args=helpers.num_positional_args(fn_name="conv1d"),
+)
 def test_conv1d(
     *,
-    data,
     x_f_d_df,
     with_out,
     as_variable,
@@ -590,6 +449,7 @@ def test_conv1d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv1d",
+        ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
@@ -600,23 +460,13 @@ def test_conv1d(
 
 
 # conv1d_transpose
-@given(
-    x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        data_format=st.sampled_from(["NWC", "NCW"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=4,
-        type="1d",
-        transpose=True,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="conv1d_transpose"),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    x_f_d_df=x_and_filters(dim=1, transpose=True),
+    num_positional_args=helpers.num_positional_args(fn_name="conv1d_transpose"),
+)
 def test_conv1d_transpose(
     *,
-    data,
     x_f_d_df,
     with_out,
     as_variable,
@@ -655,22 +505,13 @@ def test_conv1d_transpose(
 
 
 # conv2d
-@given(
-    x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        data_format=st.sampled_from(["NHWC", "NCHW"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=4,
-        type="2d",
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    x_f_d_df=x_and_filters(dim=2),
+    num_positional_args=helpers.num_positional_args(fn_name="conv2d"),
+)
 def test_conv2d(
     *,
-    data,
     x_f_d_df,
     with_out,
     as_variable,
@@ -694,6 +535,7 @@ def test_conv2d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d",
+        ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
@@ -704,20 +546,14 @@ def test_conv2d(
 
 
 # conv2d_transpose
+@handle_cmd_line_args
 @given(
-    x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        data_format=st.sampled_from(["NHWC", "NCHW"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=4,
-        type="2d",
+    x_f_d_df=x_and_filters(
+        dim=2,
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv2d_transpose"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv2d_transpose(
     *,
     x_f_d_df,
@@ -759,19 +595,14 @@ def test_conv2d_transpose(
 
 
 # depthwise_conv2d
+@handle_cmd_line_args
 @given(
-    x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        data_format=st.sampled_from(["NHWC", "NCHW"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=4,
-        type="depthwise",
+    x_f_d_df=x_and_filters(
+        dim=2,
+        depthwise=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="depthwise_conv2d"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_depthwise_conv2d(
     *,
     x_f_d_df,
@@ -811,22 +642,13 @@ def test_depthwise_conv2d(
 
 
 # conv3d
-@given(
-    x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        data_format=st.sampled_from(["NDHWC", "NCDHW"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=4,
-        type="3d",
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="conv3d"),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    x_f_d_df=x_and_filters(dim=3),
+    num_positional_args=helpers.num_positional_args(fn_name="conv3d"),
+)
 def test_conv3d(
     *,
-    data,
     x_f_d_df,
     with_out,
     as_variable,
@@ -861,20 +683,14 @@ def test_conv3d(
 
 
 # conv3d_transpose
+@handle_cmd_line_args
 @given(
-    x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
-        data_format=st.sampled_from(["NDHWC", "NCDHW"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=4,
-        type="3d",
+    x_f_d_df=x_and_filters(
+        dim=3,
         transpose=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="conv3d_transpose"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_conv3d_transpose(
     *,
     x_f_d_df,
@@ -977,20 +793,16 @@ def x_and_lstm(draw, dtypes):
 
 
 # lstm
+@handle_cmd_line_args
 @given(
     dtype_lstm=x_and_lstm(
-        dtypes=st.sampled_from(ivy_np.valid_float_dtypes),
+        dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
-    data=st.data(),
 )
-@handle_cmd_line_args
-def test_lstm(
+def test_lstm_update(
     *,
-    data,
     dtype_lstm,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1015,7 +827,7 @@ def test_lstm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=5,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,

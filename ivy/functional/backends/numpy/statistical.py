@@ -12,9 +12,10 @@ import ivy
 
 def max(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -26,9 +27,10 @@ max.support_native_out = True
 
 def mean(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -40,9 +42,10 @@ mean.support_native_out = True
 
 def min(
     x: np.ndarray,
+    /,
+    *,
     axis: Union[int, Tuple[int]] = None,
     keepdims: bool = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -52,32 +55,26 @@ def min(
 min.support_native_out = True
 
 
+def _infer_dtype(x_dtype: np.dtype):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
+
+
 def prod(
     x: np.ndarray,
+    /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if dtype is None and np.issubdtype(x.dtype, np.integer):
-        if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
-            np.int8,
-            np.int16,
-            np.int32,
-        ]:
-            dtype = np.int32
-        elif np.issubdtype(x.dtype, np.unsignedinteger) and x.dtype in [
-            np.uint8,
-            np.uint16,
-            np.uint32,
-        ]:
-            dtype = np.uint32
-        elif x.dtype == np.int64:
-            dtype = np.int64
-        else:
-            dtype = np.uint64
-    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
 
@@ -87,10 +84,11 @@ prod.support_native_out = True
 
 def std(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -102,32 +100,36 @@ std.support_native_out = True
 
 def sum(
     x: np.ndarray,
+    /,
     *,
-    axis: Union[int, Tuple[int]] = None,
-    dtype: np.dtype = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
+    initial=None,
+    where=None,
 ) -> np.ndarray:
-    if dtype is None and np.issubdtype(x.dtype, np.integer):
-        if np.issubdtype(x.dtype, np.signedinteger) and x.dtype in [
-            np.int8,
-            np.int16,
-            np.int32,
-        ]:
-            dtype = np.int32
-        elif np.issubdtype(x.dtype, np.unsignedinteger) and x.dtype in [
-            np.uint8,
-            np.uint16,
-            np.uint32,
-        ]:
-            dtype = np.uint32
-        elif x.dtype == np.int64:
-            dtype = np.int64
-        else:
-            dtype = np.uint64
-    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
+
+    if initial is None:
+        initial = np._NoValue
+
+    if where is None:
+        where = np._NoValue
+
+    return np.asarray(
+        np.sum(
+            a=x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+    )
 
 
 sum.support_native_out = True
@@ -135,14 +137,26 @@ sum.support_native_out = True
 
 def var(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: Optional[bool] = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if isinstance(correction, int):
+        return np.asarray(
+            np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
+        )
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    return np.asarray(
+        np.var(x, axis=axis, keepdims=keepdims, out=out) * (size / (size - correction))
+    ).astype(x.dtype)
 
 
 var.support_native_out = True

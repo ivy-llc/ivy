@@ -119,137 +119,7 @@ _MIN_BASE = 1e-5
 
 # local
 import threading
-from .array import Array, Variable, add_ivy_array_instance_methods
-from .array.conversions import *
-from .array import conversions as arr_conversions
-from .container import conversions as cont_conversions
-from .container import (
-    ContainerBase,
-    Container,
-    add_ivy_container_instance_methods,
-)
-from .backend_handler import (
-    current_backend,
-    get_backend,
-    set_backend,
-    unset_backend,
-    backend_stack,
-    choose_random_backend,
-    try_import_ivy_jax,
-    try_import_ivy_tf,
-    try_import_ivy_torch,
-    try_import_ivy_mxnet,
-    try_import_ivy_numpy,
-    clear_backend_stack,
-)
-from . import backend_handler, func_wrapper
-from . import functional
-from .functional import *
-from . import stateful
-from .stateful import *
-from . import verbosity
-from .inspection import fn_array_spec, add_array_specs
 
-add_array_specs()
-
-# add instance methods to Ivy Array and Container
-from ivy.functional.ivy import (
-    activations,
-    creation,
-    data_type,
-    device,
-    elementwise,
-    general,
-    gradients,
-    layers,
-    linear_algebra,
-    losses,
-    manipulation,
-    norms,
-    random,
-    searching,
-    set,
-    sorting,
-    statistical,
-    utility,
-)
-
-add_ivy_array_instance_methods(
-    Array,
-    [
-        activations,
-        arr_conversions,
-        creation,
-        data_type,
-        device,
-        elementwise,
-        general,
-        gradients,
-        layers,
-        linear_algebra,
-        losses,
-        manipulation,
-        norms,
-        random,
-        searching,
-        set,
-        sorting,
-        statistical,
-        utility,
-    ],
-)
-
-add_ivy_container_instance_methods(
-    Container,
-    [
-        activations,
-        cont_conversions,
-        creation,
-        data_type,
-        device,
-        elementwise,
-        general,
-        gradients,
-        layers,
-        linear_algebra,
-        losses,
-        manipulation,
-        norms,
-        random,
-        searching,
-        set,
-        sorting,
-        statistical,
-        utility,
-    ],
-)
-
-
-add_ivy_container_instance_methods(
-    Container,
-    [
-        activations,
-        cont_conversions,
-        creation,
-        data_type,
-        device,
-        elementwise,
-        general,
-        gradients,
-        layers,
-        linear_algebra,
-        losses,
-        manipulation,
-        norms,
-        random,
-        searching,
-        set,
-        sorting,
-        statistical,
-        utility,
-    ],
-    static=True,
-)
 
 # data types
 int8 = IntDtype("int8")
@@ -468,9 +338,165 @@ extra_promotion_table = {
     (float32, uint64): float32,
     (uint64, float64): float64,
     (float64, uint64): float64,
+    (bfloat16, bfloat16): bfloat16,
+    (bfloat16, uint8): bfloat16,
+    (uint8, bfloat16): bfloat16,
+    (bfloat16, uint16): bfloat16,
+    (uint16, bfloat16): bfloat16,
+    (bfloat16, uint32): bfloat16,
+    (uint32, bfloat16): bfloat16,
+    (bfloat16, uint64): bfloat16,
+    (uint64, bfloat16): bfloat16,
+    (bfloat16, int8): bfloat16,
+    (int8, bfloat16): bfloat16,
+    (bfloat16, int16): bfloat16,
+    (int16, bfloat16): bfloat16,
+    (bfloat16, int32): bfloat16,
+    (int32, bfloat16): bfloat16,
+    (bfloat16, int64): bfloat16,
+    (int64, bfloat16): bfloat16,
+    (bfloat16, float16): float32,
+    (float16, bfloat16): float32,
+    (bfloat16, float32): float32,
+    (float32, bfloat16): float32,
+    (bfloat16, float64): float64,
+    (float64, bfloat16): float64,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
+
+
+from .array import Array, Variable, add_ivy_array_instance_methods
+from .array.conversions import *
+from .array import conversions as arr_conversions
+from .container import conversions as cont_conversions
+from .container import (
+    ContainerBase,
+    Container,
+    add_ivy_container_instance_methods,
+)
+from .backend_handler import (
+    current_backend,
+    get_backend,
+    set_backend,
+    unset_backend,
+    backend_stack,
+    choose_random_backend,
+    try_import_ivy_jax,
+    try_import_ivy_tf,
+    try_import_ivy_torch,
+    try_import_ivy_mxnet,
+    try_import_ivy_numpy,
+    clear_backend_stack,
+)
+from . import backend_handler, func_wrapper
+from . import functional
+from .functional import *
+from . import stateful
+from .stateful import *
+from . import verbosity
+from .inspection import fn_array_spec, add_array_specs
+
+add_array_specs()
+
+# add instance methods to Ivy Array and Container
+from ivy.functional.ivy import (
+    activations,
+    creation,
+    data_type,
+    device,
+    elementwise,
+    general,
+    gradients,
+    layers,
+    linear_algebra,
+    losses,
+    manipulation,
+    norms,
+    random,
+    searching,
+    set,
+    sorting,
+    statistical,
+    utility,
+)
+
+add_ivy_array_instance_methods(
+    Array,
+    [
+        activations,
+        arr_conversions,
+        creation,
+        data_type,
+        device,
+        elementwise,
+        general,
+        gradients,
+        layers,
+        linear_algebra,
+        losses,
+        manipulation,
+        norms,
+        random,
+        searching,
+        set,
+        sorting,
+        statistical,
+        utility,
+    ],
+)
+
+add_ivy_container_instance_methods(
+    Container,
+    [
+        activations,
+        cont_conversions,
+        creation,
+        data_type,
+        device,
+        elementwise,
+        general,
+        gradients,
+        layers,
+        linear_algebra,
+        losses,
+        manipulation,
+        norms,
+        random,
+        searching,
+        set,
+        sorting,
+        statistical,
+        utility,
+    ],
+)
+
+
+add_ivy_container_instance_methods(
+    Container,
+    [
+        activations,
+        cont_conversions,
+        creation,
+        data_type,
+        device,
+        elementwise,
+        general,
+        gradients,
+        layers,
+        linear_algebra,
+        losses,
+        manipulation,
+        norms,
+        random,
+        searching,
+        set,
+        sorting,
+        statistical,
+        utility,
+    ],
+    static=True,
+)
 
 
 backend = "none"

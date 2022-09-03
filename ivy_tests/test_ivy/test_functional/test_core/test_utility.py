@@ -5,33 +5,25 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # all
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_int_dtypes,
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=-1,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
     ),
     keepdims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="all"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_all(
-    *,
     dtype_x_axis,
     keepdims,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -42,7 +34,7 @@ def test_all(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -55,27 +47,20 @@ def test_all(
 
 
 # any
+@handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_int_dtypes,
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=-1,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
     ),
     keepdims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="any"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_any(
-    *,
     dtype_x_axis,
     keepdims,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -86,7 +71,7 @@ def test_any(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
