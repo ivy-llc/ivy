@@ -290,6 +290,8 @@ def test_matrix_power(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_power",
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=dtype),
         n=n,
     )
@@ -460,6 +462,7 @@ def test_eigvalsh(
         instance_method=instance_method,
         fw=fw,
         fn_name="eigvalsh",
+        rtol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -689,6 +692,8 @@ def test_solve(
         instance_method=instance_method,
         fw=fw,
         fn_name="solve",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=np.asarray(x1, dtype=input_dtype1),
         x2=np.asarray(x2, dtype=input_dtype2),
     )

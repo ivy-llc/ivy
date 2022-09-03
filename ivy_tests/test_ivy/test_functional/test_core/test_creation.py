@@ -116,13 +116,12 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        small_value_safety_factor=0.5,
-        large_value_safety_factor=1.5,
+        small_value_safety_factor=2.5,
+        large_value_safety_factor=50,
     ),
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
-    num_positional_args=helpers.num_positional_args(fn_name="logspace"),
 )
 def test_logspace(
     *,
@@ -131,15 +130,15 @@ def test_logspace(
     base,
     axis,
     device,
-    num_positional_args,
+    with_out,
     fw,
 ):
     dtype, start_stop = dtype_and_start_stop
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
-        with_out=False,
-        num_positional_args=num_positional_args,
+        with_out=with_out,
+        num_positional_args=2,
         native_array_flags=False,
         container_flags=False,
         instance_method=False,

@@ -106,13 +106,56 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
 
     # return to original shape
     if reshape:
-        return ivy.reshape(matches, y_true_org_shape)
+        return ivy.reshape(matches, shape=y_true_org_shape)
 
     return matches
 
 
 def sparse_top_k_categorical_accuracy(y_true, y_pred, k=5):
     return _sparse_top_k_categorical_matches(y_true, y_pred, k)
+
+
+def _sparse_categorical_matches(y_true, y_pred):
+    reshape = False
+    y_true = ivy.array(y_true)
+    y_pred = ivy.array(y_pred)
+    y_true_org_shape = y_true.shape
+    y_true_rank = y_true.ndim
+    y_pred_rank = y_pred.ndim
+
+    # y_true shape to (num_samples,)
+    if (
+        (y_true_rank is not None)
+        and (y_pred_rank is not None)
+        and (len(y_true.shape) == len(y_pred.shape))
+    ):
+        y_true = ivy.squeeze(y_true, axis=-1)
+        reshape = True
+    y_pred = ivy.argmax(y_pred, axis=-1)
+
+    # cast prediction type to be the same as ground truth
+    y_pred = ivy.astype(y_pred, y_true.dtype, copy=False)
+
+    matches = ivy.astype(ivy.equal(y_true, y_pred), ivy.float32)
+    if reshape:
+        matches = ivy.reshape(matches, shape=y_true_org_shape)
+
+    return matches
+
+
+def categorical_accuracy(y_true, y_pred):
+    return _sparse_categorical_matches(ivy.argmax(y_true, axis=-1), y_pred)
+
+
+def kl_divergence(y_true, y_pred):
+    y_true = ivy.array(y_true)
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(y_true, y_pred.dtype)
+    # clip to range but avoid div-0
+    y_true = ivy.clip(y_true, 1e-7, 1)
+    y_pred = ivy.clip(y_pred, 1e-7, 1)
+
+    return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1)
 
 
 def mean_squared_logarithmic_error(y_true, y_pred):
