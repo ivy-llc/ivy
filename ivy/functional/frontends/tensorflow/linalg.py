@@ -33,4 +33,4 @@ def tensordot(x, y, axes, name=None):
     return ivy.tensordot(x, y, axes)
 
 
-tensordot.unsupported_dtypes = ("float16", "bfloat16")
+tensordot.supported_dtypes = ("float32", "float64")
