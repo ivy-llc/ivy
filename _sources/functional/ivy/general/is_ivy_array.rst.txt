@@ -4,6 +4,10 @@ is_ivy_array
 .. autofunction:: ivy.functional.ivy.general.is_ivy_array
 
 .. autofunction:: ivy.array.array_methods.is_ivy_array
+
+.. autofunction:: ivy.container.container_methods.static_is_ivy_array
+
+.. autofunction:: ivy.container.container_methods.is_ivy_array
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ is_ivy_array
 
    is_ivy_array/is_ivy_array_functional.rst
    is_ivy_array/is_ivy_array_array.rst
+   is_ivy_array/is_ivy_array_container.rst
+   is_ivy_array/static_is_ivy_array_container.rst
 

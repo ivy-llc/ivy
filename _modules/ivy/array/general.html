@@ -141,6 +141,75 @@
 
 
 <div class="viewcode-block" id="ArrayWithGeneral"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithGeneral</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="ArrayWithGeneral.is_native_array"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.is_native_array">[docs]</a>    <span class="k">def</span> <span class="nf">is_native_array</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.is_native_array. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.is_native_array </span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The input to check</span>
+<span class="sd">        exclusive</span>
+<span class="sd">            Whether to check if the data type is exclusively an array, rather than a</span>
+<span class="sd">            variable or traced array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Boolean, whether or not x is a native array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithGeneral.is_ivy_array"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.is_ivy_array">[docs]</a>    <span class="k">def</span> <span class="nf">is_ivy_array</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.is_ivy_array. This method simply </span>
+<span class="sd">        wraps the function, and so the docstring for ivy.is_ivy_array also applies </span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The input to check</span>
+<span class="sd">        exclusive</span>
+<span class="sd">            Whether to check if the data type is exclusively an array, rather than a</span>
+<span class="sd">            variable or traced array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Boolean, whether or not x is an array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithGeneral.is_array"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.is_array">[docs]</a>    <span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.is_array. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.is_array also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The input to check</span>
+<span class="sd">        exclusive</span>
+<span class="sd">            Whether to check if the data type is exclusively an array, rather than a</span>
+<span class="sd">            variable or traced array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Boolean, whether or not x is an array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="ArrayWithGeneral.all_equal"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.all_equal">[docs]</a>    <span class="k">def</span> <span class="nf">all_equal</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">equality_matrix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
@@ -231,7 +300,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span>
+<div class="viewcode-block" id="ArrayWithGeneral.cumsum"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.cumsum">[docs]</a>    <span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -303,7 +372,7 @@
 <span class="sd">                   [ 5, 13, 20],</span>
 <span class="sd">                   [ 7, 16, 25]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithGeneral.cumprod"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.cumprod">[docs]</a>    <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
@@ -542,26 +611,26 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            New array with einops.reduce having been applied.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt; x = ivy.array([[[5,4],</span>
-<span class="sd">                       [11, 2]], </span>
-<span class="sd">                      [[3, 5], </span>
+<span class="sd">                       [11, 2]],</span>
+<span class="sd">                      [[3, 5],</span>
 <span class="sd">                       [9, 7]]])</span>
 <span class="sd">        &gt;&gt; reduced = x.einops_reduce(&#39;a b c -&gt; b c&#39;, &#39;max&#39;)</span>
 <span class="sd">        &gt;&gt; print(reduced)</span>
 <span class="sd">        ivy.array([[ 5,  5],</span>
-<span class="sd">                   [11,  7]])   </span>
+<span class="sd">                   [11,  7]])</span>
 
 <span class="sd">        &gt;&gt; x = ivy.array([[[5, 4, 3],</span>
-<span class="sd">                        [11, 2, 9]], </span>
-<span class="sd">                       [[3, 5, 7], </span>
+<span class="sd">                        [11, 2, 9]],</span>
+<span class="sd">                       [[3, 5, 7],</span>
 <span class="sd">                        [9, 7, 1]]])</span>
 <span class="sd">        &gt;&gt; reduced = x.einops_reduce(&#39;a b c -&gt; a () c&#39;, &#39;min&#39;)</span>
 <span class="sd">        &gt;&gt; print(reduced)</span>
 <span class="sd">        ivy.array([[[5, 2, 3]],</span>
-<span class="sd">                   [[3, 5, 1]]])    </span>
+<span class="sd">                   [[3, 5, 1]]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_reduce</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">reduction</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">axes_lengths</span>
@@ -602,8 +671,8 @@
 <span class="sd">        &gt;&gt; repeated = x.einops_repeat(&#39;a -&gt; a c&#39;, c=3)</span>
 <span class="sd">        &gt;&gt; print(repeated)</span>
 <span class="sd">        ivy.array([[5, 4],</span>
-<span class="sd">                   [5, 4],    </span>
-<span class="sd">                  [5, 4]])  </span>
+<span class="sd">                   [5, 4],</span>
+<span class="sd">                  [5, 4]])</span>
 
 <span class="sd">        &gt;&gt; x = ivy.array([[5,4],</span>
 <span class="sd">                    [2, 3]])</span>
@@ -815,28 +884,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">assert_supports_inplace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayWithGeneral.is_ivy_array"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.is_ivy_array">[docs]</a>    <span class="k">def</span> <span class="nf">is_ivy_array</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.is_ivy_array. This method simply wraps</span>
-<span class="sd">        the function, and so the docstring for ivy.is_ivy_array also applies to this</span>
-<span class="sd">        method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            input array</span>
-<span class="sd">        exclusive</span>
-<span class="sd">            Whether to check if the data type is exclusively an array, rather than a</span>
-<span class="sd">            variable or traced array.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Boolean, whether or not x is an ivy array.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithGeneral.copy_array"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.copy_array">[docs]</a>    <span class="k">def</span> <span class="nf">copy_array</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1118,34 +1165,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_increment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="ArrayWithGeneral.cumsum"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.cumsum">[docs]</a>    <span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.cumsum. This method simply</span>
-<span class="sd">        wraps the function, and so the docstring for ivy.cumsum also applies</span>
-<span class="sd">        to this method with minimal changes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            input array</span>
-<span class="sd">        axis</span>
-<span class="sd">            int, Axis along which the cumulative sum is computed. By default 0.</span>
-<span class="sd">        out</span>
-<span class="sd">            optional output array, for writing the result to.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-<span class="sd">            Input array with cumulatively summed elements along axis</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithGeneral.clip_matrix_norm"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.clip_matrix_norm">[docs]</a>    <span class="k">def</span> <span class="nf">clip_matrix_norm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
