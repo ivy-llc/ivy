@@ -2106,7 +2106,6 @@ def test_tanh(
         instance_method=instance_method,
         fw=fw,
         fn_name="tanh",
-        ground_truth_backend="numpy",
         x=np.asarray(x, dtype=input_dtype),
     )
 
