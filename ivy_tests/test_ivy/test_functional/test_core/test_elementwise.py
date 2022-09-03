@@ -326,9 +326,6 @@ def test_atanh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    # if input_dtype == "bfloat16":
-    #     return
-    print("input_dtype", input_dtype)
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
