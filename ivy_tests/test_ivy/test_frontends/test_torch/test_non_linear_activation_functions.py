@@ -262,3 +262,40 @@ def test_torch_softmin(
         dim=axis,
         dtype=dtypes[0],
     )
+
+    
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.hardtanh"
+    ),
+    alpha=st.floats(min_value=0, max_value=1),
+)
+def test_torch_hardtanh(
+    dtype_and_x,
+    num_positional_args,
+    fw,
+    alpha,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=False,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=False,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.hardtanh",
+        input=np.asarray(x, dtype=input_dtype),
+        negative_slope=alpha,
+    )
+ 
