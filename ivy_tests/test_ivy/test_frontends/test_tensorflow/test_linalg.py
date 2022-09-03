@@ -178,6 +178,7 @@ def test_tensorflow_solve(
     )
 
 # adjoint
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
@@ -198,8 +199,8 @@ def test_tensorflow_adjoint(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="linalg.adjoint"
-        input=np.asarray(x, dtype=input_dtype),
+        fn_tree="linalg.adjoint",
+        matrix=np.asarray(x, dtype=input_dtype),
     )
 
 # slogdet
