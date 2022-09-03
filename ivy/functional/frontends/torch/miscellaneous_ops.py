@@ -39,5 +39,6 @@ cumsum.unsupported_dtypes = (
     "uint64",
 )
 
+
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(x=input, offset=offset, axis1=dim1, axis2=dim2)

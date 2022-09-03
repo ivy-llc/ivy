@@ -31,12 +31,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     native_array=st.booleans(),
 )
 def test_torch_flip(
-    dtype_and_values,
-    axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        axis,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -76,13 +76,13 @@ def test_torch_flip(
     native_array=st.booleans(),
 )
 def test_torch_roll(
-    dtype_and_values,
-    shift,
-    axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        shift,
+        axis,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     if isinstance(shift, int) and isinstance(axis, tuple):
@@ -124,11 +124,11 @@ def test_torch_roll(
     native_array=st.booleans(),
 )
 def test_torch_fliplr(
-    dtype_and_values,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -165,12 +165,12 @@ def test_torch_fliplr(
     native_array=st.booleans(),
 )
 def test_torch_cumsum(
-    dtype_and_values,
-    axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        axis,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -188,6 +188,7 @@ def test_torch_cumsum(
         out=None,
     )
 
+
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -204,12 +205,12 @@ def test_torch_cumsum(
     native_array=st.booleans(),
 )
 def test_torch_diagonal(
-    dtype_and_values,
-    axis,
-    as_variable,
-    num_positional_args,
-    native_array,
-    fw,
+        dtype_and_values,
+        axis,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -226,4 +227,3 @@ def test_torch_diagonal(
         dtype=input_dtype,
         out=None,
     )
-
