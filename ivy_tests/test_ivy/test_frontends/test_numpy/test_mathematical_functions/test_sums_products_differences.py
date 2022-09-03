@@ -5,6 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -23,9 +24,9 @@ def _dtype_x_axis(draw, **kwargs):
 @handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_axis(
-        available_dtypes=ivy.current_backend().valid_float_dtypes),
+        available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(
-        ivy.current_backend().valid_float_dtypes + (None,)),
+        ivy_np.valid_float_dtypes + (None,)),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
@@ -68,9 +69,9 @@ def test_numpy_sum(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_axis(
-        available_dtypes=ivy.current_backend().valid_float_dtypes),
+        available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(
-        ivy.current_backend().valid_float_dtypes + (None,)),
+        ivy_np.valid_float_dtypes + (None,)),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
