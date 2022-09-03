@@ -564,6 +564,9 @@ def round(
         return tf.round(x)
 
 
+round.unsupported_dtypes = ("bfloat16",)
+
+
 def sign(
     x: Union[tf.Tensor, tf.Variable],
     /,
