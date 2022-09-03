@@ -156,3 +156,7 @@ def kl_divergence(y_true, y_pred):
     y_pred = ivy.clip(y_pred, 1e-7, 1)
 
     return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1)
+
+
+def mean_squared_error(y_true, y_pred):
+    return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
