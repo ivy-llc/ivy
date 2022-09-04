@@ -32,7 +32,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ivy.is_native_array(self._data, out=out)
+        return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
 
     def is_ivy_array(
         self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
@@ -55,7 +55,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_ivy_array(self._data, out=out)
+        return ivy.is_ivy_array(self._data, exclusive=exclusive, out=out)
 
     def is_array(
         self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
@@ -78,7 +78,27 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self._data, out=out)
+        return ivy.is_array(self._data, exclusive=exclusive, out=out)
+
+    def is_ivy_container(
+        self: ivy.Array, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.is_ivy_container. This method simply 
+        wraps the function, and so the docstring for ivy.is_ivy_container also applies 
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy container.
+        """
+        return ivy.is_ivy_container(self._data, out=out)
 
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False
