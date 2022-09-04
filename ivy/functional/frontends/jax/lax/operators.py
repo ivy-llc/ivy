@@ -288,3 +288,47 @@ expm1.supported_dtypes = ("bfloat16", "float16", "float32", "float64")
 
 def log1p(x):
     return ivy.log1p(x)
+
+
+def pad(operand, padding_value, padding_config):
+    operand_new = []
+    padding_row = []
+    for i in range(0, operand.shape[1] + (operand.shape[1] - 1) * padding_config[1][2]):
+        padding_row.append(padding_value)
+    for i in range(operand.shape[0] * 2 - 1):
+        if i % 2 != 0:
+            for k in range(0, padding_config[0][2]):
+                operand_new.append(padding_row)
+        else:
+            row = []
+            for j in range(operand.shape[1] * 2 - 1):
+                if j % 2 == 0:
+                    row.append(operand[int(i / 2)][int(j / 2)])
+                else:
+                    for k in range(0, padding_config[1][2]):
+                        row.append(padding_value)
+            operand_new.append(row)
+    operand_new = ivy.array(operand_new)
+    operand_copy = operand_new
+    ret_new = []
+    for j in range(0, padding_config[0][0]):
+        row = []
+        for i in range(operand_copy.shape[1] + padding_config[1][0] + padding_config[1][1]):
+            row.append(padding_value)
+        ret_new.append(row)
+    for k in range(0, operand_copy.shape[0]):
+        col = []
+        for i in range(padding_config[1][0]):
+            col.append(padding_value)
+        for j in range(0, operand_copy.shape[1]):
+            col.append(operand_copy[k][j])
+        for i in range(padding_config[1][1]):
+            col.append(padding_value)
+        ret_new.append(col)
+    for j in range(0, padding_config[0][1]):
+        row = []
+        for i in range(operand_copy.shape[1] + padding_config[1][0] + padding_config[1][1]):
+            row.append(padding_value)
+        ret_new.append(row)
+    ret_new = ivy.asarray(ret_new, dtype=padding_value.dtype)
+    return ret_new

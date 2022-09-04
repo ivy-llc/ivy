@@ -896,7 +896,7 @@ def copy_nest(
             for i in nest
         ]
         if to_mutable:
-            return ret_list
+            return tuple(ret_list)
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list):
         return class_instance(

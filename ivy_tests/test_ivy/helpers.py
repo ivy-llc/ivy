@@ -3284,3 +3284,25 @@ def statistical_dtype_values(draw, *, function):
 @st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
+
+
+@st.composite
+def padding_configs(draw):
+    padding_config_1 = st.lists(
+        st.integers(0, 5), min_size=3, max_size=3,
+    )
+    padding_config_2 = st.lists(
+        st.integers(0, 5), min_size=3, max_size=3,
+    )
+    return draw(padding_config_1), draw(padding_config_2)
+
+
+@st.composite
+def padding_value(draw):
+    max_value = 9.0071993e15
+    size = draw(st.integers(1, 10))
+    abs_value_limit = 0.99 * max_value / size
+
+    float_value = st.floats(-abs_value_limit, abs_value_limit)
+
+    return draw(float_value)

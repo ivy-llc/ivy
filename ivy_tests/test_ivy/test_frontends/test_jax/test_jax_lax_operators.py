@@ -1831,3 +1831,48 @@ def test_jax_lax_log1p(
         fn_tree="lax.log1p",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
+    padding_value=helpers.padding_value(),
+    padding_configs=helpers.padding_configs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.pad"
+    ),
+)
+def test_jax_lax_pad(
+    dtype_and_x,
+    padding_value,
+    padding_configs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    input_dtypes = [input_dtype, input_dtype]
+    padding_config_1 = padding_configs[0]
+    padding_config_2 = padding_configs[1]
+    as_variable = [as_variable]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.pad",
+        operand=np.asarray(x, dtype=input_dtype),
+        padding_value=np.asarray(padding_value, dtype=input_dtype),
+        padding_config=[tuple(padding_config_1), tuple(padding_config_2)]
+    )
+
