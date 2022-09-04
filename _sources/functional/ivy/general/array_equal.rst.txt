@@ -2,8 +2,6 @@ array_equal
 ===========
 
 .. autofunction:: ivy.functional.ivy.general.array_equal
-
-.. autofunction:: ivy.array.array_methods.array_equal
 |
 | **Supported Frameworks:**
 
@@ -23,13 +21,3 @@ array_equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: array_equal
-
-   array_equal/array_equal_functional.rst
-   array_equal/array_equal_array.rst
-

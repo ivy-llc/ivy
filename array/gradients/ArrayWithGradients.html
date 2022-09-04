@@ -1,5 +1,4 @@
-<!
-      <link rel="icon" type="image/png" href="../logos/ivy_logo_only.png">DOCTYPE html>
+<!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
@@ -7,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ArrayWithGradients &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -49,10 +49,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../deep_dive.html">Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array.html">Array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../array_methods.html">Array methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
@@ -84,6 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../container/base.html">Base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../container/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../container/container_methods.html">Container methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../container/conversions.html">Conversions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../container/creation.html">Creation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../container/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../container/device.html">Device</a></li>
@@ -113,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/layers.html">Layers</a></li>
@@ -186,26 +190,349 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.adam_step">
-<span class="sig-name descname"><span class="pre">adam_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.adam_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.adam_step" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">adam_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.adam_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.adam_step" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.adam_step. This method simply wraps the
 function, and so the docstring for ivy.adam_step also applies to this method
 with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>mw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of the gradients.</p></li>
+<li><p><strong>vw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of second moments of the gradients.</p></li>
+<li><p><strong>step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – training step.</p></li>
+<li><p><strong>beta1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – gradient forgetting factor (Default value = 0.9). (default: <code class="docutils literal notranslate"><span class="pre">0.9</span></code>)</p></li>
+<li><p><strong>beta2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – second moment of gradient forgetting factor (Default value = 0.999). (default: <code class="docutils literal notranslate"><span class="pre">0.999</span></code>)</p></li>
+<li><p><strong>epsilon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – divisor during adam update, preventing division by zero (default: <code class="docutils literal notranslate"><span class="pre">1e-07</span></code>)
+(Default value = 1e-7).</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The adam step delta.</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.2</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">6.3</span><span class="p">]]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">adam_step_delta</span> <span class="o">=</span> <span class="n">dcdw</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">adam_step_delta</span><span class="p">)</span>
-<span class="go">    (ivy.array([[[ 0.639], [ 0.639], [-0.639]]]),</span>
-<span class="go">    ivy.array([[[ 0.11], [ 0.32], [-0.63]]]),</span>
-<span class="go">    ivy.array([[[0.00121], [0.0102 ], [0.0397 ]]]))</span>
+<span class="go">(ivy.array([0.182, 0.182, 0.182]),         ivy.array([0.9, 0.9, 0.9]),         ivy.array([0.999, 0.999, 0.999]))</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.adam_update">
+<span class="sig-name descname"><span class="pre">adam_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.adam_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.adam_update" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.adam_update. This method simply
+wraps the function, and so the docstring for ivy.adam_update also applies to
+this method with minimal changes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Learning rate(s), the rate(s) at which the weights should be updated
+relative to the gradient.</p></li>
+<li><p><strong>mw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of the gradients, from the previous time-step.</p></li>
+<li><p><strong>vw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of second moments of the gradients, from the previous
+time-step.</p></li>
+<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – training step.</p></li>
+<li><p><strong>beta1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – gradient forgetting factor (Default value = 0.9). (default: <code class="docutils literal notranslate"><span class="pre">0.9</span></code>)</p></li>
+<li><p><strong>beta2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – second moment of gradient forgetting factor (Default value = 0.999). (default: <code class="docutils literal notranslate"><span class="pre">0.999</span></code>)</p></li>
+<li><p><strong>epsilon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – divisor during adam update, preventing division by zero (default: <code class="docutils literal notranslate"><span class="pre">1e-07</span></code>)
+(Default value = 1e-7).</p></li>
+<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Default is True.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The new function weights ws_new, and also new mw and vw, following the adam
+updates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.gradient_descent_update">
+<span class="sig-name descname"><span class="pre">gradient_descent_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.gradient_descent_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.gradient_descent_update" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.gradient_descent_update.
+This method simply wraps the function, and so the docstring for
+ivy.gradient_descent_update also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Learning rate(s), the rate(s) at which the weights should be
+updated relative to the gradient.</p></li>
+<li><p><strong>inplace</strong> – Whether to perform the operation inplace, for backends which support inplace
+variable updates, and handle gradients behind the scenes such as PyTorch.
+If the update step should form part of a computation graph
+(i.e. higher order optimization), then this should be set to False.
+Default is True, provided the backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The new weights, following the gradient descent updates.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With :code: <cite>ivy.Array</cite> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>                       <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>                       <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>                            <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>                            <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_weights</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
+<span class="go">ivy.array([[ 0.95,  1.98,  2.99],                   [ 3.97,  5.94,  0.96],                   [ 0.96, -0.07,  6.98]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.is_variable">
+<span class="sig-name descname"><span class="pre">is_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.is_variable" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.is_variable. This method simply wraps
+the function, and so the docstring for ivy.is_variable also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – An ivy array.</p></li>
+<li><p><strong>exclusive</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to check if the data type is exclusively a variable, rather than an (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+array. For frameworks like JAX that do not have exclusive variable types,
+the function will always return False if this flag is set, otherwise the
+check is the same for general arrays. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Boolean, true if <code class="docutils literal notranslate"><span class="pre">self</span></code> is a trainable variable, false otherwise.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_var</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">is_var</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.lamb_update">
+<span class="sig-name descname"><span class="pre">lamb_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw_tm1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trust_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay_lambda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.lamb_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.lamb_update" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.lamb_update. This method simply
+wraps the function, and so the docstring for ivy.lamb_update also applies to
+this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Learning rate(s), the rate(s) at which the weights should be updated
+relative to the gradient.</p></li>
+<li><p><strong>mw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of the gradients, from the previous time-step.</p></li>
+<li><p><strong>vw_tm1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – running average of second moments of the gradients, from the previous
+time-step.</p></li>
+<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – training step.</p></li>
+<li><p><strong>beta1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – gradient forgetting factor (Default value = 0.9). (default: <code class="docutils literal notranslate"><span class="pre">0.9</span></code>)</p></li>
+<li><p><strong>beta2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – second moment of gradient forgetting factor (Default value = 0.999). (default: <code class="docutils literal notranslate"><span class="pre">0.999</span></code>)</p></li>
+<li><p><strong>epsilon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – divisor during adam update, preventing division by zero (default: <code class="docutils literal notranslate"><span class="pre">1e-07</span></code>)
+(Default value = 1e-7).</p></li>
+<li><p><strong>max_trust_ratio</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – The maximum value for the trust ratio. Default is 10. (default: <code class="docutils literal notranslate"><span class="pre">10</span></code>)</p></li>
+<li><p><strong>decay_lambda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The factor used for weight decay. Default is zero. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Default is True.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The new function weights ws_new, following the LAMB updates.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mw_tm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_weights</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">lamb_update</span><span class="p">(</span><span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
+<span class="go">(ivy.array([0.784, 1.78 , 2.78 ]),         ivy.array([0.05, 0.02, 0.01]),         ivy.array([2.5e-04, 4.0e-05, 1.0e-05]))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.lars_update">
+<span class="sig-name descname"><span class="pre">lars_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcdw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decay_lambda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.lars_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.lars_update" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.lars_update. This method simply
+wraps the function, and so the docstring for ivy.lars_update also applies to
+this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdw</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Learning rate, the rate at which the weights should be updated relative to
+the gradient.</p></li>
+<li><p><strong>decay_lambda</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The factor used for weight decay. Default is zero. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Default is True.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The new function weights ws_new, following the LARS updates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.optimizer_update">
+<span class="sig-name descname"><span class="pre">optimizer_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">effective_grad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.optimizer_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.optimizer_update" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.optimizer_update. This method simply
+wraps the function, and so the docstring for ivy.optimizer_update also applies
+to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Weights of the function to be updated.</p></li>
+<li><p><strong>effective_grad</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Effective gradients of the cost c with respect to the weights ws,
+[dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Learning rate(s), the rate(s) at which the weights should be updated
+relative to the gradient.</p></li>
+<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the variables after each gradient step. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+Default is True.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The new function weights ws_new, following the optimizer updates.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">effective_grad</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="mf">3e-4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ws_new</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">effective_grad</span><span class="p">,</span> <span class="n">lr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ws_new</span><span class="p">)</span>
+<span class="go">ivy.array([1., 2., 3.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.stop_gradient">
+<span class="sig-name descname"><span class="pre">stop_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preserve_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.stop_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.stop_gradient" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.stop_gradient. This method simply
+wraps the function, and so the docstring for ivy.stop_gradient also applies
+to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Array for which to stop the gradient.</p></li>
+<li><p><strong>preserve_type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to preserve the input type (ivy.Variable or ivy.Array), (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+otherwise an array is always returned. Default is True.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The same array x, but with no gradient information.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([1., 2., 3.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.variable">
+<span class="sig-name descname"><span class="pre">variable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.variable" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.variable. This method simply wraps
+the function, and so the docstring for ivy.variable also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – An ivy array.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – An ivy variable that supports gradient computation.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">variable</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span>
+<span class="go">ivy.array([ 2.,  4., -1.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.gradients.ArrayWithGradients.variable_data">
+<span class="sig-name descname"><span class="pre">variable_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/gradients.html#ArrayWithGradients.variable_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.gradients.ArrayWithGradients.variable_data" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.variable_data. This method simply wraps
+the function, and so the docstring for ivy.variable_data also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – An ivy variable.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The internal data stored by the variable</p>
 </dd>
 </dl>
 </dd></dl>
@@ -230,7 +557,7 @@ with minimal changes.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Ivy Team.</p>
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

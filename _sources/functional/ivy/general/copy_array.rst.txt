@@ -2,8 +2,6 @@ copy_array
 ==========
 
 .. autofunction:: ivy.functional.ivy.general.copy_array
-
-.. autofunction:: ivy.array.array_methods.copy_array
 |
 | **Supported Frameworks:**
 
@@ -23,13 +21,3 @@ copy_array
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: copy_array
-
-   copy_array/copy_array_functional.rst
-   copy_array/copy_array_array.rst
-

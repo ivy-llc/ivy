@@ -3,8 +3,6 @@ unstack
 
 .. autofunction:: ivy.functional.ivy.general.unstack
 
-.. autofunction:: ivy.array.array_methods.unstack
-
 .. autofunction:: ivy.container.container_methods.static_unstack
 
 .. autofunction:: ivy.container.container_methods.unstack
@@ -27,15 +25,3 @@ unstack
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: unstack
-
-   unstack/unstack_functional.rst
-   unstack/static_unstack_container.rst
-   unstack/unstack_array.rst
-   unstack/unstack_container.rst
-

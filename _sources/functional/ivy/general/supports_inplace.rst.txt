@@ -2,8 +2,6 @@ supports_inplace
 ================
 
 .. autofunction:: ivy.functional.ivy.general.supports_inplace
-
-.. autofunction:: ivy.array.array_methods.supports_inplace
 |
 | **Supported Frameworks:**
 
@@ -23,13 +21,3 @@ supports_inplace
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: supports_inplace
-
-   supports_inplace/supports_inplace_functional.rst
-   supports_inplace/supports_inplace_array.rst
-

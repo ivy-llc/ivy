@@ -13,67 +13,177 @@ Container methods
    :maxdepth: -1
    :caption: Container methods
 
-   container_methods/softplus.rst
+   container_methods/static_relu.rst
+   container_methods/relu.rst
+   container_methods/static_leaky_relu.rst
+   container_methods/leaky_relu.rst
+   container_methods/static_gelu.rst
+   container_methods/gelu.rst
+   container_methods/static_sigmoid.rst
+   container_methods/sigmoid.rst
+   container_methods/static_softmax.rst
+   container_methods/softmax.rst
    container_methods/static_softplus.rst
-   container_methods/at_dev.rst
-   container_methods/at_devs.rst
+   container_methods/softplus.rst
+   container_methods/static_arange.rst
+   container_methods/static_asarray.rst
+   container_methods/static_zeros.rst
+   container_methods/static_ones.rst
+   container_methods/static_full_like.rst
+   container_methods/full_like.rst
+   container_methods/static_ones_like.rst
+   container_methods/ones_like.rst
+   container_methods/static_zeros_like.rst
+   container_methods/zeros_like.rst
+   container_methods/static_tril.rst
+   container_methods/tril.rst
+   container_methods/static_triu.rst
+   container_methods/triu.rst
+   container_methods/static_empty_like.rst
+   container_methods/empty_like.rst
+   container_methods/static_eye.rst
+   container_methods/static_linspace.rst
+   container_methods/static_meshgrid.rst
+   container_methods/meshgrid.rst
+   container_methods/static_from_dlpack.rst
+   container_methods/from_dlpack.rst
+   container_methods/static_native_array.rst
+   container_methods/native_array.rst
+   container_methods/static_logspace.rst
+   container_methods/static_astype.rst
+   container_methods/astype.rst
+   container_methods/static_broadcast_arrays.rst
+   container_methods/broadcast_arrays.rst
+   container_methods/static_broadcast_to.rst
+   container_methods/broadcast_to.rst
    container_methods/static_can_cast.rst
    container_methods/can_cast.rst
+   container_methods/static_dtype.rst
+   container_methods/dtype.rst
+   container_methods/static_default_float_dtype.rst
+   container_methods/static_function_supported_dtypes.rst
+   container_methods/static_function_unsupported_dtypes.rst
+   container_methods/static_finfo.rst
+   container_methods/finfo.rst
+   container_methods/static_iinfo.rst
+   container_methods/iinfo.rst
+   container_methods/static_is_bool_dtype.rst
+   container_methods/is_bool_dtype.rst
+   container_methods/static_is_float_dtype.rst
+   container_methods/is_float_dtype.rst
+   container_methods/static_is_int_dtype.rst
+   container_methods/is_int_dtype.rst
+   container_methods/static_is_uint_dtype.rst
+   container_methods/is_uint_dtype.rst
+   container_methods/static_result_type.rst
+   container_methods/result_type.rst
+   container_methods/static_dev.rst
+   container_methods/dev.rst
+   container_methods/static_to_device.rst
+   container_methods/to_device.rst
    container_methods/static_abs.rst
    container_methods/abs.rst
+   container_methods/static_acosh.rst
    container_methods/acosh.rst
-   container_methods/acos.rst
+   container_methods/static_acos.rst
    container_methods/static_add.rst
+   container_methods/acos.rst
    container_methods/add.rst
+   container_methods/static_asin.rst
    container_methods/asin.rst
+   container_methods/static_asinh.rst
    container_methods/asinh.rst
+   container_methods/static_atan.rst
    container_methods/atan.rst
+   container_methods/static_atan2.rst
    container_methods/atan2.rst
+   container_methods/static_atanh.rst
    container_methods/atanh.rst
+   container_methods/static_bitwise_and.rst
    container_methods/bitwise_and.rst
+   container_methods/static_bitwise_left_shift.rst
    container_methods/bitwise_left_shift.rst
+   container_methods/static_bitwise_invert.rst
    container_methods/bitwise_invert.rst
-   container_methods/bitwise_or.rst
-   container_methods/bitwise_right_shift.rst
-   container_methods/bitwise_xor.rst
-   container_methods/ceil.rst
+   container_methods/static_cos.rst
    container_methods/cos.rst
+   container_methods/static_bitwise_or.rst
+   container_methods/bitwise_or.rst
+   container_methods/static_bitwise_right_shift.rst
+   container_methods/bitwise_right_shift.rst
+   container_methods/static_bitwise_xor.rst
+   container_methods/bitwise_xor.rst
+   container_methods/static_ceil.rst
+   container_methods/ceil.rst
+   container_methods/static_cosh.rst
    container_methods/cosh.rst
    container_methods/static_divide.rst
    container_methods/divide.rst
+   container_methods/static_equal.rst
    container_methods/equal.rst
+   container_methods/static_exp.rst
    container_methods/exp.rst
+   container_methods/static_expm1.rst
    container_methods/expm1.rst
+   container_methods/static_floor.rst
    container_methods/floor.rst
+   container_methods/static_floor_divide.rst
    container_methods/floor_divide.rst
+   container_methods/static_greater.rst
    container_methods/greater.rst
+   container_methods/static_greater_equal.rst
    container_methods/greater_equal.rst
+   container_methods/static_isfinite.rst
    container_methods/isfinite.rst
+   container_methods/static_isinf.rst
    container_methods/isinf.rst
+   container_methods/static_isnan.rst
    container_methods/isnan.rst
+   container_methods/static_less.rst
    container_methods/less.rst
+   container_methods/static_less_equal.rst
    container_methods/less_equal.rst
+   container_methods/static_log.rst
    container_methods/log.rst
+   container_methods/static_log1p.rst
    container_methods/log1p.rst
+   container_methods/static_log2.rst
    container_methods/log2.rst
+   container_methods/static_log10.rst
    container_methods/log10.rst
+   container_methods/static_logaddexp.rst
    container_methods/logaddexp.rst
+   container_methods/static_logical_and.rst
    container_methods/logical_and.rst
+   container_methods/static_logical_not.rst
    container_methods/logical_not.rst
+   container_methods/static_logical_or.rst
    container_methods/logical_or.rst
+   container_methods/static_logical_xor.rst
    container_methods/logical_xor.rst
    container_methods/static_multiply.rst
    container_methods/multiply.rst
+   container_methods/static_negative.rst
    container_methods/negative.rst
+   container_methods/static_not_equal.rst
    container_methods/not_equal.rst
+   container_methods/static_positive.rst
    container_methods/positive.rst
+   container_methods/static_pow.rst
    container_methods/pow.rst
+   container_methods/static_remainder.rst
    container_methods/remainder.rst
+   container_methods/static_round.rst
    container_methods/round.rst
+   container_methods/static_sign.rst
    container_methods/sign.rst
+   container_methods/static_sin.rst
    container_methods/sin.rst
+   container_methods/static_sinh.rst
    container_methods/sinh.rst
+   container_methods/static_square.rst
    container_methods/square.rst
+   container_methods/static_sqrt.rst
    container_methods/sqrt.rst
    container_methods/static_subtract.rst
    container_methods/subtract.rst
@@ -81,69 +191,241 @@ Container methods
    container_methods/tan.rst
    container_methods/static_tanh.rst
    container_methods/tanh.rst
+   container_methods/static_trunc.rst
    container_methods/trunc.rst
+   container_methods/static_erf.rst
    container_methods/erf.rst
+   container_methods/static_minimum.rst
+   container_methods/minimum.rst
+   container_methods/static_maximum.rst
+   container_methods/maximum.rst
+   container_methods/static_is_native_array.rst
+   container_methods/is_native_array.rst
+   container_methods/static_is_ivy_array.rst
+   container_methods/is_ivy_array.rst
+   container_methods/static_is_array.rst
+   container_methods/is_array.rst
+   container_methods/static_is_ivy_container.rst
+   container_methods/is_ivy_container.rst
+   container_methods/static_clip_vector_norm.rst
    container_methods/clip_vector_norm.rst
+   container_methods/static_inplace_update.rst
+   container_methods/inplace_update.rst
+   container_methods/static_inplace_decrement.rst
+   container_methods/inplace_decrement.rst
+   container_methods/static_inplace_increment.rst
+   container_methods/inplace_increment.rst
+   container_methods/static_supports_inplace_update.rst
+   container_methods/supports_inplace_update.rst
+   container_methods/static_assert_supports_inplace.rst
+   container_methods/assert_supports_inplace.rst
    container_methods/static_all_equal.rst
    container_methods/all_equal.rst
+   container_methods/static_unstack.rst
+   container_methods/unstack.rst
+   container_methods/static_cumsum.rst
+   container_methods/cumsum.rst
+   container_methods/static_cumprod.rst
+   container_methods/cumprod.rst
+   container_methods/static_fourier_encode.rst
+   container_methods/fourier_encode.rst
+   container_methods/static_gather.rst
+   container_methods/gather.rst
+   container_methods/static_has_nans.rst
+   container_methods/has_nans.rst
+   container_methods/static_scatter_nd.rst
+   container_methods/scatter_nd.rst
+   container_methods/static_scatter_flat.rst
+   container_methods/scatter_flat.rst
    container_methods/static_gather_nd.rst
    container_methods/gather_nd.rst
+   container_methods/static_einops_reduce.rst
+   container_methods/einops_reduce.rst
+   container_methods/static_einops_repeat.rst
+   container_methods/einops_repeat.rst
+   container_methods/static_to_scalar.rst
+   container_methods/to_scalar.rst
+   container_methods/static_value_is_nan.rst
+   container_methods/value_is_nan.rst
+   container_methods/static_to_numpy.rst
+   container_methods/to_numpy.rst
+   container_methods/static_to_list.rst
+   container_methods/to_list.rst
+   container_methods/static_stable_divide.rst
+   container_methods/stable_divide.rst
+   container_methods/static_stable_pow.rst
+   container_methods/stable_pow.rst
+   container_methods/static_floormod.rst
+   container_methods/floormod.rst
+   container_methods/static_einops_rearrange.rst
+   container_methods/einops_rearrange.rst
+   container_methods/static_indices_where.rst
+   container_methods/indices_where.rst
+   container_methods/static_one_hot.rst
+   container_methods/one_hot.rst
+   container_methods/static_clip_matrix_norm.rst
+   container_methods/clip_matrix_norm.rst
+   container_methods/static_variable.rst
+   container_methods/variable.rst
    container_methods/static_is_variable.rst
    container_methods/is_variable.rst
-   container_methods/static_adam_step.rst
+   container_methods/static_variable_data.rst
+   container_methods/variable_data.rst
+   container_methods/static_stop_gradient.rst
+   container_methods/stop_gradient.rst
    container_methods/adam_step.rst
-   container_methods/static_optimizer_update.rst
    container_methods/optimizer_update.rst
-   container_methods/static_gradient_descent_update.rst
    container_methods/gradient_descent_update.rst
-   container_methods/static_lars_update.rst
    container_methods/lars_update.rst
-   container_methods/static_adam_update.rst
    container_methods/adam_update.rst
-   container_methods/static_lamb_update.rst
    container_methods/lamb_update.rst
+   container_methods/static_linear.rst
+   container_methods/linear.rst
+   container_methods/static_dropout.rst
+   container_methods/dropout.rst
+   container_methods/static_scaled_dot_product_attention.rst
+   container_methods/scaled_dot_product_attention.rst
+   container_methods/static_multi_head_attention.rst
+   container_methods/multi_head_attention.rst
+   container_methods/static_conv1d.rst
+   container_methods/conv1d.rst
+   container_methods/static_conv2d.rst
+   container_methods/conv2d.rst
+   container_methods/static_conv1d_transpose.rst
+   container_methods/conv1d_transpose.rst
+   container_methods/static_conv2d_transpose.rst
+   container_methods/conv2d_transpose.rst
+   container_methods/static_depthwise_conv2d.rst
+   container_methods/depthwise_conv2d.rst
+   container_methods/static_conv3d.rst
+   container_methods/conv3d.rst
+   container_methods/static_conv3d_transpose.rst
+   container_methods/conv3d_transpose.rst
+   container_methods/static_lstm_update.rst
+   container_methods/lstm_update.rst
    container_methods/matmul.rst
+   container_methods/static_cholesky.rst
+   container_methods/cholesky.rst
+   container_methods/static_cross.rst
+   container_methods/cross.rst
+   container_methods/static_det.rst
+   container_methods/det.rst
+   container_methods/static_diagonal.rst
+   container_methods/diagonal.rst
+   container_methods/eigh.rst
+   container_methods/static_inv.rst
+   container_methods/inv.rst
+   container_methods/static_matrix_norm.rst
+   container_methods/matrix_norm.rst
+   container_methods/static_matrix_power.rst
+   container_methods/matrix_power.rst
+   container_methods/static_matrix_rank.rst
+   container_methods/matrix_rank.rst
+   container_methods/static_matrix_transpose.rst
+   container_methods/matrix_transpose.rst
+   container_methods/static_outer.rst
+   container_methods/outer.rst
+   container_methods/static_qr.rst
+   container_methods/qr.rst
+   container_methods/static_slogdet.rst
+   container_methods/slogdet.rst
+   container_methods/static_solve.rst
+   container_methods/solve.rst
+   container_methods/static_svd.rst
+   container_methods/svd.rst
+   container_methods/static_svdvals.rst
+   container_methods/svdvals.rst
+   container_methods/static_tensordot.rst
+   container_methods/tensordot.rst
+   container_methods/static_trace.rst
+   container_methods/trace.rst
+   container_methods/static_vecdot.rst
+   container_methods/vecdot.rst
+   container_methods/static_vector_norm.rst
+   container_methods/vector_norm.rst
+   container_methods/static_vector_to_skew_symmetric_matrix.rst
+   container_methods/vector_to_skew_symmetric_matrix.rst
    container_methods/static_cross_entropy.rst
    container_methods/cross_entropy.rst
    container_methods/static_binary_cross_entropy.rst
    container_methods/binary_cross_entropy.rst
    container_methods/static_sparse_cross_entropy.rst
    container_methods/sparse_cross_entropy.rst
+   container_methods/static_concat.rst
    container_methods/concat.rst
+   container_methods/static_expand_dims.rst
    container_methods/expand_dims.rst
+   container_methods/static_split.rst
+   container_methods/split.rst
+   container_methods/static_permute_dims.rst
    container_methods/permute_dims.rst
+   container_methods/static_flip.rst
    container_methods/flip.rst
+   container_methods/static_reshape.rst
    container_methods/reshape.rst
    container_methods/static_roll.rst
    container_methods/roll.rst
+   container_methods/static_squeeze.rst
    container_methods/squeeze.rst
+   container_methods/static_stack.rst
    container_methods/stack.rst
+   container_methods/static_repeat.rst
    container_methods/repeat.rst
+   container_methods/static_tile.rst
    container_methods/tile.rst
+   container_methods/static_constant_pad.rst
    container_methods/constant_pad.rst
+   container_methods/static_zero_pad.rst
    container_methods/zero_pad.rst
+   container_methods/static_swapaxes.rst
    container_methods/swapaxes.rst
    container_methods/static_clip.rst
    container_methods/clip.rst
    container_methods/layer_norm.rst
    container_methods/static_random_uniform.rst
    container_methods/random_uniform.rst
+   container_methods/static_random_normal.rst
+   container_methods/random_normal.rst
+   container_methods/static_multinomial.rst
+   container_methods/multinomial.rst
    container_methods/static_randint.rst
+   container_methods/randint.rst
+   container_methods/static_shuffle.rst
+   container_methods/shuffle.rst
+   container_methods/static_argmax.rst
+   container_methods/argmax.rst
+   container_methods/static_argmin.rst
+   container_methods/argmin.rst
+   container_methods/static_nonzero.rst
+   container_methods/nonzero.rst
+   container_methods/static_where.rst
+   container_methods/where.rst
+   container_methods/static_unique_all.rst
+   container_methods/unique_all.rst
    container_methods/static_unique_counts.rst
    container_methods/unique_counts.rst
+   container_methods/static_unique_values.rst
+   container_methods/unique_values.rst
+   container_methods/static_unique_inverse.rst
+   container_methods/unique_inverse.rst
    container_methods/static_argsort.rst
    container_methods/argsort.rst
    container_methods/static_sort.rst
    container_methods/sort.rst
+   container_methods/static_searchsorted.rst
+   container_methods/searchsorted.rst
    container_methods/min.rst
    container_methods/max.rst
    container_methods/mean.rst
    container_methods/var.rst
+   container_methods/static_var.rst
    container_methods/prod.rst
    container_methods/sum.rst
    container_methods/std.rst
    container_methods/einsum.rst
+   container_methods/static_all.rst
    container_methods/all.rst
+   container_methods/static_any.rst
    container_methods/any.rst
    container_methods/add_ivy_container_instance_methods.rst
 

@@ -14,5 +14,4 @@ Container
    :caption: Container
 
    container/Container.rst
-   container/MultiDevContainer.rst
 

@@ -23,13 +23,3 @@ default_float_dtype
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: default_float_dtype
-
-   default_float_dtype/default_float_dtype_functional.rst
-   default_float_dtype/static_default_float_dtype_container.rst
-

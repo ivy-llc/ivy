@@ -25,14 +25,3 @@ conv2d_transpose
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: conv2d_transpose
-
-   conv2d_transpose/conv2d_transpose_functional.rst
-   conv2d_transpose/conv2d_transpose_container.rst
-   conv2d_transpose/static_conv2d_transpose_container.rst
-

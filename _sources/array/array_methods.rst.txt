@@ -13,6 +13,11 @@ Array methods
    :maxdepth: -1
    :caption: Array methods
 
+   array_methods/relu.rst
+   array_methods/leaky_relu.rst
+   array_methods/gelu.rst
+   array_methods/sigmoid.rst
+   array_methods/softmax.rst
    array_methods/softplus.rst
    array_methods/asarray.rst
    array_methods/full_like.rst
@@ -24,7 +29,20 @@ Array methods
    array_methods/meshgrid.rst
    array_methods/from_dlpack.rst
    array_methods/native_array.rst
+   array_methods/astype.rst
+   array_methods/broadcast_arrays.rst
+   array_methods/broadcast_to.rst
    array_methods/can_cast.rst
+   array_methods/dtype.rst
+   array_methods/finfo.rst
+   array_methods/iinfo.rst
+   array_methods/is_bool_dtype.rst
+   array_methods/is_float_dtype.rst
+   array_methods/is_int_dtype.rst
+   array_methods/is_uint_dtype.rst
+   array_methods/result_type.rst
+   array_methods/dev.rst
+   array_methods/to_device.rst
    array_methods/abs.rst
    array_methods/acosh.rst
    array_methods/acos.rst
@@ -82,9 +100,65 @@ Array methods
    array_methods/tanh.rst
    array_methods/trunc.rst
    array_methods/erf.rst
+   array_methods/is_native_array.rst
+   array_methods/is_ivy_array.rst
+   array_methods/is_array.rst
+   array_methods/is_ivy_container.rst
    array_methods/all_equal.rst
+   array_methods/has_nans.rst
+   array_methods/unstack.rst
+   array_methods/cumsum.rst
+   array_methods/cumprod.rst
+   array_methods/gather.rst
+   array_methods/scatter_nd.rst
    array_methods/gather_nd.rst
+   array_methods/einops_rearrange.rst
+   array_methods/einops_reduce.rst
+   array_methods/einops_repeat.rst
+   array_methods/to_numpy.rst
+   array_methods/to_list.rst
+   array_methods/inplace_decrement.rst
+   array_methods/stable_divide.rst
+   array_methods/clip_vector_norm.rst
+   array_methods/array_equal.rst
+   array_methods/arrays_equal.rst
+   array_methods/assert_supports_inplace.rst
+   array_methods/copy_array.rst
+   array_methods/to_scalar.rst
+   array_methods/floormod.rst
+   array_methods/fourier_encode.rst
+   array_methods/value_is_nan.rst
+   array_methods/exists.rst
+   array_methods/default.rst
+   array_methods/stable_pow.rst
+   array_methods/supports_inplace.rst
+   array_methods/inplace_update.rst
+   array_methods/inplace_increment.rst
+   array_methods/clip_matrix_norm.rst
+   array_methods/scatter_flat.rst
+   array_methods/indices_where.rst
+   array_methods/one_hot.rst
+   array_methods/get_num_dims.rst
+   array_methods/variable.rst
+   array_methods/is_variable.rst
+   array_methods/variable_data.rst
+   array_methods/stop_gradient.rst
    array_methods/adam_step.rst
+   array_methods/optimizer_update.rst
+   array_methods/gradient_descent_update.rst
+   array_methods/lars_update.rst
+   array_methods/adam_update.rst
+   array_methods/lamb_update.rst
+   array_methods/linear.rst
+   array_methods/dropout.rst
+   array_methods/scaled_dot_product_attention.rst
+   array_methods/multi_head_attention.rst
+   array_methods/conv1d.rst
+   array_methods/conv1d_transpose.rst
+   array_methods/depthwise_conv2d.rst
+   array_methods/conv3d.rst
+   array_methods/conv3d_transpose.rst
+   array_methods/lstm_update.rst
    array_methods/matmul.rst
    array_methods/cholesky.rst
    array_methods/cross.rst
@@ -111,23 +185,37 @@ Array methods
    array_methods/binary_cross_entropy.rst
    array_methods/sparse_cross_entropy.rst
    array_methods/concat.rst
-   array_methods/flip.rst
    array_methods/expand_dims.rst
-   array_methods/reshape.rst
+   array_methods/flip.rst
    array_methods/permute_dims.rst
+   array_methods/reshape.rst
    array_methods/roll.rst
    array_methods/squeeze.rst
    array_methods/stack.rst
    array_methods/clip.rst
-   array_methods/repeat.rst
-   array_methods/tile.rst
    array_methods/constant_pad.rst
-   array_methods/zero_pad.rst
+   array_methods/repeat.rst
+   array_methods/split.rst
    array_methods/swapaxes.rst
+   array_methods/tile.rst
+   array_methods/zero_pad.rst
    array_methods/layer_norm.rst
+   array_methods/random_uniform.rst
+   array_methods/random_normal.rst
+   array_methods/multinomial.rst
+   array_methods/randint.rst
+   array_methods/shuffle.rst
+   array_methods/argmax.rst
+   array_methods/argmin.rst
+   array_methods/nonzero.rst
+   array_methods/where.rst
    array_methods/unique_counts.rst
+   array_methods/unique_values.rst
+   array_methods/unique_all.rst
+   array_methods/unique_inverse.rst
    array_methods/argsort.rst
    array_methods/sort.rst
+   array_methods/searchsorted.rst
    array_methods/min.rst
    array_methods/max.rst
    array_methods/mean.rst
