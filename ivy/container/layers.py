@@ -524,7 +524,7 @@ class ContainerWithLayers(ContainerBase):
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
         """
-        return self.static_conv1d(
+        return self.static_conv2d(
             self,
             filters,
             strides,
