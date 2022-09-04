@@ -6,7 +6,7 @@ import pandas as pd
 from github import Github
 from typing import Dict, Union
 
-url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&per_page=100"
+url = "https://api.github.com/repos/unifyai/ivy/actions/runs?branch=master&per_page=100&page=4"
 
 headers = {
     "Accept": "application/vnd.github+json",
@@ -33,7 +33,7 @@ results = []
 def get_api_results(token, headers, workflows=None):
     final_res = []
     headers["Authorization"] = "Bearer " + token
-    if workflows:
+    if workflows is not None:
         for workflow in workflows:
             flow_res = []
             for name, jobs_url in zip(workflow["name"], workflow["jobs_url"]):
