@@ -15,6 +15,10 @@ from ivy.func_wrapper import (
 )
 
 
+# Helpers #
+# --------#
+
+
 def _is_valid_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "supported_dtypes") and hasattr(fn, "unsupported_dtypes"):
         fn_supported_dtypes = fn.supported_dtypes
@@ -31,6 +35,18 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
             if isinstance(fn_unsupported_dtypes, tuple):
                 return False
     return True
+
+
+def _handle_nestable_dtype_info(fn):
+    def new_fn(type):
+        if isinstance(type, ivy.Container):
+            type = type.map(lambda x, kc: fn(x))
+            type.__dict__["max"] = type.map(lambda x, kc: x.max)
+            type.__dict__["min"] = type.map(lambda x, kc: x.min)
+            return type
+        return fn(type)
+
+    return new_fn
 
 
 # Array API Standard #
@@ -95,7 +111,7 @@ def astype(
 
     >>> x = ivy.array([1, 2])
     >>> y = ivy.zeros_like(x)
-    >>> y = ivy.astype(x, dtype = ivy.float64)
+    >>> y = ivy.astype(x, ivy.float64)
     >>> print(y)
     ivy.array([1., 2.])
 
@@ -360,7 +376,6 @@ def can_cast(
 
 
 @inputs_to_native_arrays
-@handle_nestable
 def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -461,7 +476,6 @@ def finfo(
 
 
 @inputs_to_native_arrays
-@handle_nestable
 def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -921,6 +935,47 @@ def default_float_dtype(
     if as_native:
         return ivy.as_native_dtype(ret)
     return ivy.FloatDtype(ivy.as_ivy_dtype(ret))
+
+
+def infer_default_dtype(
+    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
+):
+    """Summary.
+
+    Parameters
+    ----------
+    dtype
+
+    as_native
+        (Default value = False)
+
+    Returns
+    -------
+        Return the default data type for the “kind” (integer or floating-point) of dtype
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype("int32")
+    >>> ivy.infer_default_dtype("int8")
+    'int8'
+
+    >>> ivy.set_default_float_dtype("float64")
+    >>> ivy.infer_default_dtype("float32")
+    'float64'
+
+    >>> ivy.set_default_uint_dtype("uint32")
+    >>> x = ivy.array([0], dtype="uint64")
+    >>> ivy.infer_default_dtype(x.dtype)
+    'uint32'
+
+    """
+    if ivy.is_float_dtype(dtype):
+        default_dtype = ivy.default_float_dtype(as_native=as_native)
+    elif ivy.is_uint_dtype(dtype):
+        default_dtype = ivy.default_uint_dtype(as_native=as_native)
+    else:
+        default_dtype = ivy.default_int_dtype(as_native=as_native)
+    return default_dtype
 
 
 # noinspection PyShadowingNames
@@ -1945,23 +2000,18 @@ def promote_types_of_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    try:
-        if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
-            not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
-        ):
-            x1 = ivy.asarray(x1)
-            x2 = ivy.asarray(x2)
-            promoted = promote_types(x1.dtype, x2.dtype)
-            x1 = ivy.asarray(x1, dtype=promoted)
-            x2 = ivy.asarray(x2, dtype=promoted)
-        else:
-            if hasattr(x1, "dtype"):
-                x1 = ivy.asarray(x1)
-                x2 = ivy.asarray(x2, dtype=x1.dtype)
-            else:
-                x1 = ivy.asarray(x1, dtype=x2.dtype)
-                x2 = ivy.asarray(x2)
-        x1, x2 = ivy.to_native(x1), ivy.to_native(x2)
-        return x1, x2
-    except Exception:
-        raise
+    if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
+        not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
+    ):
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2)
+        promoted = promote_types(x1.dtype, x2.dtype)
+        x1 = ivy.asarray(x1, dtype=promoted)
+        x2 = ivy.asarray(x2, dtype=promoted)
+    elif hasattr(x1, "dtype"):
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
+    else:
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x2 = ivy.asarray(x2)
+    return ivy.to_native(x1), ivy.to_native(x2)

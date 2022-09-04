@@ -19,7 +19,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union
+from typing import Union, Tuple
 from builtins import set
 
 # local
@@ -126,7 +126,7 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -150,7 +150,7 @@ class ContainerBase(dict, abc.ABC):
             alphabetical_keys=alphabetical_keys,
         )
         self._config = dict()
-        self.inplace_update(dict_in, **self._config_in)
+        self.cont_inplace_update(dict_in, **self._config_in)
 
     # Class Methods #
     # --------------#
@@ -165,7 +165,7 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=None,
         out=None,
         **kwargs,
-    ) -> ivy.Container:
+    ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
         arg_cont_idxs = ivy.nested_indices_where(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
@@ -1496,7 +1496,7 @@ class ContainerBase(dict, abc.ABC):
 
         self._config = new_config
 
-    def inplace_update(
+    def cont_inplace_update(
         self, dict_in: Union[ivy.Container, dict], **config
     ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
@@ -1541,7 +1541,10 @@ class ContainerBase(dict, abc.ABC):
             ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = ivy.Container(value, **self._config)
             else:
-                self[key] = value
+                if key in self and isinstance(self[key], ivy.Container):
+                    self[key].cont_inplace_update(value)
+                else:
+                    self[key] = value
 
     def set_framework(self, ivyh):
         """Update the framework to use for the container.
