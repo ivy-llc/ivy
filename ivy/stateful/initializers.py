@@ -9,6 +9,7 @@ import ivy
 class Constant:
     def __init__(self, constant):
         self._constant = constant
+        
 
     def create_variables(
         self, var_shape, device, fan_out=None, fan_in=None, dtype=None
