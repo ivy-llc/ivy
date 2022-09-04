@@ -34,7 +34,7 @@ def Atan(*, x, name="atan"):
     return ivy.atan(x)
 
 
-def Atan2(*, y, x, name="atan2"):
+def Atan2(y, x, name=None):
     return ivy.atan2(y, x)
 
 
