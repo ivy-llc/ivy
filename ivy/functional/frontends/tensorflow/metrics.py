@@ -156,3 +156,11 @@ def kl_divergence(y_true, y_pred):
     y_pred = ivy.clip(y_pred, 1e-7, 1)
 
     return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1)
+
+
+def poisson(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.array(y_true)
+    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+
+    return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
