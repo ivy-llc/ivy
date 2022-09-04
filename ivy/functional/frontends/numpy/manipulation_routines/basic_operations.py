@@ -3,5 +3,5 @@ from typing import Tuple
 import ivy
 
 
-def shape(array, /) -> Tuple:
+def shape(array, /):
     return ivy.shape(array)

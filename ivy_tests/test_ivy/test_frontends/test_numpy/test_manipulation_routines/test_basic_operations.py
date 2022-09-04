@@ -27,7 +27,6 @@ def test_numpy_shape(
 ):
     input_dtypes, xs = xs_n_input_dtypes_n_unique_idx
     xs = np.asarray(xs, dtype=input_dtypes)
-    print(xs)
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
