@@ -4,6 +4,10 @@ stable_pow
 .. autofunction:: ivy.functional.ivy.general.stable_pow
 
 .. autofunction:: ivy.array.array_methods.stable_pow
+
+.. autofunction:: ivy.container.container_methods.static_stable_pow
+
+.. autofunction:: ivy.container.container_methods.stable_pow
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ stable_pow
 
    stable_pow/stable_pow_functional.rst
    stable_pow/stable_pow_array.rst
+   stable_pow/stable_pow_container.rst
+   stable_pow/static_stable_pow_container.rst
 
