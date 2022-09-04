@@ -1138,6 +1138,8 @@ class ContainerWithGeneral(ContainerBase):
     @staticmethod
     def static_cumsum(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
         reverse: Optional[bool] = False,
@@ -1145,7 +1147,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1266,19 +1267,21 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "cumsum",
             x,
-            axis,
-            exclusive,
-            reverse,
+            axis=axis,
+            exclusive=exclusive,
+            reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             dtype=dtype,
-            out=out
+            out=out,
         )
 
     def cumsum(
         self: ivy.Container,
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
         reverse: Optional[bool] = False,
@@ -1286,7 +1289,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1420,27 +1422,29 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_cumsum(
             self,
-            axis,
-            exclusive,
-            reverse,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            exclusive=exclusive,
+            reverse=reverse,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             dtype=dtype,
-            out=out
+            out=out,
         )
 
     @staticmethod
     def static_cumprod(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1466,6 +1470,8 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            Data type of the returned array. Default is ``None``.
         out
             Optional output container. Default is None.
 
@@ -1503,24 +1509,27 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "cumprod",
             x,
-            axis,
-            exclusive,
+            axis=axis,
+            exclusive=exclusive,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            dtype=dtype,
             out=out,
         )
 
     def cumprod(
         self: ivy.Container,
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1546,6 +1555,8 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            Data type of the returned array. Default is ``None``.
         out
             Optional output container. Default is None.
 
@@ -1581,13 +1592,151 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_cumprod(
             self,
-            axis,
-            exclusive,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            exclusive=exclusive,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
             out=out,
+        )
+
+    @staticmethod
+    def static_fourier_encode(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        num_bands: int = 4,
+        linear: bool = False,
+        concat: bool = True,
+        flatten: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fourier_encode. This method
+        simply wraps the function, and so the docstring for ivy.fourier_encode
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container to apply fourier_encode.
+        max_freq
+            The maximum frequency of the encoding.
+        num_bands
+            The number of frequency bands for the encoding. Default is 4.
+        linear
+            Whether to space the frequency bands linearly as opposed to geometrically.
+            Default is False.
+        concat
+            Whether to concatenate the position, sin and cos values, or return 
+            seperately. Default is True.
+        flatten
+            Whether to flatten the position dimension into the batch dimension. 
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        Returns
+        -------
+        ret
+            New container with the final dimension expanded of arrays at its leaves,
+            and the encodings stored in this channel.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "fourier_encode",
+            x,
+            max_freq,
+            num_bands=num_bands,
+            linear=linear,
+            concat=concat,
+            flatten=flatten,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def fourier_encode(
+        self: ivy.Container,
+        max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        num_bands: int = 4,
+        linear: bool = False,
+        concat: bool = True,
+        flatten: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.fourier_encode. This method
+        simply wraps the function, and so the docstring for ivy.fourier_encode
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container to apply fourier_encode at leaves.
+        max_freq
+            The maximum frequency of the encoding.
+        num_bands
+            The number of frequency bands for the encoding. Default is 4.
+        linear
+            Whether to space the frequency bands linearly as opposed to geometrically.
+            Default is False.
+        concat
+            Whether to concatenate the position, sin and cos values, or return 
+            seperately. Default is True.
+        flatten
+            Whether to flatten the position dimension into the batch dimension. 
+            Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional output container. Default is None.
+
+        Returns
+        -------
+        ret
+            New container with the final dimension expanded of arrays at its leaves,
+            and the encodings stored in this channel.
+        """
+        return self.static_fourier_encode(
+            self,
+            max_freq,
+            num_bands=num_bands,
+            linear=linear,
+            concat=concat,
+            flatten=flatten,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -2208,15 +2357,15 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],  
+        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],
                                            [0.735, -6.7, 13.27]],
-                                          [[-24.037, 8.5, 26.7],  
+                                          [[-24.037, 8.5, 26.7],
                                            [0.451, 12.4, 1.7]],
-                                          [[-5.6, -18.19, -20.35],  
+                                          [[-5.6, -18.19, -20.35],
                                            [2.58, -1.006, -9.973]]]),
-                            b=ivy.array([[[-4.47, 0.93, -3.34],  
-                                          [3.66, 24.29, 3.64]], 
-                                         [[4.96, 1.52, -10.67],  
+                            b=ivy.array([[[-4.47, 0.93, -3.34],
+                                          [3.66, 24.29, 3.64]],
+                                         [[4.96, 1.52, -10.67],
                                           [4.36, 13.96, 0.3]]]))
         >> reduced = ivy.Container.static_einops_reduce(x, 'a b c -> () () c', 'mean')
         >> print(reduced)
@@ -2288,8 +2437,8 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >> x = ivy.Container(a=ivy.array([[[5, 4, 3],
-                                           [11, 2, 9]], 
-                                          [[3, 5, 7], 
+                                           [11, 2, 9]],
+                                          [[3, 5, 7],
                                            [9, 7, 1]]]),
                             b=ivy.array([[[9,7,6],
                                           [5,2,1]],
@@ -2362,14 +2511,14 @@ class ContainerWithGeneral(ContainerBase):
         >> repeated = ivy.Container.static_einops_repeat(x, 'h w -> (tile h) w', tile=2)
         >> print(repeated)
         {
-            a: ivy.array([[30, 40],  
-                        [50, 75],  
-                        [30, 40],  
+            a: ivy.array([[30, 40],
+                        [50, 75],
+                        [30, 40],
                         [50, 75]]),
-            b: ivy.array([[1, 2],    
-                        [4, 5],    
-                        [1, 2],    
-                        [4, 5]])   
+            b: ivy.array([[1, 2],
+                        [4, 5],
+                        [1, 2],
+                        [4, 5]])
         }
 
         """
@@ -2427,7 +2576,7 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             New container with einops.repeat having been applied.
-        
+
         Examples
         --------
         >> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
@@ -2435,10 +2584,10 @@ class ContainerWithGeneral(ContainerBase):
         >> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
         >> print(repeated)
         {
-            a: ivy.array([[30, 30, 40, 40],  
+            a: ivy.array([[30, 30, 40, 40],
                           [50, 50, 75, 75]]),
-            b: ivy.array([[1, 1, 2, 2],      
-                          [4, 4, 5, 5]])     
+            b: ivy.array([[1, 1, 2, 2],
+                          [4, 4, 5, 5]])
         }
 
         """
@@ -2934,6 +3083,107 @@ class ContainerWithGeneral(ContainerBase):
             self,
             denominator,
             min_denominator,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_floormod(
+        x: ivy.Container,
+        y: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.floormod. This method simply
+        wraps the function, and so the docstring for ivy.floormod also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container to floordmod.
+        y
+            denominator input for floormod.
+        min_denominator
+            Container of the minimum denominator to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of the same shape and type as x, with the elements at its
+            leaves floor modded.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "floormod",
+            x,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def floormod(
+        self,
+        y: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.floormod. This method
+        simply wraps the function, and so the docstring for ivy.floormod
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container to floordmod.
+        y
+            denominator input for floormod.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of the same shape and type as self, with the elements at its
+            leaves floor modded.
+        """
+        return self.static_floormod(
+            self,
+            y,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
