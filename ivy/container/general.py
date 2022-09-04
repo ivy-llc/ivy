@@ -1610,7 +1610,6 @@ class ContainerWithGeneral(ContainerBase):
         *,
         num_bands: int = 4,
         linear: bool = False,
-        concat: bool = True,
         flatten: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1633,9 +1632,6 @@ class ContainerWithGeneral(ContainerBase):
         linear
             Whether to space the frequency bands linearly as opposed to geometrically.
             Default is False.
-        concat
-            Whether to concatenate the position, sin and cos values, or return 
-            seperately. Default is True.
         flatten
             Whether to flatten the position dimension into the batch dimension. 
             Default is False.
@@ -1661,7 +1657,7 @@ class ContainerWithGeneral(ContainerBase):
             max_freq,
             num_bands=num_bands,
             linear=linear,
-            concat=concat,
+            concat=True,
             flatten=flatten,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1676,7 +1672,6 @@ class ContainerWithGeneral(ContainerBase):
         *,
         num_bands: int = 4,
         linear: bool = False,
-        concat: bool = True,
         flatten: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1699,9 +1694,6 @@ class ContainerWithGeneral(ContainerBase):
         linear
             Whether to space the frequency bands linearly as opposed to geometrically.
             Default is False.
-        concat
-            Whether to concatenate the position, sin and cos values, or return 
-            seperately. Default is True.
         flatten
             Whether to flatten the position dimension into the batch dimension. 
             Default is False.
@@ -1731,7 +1723,6 @@ class ContainerWithGeneral(ContainerBase):
             max_freq,
             num_bands=num_bands,
             linear=linear,
-            concat=concat,
             flatten=flatten,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1845,7 +1836,9 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_has_nans(
-        x: Iterable[Any],
+        x: ivy.Container,
+        /,
+        *,
         include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1903,6 +1896,8 @@ class ContainerWithGeneral(ContainerBase):
 
     def has_nans(
         self: ivy.Container,
+        /,
+        *,
         include_infs=True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1949,7 +1944,12 @@ class ContainerWithGeneral(ContainerBase):
         }
         """
         return self.static_has_nans(
-            self, include_infs, key_chains, to_apply, prune_unapplied, map_sequences
+            self, 
+            include_infs=include_infs, 
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences
         )
 
     @staticmethod
@@ -2612,8 +2612,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.to_numpy. This method simply wraps
-        the function, and so the docstring for ivy.to_numpy also applies to this method
+        ivy.Container static method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
         with minimal changes.
 
         Parameters
@@ -2655,8 +2655,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.to_numpy. This method simply wraps
-        the function, and so the docstring for ivy.to_numpy also applies to this method
+        ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
         with minimal changes.
 
         Parameters
@@ -2682,6 +2682,102 @@ class ContainerWithGeneral(ContainerBase):
         """
         return self.static_to_scalar(
             self, key_chains, to_apply, prune_unapplied, map_sequences
+        )
+
+    @staticmethod
+    def static_value_is_nan(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        include_infs: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.value_is_nan. This method simply wraps
+        the function, and so the docstring for ivy.value_is_nan also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        include_infs
+            Whether to include infs and -infs in the check. Default is True.            
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the input value is a nan or not.
+        
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "value_is_nan",
+            x,
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def value_is_nan(
+        self: ivy.Container,
+        /,
+        *,
+        include_infs: Optional[bool] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.value_is_nan. This method simply wraps
+        the function, and so the docstring for ivy.value_is_nan also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        include_infs
+            Whether to include infs and -infs in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Boolean as to whether the input value is a nan or not.
+
+        """
+        return self.static_value_is_nan(
+            self, 
+            include_infs=include_infs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied, 
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -3083,6 +3179,110 @@ class ContainerWithGeneral(ContainerBase):
             self,
             denominator,
             min_denominator,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_stable_pow(
+        base: ivy.Container,
+        exponent: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
+        min_base: float = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stable_pow. This method simply
+        wraps the function, and so the docstring for ivy.stable_pow also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        base
+            Container of the base.
+        exponent
+            Container of the exponent.
+        min_base
+            The minimum base to use, use global ivy._MIN_BASE by default.        
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the numerically
+            stable power.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "stable_pow",
+            base,
+            exponent,
+            min_base=min_base,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def stable_pow(
+        self,
+        exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        min_base: float = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stable_pow. This method
+        simply wraps the function, and so the docstring for ivy.stable_pow
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container of the base.
+        exponent
+            Container of the exponent.
+        min_base
+            The minimum base to use, use global ivy._MIN_BASE by default.        
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of elements containing the new items following the numerically
+            stable power.
+        """
+        return self.static_stable_pow(
+            self,
+            exponent,
+            min_base=min_base,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
