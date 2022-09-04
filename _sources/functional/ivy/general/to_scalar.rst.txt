@@ -4,6 +4,10 @@ to_scalar
 .. autofunction:: ivy.functional.ivy.general.to_scalar
 
 .. autofunction:: ivy.array.array_methods.to_scalar
+
+.. autofunction:: ivy.container.container_methods.to_scalar
+
+.. autofunction:: ivy.container.container_methods.static_to_scalar
 |
 | **Supported Frameworks:**
 
@@ -31,5 +35,7 @@ to_scalar
    :caption: to_scalar
 
    to_scalar/to_scalar_functional.rst
+   to_scalar/static_to_scalar_container.rst
    to_scalar/to_scalar_array.rst
+   to_scalar/to_scalar_container.rst
 
