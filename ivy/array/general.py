@@ -192,10 +192,11 @@ class ArrayWithGeneral(abc.ABC):
 
     def cumsum(
         self: ivy.Array,
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
         reverse: Optional[bool] = False,
-        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -266,9 +267,10 @@ class ArrayWithGeneral(abc.ABC):
 
     def cumprod(
         self: ivy.Array,
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -847,6 +849,8 @@ class ArrayWithGeneral(abc.ABC):
     def fourier_encode(
         self: ivy.Array,
         max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         num_bands: int = 4,
         linear: bool = False,
         concat: bool = True,
