@@ -147,20 +147,18 @@ def dtypes_shared(draw, num_dtypes):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=1
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        num_arrays=1,
+        small_value_safety_factor=1.5,
+        large_value_safety_factor=10,
     ),
-    dtype=st.sampled_from(ivy_np.valid_dtypes),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="astype"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    dtype=helpers.get_dtypes("valid"),
 )
 def test_astype(
     dtype_and_x,
     dtype,
+    with_out,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -170,8 +168,8 @@ def test_astype(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
+        with_out=with_out,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -217,7 +215,6 @@ def test_broadcast_arrays(
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     num_positional_args = len(kw)
-    print("input: ", kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -287,9 +284,9 @@ def test_broadcast_to(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=1
+        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=1
     ),
-    to_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    to_dtype=helpers.get_dtypes("valid"),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
     native_array=st.booleans(),
@@ -422,14 +419,11 @@ def test_iinfo(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
         shared_dtype=False,
     ),
     as_variable=st.booleans(),
-    num_positional_args=st.shared(
-        helpers.ints(min_value=2, max_value=5), key="num_arrays"
-    ),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -437,7 +431,6 @@ def test_iinfo(
 def test_result_type(
     dtype_and_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -451,7 +444,7 @@ def test_result_type(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=len(x),
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -532,7 +525,7 @@ def test_closest_valid_dtype(
 # default_dtype
 @handle_cmd_line_args
 @given(
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=helpers.get_dtypes("valid"),
     as_native=st.booleans(),
 )
 def test_default_dtype(
@@ -600,7 +593,7 @@ def test_dtype(
 # dtype_bits
 @handle_cmd_line_args
 @given(
-    input_dtype=st.sampled_from(ivy_np.valid_dtypes),
+    input_dtype=helpers.get_dtypes("valid"),
     num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
 )
 def test_dtype_bits(
@@ -801,7 +794,7 @@ def test_promote_types(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         num_arrays=2,
         shared_dtype=False,
     ),
