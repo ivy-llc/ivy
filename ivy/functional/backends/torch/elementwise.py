@@ -254,9 +254,9 @@ def divide(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = torch.div(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
-        ret = torch.tensor(ret, dtype=x1.dtype)
+        ret = ret.to(x1.dtype)
     else:
-        ret = torch.tensor(ret, dtype=ivy.default_float_dtype(as_native=True))
+        ret = ret.to(ivy.default_float_dtype(as_native=True))
     return ret
 
 
@@ -520,7 +520,10 @@ def atan2(
 
 
 atan2.support_native_out = True
-atan2.unsupported_dtypes = ("float16",)
+atan2.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
