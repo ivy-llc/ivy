@@ -4,8 +4,6 @@ import ivy
 
 # Constant #
 # ---------#
-
-
 class Constant:
     def __init__(self, constant):
         self._constant = constant
@@ -31,8 +29,6 @@ class Ones(Constant):
 
 # Uniform #
 # --------#
-
-
 class Uniform:
     def __init__(self, numerator, fan_mode, power, gain):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
@@ -105,8 +101,6 @@ class Siren(Uniform):
 
 # Gaussian #
 # ---------#
-
-
 class KaimingNormal:
     def __init__(self, mean=0, fan_mode="fan_in"):
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
