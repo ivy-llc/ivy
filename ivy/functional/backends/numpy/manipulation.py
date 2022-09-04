@@ -43,6 +43,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.expand_dims(x, axis)
     return ret
@@ -80,6 +81,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
         newarr = x.copy()
@@ -141,7 +143,6 @@ def split(
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
-    out: Optional[np.ndarray] = None,
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -162,11 +163,8 @@ def split(
                 int(remainder * num_or_size_splits)
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = np.cumsum(num_or_size_splits[:-1], out=out)
+        num_or_size_splits = np.cumsum(num_or_size_splits[:-1])
     return np.split(x, num_or_size_splits, axis)
-
-
-split.support_native_out = True
 
 
 def repeat(
@@ -181,7 +179,9 @@ def repeat(
     return ret
 
 
-def tile(x: np.ndarray, /, reps, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def tile(
+    x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     ret = np.tile(x, reps)
     return ret
 
@@ -220,5 +220,8 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ret = np.asarray(np.clip(x, x_min, x_max))
-    return ret
+    assert np.all(np.less(x_min, x_max)), "Min value must be less than max."
+    return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
+
+
+clip.support_native_out = True

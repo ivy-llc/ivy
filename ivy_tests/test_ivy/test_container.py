@@ -10,7 +10,6 @@ import pickle
 # local
 import ivy
 from ivy.container import Container
-import ivy_tests.test_ivy.helpers as helpers
 
 
 def test_container_list_join(device):

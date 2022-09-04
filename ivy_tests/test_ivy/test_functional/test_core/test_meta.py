@@ -52,10 +52,10 @@ def test_fomaml_step_unique_vars(
         variables = ivy.Container(
             {
                 "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
                 ),
                 "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
                 ),
             }
         )
@@ -200,7 +200,7 @@ def test_fomaml_step_shared_vars(
         variables = ivy.Container(
             {
                 "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
                 )
             }
         )
@@ -367,10 +367,10 @@ def test_fomaml_step_overlapping_vars(
         variables = ivy.Container(
             {
                 "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
                 ),
                 "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
                 ),
             }
         )
@@ -508,7 +508,7 @@ def test_reptile_step(
         variables = ivy.Container(
             {
                 "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
                 )
             }
         )
@@ -632,10 +632,10 @@ def test_maml_step_unique_vars(
         variables = ivy.Container(
             {
                 "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
                 ),
                 "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
                 ),
             }
         )
@@ -779,7 +779,7 @@ def test_maml_step_shared_vars(
         variables = ivy.Container(
             {
                 "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
                 )
             }
         )
@@ -992,10 +992,10 @@ def test_maml_step_overlapping_vars(
         variables = ivy.Container(
             {
                 "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
                 ),
                 "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, 0)
+                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
                 ),
             }
         )

@@ -157,7 +157,9 @@ def set_nest_at_index(
     if len(index) == 1:
         nest[index[0]] = value
     else:
-        ivy.set_nest_at_index(nest[index[0]], index[1:], value)
+        ret = nest[index[0]]
+        ivy.set_nest_at_index(ret, index[1:], value)
+        nest[index[0]] = ret
 
 
 def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
@@ -313,6 +315,43 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     fn
         The function to perform on the nest at the given index.
 
+    Examples
+    --------
+    With :code:`List` inputs:
+
+    >>> nest = [['a', 'c', 'e', 'd', 'u', 'k'], ['m', 'n', 'f', 'p', 'q', 't']]
+    >>> indices = [[0, 4], [1, 5]]
+    >>> function = lambda x : x + 'b'
+    >>> ivy.map_nest_at_indices(nest, indices, function)
+    >>> print(nest)
+    [['a', 'c', 'e', 'd', 'ub', 'k'], ['m', 'n', 'f', 'p', 'q', 'tb']]
+
+    With :code:`Tuple` inputs:
+
+    >>> nest = ([-9, 8, -27],[9, -4, -5, 7])
+    >>> indices = ((0, 2),(1, 0),(1, 2))
+    >>> function = abs
+    >>> ivy.map_nest_at_indices(nest, indices, function)
+    >>> print(nest)
+    ([-9, 8, 27], [9, -4, 5, 7])
+
+    With :code:`Dict` input:
+
+    >>> nest = {'a': [8., 16., 22.], 'b': [10., 44., 81.], 'c': [9., 75., 37.]}
+    >>> indices = (('a', 2), ('b', 0), ('c', 1))
+    >>> function = lambda x : x + 1
+    >>> ivy.map_nest_at_indices(nest, indices, function)
+    >>> print(nest)
+    {'a': [8.0, 16.0, 23.0], 'b': [11.0, 44.0, 81.0], 'c': [9.0, 76.0, 37.0]}
+
+    With :code:`ivy.Array` inputs:
+
+    >>> nest = ivy.array([[-9., 8., -17.],[11., -3., 5.]])
+    >>> indices = ((0, 1),(1, 1),(1, 2))
+    >>> function = lambda x : x ** 2
+    >>> ivy.map_nest_at_indices(nest, indices, function)
+    >>> print(nest)
+    ivy.array([[-9., 64., -17.], [11., 9., 25.]])
     """
     [map_nest_at_index(nest, index, fn) for index in indices]
 
