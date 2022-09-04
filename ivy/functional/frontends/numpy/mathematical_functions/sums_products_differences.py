@@ -18,7 +18,9 @@ def sum(
     where=True,
 ):
     if not where:
-        return 0
+        if dtype:
+            return ivy.astype(ivy.array(0), ivy.as_ivy_dtype(dtype))
+        return ivy.array(0)
     if initial:
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
@@ -45,7 +47,9 @@ def prod(
         where=True
 ):
     if not where:
-        return 0
+        if dtype:
+            return ivy.astype(ivy.array(0), ivy.as_ivy_dtype(dtype))
+        return ivy.array(0)
     if initial:
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
@@ -59,17 +63,15 @@ def prod(
 prod.unsupported_dtypes = {"torch": ("float16",)}
 
 
-def sum(x, /, *, axis=None, dtype=None, out=None, keepdims=None, where=None):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    if ivy.is_array(where):
-        x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
-    return ivy.sum(x, axis=axis, keepdims=keepdims, out=out)
-
-
 def cumsum(a, /, axis=None, dtype=None, out=None):
     return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
 
 
+cumsum.unsupported_dtypes = {"torch": ("float16",)}
+
+
 def cumprod(a, /, axis=None, dtype=None, out=None):
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+    
+    
+cumprod.unsupported_dtypes = {"torch": ("float16",)}
