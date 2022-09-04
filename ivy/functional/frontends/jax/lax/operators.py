@@ -320,8 +320,8 @@ def pad(operand, padding_value, padding_config):
         col = []
         for i in range(padding_config[1][0]):
             col.append(padding_value)
-        for j in range(0, operand_copy.shape[1]):
-            col.append(operand_copy[k][j])
+        for i in range(0, operand_copy.shape[1]):
+            col.append(operand_copy[k][i])
         for i in range(padding_config[1][1]):
             col.append(padding_value)
         ret_new.append(col)
