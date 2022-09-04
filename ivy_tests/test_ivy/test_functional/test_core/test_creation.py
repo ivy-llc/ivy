@@ -534,7 +534,7 @@ def test_full_like(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=st.integers(min_value=2, max_value=5),
         min_num_dims=1,
-        max_num_dims=5,
+        max_num_dims=1,
         shared_dtype=True,
     ),
     indexing=st.sampled_from(["xy", "ij"]),
