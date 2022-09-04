@@ -176,10 +176,6 @@ def test_adam_optimizer(
         container_flags_method=container,
         method_with_v=with_v,
         device_=device,
-        all_as_kwargs_np_method={
-            "v": np.asarray(x[0], dtype=input_dtype[0]),
-            "grads": np.asarray(x[1], dtype=input_dtype[1]),
-        },
         fw=fw,
         class_name="Adam",
         method_name="_step",
