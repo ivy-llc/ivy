@@ -4,6 +4,10 @@ fourier_encode
 .. autofunction:: ivy.functional.ivy.general.fourier_encode
 
 .. autofunction:: ivy.array.array_methods.fourier_encode
+
+.. autofunction:: ivy.container.container_methods.static_fourier_encode
+
+.. autofunction:: ivy.container.container_methods.fourier_encode
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ fourier_encode
 
    fourier_encode/fourier_encode_functional.rst
    fourier_encode/fourier_encode_array.rst
+   fourier_encode/fourier_encode_container.rst
+   fourier_encode/static_fourier_encode_container.rst
 

@@ -4,6 +4,10 @@ floormod
 .. autofunction:: ivy.functional.ivy.general.floormod
 
 .. autofunction:: ivy.array.array_methods.floormod
+
+.. autofunction:: ivy.container.container_methods.static_floormod
+
+.. autofunction:: ivy.container.container_methods.floormod
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ floormod
 
    floormod/floormod_functional.rst
    floormod/floormod_array.rst
+   floormod/floormod_container.rst
+   floormod/static_floormod_container.rst
 
