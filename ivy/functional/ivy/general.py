@@ -2469,6 +2469,8 @@ def stable_divide(
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
+    /,
+    *,
     min_base: float = None,
 ) -> Any:
     """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
