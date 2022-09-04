@@ -163,6 +163,8 @@ def poisson(y_true, y_pred):
     y_true = ivy.array(y_true)
     y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
     
+    return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
+    
 
 def sparse_categorical_accuracy(
         y_true,
@@ -180,6 +182,3 @@ def sparse_categorical_accuracy(
     total = ivy.vecdot(sample_weight, ivy.equal(y_true, ivy.argmax(y_pred, axis=1)))
 
     return ivy.divide(total, count)
-
-
-    return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
