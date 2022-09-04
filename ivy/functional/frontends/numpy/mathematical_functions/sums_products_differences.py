@@ -24,7 +24,7 @@ def sum(
     if initial:
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
-        header = ivy.full(ivy.Shape(s), initial)
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
         if where:
             x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)))
         x = ivy.concat([x, header], axis=axis)
@@ -53,7 +53,7 @@ def prod(
     if initial:
         s = ivy.shape(x, as_array=True)
         s[axis] = 1
-        header = ivy.full(ivy.Shape(s), initial)
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
         if where:
             x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)))
         x = ivy.concat([x, header], axis=axis)
