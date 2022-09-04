@@ -179,6 +179,7 @@ def cumsum(
 
 
 cumsum.support_native_out = True
+cumsum.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
 
 
 def cumprod(
@@ -201,6 +202,7 @@ def cumprod(
 
 
 cumprod.support_native_out = True
+cumprod.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
 
 
 # noinspection PyShadowingNames
