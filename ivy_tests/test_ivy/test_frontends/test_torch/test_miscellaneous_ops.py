@@ -187,3 +187,36 @@ def test_torch_cumsum(
         dtype=input_dtype,
         out=None,
     )
+
+
+@handle_cmd_line_args
+@given(
+    row=st.integers(min_value=0, max_value=10),
+    col=st.integers(min_value=0, max_value=10),
+    offset=st.integers(min_value=-10, max_value=10),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tril_indices"
+    ),
+)
+def test_torch_tril_indices(
+    row,
+    col,
+    offset,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int32", "int32"],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="tril_indices",
+        row=row,
+        col=col,
+        offset=offset,
+    )
