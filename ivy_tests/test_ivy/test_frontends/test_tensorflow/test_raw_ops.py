@@ -301,7 +301,7 @@ def test_tensorflow_Asin(
         max_value=5,
         allow_inf=False,
     ),
-    output_type=st.sampled_from(["int16", "int32", "int64", "uint16"]),
+    output_type=st.sampled_from(["int16", "int32", "int64"]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.ArgMax"
     ),
