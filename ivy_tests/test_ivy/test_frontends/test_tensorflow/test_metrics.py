@@ -8,7 +8,6 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import ivy.functional.backends.numpy as ivy_np
 
 
 @st.composite
