@@ -2136,7 +2136,7 @@ def einops_rearrange(
     >>> print(x.shape)
     (32, 30, 40, 3)
     # concatenate images along vertical axis
-    >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c'x)
+    >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
