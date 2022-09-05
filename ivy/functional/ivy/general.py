@@ -16,7 +16,6 @@ from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
     infer_device,
-    infer_dtype,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
@@ -2171,16 +2170,16 @@ def einops_reduce(
     Examples
     --------
     With :code:`ivy.Array` input:
-    >> x = ivy.array([[-4.47, 0.93, -3.34],  
+    >> x = ivy.array([[-4.47, 0.93, -3.34],
                       [3.66, 24.29, 3.64]])
     >> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
     >> print(reduced)
     ivy.array([-0.405, 12.6  ,  0.15 ])
 
     With :code:`ivy.Container` input:
-    >> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],  
-                                      [3.66, 24.29, 3.64]]), 
-                        b=ivy.array([[4.96, 1.52, -10.67],  
+    >> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
+                                      [3.66, 24.29, 3.64]]),
+                        b=ivy.array([[4.96, 1.52, -10.67],
                                      [4.36, 13.96, 0.3]]))
     >> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
     >> print(reduced)
@@ -2237,17 +2236,17 @@ def einops_repeat(
                [1, 2, 3, 4]])
 
     With :code:`ivy.Container` input:
-    >> x = ivy.Container(a=ivy.array([[4,5], 
+    >> x = ivy.Container(a=ivy.array([[4,5],
                                     [1, 3]]),
-                        b=ivy.array([[9, 10], 
+                        b=ivy.array([[9, 10],
                                     [4, 2]]))
     >> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
     >> print(repeated)
     {
-        a: ivy.array([[4, 5, 4, 5],   
-                      [1, 3, 1, 3]]), 
-        b: ivy.array([[9, 10, 9, 10], 
-                      [4, 2, 4, 2]])  
+        a: ivy.array([[4, 5, 4, 5],
+                      [1, 3, 1, 3]]),
+        b: ivy.array([[9, 10, 9, 10],
+                      [4, 2, 4, 2]])
     }
 
     """
@@ -2884,7 +2883,6 @@ def inplace_increment(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@infer_dtype
 @handle_nestable
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2893,7 +2891,7 @@ def cumsum(
     reverse: Optional[bool] = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the cumulative sum of the elements along a given axis.
 
@@ -3023,8 +3021,7 @@ def cumsum(
                       [10, 10]])
     }
     """
-    return current_backend(x).cumsum(x, axis, exclusive, reverse,
-                                     dtype=dtype, out=out)
+    return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back

@@ -140,9 +140,14 @@ def cumsum(
     exclusive: Optional[bool] = False,
     reverse: Optional[bool] = False,
     *,
-    dtype: np.dtype,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if dtype is None:
+        if x.dtype == "bool":
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
