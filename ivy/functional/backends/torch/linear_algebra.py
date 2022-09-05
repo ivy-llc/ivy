@@ -98,7 +98,10 @@ def inv(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
     return torch.inverse(x, out=out)
 
 
-inv.unsupported_dtypes = ("float16",)
+inv.unsupported_dtypes = (
+    "bfloat16",
+    "float16",
+)
 
 inv.support_native_out = True
 
