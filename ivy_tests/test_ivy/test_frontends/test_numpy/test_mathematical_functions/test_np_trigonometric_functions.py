@@ -313,7 +313,8 @@ def test_numpy_cosh(
     )
 
 
-#degree
+# degree
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -321,11 +322,11 @@ def test_numpy_cosh(
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.degree"
-        ),
+        fn_name="ivy.functional.frontends.numpy.degrees"
+    ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-def test_numpy_degree(
+def test_numpy_degrees(
         dtype_and_x,
         dtype,
         where,
