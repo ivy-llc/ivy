@@ -1295,6 +1295,7 @@ def test_log2(
         instance_method=instance_method,
         fw=fw,
         fn_name="log2",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
