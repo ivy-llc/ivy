@@ -816,7 +816,7 @@ def test_torch_log2(
         input=np.asarray(input, dtype=input_dtype),
         out=None,
     )
-  
+
 
 # square
 @given(
@@ -855,8 +855,8 @@ def test_torch_square(
         input=np.asarray(input, dtype=input_dtype),
         out=None,
     )
-    
-    
+
+
 # atan2
 @handle_cmd_line_args
 @given(
