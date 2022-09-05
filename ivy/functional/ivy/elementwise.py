@@ -3461,6 +3461,61 @@ def logaddexp(
         an array containing the element-wise results. The returned array must have a
         floating-point data type determined by :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logaddexp.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2., 5., 15.])
+    >>> y = ivy.array([3., 2., 4.])
+    >>> z = ivy.logaddexp(x, y)
+    >>> print(z)
+    ivy.array([ 3.31,  5.05, 15.  ])
+
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.logaddexp(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[8.4], [3.6], [1.6]]])
+
+    With one :code:`ivy.Container` input:
+
+    >>> x = ivy.array([[5.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.logaddexp(x, y)
+    >>> print(z)
+    {
+    a: ivy.array([[5.39, 4.17, 4.], 
+                  [5.74, 5.07, 5.], 
+                  [6.34, 6.02, 6.]]),
+    b: ivy.array([[5.74, 5.07, 5.], 
+                  [6.34, 6.02, 6.], 
+                  [7.14, 7.01, 7.]])
+    }
+    
+    With multiple :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
+                        b=ivy.array([2., 3., 4.]))
+    >>> y = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                        b=ivy.array([5., 6., 7.]))
+    >>> z = ivy.logaddexp(y,x)
+    >>> print(z)
+    {
+        a: ivy.array([4.05, 5.05, 6.05]),
+        b: ivy.array([5.05, 6.05, 7.05])
+    }
+
     """
     return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
@@ -4379,7 +4434,7 @@ def reciprocal(
     -------
     ret
         A new array with the positive value of each element in ``x``.
-    
+
     """
     return ivy.current_backend(x).reciprocal(x, out=out)
 

@@ -207,9 +207,9 @@ def conv2d_transpose(
         new_w = ivy.deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
-        output_shape = [x.shape[0], new_h, new_w, x.shape[-1]]
+        output_shape = [x.shape[0], new_h, new_w, filters.shape[-1]]
     elif len(output_shape) == 2:
-        output_shape = [x.shape[0]] + output_shape + [x.shape[-1]]
+        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
     if strides[1] > 1:
         x = _add_dilations(x, strides[1], axis=2)
     if strides[0] > 1:
@@ -240,7 +240,6 @@ def conv2d_transpose(
         "constant",
     )
 
-    filters = np.swapaxes(filters, 2, 3)
     x = np.flip(x, (1, 2))
     res = np.flip(
         conv2d(x, filters, 1, "VALID", data_format="NHWC", dilations=1),
@@ -422,7 +421,9 @@ def conv3d_transpose(
         new_w = ivy.deconv_length(
             x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
         )
-        output_shape = [new_d, new_h, new_w]
+        output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-1]]
+    elif len(output_shape) == 3:
+        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
 
     if strides[2] > 1:
         x = _add_dilations(x, strides[2], axis=3)
@@ -438,12 +439,12 @@ def conv3d_transpose(
     if dilations[0] > 1:
         filters = _add_dilations(filters, dilations[0], axis=0)
 
-    pad_d = ivy.handle_padding(output_shape[0], strides[0], filters.shape[0], padding)
-    pad_h = ivy.handle_padding(output_shape[1], strides[1], filters.shape[1], padding)
-    pad_w = ivy.handle_padding(output_shape[2], strides[2], filters.shape[2], padding)
-    extra_d = max(0, output_shape[0] - (x.shape[1] + filters.shape[0] - 1 - pad_d))
-    extra_h = max(0, output_shape[1] - (x.shape[2] + filters.shape[1] - 1 - pad_h))
-    extra_w = max(0, output_shape[2] - (x.shape[3] + filters.shape[2] - 1 - pad_w))
+    pad_d = ivy.handle_padding(output_shape[1], strides[0], filters.shape[0], padding)
+    pad_h = ivy.handle_padding(output_shape[2], strides[1], filters.shape[1], padding)
+    pad_w = ivy.handle_padding(output_shape[3], strides[2], filters.shape[2], padding)
+    extra_d = max(0, output_shape[1] - (x.shape[1] + filters.shape[0] - 1 - pad_d))
+    extra_h = max(0, output_shape[2] - (x.shape[2] + filters.shape[1] - 1 - pad_h))
+    extra_w = max(0, output_shape[3] - (x.shape[3] + filters.shape[2] - 1 - pad_w))
     pad_d_top = filters.shape[0] - 1 - (pad_d // 2)
     pad_d_bot = filters.shape[0] - 1 - (pad_d - pad_d // 2)
     pad_h_top = filters.shape[1] - 1 - (pad_h // 2)
@@ -468,7 +469,6 @@ def conv3d_transpose(
         ],
         "constant",
     )
-    filters = np.swapaxes(filters, 3, 4)
     x = np.flip(x, (1, 2, 3))
     res = np.flip(
         conv3d(x, filters, 1, "VALID", data_format="NDHWC", dilations=1),

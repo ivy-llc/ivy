@@ -522,8 +522,16 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
-reciprocal.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64",
-                                 "int8", "int16", "int32", "int64")
+reciprocal.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+)
 
 
 def remainder(
@@ -540,8 +548,11 @@ def remainder(
         res_floored = tf.where(res >= 0, tf.math.floor(res), tf.math.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return tf.cast(diff * x2, x1.dtype)
+        return tf.cast(tf.round(diff * x2), x1.dtype)
     return tf.experimental.numpy.remainder(x1, x2)
+
+
+remainder.unsupported_dtypes = ("bfloat16",)
 
 
 def round(
@@ -554,6 +565,9 @@ def round(
         return x
     else:
         return tf.round(x)
+
+
+round.unsupported_dtypes = ("bfloat16",)
 
 
 def sign(
