@@ -71,7 +71,7 @@ def to_list(x: JaxArray) -> list:
 
 def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(jnp.shape(x))
+        return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 
@@ -137,16 +137,35 @@ def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
 def cumsum(
     x: JaxArray,
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
     *,
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
-    if dtype != x.dtype:
-        x = x.astype(dtype)
-    return jnp.cumsum(x, axis)
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(dtype, x.dtype)
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jnp.swapaxes(x, axis, -1)
+            res = jnp.flip(x, axis=(axis,))
+        elif exclusive:
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jnp.cumsum(x, -1, dtype=dtype)
+            res = jnp.swapaxes(x, axis, -1)
+        elif reverse:
+            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            res = jnp.flip(x, axis=axis)
+        return res
+    return jnp.cumsum(x, axis, dtype=dtype)
 
 
 def cumprod(
