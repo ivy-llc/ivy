@@ -87,12 +87,12 @@ def std(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    correction: Union[int, float] = 0.0,
+    ddof: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.std(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
+    return np.asarray(np.std(x, axis=axis, ddof=ddof, keepdims=keepdims, out=out))
 
 
 std.support_native_out = True

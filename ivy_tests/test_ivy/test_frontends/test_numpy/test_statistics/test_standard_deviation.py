@@ -32,7 +32,7 @@ def test_numpy_std(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis, correction = dtype_and_x
+    input_dtype, x, axis, ddof = dtype_and_x
     x_array=ivy.array(x)
     if len(x_array.shape) == 2:
         where=ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
@@ -58,7 +58,7 @@ def test_numpy_std(
         fn_tree="std",
         x=np.asarray(x, dtype=input_dtype[0]),
         axis=axis,
-        correction=correction,
+        ddof=ddof,
         dtype=dtype,
         out=None,
         keepdims=keep_dims,
