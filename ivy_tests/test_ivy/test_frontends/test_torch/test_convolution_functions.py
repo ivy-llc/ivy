@@ -77,11 +77,11 @@ def test_torch_conv2d_1(
 @given(
     input=helpers.array_values(  # input
         dtype=ivy.float32,
-        shape=(6, 3, 8, 6)  # (batch_size, d_in, h, w)
+        shape=(6, 3, 3, 4)  # (batch_size, d_in, h, w)
     ),
     weight=helpers.array_values(  # weight
         dtype=ivy.float32,
-        shape=(6, 3, 5, 5)  # (d_out, d_in/groups, fh, fw)
+        shape=(6, 3, 2, 2)  # (d_out, d_in/groups, fh, fw)
     ),
     bias=helpers.array_values(
         dtype=ivy.float32,
