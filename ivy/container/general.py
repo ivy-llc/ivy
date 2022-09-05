@@ -1182,8 +1182,8 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather(
-        params: ivy.Container,
-        indices: ivy.Container,
+        params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1192,31 +1192,40 @@ class ContainerWithGeneral(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Perform einops rearrange operation on each sub array in the container.
+        """
+        ivy.Container static method variant of ivy.gather. This method simply
+        wraps the function, and so the docstring for ivy.gather also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        pattern
-            Rearrangement pattern.
+        self
+            The container from which to gather values.
+        indices
+            Index array or container
+        axis
+            Optional int, the axis from which to gather from. Default is -1.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is
+            None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise
+            key_chains will be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        axes_lengths
-            Any additional specifications for dimensions.
-        **axes_lengths
-
+            Whether to also map method to sequences (lists, tuples). Default is
+            False.
+        out
+            Optional output container, for writing the result to. It musthave
+            a shape that the inputs broadcast to.
 
         Returns
         -------
-            ivy.Container with each array having einops.rearrange applied.
-
+        ret
+            New container with the values gathered at the specified indices
+            along the specified axis.
         """
         return ContainerBase.multi_map_in_static_method(
             "gather",
@@ -1242,36 +1251,40 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gather. This method simply wraps
-        the function, and so the docstring for ivy.gather also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.gather. This method simply
+        wraps the function, and so the docstring for ivy.gather also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         self
-            the container from which to gather values.
+            The container from which to gather values.
         indices
-            index array or container
+            The array or container which indicates the indices that will be 
+            gathered along the specified axis.
         axis
-            optional int, the axis from which to gather from. Default is -1.
+            Optional int, the axis from which to gather from. Default is -1.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is
+            None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise
+            key_chains will be skipped. Default is True.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples). Default is
+            False.
         out
-            optional output container, for writing the result to.
+            Optional output container, for writing the result to. It musthave
+            a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            New container with the values gathered at the specified indices along
-            the specified axis.
+            New container with the values gathered at the specified indices
+            along the specified axis.
         """
         return self.static_gather(
             self,

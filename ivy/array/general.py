@@ -229,18 +229,19 @@ class ArrayWithGeneral(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.gather. This method simply wraps the
-        function, and so the docstring for ivy.gather also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.gather. This method simply
+        wraps the function, and so the docstring for ivy.gather also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        self
-            array, the array from which to gather values.
+        params
+            The array from which to gather values.
         indices
-            array, index array.
+            The array which indicates the indices that will be gathered along 
+            the specified axis.
         axis
-            optional int, the axis from which to gather from. Default is -1.
+            Optional int, the axis from which to gather from. Default is -1.
         out
             optional output array, for writing the result to.
 
