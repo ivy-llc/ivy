@@ -38,3 +38,13 @@ cumsum.unsupported_dtypes = (
     "uint32",
     "uint64",
 )
+
+
+def trace(input):
+    if len(input.shape) == 1:
+        return ivy.asarray(input[0])
+    minimum_dimension = min(input.shape)
+
+    return ivy.asarray(
+        sum((input[i][i] for i in range(minimum_dimension))), dtype=input.dtype
+    )
