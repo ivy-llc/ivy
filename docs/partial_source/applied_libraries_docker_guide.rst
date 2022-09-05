@@ -29,7 +29,8 @@ Example - Ivy Robot
 
 **Directory Tree**
 
-1. Due to dependencies, the related Ivy repositories have to be placed in the same local folder:
+1. Due to dependencies, the related Ivy repositories have to be placed in the same
+local directory:
 
 .. code-block:: none
 
@@ -40,7 +41,7 @@ Example - Ivy Robot
     |   |-- robot
     |   |-- demo-utils
 
-2. Clone all repositories into a mutual folder:
+2. Clone all repositories into a mutual directory:
 
     .. code-block:: none
 
@@ -66,7 +67,7 @@ Example - Ivy Robot
 
 **Local Development**
 
-1. Create a virtual environment (venv) in the same folder:
+1. Create a virtual environment (venv) in the same directory:
 
     .. code-block:: none
 
@@ -94,7 +95,7 @@ Example - Ivy Robot
     (repeat for all repositories)
 
     **NOTE:** In develop mode, packages are linked to their local directory. Therefore,
-    changes or edits are allowed and reflected immediately.
+    changes or edits are reflected immediately when in use.
 
 4. To use:
 
@@ -111,14 +112,14 @@ Example - Ivy Robot
 
 1. Install `Docker Desktop`_
 
-2. Go into the ::code::`robot` repository and build the docker image:
+2. Go into the :code:`robot` repository and build the docker image:
 
     .. code-block:: none
 
         cd robot
         docker build -t my-robot .
 
-3. To use, first mount the local directories, then start up python3 with Docker:
+3. To use, first mount the local directories, then start up :code:`python3` with Docker:
 
     (in the folder containing all repositories)
     .. code-block:: none
@@ -131,9 +132,9 @@ Example - Ivy Robot
 
 **IDE Development**
 
-1. For **PyCharm**, configurations are saved in the `.idea` folder.
+1. For **PyCharm**, configurations are saved in the :code:`.idea` folder.
 
-2. For **VSCode**, configurations can be found in the `.vscode` folder.
+2. For **VSCode**, configurations can be found in the :code:`.vscode` folder.
 
 **Round Up**
 
