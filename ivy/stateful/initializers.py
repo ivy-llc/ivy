@@ -10,12 +10,13 @@ import abc
 class Initializer(abc.ABC):
     """
     An initializer for internal variables for a layer.
-    A neuron is a function of the form `a = g(z)`, where `g` is the 
+    A neuron is a function of the form `a = g(z)`, where `g` is the
     activation functions and `z = w_1x_1 + w_2x_2 + ... + w_nx_n` where the
     `w_i` are the weights and the `x_i` are the inputs. To prevent this
-    `z` from vanishing (getting too small) or exploding (getting too big), the 
-    initial weights must be picked carefully. 
+    `z` from vanishing (getting too small) or exploding (getting too big), the
+    initial weights must be picked carefully.
     """
+
     @abc.abstractmethod
     def create_variables(
         self,
@@ -95,31 +96,31 @@ class Ones(Constant):
 class Uniform(Initializer):
     def __init__(self, numerator, fan_mode, power, gain):
         """
-        A initializer based on a uniform distribution, will fill in all values with 
+        A initializer based on a uniform distribution, will fill in all values with
         values drawn from a uniform (all values have an equal probability) distribution
-        with range `[-wlim, wlim]` (endpoints included) with `wlim` being calculated as 
-        `gain * (numerator / fan)**power`. This distribution helps with issues when 
+        with range `[-wlim, wlim]` (endpoints included) with `wlim` being calculated as
+        `gain * (numerator / fan)**power`. This distribution helps with issues when
         trying to optimize and train networks. The expected value of this distribution
-        is `0` and the variance is 
+        is `0` and the variance is
         `(gain * numerator / fan)^power / 4`.
-                
+
         This is intended as a base-class for special predefined initialzers.
 
         Parameters
         ----------
-        numerator 
+        numerator
         fan_mode
             Determines how `fan` is calculated.
-            - `fan_out` sets `fan` to the number of output features of this neuron. 
+            - `fan_out` sets `fan` to the number of output features of this neuron.
               This is useful when training using back-propogation.
-            - `fan_in` sets `fan` to the number of input features of this neuron. 
+            - `fan_in` sets `fan` to the number of input features of this neuron.
               This is useful when training using forward-propogation.
-            - `fan_sum` sets `fan` to the sum of the number of input features and 
-              output features of this neuron. 
-            - `fan_sum` sets `fan` to the average of the number of input features and 
-              output features of this neuron. 
+            - `fan_sum` sets `fan` to the sum of the number of input features and
+              output features of this neuron.
+            - `fan_sum` sets `fan` to the average of the number of input features and
+              output features of this neuron.
         power
-            Sets the drop-off factor for the calculated `fan`. 
+            Sets the drop-off factor for the calculated `fan`.
         gain
             Scales the output of the distribution.
         """
@@ -138,7 +139,7 @@ class Uniform(Initializer):
     ):
         """
         Create internal variables for the layer
-        
+
         Parameters
         ----------
         var_shape
@@ -153,7 +154,7 @@ class Uniform(Initializer):
         fan_in
             The number of nodes in the previous layer.
         dtype
-            Desired data type.       
+            Desired data type.
         """
         if self._fan_mode == "fan_in":
             if fan_in is None:
@@ -198,7 +199,7 @@ class GlorotUniform(Uniform):
     def __init__(self):
         """
         The Glorot uniform initializer, also known as the Xavier uniform initializer.
-        It draws values from a uniform distribtion `[-limit, limit]` where 
+        It draws values from a uniform distribtion `[-limit, limit]` where
         `limit = sqrt(6 / (fan_in + fan_out))` where `fan_in` and `fan_out` are the
         number of input and output features respectively.
         """
@@ -232,7 +233,7 @@ class Siren(Uniform):
 class KaimingNormal(Initializer):
     def __init__(self, mean=0, fan_mode="fan_in"):
         """
-        A Kaiming normal initializer, also known as He Initialization, is an 
+        A Kaiming normal initializer, also known as He Initialization, is an
         method for initializing layers that takes into account the non-linearity
         of activation functions. It uses a normal distibution centered at `mean` with
         standard distribution `sqrt(2 / ((1 + negative_slope^2) * fan))`.
@@ -243,14 +244,14 @@ class KaimingNormal(Initializer):
             Sets the expected value, average, and center of the normal distribution.
         fan_mode
             Determines how `fan` is calculated.
-            - `fan_out` sets `fan` to the number of output features of this neuron. 
+            - `fan_out` sets `fan` to the number of output features of this neuron.
               This is useful when training using back-propogation.
-            - `fan_in` sets `fan` to the number of input features of this neuron. 
+            - `fan_in` sets `fan` to the number of input features of this neuron.
               This is useful when training using forward-propogation.
-            - `fan_sum` sets `fan` to the sum of the number of input features and 
-              output features of this neuron. 
-            - `fan_sum` sets `fan` to the average of the number of input features and 
-              output features of this neuron. 
+            - `fan_sum` sets `fan` to the sum of the number of input features and
+              output features of this neuron.
+            - `fan_sum` sets `fan` to the average of the number of input features and
+              output features of this neuron.
         """
         if fan_mode not in ["fan_in", "fan_out", "fan_sum", "fan_avg"]:
             raise Exception(
@@ -271,7 +272,7 @@ class KaimingNormal(Initializer):
     ):
         """
         Create internal variables for the layer
-        
+
         Parameters
         ----------
         var_shape
