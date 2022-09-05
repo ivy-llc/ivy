@@ -158,13 +158,11 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @handle_cmd_line_args
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
-    num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
 )
 def test_multinomial(
     everything,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -174,18 +172,18 @@ def test_multinomial(
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     # tensorflow does not support multinomial without replacement
     assume(not (fw == "tensorflow" and not replace))
-    ret, ret_gt = helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=[prob_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
-        test_values=False,
-        ground_truth_backend="numpy",
         fw=fw,
         fn_name="multinomial",
+        test_values=False,
+        ground_truth_backend="numpy",
         population_size=population_size,
         num_samples=num_samples,
         batch_size=batch_size,
@@ -193,9 +191,12 @@ def test_multinomial(
         replace=replace,
         device=device,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    if not ivy.exists(ret):
+        return
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
 
 
