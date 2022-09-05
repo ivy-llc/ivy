@@ -288,3 +288,10 @@ def polyval(coeffs, x, name=None):
 
 
 # TODO: Ibeta for Future Release
+
+
+def intersection(x, y, validate_indices=True):
+    return ivy.intersection(x,y)
+
+
+intersection.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
