@@ -892,7 +892,8 @@ def test_gather(
 # gather_nd
 # @given(
 #     params_n_ndindices=helpers.array_and_ndindices(
-#         allow_inf=False, min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
+#         allow_inf=False, min_num_dims=1, max_num_dims=5, min_dim_size=1,
+#  max_dim_size=10
 #     ),
 #     ndindices_dtype=st.sampled_from(["int32", "int64"]),
 #     as_variable=helpers.list_of_length(st.booleans(), 2),
