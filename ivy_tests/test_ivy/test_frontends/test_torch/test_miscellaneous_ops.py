@@ -198,6 +198,18 @@ def test_torch_cumsum(
         ),
         shape=helpers.get_shape(min_num_dims=2),
     ),
+    offset=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_int=True
+    ),
+    dim1=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_int=True
+    ),
+    dim2=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_int=True
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.diagonal"
@@ -206,7 +218,9 @@ def test_torch_cumsum(
 )
 def test_torch_diagonal(
         dtype_and_values,
-        axis,
+        offset,
+        dim1,
+        dim2,
         as_variable,
         num_positional_args,
         native_array,
@@ -223,7 +237,7 @@ def test_torch_diagonal(
         frontend="torch",
         fn_tree="diagonal",
         input=np.asarray(value, dtype=input_dtype),
-        offset=axis,
-        axis1=axis,
-        axis2=axis
+        offset=offset,
+        axis1=dim1,
+        axis2=dim2
     )
