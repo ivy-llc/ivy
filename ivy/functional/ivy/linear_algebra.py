@@ -488,7 +488,9 @@ def diagonal(
         b: ivy.array([4, 9, 6])
     }
     """
-    return current_backend(x).diagonal(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
+    return current_backend(x).diagonal(
+        x, offset=offset, axis1=axis1, axis2=axis2, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -783,11 +785,7 @@ def matrix_norm(
 @handle_out_argument
 @handle_nestable
 def matrix_power(
-    x: Union[ivy.Array, ivy.NativeArray],
-    n: int,
-    /,
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
