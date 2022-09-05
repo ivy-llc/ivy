@@ -143,6 +143,11 @@ def cumsum(
     dtype: jnp.dtype,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(dtype, x.dtype)
+    if dtype != x.dtype:
+        x = x.astype(dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
