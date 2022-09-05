@@ -41,7 +41,11 @@ def array_equal(
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
-    if get_num_dims(x) == 0 and ivy.as_native_dtype(x.dtype) is tf.bfloat16:
+    if (
+        ivy.is_array(x)
+        and get_num_dims(x) == 0
+        and ivy.as_native_dtype(x.dtype) is tf.bfloat16
+    ):
         x = tf.expand_dims(x, 0)
         if copy:
             return np.squeeze(np.array(tf.convert_to_tensor(x)), 0)
@@ -173,16 +177,21 @@ def _infer_dtype(x_dtype: tf.DType):
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if x.dtype == dtype:
-        return tf.math.cumsum(x, axis)
-    return tf.math.cumsum(tf.cast(x, dtype), axis)
+        if dtype is tf.bool:
+            dtype = ivy.default_int_dtype()
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
 def cumprod(
@@ -196,9 +205,9 @@ def cumprod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if x.dtype == dtype:
-        return tf.math.cumprod(x, axis, exclusive)
-    return tf.math.cumprod(tf.cast(x, dtype), axis, exclusive)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
