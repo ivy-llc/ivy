@@ -35,7 +35,7 @@ def _reshape_helper(draw):
         fn_name="ivy.functional.frontends.jax.DeviceArray.reshape"
     ),
 )
-def test_jax_lax_reshape(
+def test_jax_instance_reshape(
     x_reshape_permut,
     as_variable,
     num_positional_args,

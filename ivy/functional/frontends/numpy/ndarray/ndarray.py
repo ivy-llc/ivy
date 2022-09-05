@@ -21,7 +21,7 @@ class ndarray:
 
     def add(
         self,
-        x2,
+        other,
         /,
         out=None,
         *,
@@ -33,7 +33,7 @@ class ndarray:
     ):
         return np_frontend.add(
             self,
-            x2,
+            other,
             out=out,
             where=where,
             casting=casting,

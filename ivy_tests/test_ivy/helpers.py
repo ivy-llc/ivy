@@ -1967,6 +1967,48 @@ def test_frontend_array_instance_method(
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
+    """Tests a frontend instance method for the current backend by comparing the result with
+    the function in the associated framework.
+
+    Parameters
+    ----------
+    input_dtypes
+        data types of the input arguments in order.
+    as_variable_flags
+        dictates whether the corresponding input argument should be treated
+        as an ivy Variable.
+    with_out
+        if True, the function is also tested with the optional out argument.
+    num_positional_args
+        number of input arguments that must be passed as positional
+        arguments.
+    native_array_flags
+        dictates whether the corresponding input argument should be treated
+        as a native array.
+    fw
+        current backend (framework).
+    frontend
+        current frontend (framework).
+    frontend_class
+        class in the frontend framework.
+    fn_tree
+        Path to function in frontend framework namespace.
+    rtol
+        relative tolerance value.
+    atol
+        absolute tolerance value.
+    test_values
+        if True, test for the correctness of the resulting values.
+    all_as_kwargs_np
+        input arguments to the function as keyword arguments.
+
+    Returns
+    -------
+    ret
+        optional, return value from the function
+    ret_np
+        optional, return value from the Numpy function
+    """
     # convert single values to length 1 lists
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
