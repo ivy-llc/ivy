@@ -327,12 +327,13 @@ def test_torch_transpose(
 
     
 #chunk
-@given(   dtype_value_shape=helpers.dtype_and_values(
+@given(
+    dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)),
         ),
-        num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
+        num_arrays=st.shared(helpers.ints(min_value=1), key="num_arrays"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim=helpers.get_axis(
@@ -364,7 +365,4 @@ def test_torch_chunk(
         fn_tree='chunk',
         input = np.asarray(value,dtype=input_dtype),
         dim = dim 
-        
-        
-    )
-    
+        )  
