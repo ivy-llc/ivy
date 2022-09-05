@@ -12,11 +12,11 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
-    as_variable=helpers.array_bools(),
+    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.shape"
     ),
-    native_array=helpers.array_bools(),
+    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_shape(
     xs_n_input_dtypes_n_unique_idx,
