@@ -956,56 +956,23 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
 
     Returns
     -------
-    True if the function does not support either the device or any data type, False
+    True if the function does not support both the device and any data type, False
     otherwise.
     """
-    test_unsupported = False
     unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
-    supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
-    for i in range(len(unsupported_devices_dtypes_fn["devices"])):
-        if device in unsupported_devices_dtypes_fn["devices"][i]:
-            for d in input_dtypes:
-                if d in unsupported_devices_dtypes_fn["dtypes"][i]:
-                    test_unsupported = True
-                    break
-    if (
-        "device" in all_as_kwargs_np
-        and "dtype" in all_as_kwargs_np
-        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn["devices"]
-    ):
-        index = unsupported_devices_dtypes_fn["devices"].index(
-            all_as_kwargs_np["device"]
-        )
-        if all_as_kwargs_np["dtype"] in unsupported_devices_dtypes_fn["dtypes"][index]:
-            test_unsupported = True
-    if test_unsupported:
-        return test_unsupported
 
-    for i in range(len(supported_devices_dtypes_fn["devices"])):
-        if device in supported_devices_dtypes_fn["devices"][i]:
-            for d in input_dtypes:
-                if d not in supported_devices_dtypes_fn["dtypes"][i]:
-                    test_unsupported = True
-                    break
-        else:
-            test_unsupported = True
-        if (
-            "device" in all_as_kwargs_np
-            and "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn["devices"]
-        ):
-            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn["devices"]:
-                test_unsupported = True
-            else:
-                index = supported_devices_dtypes_fn["devices"].index(
-                    all_as_kwargs_np["device"]
-                )
-                if (
-                    all_as_kwargs_np["dtype"]
-                    not in supported_devices_dtypes_fn["dtypes"][index]
-                ):
-                    test_unsupported = True
-    return test_unsupported
+    if device in unsupported_devices_dtypes_fn:
+        for d in input_dtypes:
+            if d in unsupported_devices_dtypes_fn[device]:
+                return True
+
+    if "device" in all_as_kwargs_np and "dtype" in all_as_kwargs_np:
+        dev = all_as_kwargs_np["device"]
+        dtype = all_as_kwargs_np["dtype"]
+        if dtype in unsupported_devices_dtypes_fn.get(dev, []):
+            return True
+
+    return False
 
 
 def create_args_kwargs(
