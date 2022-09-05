@@ -461,7 +461,7 @@ def vecdot(
         x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     else:
         x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
-    ret = tf.cast(tf.tensordot(x1, x2, (axis, axis)), dtype)
+    ret = tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
     return ret
 
 
