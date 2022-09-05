@@ -16,7 +16,6 @@ from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
     infer_device,
-    infer_dtype,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
@@ -2884,7 +2883,6 @@ def inplace_increment(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@infer_dtype
 @handle_nestable
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
