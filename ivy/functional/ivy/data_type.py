@@ -4,7 +4,6 @@ import inspect
 import math
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable
-
 import numpy as np
 
 # local

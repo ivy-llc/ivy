@@ -1,14 +1,12 @@
 """Collection of general Ivy functions."""
 
-import builtins
-
 # global
+import builtins
 import gc
 import inspect
 import math
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
-
 import einops
 import numpy as np
 
