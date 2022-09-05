@@ -27,7 +27,7 @@ def test_numpy_shape(
 ):
     input_dtypes, xs = xs_n_input_dtypes_n_unique_idx
     xs = np.asarray(xs, dtype=input_dtypes)
-    helpers.test_frontend_function(
+    ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         num_positional_args=num_positional_args,
@@ -37,4 +37,12 @@ def test_numpy_shape(
         frontend="numpy",
         fn_tree="shape",
         array=xs,
+        test_values=False
     )
+    # Manually compare the shape here because ivy.shape doesn't return an array, so 
+    # ivy.to_numpy will narrow the bit-width, resulting in different dtypes. This is
+    # not an issue with the front-end function, but how the testing framework converts
+    # non-array function outputs to arrays.
+    assert len(ret[0]) == len(ret_gt[0])
+    for i, j in zip(ret[0], ret_gt[0]):
+        assert i == j
