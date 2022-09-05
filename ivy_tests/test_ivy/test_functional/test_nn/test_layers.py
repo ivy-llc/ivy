@@ -69,9 +69,9 @@ def test_linear(
 ):
 
     dtype, x, weight, bias = dtype_x_weight_bias
-    as_variable = [as_variable, as_variable, as_variable]
-    native_array = [native_array, native_array, native_array]
-    container = [container, container, container]
+    as_variable = [as_variable] * 3
+    native_array = [native_array] * 3
+    container = [container] * 3
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -83,8 +83,9 @@ def test_linear(
         instance_method=instance_method,
         fw=fw,
         fn_name="linear",
-        rtol_=1e-03,
-        atol_=1e-03,
+        ground_truth_backend="jax",
+        rtol_=1e-02,
+        atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
         weight=np.asarray(weight, dtype=dtype),
         bias=np.asarray(bias, dtype=dtype),
@@ -226,6 +227,8 @@ def test_scaled_dot_product_attention(
         fw=fw,
         fn_name="scaled_dot_product_attention",
         ground_truth_backend="jax",
+        rtol_=1e-02,
+        atol_=1e-02,
         q=np.asarray(q, dtype=dtype[0]),
         k=np.asarray(k, dtype=dtype[0]),
         v=np.asarray(v, dtype=dtype[0]),
@@ -308,6 +311,8 @@ def test_multi_head_attention(
         fw=fw,
         fn_name="multi_head_attention",
         ground_truth_backend="jax",
+        atol_=1e-02,
+        rtol_=1e-02,
         x=np.asarray(x_mha, dtype=dtype),
         scale=scale,
         num_heads=num_heads,
@@ -833,6 +838,8 @@ def test_lstm_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="lstm_update",
+        rtol_=1e-02,
+        atol_=1e-02,
         x=np.asarray(x_lstm, dtype=dtype),
         init_h=np.asarray(init_h, dtype=dtype),
         init_c=np.asarray(init_c, dtype=dtype),
