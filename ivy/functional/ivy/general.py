@@ -2135,22 +2135,23 @@ def einops_rearrange(
     >>> x=ivy.einops_rearrange(images, 'b h w c -> b h w c')
     >>> print(x.shape)
     (32, 30, 40, 3)
-    # concatenate images along vertical axis
+    
+    Concatenate images along vertical axis:
     >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
-    # concatenated images along horizontal axis, 1280 = 32 * 40
+    Concatenated images along horizontal axis, 1280 = 32 * 40:
     >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
     >>> print(x.shape)
     (30, 1280, 3)
 
-    # reordered axes to "b c h w" format for deep learning
+    Reordered axes to "b c h w" format for deep learning:
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
     >>> print(x.shape)
     (32, 3, 30, 40)
 
-    # flattened each image into a vector, 3600 = 30 * 40 * 3
+    Flattened each image into a vector, 3600 = 30 * 40 * 3:
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
     (32, 3600)
