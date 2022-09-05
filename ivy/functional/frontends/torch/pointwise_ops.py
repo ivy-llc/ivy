@@ -165,6 +165,34 @@ def bitwise_and(input, other, *, out=None):
 bitwise_and.unsupported_dtypes = ("float16",)
 
 
+def bitwise_not(input, *, out=None):
+    return ivy.bitwise_invert(input, out=out)
+
+
+bitwise_not.unsupported_dtypes = ("float16",)
+
+
+def bitwise_xor(input, other, *, out=None):
+    return ivy.bitwise_xor(input, other, out=out)
+
+
+bitwise_xor.unsupported_dtypes = ("float16",)
+
+
+def bitwise_left_shift(input, other, *, out=None):
+    return ivy.bitwise_left_shift(input, other, out=out)
+
+
+bitwise_left_shift.unsupported_dtypes = ("float16",)
+
+
+def bitwise_right_shift(input, other, *, out=None):
+    return ivy.bitwise_right_shift(input, other, out=out)
+
+
+bitwise_right_shift.unsupported_dtypes = ("float16",)
+
+
 def log10(input, *, out=None):
     return ivy.log10(input, out=out)
 

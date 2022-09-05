@@ -982,6 +982,165 @@ def test_torch_bitwise_and(
     )
 
 
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
+        ),
+        num_arrays=1,
+    ),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_not"
+    ),
+)
+def test_torch_bitwise_not(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_not",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_xor"
+    ),
+)
+def test_torch_bitwise_xor(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_xor",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+        large_value_safety_factor=1.1,
+        small_value_safety_factor=0.9,
+    ),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_left_shift"
+    ),
+)
+def test_torch_bitwise_left_shift(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    if "int" in input_dtype[0] and "int" in input_dtype[1]:
+        x[1] = np.abs(x[1])
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_left_shift",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_torch.valid_int_dtypes).intersection(
+                set(ivy_torch.valid_int_dtypes)
+            )
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+        large_value_safety_factor=1.1,
+        small_value_safety_factor=0.9,
+    ),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_right_shift"
+    ),
+)
+def test_torch_bitwise_right_shift(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_right_shift",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
 # log10
 @given(
     dtype_and_x=helpers.dtype_and_values(
