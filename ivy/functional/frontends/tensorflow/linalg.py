@@ -48,6 +48,9 @@ def svd(tensor, full_matrices=False, compute_uv=True, name=None):
     return ivy.svd(tensor, full_matrices=full_matrices)
 
 
+svd.unsupported_dtypes = ("float16", "bfloat16")
+
+
 def tensordot(a, b, axes, name=None):
     return ivy.tensordot(a, b, axes=axes)
 

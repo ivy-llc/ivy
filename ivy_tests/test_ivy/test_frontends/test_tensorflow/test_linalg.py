@@ -11,6 +11,60 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
+def _get_dtype_value1_value2_axis_for_tensordot(
+    draw,
+    available_dtypes,
+    min_value=None,
+    max_value=None,
+    allow_inf=True,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
+    dtype = draw(available_dtypes)
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+    value1 = np.asarray(value1, dtype=dtype)
+    value2 = np.asarray(value2, dtype=dtype)
+    if not isinstance(axis, list):
+        value2 = value2.transpose(
+            [k for k in range(len(shape) - axis, len(shape))]
+            + [k for k in range(0, len(shape) - axis)]
+        )
+    return dtype, value1, value2, axis
+
+
+@st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
     random_size = draw(st.integers(min_value=1, max_value=4))
@@ -248,7 +302,7 @@ def test_tensorflow_pinv(
         fn_name="ivy.functional.frontends.tensorflow.qr"
     ),
     native_array=st.booleans(),
-    full_matrices=st.sampled_from((True, False)),
+    full_matrices=st.booleans(),
 )
 def test_tensorflow_qr(
     dtype_and_input, as_variable, num_positional_args, native_array, full_matrices, fw
@@ -272,13 +326,21 @@ def test_tensorflow_qr(
 
 
 @given(
-    dtype_and_input=_get_dtype_and_matrix(),
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=0.1,
+        max_value=10.0,
+    ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.qr"
+        fn_name="ivy.functional.frontends.tensorflow.svd"
     ),
     native_array=st.booleans(),
-    full_matrices=st.sampled_from((True, False)),
+    full_matrices=st.booleans(),
 )
 def test_tensorflow_svd(
     dtype_and_input, as_variable, num_positional_args, native_array, full_matrices, fw
@@ -293,9 +355,52 @@ def test_tensorflow_svd(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="linalg.qr",
+        fn_tree="linalg.svd",
         tensor=np.asarray(x, dtype=input_dtype),
         full_matrices=full_matrices,
-        validate_args=False,
         name=None,
+    )
+
+
+@given(
+    dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=8,
+        min_dim_size=1,
+        max_dim_size=15,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.tensordot"
+    ),
+    as_variable=st.booleans(),
+    native_array=st.booleans(),
+)
+def test_tensorflow_tensordot(
+    dtype_x1_x2_axis, num_positional_args, as_variable, native_array, fw
+):
+    (
+        input_dtype,
+        x1,
+        x2,
+        axis,
+    ) = dtype_x1_x2_axis
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="linalg.tensordot",
+        a=x1,
+        b=x2,
+        axes=axis,
+        name=None,
+        rtol=1e-3,
+        atol=1e-2,
     )
