@@ -17,7 +17,7 @@ def std(
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.std(x, axis = axis, correction = correction, keepdims = keepdims, out=out)
+    ret = ivy.std(x, axis = axis, ddof = correction, keepdims = keepdims, out=out)
     if x.size == 0:
         ret = 0
     if ivy.isnan(x):
