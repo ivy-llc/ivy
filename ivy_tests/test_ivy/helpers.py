@@ -3243,9 +3243,9 @@ def handle_cmd_line_args(test_fn):
             # inspecting for keyword arguments in test function
             for param in inspect.signature(test_fn).parameters.values():
                 if param.name in cmd_line_args:
-                    kwargs[param.name] = data.draw(
-                        bool_val_flags(get_command_line_flags[param.name])
-                    )
+                    kwargs[param.name] = [
+                        data.draw(bool_val_flags(get_command_line_flags[param.name]))
+                    ]
                 elif param.name == "fw":
                     kwargs["fw"] = fw if flag else fw_string
                 elif param.name == "device":
