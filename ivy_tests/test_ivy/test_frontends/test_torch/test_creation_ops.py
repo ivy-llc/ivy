@@ -157,6 +157,7 @@ def test_torch_ones(
         requires_grad=requires_grad,
     )
 
+
 # zeros
 @handle_cmd_line_args
 @given(
@@ -195,4 +196,3 @@ def test_torch_zeros(
         device=device,
         requires_grad=requires_grad,
     )
-
