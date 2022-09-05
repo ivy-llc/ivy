@@ -1,17 +1,13 @@
 """Collection of tests for Ivy optimizers."""
 
 # global
-# from matplotlib.style import available
-# import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 import numpy as np
 
 # local
-# import ivy
-# from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
+import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -19,9 +15,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         num_arrays=2,
-        shared_dtype=False,
+        allow_inf=False,
+        shared_dtype=True,
     ),
     lr=st.floats(min_value=0.0, max_value=1.0),
     inplace=st.booleans(),
@@ -42,6 +39,7 @@ def test_sgd_optimizer(
     fw,
 ):
     input_dtype, x = dtype_and_x
+
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
         num_positional_args_method=num_positional_args_method,
@@ -53,7 +51,7 @@ def test_sgd_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=container,
+        container_flags_method=False,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
             "grads": np.asarray(x[1], dtype=input_dtype[1]),
@@ -68,9 +66,10 @@ def test_sgd_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=ivy_tf.valid_float_dtypes,
         num_arrays=2,
-        shared_dtype=False,
+        allow_inf=False,
+        shared_dtype=True,
     ),
     inplace=st.booleans(),
     lr=st.floats(min_value=0.0, max_value=1.0),
@@ -105,7 +104,7 @@ def test_lars_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=container,
+        container_flags_method=False,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
             "grads": np.asarray(x[1], dtype=input_dtype[1]),
@@ -120,9 +119,10 @@ def test_lars_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=ivy_tf.valid_float_dtypes,
         num_arrays=2,
-        shared_dtype=False,
+        allow_inf=False,
+        shared_dtype=True,
     ),
     lr=st.floats(min_value=0.0, max_value=1.0),
     beta1=st.floats(min_value=0.0, max_value=1.0),
@@ -164,7 +164,7 @@ def test_adam_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=container,
+        container_flags_method=False,
         device_=device,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
@@ -180,9 +180,10 @@ def test_adam_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=ivy_tf.valid_float_dtypes,
         num_arrays=2,
-        shared_dtype=False,
+        allow_inf=False,
+        shared_dtype=True,
     ),
     lr=st.floats(min_value=0.0, max_value=1.0),
     beta1=st.floats(min_value=0.0, max_value=1.0),
@@ -230,7 +231,7 @@ def test_lamb_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=container,
+        container_flags_method=False,
         device_=device,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
