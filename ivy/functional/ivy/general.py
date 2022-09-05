@@ -2134,9 +2134,6 @@ def einops_rearrange(
     return ret
 
 
-einops_rearrange.unsupported_dtypes = {"torch": ("uint16",)}
-
-
 @handle_nestable
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2194,9 +2191,6 @@ def einops_reduce(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
-
-
-einops_reduce.unsupported_dtypes = {"torch": ("uint16",)}
 
 
 @handle_nestable
