@@ -317,16 +317,16 @@ def test_numpy_cosh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=1
+        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
+    as_variable=helpers.array_bools(num_arrays=2),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arctan2"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
+    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_arctan2(
     dtype_and_x,
@@ -339,6 +339,7 @@ def test_numpy_arctan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
