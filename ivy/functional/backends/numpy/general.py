@@ -137,11 +137,33 @@ def _infer_dtype(x_dtype: np.dtype):
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
+    *,
     dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        if x.dtype == "bool":
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.swapaxes(x, axis, -1)
+            res = np.flip(x, axis=axis)
+        elif exclusive:
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.cumsum(x, -1, dtype=dtype)
+            res = np.swapaxes(x, axis, -1)
+        elif reverse:
+            x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+            res = np.flip(x, axis=axis)
+        return res
     return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
@@ -195,13 +217,17 @@ def scatter_flat(
             target = np.ones([size], dtype=updates.dtype) * 1e12
         np.minimum.at(target, indices, updates)
         if not target_given:
-            target = np.asarray(np.where(target == 1e12, 0.0, target), dtype=updates.dtype)
+            target = np.asarray(
+                np.where(target == 1e12, 0.0, target), dtype=updates.dtype
+            )
     elif reduction == "max":
         if not target_given:
             target = np.ones([size], dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices, updates)
         if not target_given:
-            target = np.asarray(np.where(target == -1e12, 0.0, target), dtype=updates.dtype)
+            target = np.asarray(
+                np.where(target == -1e12, 0.0, target), dtype=updates.dtype
+            )
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -250,7 +276,7 @@ def scatter_nd(
         np.maximum.at(target, indices_tuple, updates)
         if not target_given:
             target = np.where(target == -1e12, 0.0, target)
-            target = np.asarray(target, dtype=updates.dtype)            
+            target = np.asarray(target, dtype=updates.dtype)
     else:
         raise Exception(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -258,10 +284,12 @@ def scatter_nd(
             )
         )
     if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))        
+        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
 
+
 scatter_nd.support_native_out = True
+
 
 def gather(
     params: np.ndarray,
@@ -331,7 +359,7 @@ def one_hot(
 
 def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(np.shape(x))
+        return ivy.array(np.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 

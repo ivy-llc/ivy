@@ -138,15 +138,29 @@ def inplace_increment(
 def cumsum(
     x: mx.nd.NDArray,
     axis: int = 0,
-    dtype: Optional[type] = None,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
+    *,
+    dtype: type,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out, mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
-        )
-    else:
-        mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = mx.nd.cumsum(mx.nd.flip(x, axis=axis), axis=axis, dtype=dtype)
+            x = mx.nd.swapaxes(x, axis, -1)
+            x = mx.nd.concat(mx.nd.zeros_like(x[..., -1:]), x[..., :-1], dim=-1)
+            x = mx.nd.swapaxes(x, axis, -1)
+            res = mx.nd.flip(x, axis=axis)
+        elif exclusive:
+            x = mx.nd.swapaxes(x, axis, -1)
+            x = mx.nd.concat(mx.nd.zeros_like(x[..., -1:]), x[..., :-1], dim=-1)
+            x = mx.nd.cumsum(x, x.ndim - 1, dtype=dtype)
+            res = mx.nd.swapaxes(x, axis, -1)
+        elif reverse:
+            x = mx.nd.cumsum(mx.nd.flip(x, axis=axis), axis=axis, dtype=dtype)
+            res = mx.nd.flip(x, axis=axis)
+        return res
+    return mx.nd.cumsum(x, axis=axis, dtype=dtype)
 
 
 def cumprod(
@@ -168,9 +182,7 @@ def cumprod(
 
 
 # noinspection PyShadowingNames
-def scatter_flat(
-    indices, updates, size=None, out=None, reduction="sum", device=None
-):
+def scatter_flat(indices, updates, size=None, out=None, reduction="sum", device=None):
     if ivy.exists(out):
         raise Exception(
             "MXNet scatter_flat does not support scattering into "
@@ -219,7 +231,9 @@ def scatter_nd(
             "but {} selected.".format(reduction)
         )
 
+
 scatter_nd.support_native_out = True
+
 
 def gather(
     params: mx.nd.NDArray,
@@ -236,7 +250,7 @@ def gather(
             mx.nd.expand_dims(mx.nd.pick(params, idx_slice, axis), -1)
             for idx_slice in index_slices
         ],
-        dim=-1
+        dim=-1,
     )
     res = mx.nd.reshape(res, indices.shape)
     if ivy.exists(out):

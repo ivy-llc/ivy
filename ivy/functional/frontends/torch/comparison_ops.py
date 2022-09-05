@@ -1,4 +1,9 @@
-# ToDo: Add allclose(), isclose(), isposinf(), isneginf() to functional API
+"""
+ToDo
+----
+Add allclose(), isclose(), isposinf(), isneginf(), fmax()
+to ivy functional API
+"""
 # global
 import ivy
 
@@ -7,11 +12,12 @@ from collections import namedtuple
 
 
 def _compute_allclose_with_tol(input, other, rtol, atol):
-    ret = ivy.less_equal(
-        ivy.abs(ivy.subtract(input, other)),
-        ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
+    return ivy.all(
+        ivy.less_equal(
+            ivy.abs(ivy.subtract(input, other)),
+            ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
+        )
     )
-    return ivy.all(ret)
 
 
 def _compute_isclose_with_tol(input, other, rtol, atol):
@@ -48,13 +54,11 @@ allclose.unsupported_dtypes = ("float16",)
 
 
 def equal(input, other):
-    ret = ivy.all_equal(input, other, equality_matrix=False)
-    return bool(ret)
+    return bool(ivy.all_equal(input, other, equality_matrix=False))
 
 
 def eq(input, other, *, out=None):
-    ret = ivy.equal(input, other, out=out)
-    return ret
+    return ivy.equal(input, other, out=out)
 
 
 def argsort(input, dim=-1, descending=False):
@@ -62,8 +66,7 @@ def argsort(input, dim=-1, descending=False):
 
 
 def greater_equal(input, other, *, out=None):
-    ret = ivy.greater_equal(input, other, out=out)
-    return ret
+    return ivy.greater_equal(input, other, out=out)
 
 
 ge = greater_equal
@@ -126,10 +129,7 @@ def sort(input, dim=-1, descending=False, stable=False, out=None):
     values = ivy.sort(input, axis=dim, descending=descending, stable=stable, out=out)
 
     indices = ivy.argsort(input, axis=dim, descending=descending)
-
-    ret = namedtuple("sort", ["values", "indices"])(values, indices)
-
-    return ret
+    return namedtuple("sort", ["values", "indices"])(values, indices)
 
 
 def isnan(input):
@@ -159,3 +159,25 @@ ne = not_equal
 
 def minimum(input, other, *, out=None):
     return ivy.minimum(input, other, out=out)
+
+
+def fmax(input, other, *, out=None):
+    return ivy.where(
+        ivy.bitwise_or(ivy.greater(input, other), ivy.isnan(other)),
+        input,
+        other,
+        out=out,
+    )
+
+
+def fmin(input, other, *, out=None):
+    return ivy.where(
+        ivy.bitwise_or(ivy.less(input, other), ivy.isnan(other)),
+        input,
+        other,
+        out=out,
+    )
+
+
+def msort(input, *, out=None):
+    return ivy.sort(input, axis=0, out=out)

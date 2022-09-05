@@ -1,18 +1,17 @@
 """Collection of general Ivy functions."""
 
 # global
-import gc
-import math
-import einops
-import inspect
 import builtins
-import numpy as np
+import gc
+import inspect
+import math
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
+import einops
+import numpy as np
 
 # local
 import ivy
-from ivy.functional.ivy.device import dev
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
     infer_device,
@@ -22,6 +21,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.functional.ivy.device import dev
 
 FN_CACHE = dict()
 INF = float("inf")
@@ -141,7 +141,9 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False) -> bool:
+def is_ivy_array(
+    x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False
+) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -360,6 +362,7 @@ def copy_array(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
@@ -1264,6 +1267,7 @@ def clip_vector_norm(
         ret = ivy.inplace_update(out, ret)
     return ret
 
+
 clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
 
 
@@ -1365,7 +1369,13 @@ def clip_matrix_norm(
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
 
-clip_matrix_norm.unsupported_dtypes = { 'jax': ('float16',), 'numpy': ('float16',), 'tensorflow': ('float16',), "torch": ("float16",)}
+
+clip_matrix_norm.unsupported_dtypes = {
+    "jax": ("float16",),
+    "numpy": ("float16",),
+    "tensorflow": ("float16",),
+    "torch": ("float16",),
+}
 
 
 @to_native_arrays_and_back
@@ -2100,7 +2110,7 @@ def einops_rearrange(
 
     Parameters
     ----------
-    x 
+    x
         Input array to be re-arranged.
     pattern
         Rearrangement pattern.
@@ -2157,6 +2167,26 @@ def einops_reduce(
     ret
         New array with einops.reduce having been applied.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >> x = ivy.array([[-4.47, 0.93, -3.34],
+                      [3.66, 24.29, 3.64]])
+    >> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
+    >> print(reduced)
+    ivy.array([-0.405, 12.6  ,  0.15 ])
+
+    With :code:`ivy.Container` input:
+    >> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
+                                      [3.66, 24.29, 3.64]]),
+                        b=ivy.array([[4.96, 1.52, -10.67],
+                                     [4.36, 13.96, 0.3]]))
+    >> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
+    >> print(reduced)
+    {
+        a: ivy.array([-2.29, 10.5]),
+        b: ivy.array([-1.4, 6.21])
+    }
     """
     x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
@@ -2176,7 +2206,7 @@ def einops_repeat(
     *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Perform einops repeat operation on input array x.
 
     Parameters
@@ -2195,6 +2225,29 @@ def einops_repeat(
     -------
     ret
         New array with einops.repeat having been applied.
+
+    Examples
+    --------
+    With :code:`ivy.array` input:
+    >> x = ivy.array([1, 2, 3, 4])
+    >> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
+    >> print(repeated)
+    ivy.array([[1, 2, 3, 4],
+               [1, 2, 3, 4]])
+
+    With :code:`ivy.Container` input:
+    >> x = ivy.Container(a=ivy.array([[4,5],
+                                    [1, 3]]),
+                        b=ivy.array([[9, 10],
+                                    [4, 2]]))
+    >> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
+    >> print(repeated)
+    {
+        a: ivy.array([[4, 5, 4, 5],
+                      [1, 3, 1, 3]]),
+        b: ivy.array([[9, 10, 9, 10],
+                      [4, 2, 4, 2]])
+    }
 
     """
     x = ivy.to_native(x)
@@ -2415,6 +2468,8 @@ def stable_divide(
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
+    /,
+    *,
     min_base: float = None,
 ) -> Any:
     """Raise the base by the power, with MIN_BASE added to the base when exponent > 1
@@ -2493,14 +2548,14 @@ def set_queue_timeout(timeout):
 
     Examples
     --------
-    >> x = ivy.queue_timeout()
+    >> x = ivy.get_queue_timeout()
     >> print(x)
     15.0
 
     To set the timeout for example 30 seconds
 
     >> ivy.set_queue_timeout(30)
-    >> y = ivy.queue_timeout()
+    >> y = ivy.get_queue_timeout()
     >> print(y)
     30
 
@@ -2510,9 +2565,21 @@ def set_queue_timeout(timeout):
 
 
 def get_queue_timeout():
-    """Get the global queue timeout values (in seconds).
+    """
+    Get the global queue timeout value (in seconds).
+    The default value without this function being called is 10 seconds.
 
-    Default value without this function being called is 10 seconds.
+    Returns
+    -------
+    ret
+       The global queue timeout value (in seconds).
+
+    Examples
+    --------
+    >>> ivy.set_queue_timeout(10.0)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
+    10.0
 
     """
     global TIMEOUT
@@ -2820,6 +2887,8 @@ def inplace_increment(
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -2831,32 +2900,128 @@ def cumsum(
     x
         Input array.
     axis
-        int, Axis along which the cumulative sum is computed. By default 0.
+        Axis along which the cumulative sum is computed. Default is ``0``.
+    exclusive
+        Whether to perform cumsum exclusively. Default is ``False``.
+    reverse
+        Whether to perform the cumsum from last to first element in the selected
+        axis. Default is False (from first to last element)
     dtype
-        data type of the returned array. If None,
-        if the default data type corresponding to the data type “kind” (integer or
-        floating-point) of x has a smaller range of values than the data type of x
-        (e.g., x has data type int64 and the default data type is int32, or x has data
-        type uint64 and the default data type is int64), the returned array must have
-        the same data type as x. if x has a floating-point data type, the returned array
-        must have the default floating-point data type. if x has a signed integer data
-        type (e.g., int16), the returned array must have the default integer data type.
-        if x has an unsigned integer data type (e.g., uint16), the returned array must
-        have an unsigned integer data type having the same number of bits as the default
-        integer data type (e.g., if the default integer data type is int32, the returned
-        array must have a uint32 data type). If the data type (either specified or
-        resolved) differs from the data type of x, the input array should be cast to the
-        specified data type before computing the product. Default: None.
+        Data type of the returned array. Default is ``None``.
+        If None, if the default data type corresponding to the data type “kind”
+        (integer or floating-point) of x has a smaller range of values than the
+        data type of x (e.g., x has data type int64 and the default data type
+        is int32, or x has data type uint64 and the default data type is int64),
+        the returned array must have the same data type as x.
+        If x has a floating-point data type, the returned array must have the
+        default floating-point data type.
+        If x has a signed integer data type (e.g., int16), the returned array
+        must have the default integer data type.
+        If x has an unsigned integer data type (e.g., uint16), the returned
+        array must have an unsigned integer data type having the same number of
+        bits as the default integer data type (e.g., if the default integer data
+        type is int32, the returned array must have a uint32 data type).
+        If the data type (either specified or resolved) differs from the data type
+        of x, the input array should be cast to the specified data type before
+        computing the product.
     out
-        optional output array, for writing the result to.
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
-        Input array with cumulatively summed elements along axis
+        Array which holds the result of applying cumsum at each
+        original array elements along the specified axis.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 5, 2, 0])
+    >>> y = ivy.cumsum(x, exclusive= True, reverse=False)
+    >>> print(y)
+    ivy.array([0, 1, 6, 8])
+
+    >>> x = ivy.array([[6, 4, 2], \
+                       [1, 3, 0]])
+    >>> y = ivy.zeros((2,3))
+    >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
+    >>> print(y)
+    ivy.array([[7, 7, 2],
+               [1, 3, 0]])
+
+    >>> x = ivy.array([[1, 5, 2], \
+                       [4, 3, 0]])
+    >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
+    >>> print(y)
+    ivy.array([[4, 3, 0],
+               [0, 0, 0]])
+
+    >>> x = ivy.array([[2, 4, 5], \
+                       [3, 6, 5], \
+                       [1, 3, 10]])
+    >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
+    >>> print(x)
+    ivy.array([[11,  9,  5],
+               [14, 11,  5],
+               [14, 13, 10]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
+                          b=ivy.array([[3, 5, 7]]))
+    >>> y = ivy.cumsum(x, axis= 0)
+    >>> print(y)
+    {
+        a: ivy.array([[1, 3, 5]]),
+        b: ivy.array([[3, 5, 7]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
+                          b=ivy.array([[3, 5, 8], \
+                                       [5, 6, 5]]), \
+                          c=ivy.array([[2, 4, 1], \
+                                       [3, 6, 9], \
+                                       [0, 2, 3]]))
+    >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
+                          b = ivy.zeros((2, 3)), \
+                          c = ivy.zeros((3,3)))
+    >>> ivy.cumsum(x,axis=1,reverse=True, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([[8, 7, 4]]),
+        b: ivy.array([[16, 13, 8],
+                      [16, 11, 5]]),
+        c: ivy.array([[7, 5, 1],
+                      [18, 15, 9],
+                      [5, 5, 3]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[0], \
+                                       [5]]), \
+                          b=ivy.array([[6, 8, 7], \
+                                       [4, 2, 3]]), \
+                          c=ivy.array([[1, 2], \
+                                       [3, 4], \
+                                       [6, 4]]))
+    >>> ivy.cumsum(x,axis=0,out=x)
+    >>> print(x)
+    {
+        a: ivy.array([[0],
+                      [5]]),
+        b: ivy.array([[6, 8, 7],
+                      [10, 10, 10]]),
+        c: ivy.array([[1, 2],
+                      [4, 6],
+                      [10, 10]])
+    }
     """
-    return current_backend(x).cumsum(x, axis, out=out)
+    return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
 @to_native_arrays_and_back
@@ -3564,90 +3729,136 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
     return {"idx": idx, "param": list(params.values())[idx]}
 
 
+def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_attr_name):
+    attr_list = ()
+    if hasattr(fn, other_attr_name):
+        attr_list = getattr(fn, other_attr_name)
+        if isinstance(attr_list, dict):
+            attr_list = attr_list.get(backend, ())
+    if dnd_dict and attr_list:
+        raise Exception(
+            f"Cannot specify both {first_attr_name} and {other_attr_name} "
+            "cannot both be defined for the same function"
+        )
+
+
 def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
-    if hasattr(fn, "unsupported_device_and_dtype") and hasattr(
-        fn, "supported_device_and_dtype"
-    ):
-        fn_unsupported_device_and_dtype = fn.unsupported_device_and_dtype
-        fn_supported_device_and_dtype = fn.supported_device_and_dtype
-        if isinstance(fn_unsupported_device_and_dtype, dict):
-            if isinstance(fn_supported_device_and_dtype, dict):
-                backend_str = ivy.current_backend_str()
-                if (
-                    backend_str in fn_unsupported_device_and_dtype
-                    and backend_str in fn_supported_device_and_dtype
-                ):
-                    return False
-                elif (
-                    "devices" in fn_unsupported_device_and_dtype
-                    and "devices" in fn_supported_device_and_dtype
-                ):
-                    return False
+    fn_unsupported_dnd = {}
+    fn_supported_dnd = {}
+    backend = ivy.current_backend_str()
+    if hasattr(fn, "unsupported_device_and_dtype"):
+        fn_unsupported_dnd = fn.unsupported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
+            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+    if hasattr(fn, "supported_device_and_dtype"):
+        fn_supported_dnd = fn.supported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_supported_dnd.values())[0], dict):
+            fn_supported_dnd = fn_supported_dnd.get(backend, {})
+
+    if fn_unsupported_dnd and fn_supported_dnd:
+        raise Exception(
+            "unsupported_device_and_dtype and supported_device_and_dtype "
+            "cannot both be defined for the same function"
+        )
+
+    us = "unsupported_device_and_dtype"
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_devices")
+    _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_dtypes")
+
+    ss = "supported_device_and_dtype"
+    _valid_attrib_combinations(fn, backend, fn_supported_dnd, ss, "unsupported_device")
+    _valid_attrib_combinations(fn, backend, fn_supported_dnd, ss, "unsupported_dtypes")
+
     return True
 
 
-@handle_nestable
-def function_unsupported_devices_and_dtypes(fn: Callable) -> Dict:
-    """Returns the unsupported combination of devices and dtypes
-     of the current backend's function.
+def _all_dnd_combinations():
+    # TODO: not hard code this
 
-    Parameters
-    ----------
-    fn
-        The function to check for the unsupported device and dtype attribute
+    VALID_DEVICES = ("cpu",)
+    INVALID_DEVICES = ("gpu", "tpu")
+    ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
 
-    Returns
-    -------
-    ret
-        The unsupported combination of devices and dtypes of the function
-    """
-    if not _is_valid_device_and_dtypes_attributes(fn):
-        raise Exception(
-            "supported_device_and_dtypes and unsupported_device_and_dtypes \
-             attributes cannot both exist in a particular backend"
-        )
+    all_comb = {}
+    for device in ALL_DEVICES:
+        all_comb[device] = ivy.all_dtypes
+    return all_comb
 
-    unsupported_devices_dtype = {"devices": (), "dtypes": ()}
-    if hasattr(fn, "unsupported_device_and_dtype"):
-        fn_unsupported_devices_dtypes = fn.unsupported_device_and_dtype
-        if isinstance(fn_unsupported_devices_dtypes, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_unsupported_devices_dtypes:
-                fn_unsupported_devices_dtypes = fn_unsupported_devices_dtypes[
-                    backend_str
-                ]
 
-            elif "devices" not in fn_unsupported_devices_dtypes:
-                return unsupported_devices_dtype
+def _dnd_dict_intersection(a, b):
+    res = {}
+    for device in a:
+        if device in b:
+            intersection = set.intersection(set(a[device]), set(b[device]))
+            if intersection:
+                res[device] = tuple(intersection)
+    return res
 
-            keys = list(fn_unsupported_devices_dtypes.keys())
-            if "dtypes" in keys and "devices" in keys:
-                unsupported_devices_dtype["devices"] += fn_unsupported_devices_dtypes[
-                    "devices"
-                ]
 
-                if isinstance(fn_unsupported_devices_dtypes["dtypes"][0], tuple):
-                    for dtypes in fn_unsupported_devices_dtypes["dtypes"]:
-                        unsupported_devices_dtype["dtypes"] += (dtypes,)
-                else:
-                    unsupported_devices_dtype["dtypes"] += (
-                        fn_unsupported_devices_dtypes["dtypes"],
-                    )
+def _dnd_dict_difference(a, b):
+    res = a
+    for device in list(a):
+        if device in b:
+            difference = set.difference(set(a[device]), set(b[device]))
+            if difference:
+                res[device] = tuple(difference)
             else:
-                raise Exception(
-                    "'unsupported_device_and_dtype' attr must have keys \
-                     'devices' and 'dtypes'"
-                )
-        else:
-            raise Exception(
-                "Have to provide a dictionary to 'unsupported_device_and_dtype' attr \
-                 with keys 'devices' and 'dtypes'"
-            )
-    return unsupported_devices_dtype
+                del res[device]
+    return res
+
+
+def _dnd_dict_union(a, b):
+    res = {}
+    for device in set(list(a) + list(b)):
+        u1 = set(a.get(device, ()))
+        u2 = set(b.get(device, ()))
+        res[device] = tuple(set.union(u1, u2))
+
+    return res
+
+
+def _get_devices_and_dtypes(fn, complement=True):
+    supported_devices = ivy.function_supported_devices(fn)
+    supported_dtypes = ivy.function_supported_dtypes(fn)
+
+    supported = {}
+    # Generate a base supported set from other attributes
+    for device in supported_devices:
+        supported[device] = supported_dtypes
+
+    # Their values are formated like either
+    # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
+    # 2. fn.supported_devices = {"numpy": {"cpu":("float16",},)}
+    backend = ivy.current_backend_str()
+
+    if hasattr(fn, "supported_device_and_dtype"):
+        fn_supported_dnd = fn.supported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_supported_dnd.values())[0], dict):
+            fn_supported_dnd = fn_supported_dnd.get(backend, {})
+
+        supported = _dnd_dict_intersection(supported, fn_supported_dnd)
+
+    if hasattr(fn, "unsupported_device_and_dtype"):
+        fn_unsupported_dnd = fn.unsupported_device_and_dtype
+        # if it's a nested dict, unwrap for the current backend
+        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
+            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+
+        # dict difference
+        supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
+
+    if complement:
+        # dict difference
+        all_comb = _all_dnd_combinations()
+        supported = _dnd_dict_difference(all_comb, supported)
+    return supported
 
 
 @handle_nestable
-def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
+def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     """Returns the supported combination of devices and dtypes
      of the current backend's function.
 
@@ -3655,6 +3866,8 @@ def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
     ----------
     fn
         The function to check for the supported device and dtype attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
 
     Returns
     -------
@@ -3667,36 +3880,52 @@ def function_supported_devices_and_dtypes(fn: Callable) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    supported_devices_dtype = {"devices": (), "dtypes": ()}
-    if hasattr(fn, "supported_device_and_dtype"):
-        fn_supported_devices_dtypes = fn.supported_device_and_dtype
-        if isinstance(fn_supported_devices_dtypes, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_supported_devices_dtypes:
-                fn_supported_devices_dtypes = fn_supported_devices_dtypes[backend_str]
-            elif "devices" not in fn_supported_devices_dtypes:
-                return supported_devices_dtype
-            keys = list(fn_supported_devices_dtypes.keys())
-            if "dtypes" in keys and "devices" in keys:
-                supported_devices_dtype["devices"] += fn_supported_devices_dtypes[
-                    "devices"
-                ]
+    supported_devices_dtype = _get_devices_and_dtypes(fn, complement=False)
 
-                if isinstance(fn_supported_devices_dtypes["dtypes"][0], tuple):
-                    for dtypes in fn_supported_devices_dtypes["dtypes"]:
-                        supported_devices_dtype["dtypes"] += dtypes
-                else:
-                    supported_devices_dtype["dtypes"] += (
-                        fn_supported_devices_dtypes["dtypes"],
-                    )
-            else:
-                raise Exception(
-                    "'supported_device_and_dtype' attr must have keys \
-                     'devices' and 'dtypes'"
-                )
-        else:
-            raise Exception(
-                "Have to provide a dictionary to 'supported_device_and_dtype' attr \
-                 with keys 'devices' and 'dtypes'"
-            )
+    if recurse:
+        supported_devices_dtype = ivy.functional.data_type._nested_get(
+            fn,
+            _all_dnd_combinations(),
+            _dnd_dict_intersection,
+            function_supported_devices_and_dtypes,
+            wrapper=lambda x: x,
+        )
+
     return supported_devices_dtype
+
+
+@handle_nestable
+def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
+    """Returns the unsupported combination of devices and dtypes
+     of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported device and dtype attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
+
+    Returns
+    -------
+    ret
+        The unsupported combination of devices and dtypes of the function
+    """
+    if not _is_valid_device_and_dtypes_attributes(fn):
+        raise Exception(
+            "supported_device_and_dtypes and unsupported_device_and_dtypes \
+             attributes cannot both exist in a particular backend"
+        )
+
+    unsupported_devices_dtype = _get_devices_and_dtypes(fn, complement=True)
+
+    if recurse:
+        unsupported_devices_dtype = ivy.functional.data_type._nested_get(
+            fn,
+            {},
+            _dnd_dict_union,
+            function_unsupported_devices_and_dtypes,
+            wrapper=lambda x: x,
+        )
+
+    return unsupported_devices_dtype

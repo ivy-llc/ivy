@@ -6,6 +6,7 @@ import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
+import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -256,4 +257,153 @@ def test_binary_crossentropy(
         y_pred=y_pred,
         from_logits=from_logits,
         label_smoothing=label_smoothing,
+    )
+
+
+# sparse_top_k_categorical_accuracy
+@handle_cmd_line_args
+@given(
+    y_true=helpers.array_values(shape=(5,), dtype=ivy.int32),
+    y_pred=helpers.array_values(shape=(5, 10), dtype=ivy.float16),
+    k=st.integers(min_value=3, max_value=10),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.sparse_top_k_categorical_accuracy"
+    ),
+    native_array=st.booleans(),
+)
+def test_sparse_top_k_categorical_accuracy(
+    y_true, y_pred, k, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.float16,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.sparse_top_k_categorical_accuracy",
+        y_true=y_true,
+        y_pred=y_pred,
+        k=k,
+    )
+
+
+# top_k_categorical_accuracy
+@handle_cmd_line_args
+@given(
+    y_true=helpers.array_values(shape=(5, 10), dtype=ivy.int32),
+    y_pred=helpers.array_values(shape=(5, 10), dtype=ivy.float16),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.categorical_accuracy"
+    ),
+    native_array=st.booleans(),
+)
+def test_categorical_accuracy(
+    y_true, y_pred, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.float16,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.categorical_accuracy",
+        y_true=y_true,
+        y_pred=y_pred,
+    )
+
+
+# kl_divergence
+@handle_cmd_line_args
+@given(
+    y_true=helpers.array_values(shape=(2, 5), dtype=ivy.float16),
+    y_pred=helpers.array_values(shape=(2, 5), dtype=ivy.float16),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.kl_divergence"
+    ),
+    native_array=st.booleans(),
+)
+def test_kl_divergence(
+    y_true, y_pred, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.float16,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.kl_divergence",
+        y_true=y_true,
+        y_pred=y_pred,
+    )
+
+
+# poisson
+@handle_cmd_line_args
+@given(
+    y_true=helpers.array_values(shape=(2, 3), dtype=ivy.float16),
+    y_pred=helpers.array_values(shape=(2, 3), dtype=ivy.float16),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.poisson"
+    ),
+    native_array=st.booleans(),
+)
+def test_poisson(y_true, y_pred, as_variable, num_positional_args, native_array, fw):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.float16,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.poisson",
+        y_true=y_true,
+        y_pred=y_pred,
+    )
+
+
+# mean_squared_error
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+        shape=helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+        ),
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.mean_squared_error"
+    ),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+)
+def test_mean_squared_error(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.mean_squared_error",
+        y_true=np.asarray(x[0], dtype=input_dtype[0]),
+        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
     )
