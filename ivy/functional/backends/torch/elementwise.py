@@ -381,8 +381,16 @@ def floor_divide(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.div(x1, x2, rounding_mode="floor", out=out)
+    new_type = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    x1 = x1.type(new_type)
+    x2 = x2.type(new_type)
+    if len(x2.shape) == 0:
+        return x1
+    nonzeros = torch.count_nonzero(x2)
+    if len(nonzeros.shape) == 0:
+        return x1
+    ret = torch.div(x1, x2, rounding_mode="floor", out=out)
+    return ret
 
 
 floor_divide.support_native_out = True
@@ -520,7 +528,10 @@ def atan2(
 
 
 atan2.support_native_out = True
-atan2.unsupported_dtypes = ("float16",)
+atan2.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)  # TODO Fixed in PyTorch 1.12.1
 
 
 def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -562,6 +573,11 @@ def remainder(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if len(x2.shape) == 0:
+        return x1
+    nonzeros = torch.count_nonzero(x2)
+    if len(nonzeros.shape) == 0:
+        return x1
     if not modulus:
         res = x1 / x2
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
