@@ -109,6 +109,22 @@ class SparseArray:
             ), "indices is larger than shape"
         self._dense_shape = dense_shape
 
+    # Instance Methods #
+    # ---------------- #
+
+    def to_dense_array(self, *, native=False):
+        new_ind = []
+        for i in range(self._values.shape[0]):
+            coordinate = ivy.gather(self._indices, ivy.array([[i]]))
+            coordinate = ivy.reshape(coordinate, (self._indices.shape[0],))
+            new_ind.append(coordinate.to_list())
+        ret = ivy.scatter_nd(
+            ivy.array(new_ind), self._values, ivy.array(self._dense_shape)
+        )
+        if native:
+            return ivy.native_array(ret)
+        return ret
+
 
 class NativeSparseArray:
     pass
