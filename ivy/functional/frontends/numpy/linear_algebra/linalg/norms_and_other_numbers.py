@@ -6,7 +6,7 @@ import ivy
 
 def slogdet(a):
     sign, logabsdet = ivy.slogdet(a)
-    ret = ivy.concat((ivy.reshape(sign, -1), ivy.reshape(logabsdet, -1)))
+    ret = ivy.concat((ivy.reshape(sign, (-1,)), ivy.reshape(logabsdet, (-1,))))
     return ret
 
 
