@@ -28,14 +28,10 @@ from ivy.functional.backends.torch.general import (
     is_native_array as is_torch_native_array,
 )
 from ivy_tests.test_ivy.test_frontends import NativeClass
-from ivy_tests.test_ivy.test_frontends.test_torch import \
-    convtorch
-from ivy_tests.test_ivy.test_frontends.test_numpy import \
-    convnumpy
-from ivy_tests.test_ivy.test_frontends.test_tensorflow import \
-    convtensor
-from ivy_tests.test_ivy.test_frontends.test_jax import \
-    convjax
+from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
+from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
+from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
+from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -1823,15 +1819,19 @@ def test_frontend_function(
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
-    
+
     # check and replace NativeClass object in arguments with ivy counterparts
-    convs = {"jax": convjax, "numpy": convnumpy, 
-             "tensorflow": convtensor, "torch": convtorch}
+    convs = {
+        "jax": convjax,
+        "numpy": convnumpy,
+        "tensorflow": convtensor,
+        "torch": convtorch,
+    }
     if frontend in convs:
         conv = convs[frontend]
         args = ivy.nested_map(args, fn=conv, include_derived=True)
         kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
-    
+
     # run from the Ivy API directly
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
@@ -1895,13 +1895,15 @@ def test_frontend_function(
         # change ivy device to native devices
         if "device" in kwargs_frontend:
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
-        
+
         # check and replace the NativeClass objects in arguments with true counterparts
-        args_frontend = ivy.nested_map(args_frontend, fn=convtrue, 
-                                       include_derived=True, max_depth=10)
-        kwargs_frontend = ivy.nested_map(kwargs_frontend, fn=convtrue, 
-                                         include_derived=True, max_depth=10)
-        
+        args_frontend = ivy.nested_map(
+            args_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
+        kwargs_frontend = ivy.nested_map(
+            kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
+
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
@@ -2172,9 +2174,6 @@ def dtype_and_values(
                 )
             )
         )
-    if num_arrays == 1:
-        dtype = dtype[0]
-        values = values[0]
     if ret_shape:
         return dtype, values, shape
     return dtype, values
@@ -2294,7 +2293,11 @@ def dtype_values_axis(
                 )
             )
     else:
-        axis = draw(ints(min_value=min_axis, max_value=max_axis))
+        axis = draw(
+            list_of_length(x=ints(min_value=min_axis, max_value=max_axis), length=1)
+        )
+        if force_int_axis:
+            axis = axis[0]
     if ret_shape:
         return dtype, values, axis, shape
     return dtype, values, axis
