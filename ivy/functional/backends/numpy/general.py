@@ -137,11 +137,30 @@ def _infer_dtype(x_dtype: np.dtype):
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
+    *,
     dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.swapaxes(x, axis, -1)
+            res = np.flip(x, axis=axis)
+        elif exclusive:
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.cumsum(x, -1, dtype=dtype)
+            res = np.swapaxes(x, axis, -1)
+        elif reverse:
+            x = np.cumsum(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+            res = np.flip(x, axis=axis)
+        return res
     return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
