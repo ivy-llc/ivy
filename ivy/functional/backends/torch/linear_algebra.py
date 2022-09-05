@@ -322,7 +322,9 @@ def vecdot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = torch.promote_types(x1.dtype, x2.dtype)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).type(dtype)
+    if x1.dtype != x2.dtype:
+        x1, x2 = x1.type(dtype), x2.type(dtype)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
 
 
 vecdot.support_native_out = True
