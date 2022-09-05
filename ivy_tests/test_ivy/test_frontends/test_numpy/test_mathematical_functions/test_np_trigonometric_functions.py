@@ -317,7 +317,7 @@ def test_numpy_cosh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=ivy_np.valid_float_dtypes,num_arrays=2
+        available_dtypes=ivy_np.valid_float_dtypes,num_arrays=2
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
