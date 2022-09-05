@@ -6,6 +6,13 @@ Ivy Applied Libraries Development Guide
 .. _`Vision`: https://lets-unify.ai/vision/
 .. _`Demo Utils`: https://github.com/unifyai/demo-utils
 .. _`Docker Desktop`: https://www.docker.com/products/docker-desktop/
+.. _`setting up discussion`: https://github.com/unifyai/ivy/discussions/1308
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
+.. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
+.. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
+.. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
+.. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
 
 Introduction
 ------------
@@ -133,7 +140,8 @@ Example - Ivy Robot
 These examples should hopefully give you a good understanding of what is required
 when developing on the Ivy applied libraries.
 
-???
 If you're ever unsure of how best to proceed,
-please feel free to engage with the `docstrings discussion`_,
-or reach out on `discord`_ in the `docstrings channel`_!
+please feel free to engage with the `setting up discussion`_,
+or reach out on `discord`_ in the `pycharm channel`_, `docker channel`_,
+`pre-commit channel`_, `pip packages channel`_ or `other channel`_,
+depending on the question!
