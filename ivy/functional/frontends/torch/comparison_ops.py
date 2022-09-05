@@ -166,4 +166,9 @@ def fmax(input, other, *, out=None):
 
 
 def fmin(input, other, *, out=None):
-    return ivy.minimum(input, other, out=out)
+    return ivy.where(
+        ivy.bitwise_or(ivy.less(input, other), ivy.isnan(other)),
+        input,
+        other,
+        out=out,
+    )
