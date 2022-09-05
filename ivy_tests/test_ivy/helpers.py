@@ -27,6 +27,11 @@ from ivy.functional.backends.tensorflow.general import (
 from ivy.functional.backends.torch.general import (
     is_native_array as is_torch_native_array,
 )
+from ivy_tests.test_ivy.test_frontends import NativeClass
+from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
+from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
+from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
+from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -52,6 +57,13 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy.functional.backends.numpy as ivy_np
+
+
+def convtrue(argument):
+    """Convert NativeClass in argument to true framework counter part"""
+    if isinstance(argument, NativeClass):
+        return argument._native_class
+    return argument
 
 
 def get_ivy_numpy():
@@ -944,56 +956,23 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
 
     Returns
     -------
-    True if the function does not support either the device or any data type, False
+    True if the function does not support both the device and any data type, False
     otherwise.
     """
-    test_unsupported = False
     unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
-    supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
-    for i in range(len(unsupported_devices_dtypes_fn["devices"])):
-        if device in unsupported_devices_dtypes_fn["devices"][i]:
-            for d in input_dtypes:
-                if d in unsupported_devices_dtypes_fn["dtypes"][i]:
-                    test_unsupported = True
-                    break
-    if (
-        "device" in all_as_kwargs_np
-        and "dtype" in all_as_kwargs_np
-        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn["devices"]
-    ):
-        index = unsupported_devices_dtypes_fn["devices"].index(
-            all_as_kwargs_np["device"]
-        )
-        if all_as_kwargs_np["dtype"] in unsupported_devices_dtypes_fn["dtypes"][index]:
-            test_unsupported = True
-    if test_unsupported:
-        return test_unsupported
 
-    for i in range(len(supported_devices_dtypes_fn["devices"])):
-        if device in supported_devices_dtypes_fn["devices"][i]:
-            for d in input_dtypes:
-                if d not in supported_devices_dtypes_fn["dtypes"][i]:
-                    test_unsupported = True
-                    break
-        else:
-            test_unsupported = True
-        if (
-            "device" in all_as_kwargs_np
-            and "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn["devices"]
-        ):
-            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn["devices"]:
-                test_unsupported = True
-            else:
-                index = supported_devices_dtypes_fn["devices"].index(
-                    all_as_kwargs_np["device"]
-                )
-                if (
-                    all_as_kwargs_np["dtype"]
-                    not in supported_devices_dtypes_fn["dtypes"][index]
-                ):
-                    test_unsupported = True
-    return test_unsupported
+    if device in unsupported_devices_dtypes_fn:
+        for d in input_dtypes:
+            if d in unsupported_devices_dtypes_fn[device]:
+                return True
+
+    if "device" in all_as_kwargs_np and "dtype" in all_as_kwargs_np:
+        dev = all_as_kwargs_np["device"]
+        dtype = all_as_kwargs_np["dtype"]
+        if dtype in unsupported_devices_dtypes_fn.get(dev, []):
+            return True
+
+    return False
 
 
 def create_args_kwargs(
@@ -1808,6 +1787,18 @@ def test_frontend_function(
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
 
+    # check and replace NativeClass object in arguments with ivy counterparts
+    convs = {
+        "jax": convjax,
+        "numpy": convnumpy,
+        "tensorflow": convtensor,
+        "torch": convtorch,
+    }
+    if frontend in convs:
+        conv = convs[frontend]
+        args = ivy.nested_map(args, fn=conv, include_derived=True)
+        kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
+
     # run from the Ivy API directly
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
@@ -1871,6 +1862,14 @@ def test_frontend_function(
         # change ivy device to native devices
         if "device" in kwargs_frontend:
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
+
+        # check and replace the NativeClass objects in arguments with true counterparts
+        args_frontend = ivy.nested_map(
+            args_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
+        kwargs_frontend = ivy.nested_map(
+            kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
 
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))

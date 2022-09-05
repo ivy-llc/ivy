@@ -1,8 +1,10 @@
 # global
+import ast
+import inspect
 import math
-import numpy as np
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable
+import numpy as np
 
 # local
 import ivy
@@ -49,6 +51,91 @@ def _handle_nestable_dtype_info(fn):
     return new_fn
 
 
+# Get the list of function used the function
+def _get_function_list(func):
+    tree = ast.parse(inspect.getsource(func).lstrip())
+    names = set()
+    # Extract all the call names
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            nodef = node.func
+            if isinstance(nodef, ast.Name):
+                names.add(nodef.id)
+            elif isinstance(nodef, ast.Attribute):
+                names.add(nodef.attr)
+
+    return names
+
+
+# Get the reference of the functions from string
+def _get_functions_from_string(func_names, module):
+    ret = set()
+    # We only care about the functions in the ivy or the same module
+    for func_name in func_names:
+        if hasattr(ivy, func_name):
+            ret.add(getattr(ivy, func_name))
+        elif hasattr(module, func_name):
+            ret.add(getattr(module, func_name))
+    return ret
+
+
+# Get dtypes/device of nested functions, used for unsupported and supported dtypes
+# IMPORTANT: a few caveats:
+# 1. The base functions must be defined in ivy or the same module
+# 2. If the dtypes/devices are set not in the base function, it will not be detected
+# 3. Nested function cannot be parsed, due to be unable to get function reference
+# 4. Functions need to be directly called, not assigned to a variable
+def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
+    visited = set()
+    to_visit = [f]
+    out = base_set
+
+    while to_visit:
+        fn = to_visit.pop()
+        if fn in visited:
+            continue
+        visited.add(fn)
+
+        # Assuming that it's set in backend or the ivy functional module
+        if "backend" in fn.__module__ or "functional.ivy" in fn.__module__:
+            f_suported = wrapper(get_fn(fn, False))
+            out = merge_fn(f_suported, out)
+            continue
+
+        fl = _get_function_list(fn)
+        res = _get_functions_from_string(fl, __import__(fn.__module__))
+        to_visit.extend(res)
+
+    return out
+
+
+# Get the list of dtypes supported by the function
+# by default returns the supported dtypes
+def _get_dtypes(fn, complement=True):
+    supported = set(ivy.valid_dtypes)
+
+    # Their values are formated like either
+    # 1. fn.supported_dtypes = ("float16",)
+    # 2. fn.supported_dtypes = {"numpy": ("float16",)}
+    # Could also have the "all" value for the framework
+    basic = [
+        ("supported_dtypes", set.intersection, ivy.valid_dtypes),
+        ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
+    ]
+    for (key, merge_fn, base) in basic:
+        if hasattr(fn, key):
+            v = getattr(fn, key)
+            if isinstance(v, dict):
+                vb = v.get(ivy.current_backend_str(), base)
+                v = merge_fn(set(vb), v.get("all", base))
+            supported = merge_fn(supported, set(v))
+
+    if complement:
+        supported = set(ivy.all_dtypes).difference(supported)
+
+    return tuple(supported)
+
+
 # Array API Standard #
 # -------------------#
 
@@ -72,7 +159,7 @@ def astype(
     rules.
 
     .. note::
-    Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+    Casting floating-point ``NaN`` and ``infinity`` values to integral data types
     is not specified and is implementation-dependent.
 
     .. note::
@@ -90,19 +177,19 @@ def astype(
     dtype
         desired data type.
     copy
-        specifies whether to copy an array when the specified ``dtype`` matches 
-        the data type of the input array ``x``. If ``True``, a newly allocated 
+        specifies whether to copy an array when the specified ``dtype`` matches
+        the data type of the input array ``x``. If ``True``, a newly allocated
         array must always be returned. If ``False`` and the specified ``dtype``
         matches the data type of the input array, the input array must be returned;
         otherwise, a newly allocated must be returned. Default: ``True``.
     out
-        optional output array, for writing the result to. It must have a shape 
+        optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
 
     Returns
     -------
     ret
-        an array having the specified data type. The returned array must have 
+        an array having the specified data type. The returned array must have
         the same shape as ``x``.
 
     Examples
@@ -149,7 +236,7 @@ def astype(
     ivy.array([[-1., -2.],  [0.,  2.]])
 
     Using :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([False,True,True]), \
                             b=ivy.array([3.14, 2.718, 1.618]))
     >>> print(x.astype(ivy.int32))
@@ -503,7 +590,7 @@ def iinfo(
         - **min**: *int*
 
           smallest representable number.
-    
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
@@ -529,20 +616,20 @@ def iinfo(
 
     With :code:`ivy.Array` input:
 
-    >>> x = ivy.array([13,21,34]) 
+    >>> x = ivy.array([13,21,34])
     >>> ivy.iinfo(x)
     iinfo(min=-2147483648, max=2147483647, dtype=int32)
 
     >>> x = ivy.array([13,21,34], dtype=ivy.int8)
     >>> ivy.iinfo(x)
     iinfo(min=-128, max=127, dtype=int8)
-    
+
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([7,84,314], dtype=ivy.int16)
     >>> ivy.iinfo(x)
     iinfo(min=-32768, max=32767, dtype=int16)
-    
+
     >>> x = ivy.native_array([7,84,314], dtype=ivy.int64)
     >>> ivy.iinfo(x)
     iinfo(min=-9223372036854775808, max=9223372036854775807, dtype=int64)
@@ -1280,13 +1367,15 @@ def dtype(
 
 
 @handle_nestable
-def function_supported_dtypes(fn: Callable) -> Tuple:
+def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the supported data types of the current backend's function.
 
     Parameters
     ----------
     fn
         The function to check for the supported dtype attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
 
     Returns
     -------
@@ -1304,28 +1393,26 @@ def function_supported_dtypes(fn: Callable) -> Tuple:
             "supported_dtypes and unsupported_dtypes attributes cannot both \
              exist in a particular backend"
         )
-    supported_dtypes = tuple()
-    if hasattr(fn, "supported_dtypes"):
-        fn_supported_dtypes = fn.supported_dtypes
-        if isinstance(fn_supported_dtypes, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_supported_dtypes:
-                supported_dtypes += fn_supported_dtypes[backend_str]
-            if "all" in fn_supported_dtypes:
-                supported_dtypes += fn_supported_dtypes["all"]
-        else:
-            supported_dtypes += fn_supported_dtypes
-    return tuple(set(supported_dtypes))
+
+    supported_dtypes = set(_get_dtypes(fn, complement=False))
+    if recurse:
+        supported_dtypes = _nested_get(
+            fn, supported_dtypes, set.intersection, function_supported_dtypes
+        )
+
+    return tuple(supported_dtypes)
 
 
 @handle_nestable
-def function_unsupported_dtypes(fn: Callable) -> Tuple:
+def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the unsupported data types of the current backend's function.
 
     Parameters
     ----------
     fn
         The function to check for the unsupported dtype attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
 
     Returns
     -------
@@ -1344,18 +1431,14 @@ def function_unsupported_dtypes(fn: Callable) -> Tuple:
             "supported_dtypes and unsupported_dtypes attributes cannot both \
              exist in a particular backend"
         )
-    unsupported_dtypes = ivy.invalid_dtypes
-    if hasattr(fn, "unsupported_dtypes"):
-        fn_unsupported_dtypes = fn.unsupported_dtypes
-        if isinstance(fn_unsupported_dtypes, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_unsupported_dtypes:
-                unsupported_dtypes += fn_unsupported_dtypes[backend_str]
-            if "all" in fn_unsupported_dtypes:
-                unsupported_dtypes += fn_unsupported_dtypes["all"]
-        else:
-            unsupported_dtypes += fn_unsupported_dtypes
-    return tuple(set(unsupported_dtypes))
+
+    unsupported_dtypes = set(_get_dtypes(fn, complement=True))
+    if recurse:
+        unsupported_dtypes = _nested_get(
+            fn, unsupported_dtypes, set.union, function_unsupported_dtypes
+        )
+
+    return tuple(unsupported_dtypes)
 
 
 def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:

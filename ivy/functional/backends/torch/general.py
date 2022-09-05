@@ -156,9 +156,12 @@ def cumsum(
     exclusive: Optional[bool] = False,
     reverse: Optional[bool] = False,
     *,
-    dtype: torch.dtype,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
@@ -179,6 +182,7 @@ def cumsum(
 
 
 cumsum.support_native_out = True
+cumsum.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
 
 
 def cumprod(
@@ -191,7 +195,10 @@ def cumprod(
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        if dtype is torch.bool:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
     if exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
@@ -201,6 +208,7 @@ def cumprod(
 
 
 cumprod.support_native_out = True
+cumprod.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
 
 
 # noinspection PyShadowingNames

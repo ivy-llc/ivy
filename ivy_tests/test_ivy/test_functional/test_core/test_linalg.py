@@ -476,14 +476,12 @@ def test_eigvalsh(
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
-    num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
     *,
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -495,7 +493,7 @@ def test_inv(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
