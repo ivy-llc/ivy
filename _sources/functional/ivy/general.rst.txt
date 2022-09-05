@@ -86,6 +86,6 @@ General
    general/shape_array_mode.rst
    general/get_num_dims.rst
    general/arg_info.rst
-   general/function_unsupported_devices_and_dtypes.rst
    general/function_supported_devices_and_dtypes.rst
+   general/function_unsupported_devices_and_dtypes.rst
 
