@@ -136,6 +136,7 @@ class Module(abc.ABC):
         """
         The method helps in visualising the top view of a nested network upto
         a certain depth
+        
         Parameters
         ----------
         depth
@@ -143,9 +144,10 @@ class Module(abc.ABC):
         flatten_key_chains
             If True, returns a flattened view of the structure. Default is
             False
+        
         Returns
         -------
-
+        
         """
         if ivy.exists(self.top_v):
             if ivy.exists(depth):
@@ -159,6 +161,18 @@ class Module(abc.ABC):
         return ret
 
     def _top_mod_fn(self, depth=None):
+        """
+        
+        
+        Parameters
+        ----------
+        depth
+            
+        
+        Returns
+        -------
+        
+        """
         if ivy.exists(self.top_mod):
             if ivy.exists(depth):
                 return self.top_mod(depth - 1) if depth > 1 else self
@@ -168,8 +182,12 @@ class Module(abc.ABC):
     # noinspection PyProtectedMember
     def track_submod_rets(self):
         """
-        Tracks the returns of the submodules if track_submod_returns argument is set True
-        during call
+        Tracks the returns of the submodules if track_submod_returns 
+        argument is set to True during call
+        
+        Returns
+        -------
+        
         """
         if not ivy.exists(self.top_mod):
             return False
@@ -189,7 +207,12 @@ class Module(abc.ABC):
 
     def check_submod_rets(self):
         """
-        compares the submodule returns with the expected submodule returns passed during call
+        compares the submodule returns with the expected submodule 
+        returns passed during call
+        
+        Returns
+        -------
+        
         """
         if not ivy.exists(self.top_mod):
             return False
@@ -201,6 +224,10 @@ class Module(abc.ABC):
     def track_submod_call_order(self):
         """
         Tracks the order in which the submodules are called.
+        
+        Returns
+        -------
+        
         """
         if not ivy.exists(self.top_mod):
             return False
@@ -220,7 +247,11 @@ class Module(abc.ABC):
 
     def mod_depth(self):
         """
-        Returns the depth of the module in the network.
+        
+        
+        Returns 
+        -------
+        the depth of the module in the network.
         """
         depth = 0
         mod_above = self
@@ -234,7 +265,8 @@ class Module(abc.ABC):
 
     def mod_height(self):
         """
-
+        
+        
         Returns
         -------
         The height of the network
@@ -243,7 +275,8 @@ class Module(abc.ABC):
 
     def _find_variables(self, obj=None):
         """
-
+        
+        
         Parameters
         ----------
         obj
@@ -251,7 +284,7 @@ class Module(abc.ABC):
 
         Returns
         -------
-            The internal variables of the submodule passed in the argument.
+        The internal variables of the submodule passed in the argument.
         """
         vs = Container()
         # ToDo: add support for finding local variables, if/when JAX supports
@@ -286,6 +319,20 @@ class Module(abc.ABC):
 
     @staticmethod
     def _extract_v(v, keychain_mappings, orig_key_chain):
+        """
+        
+        
+        Parameters
+        ----------
+        v
+        keychain_mappings
+        orig_key_chain
+            
+        
+        Returns
+        -------
+        ret_cont
+        """
         if v.has_key_chain(orig_key_chain):
             ret_cont = v.at_key_chain(orig_key_chain)
         else:
@@ -298,6 +345,20 @@ class Module(abc.ABC):
         return ret_cont
 
     def _wrap_call_methods(self, keychain_mappings, key="", obj=None):
+        """
+        
+        
+        Parameters
+        ----------
+        keychain_mappings
+        key
+        obj
+            
+        
+        Returns
+        -------
+        None
+        """
         if isinstance(obj, Module) and obj is not self:
             orig_key_chain = key[1:] if key[0] == "_" else key
 
@@ -327,6 +388,19 @@ class Module(abc.ABC):
 
     @staticmethod
     def _remove_duplicate_variables(vs, created):
+        """
+        
+        
+        Parameters
+        ----------
+        vs
+        created
+            
+        
+        Returns
+        -------
+        
+        """
         created_ids = created.map(lambda x, kc: id(x))
         vs_ids = vs.map(lambda x, kc: id(x))
         ids = dict()
@@ -364,12 +438,19 @@ class Module(abc.ABC):
         ----------
         device
             The device string, specifying the device on which to create the variables.
+            
+        Returns
+        -------
+        An empty set
         """
         return {}
 
     def _build(self, *args, **kwargs) -> bool:
         """
-        Build the internal layers and variables for this module. Overridable. Return
+        Build the internal layers and variables for this module. Overridable. 
+        
+        Returns
+        -------
         False or empty Container if the build only partially completed (i.e. some
         child Modules have "on_call" build mode). Alternatviely, return True or a
         container of the built variables if the module is built.
@@ -383,11 +464,21 @@ class Module(abc.ABC):
         """
         Forward pass of the layer,
         called after handling the optional input variables.
+        
+        Raises
+        ------
+        NotImplementedError
         """
         raise NotImplementedError
 
     def _forward_with_tracking(self, *args, **kwargs):
-        """Forward pass while optionally tracking submodule returns and call order"""
+        """
+        Forward pass while optionally tracking submodule returns and call order
+        
+        Returns
+        -------
+        ret
+        """
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
@@ -403,6 +494,15 @@ class Module(abc.ABC):
         """
         The forward pass of the layer,
         treating layer instance as callable function.
+        
+        Parameters
+        ----------
+        v
+        with_grads
+        
+        Returns
+        -------
+        
         """
         with_grads = ivy.with_grads(with_grads=with_grads)
         if not self._built:
@@ -436,6 +536,20 @@ class Module(abc.ABC):
     # -------#
 
     def sub_mods(self, show_v=True, depth=None, flatten_key_chains=False):
+        """
+        
+        
+        Parameters
+        ----------
+        show_v
+        depth
+        flatten_key_chains
+            
+        
+        Returns
+        -------
+        
+        """
         if self._sub_mods:
             if ivy.exists(depth):
                 if depth == 0:
@@ -461,6 +575,18 @@ class Module(abc.ABC):
         return ""
 
     def show_v_in_top_v(self, depth=None):
+        """
+        
+        
+        Parameters
+        ----------
+        depth
+            
+        
+        Returns
+        -------
+        None
+        """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             self.top_v(depth).show_sub_container(self.v)
         else:
@@ -471,6 +597,18 @@ class Module(abc.ABC):
             )
 
     def v_with_top_v_key_chains(self, depth=None, flatten_key_chains=False):
+        """
+        
+        
+        Parameters
+        ----------
+        depth
+        flatten_key_chains
+        
+        Returns
+        -------
+        ret
+        """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).find_sub_container(self.v)
             if kc:
@@ -488,6 +626,18 @@ class Module(abc.ABC):
             )
 
     def mod_with_top_mod_key_chain(self, depth=None, flatten_key_chain=False):
+        """
+        
+        
+        Parameters
+        ----------
+        depth
+        flatten_key_chain
+        
+        Returns
+        -------
+        
+        """
         if not ivy.exists(self.top_mod) or depth == 0:
             return self.__repr__()
         max_depth = depth
@@ -511,6 +661,19 @@ class Module(abc.ABC):
     def show_mod_in_top_mod(
         self, upper_depth=None, lower_depth=None, flatten_key_chains=False
     ):
+        """
+        
+        
+        Parameters
+        ----------
+        upper_depth
+        lower_depth
+        flatten_key_chain
+        
+        Returns
+        -------
+        None
+        """
         if ivy.exists(self.top_mod):
             upper_depth = ivy.default(upper_depth, self.mod_depth())
             lower_depth = ivy.default(lower_depth, self.mod_height())
@@ -535,6 +698,21 @@ class Module(abc.ABC):
         track_submod_call_order,
         expected_submod_rets,
     ):
+        """
+        
+        
+        Parameters
+        ----------
+        track_submod_rets
+        submod_depth
+        submods_to_track
+        track_submod_call_order
+        expected_submod_rets
+        
+        Returns
+        -------
+        None
+        """
         self._track_submod_rets = track_submod_rets
         self._submod_depth = submod_depth
         self._submods_to_track = submods_to_track
@@ -546,6 +724,13 @@ class Module(abc.ABC):
         )
 
     def _unset_submod_flags(self):
+        """
+        
+        
+        Returns
+        -------
+        None
+        """
         self._track_submod_rets = False
         self._submod_depth = None
         self._submods_to_track = None
@@ -553,6 +738,17 @@ class Module(abc.ABC):
         self.expected_submod_rets = None
 
     def get_mod_key(self, top_mod=None):
+        """
+        
+        
+        Parameters
+        ----------
+        top_mod
+        
+        Returns
+        -------
+        
+        """
         if top_mod is None:
             top_mod = self.top_mod()
         submod_dict = top_mod.submod_dict
@@ -567,6 +763,17 @@ class Module(abc.ABC):
         return " " * self.mod_depth() + "_".join([name_key, idx_key])
 
     def _add_submod_ret(self, ret):
+        """
+        
+        
+        Parameters
+        ----------
+        ret
+        
+        Returns
+        -------
+        None
+        """
         top_mod = self.top_mod()
         sr = top_mod.submod_rets
         ret = ivy.to_numpy(ret)
@@ -577,6 +784,13 @@ class Module(abc.ABC):
             sr[key] = [ret]
 
     def _check_submod_ret(self):
+        """
+        
+        
+        Returns
+        -------
+        None
+        """
         top_mod = self.top_mod()
         esr = top_mod.expected_submod_rets
         key = self.get_mod_key(top_mod)
@@ -618,7 +832,10 @@ class Module(abc.ABC):
     def _is_submod_leaf(self):
         """
         checks if the submodule is the leaf node of the network.
-
+        
+        Returns
+        -------
+        
         """
         submod_depth = self.top_mod()._submod_depth
         submods_to_track = self.top_mod()._submods_to_track
@@ -629,6 +846,13 @@ class Module(abc.ABC):
         )
 
     def _add_submod_enter(self):
+        """
+        
+        
+        Returns
+        -------
+        None
+        """
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()
         for key in key_chain[:-1]:
@@ -692,6 +916,26 @@ class Module(abc.ABC):
         expected_submod_rets=None,
         **kwargs
     ):
+        """
+        
+        
+        Parameters
+        ----------
+        v
+        with_grads
+        stateful
+        arg_stateful_idxs
+        kwarg_stateful_idxs
+        track_submod_rets
+        submod_depth
+        submods_to_track
+        track_submod_call_order
+        expected_submo_rets
+        
+        Returns
+        -------
+        ret
+        """
 
         with_grads = ivy.with_grads(with_grads=with_grads)
         self.submod_rets = ivy.Container(
@@ -712,18 +956,35 @@ class Module(abc.ABC):
         return ret
 
     def save_weights(self, weights_path):
-        """Save the weights on the Module.
+        """
+        Save the weights on the Module.
 
         Parameters
         ----------
         weights_path
             The hdf5 file for saving the weights.
+            
+        Returns
+        -------
+        None
         """
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
     def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
-        """Build the internal layers and variables for this module."""
+        """
+        Build the internal layers and variables for this module.
+        
+        Parameters
+        ----------
+        from_call
+        device
+        dtype
+        
+        Returns
+        -------
+        
+        """
         self._dev = ivy.default(device, self._dev)
         # return False if not from_call but build_mode is on_call
 
@@ -805,6 +1066,10 @@ class Module(abc.ABC):
     def show_structure(self):
         """
         Prints the structure of the layer network.
+        
+        Returns
+        -------
+        this_repr
         """
         this_repr = termcolor.colored(object.__repr__(self), "green")
         sub_mod_repr = self.sub_mods(False).__repr__()
