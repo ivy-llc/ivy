@@ -790,19 +790,15 @@ def test_jax_lax_neg(
     )
 
 
-@st.composite
-def _dtype_x_bounded_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
-    return dtype, x, axis
-
-
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
         min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmax"
@@ -835,10 +831,13 @@ def test_jax_lax_argmax(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
         min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmin"
@@ -1025,12 +1024,14 @@ def test_jax_lax_convert_element_type(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
-        min_value=-5,
-        max_value=5,
-        max_dim_size=5,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.cumprod"
@@ -1063,12 +1064,14 @@ def test_jax_lax_cumprod(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
-        min_value=-5,
-        max_value=5,
         min_num_dims=1,
-        max_dim_size=5,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.cumsum"
@@ -1247,9 +1250,11 @@ def test_jax_lax_reciprocal(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_bounded_axis=_dtype_x_bounded_axis(
+    dtype_x_bounded_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sort"
@@ -1641,10 +1646,13 @@ def test_jax_lax_log(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
         min_dim_size=2,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.rev"
