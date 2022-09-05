@@ -54,6 +54,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
             input = ivy.zero_pad(input, pad_width=[
                 (0, 0), (0, 0), (w_pad, w_pad), (h_pad, h_pad)
             ])
+        padding = 'VALID'
 
     out = []
     _weight = ivy.permute_dims(weight, axes=(2, 3, 1, 0))
