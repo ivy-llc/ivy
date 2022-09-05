@@ -107,7 +107,6 @@ local directory:
 
         import ivy_robot
 
-
 **Docker Development**
 
 1. Install `Docker Desktop`_
