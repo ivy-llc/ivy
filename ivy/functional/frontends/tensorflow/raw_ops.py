@@ -15,15 +15,13 @@ def concat(values, axis, name="concat"):
 
 
 def ArgMax(*, input, dimension, output_type=None, name=None):
-    if (
-        output_type == ivy.int16
-        or output_type == ivy.uint16
-        or output_type == ivy.int32
-        or output_type == ivy.int64
-    ):
+    if output_type in ["uint16", "int16", "int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=dimension), output_type)
     else:
         return ivy.astype(ivy.argmax(input, axis=dimension), "int64")
+
+
+ArgMax.unsupported_dtypes = {"torch": ("uint16",)}
 
 
 def Cos(*, x, name="Cos"):

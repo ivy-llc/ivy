@@ -297,8 +297,11 @@ def test_tensorflow_Asin(
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+        allow_inf=False,
     ),
-    output_type=helpers.get_dtypes("numeric"),
+    output_type=st.sampled_from(["int16", "int32", "int64", "uint16"]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.ArgMax"
     ),
