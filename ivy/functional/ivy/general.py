@@ -2114,7 +2114,7 @@ def einops_rearrange(
     x
         Input array to be re-arranged.
     pattern
-        Rearrangement pattern b is for batch, h is for height, w is for width and c is for channels.
+        Rearrangement pattern.
     axes_lengths
         Any additional specifications for dimensions.
     out
