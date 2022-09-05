@@ -1,4 +1,9 @@
-# ToDo: Add allclose(), isclose(), isposinf(), isneginf(), fmax() to functional API
+"""
+ToDo
+----
+Add allclose(), isclose(), isposinf(), isneginf(), fmax()
+to ivy functional API
+"""
 # global
 import ivy
 
@@ -172,3 +177,7 @@ def fmin(input, other, *, out=None):
         other,
         out=out,
     )
+
+
+def msort(input, *, out=None):
+    return ivy.sort(input, axis=0, out=out)
