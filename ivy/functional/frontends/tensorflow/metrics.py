@@ -166,6 +166,10 @@ def poisson(y_true, y_pred):
     return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
 
 
+def mean_squared_error(y_true, y_pred):
+    return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
+
+
 def mean_squared_logarithmic_error(y_true, y_pred):
     y_pred = ivy.asarray(y_pred)
     y_true = ivy.astype(y_true, y_pred.dtype)

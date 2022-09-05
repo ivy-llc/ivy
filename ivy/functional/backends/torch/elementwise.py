@@ -523,7 +523,7 @@ atan2.support_native_out = True
 atan2.unsupported_dtypes = (
     "float16",
     "bfloat16",
-)
+)  # TODO Fixed in PyTorch 1.12.1
 
 
 def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
