@@ -28,12 +28,12 @@ cholesky.unsupported_dtypes = ("float16",)
 
 
 def cross(
-    x1: np.ndarray, 
-    x2: np.ndarray, 
-    /, 
-    *, 
-    axis: int = -1, 
-    out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.cross(a=x1, b=x2, axis=axis)
 
@@ -80,7 +80,10 @@ def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return ret
 
 
-inv.unsupported_dtypes = ("float16",)
+inv.unsupported_dtypes = (
+    "bfloat16",
+    "float16",
+)
 
 
 def matmul(
