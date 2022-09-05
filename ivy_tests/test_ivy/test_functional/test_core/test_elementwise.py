@@ -289,9 +289,6 @@ def test_atan2(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    x1 = _not_too_close_to_zero(x1)
-    x2 = _not_too_close_to_zero(x2)
-
     assume(not (np.any(np.isclose(x1, 0)) or np.any(np.isclose(x2, 0))))
 
     helpers.test_function(
@@ -339,6 +336,8 @@ def test_atanh(
         instance_method=instance_method,
         fw=fw,
         fn_name="atanh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -577,7 +576,8 @@ def test_bitwise_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        small_value_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
 )
@@ -931,8 +931,8 @@ def test_greater(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    # make sure they're not too close together
-    assume(not (np.any(np.isclose(x1, x2)) or np.any(np.isclose(x2, x1))))
+    # bfloat16 is not supported
+    assume(not ("bfloat16" in input_dtype))
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -1648,12 +1648,24 @@ def test_positive(
     )
 
 
+@st.composite
+def _pow_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        )
+    )
+    dtype1, dtype2 = dtype
+    x1, x2 = x
+    if "int" in dtype2:
+        x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
+    return [dtype1, dtype2], [x1, x2]
+
+
 # pow
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
-    ),
+    dtype_and_x=_pow_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="pow"),
 )
 def test_pow(
@@ -1668,7 +1680,6 @@ def test_pow(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    # input_dtype, x = (['int16', 'int8'], [[2], [64]])
 
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtype))
@@ -1684,11 +1695,6 @@ def test_pow(
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-
-    # Makesure it doesn't overflow
-    nt = np.promote_types(input_dtype[0], input_dtype[1])
-    size = nt.itemsize * 8 - 1
-    assume(np.all(np.log2(x[0]) * x[1] <= size))
 
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
@@ -1752,7 +1758,6 @@ def test_reciprocal(
         num_arrays=2,
         allow_inf=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="remainder"),
     modulus=st.booleans(),
 )
 def test_remainder(
@@ -1760,7 +1765,6 @@ def test_remainder(
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     modulus,
     native_array,
     container,
@@ -1782,7 +1786,7 @@ def test_remainder(
         input_dtypes=input_dtype,
         as_variable_flags=[as_variable, False],
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1800,14 +1804,12 @@ def test_remainder(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True)
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="round"),
 )
 def test_round(
     *,
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1818,7 +1820,7 @@ def test_round(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,

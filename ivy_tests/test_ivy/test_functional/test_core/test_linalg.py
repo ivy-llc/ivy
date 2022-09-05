@@ -1,5 +1,6 @@
 """Collection of tests for unified linear algebra functions."""
 
+
 # global
 import sys
 
@@ -289,6 +290,8 @@ def test_matrix_power(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_power",
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=dtype),
         n=n,
     )
@@ -389,7 +392,7 @@ def test_eigh(
     results = helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -402,14 +405,33 @@ def test_eigh(
     )
     if results is None:
         return
-
     ret_np_flat, ret_from_np_flat = results
-
+    eigenvalues_np, eigenvectors_np = ret_np_flat
+    reconstructed_np = None
+    for eigenvalue, eigenvector in zip(eigenvalues_np, eigenvectors_np):
+        if reconstructed_np is not None:
+            reconstructed_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+    eigenvalues_from_np, eigenvectors_from_np = ret_from_np_flat
+    reconstructed_from_np = None
+    for eigenvalue, eigenvector in zip(eigenvalues_from_np, eigenvectors_from_np):
+        if reconstructed_from_np is not None:
+            reconstructed_from_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_from_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
     # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        helpers.assert_all_close(
-            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
-        )
+    helpers.assert_all_close(
+        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
+    )
 
 
 # eigvalsh
@@ -440,6 +462,7 @@ def test_eigvalsh(
         instance_method=instance_method,
         fw=fw,
         fn_name="eigvalsh",
+        rtol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -453,14 +476,12 @@ def test_eigvalsh(
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
-    num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
     *,
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -472,7 +493,7 @@ def test_inv(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -669,6 +690,8 @@ def test_solve(
         instance_method=instance_method,
         fw=fw,
         fn_name="solve",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=np.asarray(x1, dtype=input_dtype1),
         x2=np.asarray(x2, dtype=input_dtype2),
     )
@@ -809,9 +832,9 @@ def test_trace(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=6,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vecdot"),
 )
@@ -973,11 +996,16 @@ def test_qr(
 
     ret_np_flat, ret_from_np_flat = results
 
+    q_np_flat, r_np_flat = ret_np_flat
+    q_from_np_flat, r_from_np_flat = ret_from_np_flat
+
+    reconstructed_np_flat = np.matmul(q_np_flat, r_np_flat)
+    reconstructed_from_np_flat = np.matmul(q_from_np_flat, r_from_np_flat)
+
     # value test
-    for ret_np, ret_from_np in zip(ret_np_flat, ret_from_np_flat):
-        helpers.assert_all_close(
-            np.abs(ret_np), np.abs(ret_from_np), rtol=1e-2, atol=1e-2
-        )
+    helpers.assert_all_close(
+        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-2, atol=1e-2
+    )
 
 
 # svd
@@ -1099,14 +1127,12 @@ def test_matrix_norm(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
-        min_num_dims=3,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=3,
-        min_value=0.1,
-        max_value=10.0,
+        min_num_dims=2,
+        min_value=-1e05,
+        max_value=1e05,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
+    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
     *,
@@ -1118,6 +1144,7 @@ def test_matrix_rank(
     container,
     instance_method,
     fw,
+    rtol,
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -1130,8 +1157,9 @@ def test_matrix_rank(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
+        atol_=1.0,
         x=np.asarray(x, dtype=dtype),
-        rtol=1e-04,
+        rtol=rtol,
     )
 
 
