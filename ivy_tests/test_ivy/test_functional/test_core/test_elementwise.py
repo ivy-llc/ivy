@@ -336,6 +336,8 @@ def test_atanh(
         instance_method=instance_method,
         fw=fw,
         fn_name="atanh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -574,7 +576,8 @@ def test_bitwise_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        small_value_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
 )
@@ -1755,7 +1758,6 @@ def test_reciprocal(
         num_arrays=2,
         allow_inf=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="remainder"),
     modulus=st.booleans(),
 )
 def test_remainder(
@@ -1763,7 +1765,6 @@ def test_remainder(
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     modulus,
     native_array,
     container,
@@ -1785,7 +1786,7 @@ def test_remainder(
         input_dtypes=input_dtype,
         as_variable_flags=[as_variable, False],
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1803,14 +1804,12 @@ def test_remainder(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True)
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="round"),
 )
 def test_round(
     *,
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1821,7 +1820,7 @@ def test_round(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,

@@ -14,8 +14,9 @@ from ivy import inf
 
 def cholesky(
     x: Union[tf.Tensor, tf.Variable],
-    upper: bool = False,
+    /,
     *,
+    upper: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     if not upper:
@@ -32,8 +33,9 @@ cholesky.unsupported_dtypes = ("float16",)
 def cross(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
@@ -42,6 +44,7 @@ def cross(
 
 def det(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -54,10 +57,11 @@ det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
@@ -74,6 +78,7 @@ eigh.unsupported_dtypes = ("float16",)
 
 def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -86,6 +91,7 @@ eigvalsh.unsupported_dtypes = ("float16",)
 
 def inv(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -102,6 +108,7 @@ inv.unsupported_dtypes = ("float16",)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -165,9 +172,10 @@ def matmul(
 
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axes = (-2, -1)
@@ -180,7 +188,9 @@ def matrix_norm(
             tf.reduce_sum(tf.abs(x), axis=axes[0], keepdims=True), axis=axes
         )
     elif ord == -2:
-        ret = tf.reduce_min(x, axis=(-2, -1), keepdims=keepdims)
+        ret = tf.reduce_min(
+            tf.linalg.svd(x, compute_uv=False), axis=(-2, -1), keepdims=keepdims
+        )
     elif ord == "nuc":
         if tf.size(x).numpy() == 0:
             ret = x
@@ -202,6 +212,7 @@ matrix_norm.unsupported_dtypes = ("float16",)
 def matrix_power(
     x: Union[tf.Tensor, tf.Variable],
     n: int,
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -445,12 +456,16 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    ret = tf.tensordot(x1, x2, (axis, axis))
+    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    if dtype != 'float64':
+        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    else:
+        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
+    ret = tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
     return ret
 
 
-vecdot.unsupported_dtypes = ("int8",)
+vecdot.supported_dtypes = ("bfloat16", "float16", "float32", "float64")
 
 
 def vector_norm(
@@ -463,17 +478,18 @@ def vector_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ord == -float("inf"):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
-    elif ord < 1:
-        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord, axis, keepdims) ** (
-            1.0 / ord
+    elif ord == -2:
+        tn_normalized_vector = 1.0 / tf.sqrt(
+            tf.reduce_sum(1.0 / tf.abs(x) ** 2, axis, keepdims)
         )
-
+    elif ord == -1:
+        tn_normalized_vector = 1.0 / tf.reduce_sum(1.0 / tf.abs(x), axis, keepdims)
     elif ord == 0:
         tn_normalized_vector = tf.reduce_sum(tf.cast(x != 0, x.dtype), axis, keepdims)
-
+    elif ord < 1:
+        tn_normalized_vector = tf.reduce_sum(tf.abs(x) ** ord) ** (1.0 / ord)
     else:
         tn_normalized_vector = tf.linalg.norm(x, ord, axis, keepdims)
-
     if tn_normalized_vector.shape == tuple():
         ret = tf.expand_dims(tn_normalized_vector, 0)
     else:
