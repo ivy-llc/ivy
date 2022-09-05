@@ -13,20 +13,22 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(st.one_of(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)), 
-                          st.none()))
-    where = draw(st.one_of(helpers.array_values(dtype=ivy.bool, shape=shape), 
-                           st.none()))
+    axis = draw(
+        st.one_of(
+            helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)), st.none()
+        )
+    )
+    where = draw(
+        st.one_of(helpers.array_values(dtype=ivy.bool, shape=shape), st.none())
+    )
     return (dtype, x, axis), where
 
 
 # sum
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_axis(
-        available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(
-        ivy_np.valid_float_dtypes + (None,)),
+    dtype_x_axis=_dtype_x_axis(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
@@ -64,14 +66,12 @@ def test_numpy_sum(
         where=where,
     )
 
-    
+
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_axis(
-        available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(
-        ivy_np.valid_float_dtypes + (None,)),
+    dtype_x_axis=_dtype_x_axis(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
@@ -113,9 +113,11 @@ def test_numpy_prod(
 # cumsum
 @handle_cmd_line_args
 @given(
-    dtype_and_x=np_frontend_helpers.dtype_x_bounded_axis(
+    dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("numeric"),
     num_positional_args=helpers.num_positional_args(
@@ -143,16 +145,18 @@ def test_numpy_cumsum(
         fn_tree="cumsum",
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
-        dtype=None,
+        dtype=dtype,
     )
 
 
 # cumprod
 @handle_cmd_line_args
 @given(
-    dtype_and_x=np_frontend_helpers.dtype_x_bounded_axis(
+    dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("numeric"),
     num_positional_args=helpers.num_positional_args(
@@ -180,5 +184,5 @@ def test_numpy_cumprod(
         fn_tree="cumprod",
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
-        dtype=None,
+        dtype=dtype,
     )
