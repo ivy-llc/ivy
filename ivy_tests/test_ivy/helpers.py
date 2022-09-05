@@ -2316,9 +2316,8 @@ def subsets(draw, *, elements):
 
 
 @st.composite
-def array_and_indices(
+def array_n_indices_n_axis(
     draw,
-    last_dim_same_size=True,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -2331,14 +2330,6 @@ def array_and_indices(
 
     Parameters
     ----------
-    last_dim_same_size
-        True:
-            The shape of the indices array is the exact same as the shape of the values
-            array.
-        False:
-            The last dimension of the second array is generated from a range of
-            (0 -> dimension size of first array). This results in output shapes such as
-            x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
     allow_inf
         True: inf values are allowed to be generated in the values array
     min_num_dims
@@ -2358,46 +2349,45 @@ def array_and_indices(
     Examples
     --------
     @given(
-        array_and_indices=array_and_indices(
-            last_dim_same_size= False
+        array_n_indices_n_axis=array_n_indices_n_axis(
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=10
             )
     )
-    @given(
-        array_and_indices=array_and_indices( last_dim_same_size= True)
-    )
     """
-    x_num_dims = draw(ints(min_value=min_num_dims, max_value=max_num_dims))
-    x_dim_size = draw(ints(min_value=min_dim_size, max_value=max_dim_size))
     x = draw(
         dtype_and_values(
             available_dtypes=ivy_np.valid_numeric_dtypes,
             allow_inf=allow_inf,
             ret_shape=True,
-            min_num_dims=x_num_dims,
-            max_num_dims=x_num_dims,
-            min_dim_size=x_dim_size,
-            max_dim_size=x_dim_size,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
         )
     )
-    indices_shape = list(x[2])
-    if not last_dim_same_size:
-        indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
-        indices_shape[-1] = indices_dim_size
+    axis = draw(
+        ints(
+            min_value=-1 * (len(np.array(x[1]).shape)),
+            max_value=len(np.array(x[1]).shape) - 1,
+        )
+    )
     indices = draw(
         dtype_and_values(
             available_dtypes=["int32", "int64"],
             allow_inf=False,
             min_value=0,
-            max_value=max(x[2][-1] - 1, 0),
-            shape=indices_shape,
+            max_value=max(x[2][axis] - 1, 0),
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
         )
     )
     x = x[0:2]
-    return (x, indices)
+    return (x, indices, axis)
 
 
 def _zeroing(x):

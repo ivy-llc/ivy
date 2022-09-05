@@ -430,7 +430,7 @@ def gather(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     sl = [slice(None)] * params.ndim
-    sl[axis] = ivy.native_array(indices, dtype=torch.int64)
+    sl[axis] = indices.type(torch.int64)
     return params[tuple(sl)]
 
 
