@@ -291,7 +291,7 @@ def polyval(coeffs, x, name=None):
 
 
 def intersection(x, y, validate_indices=True):
-    return ivy.intersection(x,y)
+    return ivy.intersection(x, y)
 
 
 intersection.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
