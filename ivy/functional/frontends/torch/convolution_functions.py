@@ -27,7 +27,8 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
 
     Returns
     -------
-    output tensor of shape (batch_size, d_out, h_out, w_out)
+    out: array
+        output tensor of shape (batch_size, d_out, h_out, w_out)
     """
     in_channel = input.shape[1]
     if in_channel % groups != 0:
