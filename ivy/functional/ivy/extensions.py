@@ -1,3 +1,6 @@
+import ivy
+
+
 class SparseArray:
     def __init__(self, data=None, *, indices=None, values=None, dense_shape=None):
         if data:
@@ -58,10 +61,9 @@ class NativeSparseArray:
     pass
 
 
-def is_ivy_sparse_array(arr):
-    return isinstance(arr, SparseArray)
+def is_ivy_sparse_array(x):
+    return isinstance(x, SparseArray) and is_native_sparse_array(x.data)
 
 
-def is_native_sparse_array():
-    return isinstance
-    pass
+def is_native_sparse_array(x):
+    return ivy.current_backend(x).is_native_sparse_array(x)
