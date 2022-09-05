@@ -1,5 +1,4 @@
 # local
-from typing import Tuple
 import ivy
 
 
