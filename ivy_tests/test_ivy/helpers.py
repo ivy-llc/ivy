@@ -27,6 +27,15 @@ from ivy.functional.backends.tensorflow.general import (
 from ivy.functional.backends.torch.general import (
     is_native_array as is_torch_native_array,
 )
+from ivy_tests.test_ivy.test_frontends import NativeClass
+from ivy_tests.test_ivy.test_frontends.test_torch import \
+    convtorch
+from ivy_tests.test_ivy.test_frontends.test_numpy import \
+    convnumpy
+from ivy_tests.test_ivy.test_frontends.test_tensorflow import \
+    convtensor
+from ivy_tests.test_ivy.test_frontends.test_jax import \
+    convjax
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -52,6 +61,13 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy.functional.backends.numpy as ivy_np
+
+
+def convtrue(argument):
+    """Convert NativeClass in argument to true framework counter part"""
+    if isinstance(argument, NativeClass):
+        return argument._native_class
+    return argument
 
 
 def get_ivy_numpy():
@@ -1807,7 +1823,15 @@ def test_frontend_function(
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
-
+    
+    # check and replace NativeClass object in arguments with ivy counterparts
+    convs = {"jax": convjax, "numpy": convnumpy, 
+             "tensorflow": convtensor, "torch": convtorch}
+    if frontend in convs:
+        conv = convs[frontend]
+        args = ivy.nested_map(args, fn=conv, include_derived=True)
+        kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
+    
     # run from the Ivy API directly
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
@@ -1871,7 +1895,13 @@ def test_frontend_function(
         # change ivy device to native devices
         if "device" in kwargs_frontend:
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
-
+        
+        # check and replace the NativeClass objects in arguments with true counterparts
+        args_frontend = ivy.nested_map(args_frontend, fn=convtrue, 
+                                       include_derived=True, max_depth=10)
+        kwargs_frontend = ivy.nested_map(kwargs_frontend, fn=convtrue, 
+                                         include_derived=True, max_depth=10)
+        
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
@@ -2157,7 +2187,9 @@ def dtype_values_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    large_value_safety_factor=1.1,
+    small_value_safety_factor=1.1,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=0,
@@ -2233,6 +2265,8 @@ def dtype_values_axis(
             available_dtypes=available_dtypes,
             min_value=min_value,
             max_value=max_value,
+            large_value_safety_factor=large_value_safety_factor,
+            small_value_safety_factor=small_value_safety_factor,
             allow_inf=allow_inf,
             exclude_min=exclude_min,
             exclude_max=exclude_max,
@@ -2581,13 +2615,13 @@ def array_values(
                     length=size,
                 )
             )
-    elif dtype == "float16":
+    elif dtype in ["float16", "bfloat16"]:
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=np.array(min_value, dtype=dtype).tolist(),
-                        max_value=np.array(max_value, dtype=dtype).tolist(),
+                        min_value=np.array(min_value, dtype="float16").tolist(),
+                        max_value=np.array(max_value, dtype="float16").tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2606,7 +2640,7 @@ def array_values(
             min_value_pos = round(limit, 3)
             max_value_pos = max_value
             max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+                np.array([max_value_neg, min_value_pos]).astype("float16").tolist()
             )
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = min_value_pos
@@ -2704,13 +2738,13 @@ def array_values(
                 )
             )
         values = [v / large_value_safety_factor for v in values]
-    elif dtype in ["float64", "bfloat16"]:
+    elif dtype == "float64":
         if min_value is not None and max_value is not None:
             values = draw(
                 list_of_length(
                     x=st.floats(
-                        min_value=np.array(min_value).astype("float64").tolist(),
-                        max_value=np.array(max_value).astype("float64").tolist(),
+                        min_value=np.array(min_value).astype(dtype).tolist(),
+                        max_value=np.array(max_value).astype(dtype).tolist(),
                         allow_nan=allow_nan,
                         allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
@@ -2728,7 +2762,7 @@ def array_values(
             min_value_pos = round(limit, 15)
             max_value_pos = max_value
             max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype("float64").tolist()
+                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
             )
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = min_value_pos

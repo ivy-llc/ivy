@@ -174,6 +174,9 @@ def result_type(
     return as_ivy_dtype(result)
 
 
+result_type.unsupported_dtypes = ("bfloat16",)
+
+
 # Extra #
 # ------#
 
@@ -207,3 +210,7 @@ def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
         .replace("bfloat", "")
         .replace("float", "")
     )
+
+
+# ToDo:
+# 1. result_type: Add support for bfloat16 with int16
