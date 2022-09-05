@@ -120,36 +120,6 @@ ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod_
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is -0) -> NaN]
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]
 
-############################# Ivy only skips - Pytorch #############################
-
-# torch.div(rounding_mode="floor") raises RuntimeError:ZeroDivisionError when test value too close to zero
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int32, int8) -> int32]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int32, int16) -> int32]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int64, int8) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int64, int16) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(uint8, int8) -> int16]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(uint8, int32) -> int32]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(uint8, uint8) -> uint8]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(uint8, int16) -> int16]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int64, uint8) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int16, int32) -> int32]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int8, int16) -> int16]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int8, uint8) -> int16]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int8, int32) -> int32]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int32, int32) -> int32]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int32, int64) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int64, int32) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int32, uint8) -> int32]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int16, int8) -> int16]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int16, uint8) -> int16]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int8, int64) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int8, int8) -> int8]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int64, int64) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int16, int64) -> int64]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(int16, int16) -> int16]
-ivy/ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_func_promotion[floor_divide(uint8, int64) -> int64]
-
-
 
 ### Failing for other reasons ###
 
