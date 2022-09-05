@@ -54,9 +54,6 @@ def asarray(
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
             return mx.nd.array(object_in, device).as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            # return mx.nd.array(
-            #    object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
-            # )
             return mx.nd.array(object_in, device)
         else:
             dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
@@ -67,13 +64,7 @@ def asarray(
         if dtype is None and isinstance(object_in, mx.nd.NDArray):
             return object_in.as_in_context(device)
         if dtype is None and not isinstance(object_in, mx.nd.NDArray):
-            # if _is_raw_python_list_or_scalar(object_in):
-            #    return mx.nd.array(object_in, device)
             return mx.nd.array(object_in, device)
-
-            # return mx.nd.array(
-            #    object_in, device, dtype=default_dtype(dtype=dtype, item=object_in)
-            # )
 
         else:
             dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
