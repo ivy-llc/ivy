@@ -412,26 +412,26 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array with einops.reduce having been applied.
-        
+
         Examples
         --------
         >> x = ivy.array([[[5,4],
-                       [11, 2]], 
-                      [[3, 5], 
+                       [11, 2]],
+                      [[3, 5],
                        [9, 7]]])
         >> reduced = x.einops_reduce('a b c -> b c', 'max')
         >> print(reduced)
         ivy.array([[ 5,  5],
-                   [11,  7]])   
+                   [11,  7]])
 
         >> x = ivy.array([[[5, 4, 3],
-                        [11, 2, 9]], 
-                       [[3, 5, 7], 
+                        [11, 2, 9]],
+                       [[3, 5, 7],
                         [9, 7, 1]]])
         >> reduced = x.einops_reduce('a b c -> a () c', 'min')
         >> print(reduced)
         ivy.array([[[5, 2, 3]],
-                   [[3, 5, 1]]])    
+                   [[3, 5, 1]]])
         """
         return ivy.einops_reduce(
             self._data, pattern, reduction, out=out, **axes_lengths
@@ -472,8 +472,8 @@ class ArrayWithGeneral(abc.ABC):
         >> repeated = x.einops_repeat('a -> a c', c=3)
         >> print(repeated)
         ivy.array([[5, 4],
-                   [5, 4],    
-                  [5, 4]])  
+                   [5, 4],
+                  [5, 4]])
 
         >> x = ivy.array([[5,4],
                     [2, 3]])

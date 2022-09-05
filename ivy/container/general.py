@@ -864,7 +864,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             dtype=dtype,
-            out=out
+            out=out,
         )
 
     def cumsum(
@@ -1018,7 +1018,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied,
             map_sequences,
             dtype=dtype,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -1798,15 +1798,15 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],  
+        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],
                                            [0.735, -6.7, 13.27]],
-                                          [[-24.037, 8.5, 26.7],  
+                                          [[-24.037, 8.5, 26.7],
                                            [0.451, 12.4, 1.7]],
-                                          [[-5.6, -18.19, -20.35],  
+                                          [[-5.6, -18.19, -20.35],
                                            [2.58, -1.006, -9.973]]]),
-                            b=ivy.array([[[-4.47, 0.93, -3.34],  
-                                          [3.66, 24.29, 3.64]], 
-                                         [[4.96, 1.52, -10.67],  
+                            b=ivy.array([[[-4.47, 0.93, -3.34],
+                                          [3.66, 24.29, 3.64]],
+                                         [[4.96, 1.52, -10.67],
                                           [4.36, 13.96, 0.3]]]))
         >> reduced = ivy.Container.static_einops_reduce(x, 'a b c -> () () c', 'mean')
         >> print(reduced)
@@ -1878,8 +1878,8 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >> x = ivy.Container(a=ivy.array([[[5, 4, 3],
-                                           [11, 2, 9]], 
-                                          [[3, 5, 7], 
+                                           [11, 2, 9]],
+                                          [[3, 5, 7],
                                            [9, 7, 1]]]),
                             b=ivy.array([[[9,7,6],
                                           [5,2,1]],
@@ -1952,14 +1952,14 @@ class ContainerWithGeneral(ContainerBase):
         >> repeated = ivy.Container.static_einops_repeat(x, 'h w -> (tile h) w', tile=2)
         >> print(repeated)
         {
-            a: ivy.array([[30, 40],  
-                        [50, 75],  
-                        [30, 40],  
+            a: ivy.array([[30, 40],
+                        [50, 75],
+                        [30, 40],
                         [50, 75]]),
-            b: ivy.array([[1, 2],    
-                        [4, 5],    
-                        [1, 2],    
-                        [4, 5]])   
+            b: ivy.array([[1, 2],
+                        [4, 5],
+                        [1, 2],
+                        [4, 5]])
         }
 
         """
@@ -2017,7 +2017,7 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             New container with einops.repeat having been applied.
-        
+
         Examples
         --------
         >> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
@@ -2025,10 +2025,10 @@ class ContainerWithGeneral(ContainerBase):
         >> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
         >> print(repeated)
         {
-            a: ivy.array([[30, 30, 40, 40],  
+            a: ivy.array([[30, 30, 40, 40],
                           [50, 50, 75, 75]]),
-            b: ivy.array([[1, 1, 2, 2],      
-                          [4, 4, 5, 5]])     
+            b: ivy.array([[1, 1, 2, 2],
+                          [4, 4, 5, 5]])
         }
 
         """
