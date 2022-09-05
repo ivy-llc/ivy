@@ -906,8 +906,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.supports_inplace_update. This 
-        method simply wrapsthe function, and so the docstring for 
+        ivy.Container static method variant of ivy.supports_inplace_update. This
+        method simply wrapsthe function, and so the docstring for
         ivy.supports_inplace_update also applies to this method with minimal changes.
 
         Parameters
@@ -928,7 +928,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of whether or not inplace operations are supported for x and 
+            a container of whether or not inplace operations are supported for x and
             its leaves.
         """
         return ContainerBase.multi_map_in_static_method(
@@ -950,8 +950,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.supports_inplace_update. This 
-        method simply wrapsthe function, and so the docstring for 
+        ivy.Container instance method variant of ivy.supports_inplace_update. This
+        method simply wrapsthe function, and so the docstring for
         ivy.supports_inplace_update also applies to this methodwith minimal changes.
 
         Parameters
@@ -1058,7 +1058,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            a container of whether or not inplace operations are supported for x and 
+            a container of whether or not inplace operations are supported for x and
             its leaves.
         """
         return self.static_assert_supports_inplace(
@@ -1909,6 +1909,7 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+
         Returns
         -------
         ret
@@ -2421,8 +2422,8 @@ class ContainerWithGeneral(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.scatter_flat. This method simply 
-        wraps the function, and so the docstring for ivy.scatter_flat also applies to 
+        ivy.Container static method variant of ivy.scatter_flat. This method simply
+        wraps the function, and so the docstring for ivy.scatter_flat also applies to
         this method with minimal changes.
 
         Parameters
@@ -3015,8 +3016,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.value_is_nan. This method simply 
-        wrapsthe function, and so the docstring for ivy.value_is_nan also applies to 
+        ivy.Container static method variant of ivy.value_is_nan. This method simply
+        wrapsthe function, and so the docstring for ivy.value_is_nan also applies to
         this method with minimal changes.
 
         Parameters
@@ -3063,8 +3064,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.value_is_nan. This method simply 
-        wraps the function, and so the docstring for ivy.value_is_nan also applies to 
+        ivy.Container instance method variant of ivy.value_is_nan. This method simply
+        wraps the function, and so the docstring for ivy.value_is_nan also applies to
         this method with minimal changes.
 
         Parameters
