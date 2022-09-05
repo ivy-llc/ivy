@@ -81,6 +81,11 @@ def _get_functions_from_string(func_names, module):
 
 
 # Get dtypes/device of nested functions, used for unsupported and supported dtypes
+# IMPORTANT: a few caveats:
+# 1. The base functions must be defined in ivy or the same module
+# 2. If the dtypes/devices are set not in the base function, it will not be detected
+# 3. Nested function cannot be parsed, due to be unable to get function reference
+# 4. Functions need to be directly called, not assigned to a variable
 def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
     visited = set()
     to_visit = [f]
