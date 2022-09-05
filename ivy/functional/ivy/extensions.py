@@ -121,9 +121,7 @@ class SparseArray:
         ret = ivy.scatter_nd(
             ivy.array(new_ind), self._values, ivy.array(self._dense_shape)
         )
-        if native:
-            return ivy.native_array(ret)
-        return ret
+        return ret.to_native() if native else ret
 
 
 class NativeSparseArray:
