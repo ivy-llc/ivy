@@ -9,5 +9,5 @@ from . import calculation
 from .calculation import *
 from . import other_attributes
 from .other_attributes import *
-from . import ndarry
-from .ndarry import *
+from . import ndarray
+from .ndarray import *
