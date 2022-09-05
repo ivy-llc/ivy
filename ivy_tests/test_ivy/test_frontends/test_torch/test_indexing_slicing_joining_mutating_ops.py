@@ -122,7 +122,7 @@ def test_torch_concat(
                 set(ivy_torch.valid_float_dtypes)
             )
         ),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        min_num_dims=1,
     ),
     as_tuple=st.booleans(),
     num_positional_args=helpers.num_positional_args(
