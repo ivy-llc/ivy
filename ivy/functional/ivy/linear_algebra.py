@@ -217,8 +217,8 @@ def cross(
     >>> z = ivy.cross(x, y)
     >>> print(z)
     {
-    a: ivy.array([0., 0., 35.]),
-    b: ivy.array([0., 6., 0.])
+        a: ivy.array([0., 0., 35.]),
+        b: ivy.array([0., 6., 0.])
     }
 
     With a combination of :code:`ivy.Array`
@@ -229,8 +229,8 @@ def cross(
     >>> z = ivy.cross(x, y)
     >>> print(z)
     {
-    a: ivy.array([-3., 3., 9.]),
-    b: ivy.array([0., -6., 0.])
+        a: ivy.array([-3., 3., 9.]),
+        b: ivy.array([0., -6., 0.])
     }
 
     With a combination of :code:`ivy.NativeArray`
