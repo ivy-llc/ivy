@@ -428,16 +428,12 @@ def test_clip_vector_norm(
 
 
 # floormod
+@handle_cmd_line_args
 @given(
     xy=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, min_value=1
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(1, 2),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="floormod"),
 )
 def test_floormod(
     xy,
@@ -454,8 +450,6 @@ def test_floormod(
     dtype = xy[0]
     x = xy[1][0]
     divisor = xy[1][1]
-    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
-        return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -597,11 +591,11 @@ def test_indices_where(
 # one_hot
 @handle_cmd_line_args
 @given(
-    depth=st.integers(min_value=10000, max_value=20000),
+    depth=helpers.ints(min_value=0, max_value=100),
     x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_int_dtypes, min_value=1, max_value=10000
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
 def test_one_hot(
     depth,
@@ -616,8 +610,6 @@ def test_one_hot(
     fw,
 ):
     dtype, x = x
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,

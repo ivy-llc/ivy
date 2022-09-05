@@ -741,7 +741,7 @@ def test_torch_fmax(
             ),
         ),
         num_arrays=2,
-        allow_inf=False,
+        allow_inf=True,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(

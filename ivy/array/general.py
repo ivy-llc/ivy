@@ -11,6 +11,95 @@ import ivy
 
 
 class ArrayWithGeneral(abc.ABC):
+    def is_native_array(
+        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.is_native_array. This method simply
+        wraps the function, and so the docstring for ivy.is_native_array 
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is a native array.
+        """
+        return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
+
+    def is_ivy_array(
+        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply 
+        wraps the function, and so the docstring for ivy.is_ivy_array also applies 
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an array.
+        """
+        return ivy.is_ivy_array(self._data, exclusive=exclusive, out=out)
+
+    def is_array(
+        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.is_array. This method simply wraps the
+        function, and so the docstring for ivy.is_array also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an array.
+        """
+        return ivy.is_array(self._data, exclusive=exclusive, out=out)
+
+    def is_ivy_container(
+        self: ivy.Array, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.is_ivy_container. This method simply 
+        wraps the function, and so the docstring for ivy.is_ivy_container also applies 
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy container.
+        """
+        return ivy.is_ivy_container(self._data, out=out)
+
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
@@ -101,11 +190,87 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.unstack(self._data, axis, keepdims)
 
-    def cumprod(
+    def cumsum(
         self: ivy.Array,
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
+        reverse: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cumsum. This method simply wraps the
+        function, and so the docstring for ivy.cumsum also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to apply cumsum.
+        axis
+            Axis along which the cumulative sum is computed. Default is 0.
+        exclusive
+            Whether to perform cumsum exclusively. Default is ``False``.
+        reverse
+            Whether to perform the cumsum from last to first element in the selected
+            axis. Default is False (from first to last element)
+        dtype
+            Data type of the returned array. Default is ``None``.
+        out
+            Optional array container. Default is None.
+
+        Returns
+        -------
+        ret
+            Array which holds the result of applying cumsum at each
+            original array elements along the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, 4, 5])
+        >>> y = x.cumsum()
+        >>> print(y)
+        ivy.array([ 1,  3,  6, 10, 15])
+
+        >>> x = ivy.array([2, 6, 4, 10])
+        >>> y = x.cumsum(axis=0, exclusive=False, reverse=True, dtype='float64')
+        >>> print(y)
+        ivy.array([22., 20., 14., 10.])
+
+        >>> x = ivy.array([[2, 3], [4, 6], [8, 12]])
+        >>> y = ivy.zeros((3, 2))
+        >>> x.cumsum(axis=1, exclusive=True, reverse=False, out=y)
+        >>> print(y)
+        ivy.array([[0, 2],
+                   [0, 4],
+                   [0, 8]])
+
+        >>> x = ivy.array([[1, 5, 2], \
+                           [4, 3, 0], \
+                           [4, 8, 2]])
+        >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
+        >>> print(y)
+        ivy.array([[ 7,  2,  0],
+                   [ 3,  0,  0],
+                   [10,  2,  0]])
+
+        >>> x = ivy.array([[1, 5, 10], [4, 8, 10], [2, 3, 5]])
+        >>> x.cumsum(axis=0, out=x)
+        >>> print(x)
+        ivy.array([[ 1,  5, 10],
+                   [ 5, 13, 20],
+                   [ 7, 16, 25]])
+        """
+        return ivy.cumsum(self._data, axis, exclusive, reverse, dtype=dtype, out=out)
+
+    def cumprod(
+        self: ivy.Array,
+        /,
         *,
+        axis: int = 0,
+        exclusive: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -338,26 +503,26 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array with einops.reduce having been applied.
-        
+
         Examples
         --------
         >> x = ivy.array([[[5,4],
-                       [11, 2]], 
-                      [[3, 5], 
+                       [11, 2]],
+                      [[3, 5],
                        [9, 7]]])
         >> reduced = x.einops_reduce('a b c -> b c', 'max')
         >> print(reduced)
         ivy.array([[ 5,  5],
-                   [11,  7]])   
+                   [11,  7]])
 
         >> x = ivy.array([[[5, 4, 3],
-                        [11, 2, 9]], 
-                       [[3, 5, 7], 
+                        [11, 2, 9]],
+                       [[3, 5, 7],
                         [9, 7, 1]]])
         >> reduced = x.einops_reduce('a b c -> a () c', 'min')
         >> print(reduced)
         ivy.array([[[5, 2, 3]],
-                   [[3, 5, 1]]])    
+                   [[3, 5, 1]]])
         """
         return ivy.einops_reduce(
             self._data, pattern, reduction, out=out, **axes_lengths
@@ -398,8 +563,8 @@ class ArrayWithGeneral(abc.ABC):
         >> repeated = x.einops_repeat('a -> a c', c=3)
         >> print(repeated)
         ivy.array([[5, 4],
-                   [5, 4],    
-                  [5, 4]])  
+                   [5, 4],
+                  [5, 4]])
 
         >> x = ivy.array([[5,4],
                     [2, 3]])
@@ -612,28 +777,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.assert_supports_inplace(self)
 
-    def is_ivy_array(self: ivy.Array, exclusive: Optional[bool] = False) -> bool:
-        """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply wraps
-        the function, and so the docstring for ivy.is_ivy_array also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        exclusive
-            Whether to check if the data type is exclusively an array, rather than a
-            variable or traced array.
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not x is an ivy array.
-
-        """
-        return ivy.is_ivy_array(self, exclusive)
-
     def copy_array(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.copy_array. This method simply wraps
@@ -706,6 +849,8 @@ class ArrayWithGeneral(abc.ABC):
     def fourier_encode(
         self: ivy.Array,
         max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         num_bands: int = 4,
         linear: bool = False,
         concat: bool = True,
@@ -914,34 +1059,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.inplace_increment(self, val)
-
-    def cumsum(
-        self: ivy.Array,
-        axis: int = 0,
-        *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.cumsum. This method simply
-        wraps the function, and so the docstring for ivy.cumsum also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        axis
-            int, Axis along which the cumulative sum is computed. By default 0.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Input array with cumulatively summed elements along axis
-
-        """
-        return ivy.cumsum(self, axis=axis, out=out)
 
     def clip_matrix_norm(
         self: ivy.Array,

@@ -100,3 +100,7 @@ def Exp(*, x, name="Exp"):
 
 def Expm1(*, x, name="Expm1"):
     return ivy.expm1(x)
+
+
+def Log(*, x, name="Log"):
+    return ivy.log(x)
