@@ -49,7 +49,7 @@ def diagonal(
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
         ret = jnp.diagonal(x, offset, axis1, axis2)
@@ -87,15 +87,14 @@ def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
-inv.unsupported_dtypes = ("float16",)
+inv.unsupported_dtypes = (
+    "bfloat16",
+    "float16",
+)
 
 
 def matmul(
-    x1: JaxArray, 
-    x2: JaxArray, 
-    /, 
-    *, 
-    out: Optional[JaxArray] = None
+    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.matmul(x1, x2)
     return ret
@@ -107,7 +106,7 @@ def matrix_norm(
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.size == 0:
         if keepdims:
@@ -130,7 +129,7 @@ def matrix_rank(
     x: JaxArray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.size == 0:
         ret = 0
@@ -161,7 +160,7 @@ def pinv(
     x: JaxArray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if rtol is None:
         ret = jnp.linalg.pinv(x)
@@ -253,7 +252,7 @@ def tensordot(
     x2: JaxArray,
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ret = jnp.tensordot(x1, x2, axes)
     return ret
@@ -279,7 +278,7 @@ def vector_norm(
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
         jnp_normalized_vector = jnp.linalg.norm(jnp.ravel(x), ord, axis, keepdims)
