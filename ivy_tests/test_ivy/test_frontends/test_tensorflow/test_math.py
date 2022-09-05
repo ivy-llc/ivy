@@ -878,3 +878,99 @@ def test_tensorflow_is_strictly_increasing(
         fn_tree="math.is_strictly_increasing",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+# count_nonzero
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(ivy_tf.valid_int_dtypes), shape=(2, 3)
+    ),
+    axis=helpers.get_axis(shape=(2, 3), max_size=2),
+    keepdims=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.count_nonzero"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_count_nonzero(
+    dtype_and_x, axis, keepdims, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.count_nonzero",
+        input=x,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=input_dtype,
+    )
+
+
+# confusion_matrix
+@handle_cmd_line_args
+@given(
+    predictions=helpers.array_values(
+        dtype=ivy.int32, shape=(3,), min_value=0, max_value=3
+    ),
+    labels=helpers.array_values(dtype=ivy.int32, shape=(3,), min_value=0, max_value=3),
+    num_classes=st.integers(min_value=4, max_value=10),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.confusion_matrix"
+    ),
+    native_array=st.booleans(),
+)
+def test_confusion_matrix(
+    labels, predictions, num_classes, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.int32,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.confusion_matrix",
+        labels=labels,
+        predictions=predictions,
+        num_classes=num_classes,
+    )
+
+
+# polyval
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(ivy_tf.valid_float_dtypes)
+    ),
+    x=helpers.array_values(shape=(3,), dtype=ivy.int32),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.polyval"
+    ),
+    native_array=st.booleans(),
+)
+def test_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array, fw):
+    input_dtype, coeffs = dtype_and_x
+    coeffs = [coeffs]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.polyval",
+        coeffs=coeffs,
+        x=x,
+    )
