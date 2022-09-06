@@ -247,7 +247,10 @@ def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
 
 
-svdvals.unsupported_dtypes = ("float16",)
+svdvals.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def tensordot(
