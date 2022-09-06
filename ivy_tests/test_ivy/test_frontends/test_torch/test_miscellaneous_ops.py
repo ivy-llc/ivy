@@ -196,7 +196,7 @@ def test_torch_cumsum(
                 set(ivy_torch.valid_float_dtypes)
             ),
         ),
-        shape=helpers.get_shape(min_num_dims=2),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     offset=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
