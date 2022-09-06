@@ -6,6 +6,11 @@ from hypothesis import assume, given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_array_api.array_api_tests import xps, dtype_helpers
+from ivy_tests.test_array_api.array_api_tests.test_operators_and_elementwise_functions import (  # noqa:501
+    oneway_broadcastable_shapes,
+    oneway_promotable_dtypes,
+)
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -31,12 +36,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     native_array=st.booleans(),
 )
 def test_torch_flip(
-        dtype_and_values,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -76,13 +81,13 @@ def test_torch_flip(
     native_array=st.booleans(),
 )
 def test_torch_roll(
-        dtype_and_values,
-        shift,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    shift,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     if isinstance(shift, int) and isinstance(axis, tuple):
@@ -124,11 +129,11 @@ def test_torch_roll(
     native_array=st.booleans(),
 )
 def test_torch_fliplr(
-        dtype_and_values,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -165,12 +170,12 @@ def test_torch_fliplr(
     native_array=st.booleans(),
 )
 def test_torch_cumsum(
-        dtype_and_values,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -194,10 +199,9 @@ def dims_and_offset(draw, shape):
     shape_actual = draw(shape)
     dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
     dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(st.integers(
-        min_value=-shape_actual[dim1], 
-        max_value=shape_actual[dim1]
-    ))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
     return dim1, dim2, offset
 
 
@@ -220,13 +224,13 @@ def dims_and_offset(draw, shape):
     native_array=st.booleans(),
 )
 def test_torch_diagonal(
-        dtype_and_values,
-        dims_and_offset,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
-): 
+    dtype_and_values,
+    dims_and_offset,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
     input_dtype, value = dtype_and_values
     dim1, dim2, offset = dims_and_offset
     input = np.asarray(value, dtype=input_dtype)
@@ -248,5 +252,44 @@ def test_torch_diagonal(
         input=input,
         offset=offset,
         dim1=dim1,
-        dim2=dim2
+        dim2=dim2,
+    )
+
+
+@given(
+    oneway_dtypes=oneway_promotable_dtypes(dtype_helpers.float_dtypes),
+    oneway_shapes=oneway_broadcastable_shapes(),
+    data=st.data(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.broadcast_to"
+    ),
+    native_array=st.booleans(),
+)
+# def test_iop(iop_name, iop, case, oneway_dtypes, oneway_shapes, data):
+def test_torch_broadcast_to(
+    data,
+    oneway_shapes,
+    oneway_dtypes,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    x1 = data.draw(
+        xps.arrays(shape=oneway_shapes.input_shape, dtype=oneway_dtypes.input_dtype),
+        label="x1",
+    )
+
+    helpers.test_frontend_function(
+        input_dtypes=[x1.dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="broadcast_to",
+        input=x1,
+        size=oneway_shapes.result_shape,
     )
