@@ -1170,14 +1170,12 @@ def test_matrix_rank(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
     upper=st.booleans(),
 )
 def test_cholesky(
     *,
     dtype_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1194,7 +1192,7 @@ def test_cholesky(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
