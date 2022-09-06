@@ -251,6 +251,15 @@ class ArrayWithGeneral(abc.ABC):
         ret
             New array with the values gathered at the specified indices along
             the specified axis.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = ivy.array([0, 1])
+        >>> x.gather(y)
+        ivy.array([0., 1.])
+
         """
         return ivy.gather(self._data, indices, axis, out=out)
 

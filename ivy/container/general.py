@@ -1219,7 +1219,7 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            A container for writing the result to. It must have a shape 
+            A container for writing the result to. It must have a shape
             that the inputs broadcast to. (Optional)
 
         Returns
@@ -1227,6 +1227,33 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the values gathered at the specified indices
             along the specified axis.
+
+        Examples
+        --------
+
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+                            b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container(a = ivy.array([0, 1]), \
+                            b = ivy.array([1, 2]))
+        >>> print(ivy.Container.static_gather(x, y))
+        {
+            a: ivy.array([0., 1.]),
+            b: ivy.array([5., 6.])
+        }
+
+        With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+        
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+                            b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.array([0, 1])
+        >>> print(ivy.Container.static_gather(x, y))
+        {
+            a: ivy.array([0., 1.]),
+            b: ivy.array([4., 5.])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "gather",
@@ -1278,7 +1305,7 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            A container for writing the result to. It must have a shape 
+            A container for writing the result to. It must have a shape
             that the inputs broadcast to. (Optional)
 
         Returns
@@ -1286,6 +1313,20 @@ class ContainerWithGeneral(ContainerBase):
         ret
             New container with the values gathered at the specified indices
             along the specified axis.
+
+        Examples
+        --------
+        
+        >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
+                          b = ivy.array([4., 5., 6.]))
+        >>> y = ivy.Container(a = ivy.array([0, 1]), \
+                            b = ivy.array([1, 2]))
+        >>> print(x.gather(y))
+        {
+            a: ivy.array([0., 1.]),
+            b: ivy.array([5., 6.])
+        }
+        
         """
         return self.static_gather(
             self,

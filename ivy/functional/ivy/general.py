@@ -3325,15 +3325,15 @@ def gather(
     simplicity, but this function is *nestable*, and therefore also accepts 
     :code:`ivy.Container` instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., 2.])
-    >>> y = ivy.array([0, 1])
+    >>> y = ivy.array([1, 2])
     >>> print(ivy.gather(x, y))
-    ivy.array([0., 1.])
+    ivy.array([1., 2.])
 
     >>> x = ivy.array([[0., 1., 2.], \
                         [3., 4., 5.]])
@@ -3343,18 +3343,18 @@ def gather(
                         [0., 0.]])
     >>> ivy.gather(x, y, out=z)
     >>> print(z)
-    ivy.array([[0., 1.],
-               [4., 5.]])
+    ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])
 
     >>> x = ivy.array([[[0., 1.], [2., 3.]], \
-                        [[4., 5.], [6., 7.]], \
                         [[8., 9.], [10., 11.]]])
-    >>> y = ivy.array([[[0, 1]], \
-                        [[1, 2]], \
-                        [[2, 0]]])
+    >>> y = ivy.array([[0, 1]])
     >>> ivy.gather(x, y, axis=0, out=x)
     >>> print(x)
-    ivy.array([[[0.,5.]],[[4.,9.]],[[8.,1.]]])
+    ivy.array(
+        [[[[ 0.,  1.],
+           [ 2.,  3.]],
+          [[ 8.,  9.],
+           [10., 11.]]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -3370,17 +3370,6 @@ def gather(
     >>> print(ivy.gather(x, y))
     ivy.array([0., 1.])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
-                          b = ivy.array([4., 5., 6.]))
-    >>> y = ivy.array([0, 1])
-    >>> print(ivy.gather(x, y))
-    {
-        a: ivy.array([0., 1.]),
-        b: ivy.array([4., 5.])
-    }
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
@@ -3393,27 +3382,17 @@ def gather(
         b: ivy.array([5., 6.])
     }
 
-    Instance Method Examples
-    ------------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = ivy.array([0, 1])
-    >>> print(x.gather(y))
-    ivy.array([0., 1.])
-
-    Using :code:`ivy.Container` instance method:
-
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    
     >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
                           b = ivy.array([4., 5., 6.]))
-    >>> y = ivy.Container(a = ivy.array([0, 1]), \
-                          b = ivy.array([1, 2]))
-    >>> print(x.gather(y))
+    >>> y = ivy.array([0, 1])
+    >>> print(ivy.gather(x, y))
     {
         a: ivy.array([0., 1.]),
-        b: ivy.array([5., 6.])
+        b: ivy.array([4., 5.])
     }
+
     """
     return current_backend(params).gather(params, indices, axis, out=out)
 
