@@ -5,6 +5,7 @@ Ivy Applied Libraries Development Guide
 .. _`Mech`: https://lets-unify.ai/mech/
 .. _`Vision`: https://lets-unify.ai/vision/
 .. _`Demo Utils`: https://github.com/unifyai/demo-utils
+.. _`Ivy`: https://github.com/unifyai/ivy
 .. _`Docker Desktop`: https://www.docker.com/products/docker-desktop/
 .. _`setting up discussion`: https://github.com/unifyai/ivy/discussions/1308
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
@@ -18,11 +19,12 @@ Introduction
 ------------
 
 Helping to contribute towards the ivy libraries requires a slightly more complex
-setup than it is needed for contributing to ivy alone. For instance, `Ivy Robot`_ is
-depending on `Mech`_, `Vision`_ and `Demo Utils`_. Thus, the related repositories
-have to be pulled into the same local folder, and ???
+setup than is needed for contributing to ivy alone. For instance, `Ivy Robot`_
+depends on `Mech`_, `Vision`_ and `Demo Utils`_. Thus, the related repositories
+have to be pulled into the same local folder, and `Ivy`_ must also be pulled into
+this same folder.
 
-To have a better grasp, let's look at an example on Ivy Robot in the next section!
+To have a better grasp, let's look at an example for Ivy Robot in the next section!
 
 Example - Ivy Robot
 -------------------
@@ -131,14 +133,14 @@ local directory:
 
 **IDE Development**
 
-1. For **PyCharm**, configurations are saved in the :code:`.idea` folder.
+1. For **PyCharm**, configurations are saved in the :code:`.idea` folder (part of the ivy repo).
 
-2. For **VSCode**, configurations can be found in the :code:`.vscode` folder.
+2. For **VSCode**, configurations can be found in the :code:`.vscode` folder (not part of the ivy repo).
 
 **Round Up**
 
 These examples should hopefully give you a good understanding of what is required
-when developing on the Ivy applied libraries.
+when developing the Ivy applied libraries.
 
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `setting up discussion`_,
