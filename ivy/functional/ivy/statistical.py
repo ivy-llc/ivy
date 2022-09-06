@@ -658,6 +658,104 @@ def var(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out
     )
 
+def correlate(
+    x: Union[ivy.Array, ivy.NativeArray],
+    y: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    mode: Optional[str] = "valid",
+    out: Optional[ivy.Array] = None,
+
+)   -> ivy.Array:
+    """
+    Calculates the cross-correlation between two one-dimentional arrays x and y.
+
+    Parameters
+    ----------
+    x
+        One-dimentional input array. Should have a numeric data type.
+    y
+        One-dimentional input array. Should have a numeric data type.
+    mode
+        Optional, can take the values "valid", "same", or "full". Default is "valid".
+        'same':    
+            Mode ‘same’ returns output of length max(len(x) , len(y)).
+        'valid':
+            Mode 'valid' returns output of length max(len(x), len(y)) - min(len(x), len(y)) + 1.
+        'full':
+            Mode 'full' returns an output shape of (len(x)+len(y)-1,). 
+    out
+        Optional output array, for writing the result to.
+
+    Functional Examples
+    -------------------
+
+    With :code: 'ivy.Array' input:
+
+    >>> x = ivy.array([1.0 , 2.0 , 3.0])
+    >>> y = ivy.array([0.0 , 1.0 , 0.55])
+    >>> z = ivy.correlate(x , y)
+    >>> print(z)
+    ivy.array(3.5)
+
+    >>> x = ivy.array([1.0 , 2.0 , 3.0])
+    >>> y = ivy.array([0.0 , 1.0 , 0.55])
+    >>> z = ivy.correlate(x , y , "same")
+    >>> print(z)
+    ivy.array([2.0 , 3.5 , 3.0])
+
+    >>> x = ivy.array([1.0 , 2.0 , 3.0])
+    >>> y = ivy.array([0.0 , 1.0 , 0.55])
+    >>> z = ivy.correlate(x , y, "full")
+    >>> print(z)
+    ivy.array([0.5 , 2.0 , 3.5 , 3.0 , 0.0])
+
+    >>> a = ivy.array([1+1j , 2.0 , 3-1j])
+    >>> b = ivy.array([0.0 , 1.0 , 0.5j])
+    >>> c = ivy.correlate(a , b, "full")
+    >>> print(x)
+    ivy.array([0.0+0.j ,  3.0+1.j ,  1.5+1.5j ,  1.0+0.j ,  0.5+0.5j])
+
+    With :code:'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([1.0 , 2.0, 3.0])
+    >>> y = ivy.native_array([4.0 , 5.0 , 6.0])
+    >>> z = ivy.correlate(x,y)
+    >>> print(z)
+    ivy.array(32.0)
+
+    >>> x = ivy.native_array([1.0 , 2.0 , 3.0])
+    >>> y = ivy.native_array([4.0 , 5.0 , 6.0])
+    >>> z = ivy.correlate(x,y,"same")
+    >>> print(z)
+    ivy.array([17.0 , 32.0 , 23.0])
+
+    >>> x = ivy.native_array([1.0 , 2.0 , 3.0])
+    >>> y = ivy.native_array([4.0 , 5.0 , 6.0])
+    >>> z = ivy.correlate(x,y,"full")
+    >>> print(z)
+    ivy.array([6.0 , 17.0 , 32.0 , 23.0 , 12.0])
+
+    >>> a = ivy.array([0+2j , 0.5j])
+    >>> b = ivy.array([5j , 8+3j])
+    >>> c = ivy.correlate(a , b, "full")
+    >>> print(x)
+    ivy.array([6+16j , 11.5+4j , 2.5+0j])
+
+    With :code: 'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0 , 1.0 , 2.0]), b=ivy.array([3.0 , 4.0 , 5.0]))
+    >>> y = ivy.Container(a=ivy.array([6.0 , 7.0 , 8.0], b = ivy.array([9.0 , 10.0 , 11.0]))
+    >>> z = ivy.correlate(x,y)
+    >>>> print(z)
+    {
+        a: ivy.array(23.0),
+        b: ivy.array(122.0)
+    }
+
+    """
+
+    return current_backend(x).correlate(x,y, mode=mode, out=out)
 
 # Extra #
 # ------#
