@@ -24,7 +24,10 @@ def cholesky(
     return ret
 
 
-cholesky.unsupported_dtypes = ("float16",)
+cholesky.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def cross(
