@@ -1752,6 +1752,7 @@ def test_jax_lax_rsqrt(
         frontend="jax",
         fn_tree="lax.rsqrt",
         x=np.asarray(x, dtype=input_dtype),
+        rtol=1e-02,
     )
 
 
