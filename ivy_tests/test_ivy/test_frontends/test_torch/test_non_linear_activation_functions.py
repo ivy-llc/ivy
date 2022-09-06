@@ -235,7 +235,7 @@ def test_torch_tanh(
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.logsigmoid"
-    )
+    ),
 )
 def test_torch_logsigmoid(
     dtype_and_x,
@@ -254,7 +254,7 @@ def test_torch_logsigmoid(
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.logsigmoid",
-        input=np.asarray(x, dtype=input_dtype)
+        input=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -270,7 +270,8 @@ def test_torch_logsigmoid(
     ),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.softmin"),
+        fn_name="functional.frontends.torch.softmin"
+    ),
 )
 def test_torch_softmin(
     dtype_x_and_axis,
@@ -295,4 +296,81 @@ def test_torch_softmin(
         input=np.asarray(x, dtype=input_dtype),
         dim=axis,
         dtype=dtypes[0],
+    )
+
+
+# threshold
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.threshold"
+    ),
+    inplace=st.booleans(),
+)
+def test_torch_threshold(
+    dtype_and_input,
+    inplace,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.threshold",
+        input=np.asarray(input, dtype=input_dtype),
+        threshold=0.5,
+        value=15,
+        inplace=inplace,
+    )
+
+
+# threshold_
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.threshold_"
+    ),
+)
+def test_torch_threshold_(
+    dtype_and_input,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.threshold_",
+        input=np.asarray(input, dtype=input_dtype),
+        threshold=0.5,
+        value=15,
     )
