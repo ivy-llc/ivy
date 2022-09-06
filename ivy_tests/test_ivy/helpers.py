@@ -392,6 +392,37 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
 
 
 @st.composite
+def get_castable_dtype(draw, dtype, full=False):
+    """
+    Draws castable dtypes for the given dtype based on the current backend.
+
+    Parameters
+    ----------
+    draw
+        Special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        Data type from which to cast
+    full
+        Returns the complete list of castable types
+
+    Returns
+    -------
+    ret
+        List of castable dtypes
+    """
+    if ivy.is_int_dtype(dtype):
+        valid_dtypes = [d for d in ivy.valid_int_dtypes if ivy.can_cast(dtype, d)]
+    elif ivy.is_float_dtype(dtype):
+        valid_dtypes = [d for d in ivy.valid_float_dtypes if ivy.can_cast(dtype, d)]
+    elif ivy.is_bool_dtype(dtype):
+        valid_dtypes = [dtype]
+    if full:
+        return valid_dtypes
+    return [draw(st.sampled_from(valid_dtypes))]
+
+
+@st.composite
 def floats(
     draw,
     *,
