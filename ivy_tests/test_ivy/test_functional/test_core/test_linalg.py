@@ -1133,7 +1133,6 @@ def test_matrix_norm(
         min_value=-1e05,
         max_value=1e05,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
@@ -1141,7 +1140,6 @@ def test_matrix_rank(
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1153,13 +1151,12 @@ def test_matrix_rank(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
-        atol_=1.0,
         x=np.asarray(x, dtype=dtype),
         rtol=rtol,
     )
