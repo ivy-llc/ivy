@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
     ),
@@ -52,7 +52,7 @@ def test_jax_cond(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
     ),
@@ -88,7 +88,7 @@ def test_jax_map(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
     ),

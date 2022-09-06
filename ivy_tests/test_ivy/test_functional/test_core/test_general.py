@@ -263,7 +263,7 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
 @handle_cmd_line_args
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_to_scalar(object_in, dtype, device, fw):
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
@@ -593,7 +593,7 @@ def test_indices_where(
 @given(
     depth=helpers.ints(min_value=0, max_value=100),
     x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
@@ -629,7 +629,7 @@ def test_one_hot(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         valid_axis=True,
@@ -670,7 +670,7 @@ def test_cumsum(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         valid_axis=True,

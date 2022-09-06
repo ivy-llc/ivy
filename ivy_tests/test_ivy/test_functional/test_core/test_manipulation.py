@@ -484,7 +484,7 @@ def test_stack(
 def _basic_min_x_max(draw):
     dtype, value = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric", full=True),
+            available_dtypes=helpers.get_dtypes("numeric"),
         )
     )
     min_val = draw(

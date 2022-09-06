@@ -351,7 +351,7 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=False, none=False):
+def get_dtypes(draw, kind, index=0, full=True, none=False):
     """
     Draws valid dtypes based on the backend set on the stack
 
