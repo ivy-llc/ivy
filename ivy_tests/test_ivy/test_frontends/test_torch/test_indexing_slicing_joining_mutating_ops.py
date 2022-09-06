@@ -326,7 +326,7 @@ def test_torch_transpose(
     )
 
     
-#chunk
+# chunk
 @handle_cmd_line_args
 @given(
     dtype_value_shape=helpers.dtype_and_values(
@@ -343,8 +343,8 @@ def test_torch_transpose(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.chunk"
     ),
-    
 )
+    
 def test_torch_chunk(
     dtype_value_shape,
     dim,
@@ -352,7 +352,7 @@ def test_torch_chunk(
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    fw, 
 ):
     input_dtype,value = dtype_value_shape
     helpers.test_frontend_function(
@@ -365,5 +365,6 @@ def test_torch_chunk(
         frontend='torch',
         fn_tree='chunk',
         input = np.asarray(value,dtype=input_dtype),
-        axis = dim 
-        )  
+        axis = dim, 
+        ) 
+     
