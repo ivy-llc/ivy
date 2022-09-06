@@ -146,9 +146,9 @@ matrix_power.support_native_out = True
 
 def matrix_rank(
     x: torch.Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
     /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
