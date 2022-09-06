@@ -215,7 +215,12 @@ def _get_second_matrix_and_dtype(draw):
 @st.composite
 def _get_dtype_and_vector(draw):
     # batch_shape, shared, random_size
-    input_dtype = draw(st.sampled_from(ivy_np.valid_numeric_dtypes))
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            key="shared_dtype",
+        )
+    )
     batch_shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
     return input_dtype, draw(
         helpers.array_values(
