@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         dtype=ivy.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=1,
@@ -57,7 +57,7 @@ def test_native_array(
 @handle_cmd_line_args
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=None,
         max_value=None,
@@ -109,7 +109,7 @@ def test_linspace(
 @handle_cmd_line_args
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=None,
         max_value=None,
@@ -202,7 +202,7 @@ def test_arange(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=0,
         max_num_dims=5,
@@ -287,7 +287,7 @@ def test_empty(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
@@ -380,7 +380,7 @@ def test_eye(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
@@ -481,7 +481,7 @@ def test_full(
 def _dtype_and_values(draw):
     return draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric", full=True),
+            available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=1,
             min_num_dims=1,
             max_num_dims=5,
@@ -613,7 +613,7 @@ def test_ones(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
@@ -654,7 +654,7 @@ def test_ones_like(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
@@ -696,7 +696,7 @@ def test_tril(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
@@ -776,7 +776,7 @@ def test_zeros(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
