@@ -310,7 +310,10 @@ def pinv(
     return ret
 
 
-pinv.unsupported_dtypes = ("float16",)
+pinv.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
