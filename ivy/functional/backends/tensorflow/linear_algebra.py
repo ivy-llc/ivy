@@ -348,7 +348,10 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = ("float16",)
+slogdet.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def solve(
