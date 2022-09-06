@@ -1067,6 +1067,44 @@ def test_torch_bitwise_xor(
     ),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_or"
+    ),
+)
+def test_torch_bitwise_or(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_or",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_left_shift"
     ),
 )

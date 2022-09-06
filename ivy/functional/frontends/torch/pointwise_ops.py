@@ -179,6 +179,13 @@ def bitwise_xor(input, other, *, out=None):
 bitwise_xor.unsupported_dtypes = ("float16",)
 
 
+def bitwise_or(input, other, *, out=None):
+    return ivy.bitwise_or(input, other, out=out)
+
+
+bitwise_or.unsupported_dtypes = ("float16",)
+
+
 def bitwise_left_shift(input, other, *, out=None):
     return ivy.bitwise_left_shift(input, other, out=out)
 
