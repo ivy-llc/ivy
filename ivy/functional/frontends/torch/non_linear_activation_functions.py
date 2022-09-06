@@ -2,6 +2,12 @@
 import ivy
 
 
+def _compute_threshold(input, threshold, value, inplace):
+    if inplace:
+        return ivy.where(ivy.greater(input, threshold), input, value, out=input)
+    return ivy.where(ivy.greater(input, threshold), input, value)
+
+
 def sigmoid(input, out=None):
     return ivy.sigmoid(input, out=out)
 
@@ -57,3 +63,17 @@ def softmin(input, dim=None, dtype=None):
 
 
 softmin.unsupported_dtypes = ("float16",)
+
+
+def threshold(input, threshold, value, inplace=False):
+    return _compute_threshold(input, threshold, value, inplace)
+
+
+threshold.unsupported_dtypes = ("float16",)
+
+
+def threshold_(input, threshold, value):
+    return _compute_threshold(input, threshold, value, inplace=True)
+
+
+threshold_.unsupported_dtypes = ("float16",)
