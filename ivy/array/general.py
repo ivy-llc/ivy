@@ -16,7 +16,7 @@ class ArrayWithGeneral(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
-        wraps the function, and so the docstring for ivy.is_native_array 
+        wraps the function, and so the docstring for ivy.is_native_array
         also applies to this method with minimal changes.
 
         Parameters
@@ -32,14 +32,14 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ivy.is_native_array(self._data, out=out)
+        return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
 
     def is_ivy_array(
         self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply 
-        wraps the function, and so the docstring for ivy.is_ivy_array also applies 
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_array also applies
         to this method with minimal changes.
 
         Parameters
@@ -55,7 +55,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_ivy_array(self._data, out=out)
+        return ivy.is_ivy_array(self._data, exclusive=exclusive, out=out)
 
     def is_array(
         self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
@@ -78,7 +78,27 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self._data, out=out)
+        return ivy.is_array(self._data, exclusive=exclusive, out=out)
+
+    def is_ivy_container(
+        self: ivy.Array, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.is_ivy_container. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_container also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy container.
+        """
+        return ivy.is_ivy_container(self._data, out=out)
 
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False
@@ -172,10 +192,11 @@ class ArrayWithGeneral(abc.ABC):
 
     def cumsum(
         self: ivy.Array,
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
         reverse: Optional[bool] = False,
-        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -246,9 +267,10 @@ class ArrayWithGeneral(abc.ABC):
 
     def cumprod(
         self: ivy.Array,
+        /,
+        *,
         axis: int = 0,
         exclusive: Optional[bool] = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -278,15 +300,15 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3, 4, 5])
         >>> y = x.cumprod()
         >>> print(y)
-        ivy.array([  1,   2,   6,  24, 120])
+        ivy.array([1, 2, 6, 24, 120])
 
         >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
-        >>> y = ivy.zeros((3, 2))
+        >>> y = ivy.zeros((3, 2), dtype="int32")
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
-        ivy.array([[ 1.,  2.],
-                   [ 1.,  5.],
-                   [ 1., 11.]])
+        ivy.array([[1, 2],
+                   [1, 5],
+                   [1, 11]])
         """
         return ivy.cumprod(self._data, axis, exclusive, out=out)
 
@@ -827,6 +849,8 @@ class ArrayWithGeneral(abc.ABC):
     def fourier_encode(
         self: ivy.Array,
         max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         num_bands: int = 4,
         linear: bool = False,
         concat: bool = True,
