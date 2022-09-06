@@ -152,7 +152,7 @@ def dtypes_shared(draw, num_dtypes):
         small_value_safety_factor=1.5,
         large_value_safety_factor=10,
     ),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_astype(
     dtype_and_x,
@@ -286,7 +286,7 @@ def test_broadcast_to(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=1
     ),
-    to_dtype=helpers.get_dtypes("valid"),
+    to_dtype=helpers.get_dtypes("valid", full=False),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
     native_array=st.booleans(),
@@ -525,7 +525,7 @@ def test_closest_valid_dtype(
 # default_dtype
 @handle_cmd_line_args
 @given(
-    input_dtype=helpers.get_dtypes("valid"),
+    input_dtype=helpers.get_dtypes("valid", full=False),
     as_native=st.booleans(),
 )
 def test_default_dtype(
@@ -593,7 +593,7 @@ def test_dtype(
 # dtype_bits
 @handle_cmd_line_args
 @given(
-    input_dtype=helpers.get_dtypes("valid"),
+    input_dtype=helpers.get_dtypes("valid", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
 )
 def test_dtype_bits(
