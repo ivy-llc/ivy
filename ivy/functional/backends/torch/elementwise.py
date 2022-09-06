@@ -195,8 +195,7 @@ log1p.unsupported_dtypes = ("float16",)
 
 
 def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    ret = torch.isnan(x)
-    return ret
+    return torch.isnan(x)
 
 
 def less(
@@ -381,7 +380,14 @@ def floor_divide(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    new_type = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    x1 = x1.type(new_type)
+    x2 = x2.type(new_type)
+    if len(x2.shape) == 0:
+        return x1
+    nonzeros = torch.count_nonzero(x2)
+    if len(nonzeros.shape) == 0:
+        return x1
     return torch.div(x1, x2, rounding_mode="floor", out=out)
 
 
@@ -414,8 +420,7 @@ def positive(
     x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    ret = torch.positive(x)
-    return ret
+    return torch.positive(x)
 
 
 def square(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -565,6 +570,11 @@ def remainder(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if len(x2.shape) == 0:
+        return x1
+    nonzeros = torch.count_nonzero(x2)
+    if len(nonzeros.shape) == 0:
+        return x1
     if not modulus:
         res = x1 / x2
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
