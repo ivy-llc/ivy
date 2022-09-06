@@ -4434,7 +4434,7 @@ def reciprocal(
     -------
     ret
         A new array with the positive value of each element in ``x``.
-    
+
     """
     return ivy.current_backend(x).reciprocal(x, out=out)
 

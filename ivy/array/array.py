@@ -248,9 +248,7 @@ class Array(
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(
-                query, val, tensor=self._data, reduction="replace"
-            )._data
+            self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 
     @_native_wrapper

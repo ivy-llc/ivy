@@ -215,7 +215,7 @@ def repeat(
 
 
 def tile(
-    x: torch.Tensor, /, reps, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
@@ -266,6 +266,9 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    assert torch.all(
+        torch.less(torch.tensor(x_min), x_max)
+    ), "Min value must be less than max."
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
