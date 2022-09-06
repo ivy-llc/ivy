@@ -194,7 +194,10 @@ def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = ("float16",)
+slogdet.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
