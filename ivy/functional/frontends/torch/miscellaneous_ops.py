@@ -1,3 +1,5 @@
+import itertools
+
 import ivy
 
 
@@ -42,3 +44,7 @@ cumsum.unsupported_dtypes = (
 
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
+
+
+def cartesian_prod(*tensors):
+    return ivy.asarray([i for i in list(itertools.product(tensors))])
