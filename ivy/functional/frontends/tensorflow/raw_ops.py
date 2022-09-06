@@ -86,6 +86,10 @@ def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
 
+def LessEqual(*, x, y, name="LessEqual"):
+    return ivy.less_equal(x, y)
+
+
 def Floor(*, x, name="Floor"):
     return ivy.floor(x)
 

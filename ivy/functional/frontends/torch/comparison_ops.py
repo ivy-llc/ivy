@@ -1,4 +1,9 @@
-# ToDo: Add allclose(), isclose(), isposinf(), isneginf(), fmax() to functional API
+"""
+ToDo
+----
+Add allclose(), isclose(), isposinf(), isneginf(), fmax()
+to ivy functional API
+"""
 # global
 import ivy
 
@@ -27,7 +32,7 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
     finite_other = ivy.isfinite(other)
     if ivy.all(finite_input) and ivy.all(finite_other):
         ret = _compute_allclose_with_tol(input, other, rtol, atol)
-        return bool(ret)
+        return ivy.all_equal(True, ret)
     else:
         finites = ivy.bitwise_and(finite_input, finite_other)
         ret = ivy.zeros_like(finites)
@@ -49,7 +54,7 @@ allclose.unsupported_dtypes = ("float16",)
 
 
 def equal(input, other):
-    return bool(ivy.all_equal(input, other, equality_matrix=False))
+    return ivy.all_equal(input, other, equality_matrix=False)
 
 
 def eq(input, other, *, out=None):
@@ -172,3 +177,7 @@ def fmin(input, other, *, out=None):
         other,
         out=out,
     )
+
+
+def msort(input, *, out=None):
+    return ivy.sort(input, axis=0, out=out)
