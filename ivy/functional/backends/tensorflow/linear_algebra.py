@@ -396,7 +396,10 @@ def svd(
     return results(U, D, VT)
 
 
-svd.unsupported_dtypes = ("float16",)
+svd.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def svdvals(
