@@ -308,7 +308,6 @@ def test_matrix_power(
 @given(
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
-    num_positional_args=helpers.num_positional_args(fn_name="matmul"),
 )
 def test_matmul(
     *,
@@ -316,7 +315,6 @@ def test_matmul(
     y,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -333,12 +331,14 @@ def test_matmul(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="matmul",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=np.asarray(x_1, dtype=input_dtype1),
         x2=np.asarray(y_1, dtype=input_dtype2),
     )
