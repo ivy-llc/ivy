@@ -42,16 +42,19 @@ def statistical_dtype_values(draw, *, function):
     size = np.asarray(values, dtype=dtype).size
     axis = draw(helpers.get_axis(shape=shape, allow_none=True))
     if function == "var" or function == "std":
-        if isinstance(axis, int):
+        if size == 1:
+            correction = 0
+        elif isinstance(axis, int):
             correction = draw(
-                helpers.ints(min_value=-shape[axis], max_value=shape[axis] - 1)
-                | helpers.floats(min_value=-shape[axis], max_value=shape[axis] - 1)
+                helpers.ints(min_value=0, max_value=shape[axis] - 1)
+                | helpers.floats(min_value=0, max_value=shape[axis] - 1)
             )
             return dtype, values, axis, correction
-        correction = draw(
-            helpers.ints(min_value=-size, max_value=size - 1)
-            | helpers.floats(min_value=-size, max_value=size - 1)
-        )
+        else:
+            correction = draw(
+                helpers.ints(min_value=0, max_value=size - 1)
+                | helpers.floats(min_value=0, max_value=size - 1)
+            )
         return dtype, values, axis, correction
     return dtype, values, axis
 
@@ -335,11 +338,13 @@ def test_std(
             ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
         ]
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
+    dtype=helpers.get_dtypes("float"),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]

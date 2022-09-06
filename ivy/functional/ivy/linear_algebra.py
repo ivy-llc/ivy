@@ -22,8 +22,9 @@ inf = float("inf")
 @handle_nestable
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
-    upper: bool = False,
+    /,
     *,
+    upper: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the cholesky decomposition of the x matrix.
@@ -63,7 +64,7 @@ def cholesky(
                        [2.0, 0.0, 3.0, 0.0, 0.0], \
                        [0.5, 0.0, 0.0, 0.625, 0.0], \
                        [2.0, 0.0, 0.0, 0.0, 16.0]])
-    >>> l = ivy.cholesky(x, 'false')
+    >>> l = ivy.cholesky(x, upper='false')
     >>> print(l)
     ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
                [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
@@ -77,7 +78,7 @@ def cholesky(
                        [0.5, 0.0, 0.0, 0.625, 0.0], \
                        [2.0, 0.0, 0.0, 0.0, 16.0]])
     >>> y = ivy.zeros([5,5])
-    >>> ivy.cholesky(x, 'false', out=y)
+    >>> ivy.cholesky(x, upper='false', out=y)
     >>> print(y)
     ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
                [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
@@ -90,7 +91,7 @@ def cholesky(
                        [2.0, 0.0, 3.0, 0.0, 0.0], \
                        [0.5, 0.0, 0.0, 0.625, 0.0], \
                        [2.0, 0.0, 0.0, 0.0, 16.0]])
-    >>> ivy.cholesky(x, 'false', out=x)
+    >>> ivy.cholesky(x, upper='false', out=x)
     >>> print(x)
     ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],
                [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],
@@ -101,7 +102,7 @@ def cholesky(
     With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
-    >>> u = ivy.cholesky(x, 'false')
+    >>> u = ivy.cholesky(x, upper='false')
     >>> print(u)
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
@@ -110,7 +111,7 @@ def cholesky(
 
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
-    >>> y = ivy.cholesky(x, 'false')
+    >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     {
         a: ivy.array([[1.73, -0.577],
@@ -124,7 +125,7 @@ def cholesky(
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
     >>> upper = ivy.Container(a=1, b=-1)
-    >>> y = ivy.cholesky(x, 'false')
+    >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     {
         a: ivy.array([[1.73, -0.577],
@@ -137,13 +138,13 @@ def cholesky(
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> upper = ivy.Container(a=1, b=-1)
-    >>> y = ivy.cholesky(x, 'false')
+    >>> y = ivy.cholesky(x, upper='false')
     >>> print(y)
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
 
     """
-    return current_backend(x).cholesky(x, upper, out=out)
+    return current_backend(x).cholesky(x, upper=upper, out=out)
 
 
 @to_native_arrays_and_back
@@ -152,8 +153,9 @@ def cholesky(
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
@@ -180,7 +182,7 @@ def cross(
     ret
          an array containing the cross products. The returned array must have a data
          type determined by Type Promotion Rules.
-         
+
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
@@ -224,21 +226,21 @@ def cross(
         b: ivy.array([0., -6., 0.])
     }
     """
-    return current_backend(x1).cross(x1, x2, axis, out=out)
+    return current_backend(x1).cross(x1, x2, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def det(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the determinant of a square matrix (or a stack of square matrices)``x``.
 
     Parameters
     ----------
     x
-        input array having shape ``(..., M, M)`` and whose innermost two dimensions 
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions
         form square matrices. Should have a floating-point data type.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -317,10 +319,11 @@ def det(
 @handle_nestable
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.
@@ -392,7 +395,7 @@ def diagonal(
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
 
-    >>> d = ivy.diagonal(x, 1)
+    >>> d = ivy.diagonal(x, offset=1)
     >>> print(d)
     ivy.array([2.])
 
@@ -400,7 +403,7 @@ def diagonal(
     >>> x = ivy.array([[0, 1, 2],\
                        [3, 4, 5],\
                        [6, 7, 8]])
-    >>> d = ivy.diagonal(x, -1, 0)
+    >>> d = ivy.diagonal(x, offset=-1, axis1=0)
     >>> print(d)
     ivy.array([3, 7])
 
@@ -413,7 +416,7 @@ def diagonal(
                        [[18, 19, 20],\
                         [21, 22, 23],\
                         [24, 25, 26]]])
-    >>> d = ivy.diagonal(x, 1, -3)
+    >>> d = ivy.diagonal(x, offset=1, axis1=-3)
     >>> print(d)
     ivy.array([[1, 11],
                [4, 14],
@@ -423,7 +426,7 @@ def diagonal(
                         [2, 3]],\
                        [[4, 5],\
                         [6, 7]]])
-    >>> d = ivy.diagonal(x, 0, 0, 1)
+    >>> d = ivy.diagonal(x, offset=0, axis1=0, axis2=1)
     >>> print(d)
     ivy.array([[0, 6],
                [1, 7]])
@@ -454,7 +457,7 @@ def diagonal(
                               [[18, 19, 20],\
                                [21, 22, 23],\
                                [24, 25, 26]]])
-    >>> d = ivy.diagonal(x, 1, 1, -1)
+    >>> d = ivy.diagonal(x, offset=1, axis1=1, axis2=-1)
     >>> print(d)
     ivy.array([[ 1,  5],
                [10, 14],
@@ -485,14 +488,16 @@ def diagonal(
         b: ivy.array([4, 9, 6])
     }
     """
-    return current_backend(x).diagonal(x, offset, axis1=axis1, axis2=axis2, out=out)
+    return current_backend(x).diagonal(
+        x, offset=offset, axis1=axis1, axis2=axis2, out=out
+    )
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -539,7 +544,7 @@ def eigh(
 @handle_out_argument
 @handle_nestable
 def eigvalsh(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
@@ -567,7 +572,7 @@ def eigvalsh(
 @handle_out_argument
 @handle_nestable
 def inv(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -612,6 +617,7 @@ def inv(
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -689,14 +695,14 @@ def matmul(
     With :code:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[1., 2.],  \
-                            [0., 1.]]) 
+                            [0., 1.]])
     >>> y = ivy.native_array([[2., 0.],  \
                             [0., 3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
     ivy.array([[2., 6.],
                 [0., 3.]])
-    
+
     With :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([5., 1.]), b=ivy.array([1., 0.]))
@@ -707,7 +713,7 @@ def matmul(
         a: ivy.array(27.),
         b: ivy.array(3.)
     }
-    
+
     With a combination of :code:`ivy.Array`
     and :code:`ivy.Container` inputs:
 
@@ -722,7 +728,7 @@ def matmul(
 
     With a combination of :code:`ivy.NativeArray`
     and :code:`ivy.Array` inputs:
-    
+
     >>> x = ivy.native_array([[1., 2.], \
                             [0., 3.]])
     >>> y = ivy.array([[1.], \
@@ -741,9 +747,10 @@ def matmul(
 @handle_nestable
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the matrix p-norm.
@@ -771,14 +778,14 @@ def matrix_norm(
         Matrix norm of the array at specified axes.
 
     """
-    return current_backend(x).matrix_norm(x, ord, keepdims, out=out)
+    return current_backend(x).matrix_norm(x, ord=ord, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def matrix_power(
-    x: Union[ivy.Array, ivy.NativeArray], n: int, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Raises a square matrix (or a stack of square matrices) x to an integer power
     n.
@@ -791,8 +798,9 @@ def matrix_power(
 @handle_nestable
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the rank (i.e., number of non-zero singular values) of a matrix (or a
@@ -863,14 +871,14 @@ def matrix_rank(
 
 
     """
-    return current_backend(x).matrix_rank(x, rtol, out=out)
+    return current_backend(x).matrix_rank(x, rtol=rtol, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def matrix_transpose(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Transposes a matrix (or a stack of matrices) ``x``.
 
@@ -899,6 +907,7 @@ def matrix_transpose(
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -974,8 +983,9 @@ def outer(
 @handle_nestable
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
@@ -1010,13 +1020,15 @@ def pinv(
         two dimensions must be transposed).
 
     """
-    return current_backend(x).pinv(x, rtol, out=out)
+    return current_backend(x).pinv(x, rtol=rtol, out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     mode: str = "reduced",
 ) -> NamedTuple:
     """
@@ -1054,14 +1066,14 @@ def qr(
           dimensions must have the same size as those of the input x.
 
     """
-    return current_backend(x).qr(x, mode)
+    return current_backend(x).qr(x, mode=mode)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Computes the sign and natural logarithm of the determinant of an array.
 
@@ -1093,6 +1105,7 @@ def slogdet(
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1132,6 +1145,8 @@ def solve(
 @handle_nestable
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     full_matrices: bool = True,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
     """Returns a singular value decomposition A = USVh of a matrix (or a stack of
@@ -1203,14 +1218,14 @@ def svd(
     ivy.array(0)
 
     """
-    return current_backend(x).svd(x, full_matrices)
+    return current_backend(x).svd(x, full_matrices=full_matrices)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def svdvals(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the singular values of a matrix (or a stack of matrices) ``x``.
 
@@ -1324,8 +1339,9 @@ def svdvals(
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a tensor contraction of x1 and x2 over specific axes.
@@ -1387,7 +1403,7 @@ def tensordot(
 
 
     """
-    return current_backend(x1, x2).tensordot(x1, x2, axes, out=out)
+    return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
 
 
 @to_native_arrays_and_back
@@ -1395,8 +1411,9 @@ def tensordot(
 @handle_nestable
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
-    offset: int = 0,
+    /,
     *,
+    offset: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the sum along the specified diagonals of a matrix (or a stack of
@@ -1436,12 +1453,12 @@ def trace(
     --------
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> offset = 0
-    >>> y = ivy.trace(x, offset)
+    >>> y = ivy.trace(x, offset=offset)
     >>> print(y)
     ivy.array(5.)
 
     """
-    return current_backend(x).trace(x, offset, out=out)
+    return current_backend(x).trace(x, offset=offset, out=out)
 
 
 @to_native_arrays_and_back
@@ -1450,8 +1467,9 @@ def trace(
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the (vector) dot product of two arrays.
@@ -1491,7 +1509,7 @@ def vecdot(
         for both ``x1`` and ``x2``.
 
     """
-    return current_backend(x1).vecdot(x1, x2, axis, out=out)
+    return current_backend(x1).vecdot(x1, x2, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -1499,10 +1517,11 @@ def vecdot(
 @handle_nestable
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""Computes the vector norm of a vector (or batch of vectors) ``x``.
@@ -1570,7 +1589,9 @@ def vector_norm(
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
     """
-    return current_backend(x).vector_norm(x, axis, keepdims, ord, out=out)
+    return current_backend(x).vector_norm(
+        x, axis=axis, keepdims=keepdims, ord=ord, out=out
+    )
 
 
 # Extra #
@@ -1581,7 +1602,7 @@ def vector_norm(
 @handle_out_argument
 @handle_nestable
 def vector_to_skew_symmetric_matrix(
-    vector: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     r"""Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric
     matrix :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying

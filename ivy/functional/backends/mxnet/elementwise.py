@@ -28,14 +28,12 @@ def bitwise_and(
 
 @_handle_flat_arrays_in_out
 def ceil(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.ceil(x)
-    return ret
+    return mx.nd.ceil(x)
 
 
 @_handle_flat_arrays_in_out
 def floor(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.floor(x)
-    return ret
+    return mx.nd.floor(x)
 
 
 @_handle_flat_arrays_in_out
@@ -66,14 +64,12 @@ def greater_equal(
 def isfinite(x: mx.nd.NDArray) -> mx.nd.NDArray:
     # ToDo: remove float32 conversion once int8 and uint8 work correctly.
     #  Currently 0 returns 0 for these types.
-    ret = mx.nd.contrib.isfinite(x.astype("float32")).astype("bool")
-    return ret
+    return mx.nd.contrib.isfinite(x.astype("float32")).astype("bool")
 
 
 @_handle_flat_arrays_in_out
 def isinf(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.contrib.isinf(x.astype("float32")).astype("bool")
-    return ret
+    return mx.nd.contrib.isinf(x.astype("float32")).astype("bool")
 
 
 def sqrt(x: mx.nd.NDArray) -> mx.nd.NDArray:
@@ -86,8 +82,7 @@ def sqrt(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def isnan(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.contrib.isnan(x).astype("bool")
-    return ret
+    return mx.nd.contrib.isnan(x).astype("bool")
 
 
 @_handle_flat_arrays_in_out
@@ -100,14 +95,12 @@ def less(
 
 @_handle_flat_arrays_in_out
 def logical_xor(x1: mx.nd.NDArray, x2: mx.nd.NDArray, dtype: ["bool"]) -> mx.nd.NDArray:
-    ret = mx.nd.logical_xor(x1, x2, dtype).astype("bool")
-    return ret
+    return mx.nd.logical_xor(x1, x2, dtype).astype("bool")
 
 
 @_handle_flat_arrays_in_out
 def logical_not(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.logical_not(x)
-    return ret
+    return mx.nd.logical_not(x)
 
 
 @_handle_flat_arrays_in_out
@@ -130,14 +123,12 @@ def asin(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def logical_and(x1: mx.nd.NDArray, x2: mx.nd.NDArray, dtype: ["bool"]) -> mx.nd.NDArray:
-    ret = mx.nd.logical_and(x1, x2, dtype).astype("bool")
-    return ret
+    return mx.nd.logical_and(x1, x2, dtype).astype("bool")
 
 
 @_handle_flat_arrays_in_out
 def logical_or(x1: mx.nd.NDArray, x2: mx.nd.NDArray, dtype: ["bool"]) -> mx.nd.NDArray:
-    ret = mx.nd.logical_or(x1, x2, dtype).astype("bool")
-    return ret
+    return mx.nd.logical_or(x1, x2, dtype).astype("bool")
 
 
 @_handle_flat_arrays_in_out
@@ -201,20 +192,17 @@ def sinh(x: mx.nd.NDArray) -> mx.nd.NDArray:
 
 @_handle_flat_arrays_in_out
 def square(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.square(x)
-    return ret
+    return mx.nd.square(x)
 
 
 @_handle_flat_arrays_in_out
 def round(x: mx.nd.NDArray) -> mx.nd.NDArray:
-    ret = mx.nd.round(x)
-    return ret
+    return mx.nd.round(x)
 
 
 @_handle_flat_arrays_in_out
 def trunc(x: mx.nd.NDArray) -> mx.nd.ndarray.NDArray:
-    ret = mx.np.trunc(x)
-    return ret
+    return mx.np.trunc(x)
 
 
 @_handle_flat_arrays_in_out
@@ -277,6 +265,11 @@ def atan2(x: mx.nd.NDArray, y: mx.nd.NDArray) -> mx.nd.NDArray:
     else:
         ret = mx.np.arctan2(x.as_np_ndarray(), y.as_np_ndarray()).as_nd_ndarray()
     return ret
+
+
+@_handle_flat_arrays_in_out
+def reciprocal(x: mx.nd.NDArray) -> mx.nd.NDArray:
+    return mx.nd.reciprocal(x)
 
 
 cosh = lambda x: math.cosh(x) if isinstance(x, float) else mx.nd.cosh(x)

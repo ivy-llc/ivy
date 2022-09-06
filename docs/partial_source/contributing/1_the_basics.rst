@@ -82,7 +82,7 @@ We have a clear process for contributors to engage with such ToDo lists:
 a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an
    issue created and (iii) is not mentioned in the comments.
 
-b. Create a new issue with the title being just the name of the task you would like to work on.
+b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 
 c. comment on the ToDo list issue with a reference to this issue like so:
 
@@ -101,10 +101,12 @@ e. Wait for us to review your PR. Once we have reviewed your PR we will either m
 f. Once the PR is in good shape, we will merge into master, and you then become and Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then
-the issue will be closed and the task will be made free for others in the community. Likewise, if we have requested
-changes on your PR, and you do not respond and request a new code review within 7 days, then the PR and the associated
-issue will be closed, and the task will be freed for others in the community. Even if you do not make code changes,
-you should request a new code review to flag to us that our attention is again needed to further the discussion.
+a warning message will appear on the issue. If another 7 days pass without any changes, the issue will be closed and
+the task will be made free for others in the community. Likewise, if we have requested changes on your PR, and you
+do not respond and request a new code review within 7 days, then a warning message will appear on the PR. If another
+7 days pass without any changes, then the PR and the associated issue will be closed, and the task will be freed for
+others in the community. Even if you do not make code changes, you should request a new code review to flag to us
+that our attention is again needed to further the discussion.
 
 The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where
 priority is given to those who can engage on a more short-term basis. We want to avoid the situation where tasks are
@@ -121,6 +123,14 @@ Please don't take it personally if your issue or PR gets closed because of this 
 
 Reach out to me on discord if at any point you believe this happened to you unfairly, and we will definitely
 investigate!
+
+Finally, we limit the maximum number of *open* and *incomplete* sub-task issues at *three* per person.
+This is to prevent anyone from self-allocating many sub-tasks,
+preventing others in the community from engaging, and then not being able to complete them.
+Even though the limit is three, sub-tasks should only be self-assigned using **one comment per sub-task**.
+For example, a sequence of comments like this :code:`- [ ] #Issue_number` will register
+correctly whereas a single comment like this :code:`- [ ] #Issue_number, - [ ] #Issue_number, - [ ] #Issue_number` or
+this :code:`- [ ] #Issue_number #Issue_number #Issue_number` etc. will not.
 
 **Video**
 

@@ -440,6 +440,7 @@ def test_torch_arccos(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
+        shared_dtype=True,
     ),
     alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
     num_positional_args=helpers.num_positional_args(
@@ -777,6 +778,46 @@ def test_torch_arctanh(
     )
 
 
+# log2
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.log2"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_log2(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="log2",
+        input=np.asarray(input, dtype=input_dtype),
+        out=None,
+    )
+
+
 # square
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -789,7 +830,7 @@ def test_torch_arctanh(
     as_variable=st.booleans(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.square"
+        fn_name="functional.frontends.torch.square"
     ),
     native_array=st.booleans(),
 )
@@ -980,6 +1021,45 @@ def test_torch_log10(
     )
 
 
+# trunc
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        )
+    ),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.trunc"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_trunc(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="trunc",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
 # sqrt
 @handle_cmd_line_args
 @given(
@@ -1052,5 +1132,42 @@ def test_torch_sign(
         frontend="torch",
         fn_tree="sign",
         input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
+# absolute
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            )
+        )
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.absolute"
+    ),
+)
+def test_torch_absolute(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="absolute",
+        input=np.asarray(input, dtype=input_dtype),
         out=None,
     )

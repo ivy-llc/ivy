@@ -13,6 +13,19 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
+def _cast_for_binary_op(x1, x2):
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        else:
+            x2 = np.asarray(x2, dtype=x1.dtype)
+    elif isinstance(x2, np.ndarray):
+        x1 = np.asarray(x1, dtype=x2.dtype)
+    return x1, x2
+
+
 def _clamp_bits(x1, x2):
     x2 = np.clip(
         x2,
@@ -530,14 +543,31 @@ pow.support_native_out = True
 
 
 @_handle_0_dim_output
+def reciprocal(
+    x: Union[float, np.ndarray], /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.reciprocal(x, out=out)
+
+
+reciprocal.support_native_out = True
+
+
+@_handle_0_dim_output
 def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     /,
     *,
+    modulus: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = np.where(res >= 0, np.floor(res), np.ceil(res))
+        diff = np.asarray(res - res_floored, dtype=res.dtype)
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return np.asarray(np.round(diff * x2), dtype=x1.dtype)
     return np.remainder(x1, x2, out=out)
 
 

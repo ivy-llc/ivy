@@ -146,14 +146,10 @@ This is all explained in more detail in the :ref:`Arrays` section.
 out Argument
 ------------
 
-The :code:`out` argument should always be provided as keyword-only arguments.
-Additionally, the :code:`out` argument should **only** be added to the backend functions if the wrapped backend function
-directly supports supports the :code:`out` argument itself. Otherwise, the :code:`out` argument should be omitted from
-the backend implementation. The inplace update is automatically handled in the
-wrapper code if no :code:`out` argument is detected in the backend signature, which is why we should only add it if the
-wrapped backend function itself supports the :code:`out` argument,
-which will result in the most efficient inplace update.
-This is all explained in more detail in the :ref:`Inplace Updates` section.
+The :code:`out` argument should always be provided as a keyword-only argument,
+and it should be added to all functions in the Ivy API and backend API which support
+inplace updates, with a default value of :code:`None` in all cases.
+The :code:`out` argument is explained in more detail in the :ref:`Inplace Updates` section.
 
 dtype and device arguments
 --------------------------

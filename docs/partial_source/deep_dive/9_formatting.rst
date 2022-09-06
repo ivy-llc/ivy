@@ -7,13 +7,14 @@ Formatting
 Lint Checks
 -----------
 
-To ensure that Ivy is always clean and correctly formatted, `flake8`_ is used to run
-lint checks on all Python files. Some examples are listed below for an idea of what
-is being checked for.
+To ensure that Ivy is always formatted correctly, `flake8`_ is used to run
+lint checks on all Python files in the
+`CI <https://github.com/unifyai/ivy/blob/ff7d40e7f1e6ea5b48b7b460013c011cd7752a0e/.github/workflows/lint.yml>`_.
+Some of the main things which `flake8`_ checks for are listed below.
 
 **Imports**
 
-Module imports are being checked to detect:
+Module imports are checked to detect:
 
 * unused imports
 * module imported but not used
@@ -35,8 +36,8 @@ Some examples are:
 
 **Literals**
 
-Literals formatting are often used in a string statement, which some related common
-checks are:
+Literals formatting are often used in a string statement; some common checks related to
+this are:
 
 * invalid :code:`%` format
 * :code:`%` format with missing arguments or unsupported character
@@ -45,8 +46,8 @@ checks are:
 
 **Others**
 
-There are many more types of checking which `flake8` is able to carry out. They
-include but are not limited to:
+There are many more types of checks which :code:`flake8` can perform.
+These include but are not limited to:
 
 * repeated :code:`dict` key or variable assigned to different values
 * star-unpacking assignment with too many expressions
@@ -58,22 +59,18 @@ Pre-Commit Hook
 ---------------
 
 In Ivy, we try our best to avoid committing code with lint errors. To achieve this,
-we make use of the pre-commit package, where its installation is explained in
+we make use of the pre-commit package. The installation is explained in
 the `pre-commit guide`_.
 
-The pre-commit hook runs the `flake8` lint checks before each commit. This is
+The pre-commit hook runs the :code:`flake8` lint checks before each commit. This is
 efficient and useful in preventing errors being pushed to the repository.
 
 In the case where errors are found, error messages will be raised and committing will
-be unsuccessful until the mistake is corrected. On the other hand, if the errors are
-related to arguments formatting, it will be reformatted automatically. More
-information can be found in the next section.
+be unsuccessful until the mistake is corrected. If the errors are related to argument
+formatting, it will be reformatted automatically.
 
-Automatic Reformatting Before Committing
-----------------------------------------
-
-If the arguments in a function are formatted incorrectly, for example, each argument
-is not formatted in its own line, which caused a line to exceed the length limit:
+For example, the line length limit might be exceeded if arguments are all added in a
+single line of code like so:
 
 .. code-block:: python
 
@@ -81,8 +78,8 @@ is not formatted in its own line, which caused a line to exceed the length limit
         x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
-When a commit is attempted, `pre-commit` detects this through running the lint check,
-then reformat the arguments automatically.
+When a commit is attempted, `pre-commit` would detect this error by running the lint
+check, and it would then reformat the arguments automatically.
 
 .. code-block:: none
 
@@ -98,8 +95,9 @@ then reformat the arguments automatically.
     flake8...................................................................Passed
 
 The above message indicates that a file disobeying the formatting rules is detected
-and reformatting has taken place successfully. The correctly formatted code has been
-saved and the related file(s) can now be staged and committed accordingly.
+and reformatting has taken place successfully. The correctly formatted code, with each
+argument added on a new line, has been saved and the related file(s) can now be staged
+and committed accordingly.
 
 .. code-block:: python
 
@@ -110,30 +108,14 @@ saved and the related file(s) can now be staged and committed accordingly.
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
 
-Examples
---------
-
-To ensure a better understanding of the formatting rules, examples are shown below
-for visualizing a better comparison.
-
-When a function has few arguments which will not exceed the length limit, arguments
-should be listed on the same line, together with the function :code:`def(...)`
-syntax.
+If the code is all formatted correctly, then in this case `pre-commit` will not modify
+the code. For example, when the line limit is not exceeded by the function arguments,
+then the arguments should indeed be listed on the same line, together with the function
+:code:`def(...)` syntax, as shown below.
 
 .. code-block:: python
 
     def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray]) -> Iinfo:
 
-When there are many arguments in a function, each argument and its respective type
-hints should be placed in separate lines as shown below:
-
-.. code-block:: python
-
-    def all(
-        x: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: bool = False,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+This would pass the lint checks, and :code:`pre-commit` would allow the code to be
+committed without error.

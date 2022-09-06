@@ -6,13 +6,13 @@ import gc
 import abc
 import math
 import psutil
-import nvidia_smi
+import pynvml
 from typing import Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
-    nvidia_smi.nvmlInit()
-except (nvidia_smi.NVMLError_LibraryNotFound, nvidia_smi.NVMLError_DriverNotLoaded):
+    pynvml.nvmlInit()
+except pynvml.NVMLError:
     pass
 from typing import Union, Callable, Iterable, Any
 
@@ -115,7 +115,7 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     if device in dev_handles:
         return dev_handles[device]
     gpu_idx = int(device.split(":")[-1])
-    handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
+    handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_idx)
     dev_handles[device] = handle
     return handle
 
@@ -319,6 +319,7 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
+@handle_nestable
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -479,7 +480,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """
     if "gpu" in device:
         handle = _get_nvml_gpu_handle(device)
-        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.total / 1e9
     elif device == "cpu":
         return psutil.virtual_memory().total / 1e9
@@ -515,7 +516,7 @@ def used_mem_on_dev(
         if process_specific:
             raise Exception("process-specific GPU queries are currently not supported")
         handle = _get_nvml_gpu_handle(device)
-        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.used / 1e9
     elif device == "cpu":
         if process_specific:
@@ -572,7 +573,7 @@ def percent_used_mem_on_dev(
         if process_specific:
             raise Exception("process-specific GPU queries are currently not supported")
         handle = _get_nvml_gpu_handle(device)
-        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return (info.used / info.total) * 100
     elif device == "cpu":
         vm = psutil.virtual_memory()
@@ -621,7 +622,7 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         return psutil.cpu_percent()
     elif "gpu" in device:
         handle = _get_nvml_gpu_handle(device)
-        return nvidia_smi.nvmlDeviceGetUtilizationRates(handle).gpu
+        return pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
         raise Exception(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
@@ -1037,9 +1038,13 @@ def split_func_call(
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [
-        ivy.split(inp, chunk_sizes, input_axes[i], True)
+        ivy.split(
+            inp, num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        )
         if ivy.is_array(inp)
-        else inp.split(chunk_sizes, input_axes[i], True)
+        else inp.split(
+            num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        )
         for i, inp in enumerate(inputs)
     ]
     is_mean = mode == "mean"
@@ -1074,7 +1079,10 @@ def split_func_call(
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
+    ret = [
+        ivy.concat([r[i] for r in rets], axis=output_axes[i])
+        for i in range(num_outputs)
+    ]
     return ret[0] if len(ret) == 1 else ret
 
 
@@ -1096,47 +1104,49 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
     return True
 
 
+def _get_devices(fn, complement=True):
+    # TODO: Not hardcode this
+    VALID_DEVICES = ("cpu",)
+    INVALID_DEVICES = (
+        "gpu",
+        "tpu",
+    )
+    ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
+
+    supported = set(VALID_DEVICES)
+
+    # Their values are formated like either
+    # 1. fn.supported_devices = ("cpu",)
+    # 2. fn.supported_devices = {"numpy": ("cpu",)}
+    # Could also have the "all" value for the framework
+    basic = [
+        ("supported_devices", set.intersection, VALID_DEVICES),
+        ("unsupported_devices", set.difference, INVALID_DEVICES),
+    ]
+    for (key, merge_fn, base) in basic:
+        if hasattr(fn, key):
+            v = getattr(fn, key)
+            if isinstance(v, dict):
+                vb = v.get(ivy.current_backend_str(), base)
+                v = merge_fn(set(vb), v.get("all", base))
+            supported = merge_fn(supported, set(v))
+
+    if complement:
+        supported = set(ALL_DEVICES).difference(supported)
+
+    return tuple(supported)
+
+
 @handle_nestable
-def function_unsupported_devices(fn: Callable, /) -> Tuple:
-    """Returns the unsupported devices of the current backend's function.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the unsupported device attribute
-
-    Returns
-    -------
-    ret
-        The unsupported devices of the function
-    """
-    if not _is_valid_devices_attributes(fn):
-        raise Exception(
-            "supported_devices and unsupported_devices attributes cannot both \
-             exist in a particular backend"
-        )
-    unsupported_devices = ()
-    if hasattr(fn, "unsupported_devices"):
-        fn_unsupported_devices = fn.unsupported_devices
-        if isinstance(fn_unsupported_devices, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_unsupported_devices:
-                unsupported_devices += fn_unsupported_devices[backend_str]
-            if "all" in fn_unsupported_devices:
-                unsupported_devices += fn_unsupported_devices["all"]
-        else:
-            unsupported_devices += fn_unsupported_devices
-    return tuple(set(unsupported_devices))
-
-
-@handle_nestable
-def function_supported_devices(fn: Callable, /) -> Tuple:
+def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     """Returns the supported devices of the current backend's function.
 
     Parameters
     ----------
     fn
         The function to check for the supported device attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
 
     Returns
     -------
@@ -1148,18 +1158,47 @@ def function_supported_devices(fn: Callable, /) -> Tuple:
             "supported_devices and unsupported_devices attributes cannot both \
              exist in a particular backend"
         )
-    supported_devices = tuple()
-    if hasattr(fn, "supported_devices"):
-        fn_supported_devices = fn.supported_devices
-        if isinstance(fn_supported_devices, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_supported_devices:
-                supported_devices += fn_supported_devices[backend_str]
-            if "all" in fn_supported_devices:
-                supported_devices += fn_supported_devices["all"]
-        else:
-            supported_devices += fn_supported_devices
-    return tuple(set(supported_devices))
+
+    supported_devices = set(_get_devices(fn, complement=False))
+
+    if recurse:
+        supported_devices = ivy.functional.data_type._nested_get(
+            fn, supported_devices, set.intersection, function_supported_devices
+        )
+
+    return tuple(supported_devices)
+
+
+@handle_nestable
+def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
+    """Returns the unsupported devices of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported device attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
+
+    Returns
+    -------
+    ret
+        The unsupported devices of the function
+    """
+    if not _is_valid_devices_attributes(fn):
+        raise Exception(
+            "supported_devices and unsupported_devices attributes cannot both \
+             exist in a particular backend"
+        )
+
+    unsupported_devices = set(_get_devices(fn, complement=True))
+
+    if recurse:
+        unsupported_devices = ivy.functional.data_type._nested_get(
+            fn, unsupported_devices, set.union, function_unsupported_devices
+        )
+
+    return tuple(unsupported_devices)
 
 
 # Profiler #
