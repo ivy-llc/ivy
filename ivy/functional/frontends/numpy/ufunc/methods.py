@@ -1,6 +1,11 @@
 import ivy
 
+from numpy import ufunc, dtype
+from typing import Union
 
-def accumulate(method, array, axis=0, dtype=None, out=None):
-    return array.__array_ufunc__(method, "accummulate", array=array,
-        axis=axis, dtype=dtype, out=out)
+
+@ivy.func_wrapper.outputs_to_ivy_arrays
+def accumulate(method: ufunc, array: ivy.Array,
+    axis: Union[int, tuple] = 0, dtype: Union[str, dtype] = None) -> ivy.Array:
+    return array.__array_ufunc__(method, "accumulate", array=array,
+        axis=axis, dtype=dtype)
