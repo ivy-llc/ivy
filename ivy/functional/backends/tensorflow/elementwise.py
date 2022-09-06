@@ -276,8 +276,7 @@ def floor_divide(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = tf.experimental.numpy.floor_divide(x1, x2)
-    return ret
+    return tf.experimental.numpy.floor_divide(x1, x2)
 
 
 def greater(
@@ -550,6 +549,9 @@ def remainder(
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return tf.cast(tf.round(diff * x2), x1.dtype)
     return tf.experimental.numpy.remainder(x1, x2)
+
+
+remainder.unsupported_dtypes = ("bfloat16",)
 
 
 def round(
