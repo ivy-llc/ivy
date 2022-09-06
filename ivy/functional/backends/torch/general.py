@@ -72,8 +72,7 @@ def to_list(x: torch.Tensor) -> list:
 def floormod(
     x: torch.Tensor, y: torch.Tensor, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    ret = x % y
-    return ret
+    return x % y
 
 
 def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
