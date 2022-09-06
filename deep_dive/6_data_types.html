@@ -57,7 +57,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Data Types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-type-module">Data Type Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#unsupported-data-types">Unsupported data types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-and-unsupported-data-types">Supported and Unsupported Data Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#support-for-integer-arrays">Support for Integer Arrays</a></li>
 </ul>
 </li>
@@ -387,14 +387,110 @@ because of the <em>relevant</em> <code class="code docutils literal notranslate"
 where the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is optional and <code class="code docutils literal notranslate"><span class="pre">ivy.default_dtype</span></code> is called inside the
 backend-specific implementation.</p>
 </section>
-<section id="unsupported-data-types">
-<h2>Unsupported data types<a class="headerlink" href="#unsupported-data-types" title="Permalink to this heading"></a></h2>
-<p>Some backend functions have an attribute named <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> which flags data types
-which this particular backend version of the function doesn’t support but other backends might
-do. It should be noted that the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from <code class="code docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code>
-which consists of all the <code class="code docutils literal notranslate"><span class="pre">dtypes</span></code> that every function of that particular backend doesn’t support
-and so if a certain <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is already present in the <code class="code docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> then we should
-not repeat flag it by adding it into the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>.</p>
+<section id="supported-and-unsupported-data-types">
+<h2>Supported and Unsupported Data Types<a class="headerlink" href="#supported-and-unsupported-data-types" title="Permalink to this heading"></a></h2>
+<p>Some backend functions (implemented in :code`ivy/functional/backends/&lt;some_backend&gt;`)
+have attributes named <code class="code docutils literal notranslate"><span class="pre">supported_dtypes</span></code> or <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code>,
+which flag the data types which this particular function does and does not support
+respectively for the associated backend.
+Only one of these attributes can be specified for any given function.
+In the case of <code class="code docutils literal notranslate"><span class="pre">supported_dtypes</span></code> it is assumed that all unmentioned data types
+are unsupported, and in the case of <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> it is assumed that all
+unmentioned data types are supported.</p>
+<p>These attributes should always be in <code class="code docutils literal notranslate"><span class="pre">tuple</span></code> form, with each entry in the tuple
+being of type <code class="code docutils literal notranslate"><span class="pre">str</span></code>, like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+
+<span class="n">expm1</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)</span>
+</pre></div>
+</div>
+<p>For compositional functions, the supported and unsupported data types can then be
+inferred automatically using the helper functions
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370">function_supported_dtypes</a>
+and
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407">function_unsupported_dtypes</a>
+respestively, which traverse the abstract syntax tree of the compositional function and
+evaluate the relevant attributes for each primary function in the composition.
+The same approach applies for most stateful methods, which are themselves compositional.</p>
+<p>It should be noted that the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from
+<code class="code docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> which consists of all the <code class="code docutils literal notranslate"><span class="pre">dtypes</span></code> that every function
+of that particular backend does not support, and so if a certain <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is
+already present in the <code class="code docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> then we should not add it into the
+<code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute.</p>
+<p>Sometimes, it might be possible to support a natively unsupported data type by either
+casting to a supported data type and then casting back, or explicitly handling these
+data types without deferring to a backend function at all.</p>
+<p>An example of the former is <code class="code docutils literal notranslate"><span class="pre">ivy.logical_not</span></code> with a <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">logical_not</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">bool</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>An example of the latter is <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code> with a <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="s2">&quot;uint&quot;</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In some cases, the lack of support for a particular data type by the backend function
+might be more difficult to handle correctly. For example, in many cases casting to
+another data type will result in a loss of precision, input range, or both.
+In such cases, the best solution is to simply add the data type to the
+<code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute,
+rather than trying to implement a long and complex patch to achieve the desired
+behaviour.</p>
+<p>In some cases, the lack of support might just be a bug which will likely be resolved in
+a future release of the framework. In these cases, as well as adding to the
+<code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute, we should also add a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment
+in the implementation, explaining that the support of the data type will be added as
+soon as the bug is fixed, with a link to an associated open issue in the framework
+repos included in the comment.</p>
+<p>For example, the following code throws an error when <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is
+<code class="code docutils literal notranslate"><span class="pre">torch.int32</span></code> but not when it is <code class="code docutils literal notranslate"><span class="pre">torch.int64</span></code>.
+This is tested with <code class="code docutils literal notranslate"><span class="pre">torch</span></code> version <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code>,
+which is the latest stable release at the time of writing. This is a
+<a class="reference external" href="https://github.com/pytorch/pytorch/issues/84530">know bug</a>.:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">int32</span>  <span class="c1"># or torch.int64</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Despite <code class="code docutils literal notranslate"><span class="pre">torch.int32</span></code> working correctly with <code class="code docutils literal notranslate"><span class="pre">torch.tensordot</span></code> in the vast
+majority of cases, our solution is to still add <code class="code docutils literal notranslate"><span class="pre">&quot;int32&quot;</span></code> into the
+<code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute, which will prevent the unit tests from failing in the CI.
+We also add the following comment above the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)</span>
+<span class="c1">#  is fixed.</span>
+<span class="n">tensordot</span><span class="o">.</span><span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">,)</span>
+</pre></div>
+</div>
+<p>Similarly, the following code throws an error for <code class="code docutils literal notranslate"><span class="pre">torch</span></code> version <code class="code docutils literal notranslate"><span class="pre">1.11.0</span></code>
+but not <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Writing short-lived patches for these temporary issues would add unwarranted complexity
+to the backend implementations, and introduce the risk of forgetting about the patch,
+needlessly bloating the codebase with redundant code.
+In such cases, we can explicitly flag which versions support which data types like so:</p>
+<p>[ToDo add a code example]</p>
+<p>The slight downside of this approach is that there is less data type coverage for each
+version of each backend, but taking responsibility for patching this support for all
+versions would substantially inflate the implementational requirements for ivy, and so
+we have decided to opt out of this responsibility!</p>
 </section>
 <section id="support-for-integer-arrays">
 <h2>Support for Integer Arrays<a class="headerlink" href="#support-for-integer-arrays" title="Permalink to this heading"></a></h2>

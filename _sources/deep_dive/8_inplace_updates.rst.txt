@@ -264,6 +264,38 @@ The inplace update of this :code:`ivy.Array` is always `handled by the wrapper`_
 Alternatively, if :code:`out` is an :code:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
 the container wrapping module.
 
+**Special Case**
+
+Take a function which has multiple possible "paths" through the code:
+
+.. code-block:: python
+
+    def cholesky(
+        x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
+    ) -> torch.Tensor:
+        if not upper:
+            return torch.linalg.cholesky(x, out=out)
+        else:
+            ret = torch.transpose(
+                torch.linalg.cholesky(
+                    torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
+                ),
+                dim0=len(x.shape) - 1,
+                dim1=len(x.shape) - 2,
+            )
+            if ivy.exists(out):
+                return ivy.inplace_update(out, ret)
+            return ret
+
+
+    cholesky.support_native_out = True
+
+Here we still have the :code:`support_native_out` attribute since we want to take advantage of the native inplace update
+enabled by :code:`torch.linalg.cholesky` in the first condition. However, in the :code:`else` statement, the last
+operation is :code:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update
+can't be performed by torch here. This is why we need to call :code:`ivy.inplace_update` explicitly here, to ensure the
+native inplace update is performed, as well as the :code:`ivy.Array` inplace update.
+
 **Compositional Functions**
 
 For *compositional* functions, the :code:`out` argument should **always** be handled in the compositional implementation,
