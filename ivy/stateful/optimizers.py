@@ -2,7 +2,7 @@
 
 # global
 import abc
-from typing import Union, Optional
+from typing import Union, Optional, Callable
 
 # local
 import ivy
@@ -15,7 +15,7 @@ import ivy
 class Optimizer(abc.ABC):
     def __init__(
         self,
-        lr: float,
+        lr: Union[float, Callable],
         inplace: bool = True,
         stop_gradients: bool = True,
         init_on_first_step: bool = False,

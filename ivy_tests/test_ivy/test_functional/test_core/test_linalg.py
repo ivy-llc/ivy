@@ -163,7 +163,10 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 def _get_first_matrix_and_dtype(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            key="shared_dtype",
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -186,7 +189,10 @@ def _get_first_matrix_and_dtype(draw):
 def _get_second_matrix_and_dtype(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            key="shared_dtype",
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -507,14 +513,12 @@ def test_inv(
 @handle_cmd_line_args
 @given(
     dtype_x=_get_first_matrix_and_dtype(),
-    num_positional_args=helpers.num_positional_args(fn_name="matrix_transpose"),
 )
 def test_matrix_transpose(
     *,
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -525,7 +529,7 @@ def test_matrix_transpose(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -591,14 +595,12 @@ def test_outer(
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
 )
 def test_slogdet(
     *,
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -608,8 +610,8 @@ def test_slogdet(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
+        with_out=with_out,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -706,14 +708,12 @@ def test_solve(
         max_value=50,
         min_num_dims=2,
     ),
-    num_positional_args=helpers.ints(min_value=0, max_value=1),
 )
 def test_svdvals(
     *,
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -724,7 +724,7 @@ def test_svdvals(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -926,7 +926,6 @@ def test_vector_norm(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="pinv"),
     rtol=st.floats(1e-5, 1e-3),
 )
 def test_pinv(
@@ -934,7 +933,6 @@ def test_pinv(
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -946,7 +944,7 @@ def test_pinv(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1020,14 +1018,12 @@ def test_qr(
         min_value=0.1,
         max_value=10.0,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="svd"),
     fm=st.booleans(),
 )
 def test_svd(
     *,
     dtype_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1040,7 +1036,7 @@ def test_svd(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1089,7 +1085,6 @@ def test_svd(
         min_value=-10,
         max_value=10,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
 )
@@ -1097,7 +1092,6 @@ def test_matrix_norm(
     *,
     dtype_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1110,7 +1104,7 @@ def test_matrix_norm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1131,7 +1125,6 @@ def test_matrix_norm(
         min_value=-1e05,
         max_value=1e05,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
@@ -1139,7 +1132,6 @@ def test_matrix_rank(
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1151,13 +1143,12 @@ def test_matrix_rank(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
-        atol_=1.0,
         x=np.asarray(x, dtype=dtype),
         rtol=rtol,
     )
@@ -1175,14 +1166,12 @@ def test_matrix_rank(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
     upper=st.booleans(),
 )
 def test_cholesky(
     *,
     dtype_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1199,7 +1188,7 @@ def test_cholesky(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
