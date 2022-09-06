@@ -6,6 +6,7 @@ from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 ivy_dtype_dict = {
     tf.int8: "int8",
@@ -75,6 +76,7 @@ class Finfo:
 def astype(
     x: Union[tf.Tensor, tf.Variable],
     dtype: tf.DType,
+    /,
     *,
     copy: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -120,7 +122,7 @@ def broadcast_to(
 
 
 def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
-    if isinstance(from_, tf.Tensor):
+    if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = from_.dtype
     from_str = str(from_)
     to_str = str(to)
@@ -142,12 +144,16 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bo
     return True
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
+    if ivy.as_native_dtype(type) == tf.bfloat16:
+        return Finfo(tf.experimental.numpy.finfo(tf.float32))
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
@@ -156,7 +162,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
 
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
-) -> tf.DType:
+) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return tf.experimental.numpy.result_type(arrays_and_dtypes)
 
@@ -165,7 +171,10 @@ def result_type(
     )
     for i in range(2, len(arrays_and_dtypes)):
         result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
+
+
+result_type.unsupported_dtypes = ("bfloat16",)
 
 
 # Extra #
@@ -201,3 +210,7 @@ def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
         .replace("bfloat", "")
         .replace("float", "")
     )
+
+
+# ToDo:
+# 1. result_type: Add support for bfloat16 with int16

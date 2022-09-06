@@ -36,6 +36,9 @@ def det(x: NDArray, out: Optional[NDArray] = None) -> NDArray:
     return ret
 
 
+det.unsupported_dtypes = ("float16",)
+
+
 def diagonal(x: NDArray, offset: int = 0, axis1: int = -2, axis2: int = -1) -> NDArray:
     return mx.nd.diag(x, k=offset, axis1=axis1, axis2=axis2)
 

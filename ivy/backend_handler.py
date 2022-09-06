@@ -98,6 +98,81 @@ def _determine_backend_from_args(args):
                 return importlib.import_module(module_name)
 
 
+def fn_name_from_version_specific_fn_name(name, version):
+    """
+
+    Parameters
+    ----------
+    name
+        the version specific name of the function for which the version support
+        is to be provided.
+    version
+        the version of the current framework for which the support is to be
+        provided, the version is inferred by importing the framework
+    Returns
+    -------
+        the name of the original function which will then point to the version
+        specific function
+
+    """
+    version = str(version)
+    if version.find("+") != -1:
+        version = int(version[: version.index("+")].replace(".", ""))
+    else:
+        version = int(version.replace(".", ""))
+    if "_to_" in name:
+        i = name.index("_v_")
+        e = name.index("_to_")
+        version_start = name[i + 3 : e]
+        version_start = int(version_start.replace("p", ""))
+        version_end = name[e + 4 :]
+        version_end = int(version_end.replace("p", ""))
+        if version in range(version_start, version_end + 1):
+            return name[0:i]
+    elif "_and_above" in name:
+        i = name.index("_v_")
+        e = name.index("_and_")
+        version_start = name[i + 3 : e]
+        version_start = int(version_start.replace("p", ""))
+        if version >= version_start:
+            return name[0:i]
+    else:
+        i = name.index("_v_")
+        e = name.index("_and_")
+        version_start = name[i + 3 : e]
+        version_start = int(version_start.replace("p", ""))
+        if version <= version_start:
+            return name[0:i]
+
+
+def set_backend_to_specific_version(backend):
+    """
+
+    Parameters
+    ----------
+    backend
+        the backend module for which we provide the version support
+    Returns
+        The function doesn't return anything and updates the backend __dict__
+        to make the original function name to point to the version specific one
+
+    -------
+
+    """
+    f = str(backend.__name__)
+    f = f[f.index("backends") + 9 :]
+
+    f = importlib.import_module(f)
+    f_version = f.__version__
+
+    for key in list(backend.__dict__):
+        if "_v_" in key:
+            orig_name = fn_name_from_version_specific_fn_name(key, f_version)
+            if orig_name:
+                backend.__dict__[orig_name] = backend.__dict__[key]
+                backend.__dict__[orig_name].__name__ = orig_name
+
+
 def current_backend(*args, **kwargs):
     """Returns the current backend. Priorities:
     global_backend > argument's backend.
@@ -169,6 +244,10 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
+    if isinstance(backend, str) and backend not in _backend_dict:
+        raise ValueError(
+            "backend must be one from {}".format(list(_backend_dict.keys()))
+        )
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     if not backend_stack:
@@ -177,17 +256,13 @@ def set_backend(backend: str):
         temp_stack = list()
         while backend_stack:
             temp_stack.append(unset_backend())
-        try:
-            backend = importlib.import_module(_backend_dict[backend])
-        except KeyError:
-            backend_stack.extend(reversed(temp_stack))
-            raise KeyError("Backend {} is not found.".format(backend))
+        backend = importlib.import_module(_backend_dict[backend])
         for fw in reversed(temp_stack):
             backend_stack.append(fw)
     if backend.current_backend_str() == "numpy":
         ivy.set_default_device("cpu")
     backend_stack.append(backend)
-
+    set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes and k in ivy.__dict__:
@@ -243,6 +318,8 @@ def get_backend(backend: Optional[str] = None):
     # otherwise `backend` argument will be used
     if backend is None:
         backend = ivy.current_backend()
+        if not backend_stack:
+            return ""
     elif isinstance(backend, str):
         backend = importlib.import_module(_backend_dict[backend])
     for k, v in ivy_original_dict.items():
@@ -297,9 +374,10 @@ def unset_backend():
         # wrap backend functions if there still is a backend, and add functions
         # to ivy namespace
         for k, v in new_backend_dict.items():
-            if backend_stack and k in ivy.__dict__:
-                v = _wrap_function(k, v, ivy.__dict__[k])
-            ivy.__dict__[k] = v
+            if backend_stack and k in ivy_original_dict:
+                v = _wrap_function(k, v, ivy_original_dict[k])
+            if k in ivy_original_dict:
+                ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend

@@ -1,9 +1,13 @@
+# For Review
 # global
 import ivy
 import torch
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence
+from typing import Union, Optional, Tuple, List, Sequence, Iterable
+
+# noinspection PyProtectedMember
+from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 # Array API Standard #
@@ -11,7 +15,7 @@ from typing import Union, Optional, Tuple, List, Sequence
 
 
 def concat(
-    xs: List[torch.Tensor], axis: int = 0, *, out: Optional[torch.Tensor] = None
+    xs: List[torch.Tensor], /, *, axis: int = 0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if axis is None:
         is_tuple = type(xs) is tuple
@@ -29,16 +33,22 @@ concat.support_native_out = True
 
 
 def expand_dims(
-    x: torch.Tensor, axis: int = 0, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Union[int, Tuple[int], List[int]] = 0,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.unsqueeze(x, axis)
-    return ret
+    out_shape = _calculate_out_shape(axis, x.shape)
+    # torch.reshape since it can operate on contiguous and non_contiguous tensors
+    return x.reshape(out_shape)
 
 
 def flip(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    /,
     *,
+    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
@@ -53,55 +63,61 @@ def flip(
     else:
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
-    ret = torch.flip(x, new_axis)
-    return ret
+    return torch.flip(x, new_axis)
 
 
 def permute_dims(
-    x: torch.Tensor, axes: Tuple[int, ...], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    axes: Tuple[int, ...],
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.permute(x, axes)
-    return ret
+    return torch.permute(x, axes)
 
 
 def reshape(
     x: torch.Tensor,
+    /,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None,
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.reshape(x, shape)
-    return ret
+    if copy:
+        newarr = torch.clone(x)
+        return torch.reshape(newarr, shape)
+    return torch.reshape(x, shape)
 
 
 def roll(
     x: torch.Tensor,
+    /,
     shift: Union[int, Sequence[int]],
-    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
         shift = [shift for _ in range(len(axis))]
-
     return torch.roll(x, shift, axis)
 
 
 def squeeze(
     x: torch.Tensor,
+    /,
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
-        dim = x.dim()
-        if dim > 0 and (axis < -dim or dim <= axis):
+        if x.size(dim=axis) > 1:
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found dimension size {}"
-                .format(-dim, dim, axis)
+                "Expected dimension of size [{}, {}], but found "
+                "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
+        if x.shape[axis] != 1:
+            raise ValueError(f"Expected size of axis to be 1 but was {x.shape[axis]}")
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
@@ -117,8 +133,8 @@ def squeeze(
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found dimension size {}"
-                .format(-dim, dim, shape)
+                "Expected dimension of size [{}, {}], "
+                "but found dimension size {}".format(-dim, dim, shape)
             )
         else:
             x = torch.squeeze(x, i)
@@ -126,13 +142,13 @@ def squeeze(
 
 
 def stack(
-    x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-    axis: Optional[int] = 0,
+    arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+    /,
     *,
+    axis: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.stack(x, axis, out=out)
-    return ret
+    return torch.stack(arrays, axis, out=out)
 
 
 stack.support_native_out = True
@@ -143,12 +159,12 @@ stack.support_native_out = True
 
 
 def split(
-    x,
+    x: torch.Tensor,
+    /,
+    *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
-    *,
-    out: Optional[torch.Tensor] = None,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -160,7 +176,6 @@ def split(
         return [x]
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
-        # noinspection PyUnboundLocalVariable
         num_or_size_splits = 1
     elif isinstance(num_or_size_splits, int):
         if with_remainder:
@@ -169,7 +184,7 @@ def split(
             remainder = num_chunks - num_chunks_int
             if remainder == 0:
                 num_or_size_splits = torch.round(
-                    torch.tensor(dim_size) / torch.tensor(num_or_size_splits), out=out
+                    torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
                 )
             else:
                 num_or_size_splits = tuple(
@@ -178,42 +193,41 @@ def split(
                 )
         else:
             num_or_size_splits = torch.round(
-                torch.tensor(dim_size) / torch.tensor(num_or_size_splits), out=out
+                torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
             )
     elif isinstance(num_or_size_splits, list):
         num_or_size_splits = tuple(num_or_size_splits)
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-split.support_native_out = True
-
-
 def repeat(
     x: torch.Tensor,
-    repeats: Union[int, List[int]],
-    axis: int = None,
+    /,
+    repeats: Union[int, Iterable[int]],
     *,
+    axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
         axis = None
-    ret = torch.repeat_interleave(x, repeats, axis)
-    return ret
+    repeats = torch.tensor(repeats)
+    return torch.repeat_interleave(x, repeats, axis)
 
 
-def tile(x: torch.Tensor, reps, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def tile(
+    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
-    ret = x.repeat(reps)
-    return ret
+    return x.repeat(reps)
 
 
-# noinspection PyUnresolvedReferences
 def constant_pad(
     x: torch.Tensor,
+    /,
     pad_width: List[List[int]],
-    value: Number = 0.0,
     *,
+    value: Number = 0.0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x.shape == ():
@@ -225,41 +239,44 @@ def constant_pad(
     for pad_width_sec in pad_width:
         for item in pad_width_sec:
             pad_width_flat.append(item)
-    ret = torch.nn.functional.pad(x, pad_width_flat, mode="constant", value=value)
-    return ret
+    return torch.nn.functional.pad(x, pad_width_flat, mode="constant", value=value)
 
 
 def zero_pad(
-    x: torch.Tensor, pad_width: List[List[int]], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    pad_width: List[List[int]],
+    *,
+    out: Optional[torch.Tensor] = None,
 ):
-    return constant_pad(x, pad_width, 0.0)
+    return constant_pad(x, pad_width, value=0.0)
 
 
 def swapaxes(
-    x: torch.Tensor, axis0: int, axis1: int, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, axis0: int, axis1: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    ret = torch.transpose(x, axis0, axis1)
-    return ret
+    return torch.transpose(x, axis0, axis1)
 
 
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
     x_max: Union[Number, torch.Tensor],
+    /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    assert torch.all(
+        torch.less(torch.tensor(x_min), x_max)
+    ), "Min value must be less than max."
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)
         x_max = x_max.to(promoted_type)
         x = x.to(promoted_type)
-    ret = torch.clamp(x, x_min, x_max, out=out)
-    return ret
+    return torch.clamp(x, x_min, x_max, out=out)
 
 
 clip.support_native_out = True
-
-
 clip.unsupported_dtypes = ("float16",)
