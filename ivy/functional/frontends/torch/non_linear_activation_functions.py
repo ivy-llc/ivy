@@ -8,6 +8,17 @@ def _compute_threshold(input, threshold, value, inplace):
     return ivy.where(ivy.greater(input, threshold), input, value)
 
 
+def _compute_elu(input, alpha=1.0, inplace=False):
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(ivy.exp(input), 1),
+    )
+    if inplace:
+        input = ivy.where(ivy.greater(input, 0), input, prod)
+        return input
+    return ivy.where(ivy.greater(input, 0), input, prod)
+
+
 def sigmoid(input, out=None):
     return ivy.sigmoid(input, out=out)
 
@@ -77,3 +88,26 @@ def threshold_(input, threshold, value):
 
 
 threshold_.unsupported_dtypes = ("float16",)
+
+
+def relu6(input, inplace=False):
+    if inplace:
+        return ivy.minimum(ivy.maximum(input, 0), 6, out=input)
+    return ivy.minimum(ivy.maximum(input, 0), 6)
+
+
+relu6.unsupported_dtypes = ("float16",)
+
+
+def elu(input, alpha=1.0, inplace=False):
+    return _compute_elu(input, alpha, inplace=inplace)
+
+
+elu.unsupported_dtypes = ("float16",)
+
+
+def elu_(input, alpha=1.0):
+    return _compute_elu(input, alpha, inplace=True)
+
+
+elu_.unsupported_dtypes = ("float16",)
