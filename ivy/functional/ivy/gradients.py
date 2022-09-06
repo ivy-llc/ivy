@@ -1008,7 +1008,7 @@ def lamb_update(
     decay_lambda: float = 0,
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """Update weights ws of some function, given the derivatives of some cost c with
     respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
@@ -1148,7 +1148,7 @@ def lamb_update(
         r2 = ivy.vector_norm(eff_grads + decay_lambda * w)
     else:
         r2 = ivy.vector_norm(eff_grads)
-    r = ivy.stable_divide(r1, r2).minimum(max_trust_ratio)
+    r = ivy.minimum(ivy.stable_divide(r1, r2), max_trust_ratio)
     lr = r * lr
     return (
         ivy.optimizer_update(w, eff_grads, lr, stop_gradients=stop_gradients, out=out),

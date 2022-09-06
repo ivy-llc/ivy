@@ -950,7 +950,7 @@ def test_tensorflow_confusion_matrix(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(ivy_tf.valid_numeric_dtypes)
+        available_dtypes=tuple(ivy_tf.valid_float_dtypes)
     ),
     x=helpers.array_values(shape=(3,), dtype=ivy.int32),
     as_variable=st.booleans(),

@@ -207,8 +207,7 @@ def log_softmax(x, axis=-1):
     x_max = ivy.max(x)
     shifted = ivy.subtract(x, x_max)
     shifted_logsumexp = ivy.log(ivy.sum(ivy.exp(shifted), axis=axis, keepdims=True))
-    ret = shifted - shifted_logsumexp
-    return ret
+    return shifted - shifted_logsumexp
 
 
 log_softmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
