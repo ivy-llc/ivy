@@ -2280,7 +2280,7 @@ def dtype_values_axis(
     )
     dtype, values, arr_shape = results
     if valid_axis or shape:
-        if not isinstance(values, list):
+        if values.ndim == 0:
             axis = None
         else:
             axis = draw(
