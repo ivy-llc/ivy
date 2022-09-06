@@ -977,10 +977,13 @@ def test_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array,
 
 
 # intersection
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_tf.valid_numeric_dtypes)
+            )
         ),
         num_arrays=2,
         shared_dtype=True,
@@ -1003,7 +1006,7 @@ def test_tensorflow_intersection(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_name="intersection",
+        fn_tree="intersection",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
     )
