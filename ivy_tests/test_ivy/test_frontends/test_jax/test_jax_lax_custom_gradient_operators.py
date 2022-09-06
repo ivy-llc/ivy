@@ -3,18 +3,13 @@ from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.jax as ivy_jax
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=list(
-            set(ivy_jax.valid_float_dtypes).intersection(set(ivy_np.valid_float_dtypes))
-        )
+        available_dtypes=helpers.get_dtypes("float", full=True)
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.stop_gradient"

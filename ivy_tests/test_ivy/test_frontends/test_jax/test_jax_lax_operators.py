@@ -5,7 +5,6 @@ from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.jax as ivy_jax
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -133,11 +132,11 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    available_dtypes = tuple(
-        set(ivy_np.valid_float_dtypes).intersection(ivy_jax.valid_float_dtypes)
-    )
     input_dtypes = draw(
-        helpers.array_dtypes(available_dtypes=available_dtypes, shared_dtype=True)
+        helpers.array_dtypes(
+            available_dtypes=draw(helpers.get_dtypes("numeric", full=True)),
+            shared_dtype=True,
+        )
     )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
@@ -730,7 +729,7 @@ def test_jax_lax_bitwise_or(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         num_arrays=1,
         shared_dtype=True,
     ),
