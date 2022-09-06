@@ -8,6 +8,9 @@ class SparseArray:
                 raise Exception("only specify either data or components")
             self._init_data()  # TODO
         else:
+            assert (
+                indices and values and dense_shape
+            ), "indices, values and dense_shape must all be specified"
             self._init_components(indices, values, dense_shape)
         pass  # TODO
 
