@@ -128,5 +128,5 @@ def is_ivy_sparse_array(x):
     return isinstance(x, SparseArray)
 
 
-def is_native_sparse_array(x):  # TODO
+def is_native_sparse_array(x):
     return ivy.current_backend(x).is_native_sparse_array(x)
