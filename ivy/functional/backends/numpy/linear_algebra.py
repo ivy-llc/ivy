@@ -40,8 +40,7 @@ def cross(
 
 @_handle_0_dim_output
 def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    ret = np.linalg.det(x)
-    return ret
+    return np.linalg.det(x)
 
 
 det.unsupported_dtypes = ("float16",)
@@ -60,24 +59,21 @@ def diagonal(
 
 
 def eigh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    ret = np.linalg.eigh(x)
-    return ret
+    return np.linalg.eigh(x)
 
 
 eigh.unsupported_dtypes = ("float16",)
 
 
 def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    ret = np.linalg.eigvalsh(x)
-    return ret
+    return np.linalg.eigvalsh(x)
 
 
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
 def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    ret = np.linalg.inv(x)
-    return ret
+    return np.linalg.inv(x)
 
 
 inv.unsupported_dtypes = (
@@ -248,8 +244,7 @@ trace.support_native_out = True
 def vecdot(
     x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    ret = np.tensordot(x1, x2, axes=(axis, axis))
-    return ret
+    return np.tensordot(x1, x2, axes=(axis, axis))
 
 
 def vector_norm(
