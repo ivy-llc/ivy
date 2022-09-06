@@ -99,7 +99,7 @@ def test_linear(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         allow_inf=False,

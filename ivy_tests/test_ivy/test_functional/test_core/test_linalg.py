@@ -164,7 +164,7 @@ def _get_first_matrix_and_dtype(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
         )
     )
@@ -190,7 +190,7 @@ def _get_second_matrix_and_dtype(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
         )
     )
@@ -217,7 +217,7 @@ def _get_dtype_and_vector(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
         st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
         )
     )
@@ -265,7 +265,7 @@ def test_vector_to_skew_symmetric_matrix(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
@@ -470,7 +470,7 @@ def test_eigvalsh(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
@@ -536,7 +536,7 @@ def test_matrix_transpose(
 @handle_cmd_line_args
 @given(
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=1,
         max_value=50,
@@ -581,7 +581,7 @@ def test_outer(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
@@ -692,7 +692,7 @@ def test_solve(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         min_num_dims=2,
@@ -727,7 +727,7 @@ def test_svdvals(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=3,
         max_num_dims=8,
         min_dim_size=1,
@@ -776,7 +776,7 @@ def test_tensordot(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=1,
@@ -815,7 +815,7 @@ def test_trace(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -857,7 +857,7 @@ def test_vecdot(
 @handle_cmd_line_args
 @given(
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=2,
@@ -903,7 +903,7 @@ def test_vector_norm(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -993,7 +993,7 @@ def test_qr(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
@@ -1060,7 +1060,7 @@ def test_svd(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -1141,7 +1141,7 @@ def test_matrix_rank(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -1188,7 +1188,7 @@ def test_cholesky(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=3,
@@ -1229,7 +1229,7 @@ def test_cross(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
