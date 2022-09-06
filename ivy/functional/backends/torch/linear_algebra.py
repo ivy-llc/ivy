@@ -20,8 +20,7 @@ def cholesky(
     else:
         ret = torch.transpose(
             torch.linalg.cholesky(
-                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2),
-                out=out,
+                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
             ),
             dim0=len(x.shape) - 1,
             dim1=len(x.shape) - 2,
@@ -302,6 +301,11 @@ def tensordot(
     else:
         ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
     return ret
+
+
+# ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
+#  is fixed.
+tensordot.unsupported_dtypes = ("int32",)
 
 
 def trace(

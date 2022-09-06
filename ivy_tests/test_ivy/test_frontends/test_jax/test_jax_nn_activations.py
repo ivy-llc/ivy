@@ -2,7 +2,6 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy.functional.backends.jax as ivy_jax
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -10,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -42,7 +41,7 @@ def test_jax_nn_relu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -74,7 +73,7 @@ def test_jax_nn_relu6(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -107,7 +106,7 @@ def test_jax_nn_soft_sign(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -140,7 +139,7 @@ def test_jax_nn_silu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -176,7 +175,7 @@ def test_jax_nn_leaky_relu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,  # TODO: use all nums dtypes
+        available_dtypes=helpers.get_dtypes("float", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -212,7 +211,7 @@ def test_jax_nn_gelu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -245,7 +244,7 @@ def test_jax_nn_sigmoid(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         min_value=1,
@@ -283,7 +282,7 @@ def test_jax_nn_one_hot(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,  # TODO: use all float dtypes
+        available_dtypes=helpers.get_dtypes("float", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         min_value=-2,
@@ -321,7 +320,7 @@ def test_jax_nn_softmax(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -354,7 +353,7 @@ def test_jax_nn_softplus(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -386,7 +385,7 @@ def test_jax_nn_log_sigmoid(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         min_value=-2,
@@ -425,7 +424,7 @@ def test_jax_nn_log_softmax(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         min_value=-2,
@@ -466,7 +465,7 @@ def test_jax_nn_glu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         num_arrays=3,
@@ -515,7 +514,7 @@ def test_jax_nn_normalize(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -547,7 +546,7 @@ def test_jax_nn_hard_tanh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         num_arrays=2,
@@ -582,7 +581,7 @@ def test_jax_nn_celu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         num_arrays=2,
@@ -617,7 +616,7 @@ def test_jax_nn_elu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
         num_arrays=2,
@@ -661,7 +660,7 @@ def test_jax_nn_logsumexp(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
@@ -693,7 +692,7 @@ def test_jax_nn_swish(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_jax.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         large_value_safety_factor=1,
         small_value_safety_factor=1,
     ),
