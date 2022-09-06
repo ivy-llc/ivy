@@ -238,6 +238,6 @@ def test_torch_diagonal(
         fn_tree="diagonal",
         input=np.asarray(value, dtype=input_dtype),
         offset=offset,
-        axis1=dim1,
-        axis2=dim2
+        dim1=dim1,
+        dim2=dim2
     )
