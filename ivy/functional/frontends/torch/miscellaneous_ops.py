@@ -41,4 +41,4 @@ cumsum.unsupported_dtypes = (
 
 
 def diagonal(input, offset=0, dim1=0, dim2=1):
-    return ivy.diagonal(x=input, offset=offset, axis1=dim1, axis2=dim2)
+    return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)

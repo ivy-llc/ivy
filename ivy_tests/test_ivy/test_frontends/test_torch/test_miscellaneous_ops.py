@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -189,6 +189,18 @@ def test_torch_cumsum(
     )
 
 
+@st.composite
+def dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(st.integers(
+        min_value=-shape_actual[dim1], 
+        max_value=shape_actual[dim1]
+    ))
+    return dim1, dim2, offset
+
+
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -198,17 +210,8 @@ def test_torch_cumsum(
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    offset=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        force_int=True
-    ),
-    dim1=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        force_int=True
-    ),
-    dim2=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        force_int=True
+    dims_and_offset=dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -218,25 +221,31 @@ def test_torch_cumsum(
 )
 def test_torch_diagonal(
         dtype_and_values,
-        offset,
-        dim1,
-        dim2,
+        dims_and_offset,
         as_variable,
         num_positional_args,
         native_array,
         fw,
-):
+): 
     input_dtype, value = dtype_and_values
+    dim1, dim2, offset = dims_and_offset
+    input = np.asarray(value, dtype=input_dtype)
+    num_dims = len(np.shape(input))
+    assume(dim1 != dim2)
+    if dim1 < 0:
+        assume(dim1 + num_dims != dim2)
+    if dim2 < 0:
+        assume(dim1 != dim2 + num_dims)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=True,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="diagonal",
-        input=np.asarray(value, dtype=input_dtype),
+        input=input,
         offset=offset,
         dim1=dim1,
         dim2=dim2
