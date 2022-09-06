@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ivy Applied Libraries Development Guide &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FAQ" href="../faq.html" />
+    <link rel="prev" title="Open Tasks" href="4_open_tasks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../contributing.html">Contributing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0_setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ivy Applied Libraries Development Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-ivy-robot">Example - Ivy Robot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/array_methods.html">Array methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/wrapping.html">Wrapping</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Container</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/container_methods.html">Container methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
+      <li>Ivy Applied Libraries Development Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/contributing/5_applied_libraries.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ivy-applied-libraries-development-guide">
+<h1>Ivy Applied Libraries Development Guide<a class="headerlink" href="#ivy-applied-libraries-development-guide" title="Permalink to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
+<p>Helping to contribute towards the ivy libraries requires a slightly more complex
+setup than is needed for contributing to ivy alone. For instance, <a class="reference external" href="https://lets-unify.ai/robot/">Ivy Robot</a>
+depends on <a class="reference external" href="https://lets-unify.ai/mech/">Mech</a>, <a class="reference external" href="https://lets-unify.ai/vision/">Vision</a> and <a class="reference external" href="https://github.com/unifyai/demo-utils">Demo Utils</a>. Thus, the related repositories
+have to be pulled into the same local folder, and <a class="reference external" href="https://github.com/unifyai/ivy">Ivy</a> must also be pulled into
+this same folder.</p>
+<p>To have a better grasp, let’s look at an example for Ivy Robot in the next section!</p>
+</section>
+<section id="example-ivy-robot">
+<h2>Example - Ivy Robot<a class="headerlink" href="#example-ivy-robot" title="Permalink to this heading"></a></h2>
+<p><strong>Directory Tree</strong></p>
+<p>1. Due to dependencies, the related Ivy repositories have to be placed in the same
+local directory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>|-- your-local-dir
+|   |-- ivy
+|   |-- mech
+|   |-- vision
+|   |-- robot
+|   |-- demo-utils
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p>Clone all repositories into a mutual directory:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/unifyai/ivy.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/unifyai/mech.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/unifyai/vision.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/unifyai/robot.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/unifyai/demo-utils.git
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>The next steps will depend on your type of development.</p></li>
+</ol>
+<p><strong>Local Development</strong></p>
+<ol class="arabic">
+<li><p>Create a virtual environment (venv) in the same directory:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m venv ivy_dev
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Activate the environment:</p>
+<blockquote>
+<div><p>(on Windows)
+.. code-block:: none</p>
+<blockquote>
+<div><p>ivy_devScriptsactivate.bat</p>
+</div></blockquote>
+<p>(on Mac/Linux)
+.. code-block:: none</p>
+<blockquote>
+<div><p>source ivy_dev/bin/activate</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p>Go into each directory and install packages in develop/editable mode:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd ivy
+python3 -m pip install --user -e .
+</pre></div>
+</div>
+<p>(repeat for all repositories)</p>
+<p><strong>NOTE:</strong> In develop mode, packages are linked to their local directory. Therefore,
+changes or edits are reflected immediately when in use.</p>
+</div></blockquote>
+</li>
+<li><p>To use:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy_robot</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p><strong>Docker Development</strong></p>
+<ol class="arabic">
+<li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a></p></li>
+<li><p>Go into the <code class="code docutils literal notranslate"><span class="pre">robot</span></code> repository and build the docker image:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd robot
+docker build -t my-robot .
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>To use, first mount the local directories, then start up <code class="code docutils literal notranslate"><span class="pre">python3</span></code> with Docker:</p>
+<blockquote>
+<div><p>(in the folder containing all repositories)
+.. code-block:: none</p>
+<blockquote>
+<div><p>docker run –rm -it -v <cite>pwd</cite>/ivy:/ivy -v <cite>pwd</cite>/mech:/mech -v <cite>pwd</cite>/vision:/vision -v <cite>pwd</cite>/robot:/robot -v <cite>pwd</cite>/demo-utils:/demo-utils my-robot python3</p>
+</div></blockquote>
+<p><strong>NOTE:</strong> Mounting allows the docker container to use local folder as volumes, thus
+reflecting the local changes or edits made. Users are not required to rebuild
+the docker image after every change.</p>
+</div></blockquote>
+</li>
+</ol>
+<p><strong>IDE Development</strong></p>
+<ol class="arabic simple">
+<li><p>For <strong>PyCharm</strong>, configurations are saved in the <code class="code docutils literal notranslate"><span class="pre">.idea</span></code> folder (part of the ivy repo).</p></li>
+<li><p>For <strong>VSCode</strong>, configurations can be found in the <code class="code docutils literal notranslate"><span class="pre">.vscode</span></code> folder (not part of the ivy repo).</p></li>
+</ol>
+<p><strong>Round Up</strong></p>
+<p>These examples should hopefully give you a good understanding of what is required
+when developing the Ivy applied libraries.</p>
+<p>If you’re ever unsure of how best to proceed,
+please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1308">setting up discussion</a>,
+or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114831039856730">pycharm channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>,
+<a class="reference external" href="https://discord.com/channels/799879767196958751/982725464110034944">pre-commit channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114789642080317">pip packages channel</a> or <a class="reference external" href="https://discord.com/channels/799879767196958751/982727719836069928">other channel</a>,
+depending on the question!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="4_open_tasks.html" class="btn btn-neutral float-left" title="Open Tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
