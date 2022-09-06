@@ -1,20 +1,16 @@
 # global
-import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy.valid_dtypes).intersection(set(ivy_tf.valid_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     expand_composite=st.booleans(),
     use_array=st.booleans(),
