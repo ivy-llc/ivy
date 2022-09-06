@@ -278,8 +278,7 @@ Take a function which has multiple possible "paths" through the code:
         else:
             ret = torch.transpose(
                 torch.linalg.cholesky(
-                    torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2),
-                    out=out,
+                    torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
                 ),
                 dim0=len(x.shape) - 1,
                 dim1=len(x.shape) - 2,
