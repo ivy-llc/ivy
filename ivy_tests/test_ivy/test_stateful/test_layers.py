@@ -171,51 +171,44 @@ def test_dropout_layer(
 # Attention #
 # ----------#
 @st.composite
-def x_and_mha(draw, dtypes):
+def x_and_mha(draw):
     dtype = draw(dtypes)
-    query_dim = draw(helpers.ints(min_value=1, max_value=10))
-    num_heads = draw(helpers.ints(min_value=1, max_value=100))
-    head_dim = draw(helpers.ints(min_value=1, max_value=100))
-    dropout_rate = draw(helpers.ints(min_value=1, max_value=3))
-    context_dim = draw(helpers.ints(min_value=1, max_value=3))
-    with_to_q_fn=st
-    x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
-    context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
-    mask_shape = (num_queries,) + (num_keys,)
-    scale = draw(helpers.floats(min_value=0.1, max_value=1, width=64))
-    x_mha = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=x_mha_shape,
-            min_value=0.0999755859375,
-            max_value=1,
+    query_dim = draw(st.integers(min_value=1, max_value=3))
+    num_heads = draw(st.integers(min_value=1, max_value=3))
+    head_dim = draw(st.integers(min_value=1, max_value=3))
+    dropout_rate = draw(st.floats(min_value=0.0, max_value=3.0))
+    context_dim = draw(st.integers(min_value=1, max_value=3))
+    scale = draw(st.integers(min_value=1, max_value=3))
+
+    batch_shape = draw(st.integers(min_value=1, max_value=3))
+    num_queries = draw(st.integers(min_value=1, max_value=3))
+    x_feats = draw(st.integers(min_value=1, max_value=3))
+    num_values = draw(st.integers(min_value=1, max_value=3))
+    cont_feats = draw(st.integers(min_value=1, max_value=3))
+
+    inputs_shape = [batch_shape] + [num_queries] + [x_feats]
+    context_shape = [batch_shape] + [num_values] + [cont_feats]
+    mask_shape = [num_queries] + [num_keys]
+    dtype1, x_mha = draw(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_float_dtypes, shape=inputs_shape
         )
     )
-    context = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=context_shape,
-            min_value=0.0999755859375,
-            max_value=1,
+    dtype2, context = draw(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_float_dtypes, shape=context_shape
         )
     )
-    mask = draw(
-        helpers.array_values(
-            dtype=dtype,
-            shape=mask_shape,
-            min_value=0.0999755859375,
-            max_value=1,
+    dtype3, mask = draw(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_float_dtypes, shape=mask_shape
         )
     )
-    return dtype, x_mha, scale, num_heads, context, mask
+    return dtype1, dtype2, dtype3, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim
 
 # multi_head_attention
 @given(
-    dtype_qdim=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
-    num_heads=st.integers(min_value=1, max_value=100),
-    head_dim=st.integers(min_value=1, max_value=100),
-    dropout_rate=st.integers(min_value=1, max_value=3),
-    context_dim=st.integers(min_value=1, max_value=3),
+    dtype_mha=x_and_mha(),
     with_to_q_fn=st.booleans(),
     with_to_kv_fn=st.booleans(),
     with_to_out_fn=st.booleans(),
@@ -226,11 +219,7 @@ def x_and_mha(draw, dtypes):
     build_mode=st.sampled_from(["on_init", "explicit", "on_call"]),
 )
 def test_multi_head_attention_layer(
-    dtype_qdim,
-    num_heads,
-    head_dim,
-    dropout_rate,
-    context_dim,
+    dtype_mha,
     with_to_q_fn,
     with_to_kv_fn,
     with_to_out_fn,
@@ -245,11 +234,8 @@ def test_multi_head_attention_layer(
     fw,
     device,
 ):
-    input_dtype, query_dim = dtype_qdim
-    num_heads = num_heads
-    head_dim = head_dim
-    dropout_rate = dropout_rate
-    context_dim = context_dim
+    dtype1, dtype2, dtype3, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim = dtype_mha
+    inputs = [x_mha] + [context] + [mask]
     with_to_q_fn = with_to_q_fn
     with_to_kv_fn = with_to_kv_fn
     with_to_out_fn = with_to_out_fn
@@ -275,99 +261,12 @@ def test_multi_head_attention_layer(
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": np.asarray(query_dim, dtype=input_dtype)},
+        all_as_kwargs_np_method={"inputs": np.asarray(inputs, dtype=dtype1)},
         fw=fw,
         class_name="multi_head_attention",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
     )
-
-    # x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
-    # tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    # # smoke test
-    # if as_variable:
-    #     x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
-    #     context = ivy.variable(ivy.array(context, dtype=dtype, device=device))
-    #     mask = ivy.variable(ivy.array(mask, dtype=dtype, device=device))
-    # else:
-    #     x = ivy.array(x, dtype=dtype, device=device)
-    #     context = ivy.array(context, dtype=dtype, device=device)
-    #     mask = ivy.array(mask, dtype=dtype, device=device)
-    # query_dim = x.shape[-1]
-    # context_dim = context.shape[-1]
-    # if with_v:
-    #     inner_dim = 64 * 8
-    #     np.random.seed(0)
-    #     wlim = (6 / (inner_dim + query_dim)) ** 0.5
-    #     w_to_q = ivy.variable(
-    #         ivy.array(
-    #             np.random.uniform(-wlim, wlim, (inner_dim, query_dim)),
-    #             dtype=dtype,
-    #             device=device,
-    #         )
-    #     )
-    #     wlim = (6 / (inner_dim * 2 + context_dim)) ** 0.5
-    #     w_to_k = ivy.variable(
-    #         ivy.array(
-    #             np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
-    #             dtype=dtype,
-    #             device=device,
-    #         )
-    #     )
-    #     w_to_v = ivy.variable(
-    #         ivy.array(
-    #             np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
-    #             dtype=dtype,
-    #             device=device,
-    #         )
-    #     )
-    #     wlim = (6 / (query_dim + inner_dim)) ** 0.5
-    #     w_to_out = ivy.variable(
-    #         ivy.array(
-    #             np.random.uniform(-wlim, wlim, (query_dim, inner_dim)),
-    #             dtype=dtype,
-    #             device=device,
-    #         )
-    #     )
-    #     b_to_out = ivy.variable(ivy.zeros([query_dim], device=device))
-    #     v = Container(
-    #         {
-    #             "to_q": {"w": w_to_q},
-    #             "to_kv": {"k": {"w": w_to_k}, "v": {"w": w_to_v}},
-    #             "to_out": {"submodules": {"v0": {"w": w_to_out, "b": b_to_out}}},
-    #         }
-    #     )
-    # else:
-    #     v = None
-    # multi_head_attention_layer = ivy.MultiHeadAttention(
-    #     query_dim,
-    #     context_dim=context_dim,
-    #     scale=scale,
-    #     device=device,
-    #     v=v,
-    #     build_mode=build_mode,
-    # )
-    # if build_mode == "explicit":
-    #     multi_head_attention_layer.build()
-    # ret = multi_head_attention_layer(x, context, mask)
-    # # type test
-    # assert ivy.is_ivy_array(ret)
-    # # cardinality test
-    # assert list(ret.shape) == list(np.array(ground_truth).shape)
-    # # value test
-    # if not with_v:
-    #     return
-    # assert np.allclose(
-    #     ivy.to_numpy(multi_head_attention_layer(x, context, mask)),
-    #     np.array(ground_truth),
-    #     rtol=tolerance_dict[dtype],
-    # )
-    # # compilation test
-    # if ivy.current_backend_str() == "torch":
-    #     # torch.jit compiled functions can't take variable number of arguments,
-    #     # which torch.einsum takes
-    #     return
-
 
 # Convolutions #
 # -------------#
@@ -412,7 +311,6 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False):
     if transpose:
         return dtype, vals, input_channels, output_channels, filter_shape, strides, dilations, data_format, padding, output_shape
     return dtype, vals, input_channels, output_channels, filter_shape, strides, dilations, data_format, padding
-
 
 
 # conv1d
@@ -1499,50 +1397,6 @@ def test_conv3d_transpose_layer(
     )
 
 #LSTM
-
-@st.composite
-def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False):
-    strides = draw(st.integers(min_value=1, max_value=4))
-    padding = draw(st.sampled_from(["SAME", "VALID"]))
-    batch_size = draw(st.integers(1, 5))
-    filter_shape = draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5))
-    input_channels = draw(st.integers(1, 5))
-    output_channels = draw(st.integers(1, 5))
-    dilations = draw(st.integers(1, 4))
-    x_dim = []
-    for i in range(dim):
-        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
-        x_dim.append(draw(st.integers(min_x, 100)))
-    if dim == 2:
-        data_format = draw(st.sampled_from(["NCHW"]))
-    elif dim == 1:
-        data_format = draw(st.sampled_from(["NWC", "NCW"]))
-    else:
-        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
-        x_shape = [batch_size] + x_dim + [input_channels]
-    else:
-        x_shape = [batch_size] + [input_channels] + x_dim
-
-    if transpose:
-        output_shape = []
-        for i in range(dim):
-            output_shape.append(ivy.deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations))
-        # output_shape = [batch_size] + output_shape + [output_channels]
-    if dim == 1:
-        filter_shape = filter_shape[0]
-    dtype, vals = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float", full=True), shape=x_shape
-        )
-    )
-    if transpose:
-        return dtype, vals, input_channels, output_channels, filter_shape, strides, dilations, data_format, padding, output_shape
-    return dtype, vals, input_channels, output_channels, filter_shape, strides, dilations, data_format, padding
-
-
-#
-# # LSTM #
 
 @handle_cmd_line_args
 @given(
