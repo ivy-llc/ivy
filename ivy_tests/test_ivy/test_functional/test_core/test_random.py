@@ -30,7 +30,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_num_dims=5,
         min_dim_size=2,
     ),
-    dtype=helpers.get_dtypes("float", none=True),
+    dtype=helpers.get_dtypes("float"),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
 )
 def test_random_uniform(
@@ -90,7 +90,7 @@ def test_random_uniform(
         max_num_dims=5,
         min_dim_size=2,
     ),
-    dtype=helpers.get_dtypes("float", none=True),
+    dtype=helpers.get_dtypes("float"),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
 )
 def test_random_normal(
@@ -217,7 +217,7 @@ def test_multinomial(
         min_value=26,
         max_value=100,
     ),
-    dtype=st.sampled_from(("int8", "int16", "int32", "int64", None)),
+    dtype=st.sampled_from(("int8", "int16", "int32", "int64")),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
 )
 def test_randint(
