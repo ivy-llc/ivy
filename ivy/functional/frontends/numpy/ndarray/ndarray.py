@@ -17,7 +17,7 @@ class ndarray:
     # -------------------#
 
     def reshape(self, newshape, order="C"):
-        return np_frontend.reshape(self, newshape, order)
+        return np_frontend.reshape(self.data, newshape, order)
 
     def add(
         self,
@@ -32,7 +32,7 @@ class ndarray:
         subok=True,
     ):
         return np_frontend.add(
-            self,
+            self.data,
             other,
             out=out,
             where=where,
