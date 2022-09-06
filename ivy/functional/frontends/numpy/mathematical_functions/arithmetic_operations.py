@@ -91,8 +91,7 @@ def vdot(
     b,
     /,
 ):
-    ret = ivy.multiply(a, b).sum()
-    return ret
+    return ivy.multiply(a, b).sum()
 
 
 def positive(
