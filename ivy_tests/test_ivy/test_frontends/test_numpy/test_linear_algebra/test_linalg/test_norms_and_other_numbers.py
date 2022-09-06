@@ -6,7 +6,8 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _get_dtype_and_matrix
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import \
+    _get_dtype_and_matrix
 
 # matrix_rank
 
@@ -24,7 +25,14 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _get_dtype_
         fn_name="ivy.functional.frontends.numpy.linalg.matrix_rank"
     )
 )
-def test_numpy_matrix_rank(dtype_and_x, rtol, as_variable, native_array, num_positional_args, fw):
+def test_numpy_matrix_rank(
+    dtype_and_x,
+    rtol,
+    as_variable,
+    native_array,
+    num_positional_args,
+    fw
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
