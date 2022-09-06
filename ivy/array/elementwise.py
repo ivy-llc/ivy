@@ -8,7 +8,7 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 class ArrayWithElementwise(abc.ABC):
-    def abs(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def abs(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.abs. This method simply wraps the
         function, and so the docstring for ivy.abs also applies to this method
@@ -58,14 +58,14 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic cosine
             of each element in ``self``.
             The returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([2., 10.0, 1.0])
         >>> y = x.acosh()
         >>> print(y)
         ivy.array([1.32, 2.99, 0.  ])
-        
+
         """
         return ivy.acosh(self._data, out=out)
 
@@ -88,20 +88,21 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse cosine of each element in ``self``.
             The  returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0.0, -0.9])
         >>> y = x.acos()
         >>> print(y)
         ivy.array([0.  , 1.57, 2.69])
-        
+
         """
         return ivy.acos(self._data, out=out)
 
     def add(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -156,6 +157,21 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse sine of each element in ``self``. The
             returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([-1., 1., 4., 0.8])
+        >>> y = x.asin()
+        >>> print(y)
+        ivy.array([-1.57, 1.57, nan, 0.927])
+
+        >>> x = ivy.array([-3., -0.9, 1.5, 2.8])
+        >>> y = ivy.zeros(4)
+        >>> x.asin(out=y)
+        >>> print(y)
+        ivy.array([nan, -1.12, nan, nan])
         """
         return ivy.asin(self._data, out=out)
 
@@ -209,20 +225,21 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the inverse tangent of each element in ``self``. The
             returned array must have the same data type as ``self``.
-            
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0.5, -0.5])
         >>> y = x.atan()
         >>> print(y)
         ivy.array([ 0.785,  0.464, -0.464])
-        
+
         """
         return ivy.atan(self._data, out=out)
 
     def atan2(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -282,20 +299,21 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the inverse hyperbolic tangent of each element
             in ``self``. The returned array must have a floating-point data type
             determined by :ref:`type-promotion`.
-            
+
         Examples
         --------
         >>> x = ivy.array([0.0, 0.5, -0.9])
         >>> y = x.atanh()
         >>> print(y)
         ivy.array([ 0.   ,  0.549, -1.47 ])
-        
+
         """
         return ivy.atanh(self._data, out=out)
 
     def bitwise_and(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -327,6 +345,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_left_shift(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -368,6 +387,7 @@ class ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have an integer or boolean data type.
+
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -383,6 +403,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_or(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -395,6 +416,9 @@ class ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have an integer or boolean data type.
+        x2
+            second input array. Must be compatible with ``self``
+
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -418,6 +442,7 @@ class ArrayWithElementwise(abc.ABC):
     def bitwise_right_shift(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -443,12 +468,22 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = ivy.array([[2, 3, 4], [5, 10, 64]])
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = a.bitwise_right_shift(b)
+        >>> print(y)
+        ivy.array([[ 2,  1,  1],
+                    [ 5,  5, 16]])
         """
         return ivy.bitwise_right_shift(self._data, x2, out=out)
 
     def bitwise_xor(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -584,6 +619,7 @@ class ArrayWithElementwise(abc.ABC):
     def divide(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -634,6 +670,7 @@ class ArrayWithElementwise(abc.ABC):
     def equal(
         self: ivy.Array,
         x2: Union[float, ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -775,6 +812,7 @@ class ArrayWithElementwise(abc.ABC):
     def floor_divide(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -825,6 +863,7 @@ class ArrayWithElementwise(abc.ABC):
     def greater(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -850,7 +889,7 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array must
             have a data type of ``bool``.
-            
+
         Examples
         --------
         >>> x1 = ivy.array([2., 5., 15.])
@@ -865,6 +904,7 @@ class ArrayWithElementwise(abc.ABC):
     def greater_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -913,6 +953,13 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is finite and ``False`` otherwise.
             The returned array must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, ivy.nan, -ivy.inf, float('inf')])
+        >>> y = x.isfinite()
+        >>> print(y)
+        ivy.array([ True, False, False, False])
         """
         return ivy.isfinite(self._data, out=out)
 
@@ -965,6 +1012,7 @@ class ArrayWithElementwise(abc.ABC):
     def less(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -990,7 +1038,7 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
-            
+
         Examples
         --------
         >>> x1 = ivy.array([2., 5., 15.])
@@ -1005,6 +1053,7 @@ class ArrayWithElementwise(abc.ABC):
     def less_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1088,9 +1137,10 @@ class ArrayWithElementwise(abc.ABC):
 
     def log1p(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-       ivy.Array instance method variant of ivy.log1p.
+        ivy.Array instance method variant of ivy.log1p.
         This method simply wraps the function, and so the docstring
         for ivy.log1p also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -1098,6 +1148,7 @@ class ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -1107,7 +1158,6 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([1 , 2 ,3 ])
         >>> y = x.log1p()
         >>> print(y)
@@ -1149,7 +1199,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.log10. This method simply wraps the
         function, and so the docstring for ivy.log10 also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -1186,12 +1236,12 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([[nan, 0., 0.699, inf],
                    [-inf, nan, nan, nan]])
         """
-
         return ivy.log10(self._data, out=out)
 
     def logaddexp(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1218,6 +1268,15 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([2., 5., 15.])
+        >>> y = ivy.array([3., 2., 4.])
+        >>> z = x.logaddexp(y)
+        >>> print(z)
+        ivy.array([ 3.31,  5.05, 15.  ])
+
         """
         return ivy.logaddexp(self._data, x2, out=out)
 
@@ -1287,6 +1346,7 @@ class ArrayWithElementwise(abc.ABC):
     def logical_or(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1312,12 +1372,32 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+        in the standard.
+
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        instances in place of any of the arguments.
+
+        Examples
+        --------
+        Using :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([False, 3, 0])
+        >>> y = ivy.array([2, True, False])
+        >>> z = x.logical_or(y)
+        >>> print(z)
+        ivy.array([ True,  True, False])
         """
         return ivy.logical_or(self._data, x2, out=out)
 
     def logical_xor(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1357,6 +1437,7 @@ class ArrayWithElementwise(abc.ABC):
     def multiply(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1410,6 +1491,7 @@ class ArrayWithElementwise(abc.ABC):
     def not_equal(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1462,6 +1544,7 @@ class ArrayWithElementwise(abc.ABC):
     def pow(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1495,7 +1578,9 @@ class ArrayWithElementwise(abc.ABC):
     def remainder(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
+        modulus: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1511,6 +1596,8 @@ class ArrayWithElementwise(abc.ABC):
             divisor input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1541,7 +1628,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1., 4., 2.])
         """
-        return ivy.remainder(self._data, x2, out=out)
+        return ivy.remainder(self._data, x2, modulus=modulus, out=out)
 
     def round(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -1746,6 +1833,7 @@ class ArrayWithElementwise(abc.ABC):
     def subtract(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

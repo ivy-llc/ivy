@@ -12,24 +12,28 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # random_uniform
+@handle_cmd_line_args
 @given(
     dtype_and_low=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=-1000,
         max_value=100,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
     ),
     dtype_and_high=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=101,
         max_value=1000,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float"),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_random_uniform(
-    *,
     dtype_and_low,
     dtype_and_high,
     dtype,
@@ -61,32 +65,35 @@ def test_random_uniform(
         dtype=dtype,
         device=device,
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= low) and ivy.all(u < high)
-        assert ivy.all(v >= low) and ivy.all(v < high)
+        assert u.dtype == v.dtype
 
 
 # random_normal
+@handle_cmd_line_args
 @given(
     dtype_and_mean=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=-1000,
         max_value=1000,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
     ),
     dtype_and_std=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         min_value=0,
         max_value=1000,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float"),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_random_normal(
-    *,
     dtype_and_mean,
     dtype_and_std,
     dtype,
@@ -118,56 +125,83 @@ def test_random_normal(
         dtype=dtype,
         device=device,
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert u.dtype == v.dtype
 
 
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
-    prob_dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-    batch_size = draw(st.integers(1, 5))
-    population_size = draw(st.integers(1, 20))
+    prob_dtype = draw(helpers.get_dtypes("float"))
+    batch_size = draw(helpers.ints(min_value=1, max_value=5))
+    population_size = draw(helpers.ints(min_value=1, max_value=20))
     replace = draw(st.booleans())
     if replace:
-        num_samples = draw(st.integers(1, 20))
+        num_samples = draw(helpers.ints(min_value=1, max_value=20))
     else:
-        num_samples = draw(st.integers(1, population_size))
+        num_samples = draw(helpers.ints(min_value=1, max_value=population_size))
     probs = draw(
         helpers.array_values(
             dtype=prob_dtype,
             shape=[batch_size, num_samples],
-            min_value=0.0,
+            min_value=1.0013580322265625e-05,
             max_value=1.0,
+            exclude_min=True,
+            large_value_safety_factor=1.25,
         )
-        | st.just(None)
     )
     return prob_dtype, batch_size, population_size, num_samples, replace, probs
 
 
 # multinomial
-@given(everything=_pop_size_num_samples_replace_n_probs())
-def test_multinomial(everything, device, call, fw):
+@handle_cmd_line_args
+@given(
+    everything=_pop_size_num_samples_replace_n_probs(),
+)
+def test_multinomial(
+    everything,
+    as_variable,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
-
     # tensorflow does not support multinomial without replacement
-    assume(not (fw == "tensorflow" and not replace or prob_dtype == "float64"))
-
-    # smoke test
-    probs = (
-        ivy.array(probs, dtype=prob_dtype, device=device)
-        if probs is not None
-        else probs
+    assume(not (fw == "tensorflow" and not replace))
+    ret = helpers.test_function(
+        input_dtypes=[prob_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=2,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="multinomial",
+        test_values=False,
+        ground_truth_backend="numpy",
+        population_size=population_size,
+        num_samples=num_samples,
+        batch_size=batch_size,
+        probs=np.asarray(probs, dtype=prob_dtype) if probs is not None else probs,
+        replace=replace,
+        device=device,
     )
-    ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == tuple([batch_size, num_samples])
+    if not ivy.exists(ret):
+        return
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
 
 
 # randint
+@handle_cmd_line_args
 @given(
     dtype_and_low=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -183,13 +217,10 @@ def test_multinomial(everything, device, call, fw):
         min_value=26,
         max_value=100,
     ),
-    dtype=st.sampled_from(("int8", "int16", "int32", "int64", None)),
+    dtype=st.sampled_from(("int8", "int16", "int32", "int64")),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_randint(
-    *,
     dtype_and_low,
     dtype_and_high,
     dtype,
@@ -221,36 +252,35 @@ def test_randint(
         dtype=dtype,
         device=device,
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert ivy.all(u >= low) and ivy.all(u < high)
         assert ivy.all(v >= low) and ivy.all(v < high)
 
 
 # seed
+@handle_cmd_line_args
 @given(
-    seed_val=st.integers(min_value=0, max_value=2147483647),
+    seed_val=helpers.ints(min_value=0, max_value=2147483647),
 )
 def test_seed(seed_val):
     # smoke test
-    ivy.seed(seed_val)
+    ivy.seed(seed_value=seed_val)
 
 
 # shuffle
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         allow_inf=False,
         min_num_dims=1,
         min_dim_size=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="shuffle"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_shuffle(
-    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -274,7 +304,7 @@ def test_shuffle(
         fn_name="shuffle",
         x=np.asarray(x, dtype=dtype),
     )
-    ret = helpers.flatten(ret=ret)
-    ret_gt = helpers.flatten(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(ivy.sort(u, 0) == ivy.sort(v, 0))
+        assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))

@@ -22,6 +22,53 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """Copies an array to a specified data type irrespective of 
+        :ref:`type-promotion` rules.
+
+        .. note::
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+        is not specified and is implementation-dependent.
+
+        .. note::
+        When casting a boolean input array to a numeric data type, a value of ``True``
+        must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
+        to a numeric value equal to ``0``.
+
+        When casting a numeric input array to ``bool``, a value of ``0`` must cast to
+        ``False``, and a non-zero value must cast to ``True``.
+
+        Parameters
+        ----------
+        x
+            array to cast.
+        dtype
+            desired data type.
+        copy
+            specifies whether to copy an array when the specified ``dtype`` matches 
+            the data type of the input array ``x``. If ``True``, a newly allocated 
+            array must always be returned. If ``False`` and the specified ``dtype``
+            matches the data type of the input array, the input array must be returned;
+            otherwise, a newly allocated must be returned. Default: ``True``.
+        out
+            optional output array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array having the specified data type. The returned array must have 
+            the same shape as ``x``.
+
+        Examples
+        --------
+        >>> c = ivy.Container(a=ivy.array([False,True,True]), \
+                                 b=ivy.array([3.14, 2.718, 1.618]))
+        >>> ivy.Container.static_astype(c, ivy.int32)
+        {
+            a: ivy.array([0, 1, 1]),
+            b: ivy.array([3, 2, 1])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "astype",
             x,
@@ -45,6 +92,56 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """Copies an array to a specified data type irrespective of 
+        :ref:`type-promotion` rules.
+
+        .. note::
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types
+        is not specified and is implementation-dependent.
+
+        .. note::
+        When casting a boolean input array to a numeric data type, a value of ``True``
+        must cast to a numeric value equal to ``1``, and a value of ``False`` must cast
+        to a numeric value equal to ``0``.
+
+        When casting a numeric input array to ``bool``, a value of ``0`` must cast to
+        ``False``, and a non-zero value must cast to ``True``.
+
+        Parameters
+        ----------
+        x
+            array to cast.
+        dtype
+            desired data type.
+        copy
+            specifies whether to copy an array when the specified ``dtype`` matches 
+            the data type of the input array ``x``. If ``True``, a newly allocated 
+            array must always be returned. If ``False`` and the specified ``dtype``
+            matches the data type of the input array, the input array must be returned;
+            otherwise, a newly allocated must be returned. Default: ``True``.
+        out
+            optional output array, for writing the result to. It must have a shape
+             that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array having the specified data type. The returned array must have 
+            the same shape as ``x``.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+        
+        >>> x = ivy.Container(a=ivy.array([False,True,True]), \
+                                b=ivy.array([3.14, 2.718, 1.618]))
+        >>> print(x.astype(ivy.int32))
+        {
+            a: ivy.array([0, 1, 1]),
+            b: ivy.array([3, 2, 1])
+        }
+
+        """
         return self.static_astype(
             self,
             dtype,
@@ -166,6 +263,7 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
+
         Examples
         --------
         With :code:`ivy.Container` inputs:
@@ -216,6 +314,42 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code:`ivy.Container` static method:
+        >>> x = ivy.Container(a=ivy.array([1]),\
+            b=ivy.array([2]))
+        >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
+        >>> print(y)
+        {
+            a: ivy.array([1],
+                         [1],
+                         [1]),
+            b: ivy.array([2],
+                         [2],
+                         [2])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "broadcast_to",
             x,
@@ -237,6 +371,43 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        `ivy.Container` instance method variant of `ivy.broadcast_to`.
+        This method simply wraps the function, and so the docstring
+        for `ivy.broadcast_to` also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to be broadcasted.
+        shape
+            desired shape to be broadcasted to.
+        out
+            Optional array to store the broadcasted array.
+
+        Returns
+        -------
+        ret
+            Returns the broadcasted array of shape 'shape'
+
+        Examples
+        --------
+        With :code: 'ivy.Container' instance method:
+        >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
+            b=ivy.array([4, 5]))
+        >>> y = x.broadcast_to((3,2))
+        >>> print(y)
+        {
+            a: ivy.array([[0., 0.5],
+                          [0., 0.5],
+                          [0., 0.5]]),
+            b: ivy.array([[4, 5],
+                          [4, 5],
+                          [4, 5]])
+        }
+
+        """
         return self.static_broadcast_to(
             self,
             shape,
@@ -551,6 +722,60 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `is_float_dtype`. This method
+        simply wraps this function, so the docstring of `is_float_dtype`
+        roughly applies to this method.
+
+        Parameters
+        ----------
+        dtype_in : ivy.Container
+            The input to check for float dtype.
+
+        key_chains : Optional[Union[List[str], Dict[str, str]]]
+            The key chains to use when mapping over the input.
+
+        to_apply : bool
+            Whether to apply the mapping over the input.
+
+        prune_unapplied : bool
+            Whether to prune the keys that were not applied.
+
+        map_sequences : bool
+            Boolean indicating whether to map method
+            to sequences (list, tuple). Default is False.
+
+        Returns
+        -------
+        ret : bool
+            Boolean indicating whether the input has float dtype.
+
+        Examples
+        --------
+        >>> x = ivy.static_is_float_dtype(ivy.float32)
+        >>> print(x)
+        True
+
+        >>> x = ivy.static_is_float_dtype(ivy.int64)
+        >>> print(x)
+        False
+
+        >>> x = ivy.static_is_float_dtype(ivy.int32)
+        >>> print(x)
+        False
+
+        >>> x = ivy.static_is_float_dtype(ivy.bool)
+        >>> print(x)
+        False
+
+        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
+        >>> print(arr.is_float_dtype())
+        True
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
+        >>> print(x.a.dtype, x.b.dtype)
+        float32 int32
+        """
         return ContainerBase.multi_map_in_static_method(
             "is_float_dtype",
             dtype_in,
@@ -566,8 +791,68 @@ class ContainerWithDataTypes(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        *,
+        out: ivy.Container = None,
     ) -> ivy.Container:
-        return self.static_is_int_dtype(
+        """
+        `ivy.Container` instance method variant of `ivy.is_float_dtype`.
+        This method simply wraps the function,
+        and so the docstring for `ivy.is_float_dtype`
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self : ivy.Container
+            The `ivy.Container` instance to call `ivy.is_float_dtype` on.
+
+        key_chains : Union[List[str], Dict[str, str]]
+            The key-chains to apply or not apply the method to.
+            Default is None.
+
+        to_apply : bool
+            Boolean indicating whether to apply the
+            method to the key-chains. Default is False.
+
+        prune_unapplied : bool
+            Boolean indicating whether to prune the
+            key-chains that were not applied. Default is False.
+
+        map_sequences : bool
+            Boolean indicating whether to map method
+            to sequences (list, tuple). Default is False.
+
+        Returns
+        -------
+        ret : bool
+            Boolean of whether the input is of a float dtype.
+
+        Examples
+        --------
+        >>> x = ivy.is_float_dtype(ivy.float32)
+        >>> print(x)
+        True
+
+        >>> x = ivy.is_float_dtype(ivy.int64)
+        >>> print(x)
+        False
+
+        >>> x = ivy.is_float_dtype(ivy.int32)
+        >>> print(x)
+        False
+
+        >>> x = ivy.is_float_dtype(ivy.bool)
+        >>> print(x)
+        False
+
+        >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.float32)
+        >>> print(arr.is_float_dtype())
+        True
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
+        >>> print(x.a.dtype, x.b.dtype)
+        float32 int32
+        """
+        return self.static_is_float_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

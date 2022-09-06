@@ -6,7 +6,6 @@ on:
 jobs:
   label_discussion:
     name: Label Unread Discussion
-    if: ${{ github.event.discussion.category.name == 'Ongoing' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checks

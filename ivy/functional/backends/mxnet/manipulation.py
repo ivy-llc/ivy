@@ -89,7 +89,7 @@ def squeeze(
 def reshape(
     x: mx.nd.NDArray,
     shape: Union[ivy.NativeShape, Sequence[int]],
-    copy: Optional[bool] = None
+    copy: Optional[bool] = None,
 ) -> mx.nd.NDArray:
     if copy:
         newarr = x.copy()
@@ -159,7 +159,9 @@ def repeat(x, repeats, axis=None, out: Optional[mx.nd.NDArray] = None):
     return ret
 
 
-def tile(x, reps, out: Optional[mx.nd.NDArray] = None):
+def tile(
+    x: mx.nd.NDArray, reps: Sequence[int], out: Optional[mx.nd.NDArray] = None
+) -> mx.nd.NDArray:
     if isinstance(reps, mx.nd.ndarray.NDArray):
         reps = reps.asnumpy().tolist()
     ret = mx.nd.tile(_flat_array_to_1_dim_array(x), reps)

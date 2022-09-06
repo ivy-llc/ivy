@@ -8,6 +8,8 @@ import logging
 # noinspection PyUnusedLocal
 def compile(
     func: Callable,
+    /,
+    *,
     dynamic: bool = True,
     example_inputs: Optional[Union[Any, Sequence[Any]]] = None,
     static_argnums: Optional[Union[int, Iterable[int]]] = None,

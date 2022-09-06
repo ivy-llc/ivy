@@ -1,12 +1,14 @@
 """Base Container Object."""
 
 # global
+from itertools import chain
 import re
 import abc
 import copy
 import termcolor
 import numpy as np
 import json
+
 
 try:
     # noinspection PyPackageRequirements
@@ -17,7 +19,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union, Iterable, Dict
+from typing import Union, Tuple
 from builtins import set
 
 # local
@@ -124,7 +126,7 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -148,7 +150,7 @@ class ContainerBase(dict, abc.ABC):
             alphabetical_keys=alphabetical_keys,
         )
         self._config = dict()
-        self.inplace_update(dict_in, **self._config_in)
+        self.cont_inplace_update(dict_in, **self._config_in)
 
     # Class Methods #
     # --------------#
@@ -163,7 +165,7 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=None,
         out=None,
         **kwargs,
-    ) -> ivy.Container:
+    ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
         arg_cont_idxs = ivy.nested_indices_where(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
@@ -212,7 +214,7 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(values, list):
                 for v in values:
                     if ivy.is_ivy_array(v):
-                        return ret.unstack(0)
+                        return ret.unstack_conts(0)
         return ret
 
     @staticmethod
@@ -684,8 +686,10 @@ class ContainerBase(dict, abc.ABC):
                     )
                     if ret:
                         return_dict[key] = ret
-                elif isinstance(value0, (list, tuple)) and map_nests:
-                    ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
+                elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
+                    ret = ivy.nested_multi_map(
+                        lambda x, _: func(x, None), values, to_ivy=False
+                    )
                     if prune_unapplied and not ret:
                         continue
                     return_dict[key] = ret
@@ -1455,6 +1459,27 @@ class ContainerBase(dict, abc.ABC):
     # Public Methods #
     # ---------------#
 
+    def duplicate_array_keychains(self):
+        duplciates = ()
+        key_chains = self.all_key_chains()
+        skips = set()
+        for i in range(len(key_chains)):
+            temp_duplicates = ()
+            if key_chains[i] in skips:
+                continue
+            for j in range(i + 1, len(key_chains)):
+                if key_chains[j] in skips:
+                    continue
+                if self[key_chains[i]] is self[key_chains[j]]:
+                    if key_chains[i] not in temp_duplicates:
+                        temp_duplicates += (key_chains[i],)
+                    if key_chains[j] not in temp_duplicates:
+                        temp_duplicates += (key_chains[j],)
+            if len(temp_duplicates) > 0:
+                duplciates += (temp_duplicates,)
+            skips = chain.from_iterable(duplciates)
+        return duplciates
+
     def update_config(self, **config):
         new_config = dict()
         for k, v in config.items():
@@ -1471,7 +1496,7 @@ class ContainerBase(dict, abc.ABC):
 
         self._config = new_config
 
-    def inplace_update(
+    def cont_inplace_update(
         self, dict_in: Union[ivy.Container, dict], **config
     ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
@@ -1516,7 +1541,10 @@ class ContainerBase(dict, abc.ABC):
             ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = ivy.Container(value, **self._config)
             else:
-                self[key] = value
+                if key in self and isinstance(self[key], ivy.Container):
+                    self[key].cont_inplace_update(value)
+                else:
+                    self[key] = value
 
     def set_framework(self, ivyh):
         """Update the framework to use for the container.
@@ -1622,228 +1650,6 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def maximum(
-        self,
-        x2,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise maximum between this container and another container
-        or number.
-
-        Parameters
-        ----------
-        other
-            The other container or number to compute the maximum against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the maximum values computed.
-
-        """
-        is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.maximum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def clip(
-        self,
-        x_min,
-        x_max,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise clipped values between this container and clip_min
-        and clip_max containers or numbers.
-
-        Parameters
-        ----------
-        x_min
-            The minimum container or number to clip against.
-        x_max
-            The maximum container or number to clip against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the clipped values returned.
-
-        """
-        min_is_container = isinstance(x_min, ivy.Container)
-        max_is_container = isinstance(x_max, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.clip(
-                    x,
-                    x_min[kc] if min_is_container else x_min,
-                    x_max[kc] if max_is_container else x_max,
-                )
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def vector_norm(
-        self,
-        ord=2,
-        axis=None,
-        keepdims=False,
-        global_norm=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute vector p-norm for each array in the container.
-
-        Parameters
-        ----------
-        ord
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            vector norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        global_norm
-            Whether to compute the norm across all the concattenated sub-arrays.
-            Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with the vector norms for each sub-array returned.
-
-        """
-        p_is_container = isinstance(ord, ivy.Container)
-        if global_norm:
-            if p_is_container:
-                raise Exception(
-                    "global_norm can only be computed for scalar p argument,"
-                    "but found {} of type {}".format(ord, type(ord))
-                )
-            return sum(
-                [
-                    v
-                    for k, v in self.map(
-                        lambda x, kc: self._ivy.sum(x**ord)
-                    ).to_iterator()
-                ]
-            ) ** (1 / ord)
-        return self.map(
-            lambda x, kc: self._ivy.vector_norm(
-                x, axis, keepdims, ord[kc] if p_is_container else ord
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def matrix_norm(
-        self,
-        ord=2,
-        keepdims=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute matrix p-norm for each array in the container.
-
-        Parameters
-        ----------
-        p
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            matrix norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        ord
-            Default value = 2)
-
-        Returns
-        -------
-            Container object with the matrix norms for each sub-array returned.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def slice_via_key(self, slice_key):
         """Get slice of container, based on key.
 
@@ -1913,52 +1719,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def dev_clone(self, devices):
-        """Clone the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices on which to clone the container.
-
-        Returns
-        -------
-            a set of cloned containers across the specified devices.
-
-        """
-        return self._ivy.DevClonedItem(
-            {device: self.to_device(device=device) for device in devices}
-        )
-
-    def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-        """Distribute the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices along which to distribute the container.
-        axis
-            The axis along which to split the arrays at the container leaves.
-            Default is 0.
-
-        Returns
-        -------
-            a set of distributed sub-containers across the specified devices.
-
-        """
-        split_arg = (
-            list(devices.values()) if isinstance(devices, dict) else len(devices)
-        )
-        return self._ivy.DevDistItem(
-            {
-                device: cont.to_device(device)
-                for cont, device in zip(
-                    self.split(split_arg, axis, with_remainder=True), devices
-                )
-            }
-        )
-
-    def unstack(self, axis, keepdims=False, dim_size=None):
+    def unstack_conts(self, axis, keepdims=False, dim_size=None):
         """Unstack containers along specified dimension.
 
         Parameters
@@ -1993,7 +1754,7 @@ class ContainerBase(dict, abc.ABC):
             for i in range(dim_size)
         ]
 
-    def split(
+    def split_conts(
         self,
         num_or_size_splits=None,
         axis=0,
@@ -2047,129 +1808,7 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             prune_unapplied,
             map_sequences,
-        ).unstack(0, dim_size=dim_size)
-
-    def to_device(
-        self,
-        device,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Move the container arrays to the desired device, specified by device string.
-
-        Parameters
-        ----------
-        dev
-            device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device
-            if None.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            The container, but with each sub-array now placed on the target device.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_device(x, device=device))
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def stop_gradients(
-        self,
-        preserve_type=True,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Stop gradients of all array entries in the container.
-
-        Parameters
-        ----------
-        preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
-        preserve_type
-            bool, optional (Default value = True)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each array having their gradients stopped.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, preserve_type)
-            if self._ivy.is_variable(x)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def as_arrays(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested variables to arrays, which do not support gradient
-        computation.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each variable converted to an array.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, False)
-            if self._ivy.is_variable(x)
-            else (
-                x
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else self._ivy.array(x)
-            ),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+        ).unstack_conts(0, dim_size=dim_size)
 
     def num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
@@ -2210,38 +1849,6 @@ class ContainerBase(dict, abc.ABC):
             ),
             alphabetical_keys=False,
         )
-
-    def from_numpy(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested numpy arrays to native backend arrays.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each ivy array converted to a numpy array.
-
-        """
-        ret = self.map(
-            lambda x, kc: self._ivy.array(x) if isinstance(x, np.ndarray) else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-        return ret
 
     def to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None
@@ -2339,11 +1946,11 @@ class ContainerBase(dict, abc.ABC):
         with open(json_filepath, "w+") as json_data_file:
             json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
-    def to_list(self):
+    def to_nested_list(self):
         return_list = list()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_list.append(value.to_list())
+                return_list.append(value.to_nested_list())
             elif value is not None and key != "_f":
                 return_list.append(value)
         return return_list

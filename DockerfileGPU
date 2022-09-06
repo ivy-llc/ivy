@@ -34,7 +34,7 @@ RUN \
     apt-get update
 
 # Refer to https://forums.developer.nvidia.com/t/notice-cuda-linux-repository-key-rotation/212772
-RUN apt-get update && apt-get install -y wget 
+RUN apt-get update && apt-get install -y wget
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
 RUN dpkg -i cuda-keyring_1.0-1_all.deb
 RUN apt-get update
@@ -129,7 +129,7 @@ RUN git clone https://github.com/unifyai/ivy && \
     cd ivy && \
     cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    python3 setup.py develop --no-deps
+    python3 -m pip install --user -e .
 
 # Install local requirements
 COPY requirements.txt .

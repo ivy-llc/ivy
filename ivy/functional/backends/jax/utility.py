@@ -8,19 +8,21 @@ from ivy.functional.backends.jax import JaxArray
 
 def all(
     x: JaxArray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.all(x, axis, keepdims=keepdims)
 
 
 def any(
     x: JaxArray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    *,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.any(x, axis, keepdims=keepdims)
