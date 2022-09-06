@@ -1974,8 +1974,12 @@ def test_jax_lax_conv_transpose(
 
 @st.composite
 def _gather_get_params_indices_n_dtypes(draw):
-    params = draw(helpers.dtype_values_axis(available_dtypes=ivy_jax.valid_float_dtypes))
-    indices = draw(helpers.dtype_values_axis(available_dtypes=ivy_jax.valid_int_dtypes))
+    params = draw(helpers.dtype_values_axis(
+        available_dtypes=ivy_jax.valid_float_dtypes)
+    )
+    indices = draw(helpers.dtype_values_axis(
+        available_dtypes=ivy_jax.valid_int_dtypes)
+    )
     input_dtypes = draw(
         helpers.get_dtypes("float", full=True)
     )
