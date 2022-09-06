@@ -378,3 +378,24 @@ class ContainerWithStatistical(ContainerBase):
             ),
             out=out,
         )
+    
+    def correlate(
+        self: ivy.Container,
+        mode: str,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, y_, _: ivy.correlate(x_, y_, mode) if ivy.is_array(x_) else x_,
+                key_chains,
+                to_apply,
+                prune_unapplied,
+                map_sequences,
+            ),
+            out=out,
+        )
