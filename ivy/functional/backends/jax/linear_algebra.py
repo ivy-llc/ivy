@@ -138,6 +138,9 @@ def matrix_rank(
     return jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
 
 
+matrix_rank.unsupported_dtypes = ("float16",)
+
+
 def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.swapaxes(x, -1, -2)
 
