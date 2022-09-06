@@ -4079,48 +4079,6 @@ def positive(
     b: ivy.array([3., 4., -5.])
     }
 
-    Instance Method Examples
-    -------------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1.1, -1, 0, -0,1, 1.1])
-    >>> y = x.positive()
-    >>> print(y)
-    ivy.array([-1.1, -1.,  0.,  0.,  1.,  1.1])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                         b=ivy.array([-4.4, 5, -6.6]))
-    >>> y = x.positive()
-    >>> print(y)
-    {
-    a: ivy.array([1, 2, 3]),
-    b: ivy.array([-4.4, 5., -6.6])
-    }
-
-    Operator Examples
-    -----------------
-
-    Using :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = +x
-    >>> print(y)
-    ivy.array([1, 2, 3])
-
-    Using :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                         b=ivy.array([-4.4, 5, -6.6]))
-    >>> y = +x
-    >>> print(y)
-    {
-    a: ivy.array([1, 2, 3]),
-    b: ivy.array([-4.4, 5., -6.6])
-    }
-
     """
     return ivy.current_backend(x).positive(x, out=out)
 
