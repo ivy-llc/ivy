@@ -407,7 +407,7 @@ def logaddexp(
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
-logaddexp.unsupported_dtypes = ("float16",)
+logaddexp.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def logical_and(
