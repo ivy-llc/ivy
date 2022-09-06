@@ -170,6 +170,15 @@ def mean_squared_error(y_true, y_pred):
     return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
 
 
+def mean_absolute_percentage_error(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.array(y_true)
+    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+
+    diff = ivy.abs((y_true - y_pred) / ivy.maximum(ivy.abs(y_true), 1e-7))
+    return 100.0 * ivy.mean(diff, axis=-1)
+
+
 def mean_squared_logarithmic_error(y_true, y_pred):
     y_pred = ivy.asarray(y_pred)
     y_true = ivy.astype(y_true, y_pred.dtype)

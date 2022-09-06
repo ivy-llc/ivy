@@ -163,7 +163,10 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 def _get_first_matrix_and_dtype(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            key="shared_dtype",
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -186,7 +189,10 @@ def _get_first_matrix_and_dtype(draw):
 def _get_second_matrix_and_dtype(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric", full=True))),
+            key="shared_dtype",
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -476,14 +482,12 @@ def test_eigvalsh(
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
-    num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
     *,
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -495,7 +499,7 @@ def test_inv(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -509,14 +513,12 @@ def test_inv(
 @handle_cmd_line_args
 @given(
     dtype_x=_get_first_matrix_and_dtype(),
-    num_positional_args=helpers.num_positional_args(fn_name="matrix_transpose"),
 )
 def test_matrix_transpose(
     *,
     dtype_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -527,7 +529,7 @@ def test_matrix_transpose(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1022,14 +1024,12 @@ def test_qr(
         min_value=0.1,
         max_value=10.0,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="svd"),
     fm=st.booleans(),
 )
 def test_svd(
     *,
     dtype_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1042,7 +1042,7 @@ def test_svd(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
