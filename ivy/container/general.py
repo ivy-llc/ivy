@@ -1202,9 +1202,10 @@ class ContainerWithGeneral(ContainerBase):
         self
             The container from which to gather values.
         indices
-            Index array or container
+            The container or array which indicates the indices that will be
+            gathered along the specified axis.
         axis
-            Optional int, the axis from which to gather from. Default is -1.
+            The axis from which the indices will be gathered. Default is -1.
         key_chains
             The key-chains to apply or not apply the method to. Default is
             None.
@@ -1218,8 +1219,8 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            Optional output container, for writing the result to. It musthave
-            a shape that the inputs broadcast to.
+            A container for writing the result to. It must have a shape 
+            that the inputs broadcast to. (Optional)
 
         Returns
         -------
@@ -1242,7 +1243,7 @@ class ContainerWithGeneral(ContainerBase):
     def gather(
         self: ivy.Container,
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Union[int, ivy.Container] = -1,
+        axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1260,10 +1261,10 @@ class ContainerWithGeneral(ContainerBase):
         self
             The container from which to gather values.
         indices
-            The array or container which indicates the indices that will be 
+            The container or array which indicates the indices that will be
             gathered along the specified axis.
         axis
-            Optional int, the axis from which to gather from. Default is -1.
+            The axis from which the indices will be gathered. Default is -1.
         key_chains
             The key-chains to apply or not apply the method to. Default is
             None.
@@ -1277,8 +1278,8 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            Optional output container, for writing the result to. It musthave
-            a shape that the inputs broadcast to.
+            A container for writing the result to. It must have a shape 
+            that the inputs broadcast to. (Optional)
 
         Returns
         -------

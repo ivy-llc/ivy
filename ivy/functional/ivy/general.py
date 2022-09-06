@@ -3310,14 +3310,10 @@ def gather(
         The array which indicates the indices that will be gathered along 
         the specified axis.
     axis
-        Optional int, the axis from which to gather the indices from. Default 
-        is -1.
-    device
-        Optional ivy.Device, device on which to create the array 'cuda:0',
-        'cuda:1', 'cpu' etc. Same as x if None.
+        The axis from which the indices will be gathered. Default is -1. 
     out
-        Optional output array, for writing the result to. It must have a shape 
-        that the inputs broadcast to.
+        An array for writing the result to. It must have a shape 
+        that the inputs broadcast to. (Optional)
 
     Returns
     -------

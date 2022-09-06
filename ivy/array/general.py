@@ -238,12 +238,13 @@ class ArrayWithGeneral(abc.ABC):
         params
             The array from which to gather values.
         indices
-            The array which indicates the indices that will be gathered along 
+            The array which indicates the indices that will be gathered along
             the specified axis.
         axis
-            Optional int, the axis from which to gather from. Default is -1.
+            The axis from which the indices will be gathered. Default is -1.
         out
-            optional output array, for writing the result to.
+            An array for writing the result to. It must have a shape
+            that the inputs broadcast to. (Optional)
 
         Returns
         -------
