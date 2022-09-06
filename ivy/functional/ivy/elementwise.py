@@ -3796,7 +3796,7 @@ def not_equal(
     Functional Examples
     ------------------
 
-    With: code:`ivy.Array` inputs:
+    With :code:`ivy.Array` inputs:
 
     >>> x1 = ivy.array([1, 0, 1, 1])
     >>> x2 = ivy.array([1, 0, 0, -1])
