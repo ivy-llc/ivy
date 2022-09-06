@@ -901,6 +901,8 @@ def test_vector_norm(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        large_value_safety_factor=10,
+        small_value_safety_factor=1.5,
     ),
     rtol=st.floats(1e-5, 1e-3),
 )
