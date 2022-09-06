@@ -51,7 +51,7 @@ def x_and_linear(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="linear"),
 )
@@ -192,7 +192,7 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="scaled_dot_product_attention"
@@ -280,7 +280,7 @@ def x_and_mha(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_mha=x_and_mha(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
 )
 def test_multi_head_attention(
@@ -356,7 +356,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
     input_channels = draw(st.integers(1, 5))
     output_channels = draw(st.integers(1, 5))
     dilations = draw(st.integers(1, 2))
-    dtype = draw(helpers.get_dtypes("float"))
+    dtype = draw(helpers.get_dtypes("float", full=False))
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
@@ -801,7 +801,7 @@ def x_and_lstm(draw, dtypes):
 @handle_cmd_line_args
 @given(
     dtype_lstm=x_and_lstm(
-        dtypes=helpers.get_dtypes("float"),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
 )
 def test_lstm_update(

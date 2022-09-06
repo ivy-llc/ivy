@@ -338,7 +338,7 @@ def test_std(
             ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
         ]
     ),
-    dtype=helpers.get_dtypes("float"),
+    dtype=helpers.get_dtypes("float", full=False),
     with_out=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
