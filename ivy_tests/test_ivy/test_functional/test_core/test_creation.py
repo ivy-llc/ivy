@@ -94,6 +94,8 @@ def test_linspace(
         instance_method=False,
         fw=fw,
         fn_name="linspace",
+        rtol_=1e-2,
+        atol_=1e-2,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
         stop=np.asarray(start_stop[1], dtype=dtype[1]),
         num=num,
@@ -116,13 +118,12 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        small_value_safety_factor=0.5,
-        large_value_safety_factor=1.5,
+        small_value_safety_factor=2.5,
+        large_value_safety_factor=50,
     ),
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
-    num_positional_args=helpers.num_positional_args(fn_name="logspace"),
 )
 def test_logspace(
     *,
@@ -131,15 +132,15 @@ def test_logspace(
     base,
     axis,
     device,
-    num_positional_args,
+    with_out,
     fw,
 ):
     dtype, start_stop = dtype_and_start_stop
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
-        with_out=False,
-        num_positional_args=num_positional_args,
+        with_out=with_out,
+        num_positional_args=2,
         native_array_flags=False,
         container_flags=False,
         instance_method=False,
@@ -165,7 +166,7 @@ def test_logspace(
     step=helpers.ints(min_value=-50, max_value=50).filter(
         lambda x: True if x != 0 else False
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="arange"),
 )
 def test_arange(
@@ -247,7 +248,7 @@ def test_asarray(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="empty"),
 )
 def test_empty(
@@ -340,7 +341,7 @@ def test_empty_like(
     batch_shape=st.lists(
         helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
     ),
-    dtype=helpers.get_dtypes("integer"),
+    dtype=helpers.get_dtypes("integer", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="eye"),
 )
 def test_eye(
@@ -417,7 +418,9 @@ def test_from_dlpack(
 def _dtypes(draw):
     return draw(
         st.shared(
-            helpers.list_of_length(x=helpers.get_dtypes("numeric"), length=1),
+            helpers.list_of_length(
+                x=helpers.get_dtypes("numeric", full=False), length=1
+            ),
             key="dtype",
         )
     )
@@ -533,7 +536,7 @@ def test_full_like(
         available_dtypes=ivy_np.valid_numeric_dtypes,
         num_arrays=st.integers(min_value=2, max_value=5),
         min_num_dims=1,
-        max_num_dims=5,
+        max_num_dims=1,
         shared_dtype=True,
     ),
     indexing=st.sampled_from(["xy", "ij"]),
@@ -578,7 +581,7 @@ def test_meshgrid(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="ones"),
 )
 def test_ones(
@@ -741,7 +744,7 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("integer"),
+    dtype=helpers.get_dtypes("integer", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="zeros"),
 )
 def test_zeros(

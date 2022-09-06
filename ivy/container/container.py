@@ -6,6 +6,7 @@ import operator
 import ivy
 from .activations import ContainerWithActivations
 from .base import ContainerBase
+from .conversions import ContainerWithConversions
 from .creation import ContainerWithCreation
 from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
@@ -28,6 +29,7 @@ from .utility import ContainerWithUtility
 
 class Container(
     ContainerWithActivations,
+    ContainerWithConversions,
     ContainerWithCreation,
     ContainerWithDataTypes,
     ContainerWithDevice,
