@@ -365,5 +365,5 @@ def test_torch_chunk(
         frontend='torch',
         fn_tree='chunk',
         input = np.asarray(value,dtype=input_dtype),
-        dim = dim 
+        axis = dim 
         )  
