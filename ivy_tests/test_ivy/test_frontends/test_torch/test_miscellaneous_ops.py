@@ -31,12 +31,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     native_array=st.booleans(),
 )
 def test_torch_flip(
-        dtype_and_values,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -76,13 +76,13 @@ def test_torch_flip(
     native_array=st.booleans(),
 )
 def test_torch_roll(
-        dtype_and_values,
-        shift,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    shift,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     if isinstance(shift, int) and isinstance(axis, tuple):
@@ -124,11 +124,11 @@ def test_torch_roll(
     native_array=st.booleans(),
 )
 def test_torch_fliplr(
-        dtype_and_values,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -165,12 +165,12 @@ def test_torch_fliplr(
     native_array=st.booleans(),
 )
 def test_torch_cumsum(
-        dtype_and_values,
-        axis,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+    dtype_and_values,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -194,10 +194,9 @@ def dims_and_offset(draw, shape):
     shape_actual = draw(shape)
     dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
     dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(st.integers(
-        min_value=-shape_actual[dim1], 
-        max_value=shape_actual[dim1]
-    ))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
     return dim1, dim2, offset
 
 
@@ -220,13 +219,13 @@ def dims_and_offset(draw, shape):
     native_array=st.booleans(),
 )
 def test_torch_diagonal(
-        dtype_and_values,
-        dims_and_offset,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
-): 
+    dtype_and_values,
+    dims_and_offset,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
     input_dtype, value = dtype_and_values
     dim1, dim2, offset = dims_and_offset
     input = np.asarray(value, dtype=input_dtype)
@@ -248,5 +247,48 @@ def test_torch_diagonal(
         input=input,
         offset=offset,
         dim1=dim1,
-        dim2=dim2
+        dim2=dim2,
+    )
+
+
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            ),
+        ),
+        max_dim_size=10,  # TODO: Increase these after ivy.asarray has been optimized.
+        min_dim_size=1,
+    ),
+    offset=st.integers(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.diagflat"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_diagflat(
+    dtype_and_values,
+    offset,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, values = dtype_and_values
+
+    values = np.asarray(values)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="diagflat",
+        input=values,
+        offset=offset,
     )
