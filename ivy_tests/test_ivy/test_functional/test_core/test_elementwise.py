@@ -884,8 +884,6 @@ def test_floor_divide(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
     # Make sure it's not dividing value too close to zero
     assume(not np.any(np.isclose(x2, 0)))
 
