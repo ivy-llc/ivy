@@ -1,12 +1,40 @@
 # global
 # import ivy
 import numpy as np
+from numpy import mgrid as np_mgrid
+
+# , ogrid as np_ogrid
 from hypothesis import given, strategies as st
 
 # local
+import ivy
+from ivy.functional.frontends.numpy import mgrid
+
+# , ogrid
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
+
+# helpers
+@st.composite
+def _get_range_for_grid(draw):
+    start = draw(st.booleans())
+    step = draw(st.booleans())
+    if start:
+        start = draw(helpers.ints(min_value=-25, max_value=25))
+        stop = draw(st.booleans())
+        if stop:
+            stop = draw(helpers.ints(min_value=30, max_value=100))
+        else:
+            stop = None
+    else:
+        start = None
+        stop = draw(helpers.ints(min_value=30, max_value=100))
+    if step:
+        step = draw(helpers.ints(min_value=1, max_value=5))
+        return start, stop, step
+    return start, stop, None
 
 
 # arange
@@ -193,6 +221,37 @@ def test_numpy_meshgrid(
     )
 
 
-# TODO
 # mgrid
+@handle_cmd_line_args
+@given(range=_get_range_for_grid())
+def test_numpy_mgrid(
+    range,
+    fw,
+):
+    ivy.set_backend(fw)
+    start, stop, step = range
+    if start and stop and step:
+        ret = mgrid[start:stop:step]
+        ret_np = np_mgrid[start:stop:step]
+    elif start and step:
+        ret = mgrid[start::step]
+        ret_np = np_mgrid[start::step]
+    elif stop and step:
+        ret = mgrid[:stop:step]
+        ret_np = np_mgrid[:stop:step]
+    elif start and stop:
+        ret = mgrid[start:stop]
+        ret_np = np_mgrid[start:stop]
+    elif start:
+        ret = mgrid[start:]
+        ret_np = np_mgrid[start:]
+    else:
+        ret = mgrid[:stop]
+        ret_np = np_mgrid[:stop]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    helpers.value_test(ret_np_flat=ret, ret_np_from_gt_flat=ret_np, rtol=1e-03)
+    ivy.unset_backend()
+
+
 # ogrid
