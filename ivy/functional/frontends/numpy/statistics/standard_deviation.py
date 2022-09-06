@@ -14,7 +14,6 @@ def std(
     dtype=None,
     where=True,
 ):
-    axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.std(x,axis=axis,ddof=ddof,keepdims=keepdims,out=out)

@@ -33,13 +33,6 @@ def test_numpy_std(
     keep_dims,
 ):
     input_dtype, x, axis, ddof = dtype_and_x
-    x_array=ivy.array(x)
-    if len(x_array.shape) == 2:
-        where=ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
-    elif len(x_array.shape) == 1:
-        where=True
-    if isinstance(axis, tuple):
-        axis=axis[0]
     input_dtype=[input_dtype]
     where=np_frontend_helpers.handle_where_and_array_bools(
         where=where,
