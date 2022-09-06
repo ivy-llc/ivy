@@ -563,11 +563,6 @@ def remainder(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    if len(x2.shape) == 0:
-        return x1
-    nonzeros = torch.count_nonzero(x2)
-    if len(nonzeros.shape) == 0:
-        return x1
     if not modulus:
         res = x1 / x2
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
