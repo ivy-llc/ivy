@@ -4038,7 +4038,7 @@ def positive(
     ret
         A new array with the positive value of each element in ``x``.
 
-         Functional Examples
+    Functional Examples
     -------------------
 
     With :code:`ivy.Array` input:
@@ -4050,7 +4050,7 @@ def positive(
 
     >>> x = ivy.array([0, -1, -0.5, 2, 3])
     >>> y = ivy.zeros(5)
-    >>> ivy.positive(x,out=y)
+    >>> ivy.positive(x, out=y)
     >>> print(y)
     ivy.array([0., -1., -0.5,  2.,  3.])
 
@@ -4106,7 +4106,7 @@ def positive(
     Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([1, 2, 3])
-    >>> y = x
+    >>> y = +x
     >>> print(y)
     ivy.array([1, 2, 3])
 
@@ -4114,7 +4114,7 @@ def positive(
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
                          b=ivy.array([-4.4, 5, -6.6]))
-    >>> y = x
+    >>> y = +x
     >>> print(y)
     {
     a: ivy.array([1, 2, 3]),
