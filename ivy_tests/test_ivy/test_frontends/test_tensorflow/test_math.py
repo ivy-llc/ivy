@@ -959,7 +959,8 @@ def test_tensorflow_confusion_matrix(
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array, fw):
+def test_tensorflow_polyval(dtype_and_x, x, as_variable, num_positional_args, 
+                            native_array, fw):
     input_dtype, coeffs = dtype_and_x
     coeffs = [coeffs]
     helpers.test_frontend_function(
@@ -980,9 +981,10 @@ def test_tensorflow_polyval(dtype_and_x, x, as_variable, num_positional_args, na
 @handle_cmd_line_args
 @given(
     data=helpers.array_values(
-        dtype=ivy.int32, shape=(5,6), min_value=1, max_value=9
+        dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9
     ),
-    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5,), min_value=0, max_value=4),
+    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5, ), 
+                                     min_value=0, max_value=4),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_mean"
@@ -1003,7 +1005,7 @@ def test_tensorflow_unsorted_segment_mean(
         fn_tree="math.unsorted_segment_mean",
         data=np.asarray(data, dtype=np.float32),
         segment_ids=np.asarray(segment_ids, dtype=np.int32),
-        num_segments=np.max(segment_ids)+1
+        num_segments=np.max(segment_ids) + 1
     )
 
 
@@ -1011,9 +1013,10 @@ def test_tensorflow_unsorted_segment_mean(
 @handle_cmd_line_args
 @given(
     data=helpers.array_values(
-        dtype=ivy.int32, shape=(5,6), min_value=1, max_value=9
+        dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9
     ),
-    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5,), min_value=0, max_value=4),
+    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5,), 
+                                     min_value=0, max_value=4),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_sqrt_n"
@@ -1034,7 +1037,7 @@ def test_tensorflow_unsorted_segment_sqrt_n(
         fn_tree="math.unsorted_segment_sqrt_n",
         data=np.asarray(data, dtype=np.float32),
         segment_ids=np.asarray(segment_ids, dtype=np.int32),
-        num_segments=np.max(segment_ids)+1
+        num_segments=np.max(segment_ids) + 1
     )
 
 
