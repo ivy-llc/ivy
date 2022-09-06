@@ -177,3 +177,29 @@ def mean_absolute_percentage_error(y_true, y_pred):
 
     diff = ivy.abs((y_true - y_pred) / ivy.maximum(ivy.abs(y_true), 1e-7))
     return 100.0 * ivy.mean(diff, axis=-1)
+
+
+def _cond_convert_labels(y_true):
+    are_zeros = ivy.equal(y_true, 0.0)
+    are_ones = ivy.equal(y_true, 1.0)
+    is_binary = ivy.all(ivy.logical_or(are_zeros, are_ones))
+
+    # convert [0, 1] labels to [-1, 1]
+    if is_binary:
+        return 2.0 * y_true - 1
+
+    return y_true
+
+
+def hinge(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype, copy=False)
+    y_true = _cond_convert_labels(y_true)
+    return ivy.mean(ivy.maximum(1.0 - y_true * y_pred, 0.0), axis=-1)
+
+
+def squared_hinge(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
+    y_true = _cond_convert_labels(y_true)
+    return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)
