@@ -38,6 +38,9 @@ def Atan2(y, x, name=None):
     return ivy.atan2(y, x)
 
 
+Atan2.unsupported_dtypes = ("float16",)
+
+
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     return ivy.bitwise_and(x, y)
 
