@@ -12,8 +12,7 @@ def argsort(
     stable: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.argsort(x, dim=axis, descending=descending)
-    return ret
+    return torch.argsort(x, dim=axis, descending=descending)
 
 
 def sort(
