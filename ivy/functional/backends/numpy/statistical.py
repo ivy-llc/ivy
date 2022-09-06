@@ -150,6 +150,17 @@ def var(
 
 var.support_native_out = True
 
+def correlate(
+    x: np.ndarray,
+    y: np.ndarray,
+    /,
+    *,
+    mode:Optional[str] = "valid",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.correlate(x,y, mode = mode, out=out)
+
+correlate.support_native_out = True
 
 # Extra #
 # ------#
