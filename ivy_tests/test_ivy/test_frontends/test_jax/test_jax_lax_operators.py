@@ -39,8 +39,8 @@ def test_jax_lax_add(
         fw=fw,
         frontend="jax",
         fn_tree="lax.add",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -71,7 +71,7 @@ def test_jax_lax_tan(
         fw=fw,
         frontend="jax",
         fn_tree="lax.tan",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -105,8 +105,8 @@ def test_jax_lax_max(
         fw=fw,
         frontend="jax",
         fn_tree="lax.max",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -270,7 +270,7 @@ def test_jax_lax_abs(
         fw=fw,
         frontend="jax",
         fn_tree="lax.abs",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -301,7 +301,7 @@ def test_jax_lax_sqrt(
         fw=fw,
         frontend="jax",
         fn_tree="lax.sqrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -332,7 +332,7 @@ def test_jax_lax_acos(
         fw=fw,
         frontend="jax",
         fn_tree="lax.acos",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -363,7 +363,7 @@ def test_jax_lax_sin(
         fw=fw,
         frontend="jax",
         fn_tree="lax.sin",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -394,7 +394,7 @@ def test_jax_lax_sign(
         fw=fw,
         frontend="jax",
         fn_tree="lax.sign",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -425,7 +425,7 @@ def test_jax_lax_asin(
         fw=fw,
         frontend="jax",
         fn_tree="lax.asin",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -457,7 +457,7 @@ def test_jax_lax_sinh(
         fw=fw,
         frontend="jax",
         fn_tree="lax.sinh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -490,8 +490,8 @@ def test_jax_lax_atan2(
         fw=fw,
         frontend="jax",
         fn_tree="lax.atan2",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -624,7 +624,7 @@ def test_jax_lax_atan(
         fw=fw,
         frontend="jax",
         fn_tree="lax.atan",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -654,7 +654,7 @@ def test_jax_lax_ceil(
         fw=fw,
         frontend="jax",
         fn_tree="lax.ceil",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -687,8 +687,8 @@ def test_jax_lax_bitwise_and(
         fw=fw,
         frontend="jax",
         fn_tree="lax.bitwise_and",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -721,8 +721,8 @@ def test_jax_lax_bitwise_or(
         fw=fw,
         frontend="jax",
         fn_tree="lax.bitwise_or",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -756,7 +756,7 @@ def test_jax_lax_bitwise_not(
         fw=fw,
         frontend="jax",
         fn_tree="lax.bitwise_not",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -786,7 +786,7 @@ def test_jax_lax_neg(
         fw=fw,
         frontend="jax",
         fn_tree="lax.neg",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -823,7 +823,7 @@ def test_jax_lax_argmax(
         fw=fw,
         frontend="jax",
         fn_tree="lax.argmax",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         axis=axis,
         index_dtype=index_dtype,
     )
@@ -862,7 +862,7 @@ def test_jax_lax_argmin(
         fw=fw,
         frontend="jax",
         fn_tree="lax.argmin",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         axis=axis,
         index_dtype=index_dtype,
     )
@@ -897,8 +897,8 @@ def test_jax_lax_bitwise_xor(
         fw=fw,
         frontend="jax",
         fn_tree="lax.bitwise_xor",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -946,7 +946,7 @@ def test_jax_lax_full_like(
         fw=fw,
         frontend="jax",
         fn_tree="lax.full_like",
-        x=np.asarray(x, dtype=dtype),
+        x=x,
         fill_value=fill_val,
         dtype=dtype,
         shape=shape,
@@ -979,7 +979,7 @@ def test_jax_lax_exp(
         fw=fw,
         frontend="jax",
         fn_tree="lax.exp",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -1017,7 +1017,7 @@ def test_jax_lax_convert_element_type(
         fw=fw,
         frontend="jax",
         fn_tree="lax.convert_element_type",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         new_dtype=new_dtype,
     )
 
@@ -1056,7 +1056,7 @@ def test_jax_lax_cumprod(
         fw=fw,
         frontend="jax",
         fn_tree="lax.cumprod",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         axis=axis,
         reverse=reverse,
     )
@@ -1096,7 +1096,7 @@ def test_jax_lax_cumsum(
         fw=fw,
         frontend="jax",
         fn_tree="lax.cumsum",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         axis=axis,
         reverse=reverse,
     )
@@ -1179,7 +1179,7 @@ def test_jax_lax_reshape(
         fw=fw,
         frontend="jax",
         fn_tree="lax.reshape",
-        operand=np.asarray(x, dtype=dtype),
+        operand=x,
         new_sizes=shape,
         dimensions=dimensions,
     )
@@ -1213,7 +1213,7 @@ def test_jax_lax_broadcast(
         fw=fw,
         frontend="jax",
         fn_tree="lax.broadcast",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         sizes=sizes,
     )
 
@@ -1244,7 +1244,7 @@ def test_jax_lax_reciprocal(
         fw=fw,
         frontend="jax",
         fn_tree="lax.reciprocal",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -1279,7 +1279,7 @@ def test_jax_lax_sort(
         fw=fw,
         frontend="jax",
         fn_tree="lax.sort",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         dimension=axis,
         is_stable=is_stable,
     )
@@ -1380,7 +1380,7 @@ def test_jax_lax_cosh(
         fw=fw,
         frontend="jax",
         fn_tree="lax.cosh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -1445,7 +1445,7 @@ def test_jax_lax_round(
         fw=fw,
         frontend="jax",
         fn_tree="lax.round",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -1544,7 +1544,7 @@ def test_jax_lax_cos(
         fw=fw,
         frontend="jax",
         fn_tree="lax.cos",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -1574,12 +1574,12 @@ def _basic_min_x_max(draw):
         )
     )
     min_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=1, max_value=10)
+        helpers.array_values(dtype=dtype[0], shape=(), min_value=1, max_value=10)
     )
     max_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=11, max_value=20)
+        helpers.array_values(dtype=dtype[0], shape=(), min_value=11, max_value=20)
     )  # TODO remove hardcoded values.
-    return ([dtype] * 3), (value, min_val, max_val)
+    return (dtype * 3), (value, min_val, max_val)
 
 
 @handle_cmd_line_args
@@ -1592,24 +1592,23 @@ def _basic_min_x_max(draw):
 def test_jax_lax_clamp(
     dtype_x_min_max,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    (x_dtype, min_dtype, max_dtype), (x, min_vals, max_vals) = dtype_x_min_max
+    input_dtypes, (x, min_vals, max_vals) = dtype_x_min_max
     helpers.test_frontend_function(
-        input_dtypes=[x_dtype, min_dtype, max_dtype],
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
         fn_tree="lax.clamp",
-        min=np.array(min_vals, dtype=min_dtype),
-        x=np.asarray(x, dtype=x_dtype),
-        max=np.array(max_vals, dtype=max_dtype),
+        min=min_vals,
+        x=x,
+        max=max_vals,
     )
 
 
@@ -1640,7 +1639,7 @@ def test_jax_lax_log(
         fw=fw,
         frontend="jax",
         fn_tree="lax.log",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -1675,7 +1674,7 @@ def test_jax_lax_rev(
         fw=fw,
         frontend="jax",
         fn_tree="lax.rev",
-        operand=np.asarray(x, dtype=input_dtype),
+        operand=x,
         dimensions=(axis,),
     )
 
@@ -1688,8 +1687,8 @@ def _div_dtypes_and_xs(draw):
         )
     )
     divisor = draw(
-        helpers.array_values(dtype=dtype, min_value=1, max_value=20, shape=shape)
-        | helpers.array_values(dtype=dtype, min_value=-20, max_value=-1, shape=shape)
+        helpers.array_values(dtype=dtype[0], min_value=1, max_value=20, shape=shape)
+        | helpers.array_values(dtype=dtype[0], min_value=-20, max_value=-1, shape=shape)
     )
     return [dtype, dtype], [dividend, divisor]
 
@@ -1710,7 +1709,6 @@ def test_jax_lax_div(
     fw,
 ):
     input_dtypes, xs = dtypes_and_xs
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -1751,7 +1749,7 @@ def test_jax_lax_rsqrt(
         fw=fw,
         frontend="jax",
         fn_tree="lax.rsqrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
         rtol=1e-02,
     )
 
@@ -1782,7 +1780,7 @@ def test_jax_lax_expm1(
         fw=fw,
         frontend="jax",
         fn_tree="lax.expm1",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -1834,5 +1832,5 @@ def test_jax_lax_log1p(
         fw=fw,
         frontend="jax",
         fn_tree="lax.log1p",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
