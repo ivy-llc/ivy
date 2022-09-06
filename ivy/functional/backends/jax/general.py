@@ -85,8 +85,7 @@ def container_types():
 
 
 def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = x % y
-    return ret
+    return x % y
 
 
 def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
@@ -363,8 +362,7 @@ def one_hot(
 
 def indices_where(x: JaxArray) -> JaxArray:
     where_x = jnp.where(x)
-    ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
-    return ret
+    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
 
 
 def inplace_decrement(x, val):

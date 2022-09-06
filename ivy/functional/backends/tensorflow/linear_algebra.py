@@ -38,8 +38,7 @@ def cross(
     axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.cross(x1, x2, axis=axis)
-    return ret
+    return tf.experimental.numpy.cross(x1, x2, axis=axis)
 
 
 def det(
@@ -48,8 +47,7 @@ def det(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.det(x)
-    return ret
+    return tf.linalg.det(x)
 
 
 det.unsupported_dtypes = ("float16",)
@@ -64,13 +62,11 @@ def diagonal(
     axis2: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
-    return ret
+    return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
 def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.eigh(x)
-    return ret
+    return tf.linalg.eigh(x)
 
 
 eigh.unsupported_dtypes = ("float16",)
@@ -82,8 +78,7 @@ def eigvalsh(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.linalg.eigvalsh(x)
-    return ret
+    return tf.linalg.eigvalsh(x)
 
 
 eigvalsh.unsupported_dtypes = ("float16",)
@@ -266,8 +261,7 @@ def matrix_rank(
             rtol = rtol[0]
         x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.matrix_rank(x, rtol)
-    ret = tf.cast(ret, ivy.default_int_dtype(as_native=True))
-    return ret
+    return tf.cast(ret, ivy.default_int_dtype(as_native=True))
 
 
 def matrix_transpose(
@@ -275,8 +269,7 @@ def matrix_transpose(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.swapaxes(x, -1, -2)
-    return ret
+    return tf.experimental.numpy.swapaxes(x, -1, -2)
 
 
 matrix_transpose.unsupported_dtypes = (
@@ -345,8 +338,7 @@ def slogdet(
 ) -> Union[tf.Tensor, tf.Variable, Tuple[tf.Tensor, ...]]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = tf.linalg.slogdet(x)
-    ret = results(sign, logabsdet)
-    return ret
+    return results(sign, logabsdet)
 
 
 slogdet.unsupported_dtypes = ("float16",)
@@ -401,8 +393,7 @@ def svd(
     transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
     D, U, V = tf.linalg.svd(x, full_matrices=full_matrices)
     VT = tf.transpose(V, transpose_dims)
-    ret = results(U, D, VT)
-    return ret
+    return results(U, D, VT)
 
 
 svd.unsupported_dtypes = ("float16",)

@@ -195,8 +195,7 @@ log1p.unsupported_dtypes = ("float16",)
 
 
 def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    ret = torch.isnan(x)
-    return ret
+    return torch.isnan(x)
 
 
 def less(
@@ -389,8 +388,7 @@ def floor_divide(
     nonzeros = torch.count_nonzero(x2)
     if len(nonzeros.shape) == 0:
         return x1
-    ret = torch.div(x1, x2, rounding_mode="floor", out=out)
-    return ret
+    return torch.div(x1, x2, rounding_mode="floor", out=out)
 
 
 floor_divide.support_native_out = True
@@ -422,8 +420,7 @@ def positive(
     x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    ret = torch.positive(x)
-    return ret
+    return torch.positive(x)
 
 
 def square(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
