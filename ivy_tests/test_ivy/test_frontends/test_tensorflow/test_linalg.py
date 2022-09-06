@@ -280,7 +280,7 @@ def test_tensorflow_tensordot(
         fw=fw,
         frontend="tensorflow",
         fn_tree="tensordot",
-        x=x,
-        y=y,
+        x=np.asarray(x, dtype=dtype),
+        y=np.asarray(y, dtype=dtype),
         axes=axes,
     )
