@@ -2,8 +2,6 @@ arange
 ======
 
 .. autofunction:: ivy.functional.ivy.creation.arange
-
-.. autofunction:: ivy.container.container_methods.static_arange
 |
 | **Supported Frameworks:**
 

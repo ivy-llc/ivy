@@ -2,8 +2,6 @@ isfinite
 ========
 
 .. autofunction:: ivy.functional.ivy.elementwise.isfinite
-
-.. autofunction:: ivy.container.container_methods.isfinite
 |
 | **Supported Frameworks:**
 

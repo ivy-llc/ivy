@@ -2,10 +2,6 @@ multiply
 ========
 
 .. autofunction:: ivy.functional.ivy.elementwise.multiply
-
-.. autofunction:: ivy.container.container_methods.static_multiply
-
-.. autofunction:: ivy.container.container_methods.multiply
 |
 | **Supported Frameworks:**
 

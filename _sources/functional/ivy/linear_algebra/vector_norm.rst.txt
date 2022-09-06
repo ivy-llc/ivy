@@ -2,10 +2,6 @@ vector_norm
 ===========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.vector_norm
-
-.. autofunction:: ivy.container.container_methods.static_vector_norm
-
-.. autofunction:: ivy.container.container_methods.vector_norm
 |
 | **Supported Frameworks:**
 

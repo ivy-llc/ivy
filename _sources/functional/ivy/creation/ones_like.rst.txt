@@ -2,10 +2,6 @@ ones_like
 =========
 
 .. autofunction:: ivy.functional.ivy.creation.ones_like
-
-.. autofunction:: ivy.container.container_methods.ones_like
-
-.. autofunction:: ivy.container.container_methods.static_ones_like
 |
 | **Supported Frameworks:**
 

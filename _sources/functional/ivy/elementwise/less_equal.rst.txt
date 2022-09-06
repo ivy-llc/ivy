@@ -2,8 +2,6 @@ less_equal
 ==========
 
 .. autofunction:: ivy.functional.ivy.elementwise.less_equal
-
-.. autofunction:: ivy.container.container_methods.static_less_equal
 |
 | **Supported Frameworks:**
 

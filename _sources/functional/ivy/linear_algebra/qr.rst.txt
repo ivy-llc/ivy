@@ -2,10 +2,6 @@ qr
 ==
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.qr
-
-.. autofunction:: ivy.container.container_methods.qr
-
-.. autofunction:: ivy.container.container_methods.static_qr
 |
 | **Supported Frameworks:**
 

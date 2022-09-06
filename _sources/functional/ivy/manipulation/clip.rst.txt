@@ -2,10 +2,6 @@ clip
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.clip
-
-.. autofunction:: ivy.container.container_methods.static_clip
-
-.. autofunction:: ivy.container.container_methods.clip
 |
 | **Supported Frameworks:**
 

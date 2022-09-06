@@ -2,8 +2,6 @@ finfo
 =====
 
 .. autofunction:: ivy.functional.ivy.data_type.finfo
-
-.. autofunction:: ivy.container.container_methods.finfo
 |
 | **Supported Frameworks:**
 

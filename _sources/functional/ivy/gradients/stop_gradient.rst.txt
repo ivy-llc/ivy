@@ -2,8 +2,6 @@ stop_gradient
 =============
 
 .. autofunction:: ivy.functional.ivy.gradients.stop_gradient
-
-.. autofunction:: ivy.container.container_methods.static_stop_gradient
 |
 | **Supported Frameworks:**
 

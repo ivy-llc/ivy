@@ -2,8 +2,6 @@ bitwise_left_shift
 ==================
 
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_left_shift
-
-.. autofunction:: ivy.container.container_methods.bitwise_left_shift
 |
 | **Supported Frameworks:**
 

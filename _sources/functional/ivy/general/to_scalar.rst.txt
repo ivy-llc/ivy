@@ -2,8 +2,6 @@ to_scalar
 =========
 
 .. autofunction:: ivy.functional.ivy.general.to_scalar
-
-.. autofunction:: ivy.container.container_methods.static_to_scalar
 |
 | **Supported Frameworks:**
 

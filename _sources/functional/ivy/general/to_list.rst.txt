@@ -2,10 +2,6 @@ to_list
 =======
 
 .. autofunction:: ivy.functional.ivy.general.to_list
-
-.. autofunction:: ivy.container.container_methods.to_list
-
-.. autofunction:: ivy.container.container_methods.static_to_list
 |
 | **Supported Frameworks:**
 

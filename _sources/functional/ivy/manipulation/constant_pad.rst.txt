@@ -2,10 +2,6 @@ constant_pad
 ============
 
 .. autofunction:: ivy.functional.ivy.manipulation.constant_pad
-
-.. autofunction:: ivy.container.container_methods.static_constant_pad
-
-.. autofunction:: ivy.container.container_methods.constant_pad
 |
 | **Supported Frameworks:**
 

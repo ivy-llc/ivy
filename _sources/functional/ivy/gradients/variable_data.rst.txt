@@ -2,8 +2,6 @@ variable_data
 =============
 
 .. autofunction:: ivy.functional.ivy.gradients.variable_data
-
-.. autofunction:: ivy.container.container_methods.static_variable_data
 |
 | **Supported Frameworks:**
 

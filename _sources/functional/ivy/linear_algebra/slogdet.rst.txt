@@ -2,10 +2,6 @@ slogdet
 =======
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.slogdet
-
-.. autofunction:: ivy.container.container_methods.slogdet
-
-.. autofunction:: ivy.container.container_methods.static_slogdet
 |
 | **Supported Frameworks:**
 

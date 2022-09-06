@@ -2,8 +2,6 @@ random_normal
 =============
 
 .. autofunction:: ivy.functional.ivy.random.random_normal
-
-.. autofunction:: ivy.container.container_methods.random_normal
 |
 | **Supported Frameworks:**
 

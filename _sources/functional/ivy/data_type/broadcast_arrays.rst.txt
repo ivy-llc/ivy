@@ -2,8 +2,6 @@ broadcast_arrays
 ================
 
 .. autofunction:: ivy.functional.ivy.data_type.broadcast_arrays
-
-.. autofunction:: ivy.container.container_methods.static_broadcast_arrays
 |
 | **Supported Frameworks:**
 

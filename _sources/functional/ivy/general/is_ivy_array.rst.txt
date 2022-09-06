@@ -2,8 +2,6 @@ is_ivy_array
 ============
 
 .. autofunction:: ivy.functional.ivy.general.is_ivy_array
-
-.. autofunction:: ivy.container.container_methods.is_ivy_array
 |
 | **Supported Frameworks:**
 

@@ -2,10 +2,6 @@ broadcast_to
 ============
 
 .. autofunction:: ivy.functional.ivy.data_type.broadcast_to
-
-.. autofunction:: ivy.container.container_methods.static_broadcast_to
-
-.. autofunction:: ivy.container.container_methods.broadcast_to
 |
 | **Supported Frameworks:**
 

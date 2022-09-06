@@ -2,10 +2,6 @@ floormod
 ========
 
 .. autofunction:: ivy.functional.ivy.general.floormod
-
-.. autofunction:: ivy.container.container_methods.static_floormod
-
-.. autofunction:: ivy.container.container_methods.floormod
 |
 | **Supported Frameworks:**
 

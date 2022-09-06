@@ -2,10 +2,6 @@ has_nans
 ========
 
 .. autofunction:: ivy.functional.ivy.general.has_nans
-
-.. autofunction:: ivy.container.container_methods.static_has_nans
-
-.. autofunction:: ivy.container.container_methods.has_nans
 |
 | **Supported Frameworks:**
 

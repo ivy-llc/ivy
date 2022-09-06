@@ -2,10 +2,6 @@ bitwise_invert
 ==============
 
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_invert
-
-.. autofunction:: ivy.container.container_methods.static_bitwise_invert
-
-.. autofunction:: ivy.container.container_methods.bitwise_invert
 |
 | **Supported Frameworks:**
 

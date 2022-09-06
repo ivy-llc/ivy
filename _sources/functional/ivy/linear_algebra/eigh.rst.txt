@@ -2,8 +2,6 @@ eigh
 ====
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.eigh
-
-.. autofunction:: ivy.container.container_methods.eigh
 |
 | **Supported Frameworks:**
 

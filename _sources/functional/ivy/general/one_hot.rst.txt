@@ -2,8 +2,6 @@ one_hot
 =======
 
 .. autofunction:: ivy.functional.ivy.general.one_hot
-
-.. autofunction:: ivy.container.container_methods.one_hot
 |
 | **Supported Frameworks:**
 

@@ -2,8 +2,6 @@ fourier_encode
 ==============
 
 .. autofunction:: ivy.functional.ivy.general.fourier_encode
-
-.. autofunction:: ivy.container.container_methods.fourier_encode
 |
 | **Supported Frameworks:**
 

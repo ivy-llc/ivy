@@ -2,8 +2,6 @@ clip_matrix_norm
 ================
 
 .. autofunction:: ivy.functional.ivy.general.clip_matrix_norm
-
-.. autofunction:: ivy.container.container_methods.static_clip_matrix_norm
 |
 | **Supported Frameworks:**
 

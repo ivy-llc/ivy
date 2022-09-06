@@ -2,10 +2,6 @@ conv3d
 ======
 
 .. autofunction:: ivy.functional.ivy.layers.conv3d
-
-.. autofunction:: ivy.container.container_methods.conv3d
-
-.. autofunction:: ivy.container.container_methods.static_conv3d
 |
 | **Supported Frameworks:**
 

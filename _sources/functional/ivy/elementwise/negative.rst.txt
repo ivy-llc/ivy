@@ -2,8 +2,6 @@ negative
 ========
 
 .. autofunction:: ivy.functional.ivy.elementwise.negative
-
-.. autofunction:: ivy.container.container_methods.static_negative
 |
 | **Supported Frameworks:**
 

@@ -2,8 +2,6 @@ prod
 ====
 
 .. autofunction:: ivy.functional.ivy.statistical.prod
-
-.. autofunction:: ivy.container.container_methods.prod
 |
 | **Supported Frameworks:**
 

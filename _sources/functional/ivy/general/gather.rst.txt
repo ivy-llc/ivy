@@ -2,10 +2,6 @@ gather
 ======
 
 .. autofunction:: ivy.functional.ivy.general.gather
-
-.. autofunction:: ivy.container.container_methods.static_gather
-
-.. autofunction:: ivy.container.container_methods.gather
 |
 | **Supported Frameworks:**
 

@@ -2,10 +2,6 @@ iinfo
 =====
 
 .. autofunction:: ivy.functional.ivy.data_type.iinfo
-
-.. autofunction:: ivy.container.container_methods.iinfo
-
-.. autofunction:: ivy.container.container_methods.static_iinfo
 |
 | **Supported Frameworks:**
 

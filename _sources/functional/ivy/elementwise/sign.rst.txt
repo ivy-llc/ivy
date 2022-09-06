@@ -2,10 +2,6 @@ sign
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.sign
-
-.. autofunction:: ivy.container.container_methods.static_sign
-
-.. autofunction:: ivy.container.container_methods.sign
 |
 | **Supported Frameworks:**
 

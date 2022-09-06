@@ -2,10 +2,6 @@ logical_not
 ===========
 
 .. autofunction:: ivy.functional.ivy.elementwise.logical_not
-
-.. autofunction:: ivy.container.container_methods.static_logical_not
-
-.. autofunction:: ivy.container.container_methods.logical_not
 |
 | **Supported Frameworks:**
 

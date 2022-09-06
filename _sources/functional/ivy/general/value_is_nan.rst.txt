@@ -2,10 +2,6 @@ value_is_nan
 ============
 
 .. autofunction:: ivy.functional.ivy.general.value_is_nan
-
-.. autofunction:: ivy.container.container_methods.value_is_nan
-
-.. autofunction:: ivy.container.container_methods.static_value_is_nan
 |
 | **Supported Frameworks:**
 

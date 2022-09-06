@@ -2,8 +2,6 @@ dtype
 =====
 
 .. autofunction:: ivy.functional.ivy.data_type.dtype
-
-.. autofunction:: ivy.container.container_methods.static_dtype
 |
 | **Supported Frameworks:**
 

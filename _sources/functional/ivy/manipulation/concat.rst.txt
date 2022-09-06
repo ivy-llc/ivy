@@ -2,8 +2,6 @@ concat
 ======
 
 .. autofunction:: ivy.functional.ivy.manipulation.concat
-
-.. autofunction:: ivy.container.container_methods.concat
 |
 | **Supported Frameworks:**
 

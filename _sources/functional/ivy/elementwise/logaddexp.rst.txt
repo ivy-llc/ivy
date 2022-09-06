@@ -2,8 +2,6 @@ logaddexp
 =========
 
 .. autofunction:: ivy.functional.ivy.elementwise.logaddexp
-
-.. autofunction:: ivy.container.container_methods.logaddexp
 |
 | **Supported Frameworks:**
 

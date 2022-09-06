@@ -2,10 +2,6 @@ permute_dims
 ============
 
 .. autofunction:: ivy.functional.ivy.manipulation.permute_dims
-
-.. autofunction:: ivy.container.container_methods.permute_dims
-
-.. autofunction:: ivy.container.container_methods.static_permute_dims
 |
 | **Supported Frameworks:**
 

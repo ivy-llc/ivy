@@ -2,10 +2,6 @@ minimum
 =======
 
 .. autofunction:: ivy.functional.ivy.elementwise.minimum
-
-.. autofunction:: ivy.container.container_methods.static_minimum
-
-.. autofunction:: ivy.container.container_methods.minimum
 |
 | **Supported Frameworks:**
 

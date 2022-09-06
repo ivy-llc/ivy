@@ -2,8 +2,6 @@ cos
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.cos
-
-.. autofunction:: ivy.container.container_methods.cos
 |
 | **Supported Frameworks:**
 

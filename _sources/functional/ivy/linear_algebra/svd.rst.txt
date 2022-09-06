@@ -2,10 +2,6 @@ svd
 ===
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.svd
-
-.. autofunction:: ivy.container.container_methods.static_svd
-
-.. autofunction:: ivy.container.container_methods.svd
 |
 | **Supported Frameworks:**
 

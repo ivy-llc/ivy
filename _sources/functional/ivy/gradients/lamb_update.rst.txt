@@ -2,8 +2,6 @@ lamb_update
 ===========
 
 .. autofunction:: ivy.functional.ivy.gradients.lamb_update
-
-.. autofunction:: ivy.container.container_methods.lamb_update
 |
 | **Supported Frameworks:**
 

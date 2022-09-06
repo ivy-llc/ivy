@@ -2,8 +2,6 @@ einsum
 ======
 
 .. autofunction:: ivy.functional.ivy.statistical.einsum
-
-.. autofunction:: ivy.container.container_methods.einsum
 |
 | **Supported Frameworks:**
 

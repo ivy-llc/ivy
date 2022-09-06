@@ -25,6 +25,10 @@ Container methods
    container_methods/softmax.rst
    container_methods/static_softplus.rst
    container_methods/softplus.rst
+   container_methods/static_to_native.rst
+   container_methods/to_native.rst
+   container_methods/static_to_ivy.rst
+   container_methods/to_ivy.rst
    container_methods/static_arange.rst
    container_methods/static_asarray.rst
    container_methods/static_zeros.rst

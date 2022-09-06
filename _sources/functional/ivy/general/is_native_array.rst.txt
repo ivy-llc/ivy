@@ -2,8 +2,6 @@ is_native_array
 ===============
 
 .. autofunction:: ivy.functional.ivy.general.is_native_array
-
-.. autofunction:: ivy.container.container_methods.static_is_native_array
 |
 | **Supported Frameworks:**
 

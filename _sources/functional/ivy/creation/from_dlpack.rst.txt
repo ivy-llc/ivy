@@ -2,10 +2,6 @@ from_dlpack
 ===========
 
 .. autofunction:: ivy.functional.ivy.creation.from_dlpack
-
-.. autofunction:: ivy.container.container_methods.from_dlpack
-
-.. autofunction:: ivy.container.container_methods.static_from_dlpack
 |
 | **Supported Frameworks:**
 

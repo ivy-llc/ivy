@@ -2,8 +2,6 @@ sigmoid
 =======
 
 .. autofunction:: ivy.functional.ivy.activations.sigmoid
-
-.. autofunction:: ivy.container.container_methods.sigmoid
 |
 | **Supported Frameworks:**
 

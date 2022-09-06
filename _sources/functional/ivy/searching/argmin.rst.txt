@@ -2,10 +2,6 @@ argmin
 ======
 
 .. autofunction:: ivy.functional.ivy.searching.argmin
-
-.. autofunction:: ivy.container.container_methods.argmin
-
-.. autofunction:: ivy.container.container_methods.static_argmin
 |
 | **Supported Frameworks:**
 

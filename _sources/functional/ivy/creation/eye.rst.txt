@@ -2,8 +2,6 @@ eye
 ===
 
 .. autofunction:: ivy.functional.ivy.creation.eye
-
-.. autofunction:: ivy.container.container_methods.static_eye
 |
 | **Supported Frameworks:**
 

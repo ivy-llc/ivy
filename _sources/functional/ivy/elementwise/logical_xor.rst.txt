@@ -2,10 +2,6 @@ logical_xor
 ===========
 
 .. autofunction:: ivy.functional.ivy.elementwise.logical_xor
-
-.. autofunction:: ivy.container.container_methods.static_logical_xor
-
-.. autofunction:: ivy.container.container_methods.logical_xor
 |
 | **Supported Frameworks:**
 

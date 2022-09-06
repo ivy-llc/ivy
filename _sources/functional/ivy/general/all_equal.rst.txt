@@ -2,8 +2,6 @@ all_equal
 =========
 
 .. autofunction:: ivy.functional.ivy.general.all_equal
-
-.. autofunction:: ivy.container.container_methods.static_all_equal
 |
 | **Supported Frameworks:**
 

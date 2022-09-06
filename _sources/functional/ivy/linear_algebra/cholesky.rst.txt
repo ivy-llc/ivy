@@ -2,10 +2,6 @@ cholesky
 ========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.cholesky
-
-.. autofunction:: ivy.container.container_methods.cholesky
-
-.. autofunction:: ivy.container.container_methods.static_cholesky
 |
 | **Supported Frameworks:**
 

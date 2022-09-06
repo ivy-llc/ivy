@@ -2,8 +2,6 @@ asin
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.asin
-
-.. autofunction:: ivy.container.container_methods.asin
 |
 | **Supported Frameworks:**
 

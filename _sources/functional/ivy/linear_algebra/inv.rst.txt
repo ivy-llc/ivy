@@ -2,8 +2,6 @@ inv
 ===
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.inv
-
-.. autofunction:: ivy.container.container_methods.inv
 |
 | **Supported Frameworks:**
 

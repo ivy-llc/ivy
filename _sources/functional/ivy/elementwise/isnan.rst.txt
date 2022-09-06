@@ -2,8 +2,6 @@ isnan
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.isnan
-
-.. autofunction:: ivy.container.container_methods.static_isnan
 |
 | **Supported Frameworks:**
 

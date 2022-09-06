@@ -2,10 +2,6 @@ equal
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.equal
-
-.. autofunction:: ivy.container.container_methods.static_equal
-
-.. autofunction:: ivy.container.container_methods.equal
 |
 | **Supported Frameworks:**
 

@@ -2,10 +2,6 @@ less
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.less
-
-.. autofunction:: ivy.container.container_methods.less
-
-.. autofunction:: ivy.container.container_methods.static_less
 |
 | **Supported Frameworks:**
 

@@ -2,10 +2,6 @@ unique_values
 =============
 
 .. autofunction:: ivy.functional.ivy.set.unique_values
-
-.. autofunction:: ivy.container.container_methods.static_unique_values
-
-.. autofunction:: ivy.container.container_methods.unique_values
 |
 | **Supported Frameworks:**
 

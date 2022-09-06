@@ -2,8 +2,6 @@ floor
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.floor
-
-.. autofunction:: ivy.container.container_methods.floor
 |
 | **Supported Frameworks:**
 

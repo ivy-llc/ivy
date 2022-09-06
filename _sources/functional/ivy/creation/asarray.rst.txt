@@ -2,8 +2,6 @@ asarray
 =======
 
 .. autofunction:: ivy.functional.ivy.creation.asarray
-
-.. autofunction:: ivy.container.container_methods.static_asarray
 |
 | **Supported Frameworks:**
 

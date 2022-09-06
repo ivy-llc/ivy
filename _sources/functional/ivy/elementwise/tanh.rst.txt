@@ -2,8 +2,6 @@ tanh
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.tanh
-
-.. autofunction:: ivy.container.container_methods.tanh
 |
 | **Supported Frameworks:**
 

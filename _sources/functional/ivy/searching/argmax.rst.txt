@@ -2,10 +2,6 @@ argmax
 ======
 
 .. autofunction:: ivy.functional.ivy.searching.argmax
-
-.. autofunction:: ivy.container.container_methods.argmax
-
-.. autofunction:: ivy.container.container_methods.static_argmax
 |
 | **Supported Frameworks:**
 

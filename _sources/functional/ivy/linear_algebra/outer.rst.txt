@@ -2,10 +2,6 @@ outer
 =====
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.outer
-
-.. autofunction:: ivy.container.container_methods.outer
-
-.. autofunction:: ivy.container.container_methods.static_outer
 |
 | **Supported Frameworks:**
 

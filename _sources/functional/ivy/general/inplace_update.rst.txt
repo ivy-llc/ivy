@@ -2,8 +2,6 @@ inplace_update
 ==============
 
 .. autofunction:: ivy.functional.ivy.general.inplace_update
-
-.. autofunction:: ivy.container.container_methods.static_inplace_update
 |
 | **Supported Frameworks:**
 

@@ -2,8 +2,6 @@ relu
 ====
 
 .. autofunction:: ivy.functional.ivy.activations.relu
-
-.. autofunction:: ivy.container.container_methods.relu
 |
 | **Supported Frameworks:**
 

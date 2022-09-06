@@ -2,8 +2,6 @@ einops_rearrange
 ================
 
 .. autofunction:: ivy.functional.ivy.general.einops_rearrange
-
-.. autofunction:: ivy.container.container_methods.static_einops_rearrange
 |
 | **Supported Frameworks:**
 

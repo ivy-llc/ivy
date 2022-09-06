@@ -2,8 +2,6 @@ sin
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.sin
-
-.. autofunction:: ivy.container.container_methods.static_sin
 |
 | **Supported Frameworks:**
 

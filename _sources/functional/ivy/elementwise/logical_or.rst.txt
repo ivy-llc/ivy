@@ -2,10 +2,6 @@ logical_or
 ==========
 
 .. autofunction:: ivy.functional.ivy.elementwise.logical_or
-
-.. autofunction:: ivy.container.container_methods.static_logical_or
-
-.. autofunction:: ivy.container.container_methods.logical_or
 |
 | **Supported Frameworks:**
 

@@ -2,8 +2,6 @@ roll
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.roll
-
-.. autofunction:: ivy.container.container_methods.roll
 |
 | **Supported Frameworks:**
 

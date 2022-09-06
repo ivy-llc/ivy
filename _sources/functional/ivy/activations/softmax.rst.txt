@@ -2,10 +2,6 @@ softmax
 =======
 
 .. autofunction:: ivy.functional.ivy.activations.softmax
-
-.. autofunction:: ivy.container.container_methods.softmax
-
-.. autofunction:: ivy.container.container_methods.static_softmax
 |
 | **Supported Frameworks:**
 

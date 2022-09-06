@@ -2,8 +2,6 @@ astype
 ======
 
 .. autofunction:: ivy.functional.ivy.data_type.astype
-
-.. autofunction:: ivy.container.container_methods.astype
 |
 | **Supported Frameworks:**
 

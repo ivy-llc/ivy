@@ -2,8 +2,6 @@ default_float_dtype
 ===================
 
 .. autofunction:: ivy.functional.ivy.data_type.default_float_dtype
-
-.. autofunction:: ivy.container.container_methods.static_default_float_dtype
 |
 | **Supported Frameworks:**
 

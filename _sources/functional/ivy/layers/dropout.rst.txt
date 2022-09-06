@@ -2,10 +2,6 @@ dropout
 =======
 
 .. autofunction:: ivy.functional.ivy.layers.dropout
-
-.. autofunction:: ivy.container.container_methods.dropout
-
-.. autofunction:: ivy.container.container_methods.static_dropout
 |
 | **Supported Frameworks:**
 

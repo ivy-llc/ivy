@@ -2,8 +2,6 @@ squeeze
 =======
 
 .. autofunction:: ivy.functional.ivy.manipulation.squeeze
-
-.. autofunction:: ivy.container.container_methods.static_squeeze
 |
 | **Supported Frameworks:**
 

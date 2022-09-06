@@ -2,8 +2,6 @@ cumprod
 =======
 
 .. autofunction:: ivy.functional.ivy.general.cumprod
-
-.. autofunction:: ivy.container.container_methods.static_cumprod
 |
 | **Supported Frameworks:**
 

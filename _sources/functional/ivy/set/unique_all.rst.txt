@@ -2,10 +2,6 @@ unique_all
 ==========
 
 .. autofunction:: ivy.functional.ivy.set.unique_all
-
-.. autofunction:: ivy.container.container_methods.unique_all
-
-.. autofunction:: ivy.container.container_methods.static_unique_all
 |
 | **Supported Frameworks:**
 

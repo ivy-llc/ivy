@@ -2,8 +2,6 @@ flip
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.flip
-
-.. autofunction:: ivy.container.container_methods.flip
 |
 | **Supported Frameworks:**
 

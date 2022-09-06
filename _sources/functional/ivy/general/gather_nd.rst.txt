@@ -2,10 +2,6 @@ gather_nd
 =========
 
 .. autofunction:: ivy.functional.ivy.general.gather_nd
-
-.. autofunction:: ivy.container.container_methods.gather_nd
-
-.. autofunction:: ivy.container.container_methods.static_gather_nd
 |
 | **Supported Frameworks:**
 

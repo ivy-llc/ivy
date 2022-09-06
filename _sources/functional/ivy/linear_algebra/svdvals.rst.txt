@@ -2,8 +2,6 @@ svdvals
 =======
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.svdvals
-
-.. autofunction:: ivy.container.container_methods.svdvals
 |
 | **Supported Frameworks:**
 

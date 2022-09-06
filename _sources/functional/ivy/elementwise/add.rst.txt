@@ -2,10 +2,6 @@ add
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.add
-
-.. autofunction:: ivy.container.container_methods.static_add
-
-.. autofunction:: ivy.container.container_methods.add
 |
 | **Supported Frameworks:**
 

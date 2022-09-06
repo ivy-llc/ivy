@@ -3,8 +3,6 @@ remainder
 
 .. autofunction:: ivy.functional.ivy.elementwise.remainder
 
-.. autofunction:: ivy.container.container_methods.remainder
-
 .. autofunction:: ivy.container.container_methods.static_remainder
 |
 | **Supported Frameworks:**

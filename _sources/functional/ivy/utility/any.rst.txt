@@ -2,8 +2,6 @@ any
 ===
 
 .. autofunction:: ivy.functional.ivy.utility.any
-
-.. autofunction:: ivy.container.container_methods.static_any
 |
 | **Supported Frameworks:**
 

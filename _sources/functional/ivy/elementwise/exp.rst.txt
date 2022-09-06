@@ -2,8 +2,6 @@ exp
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.exp
-
-.. autofunction:: ivy.container.container_methods.static_exp
 |
 | **Supported Frameworks:**
 

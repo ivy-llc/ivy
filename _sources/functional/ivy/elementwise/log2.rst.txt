@@ -2,10 +2,6 @@ log2
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.log2
-
-.. autofunction:: ivy.container.container_methods.log2
-
-.. autofunction:: ivy.container.container_methods.static_log2
 |
 | **Supported Frameworks:**
 

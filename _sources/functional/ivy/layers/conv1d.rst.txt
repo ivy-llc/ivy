@@ -2,8 +2,6 @@ conv1d
 ======
 
 .. autofunction:: ivy.functional.ivy.layers.conv1d
-
-.. autofunction:: ivy.container.container_methods.conv1d
 |
 | **Supported Frameworks:**
 

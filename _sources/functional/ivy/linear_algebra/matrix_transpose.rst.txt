@@ -2,10 +2,6 @@ matrix_transpose
 ================
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_transpose
-
-.. autofunction:: ivy.container.container_methods.matrix_transpose
-
-.. autofunction:: ivy.container.container_methods.static_matrix_transpose
 |
 | **Supported Frameworks:**
 

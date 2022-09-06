@@ -2,10 +2,6 @@ einops_reduce
 =============
 
 .. autofunction:: ivy.functional.ivy.general.einops_reduce
-
-.. autofunction:: ivy.container.container_methods.einops_reduce
-
-.. autofunction:: ivy.container.container_methods.static_einops_reduce
 |
 | **Supported Frameworks:**
 

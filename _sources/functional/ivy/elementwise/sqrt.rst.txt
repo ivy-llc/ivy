@@ -2,10 +2,6 @@ sqrt
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.sqrt
-
-.. autofunction:: ivy.container.container_methods.sqrt
-
-.. autofunction:: ivy.container.container_methods.static_sqrt
 |
 | **Supported Frameworks:**
 

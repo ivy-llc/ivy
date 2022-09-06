@@ -2,8 +2,6 @@ scaled_dot_product_attention
 ============================
 
 .. autofunction:: ivy.functional.ivy.layers.scaled_dot_product_attention
-
-.. autofunction:: ivy.container.container_methods.scaled_dot_product_attention
 |
 | **Supported Frameworks:**
 

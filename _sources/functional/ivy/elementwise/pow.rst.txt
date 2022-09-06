@@ -2,8 +2,6 @@ pow
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.pow
-
-.. autofunction:: ivy.container.container_methods.pow
 |
 | **Supported Frameworks:**
 

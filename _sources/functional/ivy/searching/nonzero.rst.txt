@@ -2,10 +2,6 @@ nonzero
 =======
 
 .. autofunction:: ivy.functional.ivy.searching.nonzero
-
-.. autofunction:: ivy.container.container_methods.static_nonzero
-
-.. autofunction:: ivy.container.container_methods.nonzero
 |
 | **Supported Frameworks:**
 

@@ -2,8 +2,6 @@ diagonal
 ========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.diagonal
-
-.. autofunction:: ivy.container.container_methods.static_diagonal
 |
 | **Supported Frameworks:**
 

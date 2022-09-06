@@ -2,8 +2,6 @@ positive
 ========
 
 .. autofunction:: ivy.functional.ivy.elementwise.positive
-
-.. autofunction:: ivy.container.container_methods.positive
 |
 | **Supported Frameworks:**
 

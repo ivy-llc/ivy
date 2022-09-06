@@ -2,8 +2,6 @@ multi_head_attention
 ====================
 
 .. autofunction:: ivy.functional.ivy.layers.multi_head_attention
-
-.. autofunction:: ivy.container.container_methods.static_multi_head_attention
 |
 | **Supported Frameworks:**
 

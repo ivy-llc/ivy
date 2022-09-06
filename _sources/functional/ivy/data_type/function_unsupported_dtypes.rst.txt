@@ -2,8 +2,6 @@ function_unsupported_dtypes
 ===========================
 
 .. autofunction:: ivy.functional.ivy.data_type.function_unsupported_dtypes
-
-.. autofunction:: ivy.container.container_methods.static_function_unsupported_dtypes
 |
 | **Supported Frameworks:**
 

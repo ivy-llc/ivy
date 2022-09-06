@@ -2,10 +2,6 @@ searchsorted
 ============
 
 .. autofunction:: ivy.functional.ivy.sorting.searchsorted
-
-.. autofunction:: ivy.container.container_methods.static_searchsorted
-
-.. autofunction:: ivy.container.container_methods.searchsorted
 |
 | **Supported Frameworks:**
 

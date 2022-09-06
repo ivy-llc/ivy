@@ -2,8 +2,6 @@ bitwise_and
 ===========
 
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_and
-
-.. autofunction:: ivy.container.container_methods.static_bitwise_and
 |
 | **Supported Frameworks:**
 

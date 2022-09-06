@@ -2,8 +2,6 @@ sparse_cross_entropy
 ====================
 
 .. autofunction:: ivy.functional.ivy.losses.sparse_cross_entropy
-
-.. autofunction:: ivy.container.container_methods.sparse_cross_entropy
 |
 | **Supported Frameworks:**
 

@@ -2,10 +2,6 @@ to_numpy
 ========
 
 .. autofunction:: ivy.functional.ivy.general.to_numpy
-
-.. autofunction:: ivy.container.container_methods.to_numpy
-
-.. autofunction:: ivy.container.container_methods.static_to_numpy
 |
 | **Supported Frameworks:**
 

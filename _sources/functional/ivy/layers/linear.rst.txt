@@ -2,10 +2,6 @@ linear
 ======
 
 .. autofunction:: ivy.functional.ivy.layers.linear
-
-.. autofunction:: ivy.container.container_methods.static_linear
-
-.. autofunction:: ivy.container.container_methods.linear
 |
 | **Supported Frameworks:**
 

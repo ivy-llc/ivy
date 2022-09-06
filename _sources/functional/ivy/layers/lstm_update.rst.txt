@@ -2,8 +2,6 @@ lstm_update
 ===========
 
 .. autofunction:: ivy.functional.ivy.layers.lstm_update
-
-.. autofunction:: ivy.container.container_methods.static_lstm_update
 |
 | **Supported Frameworks:**
 

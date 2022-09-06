@@ -2,10 +2,6 @@ isinf
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.isinf
-
-.. autofunction:: ivy.container.container_methods.isinf
-
-.. autofunction:: ivy.container.container_methods.static_isinf
 |
 | **Supported Frameworks:**
 

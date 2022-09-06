@@ -2,8 +2,6 @@ indices_where
 =============
 
 .. autofunction:: ivy.functional.ivy.general.indices_where
-
-.. autofunction:: ivy.container.container_methods.indices_where
 |
 | **Supported Frameworks:**
 
