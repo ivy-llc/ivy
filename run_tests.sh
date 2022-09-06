@@ -51,6 +51,7 @@ fi
 
 # Process the arguments to prepend the paths so they will work inside the docker container
 FINAL_ARGS=()
+NUM_TESTS=0
 for ARG in ${RAW_ARGS[@]}; do
     if [[ "${ARG::1}" == "-" ]]; then
         # Copy
@@ -58,8 +59,15 @@ for ARG in ${RAW_ARGS[@]}; do
     else
         # Fix paths to test files
         FINAL_ARGS+=("${IVY_PREFIX}/${ARG}")
+        NUM_TESTS+=1
     fi
 done
+
+# Ensure that empty test specs equals to test everything
+if (( $NUM_TESTS == 0 )); then
+    FINAL_ARGS+=("${IVY_PREFIX}/ivy_tests/")
+    NUM_TESTS+=1
+fi
 
 if (( "${DEBUG}" )); then
     printf -v TMP '%s; ' ${FINAL_ARGS[@]}
