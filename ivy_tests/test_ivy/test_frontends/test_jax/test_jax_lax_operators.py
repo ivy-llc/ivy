@@ -5,7 +5,6 @@ from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.jax as ivy_jax
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -1785,33 +1784,12 @@ def test_jax_lax_expm1(
     )
 
 
-@st.composite
-def _log1p_get_dtype_and_data(draw):
-
-    input_dtype = draw(
-        st.shared(st.sampled_from(ivy_jax.valid_float_dtypes), key="shared_dtype")
-    )
-    shape = draw(
-        st.shared(
-            helpers.get_shape(min_num_dims=1),
-            key="shape",
-        )
-    )
-
-    data = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=shape,
-        )
-    )
-
-    return input_dtype, data
-
-
 # log1p
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_log1p_get_dtype_and_data(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.log1p"
     ),
