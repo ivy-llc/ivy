@@ -1,16 +1,12 @@
 # global
 # import ivy
 import numpy as np
-from numpy import mgrid as np_mgrid
-
-# , ogrid as np_ogrid
+from numpy import mgrid as np_mgrid, ogrid as np_ogrid
 from hypothesis import given, strategies as st
 
 # local
 import ivy
-from ivy.functional.frontends.numpy import mgrid
-
-# , ogrid
+from ivy.functional.frontends.numpy import mgrid, ogrid
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -255,3 +251,33 @@ def test_numpy_mgrid(
 
 
 # ogrid
+@handle_cmd_line_args
+@given(range=_get_range_for_grid())
+def test_numpy_ogrid(
+    range,
+    fw,
+):
+    ivy.set_backend(fw)
+    start, stop, step = range
+    if start and stop and step:
+        ret = ogrid[start:stop:step]
+        ret_np = np_ogrid[start:stop:step]
+    elif start and step:
+        ret = ogrid[start::step]
+        ret_np = np_ogrid[start::step]
+    elif stop and step:
+        ret = ogrid[:stop:step]
+        ret_np = np_ogrid[:stop:step]
+    elif start and stop:
+        ret = ogrid[start:stop]
+        ret_np = np_ogrid[start:stop]
+    elif start:
+        ret = ogrid[start:]
+        ret_np = np_ogrid[start:]
+    else:
+        ret = ogrid[:stop]
+        ret_np = np_ogrid[:stop]
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    helpers.value_test(ret_np_flat=ret, ret_np_from_gt_flat=ret_np, rtol=1e-03)
+    ivy.unset_backend()
