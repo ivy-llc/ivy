@@ -111,3 +111,23 @@ def elu_(input, alpha=1.0):
 
 
 elu_.unsupported_dtypes = ("float16",)
+
+
+def celu(input, alpha=1.0, inplace=False):
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(ivy.divide(input, alpha)),
+            1,
+        ),
+    )
+    if inplace:
+        return ivy.add(
+            ivy.maximum(0, input),
+            ivy.minimum(0, prod),
+            out=input,
+        )
+    return ivy.add(
+        ivy.maximum(0, input),
+        ivy.minimum(0, prod),
+    )
