@@ -928,7 +928,7 @@ def test_tensorflow_count_nonzero(
     ),
     native_array=st.booleans(),
 )
-def test_confusion_matrix(
+def test_tensorflow_confusion_matrix(
     labels, predictions, num_classes, as_variable, num_positional_args, native_array, fw
 ):
     helpers.test_frontend_function(
@@ -959,7 +959,7 @@ def test_confusion_matrix(
     ),
     native_array=st.booleans(),
 )
-def test_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array, fw):
+def test_tensorflow_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array, fw):
     input_dtype, coeffs = dtype_and_x
     coeffs = [coeffs]
     helpers.test_frontend_function(
@@ -973,4 +973,97 @@ def test_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array,
         fn_tree="math.polyval",
         coeffs=coeffs,
         x=x,
+    )
+
+
+# unsorted_segment_mean
+@handle_cmd_line_args
+@given(
+    data=helpers.array_values(
+        dtype=ivy.int32, shape=(5,6), min_value=1, max_value=9
+    ),
+    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5,), min_value=0, max_value=4),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_mean"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_unsorted_segment_mean(
+    data, segment_ids, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.float32, ivy.int32],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.unsorted_segment_mean",
+        data=np.asarray(data, dtype=np.float32),
+        segment_ids=np.asarray(segment_ids, dtype=np.int32),
+        num_segments=np.max(segment_ids)+1
+    )
+
+
+# unsorted_segment_sqrt_n
+@handle_cmd_line_args
+@given(
+    data=helpers.array_values(
+        dtype=ivy.int32, shape=(5,6), min_value=1, max_value=9
+    ),
+    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5,), min_value=0, max_value=4),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_sqrt_n"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_unsorted_segment_sqrt_n(
+    data, segment_ids, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.float32, ivy.int32],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.unsorted_segment_sqrt_n",
+        data=np.asarray(data, dtype=np.float32),
+        segment_ids=np.asarray(segment_ids, dtype=np.int32),
+        num_segments=np.max(segment_ids)+1
+    )
+
+
+# zero_fraction
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ), min_num_dims=1
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.zero_fraction"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_zero_fraction(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.zero_fraction",
+        value=np.asarray(x, dtype=input_dtype),
     )
