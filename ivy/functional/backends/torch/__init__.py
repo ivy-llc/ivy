@@ -14,6 +14,8 @@ NativeDevice = torch.device
 NativeDtype = torch.dtype
 NativeShape = torch.Size
 
+NativeSparseArray = torch.Tensor
+
 # native data types
 native_int8 = torch.int8
 native_int16 = torch.int16
