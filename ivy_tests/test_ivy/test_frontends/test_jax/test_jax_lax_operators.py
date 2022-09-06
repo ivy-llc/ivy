@@ -801,7 +801,7 @@ def test_jax_lax_neg(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmax"
     ),
-    index_dtype=helpers.get_dtypes("integer"),
+    index_dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_jax_lax_argmax(
     dtype_x_axis,
@@ -840,7 +840,7 @@ def test_jax_lax_argmax(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmin"
     ),
-    index_dtype=helpers.get_dtypes("integer"),
+    index_dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_jax_lax_argmin(
     dtype_x_axis,
@@ -984,7 +984,7 @@ def test_jax_lax_exp(
 @st.composite
 def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
-    to_dtype = draw(helpers.get_dtypes("numeric"))
+    to_dtype = draw(helpers.get_dtypes("numeric"), full=False)
     assume(ivy.can_cast(dtype, to_dtype))
     return to_dtype
 
