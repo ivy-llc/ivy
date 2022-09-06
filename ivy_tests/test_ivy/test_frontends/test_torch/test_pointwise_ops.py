@@ -1064,8 +1064,6 @@ def test_torch_bitwise_xor(
         ),
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
     ),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -1081,8 +1079,6 @@ def test_torch_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if "int" in input_dtype[0] and "int" in input_dtype[1]:
-        x[1] = np.abs(x[1])
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1109,8 +1105,6 @@ def test_torch_bitwise_left_shift(
         ),
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
     ),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
