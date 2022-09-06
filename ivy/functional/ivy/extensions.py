@@ -84,8 +84,7 @@ class SparseArray:
     # --------#
 
     @data.setter
-    def data(self, data):  # TODO
-        assert ivy.is_native_sparse_array(data)
+    def data(self, data):
         self._init_data(data)
 
     @indices.setter
