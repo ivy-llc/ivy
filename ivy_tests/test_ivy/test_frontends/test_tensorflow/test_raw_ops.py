@@ -821,5 +821,45 @@ def test_tensorflow_Log(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Log",
-        x=np.asarray(x, dtype=input_dtype)
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# reshape
+@st.composite
+def _reshape_helper(draw):
+    # generate a shape s.t len(shape) > 0
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    reshape_shape = draw(helpers.reshape_shapes(shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
+    x = draw(helpers.array_values(dtype=dtype, shape=shape))
+    return x, dtype, reshape_shape
+
+
+@handle_cmd_line_args
+@given(
+    x_reshape=_reshape_helper(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Reshape",
+    ),
+)
+def test_tensorflow_Reshape(
+    x_reshape,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    x, dtype, shape = x_reshape
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Reshape",
+        tensor=np.asarray(x, dtype=dtype),
+        shape=shape,
     )

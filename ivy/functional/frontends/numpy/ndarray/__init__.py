@@ -1,4 +1,6 @@
 # flake8: noqa
+from . import ndarray
+from .ndarray import ndarray
 from . import array_conversion
 from .array_conversion import *
 from . import shape_manipulation
@@ -9,5 +11,3 @@ from . import calculation
 from .calculation import *
 from . import other_attributes
 from .other_attributes import *
-from . import ndarray
-from .ndarray import *

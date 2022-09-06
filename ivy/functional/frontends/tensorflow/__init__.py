@@ -1,4 +1,6 @@
 # flake8: noqa
+from . import tensor
+from .tensor import Tensor
 from . import activations
 from .activations import *
 from . import layers
@@ -27,5 +29,3 @@ from . import signal
 from .signal import *
 from . import sparse
 from .sparse import *
-from . import Tensor
-from .Tensor import *

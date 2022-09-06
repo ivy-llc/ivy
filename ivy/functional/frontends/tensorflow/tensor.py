@@ -16,8 +16,8 @@ class Tensor:
     # Instance Methoods #
     # -------------------#
 
-    def reshape(self, shape, name=None):
-        return tf_frontend.reshape(self, shape, name)
+    def Reshape(self, shape, name="Reshape"):
+        return tf_frontend.Reshape(self.data, shape, name)
 
-    def add(self, y, name=None):
-        return tf_frontend.add(self, y, name)
+    def add(self, y, name="add"):
+        return tf_frontend.add(self.data, y, name)

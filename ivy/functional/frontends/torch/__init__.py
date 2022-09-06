@@ -1,4 +1,6 @@
 # flake8: noqa
+from . import tensor
+from .tensor import Tensor
 from . import indexing_slicing_joining_mutating_ops
 from .indexing_slicing_joining_mutating_ops import *
 from . import pointwise_ops
@@ -41,5 +43,3 @@ from . import utilities
 from .utilities import *
 from . import vision_functions
 from .vision_functions import *
-from . import Tensor
-from .Tensor import *

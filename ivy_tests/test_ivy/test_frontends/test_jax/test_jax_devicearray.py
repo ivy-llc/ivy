@@ -3,7 +3,7 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-from ivy.functional.frontends.jax.DeviceArray import DeviceArray
+from ivy.functional.frontends.jax.devicearray import DeviceArray
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 

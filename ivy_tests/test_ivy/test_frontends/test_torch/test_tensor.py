@@ -29,7 +29,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="functional.frontends.torch.Tensor.add",
     ),
 )
-def test_torch_add(
+def test_torch_instance_add(
     dtype_and_x,
     alpha,
     as_variable,
@@ -72,7 +72,7 @@ def test_torch_add(
         fn_name="ivy.functional.frontends.torch.Tensor.reshape",
     ),
 )
-def test_torch_reshape(
+def test_torch_instance_reshape(
     dtype_value_shape,
     as_variable,
     with_out,
