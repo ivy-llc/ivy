@@ -727,7 +727,7 @@ def test_svdvals(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=3,
         max_num_dims=8,
         min_dim_size=1,
@@ -815,7 +815,7 @@ def test_trace(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -1188,7 +1188,7 @@ def test_cholesky(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=3,
