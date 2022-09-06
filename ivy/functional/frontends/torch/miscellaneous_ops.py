@@ -63,3 +63,12 @@ def diagflat(input, offset=0):
 
 
 diagflat.unsupported_dtypes = ("float16",)
+
+
+def diag(input, diagonal=0, *, out=None):
+    if len(input.shape) == 1:
+        out = diagflat(input, offset=diagonal)
+        return out
+    if len(input.shape) == 2:
+        out = diagonal(input, offset=diagonal)
+        return out

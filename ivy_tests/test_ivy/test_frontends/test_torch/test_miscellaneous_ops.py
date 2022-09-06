@@ -292,3 +292,48 @@ def test_torch_diagflat(
         input=values,
         offset=offset,
     )
+
+
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            ),
+        ),
+        max_dim_size=10,  # TODO: Increase these after ivy.asarray has been optimized.
+        min_dim_size=1,
+        max_num_dims=2,
+        min_num_dims=1,
+    ),
+    offset=st.integers(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.diagflat"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_diag(
+    dtype_and_values,
+    offset,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, values = dtype_and_values
+
+    values = np.asarray(values)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="diag",
+        input=values,
+        diagonal=offset,
+    )
