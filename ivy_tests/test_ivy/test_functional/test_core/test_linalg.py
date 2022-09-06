@@ -1020,14 +1020,12 @@ def test_qr(
         min_value=0.1,
         max_value=10.0,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="svd"),
     fm=st.booleans(),
 )
 def test_svd(
     *,
     dtype_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1040,7 +1038,7 @@ def test_svd(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
