@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence, List
+from typing import Iterable, Optional, Union, Sequence, List, Callable
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -383,6 +383,14 @@ def inplace_increment(
     else:
         x = ivy.Array(val_native)
     return x
+
+
+def vmap(func: Callable,
+         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+         out_axes: Optional[int] = 0) -> Callable:
+    return ivy.to_native_arrays_and_back(jax.vmap(func,
+                                                  in_axes=in_axes,
+                                                  out_axes=out_axes))
 
 
 current_backend_str = lambda: "jax"

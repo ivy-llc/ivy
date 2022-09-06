@@ -3314,3 +3314,36 @@ def statistical_dtype_values(draw, *, function):
 @st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
+
+
+@st.composite
+def arrays_and_axes(draw,
+                    allow_none=False,
+                    min_num_dims=0,
+                    max_num_dims=5,
+                    min_dim_size=1,
+                    max_dim_size=10,
+                    num=2):
+    shapes = list()
+    for _ in range(num):
+        shape = draw(get_shape(allow_none=False,
+                               min_num_dims=min_num_dims,
+                               max_num_dims=max_num_dims,
+                               min_dim_size=min_dim_size,
+                               max_dim_size=max_dim_size))
+        shapes.append(shape)
+    arrays = list()
+    for shape in shapes:
+        arrays.append(draw(array_values(dtype="int32",
+                                        shape=shape,
+                                        min_value=-200,
+                                        max_value=200)))
+    all_axes_ranges = list()
+    for shape in shapes:
+        if None in all_axes_ranges:
+            all_axes_ranges.append(st.integers(0, len(shape) - 1))
+        else:
+            all_axes_ranges.append(st.one_of(st.none(),
+                                             st.integers(0, len(shape) - 1)))
+    axes = draw(st.tuples(*all_axes_ranges))
+    return arrays, axes

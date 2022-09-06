@@ -6,8 +6,9 @@ import numpy as np
 import torch
 from operator import mul
 from functools import reduce
-from typing import List, Optional, Union, Sequence
+from typing import List, Optional, Union, Sequence, Callable
 from numbers import Number
+import functorch
 
 
 torch_scatter = None
@@ -512,3 +513,14 @@ def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
 
 def current_backend_str():
     return "torch"
+
+
+def vmap(func: Callable,
+         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+         out_axes: Optional[int] = 0) -> Callable:
+    def _vmap(*args):
+        new_fun = lambda *args: ivy.to_native(func(*args))
+        new_func = functorch.vmap(new_fun, in_axes, out_axes)
+        return ivy.to_ivy(new_func(*args))
+
+    return _vmap
