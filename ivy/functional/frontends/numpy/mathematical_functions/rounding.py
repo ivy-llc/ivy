@@ -34,8 +34,7 @@ def fix(
     out=None,
 ):
     where = ivy.greater_equal(x, 0)
-    ret = ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)
-    return ret
+    return ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)
 
 
 ceil.unsupported_dtypes = {"torch": ("float16",)}

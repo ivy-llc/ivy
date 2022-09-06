@@ -14,7 +14,7 @@ def _get_dtype_and_batch_matrices(draw):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
     shared_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     shape1 = (dim_size1, shared_size)
     shape2 = (shared_size, dim_size2)
     batched = draw(st.booleans())
@@ -35,7 +35,7 @@ def _get_dtype_and_batch_matrices(draw):
 @st.composite
 def _get_dtype_and_square_matrix(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     mat = draw(
         helpers.array_values(
             dtype=dtype, shape=(dim_size, dim_size), min_value=0, max_value=10
@@ -48,7 +48,7 @@ def _get_dtype_and_square_matrix(draw):
 def _get_dtype_input_and_vectors(draw, with_input=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     vec1 = draw(
         helpers.array_values(dtype=dtype, shape=(dim_size1,), min_value=2, max_value=5)
     )
@@ -70,7 +70,7 @@ def _get_dtype_input_and_matrices(draw, with_input=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
     shared_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     mat1 = draw(
         helpers.array_values(
             dtype=dtype, shape=(dim_size1, shared_size), min_value=2, max_value=5
@@ -96,7 +96,7 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
     shared_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     batch_size = draw(helpers.ints(min_value=2, max_value=4))
     mat1 = draw(
         helpers.array_values(
@@ -128,7 +128,7 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False):
 def _get_dtype_input_and_mat_vec(draw, with_input=False):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
     shared_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     mat = draw(
         helpers.array_values(
             dtype=dtype, shape=(dim_size, shared_size), min_value=2, max_value=5

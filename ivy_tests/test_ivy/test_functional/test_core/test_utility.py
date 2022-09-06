@@ -30,7 +30,7 @@ def test_all(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    axis = axis[0] if isinstance(axis, list) else axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -68,7 +68,7 @@ def test_any(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    axis = axis[0] if isinstance(axis, list) else axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

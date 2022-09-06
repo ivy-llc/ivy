@@ -2,6 +2,7 @@
 
 # global
 import builtins
+from functools import wraps
 import gc
 import inspect
 import math
@@ -2027,8 +2028,8 @@ def match_kwargs(
 
 
 def cache_fn(func: Callable) -> Callable:
-    """Wrap a function, such that when cache=True is passed as an argument, a previously
-    cached output is returned.
+    """Decorator to wrap a function, such that computed outputs are cached
+    to avoid recalculating them later.
 
     Parameters
     ----------
@@ -2040,21 +2041,51 @@ def cache_fn(func: Callable) -> Callable:
     ret
         The newly cache wrapped function.
 
+    Examples
+    --------
+    With positional arguments only:
+    >>> def my_sum(val1:float, val2:float)->float: return val1 + val2
+    >>> cached_sum = ivy.cache_fn(my_sum)
+    >>> print(cached_sum(3, 5)) # Compute the output
+    8
+
+    >>> print(cached_sum(10, 34)) # Compute the output
+    44
+
+    >>> print(cached_sum(3, 5)) # Returns the cached value
+    8
+
+    >>> print(cached_sum(5, 3)) # Compute the output
+    8
+
+
+    With keyword arguments:
+
+    >>> def line_eq(x:float, /, *, slp:float=2, itc:float=0)->float: return x*slp+itc
+    >>> cached_line_eq = ivy.cache_fn(line_eq)
+    >>> print(cached_line_eq(3, itc=5, slp=2))
+    11
+
+    >>> print(cached_line_eq(3, slp=2, itc=5)) # Returns the cached value
+    11
+
+
+    Note: providing keyword arguments by position, or using the default
+    keyword argument values will prevent the cache from being used.
+
+    >>> print(cached_line_eq(5, slp=2)) # Output is re-computed
+    10
+
+    >>> print(cached_line_eq(5)) # Output is re-computed
+    10
+
     """
     global FN_CACHE
     if func not in FN_CACHE:
         FN_CACHE[func] = dict()
 
+    @wraps(func)
     def cached_fn(*args, **kwargs):
-        """Summary.
-
-        Parameters
-        ----------
-        *args
-
-        **kwargs
-
-        """
         key = "".join(
             [str(i) + ", " for i in args]
             + [" kw, "]
