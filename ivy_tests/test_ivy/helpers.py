@@ -2172,6 +2172,8 @@ def dtype_and_values(
                 )
             )
         )
+    if num_arrays == 1:
+        values = values[0]
     if ret_shape:
         return dtype, values, shape
     return dtype, values
@@ -2799,12 +2801,12 @@ def array_values(
         values = [v / large_value_safety_factor for v in values]
     elif dtype == "bool":
         values = draw(list_of_length(x=st.booleans(), length=size))
-    array = np.array(values)
+    array = np.asarray(values, dtype=dtype)
     if dtype != "bool" and not allow_negative:
         array = np.abs(array)
     if isinstance(shape, (tuple, list)):
         array = array.reshape(shape)
-    return array.tolist()
+    return array
 
 
 @st.composite
