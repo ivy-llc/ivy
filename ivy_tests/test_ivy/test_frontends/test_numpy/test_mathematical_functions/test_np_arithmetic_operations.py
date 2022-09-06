@@ -448,7 +448,7 @@ def test_numpy_positive(
         test_values=False,
     )
 
-#negative
+# negative
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
