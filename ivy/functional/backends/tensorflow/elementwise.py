@@ -1,6 +1,7 @@
 # global
-import tensorflow as tf
 from typing import Union, Optional
+
+import tensorflow as tf
 
 # local
 import ivy
@@ -405,6 +406,9 @@ def logaddexp(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.logaddexp(x1, x2)
+
+
+logaddexp.unsupported_dtypes = ("float16",)
 
 
 def logical_and(
