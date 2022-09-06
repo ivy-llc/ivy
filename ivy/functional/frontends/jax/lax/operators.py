@@ -153,6 +153,10 @@ def full_like(x, fill_value, dtype=None, shape=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
+def gather(params, indices, axis=-1):
+    return ivy.gather(params, indices, axis)
+
+
 def ge(x, y):
     return ivy.greater_equal(x, y)
 
