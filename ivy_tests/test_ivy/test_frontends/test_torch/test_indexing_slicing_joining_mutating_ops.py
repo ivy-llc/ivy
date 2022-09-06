@@ -327,6 +327,7 @@ def test_torch_transpose(
 
     
 #chunk
+@handle_cmd_line_args
 @given(
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=tuple(
