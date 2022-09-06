@@ -2,60 +2,77 @@
 # Sensure our script doesn't fail silently
 set -efu
 
-# Some basic parameters that should bery rarely change
-IVY_PREFIX="/ivy"
-DOCKER_IMAGE="unifyai/ivy:latest"
-PYTEST_CMD=("python3" "-m" "pytest")
+# Some basic parameters that should rarely rarely change but
+# can be specified through environment variables
+if [[ -z "${IVY_PREFIX:-}" ]]; then
+    IVY_PREFIX="/ivy"
+fi
+if [[ -z "${DOCKER_IMAGE:-}" ]]; then
+    DOCKER_IMAGE="unifyai/ivy:latest"
+fi
+if [[ -z "${PYTEST_CMD:-}" ]]; then
+    PYTEST_CMD=("python3" "-m" "pytest")
+else
+    echo "WARNING: running eval on: PYTEST_CMD=${PYTEST_CMD}"
+    eval PYTEST_CMD="(${PYTEST_CMD})"
+fi
+if [[ -z "${DOCKER_CMD:-}" ]]; then
+    DOCKER_CMD="docker"
+fi
+if [[ -z "${DOCKER_FLAGS:-}" ]]; then
+    DOCKER_FLAGS=("--rm" "-it")
+else
+    echo "WARNING: running eval on: DOCKER_FLAGS=${DOCKER_FLAGS}"
+    eval DOCKER_FLAGS="(${DOCKER_FLAGS})"
+fi
+if [[ -z "${DEBUG:-}" ]]; then
+    DEBUG=0
+fi
+PWD="$(pwd)"
+RAW_ARGS=("$@") # These quotation marks are indispensible to avoid bugs with filenames with spaces
 
-if [[ "-h" == "$1" || "--help" == "$1" ]]; then
-    echo "USAGE: $0 [TESTS..] -- [PYTEST OPTIONS...]"
-    echo "To run all tests pass no options or use -- as the first one"
+# Check if help is needed
+if [[ "-h" == "${1:-}" || "--help" == "${1:-}" ]]; then
+    echo "USAGE: $0 [PYTEST OPTIONS AND TESTS]"
+    echo "EXAMPLES"
     echo "  $0"
-    echo "  $0 --"
-    echo "To run all tests on a specific file, use its path as the first argument"
+    echo "  $0 -q --no-header --no-summary"
     echo "  $0 ivy_tests/test_ivy/test_functional/test_core/test_general.py"
-    echo "To run a specific test on specific file, use its path and function name as the first argument"
     echo "  $0 ivy_tests/test_ivy/test_functional/test_core/test_general.py::test_array_equal"
-    echo "To run multiple tests just combine them as you would intuitively guess"
-    echo "  $0 ivy_tests/test_ivy/test_functional/test_core/test_general.py::test_array_equal ivy_tests/test_ivy/test_functional/test_core/test_random.py ivy_tests/test_ivy/test_functional/test_core/test_general.py::test_shape"
-    echo "Some examples of pytest options"
-    echo "  --no-header"
-    echo "  --no-summary"
-    echo "  -q same as --quiet"
+    echo "  $0 -q ivy_tests/test_ivy/test_functional/test_core/test_general.py::test_array_equal --no-header ivy_tests/test_ivy/test_functional/test_core/test_general.py --no-summary"
     echo "Remember to always use relative paths from the repository root"
     exit 1
 fi
 
-RAW_ARGS=("$@") # These quotation marks are indispensible to avoid bugs with filenames with spaces
-PYTEST_TESTS=()
-PYTEST_ARGS=()
-ARGS_SPLIT_INDEX=-1 # Holds the position of the '--' argument
-for I in ${!RAW_ARGS[@]}; do
-    if [[ "--" == "${RAW_ARGS[$I]}" ]]; then
-        ARGS_SPLIT_INDEX="${I}"
-        break
-    fi
-done
-for I in ${!RAW_ARGS[@]}; do
-    if (( $I < $ARGS_SPLIT_INDEX || $ARGS_SPLIT_INDEX < 0)); then
-        PYTEST_TESTS+=("${IVY_PREFIX}/${RAW_ARGS[$I]}")
-    elif (( $I > $ARGS_SPLIT_INDEX && $ARGS_SPLIT_INDEX > 0)); then
-        PYTEST_ARGS+=("${RAW_ARGS[$I]}")
+if (( "${DEBUG}" )); then
+    printf -v TMP '%s; ' ${RAW_ARGS[@]}
+    echo "RAW_ARGS[@] =", $TMP
+fi
+
+# Process the arguments to prepend the paths so they will work inside the docker container
+FINAL_ARGS=()
+for ARG in ${RAW_ARGS[@]}; do
+    if [[ "${ARG::1}" == "-" ]]; then
+        # Copy
+        FINAL_ARGS+=("${ARG}")
+    else
+        # Fix paths to test files
+        FINAL_ARGS+=("${IVY_PREFIX}/${ARG}")
     fi
 done
 
-PWD="$(pwd)"
-set -x
+if (( "${DEBUG}" )); then
+    printf -v TMP '%s; ' ${FINAL_ARGS[@]}
+    echo "FINAL_ARGS[@] =", $TMP
+fi
+
+if (( "${DEBUG}" )); then
+    set -x
+fi
+
 # These quotation marks are indispensible to avoid bugs with filenames with spaces
-docker run --rm -it -v "${PWD}":"${IVY_PREFIX}" "${DOCKER_IMAGE}" "${PYTEST_CMD[@]}" "${PYTEST_TESTS[@]}" "${PYTEST_ARGS[@]}"
-set +x
+"${DOCKER_CMD}" run "${DOCKER_FLAGS[@]}" -v "${PWD}":"${IVY_PREFIX}" "${DOCKER_IMAGE}" "${PYTEST_CMD[@]}" "${FINAL_ARGS[@]}"
 
-exit 0
-
-set -x
-
-if [[ -z "${REQUESTED_TESTS}" || "--" -eq "${REQUESTED_TESTS}" ]]; then
-    docker run --rm -it -v "$(pwd)":/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/ ${@: 2}
-else
-    docker run --rm -it -v "$(pwd)":/ivy unifyai/ivy:latest python3 -m pytest "ivy/${REQUESTED_TESTS}" ${@: 2}
+if (( "${DEBUG}" )); then
+    set +x
 fi
