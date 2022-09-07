@@ -173,7 +173,50 @@ def mean(
            While mixed data type promotion is implementation-defined, if the input
            array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
+          
+    Examples
+    --------
+    With :code:`ivy.Array` input:
 
+    >>> x = ivy.array([1., 2., 3.])
+    >>> z = ivy.mean(x)
+    >>> print(z)
+    ivy.array(2.)
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> z = ivy.zeros(3)
+    >>> y = ivy.mean(x, out=z)
+    >>> print(z)
+    ivy.array(1.)
+
+    >>> x = ivy.array([[0., 1., 2.], [4., 6., 10.]])
+    >>> y = ivy.mean(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[2., 3.5, 6.]])
+
+    >>> x = ivy.native_array([[0., 1., 2.], [4., 6., 10.]])
+    >>> y = ivy.mean(x)
+    >>> print(y)
+    ivy.array(3.8333333)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.mean(x)
+    >>> print(y)
+    {
+        a: ivy.array(1.),
+        b: ivy.array(4.)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
+                          b=ivy.array([2., 3., 4.]))
+    >>> z = ivy.mean(x)
+    >>> print(z)
+    {
+        a: ivy.array(2.),
+        b: ivy.array(3.)
+    }
     """
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
