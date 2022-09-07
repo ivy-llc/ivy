@@ -474,8 +474,9 @@ def test_eigvalsh(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0.137,
+        min_value=0,
         max_value=50,
+        small_value_safety_factor=2.5,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
 )
