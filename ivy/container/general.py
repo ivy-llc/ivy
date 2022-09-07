@@ -2883,7 +2883,8 @@ class ContainerWithGeneral(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),\
                             b=ivy.array([[1, 2], [4, 5]]))
-        >>> repeated = ivy.Container.static_einops_repeat(x, 'h w -> (tile h) w', tile=2)
+        >>> repeated = ivy.Container.static_einops_repeat(\
+            x, 'h w -> (tile h) w', tile=2)
         >>> print(repeated)
         {
             a: ivy.array([[30, 40],
