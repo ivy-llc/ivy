@@ -282,7 +282,6 @@ def _parse_ellipsis(so, ndims):
     )
 
 
-# noinspection PyShadowingNames
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -300,7 +299,7 @@ def scatter_nd(
         else ivy.default_dtype(item=updates, as_native=True),
     )
 
-    # hanle non-tensor indices
+    # handle non-tensor indices
     if indices == ():
         return updates
     elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
@@ -312,7 +311,7 @@ def scatter_nd(
                 torch.reshape(value, (-1,))
                 for value in torch.meshgrid(*[torch.range(0, shape[0] - 1)])
             ],
-            axis=-1,
+            dim=-1,
         )
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
         shape = out.shape if ivy.exists(out) else updates.shape
@@ -330,7 +329,7 @@ def scatter_nd(
                     indexing="ij",
                 )
             ],
-            axis=-1,
+            dim=-1,
         )
     else:
         indices = [[indices]] if isinstance(indices, Number) else indices
@@ -408,7 +407,6 @@ def scatter_nd(
             reduce=reduction,
         )
     if not target_given:
-        # noinspection PyTypeChecker
         flat_scatter = torch.where(
             flat_scatter == initial_val,
             torch.zeros(flat_result_size, dtype=updates.dtype),
@@ -420,13 +418,7 @@ def scatter_nd(
     return res
 
 
-scatter_nd.support_native_out = True
-scatter_nd.unsupported_dtypes = (
-    "float16",
-    "uint16",
-    "uint32",
-    "uint64",
-)
+scatter_nd.unsupported_dtypes = ("float16",)
 
 
 def gather(
