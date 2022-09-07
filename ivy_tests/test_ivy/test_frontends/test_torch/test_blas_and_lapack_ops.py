@@ -10,29 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # helpers
 @st.composite
-def _get_dtype_and_batch_matrices(draw):
-    dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
-    shared_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    shape1 = (dim_size1, shared_size)
-    shape2 = (shared_size, dim_size2)
-    batched = draw(st.booleans())
-    if batched:
-        batch_size1 = draw(helpers.ints(min_value=2, max_value=4))
-        batch_size2 = draw(helpers.ints(min_value=2, max_value=4))
-        shape1 = (batch_size1, 1, dim_size1, shared_size)
-        shape2 = (batch_size2, shared_size, dim_size2)
-    mat1 = draw(
-        helpers.array_values(dtype=dtype, shape=shape1, min_value=2, max_value=5)
-    )
-    mat2 = draw(
-        helpers.array_values(dtype=dtype, shape=shape2, min_value=2, max_value=5)
-    )
-    return dtype, mat1, mat2
-
-
-@st.composite
 def _get_dtype_and_square_matrix(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
