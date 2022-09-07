@@ -6,8 +6,7 @@ import ivy
 
 def slogdet(a):
     sign, logabsdet = ivy.slogdet(a)
-    ret = ivy.concat((ivy.reshape(sign, (-1,)), ivy.reshape(logabsdet, (-1,))))
-    return ret
+    return ivy.concat((ivy.reshape(sign, (-1,)), ivy.reshape(logabsdet, (-1,))))
 
 
 slogdet.unsupported_dtypes = ("float16",)

@@ -88,8 +88,7 @@ def is_native_array(x, exclusive=False):
 def floormod(
     x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    ret = np.asarray(x % y)
-    return ret
+    return np.asarray(x % y)
 
 
 def unstack(x: np.ndarray, axis: int, keepdims: bool = False) -> List[np.ndarray]:
