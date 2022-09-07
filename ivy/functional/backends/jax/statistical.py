@@ -27,9 +27,9 @@ def mean(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.mean(x, axis=axis, keepdims=keepdims)
