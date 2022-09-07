@@ -67,15 +67,15 @@ def test_numpy_clip(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
+    as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cbrt"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.array_bools(),
 )
 def test_numpy_cbrt(
     dtype_and_x,
@@ -87,7 +87,14 @@ def test_numpy_cbrt(
     native_array,
     fw,
 ):
-    (input_dtype, x) = dtype_and_x
+    input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
