@@ -58,29 +58,39 @@ def test_torch_instance_add(
 
 
 # reshape
+@st.composite
+def dtypes_x_reshape(draw):
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            shape=helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=10,
+            )
+        )
+    )
+    shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
+    return dtypes, x, shape
+
+
 @handle_cmd_line_args
 @given(
-    dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
-        ret_shape=True,
-    ),
+    dtypes_x_reshape=dtypes_x_reshape(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.Tensor.reshape",
     ),
 )
 def test_torch_instance_reshape(
-    dtype_value_shape,
+    dtypes_x_reshape,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, value, shape = dtype_value_shape
+    input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_array_instance_method(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -91,6 +101,6 @@ def test_torch_instance_reshape(
         frontend="torch",
         frontend_class=Tensor,
         fn_tree="reshape",
-        self=np.asarray(value, dtype=input_dtype),
+        self=np.asarray(x, dtype=input_dtype),
         shape=shape,
     )

@@ -10,6 +10,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+# reshape
 @st.composite
 def dtypes_x_reshape(draw):
     dtypes, x = draw(
@@ -27,7 +28,6 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
-# reshape
 @handle_cmd_line_args
 @given(
     dtypes_x_shape=dtypes_x_reshape(),
