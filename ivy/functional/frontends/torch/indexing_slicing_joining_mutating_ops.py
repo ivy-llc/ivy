@@ -11,7 +11,7 @@ def concat(tensors, dim=0, *, out=None):
 
 
 def chunk(input, chunks, dim=0):
-    return ivy.split(input, num_or_size_splits=chunks, axis=dim, with_remainder=True)
+    return ivy.chunk(input, chunks=chunks, axis=dim)
     
 
 def permute(input, dims):
