@@ -179,6 +179,8 @@ svd.unsupported_dtypes = ("float16",)
 
 
 def vdot(input, other, *, out=None):
+    if len(ivy.shape(input)) != 1 or len(ivy.shape(other)) != 1:
+        raise RuntimeError("input must be 1D vectors")
     return ivy.vecdot(input, other, out=out)
 
 
