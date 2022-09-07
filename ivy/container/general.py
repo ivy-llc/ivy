@@ -892,9 +892,9 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_increment. This method
-        simply wraps the function, and so the docstring for ivy.inplace_increment
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_increment.
+        This method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
 
         Parameters
         ----------

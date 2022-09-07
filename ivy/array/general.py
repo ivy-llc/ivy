@@ -1041,9 +1041,9 @@ class ArrayWithGeneral(abc.ABC):
         self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.inplace_increment. This method simply
-        wraps the function, and so the docstring for ivy.inplace_increment also
-        applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.inplace_increment. This
+        method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
 
         Parameters
         ----------
