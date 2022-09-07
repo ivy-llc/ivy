@@ -345,7 +345,6 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([0., 1., 2.])
         >>> y = ivy.array([0, 1])
         >>> x.gather(y)

@@ -2045,7 +2045,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         With :code:`ivy.Container` input:
 
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
@@ -2130,7 +2129,6 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
                           b = ivy.array([4., 5., 6.]))
         >>> y = ivy.Container(a = ivy.array([0, 1]), \
