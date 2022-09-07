@@ -49,7 +49,8 @@ def _dtype_x_bounded_axis(draw, **kwargs):
         )
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.sigmoid"),
+        fn_name="ivy.functional.frontends.torch.sigmoid"
+    ),
 )
 def test_torch_sigmoid(
     dtype_and_x,
@@ -88,7 +89,8 @@ def test_torch_sigmoid(
     axis=st.integers(-1, 0),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.softmax"),
+        fn_name="ivy.functional.frontends.torch.softmax"
+    ),
 )
 def test_torch_softmax(
     dtype_and_x,
@@ -175,12 +177,11 @@ def test_torch_leaky_relu(
     num_positional_args,
     as_variable,
     with_out,
-    native_array
+    native_array,
     fw,
     alpha,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
