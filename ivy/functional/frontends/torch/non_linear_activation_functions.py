@@ -131,3 +131,32 @@ def celu(input, alpha=1.0, inplace=False):
         ivy.maximum(0, input),
         ivy.minimum(0, prod),
     )
+
+
+def selu(input, inplace=False):
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(input),
+            1,
+        ),
+    )
+    sum_ = ivy.add(
+        ivy.maximum(0, input),
+        ivy.minimum(0, prod),
+    )
+    if inplace:
+        return ivy.multiply(
+            scale,
+            sum_,
+            out=input,
+        )
+    return ivy.multiply(
+        scale,
+        sum_,
+    )
+
+
+selu.unsupported_dtypes = ("float16",)
