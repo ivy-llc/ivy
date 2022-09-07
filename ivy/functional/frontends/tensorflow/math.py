@@ -293,7 +293,7 @@ def unsorted_segment_mean(data, segment_ids, num_segments,
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
-        x[segment_ids[i]] = ivy.add(x[segment_ids[i]], data[i])
+        x[segment_ids[i]] = x[segment_ids[i]] + data[i]
         count[segment_ids[i]] += 1
     for j in range(num_segments):
         x[j] = ivy.divide(x[j], count[j])
@@ -306,7 +306,7 @@ def unsorted_segment_sqrt_n(data, segment_ids, num_segments,
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
-        x[segment_ids[i]] = ivy.add(x[segment_ids[i]], data[i])
+        x[segment_ids[i]] = x[segment_ids[i]] + data[i]
         count[segment_ids[i]] += 1
     for j in range(num_segments):
         x[j] = ivy.divide(x[j], ivy.sqrt(count[j]))
