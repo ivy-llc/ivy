@@ -28,8 +28,7 @@ def argmin(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    ret = tf.convert_to_tensor(ret, dtype=ret.dtype)
-    return ret
+    return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def nonzero(
