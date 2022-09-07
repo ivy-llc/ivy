@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>value_is_nan &mdash; Ivy 1.0 documentation</title>
+  <title>unset_queue_timeout &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="has_nans" href="has_nans.html" />
-    <link rel="prev" title="fourier_encode" href="fourier_encode.html" /> 
+    <link rel="next" title="get_tmp_dir" href="get_tmp_dir.html" />
+    <link rel="prev" title="get_queue_timeout" href="get_queue_timeout.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -138,7 +138,7 @@
 <li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">value_is_nan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exists.html">exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default.html">default</a></li>
@@ -163,7 +163,7 @@
 <li class="toctree-l2"><a class="reference internal" href="print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_queue_timeout.html">set_queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_queue_timeout.html">get_queue_timeout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unset_queue_timeout.html">unset_queue_timeout</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">unset_queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_tmp_dir.html">get_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_tmp_dir.html">set_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_types.html">container_types</a></li>
@@ -247,9 +247,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../general.html">General</a> &raquo;</li>
-      <li>value_is_nan</li>
+      <li>unset_queue_timeout</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/general/value_is_nan.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/general/unset_queue_timeout.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -257,24 +257,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="value-is-nan">
-<h1>value_is_nan<a class="headerlink" href="#value-is-nan" title="Permalink to this heading"></a></h1>
+  <section id="unset-queue-timeout">
+<h1>unset_queue_timeout<a class="headerlink" href="#unset-queue-timeout" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.general.value_is_nan">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">value_is_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_infs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#value_is_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.value_is_nan" title="Permalink to this definition"></a></dt>
-<dd><p>Determine whether the single valued array or scalar is of nan type.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.general.unset_queue_timeout">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">unset_queue_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#unset_queue_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.unset_queue_timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the global queue timeout value (in seconds) to the previous state</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_queue_timeout</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_queue_timeout</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">10.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_shape_array_mode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_queue_timeout</span><span class="p">()</span>
+<span class="go">15.0</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – The input to check Input array.</p></li>
-<li><p><strong>include_infs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – Whether to include infs and -infs in the check. Default is True. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Boolean as to whether the input value is a nan or not.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -290,8 +293,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fourier_encode.html" class="btn btn-neutral float-left" title="fourier_encode" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="has_nans.html" class="btn btn-neutral float-right" title="has_nans" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="get_queue_timeout.html" class="btn btn-neutral float-left" title="get_queue_timeout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="get_tmp_dir.html" class="btn btn-neutral float-right" title="get_tmp_dir" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
