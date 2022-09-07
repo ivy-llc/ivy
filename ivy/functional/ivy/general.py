@@ -2616,8 +2616,8 @@ def get_queue_timeout() -> float:
 
 
 def unset_queue_timeout() -> None:
-    """Reset the mode of converting inputs to ivy.NativeArray, then converting
-    outputs back to ivy.Array to the previous state
+    """
+    Reset the global queue timeout value (in seconds) to the previous state
 
     Examples
     --------
