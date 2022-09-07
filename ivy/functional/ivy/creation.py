@@ -645,7 +645,7 @@ def triu(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).triu(x, k, out=out)
+    return current_backend(x).triu(x, k=k, out=out)
 
 
 @outputs_to_ivy_arrays
