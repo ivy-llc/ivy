@@ -23,19 +23,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="LayerNorm._forward"
     ),
 )
-# @pytest.mark.parametrize(
-#     "x_n_ns_n_target",
-#     [
-#         (
-#             [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
-#             [3],
-#             [[-1.2247356, 0.0, 1.2247356], [-1.2247356, 0.0, 1.2247356]],
-#         ),
-#     ],
-# )
-# @pytest.mark.parametrize("with_v", [True, False])
-# @pytest.mark.parametrize("dtype", ["float32"])
-# @pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_layer_norm_layer(
     *,
     dtype_and_x,
