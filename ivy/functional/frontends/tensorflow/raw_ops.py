@@ -69,6 +69,11 @@ def Tanh(*, x, name="Tanh"):
     return ivy.tanh(x)
 
 
+def Transpose(x, perm, name="Transpose"):
+    ret = ivy.permute_dims(x, axes=perm)
+    return ret
+
+
 def Sin(*, x, name="Sin"):
     return ivy.sin(x)
 
@@ -131,4 +136,3 @@ def Sinh(*, x, name="Sinh"):
 
 def ZerosLike(x, name="ZerosLike"):
     return ivy.zeros_like(x)
-

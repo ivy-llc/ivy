@@ -629,6 +629,46 @@ def test_tensorflow_Tanh(
     )
 
 
+@st.composite
+def _permute_dims_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="shape"))
+    dims = [x for x in range(len(shape))]
+    permutation = draw(st.permutations(dims))
+    return permutation
+
+
+# Transpose
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+        ),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    perm=_permute_dims_helper(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Transpose"
+    ),
+)
+def test_tensorflow_transpose(
+    dtype_and_x, perm, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Transpose",
+        x=np.asarray(x, dtype=dtype),
+        perm=perm,
+    )
+
+
 # Maximum
 @handle_cmd_line_args
 @given(
@@ -993,7 +1033,7 @@ def test_tensorflow_Reshape(
     ),
 )
 def test_tensorflow_zeros_like(
-        dtype_and_x, as_variable, num_positional_args, fw, native_array
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1006,4 +1046,4 @@ def test_tensorflow_zeros_like(
         frontend="tensorflow",
         fn_tree="zeros_like",
         x=np.asarray(x, dtype=dtype),
-)
+    )
