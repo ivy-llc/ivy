@@ -47,7 +47,7 @@ def test_tensorflow_det(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.det",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x,
     )
 
 
@@ -71,7 +71,7 @@ def test_tensorflow_eigvalsh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eigvalsh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x,
     )
 
 
@@ -101,7 +101,7 @@ def test_matrix_rank(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.matrix_rank",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x,
         atol=1.0,
         validate_args=False,
         tol=tolr,
@@ -174,8 +174,8 @@ def test_tensorflow_solve(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.solve",
-        x=np.asarray(x, dtype=input_dtype1),
-        y=np.asarray(y, dtype=input_dtype2),
+        x=x,
+        y=y,
     )
 
 
@@ -205,7 +205,7 @@ def test_tensorflow_slogdet(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.slogdet",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x,
     )
 
 
@@ -231,7 +231,7 @@ def test_tensorflow_pinv(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.pinv",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x,
         rcond=1e-15,
         name=None,
     )
@@ -255,16 +255,7 @@ def test_tensorflow_tensordot(
     native_array,
     fw,
 ):
-    (
-        dtype,
-        x,
-        y,
-        axes,
-    ) = dtype_x_y_axes
-
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-
+    dtype, x, y, axes = dtype_x_y_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -274,7 +265,7 @@ def test_tensorflow_tensordot(
         fw=fw,
         frontend="tensorflow",
         fn_tree="tensordot",
-        x=np.asarray(x, dtype=dtype),
-        y=np.asarray(y, dtype=dtype),
+        x=x,
+        y=y,
         axes=axes,
     )
