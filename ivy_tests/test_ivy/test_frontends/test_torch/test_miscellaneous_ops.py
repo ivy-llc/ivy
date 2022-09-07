@@ -266,7 +266,6 @@ def test_torch_diagonal(
     ),
     native_array=st.booleans(),
 )
-# def test_iop(iop_name, iop, case, oneway_dtypes, oneway_shapes, data):
 def test_torch_broadcast_to(
     data,
     oneway_shapes,
