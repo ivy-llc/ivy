@@ -55,7 +55,6 @@ def _dtype_x_bounded_axis(draw, **kwargs):
 def test_torch_sigmoid(
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -65,14 +64,13 @@ def test_torch_sigmoid(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.sigmoid",
         input=np.asarray(x, dtype=input_dtype),
-        out=None,
     )
 
 
@@ -131,15 +129,12 @@ def test_torch_softmax(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.gelu"
     ),
-    approximate=st.sampled_from(["none", "tanh"]),
 )
 def test_torch_gelu(
     dtype_and_x,
     num_positional_args,
     as_variable,
-    with_out,
     native_array,
-    approximate,
     fw,
 ):
     input_dtype, x = dtype_and_x
@@ -147,14 +142,14 @@ def test_torch_gelu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.gelu",
         input=np.asarray(x, dtype=input_dtype),
-        approximate=approximate,
+        rtol=1e-02,
     )
 
 
@@ -212,7 +207,6 @@ def test_torch_leaky_relu(
 def test_torch_tanh(
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -222,14 +216,13 @@ def test_torch_tanh(
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.tanh",
         input=np.asarray(x, dtype=input_dtype),
-        out=None,
     )
 
 
