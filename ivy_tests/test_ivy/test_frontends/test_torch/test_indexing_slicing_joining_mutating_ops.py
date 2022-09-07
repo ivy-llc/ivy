@@ -47,6 +47,18 @@ def _arrays_idx_n_dtypes(draw):
     return xs, input_dtypes, unique_idx
 
 
+# noinspection DuplicatedCode
+@st.composite
+def _array_idxes_n_dtype(draw, **kwargs):
+    num_dims = draw(helpers.ints(min_value=1, max_value=4))
+    dtype, x= draw(helpers.dtype_and_values(**kwargs, 
+                                            min_num_dims=num_dims, 
+                                            max_num_dims=num_dims, 
+                                           shared_dtype=True))
+    idxes = draw(tuple(helpers.ints(min_value=0, max_value=num_dims - 1)))
+    return x, idxes, dtype
+
+
 # cat
 @handle_cmd_line_args
 @given(
@@ -157,13 +169,12 @@ def test_torch_nonzero(
 # permute
 @handle_cmd_line_args
 @given(
-    dtype_values_axis=helpers.dtype_values_axis(
+    dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)
             ),
         ),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.permute"
@@ -177,7 +188,7 @@ def test_torch_permute(
     native_array,
     fw,
 ):
-    dtype, value, axis = dtype_values_axis
+    x, idxes, dtype = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -187,8 +198,8 @@ def test_torch_permute(
         fw=fw,
         frontend="torch",
         fn_tree="permute",
-        input=np.asarray(value, dtype=dtype),
-        dims=axis,
+        input=np.asarray(x, dtype=dtype),
+        dims=idxes,
     )
 
 
@@ -392,6 +403,7 @@ def test_torch_squeeze(
     dtype_and_values,
     dim,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -400,7 +412,7 @@ def test_torch_squeeze(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -438,6 +450,7 @@ def test_torch_swapaxes(
     axis0,
     axis1,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -446,7 +459,7 @@ def test_torch_swapaxes(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
