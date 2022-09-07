@@ -63,9 +63,7 @@ def test_unset_with_grads(grads):
 # variable
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_variable(
     *,
@@ -93,9 +91,7 @@ def test_variable(
 # is_variable
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_is_variable(
     *,
@@ -123,9 +119,7 @@ def test_is_variable(
 # variable data
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_variable_data(dtype_and_x, native_array, container, instance_method, fw):
     dtype, x = dtype_and_x
@@ -146,9 +140,7 @@ def test_variable_data(dtype_and_x, native_array, container, instance_method, fw
 # stop_gradient
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     preserve_type=st.booleans(),
 )
 def test_stop_gradient(
@@ -174,7 +166,7 @@ def test_stop_gradient(
 @handle_cmd_line_args
 @given(
     dtype_and_xs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         min_dim_size=1,
         min_value=0,
@@ -193,7 +185,7 @@ def test_execute_with_gradients(
         array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
         array_vals = ivy.multi_index_nest(xs, array_idxs)
         final_array = ivy.stack(array_vals)
-        ret = ivy.sum(final_array)
+        ret = ivy.mean(final_array)
         return ret
 
     dtype, xs = dtype_and_xs
@@ -208,6 +200,8 @@ def test_execute_with_gradients(
         fw=fw,
         fn_name="execute_with_gradients",
         func=func,
+        rtol_=1e-2,
+        atol_=1e-2,
         xs=np.asarray(xs, dtype=dtype),
         retain_grads=retain_grads,
     )

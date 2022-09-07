@@ -303,6 +303,11 @@ def tensordot(
     return ret
 
 
+# ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
+#  is fixed.
+tensordot.unsupported_dtypes = ("int32",)
+
+
 def trace(
     x: torch.Tensor, offset: int = 0, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
