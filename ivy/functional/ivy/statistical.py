@@ -179,7 +179,7 @@ def mean(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1., 2., 3.])
-    >>> z = x.mean()
+    >>> z = mean(x)
     >>> print(z)
     ivy.array(2.)
 
@@ -190,7 +190,7 @@ def mean(
     ivy.array(1.)
 
     >>> x = ivy.array([[0., 1., 2.], [4., 6., 10.]])
-    >>> y = ivy.mean(x, 0, True)
+    >>> y = ivy.mean(x, axis=0, keepdims=True)
     >>> print(y)
     ivy.array([[2., 3.5, 6.]])
 
@@ -211,7 +211,7 @@ def mean(
 
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]),\
                           b=ivy.array([2., 3., 4.]))
-    >>> z = x.mean()
+    >>> z = ivy.mean(x)
     >>> print(z)
     {
         a: ivy.array(2.),
