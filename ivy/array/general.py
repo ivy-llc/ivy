@@ -16,7 +16,7 @@ class ArrayWithGeneral(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
-        wraps the function, and so the docstring for ivy.is_native_array 
+        wraps the function, and so the docstring for ivy.is_native_array
         also applies to this method with minimal changes.
 
         Parameters
@@ -38,8 +38,8 @@ class ArrayWithGeneral(abc.ABC):
         self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply 
-        wraps the function, and so the docstring for ivy.is_ivy_array also applies 
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_array also applies
         to this method with minimal changes.
 
         Parameters
@@ -641,7 +641,6 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Array instance method variant of ivy.stable_divide. This method simply wraps
         the function, and so the docstring for ivy.stable_divide also applies to this
         method with minimal changes.
-
         Parameters
         ----------
         self
@@ -650,32 +649,11 @@ class ArrayWithGeneral(abc.ABC):
             denominator for division.
         min_denominator
             the minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
-
         Returns
         -------
         ret
             a numpy array containing the elements of numerator divided by
             the corresponding element of denominator
-
-        Examples
-        --------
-        >>> x = ivy.array([4., 5., 6.])
-        >>> y = x.stable_divide(2)
-        >>> print(y)
-        ivy.array([2., 2.5, 3.])
-
-        >>> x = ivy.array([4, 5, 6])
-        >>> y = x.stable_divide(4, min_denominator=1)
-        >>> print(y)
-        ivy.array([0.8, 1. , 1.2])
-
-        >>> x = ivy.array([[4., 5., 6.], [7., 8., 9.]])
-        >>> y = ivy.array([[1., 2., 3.], [2., 3., 4.]])
-        >>> z = x.stable_divide(y)
-        >>> print(z)
-        ivy.array([[4.  , 2.5 , 2.  ],
-               [3.5 , 2.67, 2.25]])
-
         """
         return ivy.stable_divide(self, denominator, min_denominator=min_denominator)
 
@@ -711,13 +689,13 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([ 4, 16, 25])
 
         >>> x = ivy.array([2, 4, 5])
-        >>> y = x.stable_pow(x, 4, min_base=1)
+        >>> y = x.stable_pow(4, min_base=1)
         >>> print(y)
         ivy.array([  81,  625, 1300])
 
         >>> x = ivy.array([[4, 5, 6], [7, 8, 9]])
-        >>> y = ivy.array([[1, 2,3], [2, 3, 4]])
-        >>> z = x.stable_pow(x, y)
+        >>> y = ivy.array([[1, 2, 3], [2, 3, 4]])
+        >>> z = x.stable_pow(y)
         >>> print(z)
         ivy.array([[   4,   25,  216],
                [  49,  512, 6560]])
@@ -1001,33 +979,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.default(self, default_val, catch_exceptions, rev, with_callable)
-
-    def stable_pow(
-        self: ivy.Array,
-        exponent: Union[Number, ivy.Array, ivy.NativeArray],
-        min_base: float = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
-        the function, and so the docstring for ivy.stable_pow also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array, used as the base.
-        exponent
-            The exponent number.
-        min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
-
-        Returns
-        -------
-        ret
-            The new item following the numerically stable power.
-
-        """
-        return ivy.stable_pow(self, exponent, min_base=min_base)
 
     def supports_inplace(self: ivy.Array) -> bool:
         """

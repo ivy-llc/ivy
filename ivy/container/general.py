@@ -1180,7 +1180,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             dtype=dtype,
-            out=out
+            out=out,
         )
 
     def cumsum(
@@ -1334,7 +1334,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied,
             map_sequences,
             dtype=dtype,
-            out=out
+            out=out,
         )
 
     @staticmethod
@@ -2114,15 +2114,15 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],  
+        >> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4],
                                            [0.735, -6.7, 13.27]],
-                                          [[-24.037, 8.5, 26.7],  
+                                          [[-24.037, 8.5, 26.7],
                                            [0.451, 12.4, 1.7]],
-                                          [[-5.6, -18.19, -20.35],  
+                                          [[-5.6, -18.19, -20.35],
                                            [2.58, -1.006, -9.973]]]),
-                            b=ivy.array([[[-4.47, 0.93, -3.34],  
-                                          [3.66, 24.29, 3.64]], 
-                                         [[4.96, 1.52, -10.67],  
+                            b=ivy.array([[[-4.47, 0.93, -3.34],
+                                          [3.66, 24.29, 3.64]],
+                                         [[4.96, 1.52, -10.67],
                                           [4.36, 13.96, 0.3]]]))
         >> reduced = ivy.Container.static_einops_reduce(x, 'a b c -> () () c', 'mean')
         >> print(reduced)
@@ -2194,8 +2194,8 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >> x = ivy.Container(a=ivy.array([[[5, 4, 3],
-                                           [11, 2, 9]], 
-                                          [[3, 5, 7], 
+                                           [11, 2, 9]],
+                                          [[3, 5, 7],
                                            [9, 7, 1]]]),
                             b=ivy.array([[[9,7,6],
                                           [5,2,1]],
@@ -2268,14 +2268,14 @@ class ContainerWithGeneral(ContainerBase):
         >> repeated = ivy.Container.static_einops_repeat(x, 'h w -> (tile h) w', tile=2)
         >> print(repeated)
         {
-            a: ivy.array([[30, 40],  
-                        [50, 75],  
-                        [30, 40],  
+            a: ivy.array([[30, 40],
+                        [50, 75],
+                        [30, 40],
                         [50, 75]]),
-            b: ivy.array([[1, 2],    
-                        [4, 5],    
-                        [1, 2],    
-                        [4, 5]])   
+            b: ivy.array([[1, 2],
+                        [4, 5],
+                        [1, 2],
+                        [4, 5]])
         }
 
         """
@@ -2333,7 +2333,7 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             New container with einops.repeat having been applied.
-        
+
         Examples
         --------
         >> x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),
@@ -2341,10 +2341,10 @@ class ContainerWithGeneral(ContainerBase):
         >> repeated = x.einops_repeat('h w ->  h  (w tile)', tile=2)
         >> print(repeated)
         {
-            a: ivy.array([[30, 30, 40, 40],  
+            a: ivy.array([[30, 30, 40, 40],
                           [50, 50, 75, 75]]),
-            b: ivy.array([[1, 1, 2, 2],      
-                          [4, 4, 5, 5]])     
+            b: ivy.array([[1, 1, 2, 2],
+                          [4, 4, 5, 5]])
         }
 
         """
@@ -2992,16 +2992,16 @@ class ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([10., 15.]), b=ivy.array([20., 25.]))
-        >>> y = x.static_stable_pow(3)
+        >>> y = ivy.Container.static_stable_pow(x, 3)
         >>> print(y)
         {
-            a: ivy.array([1000., 3380.]),
-            b: ivy.array([8000., 15600.])
+            a: array([1000.00287, 3375.0063], dtype=float32),
+            b: array([8000.011, 15625.018], dtype=float32)
         }
 
         >>> x = ivy.Container(a=3, b=10)
         >>> y = ivy.array([4, 5])
-        >>> z = x.static_stable_pow(y)
+        >>> z = ivy.Container.static_stable_pow(x, y)
         >>> print(z)
         {
             a: array([81.00108001, 243.00405003]),
@@ -3010,21 +3010,23 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 4.]))
         >>> y = ivy.Container(a=ivy.array([0.5, 2.5]), b=ivy.array([3.5, 1.5]))
-        >>> z = x.static_stable_pow(y)
+        >>> z = ivy.Container.static_stable_pow(x, y)
         >>> print(z)
         {
-            a: ivy.array([2.65, 5.66]),
-            b: ivy.array([46.8, 8.])
+            a: array([2.6457531, 5.656925], dtype=float32),
+            b: array([46.76592, 8.0000305], dtype=float32)
         }
 
-        >>> x = ivy.Container(a=ivy.array([1.5, 2.], [3., 4.]),\
-                              b=ivy.array([5., 6.], [7., 8.]))
+        >>> x = ivy.Container(a=ivy.array([[1.5, 2.], [3., 4.]]),\
+                              b=ivy.array([[5., 6.], [7., 8.]]))
         >>> y = ivy.Container(a=ivy.array([0.5, 2.5]), b=ivy.array([3.5, 1.5]))
-        >>> z = x.static_stable_pow(y, min_base=2)
+        >>> z = ivy.Container.static_stable_pow(x, y, min_base=2)
         >>> print(z)
         {
-            a: ivy.array([1.87, 32.]),
-            b: ivy.array([907., 22.6])
+            a: array([[1.8708287, 32.],
+                      [2.236068, 88.18163]], dtype=float32),
+            b: array([[907.4927, 22.627417],
+                      [2187., 31.622776]], dtype=float32)
         }
 
         """
@@ -3084,8 +3086,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.stable_pow(3)
         >>> print(y)
         {
-            a: ivy.array([1000., 3380.]),
-            b: ivy.array([8000., 15600.])
+            a: array([1000.00287, 3375.0063], dtype=float32),
+            b: array([8000.011, 15625.018], dtype=float32)
         }
 
         >>> x = ivy.Container(a=3, b=10)
@@ -3102,18 +3104,20 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = x.stable_pow(y)
         >>> print(z)
         {
-            a: ivy.array([2.65, 5.66]),
-            b: ivy.array([46.8, 8.])
+            a: array([2.6457531, 5.656925], dtype=float32),
+            b: array([46.76592, 8.0000305], dtype=float32)
         }
 
-        >>> x = ivy.Container(a=ivy.array([1.5, 2.], [3., 4.]),\
-                              b=ivy.array([5., 6.], [7., 8.]))
+        >>> x = ivy.Container(a=ivy.array([[1.5, 2.], [3., 4.]]),\
+                              b=ivy.array([[5., 6.], [7., 8.]]))
         >>> y = ivy.Container(a=ivy.array([0.5, 2.5]), b=ivy.array([3.5, 1.5]))
         >>> z = x.stable_pow(y, min_base=2)
         >>> print(z)
         {
-            a: ivy.array([1.87, 32.]),
-            b: ivy.array([907., 22.6])
+            a: array([[1.8708287, 32.],
+                     [2.236068, 88.18163]], dtype=float32),
+            b: array([[907.4927, 22.627417],
+                     [2187., 31.622776]], dtype=float32)
         }
 
         """
