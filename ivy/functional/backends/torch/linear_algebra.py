@@ -16,17 +16,18 @@ def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if not upper:
-        ret = torch.linalg.cholesky(x, out=out)
+        return torch.linalg.cholesky(x, out=out)
     else:
         ret = torch.transpose(
             torch.linalg.cholesky(
-                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2),
-                out=out,
+                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
             ),
             dim0=len(x.shape) - 1,
             dim1=len(x.shape) - 2,
         )
-    return ret
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
 
 
 cholesky.unsupported_dtypes = ("float16", "bfloat16")
@@ -146,9 +147,9 @@ matrix_power.support_native_out = True
 
 def matrix_rank(
     x: torch.Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
     /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
@@ -300,6 +301,11 @@ def tensordot(
     else:
         ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
     return ret
+
+
+# ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
+#  is fixed.
+tensordot.unsupported_dtypes = ("int32",)
 
 
 def trace(
