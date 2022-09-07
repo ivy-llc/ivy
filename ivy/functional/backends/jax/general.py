@@ -85,8 +85,7 @@ def container_types():
 
 
 def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = x % y
-    return ret
+    return x % y
 
 
 def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
@@ -140,9 +139,15 @@ def cumsum(
     exclusive: Optional[bool] = False,
     reverse: Optional[bool] = False,
     *,
-    dtype: jnp.dtype,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(dtype, x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
@@ -357,8 +362,7 @@ def one_hot(
 
 def indices_where(x: JaxArray) -> JaxArray:
     where_x = jnp.where(x)
-    ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
-    return ret
+    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
 
 
 def inplace_decrement(x, val):

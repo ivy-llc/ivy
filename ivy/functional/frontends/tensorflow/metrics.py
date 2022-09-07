@@ -134,7 +134,7 @@ def _sparse_categorical_matches(y_true, y_pred):
     y_pred = ivy.argmax(y_pred, axis=-1)
 
     # cast prediction type to be the same as ground truth
-    y_pred = ivy.astype(y_pred, ivy.dtype(y_true), copy=False)
+    y_pred = ivy.astype(y_pred, y_true.dtype, copy=False)
 
     matches = ivy.astype(ivy.equal(y_true, y_pred), ivy.float32)
     if reshape:
@@ -145,3 +145,61 @@ def _sparse_categorical_matches(y_true, y_pred):
 
 def categorical_accuracy(y_true, y_pred):
     return _sparse_categorical_matches(ivy.argmax(y_true, axis=-1), y_pred)
+
+
+def kl_divergence(y_true, y_pred):
+    y_true = ivy.array(y_true)
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(y_true, y_pred.dtype)
+    # clip to range but avoid div-0
+    y_true = ivy.clip(y_true, 1e-7, 1)
+    y_pred = ivy.clip(y_pred, 1e-7, 1)
+
+    return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1)
+
+
+def poisson(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.array(y_true)
+    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+
+    return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
+
+
+def mean_squared_error(y_true, y_pred):
+    return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
+
+
+def mean_absolute_percentage_error(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.array(y_true)
+    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+
+    diff = ivy.abs((y_true - y_pred) / ivy.maximum(ivy.abs(y_true), 1e-7))
+    return 100.0 * ivy.mean(diff, axis=-1)
+
+
+def _cond_convert_labels(y_true):
+    are_zeros = ivy.equal(y_true, 0.0)
+    are_ones = ivy.equal(y_true, 1.0)
+    is_binary = ivy.all(ivy.logical_or(are_zeros, are_ones))
+
+    # convert [0, 1] labels to [-1, 1]
+    if is_binary:
+        return 2.0 * y_true - 1
+
+    return y_true
+
+
+def hinge(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype, copy=False)
+    y_true = _cond_convert_labels(y_true)
+    return ivy.mean(ivy.maximum(1.0 - y_true * y_pred, 0.0), axis=-1)
+
+
+def squared_hinge(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
+    y_true = _cond_convert_labels(y_true)
+    return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)

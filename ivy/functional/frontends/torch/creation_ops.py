@@ -47,3 +47,10 @@ def ones(size, *, out=None, dtype=None, device=None, requires_grad=False):
     if requires_grad:
         return ivy.variable(ret)
     return ret
+
+
+def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
+    ret = ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret

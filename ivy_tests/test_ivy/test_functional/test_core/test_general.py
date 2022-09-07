@@ -263,7 +263,7 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
 @handle_cmd_line_args
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_to_scalar(object_in, dtype, device, fw):
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
@@ -428,16 +428,12 @@ def test_clip_vector_norm(
 
 
 # floormod
+@handle_cmd_line_args
 @given(
     xy=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, min_value=1
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=st.integers(1, 2),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="floormod"),
 )
 def test_floormod(
     xy,
@@ -454,8 +450,6 @@ def test_floormod(
     dtype = xy[0]
     x = xy[1][0]
     divisor = xy[1][1]
-    if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
-        return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -599,7 +593,7 @@ def test_indices_where(
 @given(
     depth=helpers.ints(min_value=0, max_value=100),
     x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
@@ -635,7 +629,7 @@ def test_one_hot(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         valid_axis=True,
@@ -676,7 +670,7 @@ def test_cumsum(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         valid_axis=True,
@@ -1089,7 +1083,6 @@ def test_framework_setting_with_threading(device):
 
 @handle_cmd_line_args
 def test_framework_setting_with_multiprocessing(device):
-
     if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
@@ -1127,7 +1120,6 @@ def test_framework_setting_with_multiprocessing(device):
 
 @handle_cmd_line_args
 def test_explicit_ivy_framework_handles(device):
-
     if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
@@ -1714,6 +1706,104 @@ def test_arg_names(x_n_value):
     x, value = x_n_value
     ret = ivy.arg_names(x)
     assert ret == value
+
+
+def _composition_1():
+    return ivy.relu().argmax()
+
+
+def _composition_2():
+    return ivy.ceil() or ivy.linspace()
+
+
+# function_supported_devices_and_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (
+            _composition_1,
+            {
+                "cpu": (
+                    "bool",
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "bfloat16",
+                    "float16",
+                    "float32",
+                    "float64",
+                )
+            },
+        ),
+        (
+            _composition_2,
+            {
+                "cpu": (
+                    "bool",
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "bfloat16",
+                    "float16",
+                    "float32",
+                    "float64",
+                )
+            },
+        ),
+    ],
+)
+def test_function_supported_device_and_dtype(func, expected):
+    res = ivy.function_supported_devices_and_dtypes(func)
+    exp = {}
+    for dev in expected:
+        exp[dev] = tuple((set(ivy.valid_dtypes).intersection(expected[dev])))
+        if ivy.current_backend_str() == "torch":
+            exp[dev] = tuple((set(exp[dev]).difference({"float16"})))
+
+    all_key = set(res.keys()).union(set(exp.keys()))
+    for key in all_key:
+        assert key in res
+        assert key in exp
+        assert sorted(res[key]) == sorted(exp[key])
+
+
+# function_unsupported_devices_and_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (_composition_1, {"gpu": ivy.all_dtypes, "tpu": ivy.all_dtypes}),
+        # (_composition_2, {'gpu': ivy.all_dtypes, 'tpu': ivy.all_dtypes})
+    ],
+)
+def test_function_unsupported_devices(func, expected):
+    res = ivy.function_unsupported_devices_and_dtypes(func)
+
+    exp = expected.copy()
+
+    if ivy.invalid_dtypes:
+        exp["cpu"] = ivy.invalid_dtypes
+    if ivy.current_backend_str() == "torch":
+        exp["cpu"] = tuple((set(exp["cpu"]).union({"float16"})))
+
+    all_key = set(res.keys()).union(set(exp.keys()))
+    for key in all_key:
+        assert key in res
+        assert key in exp
+        assert sorted(res[key]) == sorted(exp[key])
+
+
+# Still to Add #
+# ---------------#
 
 
 @handle_cmd_line_args

@@ -120,6 +120,12 @@ ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod_
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is -0) -> NaN]
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]
 
+############################# Ivy only skips - torch #############################
+
+# Test is sending unsupported torch dtypes
+ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_prod
+ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_sum
+
 ### Failing for other reasons ###
 
 # output differs from expected
