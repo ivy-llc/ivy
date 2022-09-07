@@ -48,7 +48,7 @@ def pixel_unshuffle(input, downscale_factor):
     h = input_shape[2]
     w = input_shape[3]
     downscale_factor_squared = downscale_factor * downscale_factor
-    assert (h % downscale_factor == 0 & w % downscale_factor == 0), (
+    assert ((h % downscale_factor == 0) & (w % downscale_factor == 0)), (
         "pixel_unshuffle expects input height and width to be divisible by "
         + "downscale_factor, but got input with sizes "
         + str(input_shape)

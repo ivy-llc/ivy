@@ -51,3 +51,48 @@ def test_torch_pixel_shuffle(
         input=input,
         upscale_factor=factor,
     )
+
+
+# pixel_unshuffle
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_float_dtypes).intersection(
+                set(ivy_torch.valid_float_dtypes)
+            )
+        ),
+        min_value=0,
+        min_num_dims=4,
+        max_num_dims=4,
+        min_dim_size=1,
+    ),
+    factor=st.integers(min_value=1),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.pixel_unshuffle"
+    ),
+    native_array=st.booleans(),
+)
+def test_torch_pixel_unshuffle(
+    dtype_and_x,
+    factor,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    input = np.asarray(x, dtype=input_dtype)
+    assume((ivy.shape(input)[2] % factor == 0) & (ivy.shape(input)[3] % factor == 0))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.pixel_unshuffle",
+        input=input,
+        downscale_factor=factor,
+    )
