@@ -987,7 +987,7 @@ def test_tensorflow_polyval(dtype_and_x, x, as_variable, num_positional_args,
                                      min_value=0, max_value=4),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_mean"
+        fn_name="ivy.functional.frontends.tensorflow.unsorted_segment_mean"
     ),
     native_array=st.booleans(),
 )
@@ -1002,7 +1002,7 @@ def test_tensorflow_unsorted_segment_mean(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="math.unsorted_segment_mean",
+        fn_tree="unsorted_segment_mean",
         data=np.asarray(data, dtype=np.float32),
         segment_ids=np.asarray(segment_ids, dtype=np.int32),
         num_segments=np.max(segment_ids) + 1
@@ -1019,7 +1019,7 @@ def test_tensorflow_unsorted_segment_mean(
                                      min_value=0, max_value=4),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_sqrt_n"
+        fn_name="ivy.functional.frontends.tensorflow.unsorted_segment_sqrt_n"
     ),
     native_array=st.booleans(),
 )
@@ -1034,7 +1034,7 @@ def test_tensorflow_unsorted_segment_sqrt_n(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="math.unsorted_segment_sqrt_n",
+        fn_tree="unsorted_segment_sqrt_n",
         data=np.asarray(data, dtype=np.float32),
         segment_ids=np.asarray(segment_ids, dtype=np.int32),
         num_segments=np.max(segment_ids) + 1
@@ -1051,7 +1051,7 @@ def test_tensorflow_unsorted_segment_sqrt_n(
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.math.zero_fraction"
+        fn_name="ivy.functional.frontends.tensorflow.zero_fraction"
     ),
     native_array=st.booleans(),
 )
@@ -1067,6 +1067,6 @@ def test_tensorflow_zero_fraction(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="math.zero_fraction",
+        fn_tree="zero_fraction",
         value=np.asarray(x, dtype=input_dtype),
     )
