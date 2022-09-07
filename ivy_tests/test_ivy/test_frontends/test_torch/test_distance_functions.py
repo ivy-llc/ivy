@@ -34,7 +34,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 )
 def test_torch_pairwise_distance(
     dtype_and_x,
-    # dtype_and_x2,
     p,
     eps,
     keepdims,
