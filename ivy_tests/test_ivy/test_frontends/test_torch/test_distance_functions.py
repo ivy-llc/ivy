@@ -19,22 +19,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         ),
         num_arrays=2,
     ),
-    # dtype_and_x2=helpers.dtype_and_values(
-    #    available_dtypes=tuple(
-    #        set(ivy_np.valid_float_dtypes).intersection(
-    #            set(ivy_torch.valid_float_dtypes)
-    #        )
-    #    ),
-    #    # TODO: Find a better way to make sure that x1 and x2 are the same size
-    #    # This does ensure that, but it also ensures that they are always 3x3 matrices
-    #    min_num_dims=2,
-    #    max_num_dims=2,
-    #    min_dim_size=3,
-    #    max_dim_size=3,
-    # ),
-    # The following bounds are arbitrary
-    # (other than min_value = 0 for p,
-    # and a max_value = 10 for p causes overflow issues.)
     p=helpers.floats(
         min_value=0, max_value=3.0, allow_nan=False, allow_inf=False, exclude_min=True
     ),
