@@ -746,6 +746,44 @@ def test_torch_matrix_power(
     )
 
 
+# matrix_rank
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_get_dtype_and_square_matrix(),
+    rtol=st.floats(1e-05, 1e-03),
+    sym=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.matrix_rank"
+    ),
+)
+def test_torch_matrix_rank(
+    dtype_and_x,
+    rtol,
+    sym,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="matrix_rank",
+        rtol=1e-01,
+        input=np.asarray(x, dtype=dtype),
+        tol=rtol,
+        symmetric=sym,
+    )
+
+
 # mm
 @handle_cmd_line_args
 @given(

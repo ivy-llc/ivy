@@ -114,6 +114,18 @@ def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
 
 
+def matrix_rank(input, tol=None, symmetric=False, *, out=None):
+    # TODO: add symmetric
+    return ivy.matrix_rank(input, rtol=tol, out=out).astype("int64")
+
+
+matrix_rank.unsupported_dtypes = {"jax": ("float16",), "torch": ("float16",)}
+
+
+def matrix_exp():
+    pass
+
+
 def mm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 2 or len(ivy.shape(mat2)) != 2:
         raise RuntimeError("input must be 2D matrices")
@@ -157,7 +169,7 @@ qr.unsupported_dtypes = ("float16",)
 
 
 def svd(input, some=True, compute_uv=True, *, out=None):
-    # TODO: add compute_uv checks
+    # TODO: add compute_uv
     if some:
         ret = ivy.svd(input, full_matrices=False)
     else:
