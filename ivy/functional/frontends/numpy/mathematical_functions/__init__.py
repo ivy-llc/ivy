@@ -24,4 +24,4 @@ from .extrema_finding import *
 from . import miscellaneous
 from .miscellaneous import *
 from . import lcm_and_gcd
-from lcm_and_gcd import *
+from .lcm_and_gcd import *
