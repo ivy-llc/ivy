@@ -215,7 +215,7 @@ def test_tensorflow_slogdet(
 
 
 @st.composite
-def _get_spd_matrix(draw):
+def _get_spd_lt_matrix(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(st.sampled_from(ivy_np.valid_float_dtypes), key="shared_dtype")
@@ -233,6 +233,8 @@ def _get_spd_matrix(draw):
     )
 
     # spd = [ivy.matmul(ivy.matrix_transpose(elem), elem) for elem in gen]
+    # spd_lt = [ivy.tril(elem) for elem in spd]
+    # return input_dtype, spd_lt
 
     return input_dtype, gen
 
@@ -255,7 +257,7 @@ def _get_second_matrix(draw):
 
 @handle_cmd_line_args
 @given(
-    x=_get_spd_matrix(),
+    x=_get_spd_lt_matrix(),
     y=_get_second_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.cholesky_solve"
