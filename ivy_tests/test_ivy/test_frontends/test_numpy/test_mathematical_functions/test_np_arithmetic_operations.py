@@ -407,7 +407,6 @@ def test_numpy_power(
         test_values=False,
     )
 
-
 # positive
 @handle_cmd_line_args
 @given(
