@@ -177,7 +177,7 @@
              
   <h1>Source code for ivy.array.statistical</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 
 <span class="c1"># local</span>
@@ -211,10 +211,88 @@
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.mean. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.mean also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        **Special Cases**</span>
+
+<span class="sd">        Let ``N`` equal the number of elements over which to compute the</span>
+<span class="sd">        arithmetic mean.</span>
+<span class="sd">        -   If ``N`` is ``0``, the arithmetic mean is ``NaN``.</span>
+<span class="sd">        -   If ``x_i`` is ``NaN``, the arithmetic mean is ``NaN`` (i.e., ``NaN``</span>
+<span class="sd">            values propagate).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array. Should have a floating-point data type.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis or axes along which arithmetic means must be computed. By default,</span>
+<span class="sd">            the mean must be computed over the entire array. If a Sequence of</span>
+<span class="sd">            integers, arithmetic means must be computed over multiple axes.</span>
+<span class="sd">            Default: ``None``.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            bool, if ``True``, the reduced axes (dimensions) must be included in the</span>
+<span class="sd">            result as singleton dimensions, and, accordingly, the result must be</span>
+<span class="sd">            compatible with the input array (see :ref:`broadcasting`). Otherwise,</span>
+<span class="sd">            if ``False``, the reduced axes (dimensions) must not be included in</span>
+<span class="sd">            the result. Default: ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            array, if the arithmetic mean was computed over the entire array, a</span>
+<span class="sd">            zero-dimensional array containing the arithmetic mean; otherwise, a</span>
+<span class="sd">            non-zero-dimensional array containing the arithmetic means.</span>
+<span class="sd">            The returned array must have the same data type as ``x``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([3., 4., 5.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.mean()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array(4.)</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.mean(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array(0.)</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([0.1, 1.1, 2.1])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array(0.)</span>
+<span class="sd">        &gt;&gt;&gt; x.mean(out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array(1.1)</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3, 0, -1])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array(0.)</span>
+<span class="sd">        &gt;&gt;&gt; ivy.mean(x, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array(0.)</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([0., 0., 0.])</span>
+<span class="sd">        &gt;&gt;&gt; x.mean(axis=0, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([-0.25,  1.05,  2.1])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0., 1., 2.], [3., 4., 5.]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([0., 0.])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.mean(x, axis=1, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([1., 4.])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithStatistical.var"><a class="viewcode-back" href="../../../array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.var">[docs]</a>    <span class="k">def</span> <span class="nf">var</span><span class="p">(</span>

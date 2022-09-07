@@ -308,8 +308,8 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculates the arithmetic mean of the input array ``x``.</span>
@@ -327,8 +327,8 @@
 <span class="sd">        input array. Should have a floating-point data type.</span>
 <span class="sd">    axis</span>
 <span class="sd">        axis or axes along which arithmetic means must be computed. By default, the mean</span>
-<span class="sd">        must be computed over the entire array. If a tuple of integers, arithmetic means</span>
-<span class="sd">        must be computed over multiple axes. Default: ``None``.</span>
+<span class="sd">        must be computed over the entire array. If a Sequence of integers, arithmetic</span>
+<span class="sd">        means must be computed over multiple axes. Default: ``None``.</span>
 <span class="sd">    keepdims</span>
 <span class="sd">        bool, if ``True``, the reduced axes (dimensions) must be included in the result</span>
 <span class="sd">        as singleton dimensions, and, accordingly, the result must be compatible with</span>
@@ -342,8 +342,8 @@
 <span class="sd">    ret</span>
 <span class="sd">        array, if the arithmetic mean was computed over the entire array, a</span>
 <span class="sd">        zero-dimensional array containing the arithmetic mean; otherwise, a</span>
-<span class="sd">        non-zero-dimensional array containing the arithmetic means. The returned array</span>
-<span class="sd">        must have the same data type as ``x``.</span>
+<span class="sd">        non-zero-dimensional array containing the arithmetic means. The returned</span>
+<span class="sd">        array must have the same data type as ``x``.</span>
 <span class="sd">        .. note::</span>
 <span class="sd">           While this specification recommends that this function only accept input</span>
 <span class="sd">           arrays having a floating-point data type, specification-compliant array</span>
@@ -351,50 +351,144 @@
 <span class="sd">           While mixed data type promotion is implementation-defined, if the input</span>
 <span class="sd">           array ``x`` has an integer data type, the returned array must have the</span>
 <span class="sd">           default floating-point data type.</span>
-<span class="sd">          </span>
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.mean(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array(2.)</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.zeros(3)</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.mean(x, out=z)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array(1.)</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.], [4., 6., 10.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.mean(x, axis=0, keepdims=True)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[2., 3.5, 6.]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [4., 6., 10.]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3., 4., 5.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.mean(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array(3.8333333)</span>
+<span class="sd">    ivy.array(4.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array(0.)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.mean(x, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(1.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1, -2, -3, 0, -1], [1, 2, 3, 0, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=1, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([-1.4,  1.4])</span>
+
+<span class="sd">    With :code:`ivy.native_array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([3., 4., 5.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.mean(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(4.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=0, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([1.5, 2.5, 3.5])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=1, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    [1., 4.]</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.mean(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array(1.),</span>
-<span class="sd">        b: ivy.array(4.)</span>
+<span class="sd">        a: ivy.array(0.),</span>
+<span class="sd">        b: ivy.array(0.9)</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
-<span class="sd">                          b=ivy.array([2., 3., 4.]))</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.mean(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \</span>
+<span class="sd">                          b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=0, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array(2.),</span>
-<span class="sd">        b: ivy.array(3.)</span>
+<span class="sd">        a: ivy.array([1.5, 2.5, 3.5]),</span>
+<span class="sd">        b: ivy.array([4.5, 5.5, 6.5])</span>
 <span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3., 4., 5.])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.mean()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(4.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 7.3, -1.3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array(0.)</span>
+<span class="sd">    &gt;&gt;&gt; x.mean(out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(2.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; x.mean(axis=0, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([-0.25,  1.05,  2.1])</span>
+
+<span class="sd">    With :code:`ivy.native_array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0.0, 1.1, 2.2])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.mean()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    1.1</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.mean()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    2.5</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.mean(axis=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    [1.5 2.5 3.5]</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.mean(axis=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    [1.0 4.0]</span>
+
+<span class="sd">    With :code:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.2, 2.2, 4.2]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.mean()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(0.6),</span>
+<span class="sd">        b: ivy.array(2.2)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 1., 1.], b=ivy.array([0., -1., 1.])))</span>
+<span class="sd">    &gt;&gt;&gt; x.mean(out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(1.1),</span>
+<span class="sd">        b: ivy.array(0.)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \</span>
+<span class="sd">                          b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))</span>
+<span class="sd">    &gt;&gt;&gt; x.mean(axis=1, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([1., 2.]),</span>
+<span class="sd">        b: ivy.array([3., 4.])</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/</span>
+<span class="sd">    signatures.statistical_functions.mean.html&gt;`_ in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for</span>
+<span class="sd">    simplicity, but this function is *nestable*, and therefore also accepts</span>
+<span class="sd">    :code:`ivy.Container` instances in place of any of the arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
