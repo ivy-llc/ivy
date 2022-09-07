@@ -21,9 +21,6 @@ def ArgMax(*, input, dimension, output_type=None, name=None):
         return ivy.astype(ivy.argmax(input, axis=dimension), "int64")
 
 
-ArgMax.unsupported_dtypes = ("uint16",)
-
-
 def Cos(*, x, name="Cos"):
     return ivy.cos(x)
 
