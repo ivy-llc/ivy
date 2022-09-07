@@ -2,7 +2,6 @@
 import numpy as np
 from hypothesis import given, strategies as st
 import sys
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -233,11 +232,8 @@ def _get_cholesky_matrix(draw):
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
     )
 
-    spd = [
-        ivy.matmul(np.asarray(elem), np.asarray(ivy.matrix_transpose(elem)))
-        for elem in gen
-    ]
-    spd_chol = [ivy.cholesky(elem) for elem in spd]
+    spd = [np.matmul(np.array(elem), np.transpose(np.array(elem))) for elem in gen]
+    spd_chol = [np.linalg.cholesky(np.array(elem)) for elem in spd]
     return input_dtype, spd_chol
 
 
