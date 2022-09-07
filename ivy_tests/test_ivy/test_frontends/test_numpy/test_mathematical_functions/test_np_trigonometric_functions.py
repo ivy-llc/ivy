@@ -33,13 +33,6 @@ def test_numpy_cos(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -49,14 +42,14 @@ def test_numpy_cos(
         fw=fw,
         frontend="numpy",
         fn_tree="cos",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
     )
 
 
@@ -84,13 +77,6 @@ def test_numpy_tan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -100,14 +86,14 @@ def test_numpy_tan(
         fw=fw,
         frontend="numpy",
         fn_tree="tan",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         casting="same_kind",
         order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
     )
 
 
@@ -135,13 +121,6 @@ def test_numpy_arcsin(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -151,14 +130,14 @@ def test_numpy_arcsin(
         fw=fw,
         frontend="numpy",
         fn_tree="arcsin",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
     )
 
 
@@ -186,13 +165,6 @@ def test_numpy_arccos(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -202,18 +174,19 @@ def test_numpy_arccos(
         fw=fw,
         frontend="numpy",
         fn_tree="arccos",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
     )
 
 
 # arctan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -236,13 +209,6 @@ def test_numpy_arctan(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -252,18 +218,114 @@ def test_numpy_arctan(
         fw=fw,
         frontend="numpy",
         fn_tree="arctan",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
     )
 
 
-# cosh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, 
+        num_arrays=2, 
+        shared_dtype=True
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    where=np_frontend_helpers.where(),
+    as_variable=helpers.array_bools(num_arrays=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.hypot"
+    ),
+    native_array=helpers.array_bools(num_arrays=2),
+)
+def test_numpy_hypot(
+    dtype_and_x,
+    dtype,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    (input_dtype1, input_dtype2), (x1, x2) = dtype_and_x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="hypot",
+        x1=np.asarray(x1, dtype=input_dtype1),
+        x2=np.asarray(x2, dtype=input_dtype2),
+        out=None,
+        where=where,
+        casting="same_kind",
+        order="k",
+        dtype=dtype,
+        subok=True,
+        test_values=True,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes, 
+        num_arrays=2, 
+        shared_dtype=True
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    where=np_frontend_helpers.where(),
+    as_variable=helpers.array_bools(num_arrays=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.arctan2"
+    ),
+    native_array=helpers.array_bools(num_arrays=2),
+)
+def test_numpy_arctan2(
+    dtype_and_x,
+    dtype,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    (input_dtype1, input_dtype2), (x1, x2) = dtype_and_x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="arctan2",
+        x1=np.asarray(x1, dtype=input_dtype1),
+        x2=np.asarray(x2, dtype=input_dtype2),
+        out=None,
+        where=where,
+        casting="same_kind",
+        order="k",
+        dtype=dtype,
+        subok=True,
+        test_values=True,
+    )
+
+
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
@@ -271,11 +333,11 @@ def test_numpy_arctan(
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.cosh"
+        fn_name="ivy.functional.frontends.numpy.degrees"
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-def test_numpy_cosh(
+def test_numpy_degrees(
     dtype_and_x,
     dtype,
     where,
@@ -286,13 +348,6 @@ def test_numpy_cosh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -301,13 +356,56 @@ def test_numpy_cosh(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_tree="cosh",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        fn_tree="degrees",
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    where=np_frontend_helpers.where(),
+    as_variable=helpers.array_bools(num_arrays=1),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.radians"
+    ),
+    native_array=helpers.array_bools(num_arrays=1),
+)
+def test_numpy_radians(
+    dtype_and_x,
+    dtype,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="radians",
+        x=np.asarray(x, dtype=input_dtype),
+        out=None,
+        where=where,
+        casting="same_kind",
+        order="k",
+        dtype=dtype,
+        subok=True,
+        test_values=True,
     )
