@@ -232,8 +232,8 @@ def _get_cholesky_matrix(draw):
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
     )
 
-    spd = [np.matmul(np.array(elem), np.transpose(np.array(elem))) for elem in gen]
-    spd_chol = [np.linalg.cholesky(np.array(elem)) for elem in spd]
+    spd = np.matmul(gen, np.transpose(gen))
+    spd_chol = np.linalg.cholesky(spd)
     return input_dtype, spd_chol
 
 
