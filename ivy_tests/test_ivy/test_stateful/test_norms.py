@@ -14,9 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # layer norm
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     new_std=st.floats(min_value=0.0, max_value=1.0),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
