@@ -7,6 +7,7 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
@@ -55,6 +56,7 @@ def test_numpy_lcm(
         subok=True,
         test_values=False,
     )
+
 
 @handle_cmd_line_args
 @given(
