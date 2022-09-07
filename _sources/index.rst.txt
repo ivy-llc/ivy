@@ -320,6 +320,67 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
+   :caption: Array
+
+   array/activations.rst
+   array/array.rst
+   array/array_methods.rst
+   array/conversions.rst
+   array/creation.rst
+   array/data_type.rst
+   array/device.rst
+   array/elementwise.rst
+   array/general.rst
+   array/gradients.rst
+   array/image.rst
+   array/layers.rst
+   array/linear_algebra.rst
+   array/losses.rst
+   array/manipulation.rst
+   array/norms.rst
+   array/random.rst
+   array/searching.rst
+   array/set.rst
+   array/sorting.rst
+   array/statistical.rst
+   array/utility.rst
+   array/wrapping.rst
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Container
+
+   container/activations.rst
+   container/base.rst
+   container/container.rst
+   container/container_methods.rst
+   container/conversions.rst
+   container/creation.rst
+   container/data_type.rst
+   container/device.rst
+   container/elementwise.rst
+   container/general.rst
+   container/gradients.rst
+   container/image.rst
+   container/layers.rst
+   container/linear_algebra.rst
+   container/losses.rst
+   container/manipulation.rst
+   container/norms.rst
+   container/random.rst
+   container/searching.rst
+   container/set.rst
+   container/sorting.rst
+   container/statistical.rst
+   container/utility.rst
+   container/wrapping.rst
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
    :caption: Functions
 
    functional/backends.rst
@@ -330,24 +391,15 @@ Citation
 .. toctree::
    :hidden:
    :maxdepth: -1
-   :caption: Data Classes
+   :caption: Stateful
 
-   data_classes/container.rst
-   data_classes/array.rst
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: Framework Classes
-
-   stateful/initializers.rst
-   stateful/converters.rst
-   stateful/optimizers.rst
-   stateful/module.rst
-   stateful/layers.rst
-   stateful/norms.rst
    stateful/activations.rst
+   stateful/converters.rst
+   stateful/initializers.rst
+   stateful/layers.rst
+   stateful/module.rst
+   stateful/norms.rst
+   stateful/optimizers.rst
    stateful/sequential.rst
 
 

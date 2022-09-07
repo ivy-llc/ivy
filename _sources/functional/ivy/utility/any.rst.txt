@@ -2,12 +2,6 @@ any
 ===
 
 .. autofunction:: ivy.functional.ivy.utility.any
-
-.. autofunction:: ivy.array.array_methods.any
-
-.. autofunction:: ivy.container.container_methods.any
-
-.. autofunction:: ivy.container.container_methods.static_any
 |
 | **Supported Frameworks:**
 
@@ -27,15 +21,3 @@ any
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: any
-
-   any/any_functional.rst
-   any/any_array.rst
-   any/any_container.rst
-   any/static_any_container.rst
-

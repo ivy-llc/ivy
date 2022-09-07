@@ -13,15 +13,13 @@ Initializers
    :maxdepth: -1
    :caption: Initializers
 
-   initializers/Constant:
-    def __init__.rst
+   initializers/Initializer.rst
+   initializers/Constant.rst
    initializers/Zeros.rst
    initializers/Ones.rst
-   initializers/Uniform:
-    def __init__.rst
+   initializers/Uniform.rst
    initializers/GlorotUniform.rst
    initializers/FirstLayerSiren.rst
    initializers/Siren.rst
-   initializers/KaimingNormal:
-    def __init__.rst
+   initializers/KaimingNormal.rst
 

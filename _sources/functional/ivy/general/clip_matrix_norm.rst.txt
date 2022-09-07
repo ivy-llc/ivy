@@ -2,12 +2,6 @@ clip_matrix_norm
 ================
 
 .. autofunction:: ivy.functional.ivy.general.clip_matrix_norm
-
-.. autofunction:: ivy.array.array_methods.clip_matrix_norm
-
-.. autofunction:: ivy.container.container_methods.clip_matrix_norm
-
-.. autofunction:: ivy.container.container_methods.static_clip_matrix_norm
 |
 | **Supported Frameworks:**
 
@@ -27,15 +21,3 @@ clip_matrix_norm
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: clip_matrix_norm
-
-   clip_matrix_norm/clip_matrix_norm_functional.rst
-   clip_matrix_norm/clip_matrix_norm_array.rst
-   clip_matrix_norm/clip_matrix_norm_container.rst
-   clip_matrix_norm/static_clip_matrix_norm_container.rst
-

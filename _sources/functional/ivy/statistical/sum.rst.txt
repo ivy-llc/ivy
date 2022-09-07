@@ -2,10 +2,6 @@ sum
 ===
 
 .. autofunction:: ivy.functional.ivy.statistical.sum
-
-.. autofunction:: ivy.array.array_methods.sum
-
-.. autofunction:: ivy.container.container_methods.sum
 |
 | **Supported Frameworks:**
 
@@ -25,14 +21,3 @@ sum
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
-
-
-.. toctree::
-   :hidden:
-   :maxdepth: -1
-   :caption: sum
-
-   sum/sum_functional.rst
-   sum/sum_array.rst
-   sum/sum_container.rst
-

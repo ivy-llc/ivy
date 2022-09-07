@@ -60,8 +60,9 @@ General
    general/num_arrays_in_memory.rst
    general/print_all_arrays_in_memory.rst
    general/set_queue_timeout.rst
-   general/queue_timeout.rst
-   general/tmp_dir.rst
+   general/get_queue_timeout.rst
+   general/unset_queue_timeout.rst
+   general/get_tmp_dir.rst
    general/set_tmp_dir.rst
    general/container_types.rst
    general/inplace_arrays_supported.rst
@@ -86,6 +87,6 @@ General
    general/shape_array_mode.rst
    general/get_num_dims.rst
    general/arg_info.rst
-   general/function_unsupported_devices_and_dtypes.rst
    general/function_supported_devices_and_dtypes.rst
+   general/function_unsupported_devices_and_dtypes.rst
 
