@@ -6,6 +6,7 @@ import sys
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
+import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
@@ -210,8 +211,6 @@ def test_tensorflow_slogdet(
 
 
 # cholesky_solve
-
-
 @st.composite
 def _get_cholesky_matrix(draw):
     # batch_shape, random_size, shared
