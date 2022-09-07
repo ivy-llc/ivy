@@ -9,6 +9,20 @@ import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+# helpers
+@st.composite
+def _get_dtype_and_range(draw):
+    dim = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    start = draw(
+        helpers.array_values(dtype=dtype, shape=(dim,), min_value=-50, max_value=0)
+    )
+    stop = draw(
+        helpers.array_values(dtype=dtype, shape=(dim,), min_value=1, max_value=50)
+    )
+    return dtype, start, stop
+
+
 # arange
 @handle_cmd_line_args
 @given(
@@ -47,38 +61,23 @@ def test_numpy_arange(
 # linspace
 @handle_cmd_line_args
 @given(
-    dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
-        num_arrays=2,
-        min_value=-50,
-        max_value=50,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
-        allow_inf=False,
-        shared_dtype=True,
-    ),
-    num=helpers.ints(min_value=5, max_value=10),
-    endpoint=st.booleans(),
-    retstep=st.booleans(),
-    axis=helpers.ints(min_value=-1, max_value=1),
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=2, max_value=5),
+    axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linspace"
     ),
 )
 def test_numpy_linspace(
-    dtype_and_start_stop,
+    dtype_start_stop,
     num,
-    endpoint,
-    retstep,
     axis,
     num_positional_args,
     fw,
 ):
-    input_dtypes, range = dtype_and_start_stop
+    dtype, start, stop = dtype_start_stop
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=[dtype, dtype],
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -86,12 +85,12 @@ def test_numpy_linspace(
         fw=fw,
         frontend="numpy",
         fn_tree="linspace",
-        start=np.asarray(range[0], dtype=input_dtypes[0]),
-        stop=np.asarray(range[1], dtype=input_dtypes[1]),
+        start=np.asarray(start, dtype=dtype),
+        stop=np.asarray(stop, dtype=dtype),
         num=num,
-        endpoint=endpoint,
-        retstep=retstep,
-        dtype=input_dtypes[0],
+        endpoint=True,
+        retstep=False,
+        dtype=dtype,
         axis=axis,
     )
 
@@ -99,38 +98,25 @@ def test_numpy_linspace(
 # logspace
 @handle_cmd_line_args
 @given(
-    dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
-        num_arrays=2,
-        min_value=-50,
-        max_value=50,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
-        allow_inf=False,
-        shared_dtype=True,
-    ),
+    dtype_start_stop=_get_dtype_and_range(),
     num=helpers.ints(min_value=5, max_value=50),
-    endpoint=st.booleans(),
     base=helpers.ints(min_value=2, max_value=10),
-    axis=helpers.ints(min_value=-1, max_value=1),
+    axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logspace"
     ),
 )
 def test_numpy_logspace(
-    dtype_and_start_stop,
+    dtype_start_stop,
     num,
-    endpoint,
     base,
     axis,
     num_positional_args,
     fw,
 ):
-    input_dtypes, range = dtype_and_start_stop
+    dtype, start, stop = dtype_start_stop
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=[dtype, dtype],
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -138,12 +124,13 @@ def test_numpy_logspace(
         fw=fw,
         frontend="numpy",
         fn_tree="logspace",
-        start=np.asarray(range[0], dtype=input_dtypes[0]),
-        stop=np.asarray(range[1], dtype=input_dtypes[1]),
+        rtol=1e-01,
+        start=np.asarray(start, dtype=dtype),
+        stop=np.asarray(stop, dtype=dtype),
         num=num,
-        endpoint=endpoint,
+        endpoint=True,
         base=base,
-        dtype=input_dtypes[0],
+        dtype=dtype,
         axis=axis,
     )
 
