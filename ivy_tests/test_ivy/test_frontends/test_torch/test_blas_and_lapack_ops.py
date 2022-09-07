@@ -22,9 +22,9 @@ def _get_dtype_and_square_matrix(draw):
 
 
 @st.composite
-def _get_dtype_input_and_vectors(draw, with_input=False):
+def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
-    dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
+    dim_size2 = dim_size1 if same_size else draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     vec1 = draw(
         helpers.array_values(dtype=dtype, shape=(dim_size1,), min_value=2, max_value=5)
@@ -479,6 +479,38 @@ def test_torch_cholesky(
         rtol=1e-02,
         input=np.asarray(x, dtype=dtype),
         upper=upper,
+    )
+
+
+# dot
+@handle_cmd_line_args
+@given(
+    dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.dot"
+    ),
+)
+def test_torch_dot(
+    dtype_and_vecs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, vec1, vec2 = dtype_and_vecs
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="dot",
+        input=np.asarray(vec1, dtype=dtype),
+        other=np.asarray(vec2, dtype=dtype),
     )
 
 

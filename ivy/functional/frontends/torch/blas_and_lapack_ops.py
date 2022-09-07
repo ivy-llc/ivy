@@ -62,6 +62,15 @@ def cholesky(input, upper=False, *, out=None):
 cholesky.unsupported_dtypes = ("float16",)
 
 
+def dot(input, other, *, out=None):
+    if len(ivy.shape(input)) != 1 or len(ivy.shape(other)) != 1:
+        raise RuntimeError("input must be 1D vectors")
+    return ivy.vecdot(input, other, out=out)
+
+
+dot.supported_dtypes = {"tensorflow": ("bfloat16", "float16", "float32", "float64")}
+
+
 def ger(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 
