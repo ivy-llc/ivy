@@ -21,7 +21,7 @@ def nonzero(input, *, out=None, as_tuple=False):
 
 
 def chunk(input, chunks, dim=0):
-    return ivy.split(input, num_or_size_splits=chunks, dim=dim, with_remainder=True)
+    return ivy.split(input, num_or_size_splits=chunks, axis=dim, with_remainder=True)
 
 
 def permute(input, dims):
