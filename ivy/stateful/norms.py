@@ -10,6 +10,8 @@ class LayerNorm(Module):
     def __init__(
         self,
         normalized_shape,
+        /,
+        *,
         epsilon: float = ivy._MIN_BASE,
         elementwise_affine=True,
         new_std: float = 1.0,

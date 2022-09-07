@@ -7,17 +7,16 @@ from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # layer norm
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
-    elementwise_affine=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True)
+    ),
     new_std=st.floats(min_value=0.0, max_value=1.0),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
@@ -42,7 +41,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def test_layer_norm_layer(
     *,
     dtype_and_x,
-    elementwise_affine,
     new_std,
     init_with_v,
     method_with_v,
@@ -57,33 +55,25 @@ def test_layer_norm_layer(
     input_dtype, x = dtype_and_x
     x = np.asarray(x, dtype=input_dtype)
     shape = x.shape
-    if init_with_v:
-        v = Container(
-            {
-                "scale": ivy.variable(ivy.ones(shape)),
-                "offset": ivy.variable(ivy.zeros(shape)),
-            }
-        )
-    else:
-        v = None
+    print(f"\nbefore -: {input_dtype}")
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
         num_positional_args_method=num_positional_args_method,
         all_as_kwargs_np_init={
             "normalized_shape": shape,
-            "elementwise_affine": elementwise_affine,
+            "epsilon": ivy._MIN_BASE,
+            "elementwise_affine": True,
             "new_std": new_std,
             "device": device,
-            "v": v,
             "dtype": input_dtype,
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
         container_flags_method=container,
+        init_with_v=init_with_v,
         method_with_v=method_with_v,
         all_as_kwargs_np_method={"inputs": x},
         fw=fw,
         class_name="LayerNorm",
-        method_name="_forward",
     )
