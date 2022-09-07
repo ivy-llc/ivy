@@ -26,9 +26,9 @@ from ivy.functional.ivy.device import dev
 
 FN_CACHE = dict()
 INF = float("inf")
-TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
+queue_timeout_stack = list()
 array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
@@ -422,7 +422,7 @@ def copy_array(
         a: ivy.array([-1, 0, 1]),
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
-    
+
     With one :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -434,7 +434,7 @@ def copy_array(
     >>> y = x.copy_array()
     >>> print(y)
     ivy.array([1, 0, 1, 1])
-    
+
     With :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
@@ -732,7 +732,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
         input array
     copy
         whether to copy the array to a new address or not. Default is True.
-    
+
     Returns
     -------
     ret
@@ -1806,7 +1806,7 @@ def default(
     >>> x = ""
     >>> y = ivy.default(x, "default_string")
     >>> print(y)
-    
+
 
     >>> x = ivy.array([4, 5, 6])
     >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
@@ -2559,7 +2559,7 @@ def print_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
 
-def set_queue_timeout(timeout):
+def set_queue_timeout(timeout: float):
     """
     Set the global queue timeout value (in seconds)
     Default value without this function being called is 15 seconds.
@@ -2585,14 +2585,16 @@ def set_queue_timeout(timeout):
     30
 
     """
-    global TIMEOUT
-    TIMEOUT = timeout
+    global queue_timeout_stack
+    if not isinstance(timeout, (int, float)):
+        raise Exception("set_array_mode only accepts type int or float")
+    queue_timeout_stack.append(timeout)
 
 
-def get_queue_timeout():
+def get_queue_timeout() -> float:
     """
     Get the global queue timeout value (in seconds).
-    The default value without this function being called is 10 seconds.
+    The default value without this function being called is 15 seconds.
 
     Returns
     -------
@@ -2607,8 +2609,30 @@ def get_queue_timeout():
     10.0
 
     """
-    global TIMEOUT
-    return TIMEOUT
+    global queue_timeout_stack
+    if not queue_timeout_stack:
+        return 15.0
+    return queue_timeout_stack[-1]
+
+
+def unset_queue_timeout() -> None:
+    """
+    Reset the global queue timeout value (in seconds) to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_queue_timeout(10.0)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
+    10.0
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.get_queue_timeout()
+    15.0
+    """
+    global queue_timeout_stack
+    if queue_timeout_stack:
+        queue_timeout_stack.pop(-1)
 
 
 def get_tmp_dir():

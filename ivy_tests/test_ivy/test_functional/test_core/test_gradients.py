@@ -185,7 +185,7 @@ def test_execute_with_gradients(
         array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
         array_vals = ivy.multi_index_nest(xs, array_idxs)
         final_array = ivy.stack(array_vals)
-        ret = ivy.sum(final_array)
+        ret = ivy.mean(final_array)
         return ret
 
     dtype, xs = dtype_and_xs
@@ -200,6 +200,8 @@ def test_execute_with_gradients(
         fw=fw,
         fn_name="execute_with_gradients",
         func=func,
+        rtol_=1e-2,
+        atol_=1e-2,
         xs=np.asarray(xs, dtype=dtype),
         retain_grads=retain_grads,
     )
