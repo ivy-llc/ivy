@@ -1236,3 +1236,43 @@ def zero_pad(
 
     """
     return current_backend(x).zero_pad(x, pad_width, out=out)
+
+@to_native_arrays_and_back
+@handle_nestable
+def chunk(
+    x: Union[ivy.Array,ivy.NativeArray],
+    /,
+    *,
+    chunks : int = None,
+    axis : int = 0 ,    
+) -> List[ivy.Array] :
+    """ Splits an array into the specified number of chunks 
+    Parameters 
+    ----------
+    x
+        Input array to chunk 
+    chunks 
+        The number of chunks to return 
+    axis 
+        Dimension along which to split the tensor , default is 0 
+    
+    Returns 
+    ----------
+    ret 
+        A List of sub-arrays 
+    
+    Functional Examples :
+    ----------
+    With :code: 'ivy.Array' input:
+    
+    >>> x = ivy.NativeArray([1,2,3,4,5,6,7,8,9])
+    >>> y = ivy.chunk(x,3)
+    >>> print(y)
+    ivy.Array([[1,2,3],[4,5,6],[7,8,9]])
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+    
+    """
+    return current_backend(x).chunk(x,chunks,axis)
