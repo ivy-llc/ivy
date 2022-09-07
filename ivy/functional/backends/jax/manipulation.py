@@ -31,8 +31,7 @@ def concat(
                 xs[i] = jnp.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-    ret = jnp.concatenate(xs, axis)
-    return ret
+    return jnp.concatenate(xs, axis)
 
 
 def expand_dims(
@@ -56,15 +55,13 @@ def flip(
     axis: Optional[Union[int, Tuple[int], List[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.flip(x, axis=axis)
-    return ret
+    return jnp.flip(x, axis=axis)
 
 
 def permute_dims(
     x: JaxArray, /, axes: Tuple[int, ...], *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.transpose(x, axes)
-    return ret
+    return jnp.transpose(x, axes)
 
 
 def reshape(
@@ -119,8 +116,7 @@ def stack(
 ) -> JaxArray:
     if axis is None:
         axis = 0
-    ret = jnp.stack(arrays, axis=axis)
-    return ret
+    return jnp.stack(arrays, axis=axis)
 
 
 # Extra #
@@ -167,15 +163,13 @@ def repeat(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
-    ret = jnp.repeat(x, repeats, axis)
-    return ret
+    return jnp.repeat(x, repeats, axis)
 
 
 def tile(
     x: JaxArray, /, reps: Iterable[int], *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.tile(x, reps)
-    return ret
+    return jnp.tile(x, reps)
 
 
 def clip(
@@ -228,8 +222,7 @@ def constant_pad(
     value: Number = 0.0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-    return ret
+    return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
 constant_pad.unsupported_dtypes = ("uint64",)
@@ -238,12 +231,10 @@ constant_pad.unsupported_dtypes = ("uint64",)
 def zero_pad(
     x: JaxArray, /, pad_width: List[List[int]], *, out: Optional[JaxArray] = None
 ):
-    ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
-    return ret
+    return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
 
 
 def swapaxes(
     x: JaxArray, axis0: int, axis1: int, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.swapaxes(x, axis0, axis1)
-    return ret
+    return jnp.swapaxes(x, axis0, axis1)

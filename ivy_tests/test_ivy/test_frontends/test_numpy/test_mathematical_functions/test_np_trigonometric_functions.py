@@ -331,6 +331,22 @@ def test_numpy_cosh(
     native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_arctan2(
+
+# deg2rad
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+    ),
+    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    where=np_frontend_helpers.where(),
+    as_variable=helpers.array_bools(num_arrays=1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.deg2rad"
+    ),
+    native_array=helpers.array_bools(num_arrays=1),
+)
+def test_numpy_deg2rad(
     dtype_and_x,
     dtype,
     where,
@@ -341,6 +357,8 @@ def test_numpy_arctan2(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -358,6 +376,8 @@ def test_numpy_arctan2(
         fn_tree="arctan2",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
+        fn_tree="deg2rad",
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",

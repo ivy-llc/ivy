@@ -195,8 +195,7 @@ log1p.unsupported_dtypes = ("float16",)
 
 
 def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    ret = torch.isnan(x)
-    return ret
+    return torch.isnan(x)
 
 
 def less(
@@ -414,8 +413,7 @@ def positive(
     x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
-    ret = torch.positive(x)
-    return ret
+    return torch.positive(x)
 
 
 def square(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -523,7 +521,7 @@ atan2.support_native_out = True
 atan2.unsupported_dtypes = (
     "float16",
     "bfloat16",
-)
+)  # TODO Fixed in PyTorch 1.12.1
 
 
 def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:

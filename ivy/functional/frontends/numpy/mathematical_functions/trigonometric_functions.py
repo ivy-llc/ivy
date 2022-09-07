@@ -170,6 +170,8 @@ cosh.unsupported_dtypes = {"torch": ("float16",)}
 def arctan2(
     x1,
     x2,
+def deg2rad(
+    x,
     /,
     out=None,
     *,
@@ -189,3 +191,12 @@ def arctan2(
 
 
 arctan2.unsupported_dtypes = {"torch": ("float16",)}
+    signature=None,
+    extobj=None,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.multiply(ivy.divide(x, 180), ivy.pi, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret

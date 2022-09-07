@@ -19,5 +19,5 @@ svd
 svdvals
 tensordot
 #trace #failing for jax
-vecdot
+#vecdot #failing for torch, due to unexpected behviour on some dtypes while type-casting (https://github.com/pytorch/pytorch/issues/84530)
 vector_norm
