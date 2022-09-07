@@ -187,7 +187,6 @@ def deg2rad(
     return ret
 
 
-arctan2.unsupported_dtypes = {"torch": ("float16",)}
     signature=None,
     extobj=None,
 ):
