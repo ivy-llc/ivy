@@ -41,6 +41,14 @@ def addr(input, vec1, vec2, *, beta=1, alpha=1, out=None):
 addr.unsupported_dtypes = {"numpy": ("float16", "int8")}
 
 
+def baddbmm(input, batch1, batch2, *, beta=1, alpha=1, out=None):
+    if len(ivy.shape(batch1)) != 3 or len(ivy.shape(batch2)) != 3:
+        raise RuntimeError("input must be batched 2D matrices")
+    ret = ivy.matmul(batch1, batch2, out=out)
+    ret = ivy.multiply(alpha, ret, out=out)
+    return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
+
+
 def bmm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 3 or len(ivy.shape(mat2)) != 3:
         raise RuntimeError("input must be 3D matrices")
@@ -48,7 +56,7 @@ def bmm(input, mat2, *, out=None):
 
 
 def cholesky(input, upper=False, *, out=None):
-    return ivy.cholesky(input, upper, out=out)
+    return ivy.cholesky(input, upper=upper, out=out)
 
 
 cholesky.unsupported_dtypes = ("float16",)
@@ -75,6 +83,13 @@ def det(input):
 det.unsupported_dtypes = ("float16",)
 
 
+def logdet(input):
+    return ivy.det(input).log()
+
+
+logdet.unsupported_dtypes = ("float16",)
+
+
 def slogdet(input):
     return ivy.slogdet(input)
 
@@ -88,6 +103,14 @@ def matmul(input, other, *, out=None):
 
 def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
+
+
+def matrix_rank(input, tol=None, symmetric=False, *, out=None):
+    # TODO: add symmetric
+    return ivy.matrix_rank(input, rtol=tol, out=out).astype("int64")
+
+
+matrix_rank.unsupported_dtypes = {"jax": ("float16",), "torch": ("float16",)}
 
 
 def mm(input, mat2, *, out=None):
@@ -113,7 +136,7 @@ outer.unsupported_dtypes = {"numpy": ("float16", "int8")}
 
 
 def pinverse(input, rcond=1e-15):
-    return ivy.pinv(input, rcond)
+    return ivy.pinv(input, rtol=rcond)
 
 
 pinverse.unsupported_dtypes = ("float16",)
@@ -133,7 +156,7 @@ qr.unsupported_dtypes = ("float16",)
 
 
 def svd(input, some=True, compute_uv=True, *, out=None):
-    # TODO: add compute_uv checks
+    # TODO: add compute_uv
     if some:
         ret = ivy.svd(input, full_matrices=False)
     else:
@@ -144,3 +167,12 @@ def svd(input, some=True, compute_uv=True, *, out=None):
 
 
 svd.unsupported_dtypes = ("float16",)
+
+
+def vdot(input, other, *, out=None):
+    if len(ivy.shape(input)) != 1 or len(ivy.shape(other)) != 1:
+        raise RuntimeError("input must be 1D vectors")
+    return ivy.vecdot(input, other, out=out)
+
+
+vdot.supported_dtypes = {"tensorflow": ("bfloat16", "float16", "float32", "float64")}

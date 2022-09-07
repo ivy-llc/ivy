@@ -16,17 +16,18 @@ def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if not upper:
-        ret = torch.linalg.cholesky(x, out=out)
+        return torch.linalg.cholesky(x, out=out)
     else:
         ret = torch.transpose(
             torch.linalg.cholesky(
-                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2),
-                out=out,
+                torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
             ),
             dim0=len(x.shape) - 1,
             dim1=len(x.shape) - 2,
         )
-    return ret
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
 
 
 cholesky.unsupported_dtypes = ("float16", "bfloat16")
@@ -146,15 +147,14 @@ matrix_power.support_native_out = True
 
 def matrix_rank(
     x: torch.Tensor,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
     /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
     ret = torch.linalg.matrix_rank(x, atol=rtol, out=out)
-    ret = torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
-    return ret
+    return torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
 
 
 matrix_rank.unsupported_dtypes = ("float16",)
@@ -267,8 +267,7 @@ def svd(
     results = namedtuple("svd", "U S Vh")
 
     U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
-    ret = results(U, D, VT)
-    return ret
+    return results(U, D, VT)
 
 
 svd.unsupported_dtypes = ("float16", "bfloat16")
@@ -304,14 +303,18 @@ def tensordot(
     return ret
 
 
+# ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
+#  is fixed.
+tensordot.unsupported_dtypes = ("int32",)
+
+
 def trace(
     x: torch.Tensor, offset: int = 0, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     desired_dtype = x.dtype
     ret = torch.diagonal(x, offset=offset, dim1=-2, dim2=-1)
     ret = torch.sum(ret, dim=-1)
-    ret = ret.type(desired_dtype)
-    return ret
+    return ret.type(desired_dtype)
 
 
 def vecdot(

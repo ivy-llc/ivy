@@ -8,8 +8,19 @@ def _compute_threshold(input, threshold, value, inplace):
     return ivy.where(ivy.greater(input, threshold), input, value)
 
 
-def sigmoid(input, out=None):
-    return ivy.sigmoid(input, out=out)
+def _compute_elu(input, alpha=1.0, inplace=False):
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(ivy.exp(input), 1),
+    )
+    if inplace:
+        input = ivy.where(ivy.greater(input, 0), input, prod)
+        return input
+    return ivy.where(ivy.greater(input, 0), input, prod)
+
+
+def sigmoid(input):
+    return ivy.sigmoid(input)
 
 
 sigmoid.unsupported_dtypes = ("float16",)
@@ -31,19 +42,21 @@ def softmax(input, dim=None, dtype=None):
 softmax.unsupported_dtypes = ("float16",)
 
 
-def gelu(input, approximate="none"):
-    if approximate == "none":
-        approximate = False
-    else:
-        approximate = True
-    return ivy.gelu(input, approximate)
+def gelu(
+    input,
+):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
+    # if approximate == "none":
+    # approximate = False
+    # else:
+    # approximate = True
+    return ivy.gelu(input)
 
 
 gelu.unsupported_dtypes = ("float16",)
 
 
-def tanh(input, *, out=None):
-    return ivy.tanh(input, out=out)
+def tanh(input):
+    return ivy.tanh(input)
 
 
 tanh.unsupported_dtypes = {"torch": ("float16",)}
@@ -77,3 +90,46 @@ def threshold_(input, threshold, value):
 
 
 threshold_.unsupported_dtypes = ("float16",)
+
+
+def relu6(input, inplace=False):
+    if inplace:
+        return ivy.minimum(ivy.maximum(input, 0), 6, out=input)
+    return ivy.minimum(ivy.maximum(input, 0), 6)
+
+
+relu6.unsupported_dtypes = ("float16",)
+
+
+def elu(input, alpha=1.0, inplace=False):
+    return _compute_elu(input, alpha, inplace=inplace)
+
+
+elu.unsupported_dtypes = ("float16",)
+
+
+def elu_(input, alpha=1.0):
+    return _compute_elu(input, alpha, inplace=True)
+
+
+elu_.unsupported_dtypes = ("float16",)
+
+
+def celu(input, alpha=1.0, inplace=False):
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(ivy.divide(input, alpha)),
+            1,
+        ),
+    )
+    if inplace:
+        return ivy.add(
+            ivy.maximum(0, input),
+            ivy.minimum(0, prod),
+            out=input,
+        )
+    return ivy.add(
+        ivy.maximum(0, input),
+        ivy.minimum(0, prod),
+    )

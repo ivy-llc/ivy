@@ -75,8 +75,7 @@ def floormod(
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
         x = tf.cast(x, promoted_type)
         y = tf.cast(y, promoted_type)
-    ret = tf.math.floormod(x, y)
-    return ret
+    return tf.math.floormod(x, y)
 
 
 def unstack(

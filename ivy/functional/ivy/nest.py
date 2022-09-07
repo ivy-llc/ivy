@@ -662,9 +662,9 @@ def nested_map(
     to_mutable: bool = False,
     max_depth: int = None,
     _depth: int = 0,
-    _tuple_check_fn: Optional[callable] = None,
-    _list_check_fn: Optional[callable] = None,
-    _dict_check_fn: Optional[callable] = None,
+    _tuple_check_fn: Optional[Callable] = None,
+    _list_check_fn: Optional[Callable] = None,
+    _dict_check_fn: Optional[Callable] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If

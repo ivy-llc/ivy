@@ -753,10 +753,10 @@ class ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            Boolean, whether or not the input arrays are equal
+            Boolean, whether the input arrays are equal
 
         """
-        return ivy.arrays_equal(List[self] + x)
+        return ivy.arrays_equal([self] + x)
 
     def assert_supports_inplace(self: ivy.Array) -> bool:
         """

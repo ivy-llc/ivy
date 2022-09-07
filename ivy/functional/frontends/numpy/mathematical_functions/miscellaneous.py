@@ -33,8 +33,7 @@ def clip(
         ivy.default(out, a),
         out=out,
     )
-    ret = ivy.astype(ret, dtype, out=out)
-    return ret
+    return ivy.astype(ret, dtype, out=out)
 
 
 # sqrt
