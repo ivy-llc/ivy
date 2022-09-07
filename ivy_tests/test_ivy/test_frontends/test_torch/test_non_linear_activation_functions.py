@@ -22,16 +22,6 @@ def _dtypes(draw):
     )
 
 
-@st.composite
-def _dtype_x_bounded_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    max_value = len(shape) - 1
-    if len(shape) == 0:
-        max_value = 0
-    axis = draw(helpers.ints(min_value=0, max_value=max_value))
-    return dtype, x, axis
-
-
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
