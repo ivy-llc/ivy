@@ -7,6 +7,8 @@ import sys
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg \
+    import _get_dtype_value1_value2_axis_for_tensordot
 
 
 @st.composite
@@ -231,4 +233,47 @@ def test_tensorflow_pinv(
         a=np.asarray(x, dtype=input_dtype),
         rcond=1e-15,
         name=None,
+    )
+
+
+# tensordot
+@handle_cmd_line_args
+@given(
+    dtype_x_y_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.tensordot"
+    ),
+)
+def test_tensorflow_tensordot(
+    *,
+    dtype_x_y_axes,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    (
+        dtype,
+        x,
+        y,
+        axes,
+    ) = dtype_x_y_axes
+
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="tensordot",
+        x=np.asarray(x, dtype=dtype),
+        y=np.asarray(y, dtype=dtype),
+        axes=axes,
     )
