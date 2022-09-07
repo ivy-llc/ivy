@@ -1038,7 +1038,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.inplace_update(self, val, ensure_in_backend=ensure_in_backend)
 
     def inplace_increment(
-        self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
+        self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.inplace_increment. This method simply
