@@ -51,10 +51,10 @@ def _arrays_idx_n_dtypes(draw):
 @st.composite
 def _array_idxes_n_dtype(draw, **kwargs):
     num_dims = draw(helpers.ints(min_value=1, max_value=4))
-    dtype, x= draw(helpers.dtype_and_values(**kwargs, 
+    dtype, x = draw(helpers.dtype_and_values(**kwargs, 
                                             min_num_dims=num_dims, 
                                             max_num_dims=num_dims, 
-                                           shared_dtype=True))
+                                            shared_dtype=True))
     idxes = draw(tuple(helpers.ints(min_value=0, max_value=num_dims - 1)))
     return x, idxes, dtype
 
