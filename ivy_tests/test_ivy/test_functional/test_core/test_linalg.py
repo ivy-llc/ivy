@@ -59,6 +59,8 @@ def dtype_value1_value2_axis(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    large_value_safety_factor=10,
+                    small_value_safety_factor=1.5,
                 )
             )
         )
@@ -473,6 +475,7 @@ def test_eigvalsh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
+        small_value_safety_factor=1.5,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
 )
@@ -498,6 +501,8 @@ def test_inv(
         instance_method=instance_method,
         fw=fw,
         fn_name="inv",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
