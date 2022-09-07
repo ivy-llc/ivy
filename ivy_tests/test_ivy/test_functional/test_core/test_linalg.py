@@ -27,6 +27,8 @@ def dtype_value1_value2_axis(
     min_dim_size=1,
     max_dim_size=10,
     specific_dim_size=3,
+    small_value_safety_factor=1.5,
+    large_value_safety_factor=10,
 ):
     # For cross product, a dim with size 3 is required
     shape = draw(
@@ -58,8 +60,8 @@ def dtype_value1_value2_axis(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    small_value_safety_factor=1.5,
-                    large_value_safety_factor=10,
+                    small_value_safety_factor=small_value_safety_factor,
+                    large_value_safety_factor=large_value_safety_factor,
                 )
             )
         )
@@ -1197,6 +1199,8 @@ def test_cholesky(
         max_num_dims=10,
         min_dim_size=3,
         max_dim_size=3,
+        small_value_safety_factor=2.5,
+        large_value_safety_factor=20,
     ),
 )
 def test_cross(
