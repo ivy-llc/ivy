@@ -35,7 +35,7 @@ def dtypes_x_reshape(draw):
     with_out=st.booleans(),
     as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.ndarray.ndarray.reshape"
+        fn_name="ivy.functional.frontends.numpy.ndarray.reshape"
     ),
     native_array=helpers.array_bools(),
 )
@@ -76,7 +76,7 @@ def test_numpy_instance_reshape(
     as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.ndarray.ndarray.add"
+        fn_name="ivy.functional.frontends.numpy.ndarray.add"
     ),
     native_array=helpers.array_bools(),
 )
