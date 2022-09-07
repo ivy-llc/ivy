@@ -63,18 +63,8 @@ def test_tensorflow_Acosh(
 
 
 def _get_broadcastable_shapes(draw):
-    to_shape = draw(
-        helpers.get_shape(
-            allow_none=False,
-            min_num_dims=2,
-            max_num_dims=6,
-            min_dim_size=1,
-            max_dim_size=5,
-        )
-    )
-    in_shape = draw(
-        helpers.nph.broadcastable_shapes(shape=to_shape, min_dims=1, max_dims=6)
-    )
+    to_shape = draw(helpers.get_shape(allow_none=False))
+    in_shape = draw(helpers.nph.broadcastable_shapes(shape=to_shape))
     return in_shape, to_shape
 
 
@@ -83,7 +73,7 @@ def _array_and_broadcast_shape(draw):
     in_shape, to_shape = _get_broadcastable_shapes(draw)
     dtype_and_x = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_tf.valid_float_dtypes,
+            available_dtypes=helpers.get_dtypes("float"),
             shape=in_shape,
             min_value=-10,
             max_value=10,
@@ -109,7 +99,7 @@ def test_tensorflow_broadcast_to(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
+        as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
@@ -641,9 +631,7 @@ def _permute_dims_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     perm=_permute_dims_helper(),
@@ -958,45 +946,10 @@ def test_tensorflow_Log(
 # Zeros_like
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.zeros_like"
     ),
-)
-def test_tensorflow_zeros_like(
-    dtype_and_x, as_variable, num_positional_args, fw, native_array
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=1,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_tree="zeros_like",
-        x=np.asarray(x, dtype=dtype),
-    )
-
-
-# zeroslike
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        )
-    ),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.raw_ops.zeros_like"
-    ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_zeros_like(
     dtype_and_x, as_variable, num_positional_args, fw, native_array
