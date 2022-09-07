@@ -11,6 +11,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+print("hello_world")
 # native_array
 @handle_cmd_line_args
 @given(
