@@ -288,9 +288,9 @@ def chunk(
     if x.shape == ():
         if chunks is not None and chunks != 1:
             raise Exception(
-                'input array has no shape but chunks was specified as {}'.format(chunks)
+                'input array has no shape but chunks was specified as {}'.format(chunk)
         return [x]
-            )
+            
     if chunks is None :
         chunks = 1
     if isinstance(chunks, int): 
