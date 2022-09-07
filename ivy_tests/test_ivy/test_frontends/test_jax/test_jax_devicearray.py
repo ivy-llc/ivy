@@ -52,7 +52,7 @@ def test_jax_instance_reshape(
         fw=fw,
         frontend="jax",
         frontend_class=DeviceArray,
-        fn_tree="lax.reshape",
+        fn_tree="DeviceArray.reshape",
         self=np.asarray(x, dtype=dtype),
         new_sizes=shape,
         dimensions=dimensions,
@@ -88,7 +88,7 @@ def test_jax_instance_add(
         fw=fw,
         frontend="jax",
         frontend_class=DeviceArray,
-        fn_tree="lax.add",
+        fn_tree="DeviceArray.add",
         self=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
     )

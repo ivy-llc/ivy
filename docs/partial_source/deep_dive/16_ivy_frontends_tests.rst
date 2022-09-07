@@ -595,10 +595,14 @@ ivy.add()
             fw=fw,
             frontend="jax",
             frontend_class=DeviceArray,
-            fn_tree="lax.add",
+            fn_tree="DeviceArray.add",
             self=np.asarray(x[0], dtype=input_dtype[0]),
             other=np.asarray(x[1], dtype=input_dtype[1]),
         )
+
+* We use :code:`test_frontend_array_instance_method()` to test the instance method.
+* We import the frontend class :code:`DeviceArray` from :code:`frontends.jax.DeviceArray` and pass it to the :code:`frontend_class` argument.
+* We specify the :code:`fn_tree` to be :code:`devicearray.add` which is the path to the function in the frontend class.
     
 **NumPy**
 
@@ -657,6 +661,10 @@ ivy.add()
             subok=True,
             test_values=False,
         )
+
+* We use :code:`np_frontend_helpers.test_frontend_array_instance_method()` to test the instance method. This handles the :code:`where` argument.
+* We import the frontend class :code:`ndarray` from :code:`frontends.numpy.ndarray` and pass it to the :code:`frontend_class` argument.
+* We specify the :code:`fn_tree` to be :code:`ndarray.add` which is the path to the function in the frontend class.
     
 **TensorFlow**
 
@@ -694,6 +702,9 @@ ivy.add()
             self=np.asarray(x[0], dtype=input_dtype[0]),
             y=np.asarray(x[1], dtype=input_dtype[1]),
         )
+
+* We import the frontend class :code:`Tensor` from :code:`frontends.tensorflow.tensor` and pass it to the :code:`frontend_class` argument.
+* We specify the :code:`fn_tree` to be :code:`Tensor.add` which is the path to the function in the frontend class.
 
 **PyTorch**
 
@@ -738,7 +749,7 @@ ivy.add()
             fw=fw,
             frontend="torch",
             frontend_class=Tensor,
-            fn_tree="add",
+            fn_tree="Tensor.add",
             rtol=1e-04,
             self=np.asarray(x[0], dtype=input_dtype[0]),
             other=np.asarray(x[1], dtype=input_dtype[1]),
@@ -746,6 +757,8 @@ ivy.add()
             out=None,
         )
 
+* We import the frontend class :code:`Tensor` from :code:`frontends.torch.tensor` and pass it to the :code:`frontend_class` argument.
+* We specify the :code:`fn_tree` to be :code:`Tensor.add` which is the path to the function in the frontend class.
 
 ivy.reshape()
 ^^^^^^^^^^^^
@@ -799,11 +812,13 @@ ivy.reshape()
             fw=fw,
             frontend="jax",
             frontend_class=DeviceArray,
-            fn_tree="lax.reshape",
+            fn_tree="DeviceArray.reshape",
             self=np.asarray(x, dtype=dtype),
             new_sizes=shape,
             dimensions=dimensions,
         )
+
+* For :code:`jax.reshape()`, we create a helper function to generate correct data to test the function.
 
 **NumPy**
 
@@ -864,6 +879,8 @@ ivy.reshape()
             copy=copy,
         )
 
+* For :code:`NumPy.reshape()`, we create a helper function to generate correct data to test the function.
+
 **TensorFlow**
 
 .. code-block:: python
@@ -916,6 +933,8 @@ ivy.reshape()
             shape=shape,
         )
 
+* For :code:`tensorflow.Reshape()`, we create a helper function to generate correct data to test the function.
+
 **PyTorch**
 
 .. code-block:: python
@@ -964,10 +983,12 @@ ivy.reshape()
             fw=fw,
             frontend="torch",
             frontend_class=Tensor,
-            fn_tree="reshape",
+            fn_tree="Tensor.reshape",
             self=np.asarray(x, dtype=input_dtype),
             shape=shape,
         )
+
+* For :code:`torch.reshape()`, we create a helper function to generate correct data to test the function.
 
 
 **Round Up**

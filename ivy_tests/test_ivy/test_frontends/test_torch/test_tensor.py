@@ -48,7 +48,7 @@ def test_torch_instance_add(
         fw=fw,
         frontend="torch",
         frontend_class=Tensor,
-        fn_tree="add",
+        fn_tree="Tensor.add",
         rtol=1e-04,
         self=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
@@ -100,7 +100,7 @@ def test_torch_instance_reshape(
         fw=fw,
         frontend="torch",
         frontend_class=Tensor,
-        fn_tree="reshape",
+        fn_tree="Tensor.reshape",
         self=np.asarray(x, dtype=input_dtype),
         shape=shape,
     )
