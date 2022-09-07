@@ -221,7 +221,42 @@ def unwrap(
     *,
     period=6.283185307179586
 ):
-    pass
+    p = ivy.array(p)
+    ndim = p.ndim
+    all_but_last = ivy.arange(0, p.shape[axis] - 1)
+    all_but_first = ivy.arange(1, p.shape[axis])
+    dd = ivy.subtract(
+        ivy.gather(p, all_but_first, axis=axis),
+        ivy.gather(p, all_but_last, axis=axis)
+    )
+    if discont is None:
+        discont = period / 2
+    slice1 = [slice(None, None)] * ndim
+    slice1[axis] = slice(1, None)
+    slice1 = tuple(slice1)
+    if ivy.is_int_dtype(p.dtype):
+        interval_high, rem = divmod(period, 2)
+        boundary_ambiguous = rem == 0
+    else:
+        interval_high = period / 2
+        boundary_ambiguous = True
+    interval_low = -interval_high
+    ddmod = ivy.remainder(dd - interval_low, period) + interval_low
+    if boundary_ambiguous:
+        # for `mask = (abs(dd) == period/2)`, the above line made
+        # `ddmod[mask] == -period/2`. correct these such that
+        # `ddmod[mask] == sign(dd[mask])*period/2`.
+        ivy.where(
+            ivy.logical_and(ddmod == interval_low, dd > 0), 
+            interval_high, 
+            ddmod,
+            out=ddmod
+        )
+    ph_correct = ddmod - dd
+    ivy.where(ivy.less(ivy.abs(dd), discont), ph_correct, 0)
+    up = ivy.array(p, copy=True, dtype=p.dtype)
+    up[slice1] = p[slice1] + ivy.cumsum(ph_correct, axis)
+    return up
 
 
 def deg2rad(

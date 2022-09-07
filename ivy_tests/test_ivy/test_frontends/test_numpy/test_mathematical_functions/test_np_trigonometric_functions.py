@@ -409,3 +409,45 @@ def test_numpy_radians(
         subok=True,
         test_values=True,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_float_dtypes,
+        shape=st.shared(helpers.get_shape(min_num_dims=1, min_dim_size=3), key="shape")
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1, min_dim_size=3), key="shape")
+    ),
+    period=helpers.floats(min_value=0, max_value=10, exclude_min=True),
+    as_variable=helpers.array_bools(num_arrays=1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.unwrap"
+    ),
+    native_array=helpers.array_bools(num_arrays=1),
+)
+def test_numpy_unwrap(
+    dtype_and_x,
+    axis,
+    period,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="unwrap",
+        p=np.asarray(x, dtype=input_dtype),
+        discont=None,
+        axis=axis,
+        period=period        
+    )
