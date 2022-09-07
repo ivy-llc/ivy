@@ -60,7 +60,7 @@ def test_numpy_instance_reshape(
         frontend_class=ndarray,
         fn_tree="ndarray.reshape",
         self=x,
-        shape=shape,
+        newshape=shape,
         copy=copy,
     )
 

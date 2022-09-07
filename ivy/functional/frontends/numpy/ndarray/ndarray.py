@@ -7,17 +7,15 @@ import ivy.functional.frontends.numpy as np_frontend
 
 class ndarray:
     def __init__(self, data):
-        if ivy.is_ivy_array(data):
-            self.data = data.data
-        else:
-            assert ivy.is_native_array(data)
-            self.data = data
+        if ivy.is_native_array(data):
+            data = ivy.Array(data)
+        self.data = data
 
     # Instance Methoods #
     # -------------------#
 
-    def reshape(self, newshape, order="C"):
-        return np_frontend.reshape(self.data, newshape, order)
+    def reshape(self, newshape, copy=None):
+        return np_frontend.reshape(self.data, newshape, copy=copy)
 
     def add(
         self,

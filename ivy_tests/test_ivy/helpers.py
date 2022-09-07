@@ -2008,6 +2008,9 @@ def test_frontend_array_instance_method(
     ret_np
         optional, return value from the Numpy function
     """
+    # num_positional_args ignores self, which we need to compensate for
+    num_positional_args += 1
+
     # convert single values to length 1 lists
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
@@ -3424,6 +3427,48 @@ def num_positional_args(draw, *, fn_name: str = None):
     for param in inspect.signature(fn).parameters.values():
         if param.name == "self":
             continue
+        total += 1
+        if param.kind == param.POSITIONAL_ONLY:
+            num_positional_only += 1
+        elif param.kind == param.KEYWORD_ONLY:
+            num_keyword_only += 1
+        elif param.kind == param.VAR_KEYWORD:
+            num_keyword_only += 1
+    return draw(
+        ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
+    )
+
+
+@st.composite
+def num_positional_args_from_fn(draw, *, fn):
+    """Draws an integers randomly from the minimum and maximum number of positional
+    arguments a given function can take.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    fn_name
+        name of the function.
+
+    Returns
+    -------
+    A strategy that can be used in the @given hypothesis decorator.
+
+    Examples
+    --------
+    @given(
+        num_positional_args=num_positional_args(fn_name="floor_divide")
+    )
+    @given(
+        num_positional_args=num_positional_args(fn_name="add")
+    )
+    """
+    num_positional_only = 0
+    num_keyword_only = 0
+    total = 0
+    for param in inspect.signature(fn).parameters.values():
         total += 1
         if param.kind == param.POSITIONAL_ONLY:
             num_positional_only += 1

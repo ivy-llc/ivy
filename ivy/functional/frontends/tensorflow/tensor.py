@@ -7,11 +7,9 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 
 class Tensor:
     def __init__(self, data):
-        if ivy.is_ivy_array(data):
-            self.data = data.data
-        else:
-            assert ivy.is_native_array(data)
-            self.data = data
+        if ivy.is_native_array(data):
+            data = ivy.Array(data)
+        self.data = data
 
     # Instance Methoods #
     # -------------------#
