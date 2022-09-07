@@ -192,6 +192,8 @@ class MultiHeadAttention(Module):
     def __init__(
         self,
         query_dim,
+        /,
+        *,
         num_heads=8,
         head_dim=64,
         dropout_rate=0.0,
