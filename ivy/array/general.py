@@ -393,7 +393,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
-        >>> scatter = indices.scatter_nd(updates, tensor=arr, reduction='replace')
+        >>> scatter = indices.scatter_nd(updates, reduction='replace', out = arr)
         >>> print(scatter)
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
