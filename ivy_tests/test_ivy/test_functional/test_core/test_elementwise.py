@@ -864,8 +864,6 @@ def test_floor_divide(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
     # Make sure it's not dividing value too close to zero
     assume(not np.any(np.isclose(x2, 0)))
 
@@ -1269,6 +1267,7 @@ def test_log2(
         instance_method=instance_method,
         fw=fw,
         fn_name="log2",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -1305,6 +1304,7 @@ def test_log10(
         instance_method=instance_method,
         fw=fw,
         fn_name="log10",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
