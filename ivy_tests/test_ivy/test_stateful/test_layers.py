@@ -172,7 +172,7 @@ def test_dropout_layer(
 # ----------#
 @st.composite
 def x_and_mha(draw):
-    dtype = draw(dtypes)
+    dtype = draw(helpers.get_dtypes("float"))
     query_dim = draw(st.integers(min_value=1, max_value=3))
     num_heads = draw(st.integers(min_value=1, max_value=3))
     head_dim = draw(st.integers(min_value=1, max_value=3))
@@ -184,29 +184,31 @@ def x_and_mha(draw):
     num_queries = draw(st.integers(min_value=1, max_value=3))
     x_feats = draw(st.integers(min_value=1, max_value=3))
     num_values = draw(st.integers(min_value=1, max_value=3))
-    cont_feats = draw(st.integers(min_value=1, max_value=3))
+    # cont_feats = draw(st.integers(min_value=1, max_value=3))
+    num_keys = draw(st.integers(min_value=1, max_value=3))
 
     inputs_shape = [batch_shape] + [num_queries] + [x_feats]
-    context_shape = [batch_shape] + [num_values] + [cont_feats]
+    context_shape = [batch_shape] + [num_values] + [context_dim]
     mask_shape = [num_queries] + [num_keys]
-    dtype1, x_mha = draw(
-        helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes, shape=inputs_shape
+    x_mha = draw(
+        helpers.array_values(
+            dtype=dtype, shape=inputs_shape
         )
     )
-    dtype2, context = draw(
-        helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes, shape=context_shape
+    context = draw(
+        helpers.array_values(
+            dtype=dtype, shape=context_shape
         )
     )
-    dtype3, mask = draw(
-        helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes, shape=mask_shape
+    mask = draw(
+        helpers.array_values(
+            dtype=dtype, shape=mask_shape
         )
     )
-    return dtype1, dtype2, dtype3, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim
+    return dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim
 
 # multi_head_attention
+@handle_cmd_line_args
 @given(
     dtype_mha=x_and_mha(),
     with_to_q_fn=st.booleans(),
@@ -214,8 +216,8 @@ def x_and_mha(draw):
     with_to_out_fn=st.booleans(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="multi_head_attention.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="multi_head_attention._forward"),
+    num_positional_args_init=helpers.num_positional_args(fn_name="MultiHeadAttention.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="MultiHeadAttention._forward"),
     build_mode=st.sampled_from(["on_init", "explicit", "on_call"]),
 )
 def test_multi_head_attention_layer(
@@ -234,12 +236,11 @@ def test_multi_head_attention_layer(
     fw,
     device,
 ):
-    dtype1, dtype2, dtype3, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim = dtype_mha
-    inputs = [x_mha] + [context] + [mask]
-    with_to_q_fn = with_to_q_fn
-    with_to_kv_fn = with_to_kv_fn
-    with_to_out_fn = with_to_out_fn
-    build_mode = build_mode
+    input_dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim = dtype_mha
+    input_dtype = [input_dtype] * 3
+    as_variable = [as_variable] * 3
+    native_array = [native_array] * 3
+    container = [container] * 3
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
         all_as_kwargs_np_init={
@@ -250,10 +251,10 @@ def test_multi_head_attention_layer(
             "context_dim": context_dim,
             "with_to_q_fn": with_to_q_fn,
             "with_to_kv_fn": with_to_kv_fn,
-            "with_to_out_fn":with_to_out_fn,
-            "build_mode":build_mode,
+            "with_to_out_fn": with_to_out_fn,
+            "build_mode": build_mode,
             "device": device,
-            "dtype": input_dtype,
+            "dtype": input_dtype[0],
 
         },
         input_dtypes_method=input_dtype,
@@ -261,9 +262,13 @@ def test_multi_head_attention_layer(
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": np.asarray(inputs, dtype=dtype1)},
+        all_as_kwargs_np_method={
+            "inputs": np.asarray(x_mha, dtype=input_dtype[0]),
+            "context": np.asarray(context, dtype=input_dtype[0]),
+            "mask": np.asarray(mask, dtype=input_dtype[0])
+        },
         fw=fw,
-        class_name="multi_head_attention",
+        class_name="MultiHeadAttention",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
     )
@@ -1398,9 +1403,23 @@ def test_conv3d_transpose_layer(
 
 #LSTM
 
+
+@st.composite
+def _input_channels_and_dtype_and_values_lstm(draw):
+    input_channels = draw(st.integers(min_value=1, max_value=10))
+    t = draw(st.integers(min_value=1, max_value=3))
+    x_shape = draw(helpers.get_shape()) + (t, input_channels)
+    dtype, vals = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float", full=True), shape=x_shape
+        )
+    )
+    return input_channels, dtype, vals
+
+
 @handle_cmd_line_args
 @given(
-    input_dtype_val=_input_channels_and_dtype_and_values(),
+    input_dtype_val=_input_channels_and_dtype_and_values_lstm(),
     output_channels=st.shared(
         st.integers(min_value=1, max_value=10), key="output_channels"
     ),
@@ -1438,10 +1457,10 @@ def test_lstm_layer(
         all_as_kwargs_np_init={
             "input_channels": input_channels,
             "output_channels": output_channels,
+            "weight_initializer": weight_initializer,
             "num_layers": num_layers,
             "return_sequence": return_sequence,
             "return_state": return_state,
-            "weight_initializer": weight_initializer,
             "device": device,
             "dtype": input_dtype,
 
