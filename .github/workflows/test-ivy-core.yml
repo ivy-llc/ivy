@@ -44,7 +44,7 @@ jobs:
            Write-Host "::set-output name=changed::$HasDiff"
 
    run-nightly-tests:
-     if: Build.steps.check_file_changed.outputs.changed == 'True'
+     if: steps.check_file_changed.outputs.changed == 'True'
      runs-on: ubuntu-latest
      steps:
        - name: Download artifact
