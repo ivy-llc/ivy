@@ -35,7 +35,8 @@ slogdet.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def cholesky_solve(chol, rhs, name=None):
-    return ivy.solve(chol, rhs)
+    y = ivy.solve(chol, rhs)
+    return ivy.solve(ivy.matrix_transpose(chol), y)
 
 
 cholesky_solve.unsupported_dtypes = ("float16", "bfloat16")

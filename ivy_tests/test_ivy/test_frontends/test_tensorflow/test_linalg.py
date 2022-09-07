@@ -212,23 +212,66 @@ def test_tensorflow_slogdet(
 
 
 # cholesky_solve
+
+
+@st.composite
+def _get_spd_matrix(draw):
+    # batch_shape, random_size, shared
+    input_dtype = draw(
+        st.shared(st.sampled_from(ivy_np.valid_float_dtypes), key="shared_dtype")
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    gen = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+
+    # spd = [ivy.matmul(ivy.matrix_transpose(elem), elem) for elem in gen]
+
+    return input_dtype, gen
+
+
+@st.composite
+def _get_second_matrix(draw):
+    # batch_shape, shared, random_size
+    input_dtype = draw(
+        st.shared(st.sampled_from(ivy_np.valid_float_dtypes), key="shared_dtype")
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+        )
+    )
+
+
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_solve_get_dtype_and_data(),
+    x=_get_spd_matrix(),
+    y=_get_second_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.cholesky_solve"
     ),
 )
 def test_tensorflow_cholesky_solve(
-    dtype_and_x,
+    *,
+    x,
+    y,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    data1, data2 = dtype_and_x
-    input_dtype1, x = data1
-    input_dtype2, y = data2
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
 
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
@@ -239,8 +282,10 @@ def test_tensorflow_cholesky_solve(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.cholesky_solve",
-        chol=np.asarray(x, dtype=input_dtype1),
-        rhs=np.asarray(y, dtype=input_dtype2),
+        rtol=1e-2,
+        atol=1e-2,
+        chol=np.asarray(x1, dtype=input_dtype1),
+        rhs=np.asarray(x2, dtype=input_dtype2),
     )
 
 
