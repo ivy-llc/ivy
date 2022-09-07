@@ -2,6 +2,12 @@ is_bool_dtype
 =============
 
 .. autofunction:: ivy.functional.ivy.data_type.is_bool_dtype
+
+.. autofunction:: ivy.array.array_methods.is_bool_dtype
+
+.. autofunction:: ivy.container.container_methods.static_is_bool_dtype
+
+.. autofunction:: ivy.container.container_methods.is_bool_dtype
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ is_bool_dtype
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: is_bool_dtype
+
+   is_bool_dtype/is_bool_dtype_functional.rst
+   is_bool_dtype/is_bool_dtype_array.rst
+   is_bool_dtype/is_bool_dtype_container.rst
+   is_bool_dtype/static_is_bool_dtype_container.rst
+

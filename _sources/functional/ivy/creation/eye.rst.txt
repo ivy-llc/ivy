@@ -2,6 +2,8 @@ eye
 ===
 
 .. autofunction:: ivy.functional.ivy.creation.eye
+
+.. autofunction:: ivy.container.container_methods.static_eye
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ eye
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: eye
+
+   eye/eye_functional.rst
+   eye/static_eye_container.rst
+

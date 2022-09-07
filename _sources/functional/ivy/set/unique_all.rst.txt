@@ -2,6 +2,12 @@ unique_all
 ==========
 
 .. autofunction:: ivy.functional.ivy.set.unique_all
+
+.. autofunction:: ivy.array.array_methods.unique_all
+
+.. autofunction:: ivy.container.container_methods.unique_all
+
+.. autofunction:: ivy.container.container_methods.static_unique_all
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ unique_all
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: unique_all
+
+   unique_all/unique_all_functional.rst
+   unique_all/static_unique_all_container.rst
+   unique_all/unique_all_array.rst
+   unique_all/unique_all_container.rst
+

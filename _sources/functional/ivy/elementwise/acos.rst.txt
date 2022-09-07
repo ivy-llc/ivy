@@ -2,6 +2,12 @@ acos
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.acos
+
+.. autofunction:: ivy.array.array_methods.acos
+
+.. autofunction:: ivy.container.container_methods.static_acos
+
+.. autofunction:: ivy.container.container_methods.acos
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ acos
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: acos
+
+   acos/acos_functional.rst
+   acos/acos_array.rst
+   acos/acos_container.rst
+   acos/static_acos_container.rst
+

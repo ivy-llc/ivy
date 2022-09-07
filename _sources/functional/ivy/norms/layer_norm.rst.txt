@@ -2,6 +2,10 @@ layer_norm
 ==========
 
 .. autofunction:: ivy.functional.ivy.norms.layer_norm
+
+.. autofunction:: ivy.array.array_methods.layer_norm
+
+.. autofunction:: ivy.container.container_methods.layer_norm
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ layer_norm
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: layer_norm
+
+   layer_norm/layer_norm_functional.rst
+   layer_norm/layer_norm_array.rst
+   layer_norm/layer_norm_container.rst
+

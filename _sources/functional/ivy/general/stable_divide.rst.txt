@@ -2,6 +2,12 @@ stable_divide
 =============
 
 .. autofunction:: ivy.functional.ivy.general.stable_divide
+
+.. autofunction:: ivy.array.array_methods.stable_divide
+
+.. autofunction:: ivy.container.container_methods.static_stable_divide
+
+.. autofunction:: ivy.container.container_methods.stable_divide
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ stable_divide
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: stable_divide
+
+   stable_divide/stable_divide_functional.rst
+   stable_divide/stable_divide_array.rst
+   stable_divide/stable_divide_container.rst
+   stable_divide/static_stable_divide_container.rst
+

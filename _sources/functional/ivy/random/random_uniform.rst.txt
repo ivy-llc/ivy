@@ -2,6 +2,12 @@ random_uniform
 ==============
 
 .. autofunction:: ivy.functional.ivy.random.random_uniform
+
+.. autofunction:: ivy.array.array_methods.random_uniform
+
+.. autofunction:: ivy.container.container_methods.random_uniform
+
+.. autofunction:: ivy.container.container_methods.static_random_uniform
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ random_uniform
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: random_uniform
+
+   random_uniform/random_uniform_functional.rst
+   random_uniform/random_uniform_array.rst
+   random_uniform/random_uniform_container.rst
+   random_uniform/static_random_uniform_container.rst
+

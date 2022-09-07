@@ -2,6 +2,8 @@ eigvalsh
 ========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.eigvalsh
+
+.. autofunction:: ivy.array.array_methods.eigvalsh
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ eigvalsh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: eigvalsh
+
+   eigvalsh/eigvalsh_functional.rst
+   eigvalsh/eigvalsh_array.rst
+

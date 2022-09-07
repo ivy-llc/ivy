@@ -2,6 +2,12 @@ vecdot
 ======
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.vecdot
+
+.. autofunction:: ivy.array.array_methods.vecdot
+
+.. autofunction:: ivy.container.container_methods.static_vecdot
+
+.. autofunction:: ivy.container.container_methods.vecdot
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ vecdot
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: vecdot
+
+   vecdot/vecdot_functional.rst
+   vecdot/static_vecdot_container.rst
+   vecdot/vecdot_array.rst
+   vecdot/vecdot_container.rst
+

@@ -2,6 +2,12 @@ reshape
 =======
 
 .. autofunction:: ivy.functional.ivy.manipulation.reshape
+
+.. autofunction:: ivy.array.array_methods.reshape
+
+.. autofunction:: ivy.container.container_methods.static_reshape
+
+.. autofunction:: ivy.container.container_methods.reshape
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ reshape
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: reshape
+
+   reshape/reshape_functional.rst
+   reshape/reshape_array.rst
+   reshape/reshape_container.rst
+   reshape/static_reshape_container.rst
+

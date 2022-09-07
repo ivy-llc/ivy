@@ -2,6 +2,12 @@ negative
 ========
 
 .. autofunction:: ivy.functional.ivy.elementwise.negative
+
+.. autofunction:: ivy.array.array_methods.negative
+
+.. autofunction:: ivy.container.container_methods.negative
+
+.. autofunction:: ivy.container.container_methods.static_negative
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ negative
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: negative
+
+   negative/negative_functional.rst
+   negative/negative_array.rst
+   negative/negative_container.rst
+   negative/static_negative_container.rst
+

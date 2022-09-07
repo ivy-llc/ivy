@@ -2,6 +2,12 @@ gather_nd
 =========
 
 .. autofunction:: ivy.functional.ivy.general.gather_nd
+
+.. autofunction:: ivy.array.array_methods.gather_nd
+
+.. autofunction:: ivy.container.container_methods.gather_nd
+
+.. autofunction:: ivy.container.container_methods.static_gather_nd
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ gather_nd
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: gather_nd
+
+   gather_nd/gather_nd_functional.rst
+   gather_nd/gather_nd_array.rst
+   gather_nd/gather_nd_container.rst
+   gather_nd/static_gather_nd_container.rst
+

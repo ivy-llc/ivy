@@ -2,6 +2,12 @@ pow
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.pow
+
+.. autofunction:: ivy.array.array_methods.pow
+
+.. autofunction:: ivy.container.container_methods.static_pow
+
+.. autofunction:: ivy.container.container_methods.pow
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ pow
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: pow
+
+   pow/pow_functional.rst
+   pow/pow_array.rst
+   pow/pow_container.rst
+   pow/static_pow_container.rst
+

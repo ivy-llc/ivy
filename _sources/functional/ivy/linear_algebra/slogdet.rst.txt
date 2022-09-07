@@ -2,6 +2,10 @@ slogdet
 =======
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.slogdet
+
+.. autofunction:: ivy.container.container_methods.slogdet
+
+.. autofunction:: ivy.container.container_methods.static_slogdet
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ slogdet
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: slogdet
+
+   slogdet/slogdet_functional.rst
+   slogdet/slogdet_container.rst
+   slogdet/static_slogdet_container.rst
+

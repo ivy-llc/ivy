@@ -2,6 +2,12 @@ trunc
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.trunc
+
+.. autofunction:: ivy.array.array_methods.trunc
+
+.. autofunction:: ivy.container.container_methods.static_trunc
+
+.. autofunction:: ivy.container.container_methods.trunc
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ trunc
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: trunc
+
+   trunc/trunc_functional.rst
+   trunc/static_trunc_container.rst
+   trunc/trunc_array.rst
+   trunc/trunc_container.rst
+

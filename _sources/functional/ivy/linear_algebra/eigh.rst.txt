@@ -2,6 +2,10 @@ eigh
 ====
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.eigh
+
+.. autofunction:: ivy.array.array_methods.eigh
+
+.. autofunction:: ivy.container.container_methods.eigh
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ eigh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: eigh
+
+   eigh/eigh_functional.rst
+   eigh/eigh_array.rst
+   eigh/eigh_container.rst
+

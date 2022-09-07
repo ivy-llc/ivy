@@ -2,6 +2,12 @@ from_dlpack
 ===========
 
 .. autofunction:: ivy.functional.ivy.creation.from_dlpack
+
+.. autofunction:: ivy.array.array_methods.from_dlpack
+
+.. autofunction:: ivy.container.container_methods.from_dlpack
+
+.. autofunction:: ivy.container.container_methods.static_from_dlpack
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ from_dlpack
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: from_dlpack
+
+   from_dlpack/from_dlpack_functional.rst
+   from_dlpack/from_dlpack_array.rst
+   from_dlpack/from_dlpack_container.rst
+   from_dlpack/static_from_dlpack_container.rst
+

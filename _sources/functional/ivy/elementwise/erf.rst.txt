@@ -2,6 +2,12 @@ erf
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.erf
+
+.. autofunction:: ivy.array.array_methods.erf
+
+.. autofunction:: ivy.container.container_methods.static_erf
+
+.. autofunction:: ivy.container.container_methods.erf
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ erf
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: erf
+
+   erf/erf_functional.rst
+   erf/erf_array.rst
+   erf/erf_container.rst
+   erf/static_erf_container.rst
+

@@ -2,6 +2,10 @@ maximum
 =======
 
 .. autofunction:: ivy.functional.ivy.elementwise.maximum
+
+.. autofunction:: ivy.container.container_methods.maximum
+
+.. autofunction:: ivy.container.container_methods.static_maximum
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ maximum
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: maximum
+
+   maximum/maximum_functional.rst
+   maximum/maximum_container.rst
+   maximum/static_maximum_container.rst
+

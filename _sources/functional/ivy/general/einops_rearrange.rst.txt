@@ -2,6 +2,12 @@ einops_rearrange
 ================
 
 .. autofunction:: ivy.functional.ivy.general.einops_rearrange
+
+.. autofunction:: ivy.array.array_methods.einops_rearrange
+
+.. autofunction:: ivy.container.container_methods.einops_rearrange
+
+.. autofunction:: ivy.container.container_methods.static_einops_rearrange
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ einops_rearrange
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: einops_rearrange
+
+   einops_rearrange/einops_rearrange_functional.rst
+   einops_rearrange/einops_rearrange_array.rst
+   einops_rearrange/einops_rearrange_container.rst
+   einops_rearrange/static_einops_rearrange_container.rst
+

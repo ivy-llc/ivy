@@ -2,6 +2,12 @@ isnan
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.isnan
+
+.. autofunction:: ivy.array.array_methods.isnan
+
+.. autofunction:: ivy.container.container_methods.isnan
+
+.. autofunction:: ivy.container.container_methods.static_isnan
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ isnan
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: isnan
+
+   isnan/isnan_functional.rst
+   isnan/isnan_array.rst
+   isnan/isnan_container.rst
+   isnan/static_isnan_container.rst
+

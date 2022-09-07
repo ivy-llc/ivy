@@ -2,6 +2,12 @@ var
 ===
 
 .. autofunction:: ivy.functional.ivy.statistical.var
+
+.. autofunction:: ivy.array.array_methods.var
+
+.. autofunction:: ivy.container.container_methods.var
+
+.. autofunction:: ivy.container.container_methods.static_var
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ var
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: var
+
+   var/var_functional.rst
+   var/static_var_container.rst
+   var/var_array.rst
+   var/var_container.rst
+

@@ -2,6 +2,8 @@ pinv
 ====
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.pinv
+
+.. autofunction:: ivy.array.array_methods.pinv
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ pinv
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: pinv
+
+   pinv/pinv_functional.rst
+   pinv/pinv_array.rst
+

@@ -2,6 +2,10 @@ asarray
 =======
 
 .. autofunction:: ivy.functional.ivy.creation.asarray
+
+.. autofunction:: ivy.array.array_methods.asarray
+
+.. autofunction:: ivy.container.container_methods.static_asarray
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ asarray
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: asarray
+
+   asarray/asarray_functional.rst
+   asarray/asarray_array.rst
+   asarray/static_asarray_container.rst
+

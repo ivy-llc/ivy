@@ -2,6 +2,12 @@ to_numpy
 ========
 
 .. autofunction:: ivy.functional.ivy.general.to_numpy
+
+.. autofunction:: ivy.array.array_methods.to_numpy
+
+.. autofunction:: ivy.container.container_methods.to_numpy
+
+.. autofunction:: ivy.container.container_methods.static_to_numpy
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ to_numpy
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: to_numpy
+
+   to_numpy/to_numpy_functional.rst
+   to_numpy/static_to_numpy_container.rst
+   to_numpy/to_numpy_array.rst
+   to_numpy/to_numpy_container.rst
+

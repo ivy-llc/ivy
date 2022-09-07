@@ -2,6 +2,8 @@ zeros
 =====
 
 .. autofunction:: ivy.functional.ivy.creation.zeros
+
+.. autofunction:: ivy.container.container_methods.static_zeros
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ zeros
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: zeros
+
+   zeros/zeros_functional.rst
+   zeros/static_zeros_container.rst
+

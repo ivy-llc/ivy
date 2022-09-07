@@ -2,6 +2,12 @@ cholesky
 ========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.cholesky
+
+.. autofunction:: ivy.array.array_methods.cholesky
+
+.. autofunction:: ivy.container.container_methods.cholesky
+
+.. autofunction:: ivy.container.container_methods.static_cholesky
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ cholesky
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: cholesky
+
+   cholesky/cholesky_functional.rst
+   cholesky/cholesky_array.rst
+   cholesky/cholesky_container.rst
+   cholesky/static_cholesky_container.rst
+

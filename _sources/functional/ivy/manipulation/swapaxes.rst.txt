@@ -2,6 +2,12 @@ swapaxes
 ========
 
 .. autofunction:: ivy.functional.ivy.manipulation.swapaxes
+
+.. autofunction:: ivy.array.array_methods.swapaxes
+
+.. autofunction:: ivy.container.container_methods.swapaxes
+
+.. autofunction:: ivy.container.container_methods.static_swapaxes
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ swapaxes
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: swapaxes
+
+   swapaxes/swapaxes_functional.rst
+   swapaxes/static_swapaxes_container.rst
+   swapaxes/swapaxes_array.rst
+   swapaxes/swapaxes_container.rst
+

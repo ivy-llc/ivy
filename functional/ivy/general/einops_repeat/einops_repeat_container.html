@@ -60,7 +60,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../general.html">General</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../get_referrers_recursive.html">get_referrers_recursive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../is_native_array.html">is_native_array</a></li>
@@ -115,8 +114,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../set_queue_timeout.html">set_queue_timeout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../get_queue_timeout.html">get_queue_timeout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../get_tmp_dir.html">get_tmp_dir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../queue_timeout.html">queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tmp_dir.html">tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../set_tmp_dir.html">set_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../container_types.html">container_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inplace_arrays_supported.html">inplace_arrays_supported</a></li>
@@ -246,23 +245,6 @@ shape that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><em>ret</em> – New container with einops.repeat having been applied.</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<dl class="simple">
-<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),</dt><dd><p>b=ivy.array([[1, 2], [4, 5]]))</p>
-</dd>
-</dl>
-<p>&gt;&gt; repeated = x.einops_repeat(‘h w -&gt;  h  (w tile)’, tile=2)
-&gt;&gt; print(repeated)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([[30, 30, 40, 40],</dt><dd><p>[50, 50, 75, 75]]),</p>
-</dd>
-<dt>b: ivy.array([[1, 1, 2, 2],</dt><dd><p>[4, 4, 5, 5]])</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}</p>
 </dd></dl>
 
 <div class="line-block">

@@ -2,6 +2,12 @@ greater
 =======
 
 .. autofunction:: ivy.functional.ivy.elementwise.greater
+
+.. autofunction:: ivy.array.array_methods.greater
+
+.. autofunction:: ivy.container.container_methods.static_greater
+
+.. autofunction:: ivy.container.container_methods.greater
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ greater
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: greater
+
+   greater/greater_functional.rst
+   greater/greater_array.rst
+   greater/greater_container.rst
+   greater/static_greater_container.rst
+

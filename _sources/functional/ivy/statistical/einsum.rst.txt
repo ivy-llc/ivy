@@ -2,6 +2,10 @@ einsum
 ======
 
 .. autofunction:: ivy.functional.ivy.statistical.einsum
+
+.. autofunction:: ivy.array.array_methods.einsum
+
+.. autofunction:: ivy.container.container_methods.einsum
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ einsum
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: einsum
+
+   einsum/einsum_functional.rst
+   einsum/einsum_array.rst
+   einsum/einsum_container.rst
+

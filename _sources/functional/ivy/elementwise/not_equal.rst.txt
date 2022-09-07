@@ -2,6 +2,12 @@ not_equal
 =========
 
 .. autofunction:: ivy.functional.ivy.elementwise.not_equal
+
+.. autofunction:: ivy.array.array_methods.not_equal
+
+.. autofunction:: ivy.container.container_methods.not_equal
+
+.. autofunction:: ivy.container.container_methods.static_not_equal
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ not_equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: not_equal
+
+   not_equal/not_equal_functional.rst
+   not_equal/not_equal_array.rst
+   not_equal/not_equal_container.rst
+   not_equal/static_not_equal_container.rst
+

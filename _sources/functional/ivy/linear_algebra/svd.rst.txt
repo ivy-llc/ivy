@@ -2,6 +2,12 @@ svd
 ===
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.svd
+
+.. autofunction:: ivy.array.array_methods.svd
+
+.. autofunction:: ivy.container.container_methods.static_svd
+
+.. autofunction:: ivy.container.container_methods.svd
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ svd
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: svd
+
+   svd/svd_functional.rst
+   svd/static_svd_container.rst
+   svd/svd_array.rst
+   svd/svd_container.rst
+

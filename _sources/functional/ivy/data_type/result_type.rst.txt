@@ -2,6 +2,12 @@ result_type
 ===========
 
 .. autofunction:: ivy.functional.ivy.data_type.result_type
+
+.. autofunction:: ivy.array.array_methods.result_type
+
+.. autofunction:: ivy.container.container_methods.result_type
+
+.. autofunction:: ivy.container.container_methods.static_result_type
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ result_type
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: result_type
+
+   result_type/result_type_functional.rst
+   result_type/result_type_array.rst
+   result_type/result_type_container.rst
+   result_type/static_result_type_container.rst
+

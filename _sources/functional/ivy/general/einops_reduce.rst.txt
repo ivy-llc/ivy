@@ -2,6 +2,12 @@ einops_reduce
 =============
 
 .. autofunction:: ivy.functional.ivy.general.einops_reduce
+
+.. autofunction:: ivy.array.array_methods.einops_reduce
+
+.. autofunction:: ivy.container.container_methods.einops_reduce
+
+.. autofunction:: ivy.container.container_methods.static_einops_reduce
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ einops_reduce
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: einops_reduce
+
+   einops_reduce/einops_reduce_functional.rst
+   einops_reduce/einops_reduce_array.rst
+   einops_reduce/einops_reduce_container.rst
+   einops_reduce/static_einops_reduce_container.rst
+
