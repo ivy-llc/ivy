@@ -74,4 +74,4 @@ def softplus(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch
     return torch.nn.functional.softplus(x)
 
 
-softplus.unsupported_dtypes = ("float16",)
+softplus.unsupported_dtypes = ("float16", "bfloat16")

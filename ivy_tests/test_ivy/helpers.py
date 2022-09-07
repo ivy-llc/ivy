@@ -27,6 +27,11 @@ from ivy.functional.backends.tensorflow.general import (
 from ivy.functional.backends.torch.general import (
     is_native_array as is_torch_native_array,
 )
+from ivy_tests.test_ivy.test_frontends import NativeClass
+from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
+from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
+from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
+from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -52,6 +57,13 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy.functional.backends.numpy as ivy_np
+
+
+def convtrue(argument):
+    """Convert NativeClass in argument to true framework counter part"""
+    if isinstance(argument, NativeClass):
+        return argument._native_class
+    return argument
 
 
 def get_ivy_numpy():
@@ -339,7 +351,7 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=False, none=False):
+def get_dtypes(draw, kind, index=0, full=True, none=False):
     """
     Draws valid dtypes based on the backend set on the stack
 
@@ -354,8 +366,8 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
         list indexing incase a test needs to be skipped for a particular dtype(s)
     full
         returns the complete list of valid types
-        returns the complete list of valid types
     none
+        allow none in the list of valid types
 
     Returns
     -------
@@ -377,6 +389,37 @@ def get_dtypes(draw, kind, index=0, full=False, none=False):
     if full:
         return type_dict[kind][index:]
     return draw(st.sampled_from(type_dict[kind][index:]))
+
+
+@st.composite
+def get_castable_dtype(draw, dtype, full=False):
+    """
+    Draws castable dtypes for the given dtype based on the current backend.
+
+    Parameters
+    ----------
+    draw
+        Special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dtype
+        Data type from which to cast
+    full
+        Returns the complete list of castable types
+
+    Returns
+    -------
+    ret
+        List of castable dtypes
+    """
+    if ivy.is_int_dtype(dtype):
+        valid_dtypes = [d for d in ivy.valid_int_dtypes if ivy.can_cast(dtype, d)]
+    elif ivy.is_float_dtype(dtype):
+        valid_dtypes = [d for d in ivy.valid_float_dtypes if ivy.can_cast(dtype, d)]
+    elif ivy.is_bool_dtype(dtype):
+        valid_dtypes = [dtype]
+    if full:
+        return valid_dtypes
+    return [draw(st.sampled_from(valid_dtypes))]
 
 
 @st.composite
@@ -944,56 +987,23 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
 
     Returns
     -------
-    True if the function does not support either the device or any data type, False
+    True if the function does not support both the device and any data type, False
     otherwise.
     """
-    test_unsupported = False
     unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
-    supported_devices_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)
-    for i in range(len(unsupported_devices_dtypes_fn["devices"])):
-        if device in unsupported_devices_dtypes_fn["devices"][i]:
-            for d in input_dtypes:
-                if d in unsupported_devices_dtypes_fn["dtypes"][i]:
-                    test_unsupported = True
-                    break
-    if (
-        "device" in all_as_kwargs_np
-        and "dtype" in all_as_kwargs_np
-        and all_as_kwargs_np["device"] in unsupported_devices_dtypes_fn["devices"]
-    ):
-        index = unsupported_devices_dtypes_fn["devices"].index(
-            all_as_kwargs_np["device"]
-        )
-        if all_as_kwargs_np["dtype"] in unsupported_devices_dtypes_fn["dtypes"][index]:
-            test_unsupported = True
-    if test_unsupported:
-        return test_unsupported
 
-    for i in range(len(supported_devices_dtypes_fn["devices"])):
-        if device in supported_devices_dtypes_fn["devices"][i]:
-            for d in input_dtypes:
-                if d not in supported_devices_dtypes_fn["dtypes"][i]:
-                    test_unsupported = True
-                    break
-        else:
-            test_unsupported = True
-        if (
-            "device" in all_as_kwargs_np
-            and "dtype" in all_as_kwargs_np
-            and all_as_kwargs_np["device"] in supported_devices_dtypes_fn["devices"]
-        ):
-            if all_as_kwargs_np["device"] not in supported_devices_dtypes_fn["devices"]:
-                test_unsupported = True
-            else:
-                index = supported_devices_dtypes_fn["devices"].index(
-                    all_as_kwargs_np["device"]
-                )
-                if (
-                    all_as_kwargs_np["dtype"]
-                    not in supported_devices_dtypes_fn["dtypes"][index]
-                ):
-                    test_unsupported = True
-    return test_unsupported
+    if device in unsupported_devices_dtypes_fn:
+        for d in input_dtypes:
+            if d in unsupported_devices_dtypes_fn[device]:
+                return True
+
+    if "device" in all_as_kwargs_np and "dtype" in all_as_kwargs_np:
+        dev = all_as_kwargs_np["device"]
+        dtype = all_as_kwargs_np["dtype"]
+        if dtype in unsupported_devices_dtypes_fn.get(dev, []):
+            return True
+
+    return False
 
 
 def create_args_kwargs(
@@ -1808,6 +1818,18 @@ def test_frontend_function(
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
 
+    # check and replace NativeClass object in arguments with ivy counterparts
+    convs = {
+        "jax": convjax,
+        "numpy": convnumpy,
+        "tensorflow": convtensor,
+        "torch": convtorch,
+    }
+    if frontend in convs:
+        conv = convs[frontend]
+        args = ivy.nested_map(args, fn=conv, include_derived=True)
+        kwargs = ivy.nested_map(kwargs, fn=conv, include_derived=True)
+
     # run from the Ivy API directly
     if test_unsupported:
         test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
@@ -1872,6 +1894,14 @@ def test_frontend_function(
         if "device" in kwargs_frontend:
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
 
+        # check and replace the NativeClass objects in arguments with true counterparts
+        args_frontend = ivy.nested_map(
+            args_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
+        kwargs_frontend = ivy.nested_map(
+            kwargs_frontend, fn=convtrue, include_derived=True, max_depth=10
+        )
+
         # compute the return via the frontend framework
         frontend_fw = importlib.import_module(".".join([frontend] + frontend_submods))
         if test_unsupported:
@@ -1908,7 +1938,7 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, frontend_ret
+        return ret_np_flat, frontend_ret_np_flat
 
     # value tests, iterating through each array in the flattened returns
     value_test(
@@ -2157,7 +2187,9 @@ def dtype_values_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    large_value_safety_factor=1.1,
+    small_value_safety_factor=1.1,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=0,
@@ -2203,6 +2235,16 @@ def dtype_values_axis(
         minimum value of each integer in the shape tuple.
     max_dim_size
         maximum value of each integer in the shape tuple.
+    valid_axis
+        if True, a valid axis will be drawn from the array dimensions.
+    allow_neg_axes
+        if True, returned axes may include negative axes.
+    min_axes_size
+        minimum size of the axis tuple.
+    max_axes_size
+        maximum size of the axis tuple.
+    force_int_axis
+        if True, and only one axis is drawn, the returned axis will be an integer.
     shape
         shape of the array. if None, a random shape is drawn.
     shared_dtype
@@ -2223,6 +2265,8 @@ def dtype_values_axis(
             available_dtypes=available_dtypes,
             min_value=min_value,
             max_value=max_value,
+            large_value_safety_factor=large_value_safety_factor,
+            small_value_safety_factor=small_value_safety_factor,
             allow_inf=allow_inf,
             exclude_min=exclude_min,
             exclude_max=exclude_max,
@@ -2394,6 +2438,7 @@ def _zeroing(x):
     # covnert -0.0 to 0.0
     if x == 0.0:
         return 0.0
+    return x
 
 
 def _clamp_value(x, dtype):
@@ -2466,6 +2511,7 @@ def array_values(
         for dim in shape:
             size *= dim
     values = None
+    limit = math.log(small_value_safety_factor)
     min_value = _clamp_value(min_value, dtype) if ivy.exists(min_value) else None
     max_value = _clamp_value(max_value, dtype) if ivy.exists(max_value) else None
     if "uint" in dtype:
@@ -2571,186 +2617,138 @@ def array_values(
                     length=size,
                 )
             )
-    elif dtype == "float16":
-        if min_value is not None and max_value is not None:
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=np.array(min_value, dtype=dtype).tolist(),
-                        max_value=np.array(max_value, dtype=dtype).tolist(),
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=16,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
+    elif dtype in ["float16", "bfloat16"]:
+        min_value_neg = min_value
+        max_value_neg = round(-1 * limit, 3)
+        min_value_pos = round(limit, 3)
+        max_value_pos = max_value
+        max_value_neg, min_value_pos = (
+            np.array([max_value_neg, min_value_pos]).astype("float16").tolist()
+        )
+        if min_value_neg is not None and min_value_neg >= max_value_neg:
+            min_value_neg = min_value_pos
+            max_value_neg = max_value_pos
+        elif max_value_pos is not None and max_value_pos <= min_value_pos:
+            min_value_pos = min_value_neg
+            max_value_pos = max_value_neg
+        min_value_pos = _zeroing(min_value_pos)
+        max_value_pos = _zeroing(max_value_pos)
+        min_value_neg = _zeroing(min_value_neg)
+        max_value_neg = _zeroing(max_value_neg)
+        values = draw(
+            list_of_length(
+                x=st.floats(
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
                 )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=16,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                length=size,
             )
-
-        else:
-            limit = math.log(small_value_safety_factor)
-            min_value_neg = min_value
-            max_value_neg = round(-1 * limit, 3)
-            min_value_pos = round(limit, 3)
-            max_value_pos = max_value
-            max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
-            )
-            if min_value_neg is not None and min_value_neg >= max_value_neg:
-                min_value_neg = min_value_pos
-                max_value_neg = max_value_pos
-            elif max_value_pos is not None and max_value_pos <= min_value_pos:
-                min_value_pos = min_value_neg
-                max_value_pos = max_value_neg
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=min_value_neg,
-                        max_value=max_value_neg,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=16,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    )
-                    | st.floats(
-                        min_value=min_value_pos,
-                        max_value=max_value_pos,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=16,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
-                )
-            )
+        )
         values = [v / large_value_safety_factor for v in values]
     elif dtype == "float32":
-        if min_value is not None and max_value is not None:
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=np.array(min_value, dtype=dtype).tolist(),
-                        max_value=np.array(max_value, dtype=dtype).tolist(),
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=32,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
+        min_value_neg = min_value
+        max_value_neg = round(-1 * limit, 6)
+        min_value_pos = round(limit, 6)
+        max_value_neg, min_value_pos = (
+            np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+        )
+        max_value_pos = max_value
+        if min_value_neg is not None and min_value_neg >= max_value_neg:
+            min_value_neg = min_value_pos
+            max_value_neg = max_value_pos
+        elif max_value_pos is not None and max_value_pos <= min_value_pos:
+            min_value_pos = min_value_neg
+            max_value_pos = max_value_neg
+        min_value_pos = _zeroing(min_value_pos)
+        max_value_pos = _zeroing(max_value_pos)
+        min_value_neg = _zeroing(min_value_neg)
+        max_value_neg = _zeroing(max_value_neg)
+        values = draw(
+            list_of_length(
+                x=st.floats(
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
                 )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=32,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                length=size,
             )
-        else:
-            limit = math.log(small_value_safety_factor)
-            min_value_neg = min_value
-            max_value_neg = round(-1 * limit, 6)
-            min_value_pos = round(limit, 6)
-            max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
-            )
-            max_value_pos = max_value
-            if min_value_neg is not None and min_value_neg >= max_value_neg:
-                min_value_neg = min_value_pos
-                max_value_neg = max_value_pos
-            elif max_value_pos is not None and max_value_pos <= min_value_pos:
-                min_value_pos = min_value_neg
-                max_value_pos = max_value_neg
-
-            min_value_pos = _zeroing(min_value_pos)
-            max_value_pos = _zeroing(max_value_pos)
-            min_value_neg = _zeroing(min_value_neg)
-            max_value_neg = _zeroing(max_value_neg)
-
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=min_value_neg,
-                        max_value=max_value_neg,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=32,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    )
-                    | st.floats(
-                        min_value=min_value_pos,
-                        max_value=max_value_pos,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=32,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
-                )
-            )
+        )
         values = [v / large_value_safety_factor for v in values]
-    elif dtype in ["float64", "bfloat16"]:
-        if min_value is not None and max_value is not None:
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=np.array(min_value).astype("float64").tolist(),
-                        max_value=np.array(max_value).astype("float64").tolist(),
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=64,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
+    elif dtype == "float64":
+        limit = math.log(small_value_safety_factor)
+        min_value_neg = min_value
+        max_value_neg = round(-1 * limit, 15)
+        min_value_pos = round(limit, 15)
+        max_value_pos = max_value
+        max_value_neg, min_value_pos = (
+            np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
+        )
+        if min_value_neg is not None and min_value_neg >= max_value_neg:
+            min_value_neg = min_value_pos
+            max_value_neg = max_value_pos
+        elif max_value_pos is not None and max_value_pos <= min_value_pos:
+            min_value_pos = min_value_neg
+            max_value_pos = max_value_neg
+        min_value_pos = _zeroing(min_value_pos)
+        max_value_pos = _zeroing(max_value_pos)
+        min_value_neg = _zeroing(min_value_neg)
+        max_value_neg = _zeroing(max_value_neg)
+        values = draw(
+            list_of_length(
+                x=st.floats(
+                    min_value=min_value_neg,
+                    max_value=max_value_neg,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
                 )
+                | st.floats(
+                    min_value=min_value_pos,
+                    max_value=max_value_pos,
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=64,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                ),
+                length=size,
             )
-        else:
-            limit = math.log(small_value_safety_factor)
-            min_value_neg = min_value
-            max_value_neg = round(-1 * limit, 15)
-            min_value_pos = round(limit, 15)
-            max_value_pos = max_value
-            max_value_neg, min_value_pos = (
-                np.array([max_value_neg, min_value_pos]).astype("float64").tolist()
-            )
-            if min_value_neg is not None and min_value_neg >= max_value_neg:
-                min_value_neg = min_value_pos
-                max_value_neg = max_value_pos
-            elif max_value_pos is not None and max_value_pos <= min_value_pos:
-                min_value_pos = min_value_neg
-                max_value_pos = max_value_neg
-            values = draw(
-                list_of_length(
-                    x=st.floats(
-                        min_value=min_value_neg,
-                        max_value=max_value_neg,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=64,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    )
-                    | st.floats(
-                        min_value=min_value_pos,
-                        max_value=max_value_pos,
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=64,
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
-                    length=size,
-                )
-            )
+        )
         values = [v / large_value_safety_factor for v in values]
     elif dtype == "bool":
         values = draw(list_of_length(x=st.booleans(), length=size))
@@ -3022,6 +3020,8 @@ def get_axis(
     shape
         shape of the array as a tuple, or a hypothesis strategy from which the shape
         will be drawn
+    allow_neg
+        boolean; if True, allow negative axes to be drawn
     allow_none
         boolean; if True, allow None to be drawn
     sorted

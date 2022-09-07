@@ -94,8 +94,7 @@ def vdot(
     b,
     /,
 ):
-    ret = ivy.multiply(a, b).sum()
-    return ret
+    return ivy.multiply(a, b).sum()
 
 
 @from_zero_dim_arrays_to_float

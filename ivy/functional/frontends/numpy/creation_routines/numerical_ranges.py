@@ -11,7 +11,7 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
     if retstep:
         if endpoint:
             num -= 1
-        step = (stop - start) / num
+        step = ivy.divide(ivy.subtract(stop, start), num)
         return ret, step
     return ret
 

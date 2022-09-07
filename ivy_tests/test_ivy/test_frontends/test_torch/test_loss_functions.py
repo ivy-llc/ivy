@@ -5,30 +5,20 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.torch as ivy_torch
 
 
 # cross_entropy
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.0,
         max_value=1.0,
         allow_inf=False,
@@ -37,11 +27,7 @@ import ivy.functional.backends.torch as ivy_torch
         min_dim_size=2,
     ),
     dtype_and_weights=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -93,11 +79,7 @@ def test_torch_cross_entropy(
 # binary_cross_entropy
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.0,
         max_value=1.0,
         large_value_safety_factor=1.0,
@@ -110,11 +92,7 @@ def test_torch_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1.0,
         large_value_safety_factor=1.0,
@@ -127,11 +105,7 @@ def test_torch_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_weight=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1.0,
         allow_inf=False,
