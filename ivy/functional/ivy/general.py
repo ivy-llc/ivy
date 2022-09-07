@@ -1035,7 +1035,8 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
                        [-4.4, -5.5, -6.6]])
     >>> y = ivy.to_list(x)
     >>> print(y)
-    [[1.100000023841858,2.200000047683716,3.299999952316284],[-4.400000095367432,-5.5,-6.599999904632568]]
+    [[1.100000023841858,2.200000047683716,3.299999952316284],
+    [-4.400000095367432,-5.5,-6.599999904632568]]
 
     >>> print(isinstance(y, list))
     True
@@ -1596,7 +1597,8 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     x
         Input array.
     include_infs
-        Whether to include ``+infinity`` and ``-infinity`` in the check. Default is True.
+        Whether to include ``+infinity`` and ``-infinity`` in the check. 
+        Default is True.
 
     Returns
     -------
@@ -1606,7 +1608,8 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+        signatures.elementwise_functions.tan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2812,7 +2815,8 @@ def inplace_decrement(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+        signatures.elementwise_functions.tan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
