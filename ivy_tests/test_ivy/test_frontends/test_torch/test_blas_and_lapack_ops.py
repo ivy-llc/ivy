@@ -510,7 +510,7 @@ def test_torch_dot(
         frontend="torch",
         fn_tree="dot",
         input=np.asarray(vec1, dtype=dtype),
-        other=np.asarray(vec2, dtype=dtype),
+        tensor=np.asarray(vec2, dtype=dtype),
     )
 
 
