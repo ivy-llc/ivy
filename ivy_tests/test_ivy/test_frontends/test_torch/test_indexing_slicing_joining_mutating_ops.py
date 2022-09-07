@@ -459,6 +459,7 @@ def test_torch_swapaxes(
 
 
 #chunk
+@handle_cmd_line_args
 @given(
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -495,5 +496,5 @@ def test_torch_chunk(
         frontend='torch',
         fn_tree='chunk',
         input=np.asarray(value,dtype=input_dtype),
-        dim=dim,
+        axis=dim,
     )
