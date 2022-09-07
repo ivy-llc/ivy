@@ -55,7 +55,13 @@ def _array_idxes_n_dtype(draw, **kwargs):
                                             min_num_dims=num_dims, 
                                             max_num_dims=num_dims, 
                                             shared_dtype=True))
-    idxes = draw(tuple(helpers.ints(min_value=0, max_value=num_dims - 1)))
+    idxes = draw(
+        helpers.lists(
+            arg=helpers.ints(min_value=0, max_value=num_dims - 1),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
+        )
+    )
     return x, idxes, dtype
 
 
@@ -199,7 +205,7 @@ def test_torch_permute(
         frontend="torch",
         fn_tree="permute",
         input=np.asarray(x, dtype=dtype),
-        dims=idxes,
+        dims=tuple(idxes),
     )
 
 
