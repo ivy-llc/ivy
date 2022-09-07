@@ -16,10 +16,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         available_dtypes=helpers.get_dtypes("float", full=True),
         num_arrays=2,
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes, None)),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=2),
     with_out=st.booleans(),
+    mode=st.text(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.correlate"
 ),
@@ -54,7 +54,7 @@ def test_numpy_correlate(
         fn_tree="correlate",
         x=np.asarray(x, dtype=input_dtype[0]),
         y=np.asarray(y,dtype=input_dtype[0]),
-        mode=None
+        mode=None,
         out=None,
         where=where,
     )
