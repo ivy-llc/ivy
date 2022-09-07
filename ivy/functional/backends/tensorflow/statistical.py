@@ -123,9 +123,14 @@ def var(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * tf.experimental.numpy.var(
-        x, axis=axis, out=out, keepdims=keepdims
-    )
+    if size - correction <= 0:
+        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    else:
+        return (size / (size - correction)) ** 0.5 * tf.experimental.numpy.var(
+            x, axis=axis, out=out, keepdims=keepdims
+        )
 
 
 # Extra #

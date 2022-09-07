@@ -174,90 +174,6 @@ def mean(
            array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
 
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([3., 4., 5.])
-    >>> y = x.mean()
-    >>> print(y)
-    ivy.array(4.)
-
-    >>> x = ivy.array([1, 2, 3, 0, -1])
-    >>> y = ivy.mean(x)
-    >>> print(y)
-    ivy.array(0.)
-
-    >>> x = ivy.array([0.1, 1.1, 2.1])
-    >>> y = ivy.array(0.)
-    >>> ivy.mean(x, out=y)
-    >>> print(y)
-    ivy.array(1.1)
-
-    >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
-    >>> y = ivy.array([0., 0., 0.])
-    >>> x.mean(axis=0, out=y)
-    >>> print(y)
-    ivy.array([-0.25,  1.05,  2.1 ])
-
-    >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = ivy.array([0., 0.])
-    >>> ivy.mean(x, axis=1, out=y)
-    >>> print(y)
-    ivy.array([1., 4.])
-
-    With :code:`ivy.native_array` input:
-
-    >>> x = ivy.native_array([1., 2., 3.])
-    >>> y = x.mean()
-    >>> print(y)
-    2.0
-
-    >>> x = ivy.native_array([-2.5, 1.4, 5.6])
-    >>> y = ivy.mean(x)
-    >>> print(y)
-    ivy.array(1.5)
-
-    >>> x = ivy.native_array([[-1, -2, -3, 0, -4], [1, 2, 3, 0, 4]])
-    >>> y = ivy.array([0., 0., 0.])
-    >>> ivy.mean(x, axis=0, out=y)
-    >>> print(y)
-    ivy.array([0., 0., 0., 0., 0.])
-
-    >>> x = ivy.native_array([[0.0, 1.1, 2.2], [3.3, 4.4, 5.5]])
-    >>> y = ivy.native_array([0., 0.])
-    >>> ivy.mean(x, axis=1, out=y)
-    >>> print(y)
-    [1.1, 4.4]
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.1, 1.1, 2.1]))
-    >>> y = ivy.mean(x)
-    >>> print(y)
-    {
-        a: ivy.array(0.6),
-        b: ivy.array(1.1)
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[1, 2], [3, 4]]), \
-                          b=ivy.array([[5, 6], [7, 8]]))
-    >>> ivy.mean(x, axis=0, out=x)
-    >>> print(x)
-    {
-        a: ivy.array([2., 3.]),
-        b: ivy.array([6., 7.])
-    }
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.statistical_functions.mean.html>`_ in the standard.
-
-    Both the description and the type hints above assumes an array input for
-    simplicity, but this function is *nestable*, and therefore also accepts
-    :code:`ivy.Container` instances in place of any of the arguments.
-
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
@@ -386,7 +302,15 @@ def mean(
         a: ivy.array([1., 2.]),
         b: ivy.array([3., 4.])
     }
+    
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.statistical_functions.mean.html>`_ in the standard.
 
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :code:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
@@ -442,7 +366,7 @@ def min(
         as x.
 
     """
-    return current_backend.min(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back

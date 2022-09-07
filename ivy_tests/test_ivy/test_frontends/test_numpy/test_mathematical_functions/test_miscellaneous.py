@@ -67,15 +67,15 @@ def test_numpy_clip(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
+    as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cbrt"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.array_bools(),
 )
 def test_numpy_cbrt(
     dtype_and_x,
@@ -87,7 +87,14 @@ def test_numpy_cbrt(
     native_array,
     fw,
 ):
-    (input_dtype, x) = dtype_and_x
+    input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -97,7 +104,7 @@ def test_numpy_cbrt(
         fw=fw,
         frontend="numpy",
         fn_tree="cbrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
@@ -110,15 +117,15 @@ def test_numpy_cbrt(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
+    as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sqrt"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.array_bools(),
 )
 def test_numpy_sqrt(
     dtype_and_x,
@@ -131,6 +138,13 @@ def test_numpy_sqrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -140,28 +154,28 @@ def test_numpy_sqrt(
         fw=fw,
         frontend="numpy",
         fn_tree="sqrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=False,
+        subok=True,
         test_values=False,
     )
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
+    as_variable=helpers.array_bools(),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.square"
     ),
-    native_array=st.booleans(),
+    native_array=helpers.array_bools(),
 )
 def test_numpy_square(
     dtype_and_x,
@@ -174,6 +188,13 @@ def test_numpy_square(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -183,14 +204,14 @@ def test_numpy_square(
         fw=fw,
         frontend="numpy",
         fn_tree="square",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=False,
-        test_values=True,
+        subok=True,
+        test_values=False,
     )
 
 
@@ -345,14 +366,7 @@ def test_numpy_heaviside(
     neginf=st.one_of(st.none(), st.floats()),
 )
 def test_numpy_nan_to_num(
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    posinf,
-    neginf,
-    fw
-
+    dtype_and_x, as_variable, num_positional_args, native_array, posinf, neginf, fw
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -367,7 +381,7 @@ def test_numpy_nan_to_num(
         x=np.asarray(x, dtype=input_dtype),
         nan=0.0,
         posinf=posinf,
-        neginf=neginf
+        neginf=neginf,
     )
 
 
@@ -408,27 +422,27 @@ def test_numpy_real_if_close(
     ),
     native_array=helpers.array_bools(num_arrays=3),
     xp_and_fp=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, 
-        num_arrays=2, 
-        min_num_dims=1, 
-        max_num_dims=1, 
-        min_dim_size=3, 
-        min_value=-10000, 
-        max_value=10000
+        available_dtypes=ivy_np.valid_float_dtypes,
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=3,
+        min_value=-10000,
+        max_value=10000,
     ),
     x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
     left=st.one_of(st.none(), st.floats()),
     right=st.one_of(st.none(), st.floats()),
     period=st.one_of(
-        st.none(), 
+        st.none(),
         st.floats(
-            allow_nan=False, 
-            allow_infinity=False, 
-            allow_subnormal=False, 
-            min_value=0.1, 
-            max_value=1.0e5, 
-            exclude_min=True
-        )
+            allow_nan=False,
+            allow_infinity=False,
+            allow_subnormal=False,
+            min_value=0.1,
+            max_value=1.0e5,
+            exclude_min=True,
+        ),
     ),
 )
 def test_numpy_interp(
@@ -440,7 +454,7 @@ def test_numpy_interp(
     left,
     right,
     period,
-    fw
+    fw,
 ):
     (xp_dtype, fp_dtype), (xp, fp) = xp_and_fp
     xp_order = argsort(xp)
@@ -465,5 +479,5 @@ def test_numpy_interp(
         fp=np.asarray(fp, dtype=fp_dtype),
         left=left,
         right=right,
-        period=period
+        period=period,
     )
