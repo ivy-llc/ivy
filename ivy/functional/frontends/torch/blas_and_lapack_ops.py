@@ -48,7 +48,7 @@ def bmm(input, mat2, *, out=None):
 
 
 def cholesky(input, upper=False, *, out=None):
-    return ivy.cholesky(input, upper, out=out)
+    return ivy.cholesky(input, upper=upper, out=out)
 
 
 cholesky.unsupported_dtypes = ("float16",)
@@ -113,7 +113,7 @@ outer.unsupported_dtypes = {"numpy": ("float16", "int8")}
 
 
 def pinverse(input, rcond=1e-15):
-    return ivy.pinv(input, rcond)
+    return ivy.pinv(input, rtol=rcond)
 
 
 pinverse.unsupported_dtypes = ("float16",)
