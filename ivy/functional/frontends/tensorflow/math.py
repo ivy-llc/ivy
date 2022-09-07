@@ -290,7 +290,7 @@ def polyval(coeffs, x, name=None):
 def unsorted_segment_mean(data, segment_ids, num_segments, 
                           name="unsorted_segment_mean"):
     assert list(segment_ids.shape) == [list(data.shape)[0]]
-    x = ivy.zeros(ivy.Shape([num_segments] + (list(data.shape))[1:]))
+    x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
         x[segment_ids[i]] = ivy.add(x[segment_ids[i]], data[i])
@@ -303,7 +303,7 @@ def unsorted_segment_mean(data, segment_ids, num_segments,
 def unsorted_segment_sqrt_n(data, segment_ids, num_segments, 
                             name="unsorted_segement_sqrt_n"):
     assert list(segment_ids.shape) == [list(data.shape)[0]]
-    x = ivy.zeros(ivy.Shape([num_segments] + (list(data.shape))[1:]))
+    x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
         x[segment_ids[i]] = ivy.add(x[segment_ids[i]], data[i])
@@ -314,7 +314,7 @@ def unsorted_segment_sqrt_n(data, segment_ids, num_segments,
 
 
 def zero_fraction(value, name="zero_fraction"):
-    zero = ivy.zeros(ivy.Shape(list(value.shape)), dtype=ivy.float32)
+    zero = ivy.zeros(tuple(list(value.shape)), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
