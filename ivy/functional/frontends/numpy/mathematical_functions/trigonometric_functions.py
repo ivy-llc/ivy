@@ -189,7 +189,6 @@ def deg2rad(
 
     signature=None,
     extobj=None,
-):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.multiply(ivy.divide(x, 180), ivy.pi, out=out)
