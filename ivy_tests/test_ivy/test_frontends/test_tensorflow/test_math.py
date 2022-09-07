@@ -558,7 +558,7 @@ def test_tensorflow_reduce_std(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="reduce_std",
+        fn_tree="math.reduce_std",
         input_tensor=np.asarray(x, dtype=input_dtype),
     )
 
