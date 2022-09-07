@@ -576,7 +576,7 @@ def test_torch_slogdet(
 # matmul
 @handle_cmd_line_args
 @given(
-    dtype_xy=_get_dtype_and_batch_matrices(),
+    dtype_xy=_get_dtype_and_3dbatch_matrices(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.matmul"
     ),
@@ -600,7 +600,7 @@ def test_torch_matmul(
         fw=fw,
         frontend="torch",
         fn_tree="matmul",
-        rtol=1e-03,
+        rtol=1e-02,
         input=np.asarray(x, dtype=dtype),
         other=np.asarray(y, dtype=dtype),
         out=None,
