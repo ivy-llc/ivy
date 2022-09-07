@@ -23,6 +23,7 @@ def dtype_x_bounded_axis(draw, **kwargs):
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = kwargs["where"]
+    kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
         return
@@ -42,10 +43,12 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
 def test_frontend_function(*args, where=None, **kwargs):
     if not ivy.exists(where):
         helpers.test_frontend_function(*args, **kwargs)
-    kwargs["where"] = where
-    if "out" in kwargs and kwargs["out"] is None:
-        _test_frontend_function_ignoring_unitialized(*args, **kwargs)
-    helpers.test_frontend_function(*args, **kwargs)
+    else:
+        kwargs["where"] = where
+        if "out" in kwargs and kwargs["out"] is None:
+            _test_frontend_function_ignoring_unitialized(*args, **kwargs)
+        else:
+            helpers.test_frontend_function(*args, **kwargs)
 
 
 # noinspection PyShadowingNames
@@ -54,7 +57,7 @@ def handle_where_and_array_bools(
 ):
     where_array = isinstance(where, list)
     if where_array:
-        where = np.asarray(where, dtype=np.bool)
+        where = np.asarray(where, dtype=np.bool_)
         if ivy.exists(input_dtype):
             input_dtype += ["bool"]
         if ivy.exists(as_variable):

@@ -68,6 +68,7 @@ def arange(
 
 
 arange.support_native_out = True
+arange.unsupported_dtypes = ("float16",)
 
 
 def asarray(
@@ -282,7 +283,7 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
+linspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
@@ -473,4 +474,4 @@ def logspace(
 
 
 logspace.support_native_out = True
-logspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
+logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}

@@ -20,7 +20,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.equal"
     ),
-    native_array=helpers.array_bools()
+    native_array=helpers.array_bools(),
 )
 def test_numpy_equal(
     dtype_and_x,
@@ -55,5 +55,5 @@ def test_numpy_equal(
         order="K",
         dtype=dtype,
         subok=True,
-        test_values=False
+        test_values=False,
     )

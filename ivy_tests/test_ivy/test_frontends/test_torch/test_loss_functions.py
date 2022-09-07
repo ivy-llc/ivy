@@ -148,7 +148,7 @@ def test_torch_cross_entropy(
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=3),
 )
-def test_binary_cross_entropy(
+def test_torch_binary_cross_entropy(
     dtype_and_true,
     dtype_and_pred,
     dtype_and_weight,

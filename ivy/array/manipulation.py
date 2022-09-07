@@ -402,6 +402,22 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.tile. This method simply
         wraps the function, and so the docstring for ivy.tile also applies
         to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0], [1], [2]])
+        >>> y = x.tile((3,2))
+        >>> print(y)
+        ivy.array([[0,0],
+                   [1,1],
+                   [2,2],
+                   [0,0],
+                   [1,1],
+                   [2,2],
+                   [0,0],
+                   [1,1],
+                   [2,2]])
+
         """
         return ivy.tile(self._data, reps=reps, out=out)
 

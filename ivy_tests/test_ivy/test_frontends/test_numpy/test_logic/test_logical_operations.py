@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
     dtype=st.sampled_from((ivy.bool, None)),
@@ -66,7 +66,7 @@ def test_numpy_logical_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
     dtype=st.sampled_from((ivy.bool, None)),
@@ -119,7 +119,7 @@ def test_numpy_logical_or(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     dtype=st.sampled_from((ivy.bool, None)),
     where=np_frontend_helpers.where(),
@@ -171,7 +171,7 @@ def test_numpy_logical_not(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
     dtype=st.sampled_from((ivy.bool, None)),

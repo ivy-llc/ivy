@@ -136,11 +136,11 @@ Frontend APIs
 For this task, the goal will be to implement functions for each of the
 frontend functional APIs (see :ref:`Ivy as a Transpiler`),
 with frontend APIs implemented for:
-:code:`JAX`, :code:`MXNet`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
+:code:`JAX`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
 
 Currently, we have many ToDo list issues
 `open <https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22>`_
-for this task, which is explained below.
+for this task.
 
 The general workflow for this task is:
 
@@ -150,21 +150,34 @@ The general workflow for this task is:
 
 If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing,
 which would make your frontend function much simpler to implement,
-then you have two options:
+then you you should first do the following:
+
+#. create a new issue with the title :code:`ivy.<func_name>`, add the labels
+   :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`
+   to it, and then simply leave this issue open. At some point, a member of our team
+   will assess whether it should be added, and if so, they will add it to another
+   appropriate ToDo list issue (see the open task below).
+   You do not need to wait for this in order to proceed.
+
+After this, you then have two options for how to proceed:
 
 #. try to implement the function as a composition of currently present ivy functions,
    as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_
    guide, and add the :code:`#ToDo` comment in the implementation as explained. Once the
-   PR is merged, your sub-task issue will then be closed as normal. You should then
-   create a new issue with the title :code:`ivy.<func_name>`, add the labels
-   :code:`Extension` and :code:`Next Release` to it, and then simply leave it open.
+   PR is merged, your sub-task issue will then be closed as normal.
 #. alternatively, if you do not want to try and implement the frontend function
-   compositionally, then you can remove the :code:`` label from the sub-task issue,
-   rename the issue to :code:`ivy.<func_name>`, add the :code:`Extension` and
-   :code:`Next Release` labels, and then simply choose another frontend function to work
-   on, leaving this original issue open. This issue will also still show up as open in
-   the original ToDo list, helpfully preventing others from working on this problematic
-   frontend function, which depends on the unimplemented :code:`ivy.<func_name>`.
+   compositionally, or if this is not feasible, then you can simply choose another
+   frontend function to work on. You could also choose to work on another open task
+   entirely at this point if you wanted to. For example, you might decide to wait for a
+   member of our team to review your suggested addition :code:`ivy.<func_name>`, and
+   potentially add this to an Ivy Extension ToDo list issue (see the open task below).
+   In either case, you should add the label "Pending other Issue" to the frontend
+   sub-task issue, and leave it open. This issue will then still show up as open in the
+   original frontend ToDo list, helpfully preventing others from working on this
+   problematic frontend function, which depends on the unimplemented
+   :code:`ivy.<func_name>`. Finally, you should add a comment to the issue with the
+   contents: :code:`pending <issue_link>`, which links to the :code:`ivy.<func_name>`
+   issue, making the "Pending other Issue" label more informative.
 
 There are a few other points to take note of when working on your chosen frontend
 function:
@@ -188,6 +201,12 @@ issue to request for the function to be added to Ivy. Meanwhile, you can select
 another frontend function to work on from the ToDo list! If you're stuck on a
 function which requires complex compositions, you're allowed to reselect a function
 too!
+
+Ivy API Extensions
+------------------
+
+Coming soon!
+
 
 **Round Up**
 

@@ -50,25 +50,22 @@ We're excited for you to get involved!  🦾
 | (k) :ref:`Function Arguments`
 | How to add the correct function arguments 📑
 |
-| (l) :ref:`Submodule Helper Functions`
-| When to create submodule-specific helper functions, and how to use them 🔧
-|
-| (m) :ref:`Docstrings`
+| (l) :ref:`Docstrings`
 | How to properly write docstrings 📄
 |
-| (n) :ref:`Docstring Examples`
+| (m) :ref:`Docstring Examples`
 | How to add useful examples to the docstrings 💯
 |
-| (o) :ref:`Array API Tests`
+| (n) :ref:`Array API Tests`
 | How we're borrowing the test suite from the Array API Standard 🤝
 |
-| (p) :ref:`Ivy Tests`
+| (o) :ref:`Ivy Tests`
 | How to add new tests for each Ivy function ❓
 |
-| (q) :ref:`Ivy Frontends`
+| (p) :ref:`Ivy Frontends`
 | How to implement frontend functions ➡️
 |
-| (r) :ref:`Ivy Frontend Tests`
+| (q) :ref:`Ivy Frontend Tests`
 | How to add new tests for each frontend function ➡️❓
 
 .. toctree::
@@ -87,10 +84,9 @@ We're excited for you to get involved!  🦾
    deep_dive/8_inplace_updates.rst
    deep_dive/9_formatting.rst
    deep_dive/10_function_arguments.rst
-   deep_dive/11_submodule_helpers.rst
-   deep_dive/12_docstrings.rst
-   deep_dive/13_docstring_examples.rst
-   deep_dive/14_array_api_tests.rst
-   deep_dive/15_ivy_tests.rst
-   deep_dive/16_ivy_frontends.rst
-   deep_dive/17_ivy_frontends_tests.rst
+   deep_dive/11_docstrings.rst
+   deep_dive/12_docstring_examples.rst
+   deep_dive/13_array_api_tests.rst
+   deep_dive/14_ivy_tests.rst
+   deep_dive/15_ivy_frontends.rst
+   deep_dive/16_ivy_frontends_tests.rst
