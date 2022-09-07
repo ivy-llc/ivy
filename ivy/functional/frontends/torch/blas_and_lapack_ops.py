@@ -41,6 +41,14 @@ def addr(input, vec1, vec2, *, beta=1, alpha=1, out=None):
 addr.unsupported_dtypes = {"numpy": ("float16", "int8")}
 
 
+def baddbmm(input, batch1, batch2, *, beta=1, alpha=1, out=None):
+    if len(ivy.shape(batch1)) != 3 or len(ivy.shape(batch2)) != 3:
+        raise RuntimeError("input must be batched 2D matrices")
+    ret = ivy.matmul(batch1, batch2, out=out)
+    ret = ivy.multiply(alpha, ret, out=out)
+    return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
+
+
 def bmm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 3 or len(ivy.shape(mat2)) != 3:
         raise RuntimeError("input must be 3D matrices")

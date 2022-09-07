@@ -69,7 +69,7 @@ def _get_dtype_input_and_matrices(draw, with_input=False):
 
 
 @st.composite
-def _get_dtype_and_3dbatch_matrices(draw, with_input=False):
+def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
     dim_size1 = draw(helpers.ints(min_value=2, max_value=5))
     dim_size2 = draw(helpers.ints(min_value=2, max_value=5))
     shared_size = draw(helpers.ints(min_value=2, max_value=5))
@@ -92,6 +92,16 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False):
         )
     )
     if with_input:
+        if input_3d:
+            input = draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=(batch_size, dim_size1, dim_size2),
+                    min_value=2,
+                    max_value=5,
+                )
+            )
+            return dtype, input, mat1, mat2
         input = draw(
             helpers.array_values(
                 dtype=dtype, shape=(dim_size1, dim_size2), min_value=2, max_value=5
@@ -332,6 +342,59 @@ def test_torch_addr(
         input=np.asarray(input, dtype=dtype),
         vec1=np.asarray(vec1, dtype=dtype),
         vec2=np.asarray(vec2, dtype=dtype),
+        beta=beta,
+        alpha=alpha,
+        out=None,
+    )
+
+
+# baddbmm
+@handle_cmd_line_args
+@given(
+    dtype_and_matrices=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.baddbmm"
+    ),
+)
+def test_torch_baddbmm(
+    dtype_and_matrices,
+    beta,
+    alpha,
+    as_variable,
+    with_out,
+    native_array,
+    num_positional_args,
+    fw,
+):
+    dtype, input, batch1, batch2 = dtype_and_matrices
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="baddbmm",
+        rtol=1e-01,
+        input=np.asarray(input, dtype=dtype),
+        batch1=np.asarray(batch1, dtype=dtype),
+        batch2=np.asarray(batch2, dtype=dtype),
         beta=beta,
         alpha=alpha,
         out=None,
