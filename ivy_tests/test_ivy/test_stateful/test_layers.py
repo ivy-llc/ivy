@@ -237,10 +237,15 @@ def test_multi_head_attention_layer(
     device,
 ):
     input_dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim = dtype_mha
+    with_to_q_fn = with_to_q_fn
+    with_to_kv_fn = with_to_kv_fn
+    with_to_out_fn = with_to_out_fn
+    build_mode = build_mode
     input_dtype = [input_dtype] * 3
     as_variable = [as_variable] * 3
     native_array = [native_array] * 3
     container = [container] * 3
+
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
         all_as_kwargs_np_init={
@@ -276,100 +281,115 @@ def test_multi_head_attention_layer(
 # Convolutions #
 # -------------#
 
-
-@st.composite
-def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False):
-    strides = draw(st.integers(min_value=1, max_value=4))
-    padding = draw(st.sampled_from(["SAME", "VALID"]))
-    batch_size = draw(st.integers(1, 5))
-    filter_shape = draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5))
-    input_channels = draw(st.integers(1, 5))
-    output_channels = draw(st.integers(1, 5))
-    dilations = draw(st.integers(1, 4))
-    x_dim = []
-    for i in range(dim):
-        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
-        x_dim.append(draw(st.integers(min_x, 100)))
-    if dim == 2:
-        data_format = draw(st.sampled_from(["NCHW"]))
-    elif dim == 1:
-        data_format = draw(st.sampled_from(["NWC", "NCW"]))
-    else:
-        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
-        x_shape = [batch_size] + x_dim + [input_channels]
-    else:
-        x_shape = [batch_size] + [input_channels] + x_dim
-
-    if transpose:
-        output_shape = []
-        for i in range(dim):
-            output_shape.append(ivy.deconv_length(x_dim[i], strides, filter_shape[i], padding, dilations))
-        # output_shape = [batch_size] + output_shape + [output_channels]
-    if dim == 1:
-        filter_shape = filter_shape[0]
-    dtype, vals = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float", full=True), shape=x_shape
-        )
-    )
-    if transpose:
-        return dtype, vals, input_channels, output_channels, filter_shape, strides, dilations, data_format, padding, output_shape
-    return dtype, vals, input_channels, output_channels, filter_shape, strides, dilations, data_format, padding
-
-
 # conv1d
 @handle_cmd_line_args
 @given(
-    _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=1),
-    weight_initializer=_sample_initializer(),
-    bias_initializer=_sample_initializer(),
-    init_with_v=st.booleans(),
-    method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="Conv1D.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="Conv1D._forward"),
+    x_n_fs_n_pad_n_res=st.sampled_from(
+        [
+            (
+                    [[[0.0], [3.0], [0.0]]],
+                    3,
+                    "SAME",
+                    [[[1.0679483], [2.2363136], [0.5072848]]],
+            ),
+            (
+                    [[[0.0], [3.0], [0.0]] for _ in range(5)],
+                    3,
+                    "SAME",
+                    [[[1.0679483], [2.2363136], [0.5072848]] for _ in range(5)],
+            ),
+            ([[[0.0], [3.0], [0.0]]], 3, "VALID", [[[2.2363136]]]),
+        ]
+    ),
+    with_v=st.booleans(),
+    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    as_variable=st.booleans(),
 )
 def test_conv1d_layer(
-    _x_ic_oc_f_s_d_df_p,
-    weight_initializer,
-    bias_initializer,
-    init_with_v,
-    method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    x_n_fs_n_pad_n_res, with_v, dtype, as_variable, device, compile_graph
 ):
-    input_dtype, vals, input_channels, output_channels, filter_shape, strides, dilations, data_format, padding = _x_ic_oc_f_s_d_df_p
-    helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
-            "input_channels": input_channels,
-            "output_channels": output_channels,
-            "filter_shape": filter_shape,
-            "strides": strides,
-            "padding": padding,
-            "weight_initializer": weight_initializer,
-            "bias_initializer": bias_initializer,
-            "data_format": data_format,
-            "dilations": dilations,
-            "device": device,
-            "dtype": input_dtype,
-        },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": np.asarray(vals, dtype=input_dtype)},
-        fw=fw,
-        class_name="Conv1D",
-        init_with_v=init_with_v,
-        method_with_v=method_with_v,
+    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    if ivy.current_backend_str() == "tensorflow" and "cpu" in device:
+        # tf conv1d does not work when CUDA is installed, but array is on CPU
+        return
+    if ivy.current_backend_str() in ("numpy", "jax"):
+        # numpy and jax do not yet support conv1d
+        return
+    if ivy.current_backend_str() == "torch" and (dtype == "float16"):
+        # we are skipping for float16 as it torch.nn.functional.conv1d
+        # doesn't seem to be able to handle it
+        return
+    # smoke test
+    x, filter_size, padding, target = x_n_fs_n_pad_n_res
+    if as_variable:
+        x = ivy.variable(ivy.array(x, dtype=dtype, device=device))
+    else:
+        x = ivy.array(x, dtype=dtype, device=device)
+
+    target = np.array(target)
+    input_channels = x.shape[-1]
+    output_channels = target.shape[-1]
+    batch_size = x.shape[0]
+
+    width = x.shape[1]
+    if with_v and not dtype:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        w = ivy.variable(
+            ivy.array(
+                np.random.uniform(
+                    -wlim, wlim, (filter_size, output_channels, input_channels)
+                ),
+                dtype="float32",
+                device=device,
+            )
+        )
+        b = ivy.variable(
+            ivy.zeros([1, 1, output_channels], device=device, dtype="float32")
+        )
+        v = Container({"w": w, "b": b})
+    elif with_v:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        w = ivy.variable(
+            ivy.array(
+                np.random.uniform(
+                    -wlim, wlim, (filter_size, output_channels, input_channels)
+                ),
+                dtype=dtype,
+                device=device,
+            )
+        )
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], device=device, dtype=dtype))
+        v = Container({"w": w, "b": b})
+    else:
+        v = None
+    conv1d_layer = ivy.Conv1D(
+        input_channels,
+        output_channels,
+        filter_size,
+        1,
+        padding,
+        device=device,
+        v=v,
+        dtype=dtype,
     )
+    ret = conv1d_layer(x)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    new_width = width if padding == "SAME" else width - filter_size + 1
+    assert ret.shape == (batch_size, new_width, output_channels)
+    # value test
+    if not with_v:
+        return
+    assert np.allclose(
+        ivy.to_numpy(conv1d_layer(x)), target, rtol=tolerance_dict[dtype]
+    )
+    # compilation test
+    if ivy.current_backend_str() == "torch":
+        # pytest scripting does not **kwargs
+        return
 
 
 # conv1d transpose
