@@ -48,3 +48,6 @@ def trace(input):
     return ivy.asarray(
         sum((input[i][i] for i in range(minimum_dimension))), dtype=input.dtype
     )
+
+
+trace.unsupported_dtypes = ("float16",)
