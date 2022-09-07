@@ -47,10 +47,6 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
 def diagflat(input, offset=0):
     input_flat = input.flatten()
 
-    # data = []
-    # for i in range(offset):
-    #    data += [[0 for j in range(len(input_flat) + abs(offset))]]
-
     data = [
         [
             input_flat[i] if i < len(input_flat) and i - r == offset else 0
