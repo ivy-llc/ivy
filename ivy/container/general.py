@@ -1168,6 +1168,7 @@ class ContainerWithGeneral(ContainerBase):
                           [1, 4],
                           [1, 5]])
         }
+
         """
         return self.static_cumprod(
             self,
