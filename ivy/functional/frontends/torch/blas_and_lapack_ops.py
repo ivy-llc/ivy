@@ -122,10 +122,6 @@ def matrix_rank(input, tol=None, symmetric=False, *, out=None):
 matrix_rank.unsupported_dtypes = {"jax": ("float16",), "torch": ("float16",)}
 
 
-def matrix_exp():
-    pass
-
-
 def mm(input, mat2, *, out=None):
     if len(ivy.shape(input)) != 2 or len(ivy.shape(mat2)) != 2:
         raise RuntimeError("input must be 2D matrices")
@@ -180,3 +176,10 @@ def svd(input, some=True, compute_uv=True, *, out=None):
 
 
 svd.unsupported_dtypes = ("float16",)
+
+
+def vdot(input, other, *, out=None):
+    return ivy.vecdot(input, other, out=out)
+
+
+vdot.supported_dtypes = {"tensorflow": ("bfloat16", "float16", "float32", "float64")}

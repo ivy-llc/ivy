@@ -1012,3 +1012,35 @@ def test_torch_svd(
         compute_uv=compute,
         out=None,
     )
+
+
+# vdot
+@handle_cmd_line_args
+@given(
+    dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.vdot"
+    ),
+)
+def test_torch_vdot(
+    dtype_and_vecs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, vec1, vec2 = dtype_and_vecs
+
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="vdot",
+        input=np.asarray(vec1, dtype=dtype),
+        other=np.asarray(vec2, dtype=dtype),
+    )
