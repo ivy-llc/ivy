@@ -92,6 +92,13 @@ def det(input):
 det.unsupported_dtypes = ("float16",)
 
 
+def logdet(input):
+    return ivy.det(input).log()
+
+
+logdet.unsupported_dtypes = ("float16",)
+
+
 def slogdet(input):
     return ivy.slogdet(input)
 
