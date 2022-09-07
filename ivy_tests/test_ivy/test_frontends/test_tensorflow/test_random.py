@@ -18,11 +18,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_num_dims=1,
         min_dim_size=2,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.shuffle"
     ),
-    native_array=st.booleans(),
     seed=st.integers(min_value=0, max_value=2**32 - 1),
 )
 def test_tensorflow_shuffle(
@@ -50,23 +48,29 @@ def test_tensorflow_shuffle(
         available_dtypes=ivy_tf.valid_float_dtypes,
         min_value=-1000,
         max_value=100,
+        allow_inf=False,
     ),
     dtype_and_high=helpers.dtype_and_values(
         available_dtypes=ivy_tf.valid_float_dtypes,
         min_value=101,
         max_value=1000,
+        allow_inf=False,
     ),
-    as_variable=st.booleans(),
+    shape=helpers.get_shape(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.uniform"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_uniform(
-    dtype_and_low, dtype_and_high, as_variable, num_positional_args, native_array, fw
+    dtype_and_low, dtype_and_high, shape, as_variable, num_positional_args, native_array, fw
 ):
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
+    # If low and high are numerics and not arrays, shape=shape else shape=None
+    if isinstance(low, (int, float)) and isinstance(high, (int, float)):
+        shape = shape
+    else:
+        shape = None
     helpers.test_frontend_function(
         input_dtypes=[low_dtype, high_dtype],
         as_variable_flags=as_variable,
@@ -76,7 +80,7 @@ def test_tensorflow_uniform(
         fw=fw,
         frontend="tensorflow",
         fn_tree="random.uniform",
-        shape=None,
+        shape=shape,
         minval=np.asarray(low, dtype=low_dtype),
         maxval=np.asarray(high, dtype=high_dtype),
     )
