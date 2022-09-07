@@ -5,8 +5,6 @@ import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.tensorflow as ivy_tf
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -36,13 +34,13 @@ def _get_dtype_y_true_y_pred(
     dtype_true = draw(
         helpers.array_dtypes(
             num_arrays=1,
-            available_dtypes=ivy_tf.valid_int_dtypes,
+            available_dtypes=draw(helpers.get_dtypes("float")),
         )
     )[0]
     dtype_pred = draw(
         helpers.array_dtypes(
             num_arrays=1,
-            available_dtypes=ivy_tf.valid_float_dtypes,
+            available_dtypes=draw(helpers.get_dtypes("float")),
         )
     )[0]
 
@@ -103,11 +101,9 @@ def _get_dtype_y_true_y_pred(
         min_value=0,
         max_value=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.binary_accuracy"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_binary_accuracy(
     dtype_y_true_y_pred, as_variable, num_positional_args, native_array, fw
@@ -134,7 +130,7 @@ def test_tensorflow_binary_accuracy(
 @given(
     y_true=st.lists(st.integers(min_value=0, max_value=4), min_size=1, max_size=1),
     dtype_y_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_tf.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         shape=(5,),
         min_value=-10,
         max_value=10,
@@ -179,10 +175,10 @@ def test_sparse_categorical_crossentropy(
 @handle_cmd_line_args
 @given(
     y_true_dtype_y_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=1,
         shape=(2, 2),
-        dtype=ivy.current_backend().valid_dtypes,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -213,9 +209,11 @@ def test_mean_absolute_error(
 # binary_crossentropy
 @handle_cmd_line_args
 @given(
-    y_true=st.lists(st.integers(min_value=0, max_value=4), min_size=1, max_size=1),
+    y_true=st.lists(
+        st.integers(min_value=0, max_value=4), min_size=1, max_size=1
+    ),  # ToDo: we should be using the helpers
     dtype_y_pred=helpers.dtype_and_values(
-        available_dtypes=ivy_tf.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         shape=(5,),
         min_value=-10,
         max_value=10,
@@ -225,7 +223,6 @@ def test_mean_absolute_error(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.binary_crossentropy"
     ),
-    native_array=st.booleans(),
 )
 def test_binary_crossentropy(
     y_true,
@@ -266,11 +263,9 @@ def test_binary_crossentropy(
     y_true=helpers.array_values(shape=(5,), dtype=ivy.int32),
     y_pred=helpers.array_values(shape=(5, 10), dtype=ivy.float16),
     k=st.integers(min_value=3, max_value=10),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.sparse_top_k_categorical_accuracy"
     ),
-    native_array=st.booleans(),
 )
 def test_sparse_top_k_categorical_accuracy(
     y_true, y_pred, k, as_variable, num_positional_args, native_array, fw
@@ -293,13 +288,13 @@ def test_sparse_top_k_categorical_accuracy(
 # top_k_categorical_accuracy
 @handle_cmd_line_args
 @given(
-    y_true=helpers.array_values(shape=(5, 10), dtype=ivy.int32),
+    y_true=helpers.array_values(
+        shape=(5, 10), dtype=ivy.int32
+    ),  # ToDo: we should be using the helpers.dtype_and_values
     y_pred=helpers.array_values(shape=(5, 10), dtype=ivy.float16),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.categorical_accuracy"
     ),
-    native_array=st.booleans(),
 )
 def test_categorical_accuracy(
     y_true, y_pred, as_variable, num_positional_args, native_array, fw
@@ -322,9 +317,7 @@ def test_categorical_accuracy(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         shape=helpers.get_shape(
@@ -332,11 +325,9 @@ def test_categorical_accuracy(
             min_num_dims=1,
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.kl_divergence"
     ),
-    native_array=st.booleans(),
 )
 def test_kl_divergence(dtype_and_x, as_variable, num_positional_args, native_array, fw):
     input_dtype, x = dtype_and_x
@@ -358,21 +349,14 @@ def test_kl_divergence(dtype_and_x, as_variable, num_positional_args, native_arr
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
-        shape=helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-        ),
+        min_num_dims=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.poisson"
     ),
-    native_array=st.booleans(),
 )
 def test_poisson(dtype_and_x, as_variable, num_positional_args, native_array, fw):
     input_dtype, x = dtype_and_x
@@ -393,9 +377,7 @@ def test_poisson(dtype_and_x, as_variable, num_positional_args, native_array, fw
 # mean_squared_error
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         shape=helpers.get_shape(
@@ -431,7 +413,7 @@ def test_mean_squared_error(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(ivy_tf.valid_float_dtypes),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         shape=helpers.get_shape(
@@ -470,11 +452,9 @@ def test_mean_absolute_percentage_error(
         dtype=ivy.float16, shape=(2, 5), min_value=-1, max_value=1
     ),
     y_pred=helpers.array_values(dtype=ivy.float16, shape=(2, 5)),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.hinge"
     ),
-    native_array=st.booleans(),
 )
 def test_hinge(y_true, y_pred, as_variable, num_positional_args, native_array, fw):
     helpers.test_frontend_function(
@@ -498,11 +478,9 @@ def test_hinge(y_true, y_pred, as_variable, num_positional_args, native_array, f
         dtype=ivy.float16, shape=(2, 5), min_value=-1, max_value=1
     ),
     y_pred=helpers.array_values(dtype=ivy.float16, shape=(2, 5)),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.squared_hinge"
     ),
-    native_array=st.booleans(),
 )
 def test_squared_hinge(
     y_true, y_pred, as_variable, num_positional_args, native_array, fw
