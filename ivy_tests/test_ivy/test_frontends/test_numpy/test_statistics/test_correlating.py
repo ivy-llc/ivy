@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=2),
     with_out=st.booleans(),
-    mode=st.text(),
+    mode=st.one_of("valid", "same", "full"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.correlate"
 ),
@@ -35,14 +35,8 @@ def test_numpy_correlate(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
+    (input_dtype_x, input_dtype_y), (x, y) = dtype_and_x
+    input_dtype = [input_dtype_x, input_dtype_y]
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -53,7 +47,7 @@ def test_numpy_correlate(
         frontend="numpy",
         fn_tree="correlate",
         x=np.asarray(x, dtype=input_dtype[0]),
-        y=np.asarray(y,dtype=input_dtype[0]),
+        y=np.asarray(y, dtype=input_dtype[1]),
         mode=None,
         out=None,
         where=where,
