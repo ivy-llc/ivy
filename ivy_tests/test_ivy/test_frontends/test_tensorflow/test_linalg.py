@@ -2,6 +2,7 @@
 import numpy as np
 from hypothesis import given, strategies as st
 import sys
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -232,11 +233,12 @@ def _get_spd_lt_matrix(draw):
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
     )
 
-    # spd = [ivy.matmul(ivy.matrix_transpose(elem), elem) for elem in gen]
-    # spd_lt = [ivy.tril(elem) for elem in spd]
-    # return input_dtype, spd_lt
-
-    return input_dtype, gen
+    spd = [
+        ivy.matmul(np.asarray(elem), np.asarray(ivy.matrix_transpose(elem)))
+        for elem in gen
+    ]
+    spd_lt = [ivy.tril(elem) for elem in spd]
+    return input_dtype, spd_lt
 
 
 @st.composite
