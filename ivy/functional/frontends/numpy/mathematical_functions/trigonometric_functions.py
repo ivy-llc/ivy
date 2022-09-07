@@ -1,9 +1,6 @@
 # global
 import ivy
 
-# local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
-
 
 def cos(
     x,
@@ -153,7 +150,10 @@ def hypot(
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
-        ivy.broadcast_to(where, x1.shape), ivy.sqrt(ivy.add(ivy.square(x1), ivy.square(x2))), ivy.default(out, x1), out=out
+        ivy.broadcast_to(where, x1.shape), 
+        ivy.sqrt(ivy.add(ivy.square(x1), ivy.square(x2))), 
+        ivy.default(out, x1), 
+        out=out
     )
     return ret
 
@@ -174,7 +174,10 @@ def arctan2(
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
     ret = ivy.where(
-        ivy.broadcast_to(where, x1.shape), ivy.atan2(x1, x2), ivy.default(out, x1), out=out
+        ivy.broadcast_to(where, x1.shape), 
+        ivy.atan2(x1, x2), 
+        ivy.default(out, x1), 
+        out=out
     )
     return ret
 
