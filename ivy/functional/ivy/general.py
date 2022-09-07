@@ -1269,9 +1269,6 @@ def clip_vector_norm(
     return ret
 
 
-clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1369,14 +1366,6 @@ def clip_matrix_norm(
     norms = ivy.matrix_norm(x, p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
-
-
-clip_matrix_norm.unsupported_dtypes = {
-    "jax": ("float16",),
-    "numpy": ("float16",),
-    "tensorflow": ("float16",),
-    "torch": ("float16",),
-}
 
 
 @to_native_arrays_and_back
@@ -2282,9 +2271,6 @@ def einops_repeat(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
-
-
-einops_repeat.unsupported_dtypes = {"tensorflow": ("uint16",)}
 
 
 def get_min_denominator() -> float:
