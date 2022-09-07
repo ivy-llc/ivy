@@ -2697,7 +2697,7 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
         *,
         out: Optional[ivy.Container] = None,
-        axes_lengths: Dict[str, int],
+        **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
         """Perform einops reduce operation on each sub array in the container.
 
@@ -2720,7 +2720,6 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is False.
         axes_lengths
             Any additional specifications for dimensions.
-        **axes_lengths
 
         Returns
         -------
@@ -2728,21 +2727,15 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[[8.64, 4.83, -7.4], \
-                                           [0.735, -6.7, 13.27]],\
-                                          [[-24.037, 8.5, 26.7],\
-                                           [0.451, 12.4, 1.7]],\
-                                          [[-5.6, -18.19, -20.35],\
-                                           [2.58, -1.006, -9.973]]]),
-                            b=ivy.array([[[-4.47, 0.93, -3.34],\
-                                          [3.66, 24.29, 3.64]],\
-                                         [[4.96, 1.52, -10.67],\
-                                          [4.36, 13.96, 0.3]]]))
-        >>> reduced = ivy.Container.static_einops_reduce(x, 'a b c -> () () c', 'mean')
+        >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],\
+                                      [3.66, 24.29, 3.64]]),\
+                        b=ivy.array([[4.96, 1.52, -10.67],\
+                                     [4.36, 13.96, 0.3]]))
+        >>> reduced = ivy.Container.static_einops_reduce(x, 'a b -> a', 'mean')
         >>> print(reduced)
         {
-            a: ivy.array([[[-2.87, -0.0277, 0.658]]]),
-            b: ivy.array([[[2.13, 10.2, -2.52]]])
+            a: ivy.array([-2.29, 10.5]),
+            b: ivy.array([-1.4, 6.21])
         }
 
         """
@@ -2785,8 +2778,6 @@ class ContainerWithGeneral(ContainerBase):
         reduction
             One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
             callable.
-        axes_lengths
-            Any additional specifications for dimensions.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -2800,6 +2791,8 @@ class ContainerWithGeneral(ContainerBase):
         out
             optional output container, for writing the result to. It must have a
             shape that the inputs broadcast to.
+        axes_lengths
+            Any additional specifications for dimensions.
 
         Returns
         -------
@@ -3802,7 +3795,6 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is False.
         axes_lengths
             Any additional specifications for dimensions.
-        **axes_lengths
 
 
         Returns
