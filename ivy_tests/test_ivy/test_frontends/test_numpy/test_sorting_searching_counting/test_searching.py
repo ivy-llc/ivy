@@ -91,7 +91,7 @@ def _dtype_x_bounded_axis(draw, **kwargs):
 @handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_bounded_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
     ),
