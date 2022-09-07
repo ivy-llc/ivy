@@ -62,7 +62,13 @@ def test_tensorflow_shuffle(
     ),
 )
 def test_tensorflow_uniform(
-    dtype_and_low, dtype_and_high, shape, as_variable, num_positional_args, native_array, fw
+    dtype_and_low,
+    dtype_and_high,
+    shape,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
@@ -84,4 +90,3 @@ def test_tensorflow_uniform(
         minval=np.asarray(low, dtype=low_dtype),
         maxval=np.asarray(high, dtype=high_dtype),
     )
-    
