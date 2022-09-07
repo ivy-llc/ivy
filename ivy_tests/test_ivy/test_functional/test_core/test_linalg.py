@@ -19,7 +19,7 @@ def dtype_value1_value2_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=1,
@@ -44,7 +44,7 @@ def dtype_value1_value2_axis(
     shape = shape[:axis] + [specific_dim_size] + shape[axis:]
     shape = tuple(shape)
 
-    dtype = draw(available_dtypes)
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
 
     values = []
     for i in range(2):
@@ -58,6 +58,8 @@ def dtype_value1_value2_axis(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    small_value_safety_factor=1.5,
+                    large_value_safety_factor=10,
                 )
             )
         )
@@ -72,7 +74,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=1,
@@ -91,7 +93,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
         )
     )
     axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    dtype = draw(available_dtypes)
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
 
     values = []
     for i in range(2):
@@ -105,6 +107,8 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    small_value_safety_factor=1.5,
+                    large_value_safety_factor=10,
                 )
             )
         )
