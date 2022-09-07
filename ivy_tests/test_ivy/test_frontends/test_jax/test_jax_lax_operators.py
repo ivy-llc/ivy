@@ -1793,3 +1793,53 @@ def test_jax_lax_log1p(
         fn_tree="lax.log1p",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+@st.composite
+def _dtype_values_dims(draw):
+    dtype, values, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    size = len(shape)
+    permutations = draw(
+        st.lists(
+            st.integers(min_value=0, max_value=len(shape) - 1),
+            min_size=size,
+            max_size=size,
+            unique=True,
+        )
+    )
+    return dtype, values, tuple(permutations)
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_dims=_dtype_values_dims(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.transpose"
+    ),
+)
+def test_jax_lax_transpose(
+    dtype_x_dims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, dims = dtype_x_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.transpose",
+        operand=np.asarray(x, dtype=input_dtype),
+        permutation=dims,
+    )
