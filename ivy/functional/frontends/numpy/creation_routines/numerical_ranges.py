@@ -16,17 +16,11 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
     return ret
 
 
-linspace.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     if not endpoint:
         interval = (stop - start) / num
         stop -= interval
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
-
-
-logspace.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
