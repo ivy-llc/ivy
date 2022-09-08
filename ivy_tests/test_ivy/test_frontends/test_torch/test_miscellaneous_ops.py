@@ -199,7 +199,7 @@ def test_torch_cumsum(
         ),
         min_num_dims=1,
         max_num_dims=1,
-        min_dim_size=2,
+        min_dim_size=2, # TODO: Split this so that it tests cases where row.dtype != col.dtype
         max_dim_size=2,
         min_value=0,
     ),
