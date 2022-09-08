@@ -39,7 +39,6 @@ def test_sgd_optimizer(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_method(
         num_positional_args_init=num_positional_args_init,
         num_positional_args_method=num_positional_args_method,
@@ -51,7 +50,7 @@ def test_sgd_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=container,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
             "grads": np.asarray(x[1], dtype=input_dtype[1]),
@@ -104,7 +103,7 @@ def test_lars_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=container,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
             "grads": np.asarray(x[1], dtype=input_dtype[1]),
@@ -164,7 +163,7 @@ def test_adam_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=container,
         device_=device,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
@@ -231,7 +230,7 @@ def test_lamb_optimizer(
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
-        container_flags_method=False,
+        container_flags_method=container,
         device_=device,
         all_as_kwargs_np_method={
             "v": np.asarray(x[0], dtype=input_dtype[0]),
