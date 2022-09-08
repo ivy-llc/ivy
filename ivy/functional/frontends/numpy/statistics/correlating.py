@@ -20,7 +20,7 @@ def correlate(
                 a = ivy.concat((ivy.array(0),a),axis = None)
         elif mode == "same":
             r = m
-            for j in range(0,(n-1)//2):
+            for j in range(0,(n-1)%2):
                 a = ivy.concat((ivy.array(0),a),axis = None)
         elif mode == "valid":
             r = m-n+1
@@ -34,7 +34,7 @@ def correlate(
                 v = ivy.concat((ivy.array(0),v),axis = None)
         elif mode == "same":
             r = m
-            for j in range(0,(n-1)//2):
+            for j in range(0,(n-1)%2):
                 v = ivy.concat((ivy.array(0),v),axis = None)
         elif mode == "valid":
             r = m-n+1
