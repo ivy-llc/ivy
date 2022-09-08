@@ -36,15 +36,7 @@ sum.unsupported_dtypes = {"torch": ("float16",)}
 
 @from_zero_dim_arrays_to_float
 def prod(
-        x,
-        /,
-        *,
-        axis=None,
-        dtype=None,
-        out=None,
-        keepdims=False,
-        initial=None,
-        where=True
+    x, /, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True
 ):
     if not where:
         if dtype:
@@ -67,11 +59,35 @@ def cumsum(a, /, axis=None, dtype=None, out=None):
     return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
 
 
-cumsum.unsupported_dtypes = {"torch": ("float16",)}
+cumsum.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16")
+}  # TODO Fixed in PyTorch 1.12.1
 
 
 def cumprod(a, /, axis=None, dtype=None, out=None):
     return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
-    
-    
-cumprod.unsupported_dtypes = {"torch": ("float16",)}
+
+
+cumprod.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16")
+}  # TODO Fixed in PyTorch 1.12.1
+
+
+def nancumprod(a, /, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.ones_like(a), a)
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+
+
+nancumprod.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16")
+}  # TODO Fixed in PyTorch 1.12.1
+
+
+def nancumsum(a, /, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+nancumsum.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16")
+}  # TODO Fixed in PyTorch 1.12.1

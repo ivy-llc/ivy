@@ -33,11 +33,9 @@ def clip(
         ivy.default(out, a),
         out=out,
     )
-    ret = ivy.astype(ret, dtype, out=out)
-    return ret
+    return ivy.astype(ret, dtype, out=out)
 
 
-# sqrt
 @from_zero_dim_arrays_to_float
 def sqrt(
     x,
