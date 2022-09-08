@@ -317,6 +317,12 @@ def floor_divide(
     return np.floor(np.divide(x1, x2)).astype(x1.dtype)
 
 
+def floormod(
+    x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.asarray(x % y)
+
+
 @_handle_0_dim_output
 def greater(
     x1: Union[float, np.ndarray],
