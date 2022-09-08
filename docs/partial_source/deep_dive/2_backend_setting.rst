@@ -62,6 +62,33 @@ backend is unset using the :code:`ivy.unset_backend`, the `implicit_backend`_ wi
 assume the backend from the last run. While the `implicit_backend`_ functionality gives more freedom to the user , the \
 recommended way of doing things would be set the backend explicitly.
 
+
+Backend and Frontend Version Support
+------------------------------------
+
+Each time a new ivy backend is set, the backend_handler modifies the :code:`ivy.__dict__` to support the multiple
+versions of functions that are not forward compatible. For example, :code:`torch.ones_like` in the latest stable version :code:`1.12`
+has many new arguments :code:`dtype=None, layout=None, device=None, requires_grad=False, memory_format=torch.preserve_format`
+compared to the same function at version :code:`0.3.1`. None of these new arguments will cause any forward compatibility issues:
+they weren't used in old code, and they can now just be used in new code if desired. However, the removal of the :code:`out` argument
+does break forward compatibility. Old :code:`torch` code will raise an :code:`Argument Not Found` error if being run with new :code:`torch`
+versions. However, such forward-breaking changes are in the vast minority.
+
+We currently use a naming convention for such functions and name them as :code:`fn_name_v_1p12_and_above` which means that this particular
+implementation of the function is valid for versions :code:`1.12` and above. Similarly, :code:`fn_name_v_1p01_to_1p1` means that the function is
+valid for versions between :code:`1.01` and :code:`1.1` both inclusive. Each time a backend is set, we go through the :code:`backend.__dict__` and
+for all functions for which multiple versions are detected, we simply import and assign the original :code:`fn_name` to the version
+specific one. We do so by detecting the version of the backend framework installed on the user's end.
+
+We follow the same workflow for providing version support to the frontend functions. Again the version is inferred by importing the corresponding
+framework on the user's system . If the user's system doesn't have the backend framework installed, we default to the latest version.
+
+
+
+
+
+
+
 **Round Up**
 
 This should have hopefully given you a good feel for how the backend framework is set.
@@ -69,3 +96,12 @@ This should have hopefully given you a good feel for how the backend framework i
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `backend setting discussion`_,
 or reach out on `discord`_ in the `backend setting channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/ROt5E8aHgww" class="video">
+    </iframe>

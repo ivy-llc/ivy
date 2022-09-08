@@ -3,11 +3,12 @@ import numpy as np
 import jax
 import jaxlib
 import jax.numpy as jnp
-from typing import Union, Tuple, List
+from typing import Union, Sequence, List
 
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
@@ -56,8 +57,11 @@ native_dtype_dict = {
 
 
 class Finfo:
-    def __init__(self, jnp_finfo):
+    def __init__(self, jnp_finfo: jnp.finfo):
         self._jnp_finfo = jnp_finfo
+
+    def __repr__(self):
+        return repr(self._jnp_finfo)
 
     @property
     def bits(self):
@@ -84,7 +88,7 @@ class Finfo:
 # -------------------#
 
 
-def astype(x: JaxArray, dtype: jnp.dtype, *, copy: bool = True) -> JaxArray:
+def astype(x: JaxArray, dtype: jnp.dtype, /, *, copy: bool = True) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if copy:
         if x.dtype == dtype:
@@ -103,7 +107,7 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     return jnp.broadcast_arrays(*arrays)
 
 
-def broadcast_to(x: JaxArray, shape: Tuple[int, ...]) -> JaxArray:
+def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
     return jnp.broadcast_to(x, shape)
 
 
@@ -122,29 +126,49 @@ def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
     return jnp.can_cast(from_, to)
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[jnp.dtype, str, JaxArray]) -> Finfo:
     return Finfo(jnp.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[jnp.dtype, str, JaxArray]) -> np.iinfo:
     return jnp.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> jnp.dtype:
+def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> ivy.Dtype:
     if len(arrays_and_dtypes) <= 1:
         return jnp.result_type(arrays_and_dtypes)
 
     result = jnp.result_type(arrays_and_dtypes[0], arrays_and_dtypes[1])
     for i in range(2, len(arrays_and_dtypes)):
         result = jnp.result_type(result, arrays_and_dtypes[i])
-    return result
+    return as_ivy_dtype(result)
 
 
 # Extra #
 # ------#
 
 
-def dtype_bits(dtype_in):
+def as_ivy_dtype(dtype_in: Union[jnp.dtype, str]) -> ivy.Dtype:
+    if isinstance(dtype_in, str):
+        return ivy.Dtype(dtype_in)
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
+
+
+def as_native_dtype(dtype_in: Union[jnp.dtype, str]) -> jnp.dtype:
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return native_dtype_dict[ivy.Dtype(dtype_in)]
+
+
+def dtype(x: JaxArray, as_native: bool = False) -> ivy.Dtype:
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
+
+
+def dtype_bits(dtype_in: Union[jnp.dtype, str]) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -154,21 +178,3 @@ def dtype_bits(dtype_in):
         .replace("bfloat", "")
         .replace("float", "")
     )
-
-
-def dtype(x, as_native=False):
-    if as_native:
-        return ivy.to_native(x).dtype
-    return as_ivy_dtype(x.dtype)
-
-
-def as_ivy_dtype(dtype_in):
-    if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
-    return ivy.Dtype(ivy_dtype_dict[dtype_in])
-
-
-def as_native_dtype(dtype_in):
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return native_dtype_dict[ivy.Dtype(dtype_in)]

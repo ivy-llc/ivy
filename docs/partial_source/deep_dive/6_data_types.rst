@@ -4,7 +4,7 @@ Data Types
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`infer_dtype`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
 .. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
-.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L51
+.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096
 .. _`empty class`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38
 .. _`also specified`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241
 .. _`tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256
@@ -17,10 +17,10 @@ Data Types
 .. _`original definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225
 .. _`new definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
 .. _`handled`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194
-.. _`data_type.py`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py
-.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L22
-.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/data_type.py#L484
-.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/data_type.py#L536
+.. _`data_type.py`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py
+.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
+.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
+.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
 .. _`data types discussion`: https://github.com/unifyai/ivy/discussions/1307
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
@@ -246,13 +246,151 @@ The PyTorch-specific implementation is as follows:
         return torch.full(
             shape_to_tuple(shape),
             fill_value,
-            dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
+            dtype=ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True),
             device=device,
         )
 
 The implementations for all other backends follow a similar pattern to this PyTorch implementation,
 where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
 backend-specific implementation.
+
+Supported and Unsupported Data Types
+------------------------------------
+
+Some backend functions (implemented in :code`ivy/functional/backends/<some_backend>`)
+have attributes named :code:`supported_dtypes` or :code:`unsupported_dtypes`,
+which flag the data types which this particular function does and does not support
+respectively for the associated backend.
+Only one of these attributes can be specified for any given function.
+In the case of :code:`supported_dtypes` it is assumed that all unmentioned data types
+are unsupported, and in the case of :code:`unsupported_dtypes` it is assumed that all
+unmentioned data types are supported.
+
+These attributes should always be in :code:`tuple` form, with each entry in the tuple
+being of type :code:`str`, like so:
+
+.. code-block:: python
+
+    def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        return torch.expm1(x, out=out)
+
+    expm1.unsupported_dtypes = ("float16",)
+
+For compositional functions, the supported and unsupported data types can then be
+inferred automatically using the helper functions
+`function_supported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370>`_
+and
+`function_unsupported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407>`_
+respestively, which traverse the abstract syntax tree of the compositional function and
+evaluate the relevant attributes for each primary function in the composition.
+The same approach applies for most stateful methods, which are themselves compositional.
+
+It should be noted that the :code:`unsupported_dtypes` is different from
+:code:`ivy.invalid_dtypes` which consists of all the :code:`dtypes` that every function
+of that particular backend does not support, and so if a certain :code:`dtype` is
+already present in the :code:`ivy.invalid_dtypes` then we should not add it into the
+:code:`unsupported_dtypes` attribute.
+
+Sometimes, it might be possible to support a natively unsupported data type by either
+casting to a supported data type and then casting back, or explicitly handling these
+data types without deferring to a backend function at all.
+
+An example of the former is :code:`ivy.logical_not` with a :code:`tensorflow` backend:
+
+.. code-block:: python
+
+    def logical_not(
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        return tf.logical_not(tf.cast(x, tf.bool))
+
+An example of the latter is :code:`ivy.abs` with a :code:`tensorflow` backend:
+
+.. code-block:: python
+
+    def abs(
+        x: Union[float, tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        if "uint" in ivy.dtype(x):
+            return x
+        else:
+            return tf.abs(x)
+
+In some cases, the lack of support for a particular data type by the backend function
+might be more difficult to handle correctly. For example, in many cases casting to
+another data type will result in a loss of precision, input range, or both.
+In such cases, the best solution is to simply add the data type to the
+:code:`unsupported_dtypes` attribute,
+rather than trying to implement a long and complex patch to achieve the desired
+behaviour.
+
+In some cases, the lack of support might just be a bug which will likely be resolved in
+a future release of the framework. In these cases, as well as adding to the
+:code:`unsupported_dtypes` attribute, we should also add a :code:`#ToDo` comment
+in the implementation, explaining that the support of the data type will be added as
+soon as the bug is fixed, with a link to an associated open issue in the framework
+repos included in the comment.
+
+For example, the following code throws an error when :code:`dtype` is
+:code:`torch.int32` but not when it is :code:`torch.int64`.
+This is tested with :code:`torch` version :code:`1.12.1`,
+which is the latest stable release at the time of writing. This is a
+`know bug <https://github.com/pytorch/pytorch/issues/84530>`_.:
+
+.. code-block:: python
+
+    dtype = torch.int32  # or torch.int64
+    x = torch.randint(1, 10, ([1, 2, 3]), dtype=dtype)
+    torch.tensordot(x, x, dims=([0], [0]))
+
+Despite :code:`torch.int32` working correctly with :code:`torch.tensordot` in the vast
+majority of cases, our solution is to still add :code:`"int32"` into the
+:code:`unsupported_dtypes` attribute, which will prevent the unit tests from failing in the CI.
+We also add the following comment above the :code:`unsupported_dtypes` attribute:
+
+.. code-block:: python
+
+    # ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
+    #  is fixed.
+    tensordot.unsupported_dtypes = ("int32",)
+
+Similarly, the following code throws an error for :code:`torch` version :code:`1.11.0`
+but not :code:`1.12.1`.
+
+.. code-block:: python
+
+    x = torch.tensor([0], dtype=torch.float32)
+    torch.cumsum(x, axis=0, dtype=torch.bfloat16)
+
+Writing short-lived patches for these temporary issues would add unwarranted complexity
+to the backend implementations, and introduce the risk of forgetting about the patch,
+needlessly bloating the codebase with redundant code.
+In such cases, we can explicitly flag which versions support which data types like so:
+
+[ToDo add a code example]
+
+The slight downside of this approach is that there is less data type coverage for each
+version of each backend, but taking responsibility for patching this support for all
+versions would substantially inflate the implementational requirements for ivy, and so
+we have decided to opt out of this responsibility!
+
+Support for Integer Arrays
+--------------------------
+
+Some backends like :code:`tensorflow` donot support integer array inputs for certain functions. For example
+:code:`ivy.cos` wouldn't work for an input like :code:`ivy.array([1,2,3])` when the backend is set to :code:`tensorflow`
+the reason being that :code:`tensorflow` only supports non-integer values for this function. However, backends like
+:code:`torch` and :code:`jax` support integer arrays as inputs. So to provide this same functionality in
+:code:`tensorflow` we simply promote any integer array passed to such functions to the default float dtype.
+This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
+lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
+of implementing the superset of all behavior, rather than the lowest common denominator
 
 **Round Up**
 
@@ -261,3 +399,12 @@ This should have hopefully given you a good feel for data types, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `data types discussion`_,
 or reach out on `discord`_ in the `data types channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
+    </iframe>

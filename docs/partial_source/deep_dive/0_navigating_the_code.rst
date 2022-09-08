@@ -6,6 +6,9 @@ Navigating the Code
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`project structure channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
+.. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
+.. _`pre-commit guide`: https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit
 
 Categorization
 --------------
@@ -81,12 +84,14 @@ look something like the following, (explained in much more detail in the followi
 .. code-block:: python
 
 
-    def my_func(x: Union[ivy.Array, ivy.NativeArray],
-                axes: Union[int, Tuple[int], List[int]],
-                *,
-                dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-                device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-                out: Optional[ivy.Array] = None
+    def my_func(
+        x: Union[ivy.Array, ivy.NativeArray],
+        /,
+        axes: Union[int, Tuple[int], List[int]],
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         My function does something cool.
@@ -128,6 +133,16 @@ look something like the following, (explained in much more detail in the followi
         """
         return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
+We follow the `Array API Standard convention`_ about positional and keyword arguments.
+
+* Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order.
+* Optional parameters must be keyword-only arguments
+
+This convention makes it easier for us to modify functions in the future. Keyword-only parameters will mandate the use
+of argument names when calling functions, and this will increase our flexibility for extending function behaviour in
+future releases without breaking forward compatibility. Similar arguments can be kept together in the argument list,
+rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
+
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
@@ -141,12 +156,14 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 .. code-block:: python
 
 
-    def my_func(x: torch.Tensor,
-                axes: Union[int, Tuple[int], List[int]],
-                *,
-                dtype: torch.dtype,
-                device: torch.device,
-                out: Optional[torch.Tensor] = None
+    def my_func(
+        x: torch.Tensor,
+        /,
+        axes: Union[int, Tuple[int], List[int]],
+        *,
+        dtype: torch.dtype,
+        device: torch.device,
+        out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
         return torch.something_cool(x, axes, dtype, device, out)
 
@@ -157,6 +174,122 @@ rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`iv
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.
 
+Submodule Helper Functions
+--------------------------
+
+At times, helper functions specific to submodule is required to:
+
+* keep the code clean and readable
+* be imported in their respective backend implementations
+
+To have a better idea on this, let's look at an example!
+
+**Helper in Ivy**
+
+.. code-block:: python
+
+    # in ivy/functional/ivy/creation.py
+    def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
+        assert (
+            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
+            and isinstance(fill_value, int)
+        ) or (
+            ivy.is_float_dtype(dtype)
+            and isinstance(fill_value, float)
+            or (isinstance(fill_value, bool))
+        ), "the fill_value and data type are not compatible"
+
+In the :code:`full_like` function in :code:`creation.py`, the types of
+:code:`fill_value` and :code:`dtype` has to be verified to avoid errors. This
+check has to be applied to all backends, which means the related code is common
+and identical. In this case, we can extract the code to be a helper function on
+its own, placed in its related submodule (:code:`creation.py` here). In this
+example, the helper function is named as
+:code:`_assert_fill_value_and_dtype_are_compatible`.
+
+Then, we import this submodule-specific helper function to the respective backends,
+where examples for each backend is shown below.
+
+**Jax**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/jax/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: JaxArray,
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: jnp.dtype,
+        device: jaxlib.xla_extension.Device,
+        out: Optional[JaxArray] = None
+    ) -> JaxArray:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        return _to_device(
+            jnp.full_like(x, fill_value, dtype=dtype),
+            device=device,
+        )
+
+**NumPy**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/numpy/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: np.ndarray,
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: np.dtype,
+        device: str,
+        out: Optional[np.ndarray] = None
+    ) -> np.ndarray:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
+
+**TensorFlow**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/tensorflow/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: tf.DType,
+        device: str,
+        out: Union[tf.Tensor, tf.Variable] = None
+    ) -> Union[tf.Tensor, tf.Variable]:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        with tf.device(device):
+            return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
+
+**Torch**
+
+.. code-block:: python
+
+    # in ivy/functional/backends/torch/creation.py
+    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+    def full_like(
+        x: torch.Tensor,
+        /,
+        fill_value: Union[int, float],
+        *,
+        dtype: torch.dtype,
+        device: torch.device,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        return torch.full_like(x, fill_value, dtype=dtype, device=device)
+
 **Round Up**
 
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
@@ -164,3 +297,12 @@ This should have hopefully given you a good feel for how to navigate the Ivy cod
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `project structure discussion`_,
 or reach out on `discord`_ in the `project structure channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
+    </iframe>

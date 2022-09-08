@@ -8,7 +8,6 @@ import jax.numpy as jnp
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
 
 
 class TorchLinearModule(torch.nn.Module):
@@ -64,9 +63,9 @@ NATIVE_MODULES = {"torch": TorchModule, "jax": HaikuModule}
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize("from_class_and_args", [True, False])
 @pytest.mark.parametrize("inplace_update", [True, False])
-def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device, call):
+def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device):
     # smoke test
-    if call not in [helpers.torch_call, helpers.jnp_call]:
+    if ivy.current_backend_str() not in ("torch", "jax"):
         # Currently only implemented for PyTorch
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
@@ -83,7 +82,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device, ca
             inplace_update=inplace_update,
         )
     else:
-        if call is helpers.jnp_call:
+        if ivy.current_backend_str() == "jax":
 
             def forward_fn(*a, **kw):
                 model = natvie_module_class(input_channels, output_channels)
@@ -120,7 +119,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, device, ca
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if call is helpers.mx_call:
+    if ivy.current_backend_str() == "mxnet":
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:

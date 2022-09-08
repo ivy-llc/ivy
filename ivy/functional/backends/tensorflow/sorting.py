@@ -1,13 +1,16 @@
 # global
 import tensorflow as tf
-from typing import Union
+from typing import Union, Optional
 
 
 def argsort(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
@@ -36,14 +39,17 @@ def argsort(
             ret = tf.argsort(
                 tf.convert_to_tensor(x), axis=axis, direction="ASCENDING", stable=stable
             )
-    return ret
+    return tf.cast(ret, dtype=tf.int64)
 
 
 def sort(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.convert_to_tensor(x).dtype.is_bool:
         if descending:
@@ -58,3 +64,15 @@ def sort(
         else:
             ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="ASCENDING")
     return ret
+
+
+def searchsorted(
+    x1: Union[tf.Tensor, tf.Variable],
+    v: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    side="left",
+    sorter=None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.searchsorted(x1, v, side=side)
