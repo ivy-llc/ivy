@@ -4,8 +4,8 @@ import ivy
 def correlate(
     x,    
     y,
-    *,
     mode = None,
+    *,
     old_behavior = False,
     out = None
 ):
@@ -27,7 +27,7 @@ def correlate(
             r = m-n+1
         else:
             assert False, "Invalid Mode"
-        ret = ivy.array([(y[:n]*ivy.roll(x,-t)[:n]).sum() for t in range(0,r)], out=out)
+        ret = ivy.array([(y[:n]*ivy.roll(x,-t)[:n]).sum().tolist() for t in range(0,r)], out=out)
     else:
         if mode == "full":
             r = n+m-1
@@ -41,5 +41,5 @@ def correlate(
             r = m-n+1
         else:
             assert False, "Invalid Mode"
-        ret = ivy.flip(ivy.array([(x[:n]*ivy.roll(y,-t)[:n]).sum() for t in range(0,r)], out=out), out=out)
+        ret = ivy.flip(ivy.array([(x[:n]*ivy.roll(y,-t)[:n]).sum().tolist() for t in range(0,r)], out=out), out=out)
     return ret
