@@ -50,16 +50,16 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_submodule_helpers.html">Submodule Helper Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
@@ -75,6 +75,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#self-consistent-and-explicit-testing">Self-Consistent and Explicit Testing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id6">test_array_function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#re-running-failed-ivy-tests">Re-Running Failed Ivy Tests</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
@@ -83,6 +84,59 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/array_methods.html">Array methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/wrapping.html">Wrapping</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Container</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/container_methods.html">Container methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -93,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
@@ -109,20 +164,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
@@ -302,13 +352,10 @@ form our own strategies for describing data by composing Hypothesis’ built-in 
 <h3>Integration of Strategies into Ivy Tests<a class="headerlink" href="#integration-of-strategies-into-ivy-tests" title="Permalink to this heading"></a></h3>
 <p>Once a strategy is initialised the <strong>given</strong> decorator is added to the test function for drawing values from the strategy
 and passing them as inputs to the test. For example, in this code snippet here -:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@given</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
 <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">),</span>
-<span class="n">as_variable</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span>
-<span class="n">native_array</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
 <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-<span class="n">container</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="mi">2</span><span class="p">),</span>
-<span class="n">instance_method</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
 <span class="n">alpha</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_leaky_relu</span><span class="p">(</span>
@@ -341,7 +388,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
                     <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,)</span>
 </pre></div>
 </div>
-<p>In the test above, all parameters being exhaustively drawn inside the given block from hypothesis either
+<p>In the test above, all parameters being exhaustively drawn inside the decorator <code class="code docutils literal notranslate"><span class="pre">&#64;handle_cmd_line_args</span></code> and <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> from hypothesis either
 <strong>directly</strong> (<em>native_array, num_positional, instance_methods, alpha</em>) or <strong>indirectly</strong> (<em>dtype_and_x, as_variable, container</em>)
 with the <em>helper</em> functions.</p>
 <p><strong>Note</strong> - It is advisable to specify the parameters of given as keyword arguments, so that there’s a correspondence
@@ -739,6 +786,39 @@ arrays in the arguments.</p>
 then we should not use the helper <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code>.
 For example, <code class="code docutils literal notranslate"><span class="pre">ivy.num_gpus</span></code> does not receive any arrays in the input,
 and so we should not make us of <code class="code docutils literal notranslate"><span class="pre">test_array_function</span></code> in the test implementation.</p>
+</section>
+<section id="re-running-failed-ivy-tests">
+<h2>Re-Running Failed Ivy Tests<a class="headerlink" href="#re-running-failed-ivy-tests" title="Permalink to this heading"></a></h2>
+<p>When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
+For example, in the <code class="code docutils literal notranslate"><span class="pre">test_result_type</span></code> Test, we find the following output on running the test:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Falsifying</span> <span class="n">example</span><span class="p">:</span> <span class="n">test_result_type</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="p">([</span><span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span> <span class="s1">&#39;int16&#39;</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.9090909090909091</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">as_variable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">container</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">instance_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">fw</span><span class="o">=</span><span class="s1">&#39;torch&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>It is always efficient to fix this particular example first, before running any other examples.
+In order to achieve this functionality, we can use the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> Hypothesis decorator.
+The <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator ensures that a specific example is always tested, on running a particular test. The decorator requires the test arguments as parameters.
+For the <code class="code docutils literal notranslate"><span class="pre">test_result_type</span></code> Test, we can add the decorator as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@example</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="p">([</span><span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span> <span class="s1">&#39;int16&#39;</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.9090909090909091</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">as_variable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">container</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">instance_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">fw</span><span class="o">=</span><span class="s1">&#39;torch&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This ensures that the given example is always tested while running the test, allowing one to debug the failure
+efficiently.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for how the tests are implemented in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,

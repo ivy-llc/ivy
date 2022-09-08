@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Array API Tests &mdash; Ivy 1.0 documentation</title>
+  <title>Formatting &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Ivy Tests" href="15_ivy_tests.html" />
-    <link rel="prev" title="Docstring Examples" href="13_docstring_examples.html" /> 
+    <link rel="next" title="Function Arguments" href="11_function_arguments.html" />
+    <link rel="prev" title="Inplace Updates" href="9_inplace_updates.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,19 +58,15 @@
 <li class="toctree-l2"><a class="reference internal" href="7_data_types.html">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_devices.html">Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="9_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Formatting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lint-checks">Lint Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-commit-hook">Pre-Commit Hook</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Array API Tests</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#running-the-tests">Running the tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#using-bash-file">Using bash file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#using-ide">Using IDE</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#re-running-failed-array-api-tests">Re-Running Failed Array API Tests</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -198,9 +194,9 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Array API Tests</li>
+      <li>Formatting</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/deep_dive/14_array_api_tests.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/deep_dive/10_formatting.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -208,69 +204,105 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="array-api-tests">
-<h1>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h1>
-<p>All functions which are present in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> have a corresponding unit test in the
-<a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a> for the standard.</p>
-<p>The test suite is included in the ivy repository as a submodule in the folder <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests">test_array_api</a>,
-which we keep updated with the upstream test suite.</p>
-<section id="running-the-tests">
-<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading"></a></h2>
-<p>The entire test suite is run independently <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows">for each backend</a> on every push to the repo.
-Therefore, every function which exists in the standard is thoroughly tested for
-adherence to the standard on a continuous basis.</p>
-<p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
-functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
-‘Details’ -&gt; ‘Run [backend] Tests’.</p>
-<p>You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.</p>
-<section id="using-bash-file">
-<h3>Using bash file<a class="headerlink" href="#using-bash-file" title="Permalink to this heading"></a></h3>
-<p>Using the terminal, you can run our bash file <a class="reference external" href="https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh">test_array_api.sh</a> and specify which framework backend you want to use.
-You can use the following command as an example.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/bin/bash -e ./test_array_api.sh  &#39;&lt;insert_chosen_backend&gt;&#39;
-</pre></div>
-</div>
-<p>You can change the argument with any of our other supported frameworks like ‘tensorflow’ or ‘numpy’.</p>
+  <section id="formatting">
+<h1>Formatting<a class="headerlink" href="#formatting" title="Permalink to this heading"></a></h1>
+<section id="lint-checks">
+<h2>Lint Checks<a class="headerlink" href="#lint-checks" title="Permalink to this heading"></a></h2>
+<p>To ensure that Ivy is always formatted correctly, <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> is used to run
+lint checks on all Python files in the
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/ff7d40e7f1e6ea5b48b7b460013c011cd7752a0e/.github/workflows/lint.yml">CI</a>.
+Some of the main things which <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> checks for are listed below.</p>
+<p><strong>Imports</strong></p>
+<p>Module imports are checked to detect:</p>
+<ul class="simple">
+<li><p>unused imports</p></li>
+<li><p>module imported but not used</p></li>
+<li><p>module used without imports</p></li>
+<li><p>duplicate imports</p></li>
+<li><p>undefined import names</p></li>
+</ul>
+<p><strong>Syntax</strong></p>
+<p>Flake8 is useful in detecting syntax errors, which are one of the most common mistakes.
+Some examples are:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">break</span></code> or <code class="code docutils literal notranslate"><span class="pre">continue</span></code> statement outside a <code class="code docutils literal notranslate"><span class="pre">for</span></code> or <code class="code docutils literal notranslate"><span class="pre">while</span></code> loop</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">continue</span></code> statement in the <code class="code docutils literal notranslate"><span class="pre">finally</span></code> block of a loop</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">yield</span></code> or <code class="code docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code> statement outside a function</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">return</span></code> statement used with arguments in a generator, or outside a function or method</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">except:</span></code> block not being the last exception handler</p></li>
+<li><p>syntax or length errors in docstrings, comments, or annotations</p></li>
+</ul>
+<p><strong>Literals</strong></p>
+<p>Literals formatting are often used in a string statement; some common checks related to
+this are:</p>
+<ul class="simple">
+<li><p>invalid <code class="code docutils literal notranslate"><span class="pre">%</span></code> format</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">%</span></code> format with missing arguments or unsupported character</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">.format(...)</span></code> with invalid format, missing or unused arguments</p></li>
+<li><p>f-string without placeholders</p></li>
+</ul>
+<p><strong>Others</strong></p>
+<p>There are many more types of checks which <code class="code docutils literal notranslate"><span class="pre">flake8</span></code> can perform.
+These include but are not limited to:</p>
+<ul class="simple">
+<li><p>repeated <code class="code docutils literal notranslate"><span class="pre">dict</span></code> key or variable assigned to different values</p></li>
+<li><p>star-unpacking assignment with too many expressions</p></li>
+<li><p>assertion test is a <code class="code docutils literal notranslate"><span class="pre">tuple</span></code>, which is always <code class="code docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p>use of <code class="code docutils literal notranslate"><span class="pre">==</span></code> or <code class="code docutils literal notranslate"><span class="pre">!=</span></code> to compare <code class="code docutils literal notranslate"><span class="pre">str</span></code>, <code class="code docutils literal notranslate"><span class="pre">bytes</span></code> or <code class="code docutils literal notranslate"><span class="pre">int</span></code> literals</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">raise</span> <span class="pre">NotImplemented</span></code> should be <code class="code docutils literal notranslate"><span class="pre">raise</span> <span class="pre">NotImplementedError</span></code></p></li>
+</ul>
 </section>
-<section id="using-ide">
-<h3>Using IDE<a class="headerlink" href="#using-ide" title="Permalink to this heading"></a></h3>
-<p>If you prefer, you can also run a specific test or test file by using your IDE. To make this work, you should set the
-backend explicitly in the ‘_array_module.py’ file. You can find it on the ‘array_api_tests’ submodule. At the beginning
-of the file, you will see the following line of code <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>. You need to comment that line and add
-the following code:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import ivy as array_module
-array_module.set_backend(&quot;&lt;insert_chosen_backend&gt;&quot;)
+<section id="pre-commit-hook">
+<h2>Pre-Commit Hook<a class="headerlink" href="#pre-commit-hook" title="Permalink to this heading"></a></h2>
+<p>In Ivy, we try our best to avoid committing code with lint errors. To achieve this,
+we make use of the pre-commit package. The installation is explained in
+the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/0_setting_up.html#pre-commit">pre-commit guide</a>.</p>
+<p>The pre-commit hook runs the <code class="code docutils literal notranslate"><span class="pre">flake8</span></code> lint checks before each commit. This is
+efficient and useful in preventing errors being pushed to the repository.</p>
+<p>In the case where errors are found, error messages will be raised and committing will
+be unsuccessful until the mistake is corrected. If the errors are related to argument
+formatting, it will be reformatted automatically.</p>
+<p>For example, the line length limit might be exceeded if arguments are all added in a
+single line of code like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
 </pre></div>
 </div>
-<p>After that, you can run the API test files as you typically would with other tests. Just make sure to not add these
-changes to your commit.</p>
-</section>
-<section id="re-running-failed-array-api-tests">
-<h3>Re-Running Failed Array API Tests<a class="headerlink" href="#re-running-failed-array-api-tests" title="Permalink to this heading"></a></h3>
-<p>When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
-For example, in the <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> Array API Test, we find the following output on running the test:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Falsifying</span> <span class="n">example</span><span class="p">:</span> <span class="n">test_trace</span><span class="p">(</span>
-    <span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.e-05</span><span class="p">]]),</span> <span class="n">kw</span><span class="o">=</span><span class="p">{},</span>
-<span class="p">)</span>
+<p>When a commit is attempted, <cite>pre-commit</cite> would detect this error by running the lint
+check, and it would then reformat the arguments automatically.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>black....................................................................Failed
+- hook id: black
+- files were modified by this hook
+
+reformatted ivy/functional/ivy/general.py
+
+All done! ✨ 🍰 ✨
+1 file reformatted.
+
+flake8...................................................................Passed
 </pre></div>
 </div>
-<p>It is always efficient to fix this particular example first, before running any other examples.
-In order to achieve this functionality, we can use the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> Hypothesis decorator.
-The <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator ensures that a specific example is always tested, on running a particular test.
-The decorator requires the test arguments as parameters.
-For the <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> Array API Test, we can add the decorator as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@example</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.5e-46</span><span class="p">]]),</span> <span class="n">kw</span><span class="o">=</span><span class="p">{})</span>
-<span class="k">def</span> <span class="nf">test_trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kw</span><span class="p">):</span>
+<p>The above message indicates that a file disobeying the formatting rules is detected
+and reformatting has taken place successfully. The correctly formatted code, with each
+argument added on a new line, has been saved and the related file(s) can now be staged
+and committed accordingly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
 </pre></div>
 </div>
-<p>This ensures that the given example is always tested while running the test, allowing one to debug the failure
-efficiently.</p>
-<p><strong>Round Up</strong></p>
-<p>This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.</p>
-<p>If you’re ever unsure of how best to proceed,
-please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1306">array api tests discussion</a>,
-or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738404611592256">array api tests channel</a>!</p>
-</section>
+<p>If the code is all formatted correctly, then in this case <cite>pre-commit</cite> will not modify
+the code. For example, when the line limit is not exceeded by the function arguments,
+then the arguments should indeed be listed on the same line, together with the function
+<code class="code docutils literal notranslate"><span class="pre">def(...)</span></code> syntax, as shown below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>This would pass the lint checks, and <code class="code docutils literal notranslate"><span class="pre">pre-commit</span></code> would allow the code to be
+committed without error.</p>
 </section>
 </section>
 
@@ -278,8 +310,8 @@ or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQ
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="13_docstring_examples.html" class="btn btn-neutral float-left" title="Docstring Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="15_ivy_tests.html" class="btn btn-neutral float-right" title="Ivy Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="9_inplace_updates.html" class="btn btn-neutral float-left" title="Inplace Updates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="11_function_arguments.html" class="btn btn-neutral float-right" title="Function Arguments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

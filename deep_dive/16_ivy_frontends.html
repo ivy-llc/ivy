@@ -50,16 +50,16 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_submodule_helpers.html">Submodule Helper Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
@@ -69,6 +69,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#basic">Basic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#framework-specific-classes">Framework-Specific Classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ivy-sum">ivy.sum()</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -76,6 +81,59 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../array/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/array_methods.html">Array methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../array/wrapping.html">Wrapping</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Container</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/container_methods.html">Container methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/conversions.html">Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -86,6 +144,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
@@ -102,20 +161,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
@@ -161,7 +215,7 @@
 <h1>Ivy Frontends<a class="headerlink" href="#ivy-frontends" title="Permalink to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
-<p>On top of the Ivy and backend functional APIs, Ivy has another set of
+<p>On top of the Ivy functional API and backend functional APIs, Ivy has another set of
 framework-specific frontend functional APIs, which play an important role in code
 transpilations, as explained <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">here</a>.</p>
 <p>Let’s start with some examples to have a better idea on Ivy Frontends!</p>
@@ -268,7 +322,7 @@ arguments just like its <code class="code docutils literal notranslate"><span cl
 specified in the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute to indicate the list of
 invalid data types for any backend framework.</p>
 <p><strong>TensorFlow</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/functions.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
@@ -281,7 +335,7 @@ changes when using <code class="code docutils literal notranslate"><span class="
 <p>There are three arguments according to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/add">tf.add</a> documentation, where we
 have written accordingly as shown above. Just like the previous examples, it will
 also return <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> for the linking of backend framework.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/functions.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
@@ -359,7 +413,7 @@ support this behaviour by default.</p>
 required behaviour. For example, we can reverse the result by calling
 <code class="code docutils literal notranslate"><span class="pre">ivy.flip()</span></code> after running <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
 <p><strong>TensorFlow Frontend</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math/general.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
@@ -382,8 +436,85 @@ function. However, functions are added to Ivy in an iterative and deliberate man
 which doesn’t always align with the timelines for the frontend implementations.
 Sometimes Ivy’s API is not ready to have a new function added. In such cases, the
 frontend function should be added as a heavy composition, but a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment
-should be added, explaining that this frontend implementation will be updated as soon as
+should be added, explaining that this frontend implementation will be updated if/when
 <code class="code docutils literal notranslate"><span class="pre">ivy.&lt;func_name&gt;</span></code> is implemented.</p>
+</section>
+<section id="supported-data-types-and-devices">
+<h2>Supported Data Types and Devices<a class="headerlink" href="#supported-data-types-and-devices" title="Permalink to this heading"></a></h2>
+<p>Sometimes, the corresponding function in the original framework might only support a
+subset of data types. For example, <code class="code docutils literal notranslate"><span class="pre">tf.math.logical_and</span></code> only supports inputs of
+type <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>. However, Ivy’s
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L84">implementation</a>
+is as follows, with direct wrapping around <code class="code docutils literal notranslate"><span class="pre">ivy.logical_and</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">logical_and</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LogicalAnd&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="code docutils literal notranslate"><span class="pre">ivy.logical_and</span></code> supports all data types, and so
+<code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and</span></code> can also easily support all
+data types. However, the primary purpose of these frontend functions is for code
+transpilations, and in such cases it would never be useful to support extra data types
+beyond <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>, as the tensorflow code being transpiled would not support this.
+Additionally, the unit tests for all frontend functions use the original framework
+function as the ground truth, and so we can only test
+<code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and</span></code> with boolean inputs anyway.</p>
+<p>For these reasons, all frontend functions which correspond to functions with limited
+data type support in the native framework (which go beyond the data type limitations of
+the framework itself) should be flagged
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88">as such</a>
+in a manner like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logical_and</span><span class="o">.</span><span class="n">supported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,)</span>
+</pre></div>
+</div>
+<p>The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
+more devices, we should still flag the frontend function devices to be the same as those
+supported by the function in the native framework.</p>
+</section>
+<section id="framework-specific-classes">
+<h2>Framework-Specific Classes<a class="headerlink" href="#framework-specific-classes" title="Permalink to this heading"></a></h2>
+<p>Some of the frontend functions that we need to implement for our frontend functional API
+include framework-specific classes, which do not have a counterpart in other frameworks
+or Ivy, as the types for their arguments or as the default values for the arguments.
+When re-implementing these functions in Ivy’s frontend, we would like to still include
+those arguments without directly using those special classes as they do not exist in Ivy.
+In this section of the deep dive we are going to introduce how to deal with
+Framework-Specific Classes.</p>
+<p>For each backend framework, there is a dictionary named <cite>&lt;backend&gt;_classes_to_ivy_classes</cite>
+in <cite>ivy/ivy_tests/test_ivy/test_frontends/test_&lt;backend&gt;/__init__.py</cite>,
+which will hold pairs of framework-specific classes and corresponding Ivy or
+native Python classes. For example, in <cite>ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py</cite>, we have:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numpy_classes_to_ivy_classes</span> <span class="o">=</span> <span class="p">{</span><span class="n">np</span><span class="o">.</span><span class="n">_NoValue</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Where np._NoValue is a reference to _NoValueType class defined in numpy/numpy/_globals.py,
+which represents a special keyword value and the instance of this class may be used as the
+default value assigned to a keyword if no other obvious default (e.g., <code class="code docutils literal notranslate"><span class="pre">None</span></code>) is suitable.</p>
+<p>When you found that the frontend function of a certain framework that you try to implement
+in our frontend API introduce a new datatype that, like the <code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code> example before,
+can not be directly replaced, you may pick an existing Ivy or pure python datatype
+and use them instead in the ivy frontend implementation to mimic the same effect and record
+the pair of framework-specific class’s reference and your replacement class’s reference
+in the corresponding dictionary.</p>
+<p>As our frontend test will try to pass all the generated inputs in both our own implementation
+and the original function, then you cannot directly pass either the framework-specific class
+or your chosen counterpart in our test function. Instead, you should pass a <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code>
+object in. The <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> is defined in ‘ivy/ivy_tests/test_ivy/test_frontends/__init__.py’ as a placeholder class to represent a
+pair of framework specific class and its counterpart. It has only one attribute, which is
+<code class="code docutils literal notranslate"><span class="pre">_native_class</span></code>, that holds the reference to the special class being used by the
+targeted framework.</p>
+<p>When writing a test for a frontend function where its original counterpart accepts a
+framework-specific class, you should import the <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> and initialize an instance
+of it with <code class="code docutils literal notranslate"><span class="pre">_native_class</span></code> set as the reference to the special class, which you have
+added in the <cite>&lt;backend&gt;_classes_to_ivy_classes</cite> dictionary before. Then just pass the
+<code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> instance in the arguments like other generated input and the
+<code class="code docutils literal notranslate"><span class="pre">helpers.test_frontend_function</span></code> will replace it with the actual classes accordingly
+in the background.</p>
+<p>Here is an example of <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> being put to use in test.</p>
+<section id="ivy-sum">
+<h3>ivy.sum()<a class="headerlink" href="#ivy-sum" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>NumPy.sum has three optional arguments: <code class="code docutils literal notranslate"><span class="pre">where</span></code>, <code class="code docutils literal notranslate"><span class="pre">keep_dims</span></code>, <code class="code docutils literal notranslate"><span class="pre">initial</span></code>, which all have the default value of numpy._NoValue. So we define a NativeClass object Novalue to help recreate the effect of not passing any value to those arguments by using Novalue instead where None used to be generated for the those arguments.</p></li>
+</ul>
 <p><strong>Round Up</strong></p>
 <p>This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
 after going through the contents! We have a <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this
@@ -391,6 +522,7 @@ as well if you prefer a video explanation!</p>
 <p>If you’re ever unsure of how best to proceed,
 please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/2051">ivy frontends discussion</a>,
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a>!</p>
+</section>
 </section>
 </section>
 

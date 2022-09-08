@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Array API Tests &mdash; Ivy 1.0 documentation</title>
+  <title>Backend Setting &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Ivy Tests" href="15_ivy_tests.html" />
-    <link rel="prev" title="Docstring Examples" href="13_docstring_examples.html" /> 
+    <link rel="next" title="Function Wrapping" href="4_function_wrapping.html" />
+    <link rel="prev" title="Superset Behaviour" href="2_superset_behaviour.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,7 +51,10 @@
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Backend Setting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#backend-and-frontend-version-support">Backend and Frontend Version Support</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="4_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_arrays.html">Arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_containers.html">Containers</a></li>
@@ -62,15 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Array API Tests</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#running-the-tests">Running the tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#using-bash-file">Using bash file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#using-ide">Using IDE</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#re-running-failed-array-api-tests">Re-Running Failed Array API Tests</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -198,9 +193,9 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../contributing.html">Contributing</a> &raquo;</li>
           <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Array API Tests</li>
+      <li>Backend Setting</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/deep_dive/14_array_api_tests.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/deep_dive/3_backend_setting.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -208,78 +203,75 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="array-api-tests">
-<h1>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h1>
-<p>All functions which are present in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> have a corresponding unit test in the
-<a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a> for the standard.</p>
-<p>The test suite is included in the ivy repository as a submodule in the folder <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests">test_array_api</a>,
-which we keep updated with the upstream test suite.</p>
-<section id="running-the-tests">
-<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading"></a></h2>
-<p>The entire test suite is run independently <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows">for each backend</a> on every push to the repo.
-Therefore, every function which exists in the standard is thoroughly tested for
-adherence to the standard on a continuous basis.</p>
-<p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy
-functions which are part of the standard. If a test fails on the CI, you can see details about the failure under
-‘Details’ -&gt; ‘Run [backend] Tests’.</p>
-<p>You can also run the tests locally before making a PR. There are two ways to do this: by the terminal or using your IDE.</p>
-<section id="using-bash-file">
-<h3>Using bash file<a class="headerlink" href="#using-bash-file" title="Permalink to this heading"></a></h3>
-<p>Using the terminal, you can run our bash file <a class="reference external" href="https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh">test_array_api.sh</a> and specify which framework backend you want to use.
-You can use the following command as an example.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/bin/bash -e ./test_array_api.sh  &#39;&lt;insert_chosen_backend&gt;&#39;
+  <section id="backend-setting">
+<h1>Backend Setting<a class="headerlink" href="#backend-setting" title="Permalink to this heading"></a></h1>
+<p>The backend framework can either be set by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(backend_name)</span></code> or it can inferred from the arguments. For the latter, a global variable <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> is located in the file which is initialized as <code class="code docutils literal notranslate"><span class="pre">numpy</span></code>, and is always used to infer the backend in cases where: (a) no backend has been set using the <code class="code docutils literal notranslate"><span class="pre">set_backend</span></code> function and (b) the backend cannot be inferred from the inputs. If the framework can be inferred from the inputs, then this is always used, and the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> is overwritten with the framework inferred. <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> will always be the default backend unless it is explicitly set or is inferred.</p>
+<p>When calling <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154">this function</a> for setting the backend, the following steps are performed:</p>
+<ol class="arabic simple">
+<li><p>store a global copy of the original <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> to <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code>, if this is not already stored.</p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L184">import the backend module</a>, for example <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code>, if the backend has been passed in as a string. All functions in this unmodified backend module are <em>primary</em> functions, because only primary functions are stored in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.backend_name</span></code>. This backend module does not include any <em>compositional</em> functions.</p></li>
+<li><p>loop through the original <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code> (which has all functions, including compositional), and
+(a) add the primary function from the backend if it exists, (b) else add the compositional
+function from <code class="code docutils literal notranslate"><span class="pre">ivy_original_dict</span></code>.</p></li>
+<li><p><a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">wrap the functions</a> where necessary, extending them with shared repeated functionality and
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212">writing the function</a> to <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code>. Wrapping is used in order to avoid excessive code duplication in
+every backend function implementation. This is explained in more detail in the next section:
+<a class="reference internal" href="4_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a>.</p></li>
+</ol>
+<p>It’s helpful to look at an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]])</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.numpy&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/numpy/__init__.py&#39;</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>You can change the argument with any of our other supported frameworks like ‘tensorflow’ or ‘numpy’.</p>
-</section>
-<section id="using-ide">
-<h3>Using IDE<a class="headerlink" href="#using-ide" title="Permalink to this heading"></a></h3>
-<p>If you prefer, you can also run a specific test or test file by using your IDE. To make this work, you should set the
-backend explicitly in the ‘_array_module.py’ file. You can find it on the ‘array_api_tests’ submodule. At the beginning
-of the file, you will see the following line of code <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>. You need to comment that line and add
-the following code:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import ivy as array_module
-array_module.set_backend(&quot;&lt;insert_chosen_backend&gt;&quot;)
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="mf">3.</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">([</span><span class="mf">4.</span><span class="p">]))</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.torch&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/torch/__init__.py&#39;</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>After that, you can run the API test files as you typically would with other tests. Just make sure to not add these
-changes to your commit.</p>
-</section>
-<section id="re-running-failed-array-api-tests">
-<h3>Re-Running Failed Array API Tests<a class="headerlink" href="#re-running-failed-array-api-tests" title="Permalink to this heading"></a></h3>
-<p>When a hypothesis test fails, the falsifying example is printed on the console by Hypothesis.
-For example, in the <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> Array API Test, we find the following output on running the test:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Falsifying</span> <span class="n">example</span><span class="p">:</span> <span class="n">test_trace</span><span class="p">(</span>
-    <span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.e-05</span><span class="p">]]),</span> <span class="n">kw</span><span class="o">=</span><span class="p">{},</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s1">&#39;jax&#39;</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.</span><span class="p">,</span><span class="mf">3.</span><span class="p">]]),</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">],[</span><span class="mf">6.</span><span class="p">]]))</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.jax&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/jax/__init__.py&#39;</span><span class="o">&gt;</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">&#39;ivy.functional.backends.torch&#39;</span> <span class="kn">from</span> <span class="s1">&#39;/opt/project/ivy/functional/backends/torch/__init__.py&#39;</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>It is always efficient to fix this particular example first, before running any other examples.
-In order to achieve this functionality, we can use the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> Hypothesis decorator.
-The <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator ensures that a specific example is always tested, on running a particular test.
-The decorator requires the test arguments as parameters.
-For the <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> Array API Test, we can add the decorator as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@example</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.5e-46</span><span class="p">]]),</span> <span class="n">kw</span><span class="o">=</span><span class="p">{})</span>
-<span class="k">def</span> <span class="nf">test_trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kw</span><span class="p">):</span>
-</pre></div>
-</div>
-<p>This ensures that the given example is always tested while running the test, allowing one to debug the failure
-efficiently.</p>
+<p>In the last example above, the moment any backend is set, it will be used over the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a>. However when the backend is unset using the <code class="code docutils literal notranslate"><span class="pre">ivy.unset_backend</span></code>, the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> will be used as a fallback, which will assume the backend from the last run. While the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/backend_handler.py#L16">implicit_backend</a> functionality gives more freedom to the user , the recommended way of doing things would be set the backend explicitly.</p>
+<section id="backend-and-frontend-version-support">
+<h2>Backend and Frontend Version Support<a class="headerlink" href="#backend-and-frontend-version-support" title="Permalink to this heading"></a></h2>
+<p>Each time a new ivy backend is set, the backend_handler modifies the <code class="code docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> to support the multiple
+versions of functions that are not forward compatible. For example, <code class="code docutils literal notranslate"><span class="pre">torch.ones_like</span></code> in the latest stable version <code class="code docutils literal notranslate"><span class="pre">1.12</span></code>
+has many new arguments <code class="code docutils literal notranslate"><span class="pre">dtype=None,</span> <span class="pre">layout=None,</span> <span class="pre">device=None,</span> <span class="pre">requires_grad=False,</span> <span class="pre">memory_format=torch.preserve_format</span></code>
+compared to the same function at version <code class="code docutils literal notranslate"><span class="pre">0.3.1</span></code>. None of these new arguments will cause any forward compatibility issues:
+they weren’t used in old code, and they can now just be used in new code if desired. However, the removal of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument
+does break forward compatibility. Old <code class="code docutils literal notranslate"><span class="pre">torch</span></code> code will raise an <code class="code docutils literal notranslate"><span class="pre">Argument</span> <span class="pre">Not</span> <span class="pre">Found</span></code> error if being run with new <code class="code docutils literal notranslate"><span class="pre">torch</span></code>
+versions. However, such forward-breaking changes are in the vast minority.</p>
+<p>We currently use a naming convention for such functions and name them as <code class="code docutils literal notranslate"><span class="pre">fn_name_v_1p12_and_above</span></code> which means that this particular
+implementation of the function is valid for versions <code class="code docutils literal notranslate"><span class="pre">1.12</span></code> and above. Similarly, <code class="code docutils literal notranslate"><span class="pre">fn_name_v_1p01_to_1p1</span></code> means that the function is
+valid for versions between <code class="code docutils literal notranslate"><span class="pre">1.01</span></code> and <code class="code docutils literal notranslate"><span class="pre">1.1</span></code> both inclusive. Each time a backend is set, we go through the <code class="code docutils literal notranslate"><span class="pre">backend.__dict__</span></code> and
+for all functions for which multiple versions are detected, we simply import and assign the original <code class="code docutils literal notranslate"><span class="pre">fn_name</span></code> to the version
+specific one. We do so by detecting the version of the backend framework installed on the user’s end.</p>
+<p>We follow the same workflow for providing version support to the frontend functions. Again the version is inferred by importing the corresponding
+framework on the user’s system . If the user’s system doesn’t have the backend framework installed, we default to the latest version.</p>
 <p><strong>Round Up</strong></p>
-<p>This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.</p>
+<p>This should have hopefully given you a good feel for how the backend framework is set.</p>
 <p>If you’re ever unsure of how best to proceed,
-please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1306">array api tests discussion</a>,
-or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738404611592256">array api tests channel</a>!</p>
-</section>
-</section>
+please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1313">backend setting discussion</a>,
+or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737886963187772">backend setting channel</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/ROt5E8aHgww" class="video">
+</iframe></section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="13_docstring_examples.html" class="btn btn-neutral float-left" title="Docstring Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="15_ivy_tests.html" class="btn btn-neutral float-right" title="Ivy Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="2_superset_behaviour.html" class="btn btn-neutral float-left" title="Superset Behaviour" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_function_wrapping.html" class="btn btn-neutral float-right" title="Function Wrapping" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
