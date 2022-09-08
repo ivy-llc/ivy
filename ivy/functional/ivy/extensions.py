@@ -10,12 +10,10 @@ class SparseArray:
                     indices, values and dense_shape"
                 )
             self._init_data(data)
-        else:
-            if indices and values and dense_shape:
-                self._init_coo_components(indices, values, dense_shape)
-            # TODO: to add csr
-            else:
-                raise Exception("indices, values and dense_shape must all be specified")
+        elif indices and values and dense_shape:
+            self._init_coo_components(indices, values, dense_shape)
+        # TODO: to add csr
+        raise Exception("indices, values and dense_shape must all be specified")
 
     def _init_data(self, data):
         if is_ivy_sparse_array(data):
