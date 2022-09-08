@@ -988,25 +988,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
 
-    def supports_inplace(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.supports_inplace. This method simply
-        wraps the function, and so the docstring for ivy.supports_inplace also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not inplace operations are supported for x.
-
-        """
-        return ivy.supports_inplace(self)
-
     def inplace_update(
         self: ivy.Array,
         val: Union[ivy.Array, ivy.NativeArray],
