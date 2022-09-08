@@ -22,7 +22,7 @@ Ivy Frontends
 Introduction
 ------------
 
-On top of the Ivy and backend functional APIs, Ivy has another set of
+On top of the Ivy functional API and backend functional APIs, Ivy has another set of
 framework-specific frontend functional APIs, which play an important role in code
 transpilations, as explained `here`_.
 
@@ -283,7 +283,7 @@ function. However, functions are added to Ivy in an iterative and deliberate man
 which doesn't always align with the timelines for the frontend implementations.
 Sometimes Ivy's API is not ready to have a new function added. In such cases, the
 frontend function should be added as a heavy composition, but a :code:`#ToDo` comment
-should be added, explaining that this frontend implementation will be updated as soon as
+should be added, explaining that this frontend implementation will be updated if/when
 :code:`ivy.<func_name>` is implemented.
 
 Supported Data Types and Devices
