@@ -49,7 +49,8 @@ def _dtype_x_bounded_axis(draw, **kwargs):
         )
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.sigmoid"),
+        fn_name="ivy.functional.frontends.torch.sigmoid"
+    ),
 )
 def test_torch_sigmoid(
     dtype_and_x,
@@ -88,7 +89,8 @@ def test_torch_sigmoid(
     axis=st.integers(-1, 0),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.softmax"),
+        fn_name="ivy.functional.frontends.torch.softmax"
+    ),
 )
 def test_torch_softmax(
     dtype_and_x,
@@ -175,7 +177,7 @@ def test_torch_leaky_relu(
     num_positional_args,
     as_variable,
     with_out,
-    native_array
+    native_array,
     fw,
     alpha,
 ):
@@ -236,9 +238,9 @@ def test_torch_tanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
+            .difference({"uint8", "int8", "int16", "int32", "int64", "float16"}),
         )
     ),
     num_positional_args=helpers.num_positional_args(
@@ -313,9 +315,9 @@ def test_torch_softmin(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
+            .difference({"float16"}),
         ),
     ),
     num_positional_args=helpers.num_positional_args(
@@ -354,9 +356,9 @@ def test_torch_threshold(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
+            .difference({"float16"}),
         ),
     ),
     num_positional_args=helpers.num_positional_args(
@@ -392,9 +394,9 @@ def test_torch_threshold_(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
+            .difference({"float16"}),
         ),
     ),
     num_positional_args=helpers.num_positional_args(
@@ -431,9 +433,9 @@ def test_torch_relu6(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
+            .difference({"uint8", "int8", "int16", "int32", "int64", "float16"}),
         ),
     ),
     num_positional_args=helpers.num_positional_args(
@@ -473,9 +475,9 @@ def test_torch_elu(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
+            .difference({"uint8", "int8", "int16", "int32", "int64", "float16"}),
         ),
     ),
     num_positional_args=helpers.num_positional_args(
