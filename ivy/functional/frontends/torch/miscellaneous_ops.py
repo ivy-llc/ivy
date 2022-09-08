@@ -52,6 +52,7 @@ tril_indices.supported_dtypes = (
     "int16",
     "int32",
     "int64",
-    "uint8" "uint32",
+    "uint8",
+    "uint32",
     "uint64",
 )
