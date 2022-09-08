@@ -19,8 +19,8 @@ def _compute_elu(input, alpha=1.0, inplace=False):
     return ivy.where(ivy.greater(input, 0), input, prod)
 
 
-def sigmoid(input, out=None):
-    return ivy.sigmoid(input, out=out)
+def sigmoid(input):
+    return ivy.sigmoid(input)
 
 
 sigmoid.unsupported_dtypes = ("float16",)
@@ -42,19 +42,21 @@ def softmax(input, dim=None, dtype=None):
 softmax.unsupported_dtypes = ("float16",)
 
 
-def gelu(input, approximate="none"):
-    if approximate == "none":
-        approximate = False
-    else:
-        approximate = True
-    return ivy.gelu(input, approximate)
+def gelu(
+    input,
+):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
+    # if approximate == "none":
+    # approximate = False
+    # else:
+    # approximate = True
+    return ivy.gelu(input)
 
 
 gelu.unsupported_dtypes = ("float16",)
 
 
-def tanh(input, *, out=None):
-    return ivy.tanh(input, out=out)
+def tanh(input):
+    return ivy.tanh(input)
 
 
 tanh.unsupported_dtypes = {"torch": ("float16",)}
