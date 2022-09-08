@@ -7,7 +7,7 @@ import gc
 import inspect
 import math
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
+from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
 import einops
 import numpy as np
 
@@ -26,9 +26,9 @@ from ivy.functional.ivy.device import dev
 
 FN_CACHE = dict()
 INF = float("inf")
-TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
+queue_timeout_stack = list()
 array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
@@ -422,7 +422,7 @@ def copy_array(
         a: ivy.array([-1, 0, 1]),
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
-    
+
     With one :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -434,7 +434,7 @@ def copy_array(
     >>> y = x.copy_array()
     >>> print(y)
     ivy.array([1, 0, 1, 1])
-    
+
     With :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
@@ -732,7 +732,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
         input array
     copy
         whether to copy the array to a new address or not. Default is True.
-    
+
     Returns
     -------
     ret
@@ -1158,8 +1158,9 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
-    p: float = 2.0,
+    /,
     *,
+    p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
@@ -1269,7 +1270,10 @@ def clip_vector_norm(
     return ret
 
 
-clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
+clip_vector_norm.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
 
 
 @handle_nestable
@@ -1377,36 +1381,6 @@ clip_matrix_norm.unsupported_dtypes = {
     "tensorflow": ("float16",),
     "torch": ("float16",),
 }
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def floormod(
-    x: Union[ivy.Array, ivy.NativeArray],
-    y: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns element-wise remainder of division.
-
-    Parameters
-    ----------
-    x
-        array, input to floormod
-    y
-        array, denominator input for floormod.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        An array of the same shape and type as x, with the elements floor modded.
-
-    """
-    return current_backend(x).floormod(x, y, out=out)
 
 
 @to_native_arrays_and_back
@@ -1806,7 +1780,7 @@ def default(
     >>> x = ""
     >>> y = ivy.default(x, "default_string")
     >>> print(y)
-    
+
 
     >>> x = ivy.array([4, 5, 6])
     >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
@@ -2559,7 +2533,7 @@ def print_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
 
-def set_queue_timeout(timeout):
+def set_queue_timeout(timeout: float):
     """
     Set the global queue timeout value (in seconds)
     Default value without this function being called is 15 seconds.
@@ -2585,14 +2559,16 @@ def set_queue_timeout(timeout):
     30
 
     """
-    global TIMEOUT
-    TIMEOUT = timeout
+    global queue_timeout_stack
+    if not isinstance(timeout, (int, float)):
+        raise Exception("set_array_mode only accepts type int or float")
+    queue_timeout_stack.append(timeout)
 
 
-def get_queue_timeout():
+def get_queue_timeout() -> float:
     """
     Get the global queue timeout value (in seconds).
-    The default value without this function being called is 10 seconds.
+    The default value without this function being called is 15 seconds.
 
     Returns
     -------
@@ -2607,8 +2583,30 @@ def get_queue_timeout():
     10.0
 
     """
-    global TIMEOUT
-    return TIMEOUT
+    global queue_timeout_stack
+    if not queue_timeout_stack:
+        return 15.0
+    return queue_timeout_stack[-1]
+
+
+def unset_queue_timeout() -> None:
+    """
+    Reset the global queue timeout value (in seconds) to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_queue_timeout(10.0)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
+    10.0
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.get_queue_timeout()
+    15.0
+    """
+    global queue_timeout_stack
+    if queue_timeout_stack:
+        queue_timeout_stack.pop(-1)
 
 
 def get_tmp_dir():
@@ -3578,6 +3576,7 @@ def indices_where(
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
+    /,
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -3954,3 +3953,57 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
         )
 
     return unsupported_devices_dtype
+
+
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
+    """Vectorizing map. Creates a function which maps func over argument axes.
+
+    Parameters
+    ----------
+    func
+        Function to be mapped over additional axes.
+    in_axes
+       An integer, None, or (nested) standard Python container
+       (tuple/list) thereof specifying which input array
+       axes to map over.If each positional argument to fun
+       is an array, then in_axes can be an integer, a None,
+       or a tuple of integers and Nones with length equal
+       to the number of positional arguments to fun. An
+       integer or None indicates which array axis to map
+       over for all arguments (with None indicating not to map any axis),
+       and a tuple indicates which axis to map for each
+       corresponding positional argument. Axis integers must
+       be in the range [-ndim, ndim) for each array,
+       where ndim is the number of dimensions (axes) of the
+       corresponding input array.
+    out_axes
+        An integer indicating where the mapped axis should appear in the output.
+
+    Returns
+    -------
+    ret
+        Batched/vectorized version of func with arguments
+        that correspond to those of func, but with extra
+        array axes at positions indicated by in_axes,
+        and a return value that corresponds
+        to that of fun, but with extra array axes
+        at positions indicated by out_axes.
+    This docstring is a summarised version of the
+    `docstring <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for  # noqa
+    vmap from JAX documentation.
+
+    Examples
+    --------
+    With :code:`ivy.matmul` func and :code:`ivy.Array` input:
+    >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
+    >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
+    >>> z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)
+    >>> print(z.shape)
+    (3, 5, 2)
+    """
+    # TODO: optimize in the numpy and tensorflow backends and extend functionality
+    return current_backend().vmap(func, in_axes, out_axes)
