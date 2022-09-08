@@ -1,16 +1,37 @@
 import ivy
+from ivy.func_wrapper import inputs_to_native_arrays
+
+
+# helpers
+def _verify_coo_components(*, indices=None, values=None, dense_shape=None):
+    assert (
+        ivy.exists(indices) and ivy.exists(values) and ivy.exists(dense_shape)
+    ), "indices, values and dense_shape must all be specified"
+    # coordinates style, must be shaped (x, y)
+    assert len(ivy.shape(indices)) == 2, "indices must be 2D"
+    assert (
+        len(ivy.to_ivy_shape(dense_shape)) == ivy.shape(indices)[0]
+    ), "shape and indices shape do not match"
+    # number of values must match number of coordinates
+    assert (
+        ivy.shape(values)[0] == ivy.shape(indices)[1]
+    ), "values and indices do not match"
+    for i in range(ivy.shape(indices)[0]):
+        assert ivy.all(
+            ivy.less(indices[i], ivy.to_ivy_shape(dense_shape)[i])
+        ), "indices is larger than shape"
 
 
 class SparseArray:
     def __init__(self, data=None, *, indices=None, values=None, dense_shape=None):
         if data is not None:
-            if indices or values or dense_shape:
+            if ivy.exists(indices) or ivy.exists(values) or ivy.exists(dense_shape):
                 raise Exception(
                     "only specify either data or or all three components: \
                     indices, values and dense_shape"
                 )
             self._init_data(data)
-        elif indices and values and dense_shape:
+        elif ivy.exists(indices) and ivy.exists(values) and ivy.exists(dense_shape):
             self._init_coo_components(indices, values, dense_shape)
         # TODO: to add csr
         else:
@@ -36,32 +57,12 @@ class SparseArray:
         self._dense_shape = ivy.Shape(shape)
 
     def _init_coo_components(self, indices, values, shape):
-        indices = ivy.array(indices, dtype="int64")
-        values = ivy.array(values)
-        shape = ivy.Shape(shape)
-        self._verify_coo_components(indices=indices, values=values, dense_shape=shape)
-        self._indices = indices
-        self._values = values
-        self._dense_shape = shape
-        self._data = ivy.current_backend().init_data_sparse_array(
-            indices, values, shape
+        self._data = ivy.native_sparse_array(
+            indices=indices, values=values, dense_shape=shape
         )
-
-    def _verify_coo_components(self, *, indices=None, values=None, dense_shape=None):
-        indices = indices if indices else self._indices
-        values = values if values else self._values
-        dense_shape = dense_shape if dense_shape else self._dense_shape
-        # coordinates style, must be shaped (x, y)
-        assert len(indices.shape) == 2, "indices must be 2D"
-        assert (
-            len(dense_shape) == indices.shape[0]
-        ), "shape and indices shape do not match"
-        # number of values must match number of coordinates
-        assert values.shape[0] == indices.shape[1], "values and indices do not match"
-        for i in range(indices.shape[0]):
-            assert ivy.all(
-                ivy.less(indices[i], dense_shape[i])
-            ), "indices is larger than shape"
+        self._indices = ivy.array(indices, dtype="int64")
+        self._values = ivy.array(values)
+        self._dense_shape = ivy.Shape(shape)
 
     # Properties #
     # -----------#
@@ -92,19 +93,25 @@ class SparseArray:
     @indices.setter
     def indices(self, indices):
         indices = ivy.array(indices, dtype="int64")
-        self._verify_coo_components(indices=indices)
+        _verify_coo_components(
+            indices=indices, values=self._values, dense_shape=self._dense_shape
+        )
         self._indices = indices
 
     @values.setter
     def values(self, values):
         values = ivy.array(values)
-        self._verify_coo_components(values=values)
+        _verify_coo_components(
+            indices=self._indices, values=values, dense_shape=self._dense_shape
+        )
         self._values = values
 
     @dense_shape.setter
     def dense_shape(self, dense_shape):
         dense_shape = ivy.Shape(dense_shape)
-        self._verify_coo_components(dense_shape=dense_shape)
+        _verify_coo_components(
+            indices=self._indices, values=self._values, dense_shape=dense_shape
+        )
         self._dense_shape = dense_shape
 
     # Instance Methods #
@@ -130,8 +137,16 @@ def is_ivy_sparse_array(x):
     return isinstance(x, ivy.SparseArray)
 
 
+@inputs_to_native_arrays
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
+
+
+@inputs_to_native_arrays
+def native_sparse_array(data=None, *, indices=None, values=None, dense_shape=None):
+    return ivy.current_backend().native_sparse_array(
+        data, indices=indices, values=values, dense_shape=dense_shape
+    )
 
 
 def native_sparse_array_to_indices_values_and_shape(x):
