@@ -266,6 +266,8 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_to_scalar(object_in, dtype, device, fw):
+    assume(not ("bfloat16" in dtype))
+    # bfloat16 is not supported by numpy
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
     assume(not (fw == "mxnet" and dtype == "int16"))
@@ -424,44 +426,6 @@ def test_clip_vector_norm(
         x=np.asarray(x, dtype=dtype),
         max_norm=max_norm,
         p=p,
-    )
-
-
-# floormod
-@handle_cmd_line_args
-@given(
-    xy=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, min_value=1
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="floormod"),
-)
-def test_floormod(
-    xy,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    # smoke test
-    dtype = xy[0]
-    x = xy[1][0]
-    divisor = xy[1][1]
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="floormod",
-        x=np.asarray(x, dtype=dtype[0]),
-        y=np.asarray(divisor, dtype=dtype[1]),
     )
 
 

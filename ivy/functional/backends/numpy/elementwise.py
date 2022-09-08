@@ -318,6 +318,14 @@ def floor_divide(
 
 
 @_handle_0_dim_output
+def floormod(
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x, y = ivy.promote_types_of_inputs(x, y)
+    return np.asarray(x % y)
+
+
+@_handle_0_dim_output
 def greater(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],

@@ -280,6 +280,17 @@ def floor_divide(
     return tf.experimental.numpy.floor_divide(x1, x2)
 
 
+def floormod(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x, y = ivy.promote_types_of_inputs(x, y)
+    return tf.math.floormod(x, y)
+
+
 def greater(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],

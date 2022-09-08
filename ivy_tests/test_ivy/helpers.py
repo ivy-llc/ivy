@@ -1337,12 +1337,15 @@ def test_method(
         kwargs_np=kwargs_np_constructor,
         input_dtypes=input_dtypes_init,
         as_variable_flags=as_variable_flags_init,
+        native_array_flags=native_array_flags_init,
     )
     args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
         kwargs_np=kwargs_np_method,
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
+        native_array_flags=native_array_flags_method,
+        container_flags=container_flags_method,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     if isinstance(ins_gt, ivy.Module):
