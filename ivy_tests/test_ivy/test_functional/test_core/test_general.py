@@ -389,12 +389,15 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 # clip_vector_norm
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_value_safety_factor=20,
+        small_value_safety_factor=2.5,
+    ),
     max_norm=st.floats(),
     p=st.floats(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -405,7 +408,6 @@ def test_clip_vector_norm(
     p,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -417,7 +419,7 @@ def test_clip_vector_norm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1201,7 +1203,7 @@ def test_einops_rearrange(
         fn_name="einops_rearrange",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
-        **axes_lengths
+        **axes_lengths,
     )
 
 
@@ -1257,7 +1259,7 @@ def test_einops_reduce(
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
         reduction=reduction,
-        **axes_lengths
+        **axes_lengths,
     )
 
 
@@ -1309,7 +1311,7 @@ def test_einops_repeat(
         fn_name="einops_repeat",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
-        **axes_lengths
+        **axes_lengths,
     )
 
 
@@ -1972,14 +1974,18 @@ def _fn3(x, y):
     ivy.add(x, y)
 
 
-@given(func=st.sampled_from([_fn1, _fn2, _fn3]),
-       arrays_and_axes=helpers.arrays_and_axes(allow_none=False,
-                                               min_num_dims=2,
-                                               max_num_dims=5,
-                                               min_dim_size=2,
-                                               max_dim_size=10,
-                                               num=2),
-       in_axes_as_cont=st.booleans())
+@given(
+    func=st.sampled_from([_fn1, _fn2, _fn3]),
+    arrays_and_axes=helpers.arrays_and_axes(
+        allow_none=False,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        num=2,
+    ),
+    in_axes_as_cont=st.booleans(),
+)
 def test_vmap(func, arrays_and_axes, in_axes_as_cont):
 
     generated_arrays, in_axes = arrays_and_axes
@@ -2014,8 +2020,9 @@ def test_vmap(func, arrays_and_axes, in_axes_as_cont):
     ivy.unset_backend()
 
     if fw_res is not None and jax_res is not None:
-        assert np.allclose(fw_res, jax_res),\
-            f"Results from {ivy.current_backend_str()} and jax are not equal"
+        assert np.allclose(
+            fw_res, jax_res
+        ), f"Results from {ivy.current_backend_str()} and jax are not equal"
 
     elif fw_res is None and jax_res is None:
         pass
