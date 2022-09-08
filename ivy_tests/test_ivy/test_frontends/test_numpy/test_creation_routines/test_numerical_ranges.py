@@ -6,7 +6,6 @@ from hypothesis import given, strategies as st
 # local
 from ivy.functional.frontends.numpy import mgrid, ogrid
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -50,7 +49,7 @@ def _get_dtype_and_range(draw):
     start=helpers.ints(min_value=-50, max_value=0),
     stop=helpers.ints(min_value=1, max_value=50),
     step=helpers.ints(min_value=1, max_value=5),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arange"
     ),
@@ -160,7 +159,7 @@ def test_numpy_logspace(
 @handle_cmd_line_args
 @given(
     dtype_and_arrays=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
         min_dim_size=1,
