@@ -21,15 +21,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     n=helpers.ints(min_value=1, max_value=8),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.matrix_power"
-    )
+    ),
 )
 def test_numpy_matrix_power(
-    dtype_and_x,
-    n,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_and_x, n, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -42,5 +37,5 @@ def test_numpy_matrix_power(
         frontend="numpy",
         fn_tree="linalg.matrix_power",
         a=np.array(x, dtype=dtype),
-        n=n
+        n=n,
     )

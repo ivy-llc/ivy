@@ -1041,21 +1041,35 @@ class ArrayWithGeneral(abc.ABC):
         self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.inplace_increment. This method simply
-        wraps the function, and so the docstring for ivy.inplace_increment also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.inplace_increment. This
+        method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input array to increment
+            The input array to be incremented by the defined value.
         val
-            The array to increment the variable with.
+            The value of increment.
 
         Returns
         -------
         ret
-            The array following the in-place increment.
+            The array following an in-place increment.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
+        >>> y = x.inplace_increment(1)
+        >>> print(y)
+        ivy.array([6.7, 5.3, 3.5, 2.9])
+
+        >>> x = ivy.asarray([4., 5., 6.])
+        >>> y = x.inplace_increment(2.5)
+        >>> print(y)
+        ivy.array([6.5, 7.5, 8.5])
 
         """
         return ivy.inplace_increment(self, val)
