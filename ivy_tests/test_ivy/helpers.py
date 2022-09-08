@@ -1916,7 +1916,7 @@ def test_frontend_function(
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
 
-        if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
+        if frontend == "numpy" and np.isscalar(frontend_ret):
             backend_returned_scalar = True
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
         else:
@@ -1935,7 +1935,7 @@ def test_frontend_function(
     ivy.unset_backend()
 
     if backend_returned_scalar:
-        ret_np_flat = ivy.to_numpy([ret])
+        ret_np_flat = [np.asarray(ret, dtype=frontend_ret.dtype)]
     else:
         ret_np_flat = flatten_and_to_np(ret=ret)
 
@@ -3274,33 +3274,39 @@ def seed(draw):
 
 
 @st.composite
-def arrays_and_axes(draw,
-                    allow_none=False,
-                    min_num_dims=0,
-                    max_num_dims=5,
-                    min_dim_size=1,
-                    max_dim_size=10,
-                    num=2):
+def arrays_and_axes(
+    draw,
+    allow_none=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    num=2,
+):
     shapes = list()
     for _ in range(num):
-        shape = draw(get_shape(allow_none=False,
-                               min_num_dims=min_num_dims,
-                               max_num_dims=max_num_dims,
-                               min_dim_size=min_dim_size,
-                               max_dim_size=max_dim_size))
+        shape = draw(
+            get_shape(
+                allow_none=False,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
         shapes.append(shape)
     arrays = list()
     for shape in shapes:
-        arrays.append(draw(array_values(dtype="int32",
-                                        shape=shape,
-                                        min_value=-200,
-                                        max_value=200)))
+        arrays.append(
+            draw(
+                array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)
+            )
+        )
     all_axes_ranges = list()
     for shape in shapes:
         if None in all_axes_ranges:
             all_axes_ranges.append(st.integers(0, len(shape) - 1))
         else:
-            all_axes_ranges.append(st.one_of(st.none(),
-                                             st.integers(0, len(shape) - 1)))
+            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
     axes = draw(st.tuples(*all_axes_ranges))
     return arrays, axes

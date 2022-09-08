@@ -191,9 +191,15 @@ def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
         # get out arg index
         out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
         # check if out is None or out is not present in args and kwargs.
-        out_args = out_arg_pos < len(args) and args[out_arg_pos] is None
-        out_kwargs = "out" in kwargs and kwargs["out"] is None
-        if ret.shape == () and (out_args or out_kwargs):
+        out_args = (
+            out_arg_pos < len(args) and args[out_arg_pos] is None
+        ) or out_arg_pos >= len(args)
+        out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
+        if (
+            ret.shape == ()
+            and (out_args or out_kwargs)
+            and not (ivy.isinf(ret) or ivy.isnan(ret))
+        ):
             return float(ret)
         # convert to float from 0 dim
         return ret
