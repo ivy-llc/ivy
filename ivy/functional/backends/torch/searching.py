@@ -1,5 +1,6 @@
 from typing import Optional, Tuple
 
+import ivy
 import torch
 
 
@@ -12,8 +13,7 @@ def argmax(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = torch.tensor(x)
-    ret = torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
-    return ret
+    return torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
 
 
 argmax.support_native_out = True
@@ -28,8 +28,7 @@ def argmin(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = torch.tensor(x)
-    ret = torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
-    return ret
+    return torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
 
 
 argmin.support_native_out = True
@@ -50,7 +49,5 @@ def where(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    promoted_type = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.to(promoted_type)
-    x2 = x2.to(promoted_type)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.where(condition, x1, x2)

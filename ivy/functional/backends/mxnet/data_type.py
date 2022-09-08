@@ -5,6 +5,7 @@ from typing import Union, Sequence, Optional
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from ivy.functional.backends.mxnet import _handle_flat_arrays_in_out
 
 
@@ -81,10 +82,12 @@ class Finfo:
         return float(self._mx_finfo.tiny)
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[type, str, mx.nd.NDArray]) -> np.iinfo:
     return np.iinfo(ivy.as_native_dtype(type))
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[type, str, mx.nd.NDArray]) -> Finfo:
     return Finfo(np.finfo(ivy.as_native_dtype(type)))
 

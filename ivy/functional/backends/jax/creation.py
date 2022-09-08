@@ -23,6 +23,7 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
     *,
@@ -43,6 +44,7 @@ def arange(
 
 def asarray(
     object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
+    /,
     *,
     copy: Optional[bool] = None,
     dtype: Optional[jnp.dtype] = None,
@@ -84,6 +86,7 @@ def empty(
 
 def empty_like(
     x: JaxArray,
+    /,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -95,9 +98,10 @@ def empty_like(
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
+    /,
+    *,
     k: Optional[int] = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
-    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
@@ -114,7 +118,7 @@ def eye(
 
 
 # noinspection PyShadowingNames
-def from_dlpack(x, *, out: Optional[JaxArray] = None) -> JaxArray:
+def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     capsule = jax.dlpack.to_dlpack(x)
     return jax.dlpack.from_dlpack(capsule)
 
@@ -137,6 +141,7 @@ def full(
 
 def full_like(
     x: JaxArray,
+    /,
     fill_value: float,
     *,
     dtype: jnp.dtype,
@@ -155,10 +160,11 @@ def full_like(
 def linspace(
     start: Union[JaxArray, float],
     stop: float,
+    /,
     num: int,
+    *,
     axis: Optional[int] = None,
     endpoint: bool = True,
-    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
@@ -235,6 +241,7 @@ def ones(
 
 def ones_like(
     x: JaxArray,
+    /,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -243,11 +250,11 @@ def ones_like(
     return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
 
 
-def tril(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
+def tril(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tril(x, k)
 
 
-def triu(x: JaxArray, k: int = 0, *, out: Optional[JaxArray] = None) -> JaxArray:
+def triu(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.triu(x, k)
 
 
@@ -266,6 +273,7 @@ def zeros(
 
 def zeros_like(
     x: JaxArray,
+    /,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -284,10 +292,11 @@ array = asarray
 def logspace(
     start: Union[JaxArray, int],
     stop: Union[JaxArray, int],
+    /,
     num: int,
+    *,
     base: float = 10.0,
     axis: int = None,
-    *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
