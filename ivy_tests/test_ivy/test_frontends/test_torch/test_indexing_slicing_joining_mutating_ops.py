@@ -4,8 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.torch as ivy_torch
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -32,10 +30,9 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    available_dtypes = set(ivy_torch.valid_float_dtypes).intersection(
-        ivy_torch.valid_float_dtypes
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
     )
-    input_dtypes = draw(helpers.array_dtypes(available_dtypes=available_dtypes))
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
@@ -51,10 +48,11 @@ def _arrays_idx_n_dtypes(draw):
 @st.composite
 def _array_idxes_n_dtype(draw, **kwargs):
     num_dims = draw(helpers.ints(min_value=1, max_value=4))
-    dtype, x = draw(helpers.dtype_and_values(**kwargs,
-                                             min_num_dims=num_dims,
-                                             max_num_dims=num_dims,
-                                             shared_dtype=True))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            **kwargs, min_num_dims=num_dims, max_num_dims=num_dims, shared_dtype=True
+        )
+    )
     idxes = draw(
         helpers.lists(
             arg=helpers.ints(min_value=0, max_value=num_dims - 1),
@@ -135,11 +133,7 @@ def test_torch_concat(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
     ),
     as_tuple=st.booleans(),
@@ -176,11 +170,7 @@ def test_torch_nonzero(
 @handle_cmd_line_args
 @given(
     dtype_values_axis=_array_idxes_n_dtype(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.permute"
@@ -213,11 +203,7 @@ def test_torch_permute(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     dim0=helpers.get_axis(
@@ -260,11 +246,7 @@ def test_torch_swapdims(
 @handle_cmd_line_args
 @given(
     dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         ret_shape=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -298,11 +280,7 @@ def test_torch_reshape(
 @handle_cmd_line_args
 @given(
     dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
@@ -342,11 +320,7 @@ def test_torch_stack(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     dim0=helpers.get_axis(
@@ -386,24 +360,19 @@ def test_torch_transpose(
 
 
 # squeeze
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         max_size=1,
     ).filter(lambda axis: isinstance(axis, int)),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.squeeze"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_squeeze(
     dtype_and_values,
@@ -430,13 +399,10 @@ def test_torch_squeeze(
 
 
 # swapaxes
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     axis0=helpers.get_axis(
@@ -445,11 +411,9 @@ def test_torch_squeeze(
     axis1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.swapaxes"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_swapaxes(
     dtype_and_values,
