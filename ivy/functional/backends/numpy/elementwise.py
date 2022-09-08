@@ -317,6 +317,7 @@ def floor_divide(
     return np.floor(np.divide(x1, x2)).astype(x1.dtype)
 
 
+@_handle_0_dim_output
 def floormod(
     x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
