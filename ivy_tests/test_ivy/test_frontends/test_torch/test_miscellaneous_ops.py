@@ -193,24 +193,52 @@ def test_torch_cumsum(
 #  once ivy.asarray has been optimized.
 @handle_cmd_line_args
 @given(
-    row=st.integers(min_value=0, max_value=10),
-    col=st.integers(min_value=0, max_value=10),
-    offset=st.integers(min_value=-10, max_value=10),
+    dtype_and_size=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes)),
+        ),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=0,
+    ),
+    dtype_and_offset=helpers.dtype_and_values(
+        available_dtypes=tuple(
+            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes)),
+        ),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+        num_arrays=1,
+    ),
+    dtype_result=helpers.get_dtypes(
+        kind="integer",
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.tril_indices"
     ),
 )
 def test_torch_tril_indices(
-    row,
-    col,
-    offset,
+    dtype_and_size,
+    dtype_and_offset,
+    dtype_result,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
+    dtype_row_col, size = dtype_and_size
+    row, col = size
+
+    dtype_offset, offset = dtype_and_offset
+    offset = offset[
+        0
+    ]  # The reason for offset being a 2-list here completely evades me.
+
     helpers.test_frontend_function(
-        input_dtypes=["int32", "int32", "int32"],
+        input_dtypes=dtype_row_col + dtype_offset,
         with_out=False,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -221,4 +249,5 @@ def test_torch_tril_indices(
         row=row,
         col=col,
         offset=offset,
+        dtype=dtype_result,
     )

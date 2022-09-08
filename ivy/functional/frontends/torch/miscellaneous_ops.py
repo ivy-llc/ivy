@@ -41,38 +41,17 @@ cumsum.unsupported_dtypes = (
 
 
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
-    if row == 0 and col == 0:
-        return ivy.array([], dtype=dtype, device=device)
+    # TODO: Find out how Ivy handles this layout flag
+    # As I understand it, we don't have such a thing
+    sample_matrix = ivy.tril(ivy.ones((row, col), dtype=dtype, device=device), k=offset)
+    return ivy.stack(ivy.nonzero(sample_matrix))
 
-    highest_included_diagonal = [
-        [i - offset, i] for i in range(-abs(offset), max(row, col) + abs(offset))
-    ]
 
-    needs_transposition = True
-
-    if row == 0:
-        if col == 1:
-            all_indices = [[0, 0]]
-        elif offset < col:
-            all_indices = [[], []]
-            needs_transposition = False
-        else:
-            all_indices = [[0, i] for i in range(min(col, offset))]
-
-    else:
-        all_indices = [
-            (i, index[1])
-            for i in range(
-                highest_included_diagonal[0][1], max(row, col)
-            )  # The smallest possible value is in the first item
-            for index in highest_included_diagonal
-            if 0 <= i < row and 0 <= index[1] < col and i >= index[0]
-        ]
-
-    if len(all_indices) == 0:
-        return ivy.array([], dtype=dtype, device=device)
-
-    data = ivy.asarray(all_indices, copy=False, dtype=dtype)
-    if needs_transposition:
-        data = data.matrix_transpose()
-    return data
+tril_indices.supported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8" "uint32",
+    "uint64",
+)
