@@ -26,15 +26,15 @@ def test_torch_dist(
     fw,
     p,
 ):
-    input_x_dtype, x, dim_y = dtype_and_x
+    input_x_dtype, x, dim_x = dtype_and_x
     input_y_dtype, y, dim_y = dtype_and_y
     helpers.test_frontend_function(
-        input_dtypes=[input_x_dtype, input_y_dtype],
+        input_dtypes=[input_x_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw="torch",
+        fw=fw,
         frontend="torch",
         fn_tree="dist",
         input=np.asarray(x, dtype=input_x_dtype),
