@@ -171,7 +171,6 @@ class ContainerWithStatistical(ContainerBase):
         }
 
         """
-
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.mean(x_, axis=axis, keepdims=keepdims)
