@@ -4,29 +4,23 @@ from hypothesis import given, assume, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.torch as ivy_torch
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # pixel_shuffle
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
     ),
     factor=st.integers(min_value=1),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.pixel_shuffle"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_pixel_shuffle(
     dtype_and_x,

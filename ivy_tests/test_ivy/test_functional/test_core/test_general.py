@@ -263,9 +263,11 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
 @handle_cmd_line_args
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_to_scalar(object_in, dtype, device, fw):
+    assume(not ("bfloat16" in dtype))
+    # bfloat16 is not supported by numpy
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
     assume(not (fw == "mxnet" and dtype == "int16"))
@@ -387,12 +389,15 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 # clip_vector_norm
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_value_safety_factor=20,
+        small_value_safety_factor=2.5,
+    ),
     max_norm=st.floats(),
     p=st.floats(),
     as_variable=st.booleans(),
     with_out=st.booleans(),
-    num_positional_args=st.integers(0, 3),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -403,7 +408,6 @@ def test_clip_vector_norm(
     p,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -415,7 +419,7 @@ def test_clip_vector_norm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -424,44 +428,6 @@ def test_clip_vector_norm(
         x=np.asarray(x, dtype=dtype),
         max_norm=max_norm,
         p=p,
-    )
-
-
-# floormod
-@handle_cmd_line_args
-@given(
-    xy=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, min_value=1
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="floormod"),
-)
-def test_floormod(
-    xy,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    # smoke test
-    dtype = xy[0]
-    x = xy[1][0]
-    divisor = xy[1][1]
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="floormod",
-        x=np.asarray(x, dtype=dtype[0]),
-        y=np.asarray(divisor, dtype=dtype[1]),
     )
 
 
@@ -588,39 +554,48 @@ def test_indices_where(
     )
 
 
+@st.composite
+def _dtype_indices_depth(draw):
+    depth = draw(helpers.ints(min_value=2, max_value=100))
+    dtype_and_indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_value=0,
+            max_value=depth - 1,
+            small_value_safety_factor=2.5,
+        )
+    )
+    return dtype_and_indices, depth
+
+
 # one_hot
 @handle_cmd_line_args
 @given(
-    depth=helpers.ints(min_value=0, max_value=100),
-    x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
+    dtype_indices_depth=_dtype_indices_depth(),
 )
 def test_one_hot(
-    depth,
-    x,
+    dtype_indices_depth,
     with_out,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
     device,
     fw,
 ):
-    dtype, x = x
+    dtype_and_indices, depth = dtype_indices_depth
+    dtype, indices = dtype_and_indices
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="one_hot",
-        indices=np.asarray(x, dtype=dtype),
+        indices=np.asarray(indices, dtype=dtype),
         depth=depth,
     )
 
@@ -629,7 +604,7 @@ def test_one_hot(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         valid_axis=True,
@@ -670,7 +645,7 @@ def test_cumsum(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         valid_axis=True,
@@ -1228,7 +1203,7 @@ def test_einops_rearrange(
         fn_name="einops_rearrange",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
-        **axes_lengths
+        **axes_lengths,
     )
 
 
@@ -1284,7 +1259,7 @@ def test_einops_reduce(
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
         reduction=reduction,
-        **axes_lengths
+        **axes_lengths,
     )
 
 
@@ -1336,7 +1311,7 @@ def test_einops_repeat(
         fn_name="einops_repeat",
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
-        **axes_lengths
+        **axes_lengths,
     )
 
 
@@ -1985,3 +1960,71 @@ def test_assert_supports_inplace(
 @handle_cmd_line_args
 def test_arg_info():
     return
+
+
+def _fn1(x, y):
+    return ivy.matmul(x, y)
+
+
+def _fn2(x, y):
+    return ivy.vecdot(x, y)
+
+
+def _fn3(x, y):
+    ivy.add(x, y)
+
+
+@given(
+    func=st.sampled_from([_fn1, _fn2, _fn3]),
+    arrays_and_axes=helpers.arrays_and_axes(
+        allow_none=False,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        num=2,
+    ),
+    in_axes_as_cont=st.booleans(),
+)
+def test_vmap(func, arrays_and_axes, in_axes_as_cont):
+
+    generated_arrays, in_axes = arrays_and_axes
+    arrays = [ivy.native_array(array) for array in generated_arrays]
+
+    if in_axes_as_cont:
+        vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
+    else:
+        vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+
+    assert callable(vmapped_func)
+
+    try:
+        fw_res = vmapped_func(*arrays)
+    except Exception:
+        fw_res = None
+
+    ivy.set_backend("jax")
+    arrays = [ivy.native_array(array) for array in generated_arrays]
+    if in_axes_as_cont:
+        jax_vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
+    else:
+        jax_vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+
+    assert callable(jax_vmapped_func)
+
+    try:
+        jax_res = jax_vmapped_func(*arrays)
+    except Exception:
+        jax_res = None
+
+    ivy.unset_backend()
+
+    if fw_res is not None and jax_res is not None:
+        assert np.allclose(
+            fw_res, jax_res
+        ), f"Results from {ivy.current_backend_str()} and jax are not equal"
+
+    elif fw_res is None and jax_res is None:
+        pass
+    else:
+        assert False, "One of the results is None while other isn't"

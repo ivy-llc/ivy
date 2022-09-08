@@ -51,9 +51,20 @@ def svd(tensor, full_matrices=False, compute_uv=True, name=None):
 svd.unsupported_dtypes = ("float16", "bfloat16")
 
 
-def tensordot(a, b, axes, name=None):
-    return ivy.tensordot(a, b, axes=axes)
+def cholesky_solve(chol, rhs, name=None):
+    y = ivy.solve(chol, rhs)
+    return ivy.solve(ivy.matrix_transpose(chol), y)
+
+
+cholesky_solve.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def trace(a, offset=0, axis1=0, axis2=1, dtype=None):
     return ivy.trace(a, offset=offset)
+
+
+def tensordot(x, y, axes, name=None):
+    return ivy.tensordot(x, y, axes)
+
+
+tensordot.supported_dtypes = ("float32", "float64")
