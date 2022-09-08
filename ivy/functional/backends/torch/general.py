@@ -483,7 +483,9 @@ def one_hot(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(device)
+    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
+        device, indices.dtype
+    )
 
 
 def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
