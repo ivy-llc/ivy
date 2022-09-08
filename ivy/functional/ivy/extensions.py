@@ -25,10 +25,10 @@ class SparseArray:
         else:
             assert ivy.is_native_sparse_array(data), "not a native sparse array"
             self._data = data
-            self._init_native_components()
+            self._native_sparse_array_to_indices_values_and_shape()
 
-    def _init_native_components(self):
-        indices, values, shape = ivy.current_backend().init_native_components(
+    def _native_sparse_array_to_indices_values_and_shape(self):
+        indices, values, shape = ivy.native_sparse_array_to_indices_values_and_shape(
             self._data
         )
         self._indices = ivy.array(indices, dtype="int64")
@@ -132,3 +132,7 @@ def is_ivy_sparse_array(x):
 
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
+
+
+def native_sparse_array_to_indices_values_and_shape(x):
+    return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)

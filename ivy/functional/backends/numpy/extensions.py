@@ -7,6 +7,6 @@ def init_data_sparse_array(indices, values, shape):
     return None
 
 
-def init_native_components(x):
+def native_sparse_array_to_indices_values_and_shape(x):
     """Numpy does not support sparse arrays."""
     return None, None, None
