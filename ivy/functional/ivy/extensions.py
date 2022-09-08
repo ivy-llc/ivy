@@ -125,7 +125,7 @@ class NativeSparseArray:
 
 
 def is_ivy_sparse_array(x):
-    return isinstance(x, SparseArray)
+    return isinstance(x, ivy.SparseArray)
 
 
 def is_native_sparse_array(x):
