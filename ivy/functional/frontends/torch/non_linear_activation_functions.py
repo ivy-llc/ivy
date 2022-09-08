@@ -143,19 +143,19 @@ def selu(input, inplace=False):
             1,
         ),
     )
-    sum_ = ivy.add(
-        ivy.maximum(0, input),
+    min_ = ivy.multiply(
+        scale,
         ivy.minimum(0, prod),
     )
-    if inplace:
-        return ivy.multiply(
-            scale,
-            sum_,
-            out=input,
-        )
-    return ivy.multiply(
+    max_ = ivy.multiply(
         scale,
-        sum_,
+        ivy.maximum(0, input),
+    )
+    if inplace:
+        return ivy.add(min_, max_, out=input)
+    return ivy.add(
+        min_,
+        max_,
     )
 
 
