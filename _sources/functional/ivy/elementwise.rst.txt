@@ -37,7 +37,6 @@ Elementwise
    elementwise/expm1.rst
    elementwise/floor.rst
    elementwise/floor_divide.rst
-   elementwise/floormod.rst
    elementwise/greater.rst
    elementwise/greater_equal.rst
    elementwise/less_equal.rst
@@ -72,6 +71,7 @@ Elementwise
    elementwise/tanh.rst
    elementwise/trunc.rst
    elementwise/erf.rst
+   elementwise/floormod.rst
    elementwise/maximum.rst
    elementwise/minimum.rst
 
