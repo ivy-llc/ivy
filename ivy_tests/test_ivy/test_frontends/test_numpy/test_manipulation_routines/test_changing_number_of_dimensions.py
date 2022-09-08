@@ -1,5 +1,3 @@
-import ivy.functional.backends.numpy as ivy_np
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import numpy as np
@@ -24,7 +22,7 @@ def _squeeze_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -57,7 +55,7 @@ def test_numpy_squeeze(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=helpers.get_axis(
