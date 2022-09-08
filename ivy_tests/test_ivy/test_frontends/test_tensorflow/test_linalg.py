@@ -2,6 +2,8 @@
 import numpy as np
 from hypothesis import given, strategies as st
 import sys
+import ivy
+import tensorflow as tf
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -79,6 +81,8 @@ def _get_dtype_and_matrix(draw):
     )
 
 
+# det
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
@@ -104,6 +108,8 @@ def test_tensorflow_det(
     )
 
 
+# eigvalsh
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
@@ -129,6 +135,7 @@ def test_tensorflow_eigvalsh(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_float_dtypes[1:],
@@ -235,6 +242,7 @@ def test_tensorflow_solve(
 
 
 # slogdet
+@handle_cmd_line_args
 @given(
     dtype_and_x=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
@@ -266,6 +274,7 @@ def test_tensorflow_slogdet(
 
 
 # pinv
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
@@ -295,6 +304,8 @@ def test_tensorflow_pinv(
     )
 
 
+# qr
+@handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
     as_variable=st.booleans(),
@@ -325,6 +336,8 @@ def test_tensorflow_qr(
     )
 
 
+# svd
+@handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=True),
@@ -347,7 +360,7 @@ def test_tensorflow_svd(
 ):
     input_dtype, x = dtype_and_input
 
-    helpers.test_frontend_function(
+    results = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -359,9 +372,47 @@ def test_tensorflow_svd(
         tensor=np.asarray(x, dtype=input_dtype),
         full_matrices=full_matrices,
         name=None,
+        test_values=False,
+        rtol=1e-6,
+    )
+
+    if results is None:
+        return
+
+    # value test based on recreating the original matrix and testing the consistency
+    ret_flat_np, ret_from_gt_flat_np = results
+    U, S, Vh = ret_flat_np
+    m = U.shape[-1]
+    n = Vh.shape[-1]
+    S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+
+    # tensorflow returns from svd as S, U, V instead of U, S, Vh
+    S_gt, U_gt, V_gt = ret_from_gt_flat_np
+    batch_shape = tf.shape(x)[:-2]
+    num_batch_dims = len(batch_shape)
+    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
+    Vh_gt = tf.transpose(V_gt, transpose_dims)
+
+    S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
+
+    with ivy.functional.backends.numpy.use:
+        S_mat = S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+        S_mat_gt = (
+            S_gt
+            * ivy.eye(U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]).data
+        )
+    reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+    reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+
+    # value test
+    helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
+    helpers.assert_all_close(
+        reconstructed, np.asarray(x, dtype=input_dtype), atol=1e-04
     )
 
 
+# tensordot
+@handle_cmd_line_args
 @given(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
         available_dtypes=helpers.get_dtypes("float"),
