@@ -1,11 +1,69 @@
 # global
 import ivy
 
-# local
-from ivy.func_wrapper import from_zero_dim_arrays_to_float
+
+def around(a, decimals=0, out=None):
+    ten_raised = 10.0 ** decimals
+    return ivy.divide(rint(ivy.multiply(a, ten_raised)), ten_raised, out=out)
 
 
-@from_zero_dim_arrays_to_float
+def round_(a, decimals=0, out=None):
+    return around(a, decimals=decimals, out=out)
+
+
+def rint(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.where(
+        ivy.broadcast_to(where, x.shape), 
+        ivy.round(x), 
+        ivy.default(out, x), 
+        out=out
+    )
+    return ret
+
+
+def fix(
+    x,
+    /,
+    out=None,
+):
+    where = ivy.greater_equal(x, 0)
+    return ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)
+
+
+def floor(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.where(
+        ivy.broadcast_to(where, x.shape), 
+        ivy.floor(x), 
+        ivy.default(out, x), 
+        out=out
+    )
+    return ret
+
+
 def ceil(
     x,
     /,
@@ -19,22 +77,32 @@ def ceil(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.ceil(x, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    ret = ivy.where(
+        ivy.broadcast_to(where, x.shape), 
+        ivy.ceil(x), 
+        ivy.default(out, x), 
+        out=out
+    )
     return ret
 
 
-ceil.unsupported_dtypes = {"torch": ("float16",)}
-
-
-def fix(
+def trunc(
     x,
     /,
     out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
 ):
-    where = ivy.greater_equal(x, 0)
-    return ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)
-
-
-ceil.unsupported_dtypes = {"torch": ("float16",)}
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.where(
+        ivy.broadcast_to(where, x.shape), 
+        ivy.trunc(x), 
+        ivy.default(out, x), 
+        out=out
+    )
+    return ret
