@@ -18,10 +18,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     new_std=st.floats(min_value=0.0, max_value=1.0),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="LayerNorm.__init__"),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="LayerNorm._forward"
-    ),
 )
 def test_layer_norm_layer(
     *,
@@ -29,8 +25,6 @@ def test_layer_norm_layer(
     new_std,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
     as_variable,
     native_array,
     container,
@@ -40,10 +34,9 @@ def test_layer_norm_layer(
     input_dtype, x = dtype_and_x
     x = np.asarray(x, dtype=input_dtype)
     shape = x.shape
-    print(f"\nbefore -: {input_dtype}")
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        num_positional_args_method=num_positional_args_method,
+        num_positional_args_init=1,
+        num_positional_args_method=5,
         all_as_kwargs_np_init={
             "normalized_shape": shape,
             "epsilon": ivy._MIN_BASE,
