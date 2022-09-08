@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, given, strategies as st, settings
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -261,7 +261,10 @@ def test_torch_diagonal(
         max_dim_size=10,  # TODO: Increase these after ivy.asarray has been optimized.
         min_dim_size=1,
     ),
-    offset=st.integers(),
+    offset=st.integers(
+        max_value=10, min_value=-10
+    ),  # Bounded because large values cause the output to
+    # be so large the system runs out of memory.
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.diagflat"
@@ -294,29 +297,30 @@ def test_torch_diagflat(
     )
 
 
+@handle_cmd_line_args
+@settings(max_examples=5)
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
             ),
         ),
-        max_dim_size=10,  # TODO: Increase these after ivy.asarray has been optimized.
+        max_dim_size=4,  # TODO: Increase these after ivy.asarray has been optimized.
         min_dim_size=1,
         max_num_dims=2,
         min_num_dims=1,
     ),
-    offset=st.integers(),
-    as_variable=st.booleans(),
+    offset=st.integers(max_value=5, min_value=-5),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.diagflat"
+        fn_name="ivy.functional.frontends.torch.diag"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_diag(
     dtype_and_values,
     offset,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -325,10 +329,17 @@ def test_torch_diag(
 
     values = np.asarray(values)
 
+    if len(values.shape) == 2:
+        offset = min(offset, values.shape[1])
+        offset = max(offset, -values.shape[1])
+        # This is to avoid a bug in the real Torch function where it will crash
+        # with a bug where `alloc_cpu() seems to have been called with a negative
+        # number`.
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,

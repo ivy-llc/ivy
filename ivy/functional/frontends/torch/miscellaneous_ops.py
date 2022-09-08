@@ -47,15 +47,19 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
 def diagflat(input, offset=0):
     input_flat = input.flatten()
 
-    data = [
-        [
-            input_flat[i] if i < len(input_flat) and i - r == offset else 0
-            for i in range(len(input_flat) + abs(offset))
-        ]
-        for r in range(len(input_flat) + abs(offset))
-    ]
+    output_size = len(input_flat) + abs(offset)
 
-    return ivy.array(data, dtype=input.dtype)
+    ret = ivy.zeros((output_size, output_size), dtype=input.dtype)
+
+    index = 0
+    for i in range(0, len(input_flat)):
+        if offset >= 0:
+            ret[i][i + offset] = input_flat[index]
+        else:
+            ret[i - offset][i] = input_flat[index]
+        index += 1
+
+    return ret
 
 
 diagflat.unsupported_dtypes = ("float16",)
@@ -63,8 +67,13 @@ diagflat.unsupported_dtypes = ("float16",)
 
 def diag(input, diagonal=0, *, out=None):
     if len(input.shape) == 1:
-        out = diagflat(input, offset=diagonal)
-        return out
+        ret = diagflat(input, offset=diagonal)
     if len(input.shape) == 2:
-        out = diagonal(input, offset=diagonal)
-        return out
+        ret = ivy.diagonal(input, offset=diagonal)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+
+    return ret
+
+
+diag.unsupported_dtypes = ("float16",)
