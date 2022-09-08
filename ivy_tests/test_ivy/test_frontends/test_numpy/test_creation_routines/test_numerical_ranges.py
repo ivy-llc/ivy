@@ -1,11 +1,9 @@
 # global
-# import ivy
 import numpy as np
 from numpy import mgrid as np_mgrid, ogrid as np_ogrid
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 from ivy.functional.frontends.numpy import mgrid, ogrid
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
@@ -224,7 +222,6 @@ def test_numpy_mgrid(
     range,
     fw,
 ):
-    ivy.set_backend(fw)
     start, stop, step = range
     if start and stop and step:
         ret = mgrid[start:stop:step]
@@ -247,7 +244,6 @@ def test_numpy_mgrid(
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     helpers.value_test(ret_np_flat=ret, ret_np_from_gt_flat=ret_np, rtol=1e-03)
-    ivy.unset_backend()
 
 
 # ogrid
@@ -257,7 +253,6 @@ def test_numpy_ogrid(
     range,
     fw,
 ):
-    ivy.set_backend(fw)
     start, stop, step = range
     if start and stop and step:
         ret = ogrid[start:stop:step]
@@ -280,4 +275,3 @@ def test_numpy_ogrid(
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     helpers.value_test(ret_np_flat=ret, ret_np_from_gt_flat=ret_np, rtol=1e-03)
-    ivy.unset_backend()
