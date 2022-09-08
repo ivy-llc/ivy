@@ -4,7 +4,6 @@ from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -12,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
