@@ -67,6 +67,7 @@ Array methods
    array_methods/expm1.rst
    array_methods/floor.rst
    array_methods/floor_divide.rst
+   array_methods/floormod.rst
    array_methods/greater.rst
    array_methods/greater_equal.rst
    array_methods/isfinite.rst
@@ -125,7 +126,6 @@ Array methods
    array_methods/assert_supports_inplace.rst
    array_methods/copy_array.rst
    array_methods/to_scalar.rst
-   array_methods/floormod.rst
    array_methods/fourier_encode.rst
    array_methods/value_is_nan.rst
    array_methods/exists.rst

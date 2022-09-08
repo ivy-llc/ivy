@@ -33,7 +33,6 @@ General
    general/to_list.rst
    general/clip_vector_norm.rst
    general/clip_matrix_norm.rst
-   general/floormod.rst
    general/unstack.rst
    general/fourier_encode.rst
    general/value_is_nan.rst

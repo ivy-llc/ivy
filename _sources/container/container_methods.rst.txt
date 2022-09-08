@@ -133,6 +133,8 @@ Container methods
    container_methods/floor.rst
    container_methods/static_floor_divide.rst
    container_methods/floor_divide.rst
+   container_methods/static_floormod.rst
+   container_methods/floormod.rst
    container_methods/static_greater.rst
    container_methods/greater.rst
    container_methods/static_greater_equal.rst
@@ -259,8 +261,6 @@ Container methods
    container_methods/stable_divide.rst
    container_methods/static_stable_pow.rst
    container_methods/stable_pow.rst
-   container_methods/static_floormod.rst
-   container_methods/floormod.rst
    container_methods/static_einops_rearrange.rst
    container_methods/einops_rearrange.rst
    container_methods/static_indices_where.rst
