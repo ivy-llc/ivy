@@ -712,7 +712,7 @@ class ArrayWithGeneral(abc.ABC):
             An array with the vector norm downscaled to the max norm if needed.
 
         """
-        return ivy.clip_vector_norm(self, max_norm, p, out=out)
+        return ivy.clip_vector_norm(self, max_norm, p=p, out=out)
 
     def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray]) -> bool:
         """
