@@ -7,6 +7,7 @@ Open Tasks
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
 .. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
 .. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
+.. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -205,7 +206,31 @@ too!
 Ivy API Extensions
 ------------------
 
-Coming soon!
+The goal of this task is to add functions to the existing Ivy API which 
+would help with the implementation for many of the functions in the frontend.
+
+Your task is to implement these functions in Ivy, along with their Implementation 
+in the respective backends which are :code:`Jax`, :code:`PyTorch`, :code:`TensorFlow` 
+and :code:`NumPy`. You must also implement tests for these functions.
+
+A general workflow for these tasks would be:
+
+#. Implement the functions in each of the backend files :code:`ivy/functional/backends/backend_name/extenstion.py`,
+   sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific 
+   helper functions to recreate the behaviour. Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#backend-api>`_
+   on how this can be done.
+#. Implement the functions in :code:`ivy/functional/ivy/extenstion.py` simply defering to 
+   their backend-specific implementation. Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#ivy-api>`_ 
+   to get a clearer picture of how this must be done.
+#. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
+
+A few points to keep in mind while doing this:
+
+#. Make sure all the positional arguments are postional-only and optional arguments are keywork-only.
+#. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function 
+   in the hypothesis library.
+
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
 
 
 **Round Up**
