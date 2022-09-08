@@ -5,8 +5,9 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import \
-    _get_dtype_and_matrix
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_dtype_and_matrix,
+)
 
 # matrix_rank
 
@@ -14,23 +15,18 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import \
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         min_value=-1e05,
-        max_value=1e05
+        max_value=1e05,
     ),
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.matrix_rank"
-    )
+    ),
 )
 def test_numpy_matrix_rank(
-    dtype_and_x,
-    rtol,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_and_x, rtol, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -43,8 +39,9 @@ def test_numpy_matrix_rank(
         frontend="numpy",
         fn_tree="linalg.matrix_rank",
         A=np.array(x, dtype=dtype),
-        tol=rtol
+        tol=rtol,
     )
+
 
 # det
 
@@ -54,7 +51,7 @@ def test_numpy_matrix_rank(
     dtype_and_x=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.det"
-    )
+    ),
 )
 def test_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args, fw):
     dtype, x = dtype_and_x
@@ -67,8 +64,9 @@ def test_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args, 
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.det",
-        a=np.array(x, dtype=dtype)
+        a=np.array(x, dtype=dtype),
     )
+
 
 # slogdet
 
