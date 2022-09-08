@@ -324,6 +324,107 @@ The same logic applies to unsupported devices. Even if the wrapped Ivy function 
 more devices, we should still flag the frontend function devices to be the same as those
 supported by the function in the native framework.
 
+Framework-Specific Classes
+--------------------------
+
+Some of the frontend functions that we need to implement for our frontend functional API 
+include framework-specific classes, which do not have a counterpart in other frameworks 
+or Ivy, as the types for their arguments or as the default values for the arguments. 
+When re-implementing these functions in Ivy's frontend, we would like to still include
+those arguments without directly using those special classes as they do not exist in Ivy.
+In this section of the deep dive we are going to introduce how to deal with 
+Framework-Specific Classes.
+
+For each backend framework, there is a dictionary named `<backend>_classes_to_ivy_classes`
+in `ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`, 
+which will hold pairs of framework-specific classes and corresponding Ivy or 
+native Python classes. For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have: 
+
+.. code-block:: python
+    
+    numpy_classes_to_ivy_classes = {np._NoValue: None}
+
+Where np._NoValue is a reference to _NoValueType class defined in numpy/numpy/_globals.py, 
+which represents a special keyword value and the instance of this class may be used as the
+default value assigned to a keyword if no other obvious default (e.g., :code:`None`) is suitable.
+
+When you found that the frontend function of a certain framework that you try to implement 
+in our frontend API introduce a new datatype that, like the :code:`numpy._NoValue` example before, 
+can not be directly replaced, you may pick an existing Ivy or pure python datatype 
+and use them instead in the ivy frontend implementation to mimic the same effect and record 
+the pair of framework-specific class’s reference and your replacement class’s reference 
+in the corresponding dictionary.
+
+As our frontend test will try to pass all the generated inputs in both our own implementation
+and the original function, then you cannot directly pass either the framework-specific class
+or your chosen counterpart in our test function. Instead, you should pass a :code:`NativeClass` 
+object in. The :code:`NativeClass` is defined in ‘ivy/ivy_tests/test_ivy/test_frontends/__init__.py’ as a placeholder class to represent a 
+pair of framework specific class and its counterpart. It has only one attribute, which is 
+:code:`_native_class`, that holds the reference to the special class being used by the 
+targeted framework.
+
+When writing a test for a frontend function where its original counterpart accepts a 
+framework-specific class, you should import the :code:`NativeClass` and initialize an instance
+of it with :code:`_native_class` set as the reference to the special class, which you have 
+added in the `<backend>_classes_to_ivy_classes` dictionary before. Then just pass the 
+:code:`NativeClass` instance in the arguments like other generated input and the 
+:code:`helpers.test_frontend_function` will replace it with the actual classes accordingly 
+in the background.
+
+Here is an example of :code:`NativeClass` being put to use in test.
+
+ivy.sum()
+^^^^^^^^^^
+
+.. code-block:: python
+    # sum
+    Novalue = NativeClass(numpy._NoValue)
+    @handle_cmd_line_args
+    @given(
+        dtype_x_axis=_dtype_x_axis(
+            available_dtypes=ivy_np.valid_float_dtypes),
+        dtype=st.sampled_from(
+            ivy_np.valid_float_dtypes + (None,)),
+        keep_dims= st.one_of (st.booleans(), Novalue),
+        initial=st.one_of(st.floats(), Novalue),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.numpy.sum"
+        ),
+    )
+    def test_numpy_sum(
+        dtype_x_axis,
+        dtype,
+        keep_dims,
+        initial,
+        as_variable,
+        num_positional_args,
+        native_array,
+        with_out,
+        fw,
+    ):
+        (input_dtype, x, axis), where = dtype_x_axis
+        if where is None:
+            where = Novalue
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            fw=fw,
+            frontend="numpy",
+            fn_tree="sum",
+            x=np.asarray(x, dtype=input_dtype[0]),
+            axis=axis,
+            dtype=dtype,
+            keepdims=keep_dims,
+            initial=initial,
+            where=where,
+        )
+
+* NumPy.sum has three optional arguments: :code:`where`, :code:`keep_dims`, :code:`initial`, which all have the default value of numpy._NoValue. So we define a NativeClass object Novalue to help recreate the effect of not passing any value to those arguments by using Novalue instead where None used to be generated for the those arguments. 
+
+
 **Round Up**
 
 This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
