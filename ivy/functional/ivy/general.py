@@ -1380,36 +1380,6 @@ clip_matrix_norm.unsupported_dtypes = {
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def floormod(
-    x: Union[ivy.Array, ivy.NativeArray],
-    y: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns element-wise remainder of division.
-
-    Parameters
-    ----------
-    x
-        array, input to floormod
-    y
-        array, denominator input for floormod.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        An array of the same shape and type as x, with the elements floor modded.
-
-    """
-    return current_backend(x).floormod(x, y, out=out)
-
-
-@to_native_arrays_and_back
 @handle_nestable
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
