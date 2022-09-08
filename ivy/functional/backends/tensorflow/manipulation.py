@@ -5,7 +5,7 @@ import math
 import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
-
+from . import tf_version, dtype_from_version
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 
@@ -242,13 +242,13 @@ def tile(
     return tf.tile(x, reps)
 
 
-tile.unsupported_dtypes = (
+tile.unsupported_dtypes = dtype_from_version({"2.9.1":(
     "uint8",
     "uint16",
     "uint32",
     "int8",
     "int16",
-)
+)},tf_version)
 
 
 def constant_pad(

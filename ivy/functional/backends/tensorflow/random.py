@@ -6,7 +6,7 @@ signature.
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
 from typing import Optional, Union, Sequence
-
+from . import tf_version,dtype_from_version
 # local
 import ivy
 from ivy.functional.ivy.random import (
@@ -79,7 +79,10 @@ def multinomial(
         return tf.random.categorical(tf.math.log(probs), num_samples)
 
 
-multinomial.unsupported_dtypes = ("bfloat16",)
+multinomial.unsupported_dtypes = dtype_from_version({
+    "2.9.1":(
+    "bfloat16")
+},tf_version)
 
 
 def randint(

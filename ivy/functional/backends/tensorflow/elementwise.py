@@ -1,7 +1,7 @@
 # global
 import tensorflow as tf
 from typing import Union, Optional
-
+from . import tf_version, dtype_from_version
 # local
 import ivy
 
@@ -467,7 +467,7 @@ def negative(
     return tf.negative(x)
 
 
-negative.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
+negative.unsupported_dtypes = dtype_from_version({"2.9.1":("uint8", "uint16", "uint32", "uint64")},tf_version)
 
 
 def not_equal(
@@ -509,7 +509,7 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
+pow.unsupported_dtypes = dtype_from_version({"2.9.1":("uint8", "uint16", "uint32", "uint64", "float64")},tf_version)
 
 
 def reciprocal(
@@ -521,7 +521,7 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
-reciprocal.unsupported_dtypes = (
+reciprocal.unsupported_dtypes = dtype_from_version({"2.9.1":(
     "uint8",
     "uint16",
     "uint32",
@@ -530,7 +530,7 @@ reciprocal.unsupported_dtypes = (
     "int16",
     "int32",
     "int64",
-)
+)},tf_version)
 
 
 def remainder(
@@ -551,7 +551,10 @@ def remainder(
     return tf.experimental.numpy.remainder(x1, x2)
 
 
-remainder.unsupported_dtypes = ("bfloat16",)
+remainder.unsupported_dtypes = dtype_from_version({
+    "2.9.1":(
+    "bfloat16")
+},tf_version)
 
 
 def round(
@@ -566,7 +569,10 @@ def round(
         return tf.round(x)
 
 
-round.unsupported_dtypes = ("bfloat16",)
+round.unsupported_dtypes = dtype_from_version({
+    "2.9.1":(
+    "bfloat16")
+},tf_version)
 
 
 def sign(

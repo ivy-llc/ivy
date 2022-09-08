@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from torch import Tensor
 from typing import Union, Tuple, List, Optional, Sequence
-
+from . import torch_version, dtype_from_version
 # local
 import ivy
 from ivy import (
@@ -68,7 +68,7 @@ def arange(
 
 
 arange.support_native_out = True
-arange.unsupported_dtypes = ("float16",)
+arange.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
 
 
 def asarray(

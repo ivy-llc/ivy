@@ -1,7 +1,8 @@
 # global
 import sys
 import numpy as np
-
+np_version=np.__version__
+from .. import dtype_from_version
 # local
 import ivy
 

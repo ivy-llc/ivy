@@ -4,7 +4,8 @@ import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 from tensorflow.python.framework.tensor_shape import TensorShape
-
+tf_version=tf.__version__
+from .. import dtype_from_version
 # local
 import ivy
 

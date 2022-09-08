@@ -11,7 +11,7 @@ import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
 import tensorflow as tf
-
+from . import tf_version, dtype_from_version
 # local
 import ivy
 
@@ -449,7 +449,7 @@ def one_hot(
     return tf.one_hot(indices, depth)
 
 
-one_hot.unsupported_dtypes = ("int8", "int16", "uint16", "uint32", "uint64")
+one_hot.unsupported_dtypes = dtype_from_version({"2.9.1":("int8", "int16", "uint16", "uint32", "uint64")},tf_version)
 
 
 def current_backend_str():

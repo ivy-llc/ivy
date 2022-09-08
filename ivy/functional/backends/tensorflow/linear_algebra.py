@@ -2,7 +2,7 @@
 import tensorflow as tf
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 from collections import namedtuple
-
+from . import tf_version, dtype_from_version
 # local
 import ivy
 from ivy import inf
@@ -27,10 +27,10 @@ def cholesky(
     return ret
 
 
-cholesky.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+cholesky.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def cross(
@@ -53,7 +53,7 @@ def det(
     return tf.linalg.det(x)
 
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
 
 
 def diagonal(
@@ -72,7 +72,7 @@ def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.eigh(x)
 
 
-eigh.unsupported_dtypes = ("float16",)
+eigh.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
 
 
 def eigvalsh(
@@ -84,7 +84,7 @@ def eigvalsh(
     return tf.linalg.eigvalsh(x)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
 
 
 def inv(
@@ -100,10 +100,10 @@ def inv(
     return ret
 
 
-inv.unsupported_dtypes = (
-    "bfloat16",
-    "float16",
-)
+inv.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def matmul(
@@ -207,10 +207,10 @@ def matrix_norm(
     return ret
 
 
-matrix_norm.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+matrix_norm.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def matrix_power(
@@ -244,7 +244,10 @@ def matrix_power(
     return result
 
 
-matrix_power.unsupported_dtypes = ("int8", "float16")
+matrix_power.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("int8",
+    "bfloat16",)
+},tf_version)
 
 
 # noinspection PyPep8Naming
@@ -271,10 +274,10 @@ def matrix_rank(
     return tf.cast(ret, ivy.default_int_dtype(as_native=True))
 
 
-matrix_rank.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+matrix_rank.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def matrix_transpose(
@@ -285,7 +288,7 @@ def matrix_transpose(
     return tf.experimental.numpy.swapaxes(x, -1, -2)
 
 
-matrix_transpose.unsupported_dtypes = (
+matrix_transpose.unsupported_dtypes = dtype_from_version({"2.9.1":(
     "float16",
     "int8",
     "int16",
@@ -296,6 +299,7 @@ matrix_transpose.unsupported_dtypes = (
     "uint32",
     "uint64",
 )
+},tf_version)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -322,10 +326,10 @@ def pinv(
     return ret
 
 
-pinv.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+pinv.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
@@ -344,7 +348,9 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",)
+},tf_version)
 
 
 def slogdet(
@@ -357,10 +363,10 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+slogdet.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def solve(
@@ -398,7 +404,9 @@ def solve(
     return ret
 
 
-solve.unsupported_dtypes = ("float16",)
+solve.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16")
+},tf_version)
 
 
 def svd(
@@ -415,10 +423,10 @@ def svd(
     return results(U, D, VT)
 
 
-svd.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+svd.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def svdvals(
@@ -430,10 +438,10 @@ def svdvals(
     return ret
 
 
-svdvals.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+svdvals.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def tensordot(
@@ -465,7 +473,9 @@ def trace(
     return ret
 
 
-trace.unsupported_dtypes = ("float16",)
+trace.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16")
+},tf_version)
 
 
 def vecdot(
@@ -484,7 +494,7 @@ def vecdot(
     return ret
 
 
-vecdot.supported_dtypes = ("bfloat16", "float16", "float32", "float64")
+vecdot.supported_dtypes = dtype_from_version({"2.9.1":("bfloat16", "float16", "float32", "float64")},tf_version)
 
 
 def vector_norm(
@@ -516,7 +526,7 @@ def vector_norm(
     return ret
 
 
-vector_norm.unsupported_dtypes = ("float16",)
+vector_norm.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
 
 
 # Extra #
@@ -546,7 +556,7 @@ def vector_to_skew_symmetric_matrix(
     return ret
 
 
-vector_to_skew_symmetric_matrix.unsupported_dtypes = (
+vector_to_skew_symmetric_matrix.unsupported_dtypes = dtype_from_version({"2.9.1":(
     "int8",
     "int16",
     "int32",
@@ -557,5 +567,5 @@ vector_to_skew_symmetric_matrix.unsupported_dtypes = (
     "uint64",
     "float16",
     "float64",
-)
+)},tf_version)
 # vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "float64")

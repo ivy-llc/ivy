@@ -4,7 +4,7 @@ import math
 import jax.numpy as jnp
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
 from numbers import Number
-
+from . import jax_version, dtype_from_version
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
@@ -225,7 +225,7 @@ def constant_pad(
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
-constant_pad.unsupported_dtypes = ("uint64",)
+constant_pad.unsupported_dtypes = dtype_from_version({"0.3.14":("uint64",)},jax_version)
 
 
 def zero_pad(

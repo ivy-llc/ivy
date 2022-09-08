@@ -2,7 +2,7 @@
 # global
 import tensorflow as tf
 from typing import Union, Tuple, List, Optional, Sequence
-
+from . import tf_version, dtype_from_version
 # local
 import ivy
 from ivy import (
@@ -57,10 +57,10 @@ def arange(
                 return tf.range(start, stop, delta=step, dtype=dtype)
 
 
-arange.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
+arange.unsupported_dtypes = dtype_from_version({
+    "2.9.1":("float16",
+    "bfloat16",)
+},tf_version)
 
 
 def asarray(
@@ -194,7 +194,7 @@ def eye(
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
-eye.unsupported_dtypes = ("uint16",)
+eye.unsupported_dtypes = dtype_from_version({"2.9.1":("uint16",)},tf_version)
 
 
 # noinspection PyShadowingNames

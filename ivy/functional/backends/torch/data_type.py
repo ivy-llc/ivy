@@ -1,7 +1,7 @@
 # global
 import torch
 from typing import Union, Sequence, List
-
+from . import torch_version, dtype_from_version
 # local
 import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
@@ -81,7 +81,7 @@ def broadcast_to(
     return torch.broadcast_to(x, shape)
 
 
-broadcast_to.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
+broadcast_to.unsupported_dtypes = dtype_from_version({"1.11.0":("uint8", "uint16", "uint32", "uint64")},torch_version.split('+')[0])
 
 
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:

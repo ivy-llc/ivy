@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from typing import Union, Sequence, List
 from tensorflow.python.framework.dtypes import DType
-
+from . import tf_version, dtype_from_version
 # local
 import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
@@ -174,7 +174,7 @@ def result_type(
     return as_ivy_dtype(result)
 
 
-result_type.unsupported_dtypes = ("bfloat16",)
+result_type.unsupported_dtypes = dtype_from_version({"2.9.1":("bfloat16",)},tf_version)
 
 
 # Extra #
