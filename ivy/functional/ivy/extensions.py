@@ -22,14 +22,22 @@ def _verify_coo_components(*, indices=None, values=None, dense_shape=None):
         ), "indices is larger than shape"
 
 
+def _is_data_not_indices_values_and_shape(
+    data=None, indices=None, values=None, dense_shape=None
+):
+    if data is not None:
+        if ivy.exists(indices) or ivy.exists(values) or ivy.exists(dense_shape):
+            raise Exception(
+                "only specify either data or or all three components: \
+                indices, values and dense_shape"
+            )
+        return True
+    return False
+
+
 class SparseArray:
     def __init__(self, data=None, *, indices=None, values=None, dense_shape=None):
-        if data is not None:
-            if ivy.exists(indices) or ivy.exists(values) or ivy.exists(dense_shape):
-                raise Exception(
-                    "only specify either data or or all three components: \
-                    indices, values and dense_shape"
-                )
+        if _is_data_not_indices_values_and_shape(data, indices, values, dense_shape):
             self._init_data(data)
         elif ivy.exists(indices) and ivy.exists(values) and ivy.exists(dense_shape):
             self._init_coo_components(indices, values, dense_shape)
