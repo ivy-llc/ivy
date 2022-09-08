@@ -40,7 +40,7 @@ def max(
 
 def mean(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Sequence[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: Optional[bool] = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
