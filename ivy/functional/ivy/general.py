@@ -2719,28 +2719,28 @@ def supports_inplace(
     --------
     With :code:'ivy.DType("bool")' input:
     >>> x = True
-    >>> ret = ivy.supports_inplace(x)
+    >>> ivy.supports_inplace(x)
     ValueError: Input x must be either a variable or an array.
 
     With :code:'ivy.Array' input and default backend set as 'numpy':
     >>> x = ivy.array([0, 1, 2])
     >>> ret = ivy.supports_inplace(x)
-    >>> print(y)
+    >>> print(ret)
     True
 
     With :code:'ivy.Variable' input and backend set as 'jax':
     >>> x = ivy.variable(ivy.array(5.5))
     >>> ret = ivy.supports_inplace(x)
-    >>> print(y)
+    >>> print(ret)
     False
 
     With :code:'ivy.Container' input and backend set as 'torch':
     >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
     >>> ret = ivy.supports_inplace(x)
-    >>> print(y)
+    >>> print(ret)
     {
-        a: True,
-        b: True
+        a: true,
+        b: true
     }
     """
     if ivy.is_variable(x):

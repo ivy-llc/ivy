@@ -6,7 +6,7 @@ from typing import Any, Union, List, Dict, Iterable, Optional, Callable
 from ivy.container.base import ContainerBase
 import ivy
 
-# ToDo: implement all methods here as public instance methods
+# ToDo: implement all methods here as public instance methods 
 
 
 # noinspection PyMissingConstructor
@@ -4120,13 +4120,13 @@ class ContainerWithGeneral(ContainerBase):
             Default is False.
 
         Returns
-        ------
+        -------
         ret
             An ivy.Container instance of bool values.
             True if nodes of x support in-place operations. False otherwise.
 
         Raises
-        -------
+        ------
         ValueError
             If a node(s) of the container isn't a class instance of ivy.Variable,
             ivy.Array, or ivy.NativeArray, an exception will be raised.
