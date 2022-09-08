@@ -395,14 +395,14 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
     backend_dtypes = _get_type_dict(ivy)[kind]
     if frontend_fw:
         fw_dtypes = _get_type_dict(frontend_fw())[kind]
-        types = tuple(set(fw_dtypes).intersection(backend_dtypes))
+        valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
     else:
-        types = backend_dtypes
+        valid_dtypes = backend_dtypes
     if none:
-        return draw(st.sampled_from(types[index:] + (None,)))
+        return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
     if full:
-        return types[index:]
-    return draw(st.sampled_from(types[index:]))
+        return valid_dtypes[index:]
+    return draw(st.sampled_from(valid_dtypes[index:]))
 
 
 @st.composite
