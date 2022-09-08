@@ -483,11 +483,11 @@ class ContainerWithGeneral(ContainerBase):
             "clip_vector_norm",
             x,
             max_norm,
-            p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            p=p,
             out=out,
         )
 
@@ -551,11 +551,11 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_clip_vector_norm(
             self,
             max_norm,
-            p,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            p=p,
             out=out,
         )
 
