@@ -195,3 +195,19 @@ def absolute(input, *, out=None):
 
 
 absolute.unsupported_dtypes = ("float16",)
+
+
+def logical_not(input, *, out=None):
+    return ivy.logical_not(input, out=out)
+
+
+def logical_and(input, other, *, out=None):
+    return ivy.logical_and(input, other, out=out)
+
+
+def logical_or(input, other, *, out=None):
+    return ivy.logical_or(input, other, out=out)
+
+
+def logical_xor(input, other, *, out=None):
+    return ivy.logical_xor(input, other, out=out)
