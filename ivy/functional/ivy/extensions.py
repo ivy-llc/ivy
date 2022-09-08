@@ -9,7 +9,7 @@ class SparseArray:
                     "only specify either data or or all three components: \
                     indices, values and dense_shape"
                 )
-            self._init_data()
+            self._init_data(data)
         else:
             if indices and values and dense_shape:
                 self._init_coo_components(indices, values, dense_shape)
