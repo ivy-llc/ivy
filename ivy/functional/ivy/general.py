@@ -3950,10 +3950,13 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     return unsupported_devices_dtype
 
 
-def vmap(func: Callable,
-         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-         out_axes: Optional[int] = 0) -> Callable:
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
     """Vectorizing map. Creates a function which maps func over argument axes.
+
     Parameters
     ----------
     func
@@ -3974,6 +3977,7 @@ def vmap(func: Callable,
        corresponding input array.
     out_axes
         An integer indicating where the mapped axis should appear in the output.
+
     Returns
     -------
     ret
@@ -3986,6 +3990,7 @@ def vmap(func: Callable,
     This docstring is a summarised version of the
     `docstring <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for  # noqa
     vmap from JAX documentation.
+
     Examples
     --------
     With :code:`ivy.matmul` func and :code:`ivy.Array` input:
