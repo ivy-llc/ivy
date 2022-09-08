@@ -34,6 +34,14 @@ def slogdet(input, name=None):
 slogdet.unsupported_dtypes = ("float16", "bfloat16")
 
 
+def cholesky_solve(chol, rhs, name=None):
+    y = ivy.solve(chol, rhs)
+    return ivy.solve(ivy.matrix_transpose(chol), y)
+
+
+cholesky_solve.unsupported_dtypes = ("float16", "bfloat16")
+
+
 def pinv(a, rcond=None, validate_args=False, name=None):
     return ivy.pinv(a, rcond)
 
