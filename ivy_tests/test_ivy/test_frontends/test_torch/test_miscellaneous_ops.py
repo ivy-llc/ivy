@@ -2,8 +2,6 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
-import ivy
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
@@ -213,8 +211,8 @@ def test_torch_trace(
     fw,
 ):
     input_dtype, value = dtype_and_values
-    if "float16" in input_dtype:
-        input_dtype = ivy.FloatDtype("float32")  # Float16 is unsupported for trace.
+    # if "float16" in input_dtype:
+    #    input_dtype = ivy.FloatDtype("float32")  # Float16 is unsupported for trace.
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
