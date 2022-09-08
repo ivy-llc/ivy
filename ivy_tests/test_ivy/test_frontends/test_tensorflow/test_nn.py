@@ -522,6 +522,8 @@ def test_conv3d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     input_dtype = [input_dtype] * 2
     as_variable = [as_variable] * 2
+    x = np.asarray(x, dtype=input_dtype[0])
+    filters = np.asarray(filters, dtype=input_dtype[1])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -531,8 +533,8 @@ def test_conv3d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
         fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv3d",
-        input=np.asarray(x, dtype=input_dtype[0]),
-        filters=np.asarray(filters, dtype=input_dtype[1]),
+        input=x,
+        filters=filters.reshape(filters.shape[:-2] + x.shape[-1] + filters.shape[-1]),
         strides=stride,
         padding=padding,
         data_format=data_format,
@@ -568,6 +570,7 @@ def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
     ) = x_f_d_df
     input_dtype = [input_dtype] * 2
     as_variable = [as_variable] * 2
+    x = np.asarray(x, dtype=input_dtype[0])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -577,8 +580,8 @@ def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         fw=fw,
         frontend="tensorflow",
         fn_tree="nn.conv3d_transpose",
-        input=np.asarray(x, dtype=input_dtype[0]),
-        filters=np.asarray(filters, dtype=input_dtype[1]),
+        input=x,
+        filters=np.asarray(filters, dtype=input_dtype[1]).reshape(x.shape),
         output_shape=output_shape,
         strides=stride,
         padding=padding,
