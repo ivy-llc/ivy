@@ -283,13 +283,11 @@ def floor_divide(
 def floormod(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if hasattr(x, "dtype") and hasattr(y, "dtype"):
-        promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
-        x = tf.cast(x, promoted_type)
-        y = tf.cast(y, promoted_type)
+    x, y = ivy.promote_types_of_inputs(x, y)
     return tf.math.floormod(x, y)
 
 
