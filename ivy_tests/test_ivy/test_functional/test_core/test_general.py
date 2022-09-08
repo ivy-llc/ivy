@@ -427,44 +427,6 @@ def test_clip_vector_norm(
     )
 
 
-# floormod
-@handle_cmd_line_args
-@given(
-    xy=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=2, min_value=1
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="floormod"),
-)
-def test_floormod(
-    xy,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    # smoke test
-    dtype = xy[0]
-    x = xy[1][0]
-    divisor = xy[1][1]
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="floormod",
-        x=np.asarray(x, dtype=dtype[0]),
-        y=np.asarray(divisor, dtype=dtype[1]),
-    )
-
-
 # unstack
 @handle_cmd_line_args
 @given(
