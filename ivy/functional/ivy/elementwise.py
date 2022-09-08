@@ -2268,6 +2268,7 @@ def floor_divide(
 def floormod(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
