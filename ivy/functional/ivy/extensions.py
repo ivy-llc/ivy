@@ -3,7 +3,7 @@ import ivy
 
 class SparseArray:
     def __init__(self, data=None, *, indices=None, values=None, dense_shape=None):
-        if data:
+        if data is not None:
             if indices or values or dense_shape:
                 raise Exception(
                     "only specify either data or or all three components: \
@@ -13,10 +13,11 @@ class SparseArray:
         elif indices and values and dense_shape:
             self._init_coo_components(indices, values, dense_shape)
         # TODO: to add csr
-        raise Exception("indices, values and dense_shape must all be specified")
+        else:
+            raise Exception("indices, values and dense_shape must all be specified")
 
     def _init_data(self, data):
-        if is_ivy_sparse_array(data):
+        if ivy.is_ivy_sparse_array(data):
             self._data = data.data
             self._indices = data.indices
             self._values = data.values
@@ -130,4 +131,4 @@ def is_ivy_sparse_array(x):
 
 
 def is_native_sparse_array(x):
-    return ivy.current_backend(x).is_native_sparse_array(x)
+    return ivy.current_backend().is_native_sparse_array(x)
