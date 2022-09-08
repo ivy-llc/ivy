@@ -388,8 +388,9 @@ floor_divide.support_native_out = True
 
 
 def floormod(
-    x: torch.Tensor, y: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, y: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    x, y = ivy.promote_types_of_inputs(x, y)
     return x % y
 
 
