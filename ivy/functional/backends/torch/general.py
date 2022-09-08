@@ -69,12 +69,6 @@ def to_list(x: torch.Tensor) -> list:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def floormod(
-    x: torch.Tensor, y: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return x % y
-
-
 def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
