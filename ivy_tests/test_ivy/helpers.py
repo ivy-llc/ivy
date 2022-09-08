@@ -1337,12 +1337,15 @@ def test_method(
         kwargs_np=kwargs_np_constructor,
         input_dtypes=input_dtypes_init,
         as_variable_flags=as_variable_flags_init,
+        native_array_flags=native_array_flags_init,
     )
     args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
         kwargs_np=kwargs_np_method,
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
+        native_array_flags=native_array_flags_method,
+        container_flags=container_flags_method,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     if isinstance(ins_gt, ivy.Module):
@@ -3277,3 +3280,42 @@ def statistical_dtype_values(draw, *, function):
 @st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
+
+
+@st.composite
+def arrays_and_axes(
+    draw,
+    allow_none=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    num=2,
+):
+    shapes = list()
+    for _ in range(num):
+        shape = draw(
+            get_shape(
+                allow_none=False,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
+        shapes.append(shape)
+    arrays = list()
+    for shape in shapes:
+        arrays.append(
+            draw(
+                array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)
+            )
+        )
+    all_axes_ranges = list()
+    for shape in shapes:
+        if None in all_axes_ranges:
+            all_axes_ranges.append(st.integers(0, len(shape) - 1))
+        else:
+            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
+    axes = draw(st.tuples(*all_axes_ranges))
+    return arrays, axes

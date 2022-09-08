@@ -19,8 +19,8 @@ def _compute_elu(input, alpha=1.0, inplace=False):
     return ivy.where(ivy.greater(input, 0), input, prod)
 
 
-def sigmoid(input, out=None):
-    return ivy.sigmoid(input, out=out)
+def sigmoid(input):
+    return ivy.sigmoid(input)
 
 
 def leaky_relu(input, negative_slope=0.01):
@@ -33,16 +33,18 @@ def softmax(input, dim=None, dtype=None):
     return ivy.softmax(input, axis=dim)
 
 
-def gelu(input, approximate="none"):
-    if approximate == "none":
-        approximate = False
-    else:
-        approximate = True
-    return ivy.gelu(input, approximate)
+def gelu(
+    input,
+):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
+    # if approximate == "none":
+    # approximate = False
+    # else:
+    # approximate = True
+    return ivy.gelu(input)
 
 
-def tanh(input, *, out=None):
-    return ivy.tanh(input, out=out)
+def tanh(input):
+    return ivy.tanh(input)
 
 
 def logsigmoid(input):
@@ -75,3 +77,23 @@ def elu(input, alpha=1.0, inplace=False):
 
 def elu_(input, alpha=1.0):
     return _compute_elu(input, alpha, inplace=True)
+
+
+def celu(input, alpha=1.0, inplace=False):
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(ivy.divide(input, alpha)),
+            1,
+        ),
+    )
+    if inplace:
+        return ivy.add(
+            ivy.maximum(0, input),
+            ivy.minimum(0, prod),
+            out=input,
+        )
+    return ivy.add(
+        ivy.maximum(0, input),
+        ivy.minimum(0, prod),
+    )

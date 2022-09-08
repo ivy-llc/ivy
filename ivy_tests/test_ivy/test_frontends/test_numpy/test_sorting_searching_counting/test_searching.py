@@ -3,14 +3,13 @@ from hypothesis import given, strategies as st
 import numpy as np
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
 def _broadcastable_trio(draw):
-    dtype = draw(st.sampled_from(ivy_np.valid_numeric_dtypes))
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
 
     shapes_st = hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
     cond_shape, x1_shape, x2_shape = draw(shapes_st).input_shapes
@@ -55,7 +54,7 @@ def test_numpy_where(
 @handle_cmd_line_args
 @given(
     dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nonzero"
@@ -95,7 +94,7 @@ def _dtype_x_bounded_axis(draw, **kwargs):
         min_num_dims=1,
         min_dim_size=1,
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.argmin"
     ),

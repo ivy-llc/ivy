@@ -210,3 +210,14 @@ def expm1(x):
 
 def log1p(x):
     return ivy.log1p(x)
+
+
+def transpose(operand, permutation):
+    return ivy.permute_dims(operand, permutation)
+
+
+def dot(lhs, rhs, precision=None, preferred_element_type=None):
+    if preferred_element_type:
+        lhs = ivy.astype(lhs, dtype=preferred_element_type)
+        rhs = ivy.astype(rhs, dtype=preferred_element_type)
+    return ivy.tensordot(lhs, rhs)
