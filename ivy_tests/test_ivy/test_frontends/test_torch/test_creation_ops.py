@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.torch as ivy_torch
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -15,7 +14,7 @@ def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_length(
-                x=st.sampled_from(ivy_torch.valid_numeric_dtypes), length=1
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
             ),
             key="dtype",
         )
@@ -86,7 +85,7 @@ def test_torch_full(
 # ones_like
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_torch.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtypes=_dtypes(),
     requires_grad=_requires_grad(),
     num_positional_args=helpers.num_positional_args(
