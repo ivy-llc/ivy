@@ -266,6 +266,8 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_to_scalar(object_in, dtype, device, fw):
+    assume(not ("bfloat16" in dtype))
+    # bfloat16 is not supported by numpy
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
     assume(not (fw == "mxnet" and dtype == "int16"))
