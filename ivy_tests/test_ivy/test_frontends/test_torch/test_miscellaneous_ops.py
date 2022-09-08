@@ -254,8 +254,8 @@ def test_torch_diagonal(
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
             ),
         ),
         max_dim_size=10,  # TODO: Increase these after ivy.asarray has been optimized.
@@ -311,7 +311,7 @@ def test_torch_diagflat(
         max_num_dims=2,
         min_num_dims=1,
     ),
-    offset=st.integers(max_value=5, min_value=-5),
+    offset=st.integers(max_value=4, min_value=-4),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.diag"
     ),
