@@ -20,7 +20,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.slogdet"
-    )
+    ),
 )
 def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_args, fw):
     dtype, x = dtype_and_x
@@ -33,5 +33,5 @@ def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_ar
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.slogdet",
-        a=np.array(x, dtype=dtype)
+        a=np.array(x, dtype=dtype),
     )
