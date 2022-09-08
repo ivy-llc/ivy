@@ -329,13 +329,13 @@ def test_torch_transpose(
 # chunk
 @handle_cmd_line_args
 @given(
-    dtype_value_shape=helpers.dtype_and_values(
+    dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(
                 set(ivy_torch.valid_float_dtypes)),
         ),
-        num_arrays=st.shared(helpers.ints(min_value=1), key="num_arrays"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        num_arrays=st.shared(helpers.ints(min_value=1,max_value=4), key="num_arrays"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1,max_num_dims=4), key="shape"),
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
@@ -346,7 +346,7 @@ def test_torch_transpose(
 )
     
 def test_torch_chunk(
-    dtype_value_shape,
+    dtype_and_values,
     dim,
     as_variable,
     with_out,
@@ -354,7 +354,7 @@ def test_torch_chunk(
     native_array,
     fw, 
 ):
-    input_dtype,value = dtype_value_shape
+    input_dtype,value = dtype_and_values 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -366,5 +366,6 @@ def test_torch_chunk(
         fn_tree='chunk',
         input = np.asarray(value,dtype=input_dtype),
         axis = dim, 
+        chunks = np.random.randint(np.asarray(value)),
         )
         
