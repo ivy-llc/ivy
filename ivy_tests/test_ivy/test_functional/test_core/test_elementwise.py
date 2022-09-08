@@ -889,15 +889,16 @@ def test_floor_divide(
 @handle_cmd_line_args
 @given(
     xy=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, min_value=1
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=1,
+        large_value_safety_factor=20,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="floormod"),
 )
 def test_floormod(
     xy,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -912,7 +913,7 @@ def test_floormod(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,

@@ -194,7 +194,10 @@ def floor_divide(
     return jax.numpy.floor_divide(x1, x2)
 
 
-def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def floormod(
+    x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    x, y = ivy.promote_types_of_inputs(x, y)
     return x % y
 
 
