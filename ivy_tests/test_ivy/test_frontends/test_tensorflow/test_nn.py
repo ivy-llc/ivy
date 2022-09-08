@@ -5,8 +5,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.tensorflow as ivy_tf
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -216,13 +214,7 @@ def _x_and_filters(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -259,13 +251,7 @@ def test_tensorflow_atrous_conv2d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -315,13 +301,7 @@ def test_tensorflow_atrous_conv2d_transpose(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=3,
@@ -360,13 +340,7 @@ def test_tensorflow_conv1d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=3,
@@ -417,9 +391,7 @@ def test_tensorflow_conv1d_transpose(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(

@@ -822,7 +822,7 @@ class ContainerWithGeneral(ContainerBase):
         Parameters
         ----------
         x
-            The input array to be decremented by the defined value.
+            The input array to be incremented by the defined value.
         val
             The value of increment.
         key_chains
@@ -840,6 +840,38 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             The array following an in-place increment.
+
+        Examples
+        --------
+        Increment by a value
+        >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
+                              b=ivy.array([0., -25., 50.]))
+        >>> y = ivy.inplace_increment(x, 1.5)
+        >>> print(y)
+        {
+            a: ivy.array([2., -3.5, 31.5]),
+            b: ivy.array([1.5, -23.5, 51.5])
+        }
+
+        Increment by a Container
+        >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+        >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
+        >>> z = ivy.inplace_increment(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([0., 30., 60.]),
+            b: ivy.array([0., 50., 100.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))
+        >>> y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))
+        >>> z = ivy.inplace_increment(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([5., 12.5, 17.]),
+            b: ivy.array([0., 100., 7.5])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "inplace_increment",
@@ -860,16 +892,16 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.inplace_increment. This method
-        simply wraps the function, and so the docstring for ivy.inplace_increment
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.inplace_increment.
+        This method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
             Input container to apply an in-place increment.
         val
-            The value of decrement.
+            The value of increment.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -885,6 +917,21 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             A container with the array following the in-place increment.
+
+        Examples
+        --------
+        Using :code:`ivy.Container` instance method:
+        >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
+                               b=ivy.array([1.5, -0.3, 0]),\
+                               c=ivy.array([-4.7, -5.4, 7.5]))
+        >>> y = x.inplace_increment(2)
+        >>> print(y)
+        {
+            a: ivy.array([-4.7, 4.4, -6.5]),
+            b: ivy.array([3.5, 1.7, 2.]),
+            c: ivy.array([-2.7, -3.4, 9.5])
+        }
+
         """
         return self.static_inplace_increment(
             self,
@@ -3603,107 +3650,6 @@ class ContainerWithGeneral(ContainerBase):
             self,
             exponent,
             min_base=min_base,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    @staticmethod
-    def static_floormod(
-        x: ivy.Container,
-        y: Union[Number, ivy.Array, ivy.Container],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.floormod. This method simply
-        wraps the function, and so the docstring for ivy.floormod also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container to floordmod.
-        y
-            denominator input for floormod.
-        min_denominator
-            Container of the minimum denominator to use,
-            use global ivy._MIN_DENOMINATOR by default.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            A container of the same shape and type as x, with the elements at its
-            leaves floor modded.
-
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "floormod",
-            x,
-            y,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    def floormod(
-        self,
-        y: Union[Number, ivy.Array, ivy.Container],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.floormod. This method
-        simply wraps the function, and so the docstring for ivy.floormod
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input container to floordmod.
-        y
-            denominator input for floormod.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            A container of the same shape and type as self, with the elements at its
-            leaves floor modded.
-        """
-        return self.static_floormod(
-            self,
-            y,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

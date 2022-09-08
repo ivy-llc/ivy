@@ -13,8 +13,7 @@ def argmax(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmax.support_native_out = True
@@ -29,8 +28,7 @@ def argmin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmin.support_native_out = True
