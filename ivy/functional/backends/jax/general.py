@@ -84,10 +84,6 @@ def container_types():
     return [FlatMapping]
 
 
-def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return x % y
-
-
 def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
     if x.shape == ():
         return [x]

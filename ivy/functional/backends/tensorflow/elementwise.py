@@ -280,6 +280,19 @@ def floor_divide(
     return tf.experimental.numpy.floor_divide(x1, x2)
 
 
+def floormod(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if hasattr(x, "dtype") and hasattr(y, "dtype"):
+        promoted_type = tf.experimental.numpy.promote_types(x.dtype, y.dtype)
+        x = tf.cast(x, promoted_type)
+        y = tf.cast(y, promoted_type)
+    return tf.math.floormod(x, y)
+
+
 def greater(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
