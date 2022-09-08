@@ -31,6 +31,7 @@ def _get_range_for_grid(draw):
     return start, stop, None
 
 
+@st.composite
 def _get_dtype_and_range(draw):
     dim = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
@@ -205,7 +206,6 @@ def test_numpy_meshgrid(
 @given(range=_get_range_for_grid())
 def test_numpy_mgrid(
     range,
-    fw,
 ):
     start, stop, step = range
     if start and stop and step:
@@ -236,7 +236,6 @@ def test_numpy_mgrid(
 @given(range=_get_range_for_grid())
 def test_numpy_ogrid(
     range,
-    fw,
 ):
     start, stop, step = range
     if start and stop and step:
