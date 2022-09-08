@@ -5,7 +5,10 @@ class SparseArray:
     def __init__(self, data=None, *, indices=None, values=None, dense_shape=None):
         if data:
             if indices or values or dense_shape:
-                raise Exception("only specify either data or components")
+                raise Exception(
+                    "only specify either data or or all three components: \
+                    indices, values and dense_shape"
+                )
             self._init_data()
         else:
             if indices and values and dense_shape:
