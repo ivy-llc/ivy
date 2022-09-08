@@ -46,3 +46,10 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
 
 def broadcast_to(input, size):
     return ivy.broadcast_to(input, shape=size)
+
+
+broadcast_to.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)

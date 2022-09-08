@@ -6,12 +6,15 @@ from hypothesis import assume, given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.torch as ivy_torch
-from ivy_tests.test_array_api.array_api_tests import xps, dtype_helpers
 from ivy_tests.test_array_api.array_api_tests.test_operators_and_elementwise_functions import (  # noqa:501
     oneway_broadcastable_shapes,
     oneway_promotable_dtypes,
 )
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_dtype import (
+    array_and_broadcastable_shape,
+    dtype_shared,
+)
 
 
 # flip
@@ -257,9 +260,8 @@ def test_torch_diagonal(
 
 
 @given(
-    oneway_dtypes=oneway_promotable_dtypes(dtype_helpers.float_dtypes),
-    oneway_shapes=oneway_broadcastable_shapes(),
-    data=st.data(),
+    array_and_shape=array_and_broadcastable_shape(dtype_shared),
+    input_dtype=dtype_shared,
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.broadcast_to"
@@ -267,21 +269,17 @@ def test_torch_diagonal(
     native_array=st.booleans(),
 )
 def test_torch_broadcast_to(
-    data,
-    oneway_shapes,
-    oneway_dtypes,
+    array_and_shape,
+    input_dtype,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    x1 = data.draw(
-        xps.arrays(shape=oneway_shapes.input_shape, dtype=oneway_dtypes.input_dtype),
-        label="x1",
-    )
+    array, shape = array_and_shape
 
     helpers.test_frontend_function(
-        input_dtypes=[x1.dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -289,6 +287,6 @@ def test_torch_broadcast_to(
         fw=fw,
         frontend="torch",
         fn_tree="broadcast_to",
-        input=x1,
-        size=oneway_shapes.result_shape,
+        input=array,
+        size=shape,
     )
