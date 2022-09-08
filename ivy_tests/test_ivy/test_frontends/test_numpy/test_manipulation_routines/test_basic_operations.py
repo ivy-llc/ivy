@@ -39,9 +39,9 @@ def test_numpy_shape(
         frontend="numpy",
         fn_tree="shape",
         array=xs,
-        test_values=False
+        test_values=False,
     )
-    # Manually compare the shape here because ivy.shape doesn't return an array, so 
+    # Manually compare the shape here because ivy.shape doesn't return an array, so
     # ivy.to_numpy will narrow the bit-width, resulting in different dtypes. This is
     # not an issue with the front-end function, but how the testing framework converts
     # non-array function outputs to arrays.

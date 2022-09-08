@@ -175,12 +175,12 @@ def test_torch_ones(
     ),
 )
 def test_torch_zeros(
-        shape,
-        dtypes,
-        requires_grad,
-        device,
-        num_positional_args,
-        fw,
+    shape,
+    dtypes,
+    requires_grad,
+    device,
+    num_positional_args,
+    fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
