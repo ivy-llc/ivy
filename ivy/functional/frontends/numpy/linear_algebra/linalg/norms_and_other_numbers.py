@@ -5,7 +5,7 @@ import ivy
 
 
 def matrix_rank(A, tol=None, hermitian=False):
-    ret = ivy.matrix_rank(x=A, rtol=tol)
+    ret = ivy.matrix_rank(A, rtol=tol)
     return ivy.array(ret, dtype=ivy.int64)
 
 
