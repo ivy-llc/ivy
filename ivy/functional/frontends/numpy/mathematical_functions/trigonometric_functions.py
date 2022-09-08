@@ -227,7 +227,7 @@ def radians(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.multiply(ivy.divide(x, 180), ivy.pi, out=out)
+    ret = ivy.divide(ivy.multiply(x,ivy.pi,out=out),180)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
