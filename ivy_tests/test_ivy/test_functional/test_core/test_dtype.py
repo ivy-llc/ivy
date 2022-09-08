@@ -240,7 +240,7 @@ def array_and_broadcastable_shape(draw, dtype):
         .filter(lambda s: broadcast_shapes(in_shape, s) == s),
         label="shape",
     )
-    return (x, to_shape)
+    return x, to_shape
 
 
 @handle_cmd_line_args

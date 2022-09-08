@@ -114,7 +114,6 @@ class ArrayWithStatistical(abc.ABC):
         ivy.array([1., 4.])
 
         """
-
         return ivy.mean(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def var(
