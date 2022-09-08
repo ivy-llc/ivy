@@ -1,8 +1,6 @@
 """Collection of general Ivy functions."""
 
 # global
-from __future__ import annotations
-
 import gc
 import math
 import einops
