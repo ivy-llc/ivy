@@ -81,3 +81,13 @@ def nancumprod(a, /, axis=None, dtype=None, out=None):
 nancumprod.unsupported_dtypes = {
     "torch": ("float16", "bfloat16")
 }  # TODO Fixed in PyTorch 1.12.1
+
+
+def nancumsum(a, /, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+nancumsum.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16")
+}  # TODO Fixed in PyTorch 1.12.1
