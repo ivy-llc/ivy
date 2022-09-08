@@ -227,13 +227,14 @@ def degrees(
     signature=None,
     extobj=None,
 ):
-    #TODO Need to change out the "ret" line to rad2deg function once it is implemented
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.multiply(ivy.divide(x, 180), ivy.pi, out=out)
+    ret = ivy.multiply(ivy.divide(180, ivy.pi), x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
 degrees.unsupported_dtypes = {"torch": ("float16",)}
+
+
