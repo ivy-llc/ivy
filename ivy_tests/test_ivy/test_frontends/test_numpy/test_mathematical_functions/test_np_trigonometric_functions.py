@@ -425,17 +425,14 @@ def test_numpy_arctan2(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_num_dims=1,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
-    with_out=st.booleans(),
+    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.degrees"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
+    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_degrees(
     dtype_and_x,
