@@ -7,7 +7,7 @@ def _verify_coo_components(*, indices=None, values=None, dense_shape=None):
     assert (
         ivy.exists(indices) and ivy.exists(values) and ivy.exists(dense_shape)
     ), "indices, values and dense_shape must all be specified"
-    # coordinates style, must be shaped (x, y)
+    # coordinates style (COO), must be shaped (x, y)
     assert len(ivy.shape(indices)) == 2, "indices must be 2D"
     assert (
         len(ivy.to_ivy_shape(dense_shape)) == ivy.shape(indices)[0]
@@ -126,13 +126,13 @@ class SparseArray:
     # ---------------- #
 
     def to_dense_array(self, *, native=False):
-        new_ind = []
+        all_coordinates = []
         for i in range(self._values.shape[0]):
             coordinate = ivy.gather(self._indices, ivy.array([[i]]))
             coordinate = ivy.reshape(coordinate, (self._indices.shape[0],))
-            new_ind.append(coordinate.to_list())
+            all_coordinates.append(coordinate.to_list())
         ret = ivy.scatter_nd(
-            ivy.array(new_ind), self._values, ivy.array(self._dense_shape)
+            ivy.array(all_coordinates), self._values, ivy.array(self._dense_shape)
         )
         return ret.to_native() if native else ret
 
