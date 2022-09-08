@@ -185,7 +185,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">import</span> <span class="nn">einops</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -4126,6 +4126,55 @@
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">unsupported_devices_dtype</span></div>
+
+
+<div class="viewcode-block" id="vmap"><a class="viewcode-back" href="../../../../functional/ivy/general/vmap.html#ivy.functional.ivy.general.vmap">[docs]</a><span class="k">def</span> <span class="nf">vmap</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+         <span class="n">in_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="n">out_axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Vectorizing map. Creates a function which maps func over argument axes.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func</span>
+<span class="sd">        Function to be mapped over additional axes.</span>
+<span class="sd">    in_axes</span>
+<span class="sd">       An integer, None, or (nested) standard Python container</span>
+<span class="sd">       (tuple/list) thereof specifying which input array</span>
+<span class="sd">       axes to map over.If each positional argument to fun</span>
+<span class="sd">       is an array, then in_axes can be an integer, a None,</span>
+<span class="sd">       or a tuple of integers and Nones with length equal</span>
+<span class="sd">       to the number of positional arguments to fun. An</span>
+<span class="sd">       integer or None indicates which array axis to map</span>
+<span class="sd">       over for all arguments (with None indicating not to map any axis),</span>
+<span class="sd">       and a tuple indicates which axis to map for each</span>
+<span class="sd">       corresponding positional argument. Axis integers must</span>
+<span class="sd">       be in the range [-ndim, ndim) for each array,</span>
+<span class="sd">       where ndim is the number of dimensions (axes) of the</span>
+<span class="sd">       corresponding input array.</span>
+<span class="sd">    out_axes</span>
+<span class="sd">        An integer indicating where the mapped axis should appear in the output.</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Batched/vectorized version of func with arguments</span>
+<span class="sd">        that correspond to those of func, but with extra</span>
+<span class="sd">        array axes at positions indicated by in_axes,</span>
+<span class="sd">        and a return value that corresponds</span>
+<span class="sd">        to that of fun, but with extra array axes</span>
+<span class="sd">        at positions indicated by out_axes.</span>
+<span class="sd">    This docstring is a summarised version of the</span>
+<span class="sd">    `docstring &lt;https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap&gt;`_ for  </span>
+<span class="sd">    vmap from JAX documentation.</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`ivy.matmul` func and :code:`ivy.Array` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z.shape)</span>
+<span class="sd">    (3, 5, 2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: optimize in the numpy and tensorflow backends and extend functionality</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">in_axes</span><span class="p">,</span> <span class="n">out_axes</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -88,4 +88,5 @@ General
    general/arg_info.rst
    general/function_supported_devices_and_dtypes.rst
    general/function_unsupported_devices_and_dtypes.rst
+   general/vmap.rst
 
