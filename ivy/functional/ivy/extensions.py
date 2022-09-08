@@ -30,7 +30,7 @@ class SparseArray:
             self._data
         )
         self._indices = ivy.array(indices, dtype="int64")
-        self._values = ivy.array(values, dtype=values.dtype)
+        self._values = ivy.array(values)
         self._dense_shape = ivy.Shape(shape)
 
     def _init_coo_components(self, indices, values, shape):
