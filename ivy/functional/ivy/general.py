@@ -3865,22 +3865,21 @@ def _get_devices_and_dtypes(fn, complement=True):
 
     # Their values are formated like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
-    # 2. fn.supported_devices = {"numpy": {"cpu":("float16",},)}
-    backend = ivy.current_backend_str()
 
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.values())[0], dict):
-            fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
+        if not isinstance(list(fn_supported_dnd.values())[0], tuple):
+            raise ValueError("supported_device_and_dtype must be a dict of tuples")
+
+        # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
-            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+
+        if not isinstance(list(fn_unsupported_dnd.values())[0], tuple):
+            raise ValueError("unsupported_device_and_dtype must be a dict of tuples")
 
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
