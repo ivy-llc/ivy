@@ -408,7 +408,7 @@ def test_gelu(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype] * 2,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -437,6 +437,8 @@ def test_gelu(
 )
 def test_conv2d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -481,6 +483,8 @@ def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         padding,
         output_shape,
     ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -516,6 +520,8 @@ def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
 )
 def test_conv3d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -559,6 +565,8 @@ def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         padding,
         output_shape,
     ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
