@@ -1158,8 +1158,9 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
-    p: float = 2.0,
+    /,
     *,
+    p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
@@ -1269,7 +1270,10 @@ def clip_vector_norm(
     return ret
 
 
-clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
+clip_vector_norm.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("float16",),
+}
 
 
 @handle_nestable
