@@ -43,6 +43,7 @@ cmd_line_args = (
     "instance_method",
     "test_gradients",
 )
+frontend_fw = None
 
 try:
     import tensorflow as tf
@@ -350,6 +351,10 @@ def var_fn(x, *, dtype=None, device=None):
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
 
 
+def get_current_frontend():
+    return frontend_fw()
+
+
 @st.composite
 def get_dtypes(draw, kind, index=0, full=True, none=False):
     """
@@ -374,21 +379,30 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
     ret
         dtype string
     """
-    type_dict = {
-        "valid": ivy.valid_dtypes,
-        "numeric": ivy.valid_numeric_dtypes,
-        "float": ivy.valid_float_dtypes,
-        "integer": ivy.valid_int_dtypes,
-        "unsigned": ivy.valid_uint_dtypes,
-        "signed_integer": tuple(
-            set(ivy.valid_int_dtypes).difference(ivy.valid_uint_dtypes)
-        ),
-    }
+
+    def _get_type_dict(framework):
+        return {
+            "valid": framework.valid_dtypes,
+            "numeric": framework.valid_numeric_dtypes,
+            "float": framework.valid_float_dtypes,
+            "integer": framework.valid_int_dtypes,
+            "unsigned": framework.valid_uint_dtypes,
+            "signed_integer": tuple(
+                set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
+            ),
+        }
+
+    backend_dtypes = _get_type_dict(ivy)[kind]
+    if frontend_fw:
+        fw_dtypes = _get_type_dict(frontend_fw())[kind]
+        types = tuple(set(fw_dtypes).intersection(backend_dtypes))
+    else:
+        types = backend_dtypes
     if none:
-        return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
+        return draw(st.sampled_from(types[index:] + (None,)))
     if full:
-        return type_dict[kind][index:]
-    return draw(st.sampled_from(type_dict[kind][index:]))
+        return types[index:]
+    return draw(st.sampled_from(types[index:]))
 
 
 @st.composite
@@ -3192,6 +3206,20 @@ def handle_cmd_line_args(test_fn):
             # use the one which is parametrized
             flag = True
 
+        global frontend_fw
+        # Infer the frontend
+        try:
+            # naming convention `test_framework_`
+            frontend_string = test_fn.__name__.split("_")[1]
+            if frontend_string in FW_STRS:
+                frontend_fw = TEST_BACKENDS[frontend_string]
+            else:
+                frontend_fw = None
+        except IndexError:
+            raise ValueError(
+                "'{}' is not a valid test function, "
+                "a test function should start with 'test_'.".format(test_fn.__name__)
+            )  # ToDo: use another exception class
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
