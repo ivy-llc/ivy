@@ -1000,7 +1000,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
-<span class="sd">            The input array to be decremented by the defined value.</span>
+<span class="sd">            The input array to be incremented by the defined value.</span>
 <span class="sd">        val</span>
 <span class="sd">            The value of increment.</span>
 <span class="sd">        key_chains</span>
@@ -1018,6 +1018,38 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            The array following an in-place increment.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Increment by a value</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \</span>
+<span class="sd">                              b=ivy.array([0., -25., 50.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.inplace_increment(x, 1.5)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([2., -3.5, 31.5]),</span>
+<span class="sd">            b: ivy.array([1.5, -23.5, 51.5])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        Increment by a Container</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.inplace_increment(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0., 30., 60.]),</span>
+<span class="sd">            b: ivy.array([0., 50., 100.])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([3., 7., 10.]), b=ivy.array([0., 75., 5.5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([2., 5.5, 7.]), b=ivy.array([0., 25., 2.]))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.inplace_increment(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([5., 12.5, 17.]),</span>
+<span class="sd">            b: ivy.array([0., 100., 7.5])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;inplace_increment&quot;</span><span class="p">,</span>
@@ -1038,16 +1070,16 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.inplace_increment. This method</span>
-<span class="sd">        simply wraps the function, and so the docstring for ivy.inplace_increment</span>
-<span class="sd">        also applies to this method with minimal changes.</span>
+<span class="sd">        ivy.Container instance method variant of ivy.inplace_increment.</span>
+<span class="sd">        This method wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.inplace_increment also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            Input container to apply an in-place increment.</span>
 <span class="sd">        val</span>
-<span class="sd">            The value of decrement.</span>
+<span class="sd">            The value of increment.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
 <span class="sd">        to_apply</span>
@@ -1063,6 +1095,21 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            A container with the array following the in-place increment.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :code:`ivy.Container` instance method:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\</span>
+<span class="sd">                               b=ivy.array([1.5, -0.3, 0]),\</span>
+<span class="sd">                               c=ivy.array([-4.7, -5.4, 7.5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.inplace_increment(2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([-4.7, 4.4, -6.5]),</span>
+<span class="sd">            b: ivy.array([3.5, 1.7, 2.]),</span>
+<span class="sd">            c: ivy.array([-2.7, -3.4, 9.5])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_inplace_increment</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

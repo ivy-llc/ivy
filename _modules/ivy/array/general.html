@@ -1219,21 +1219,35 @@
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Array instance method variant of ivy.inplace_increment. This method simply</span>
-<span class="sd">        wraps the function, and so the docstring for ivy.inplace_increment also applies</span>
-<span class="sd">        to this method with minimal changes.</span>
+<span class="sd">        ivy.Array instance method variant of ivy.inplace_increment. This</span>
+<span class="sd">        method wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.inplace_increment also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
-<span class="sd">            input array to increment</span>
+<span class="sd">            The input array to be incremented by the defined value.</span>
 <span class="sd">        val</span>
-<span class="sd">            The array to increment the variable with.</span>
+<span class="sd">            The value of increment.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            The array following the in-place increment.</span>
+<span class="sd">            The array following an in-place increment.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` instance methods:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([5.7, 4.3, 2.5, 1.9])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.inplace_increment(1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([6.7, 5.3, 3.5, 2.9])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.asarray([4., 5., 6.])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.inplace_increment(2.5)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([6.5, 7.5, 8.5])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_increment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
