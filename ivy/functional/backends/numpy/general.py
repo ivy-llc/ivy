@@ -346,7 +346,9 @@ def one_hot(
     indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = np.eye(depth)[np.array(indices).reshape(-1)]
+    res = np.eye(depth, dtype=indices.dtype)[
+        np.array(indices, dtype="int64").reshape(-1)
+    ]
     return res.reshape(list(indices.shape) + [depth])
 
 

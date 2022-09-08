@@ -423,20 +423,13 @@ def one_hot(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if indices.dtype == tf.int8:
-        indices = tf.cast(indices, tf.uint8)
-    elif indices.dtype == tf.int16 or tf.uint16:
-        indices = tf.cast(indices, tf.int32)
-    else:
-        indices = tf.cast(indices, tf.int64)
     device = ivy.default_device(device)
+    dtype = indices.dtype
     if device is not None:
+        indices = tf.cast(indices, tf.int64)
         with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(indices, depth)
-    return tf.one_hot(indices, depth)
-
-
-one_hot.unsupported_dtypes = ("int8", "int16", "uint16", "uint32", "uint64")
+            return tf.one_hot(indices, depth, dtype=dtype)
+    return tf.one_hot(indices, depth, dtype=dtype)
 
 
 def current_backend_str():
