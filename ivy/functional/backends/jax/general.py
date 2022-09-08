@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence, List
+from typing import Iterable, Optional, Union, Sequence, List, Callable
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -84,11 +84,6 @@ def container_types():
     return [FlatMapping]
 
 
-def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = x % y
-    return ret
-
-
 def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
     if x.shape == ():
         return [x]
@@ -141,9 +136,15 @@ def cumsum(
     exclusive: Optional[bool] = False,
     reverse: Optional[bool] = False,
     *,
-    dtype: jnp.dtype,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(dtype, x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
@@ -352,14 +353,15 @@ def one_hot(
     indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
 ) -> JaxArray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
+    res = jnp.eye(depth, dtype=indices.dtype)[
+        jnp.array(indices, dtype="int64").reshape(-1)
+    ]
     return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
 def indices_where(x: JaxArray) -> JaxArray:
     where_x = jnp.where(x)
-    ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
-    return ret
+    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
 
 
 def inplace_decrement(x, val):
@@ -382,5 +384,15 @@ def inplace_increment(
     return x
 
 
-current_backend_str = lambda: "jax"
-current_backend_str.__name__ = "current_backend_str"
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
+    return ivy.to_native_arrays_and_back(
+        jax.vmap(func, in_axes=in_axes, out_axes=out_axes)
+    )
+
+
+def current_backend_str():
+    return "jax"

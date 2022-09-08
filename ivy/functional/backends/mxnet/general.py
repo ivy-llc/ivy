@@ -11,10 +11,7 @@ import multiprocessing as _multiprocessing
 # local
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.mxnet.device import dev
-from ivy.functional.backends.mxnet import (
-    _handle_flat_arrays_in_out,
-    _mxnet_init_context,
-)
+from ivy.functional.backends.mxnet import _mxnet_init_context
 
 
 def is_native_array(x, exclusive=False):
@@ -56,18 +53,6 @@ def to_scalar(x: mx.nd.NDArray) -> Number:
 
 def to_list(x: mx.nd.NDArray) -> list:
     return to_numpy(x).tolist()
-
-
-@_handle_flat_arrays_in_out
-def floormod(
-    x: mx.nd.NDArray,
-    y: mx.nd.NDArray,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    ret = x % y
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
 
 
 container_types = lambda: []
