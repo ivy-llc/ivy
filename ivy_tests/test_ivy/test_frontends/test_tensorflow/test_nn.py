@@ -510,6 +510,7 @@ def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
+        stride_max=1,
         type="3d",
     ),
     as_variable=st.booleans(),
@@ -546,7 +547,9 @@ def test_conv3d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
+        stride_max=1,
         type="3d",
+        transpose=True,
     ),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
