@@ -352,7 +352,9 @@ def one_hot(
     indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
 ) -> JaxArray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
+    res = jnp.eye(depth, dtype=indices.dtype)[
+        jnp.array(indices, dtype="int64").reshape(-1)
+    ]
     return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
