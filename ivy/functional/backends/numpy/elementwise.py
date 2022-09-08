@@ -318,8 +318,9 @@ def floor_divide(
 
 
 def floormod(
-    x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray] = None
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    x, y = ivy.promote_types_of_inputs(x, y)
     return np.asarray(x % y)
 
 
