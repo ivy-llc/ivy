@@ -251,31 +251,21 @@ def test_torch_diagonal(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,  # Torch requires this.
     ),
     diagonal=st.integers(),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.triu"
-    ),
-    native_array=st.booleans(),
-    with_out=st.booleans(),
 )
 def test_torch_triu(
     dtype_and_values,
     diagonal,
-    as_variable,
-    num_positional_args,
-    native_array,
-    with_out,
     fw,
+    as_variable,
+    with_out,
+    native_array,
 ):
     dtype, values = dtype_and_values
     values = np.asarray(values)
