@@ -73,12 +73,9 @@ def test_numpy_instance_reshape(
     ),
     dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.add"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_instance_add(
     dtype_and_x,

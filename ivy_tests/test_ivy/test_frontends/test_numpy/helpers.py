@@ -90,9 +90,18 @@ def handle_where_and_array_bools(
     if where_array:
         where = np.asarray(where, dtype=np.bool_)
         if ivy.exists(input_dtype):
-            input_dtype += ["bool"]
+            try:
+                input_dtype += ["bool"]
+            except TypeError:
+                input_dtype = [input_dtype, "bool"]
         if ivy.exists(as_variable):
-            as_variable += [False]
+            try:
+                as_variable += [False]
+            except TypeError:
+                as_variable = [as_variable, False]
         if ivy.exists(native_array):
-            native_array += [False]
+            try:
+                native_array += [False]
+            except TypeError:
+                native_array = [native_array, False]
     return where

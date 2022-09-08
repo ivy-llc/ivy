@@ -2104,11 +2104,13 @@ def test_frontend_array_instance_method(
         assert ivy.is_array(ret)
         if "out" in kwargs:
             kwargs["out"] = out
-            kwargs_ivy["out"] = out
+            kwargs_ivy["out"] = ivy.asarray(out)  # case where ret is not ivy.array
         else:
             args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
             args_ivy = list(args_ivy)
-            args_ivy[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
+            args_ivy[ivy.arg_info(frontend_fn, name="out")["idx"]] = ivy.asarray(
+                out
+            )  # case where ret is not ivy.array
             args_ivy = tuple(args_ivy)
         ret = frontend_fn(*args, **kwargs)
 
@@ -2172,6 +2174,10 @@ def test_frontend_array_instance_method(
         # change ivy device to native devices
         if "device" in kwargs_frontend:
             kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
+
+        # change out argument to ivy array
+        if "out" in kwargs_frontend:
+            kwargs_frontend["out"] = ivy.asarray(kwargs_frontend["out"])
 
         # get instance array
         if args_frontend == () or args_frontend == []:
