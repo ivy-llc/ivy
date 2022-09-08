@@ -12,7 +12,7 @@ import torch.nn
 import ivy
 
 
-def relu(x: torch.Tensor, /) -> torch.Tensor:
+def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.relu(x)
 
 
@@ -24,6 +24,7 @@ def leaky_relu(
     /,
     *,
     alpha: Optional[float] = 0.2,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
 
@@ -32,10 +33,7 @@ leaky_relu.unsupported_dtypes = ("float16",)
 
 
 def gelu(
-    x: torch.Tensor,
-    /,
-    *,
-    approximate: bool = True,
+    x: torch.Tensor, /, *, approximate: bool = True, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if approximate:
         return (
@@ -49,7 +47,7 @@ gelu.unsupported_dtypes = ("float16",)
 
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if not ivy.is_array(x):
-        x=torch.tensor(x)
+        x = torch.tensor(x)
     return torch.sigmoid(x, out=out)
 
 
@@ -57,7 +55,13 @@ sigmoid.unsupported_dtypes = ("float16",)
 sigmoid.support_native_out = True
 
 
-def softmax(x: torch.Tensor, /, *, axis: Optional[int] = None) -> torch.Tensor:
+def softmax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     if axis is None:
         axis = -1
     return torch.nn.functional.softmax(x, axis)
@@ -66,8 +70,8 @@ def softmax(x: torch.Tensor, /, *, axis: Optional[int] = None) -> torch.Tensor:
 softmax.unsupported_dtypes = ("float16",)
 
 
-def softplus(x: torch.Tensor, /) -> torch.Tensor:
+def softplus(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.softplus(x)
 
 
-softplus.unsupported_dtypes = ("float16",)
+softplus.unsupported_dtypes = ("float16", "bfloat16")

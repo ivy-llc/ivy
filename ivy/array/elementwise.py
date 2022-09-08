@@ -860,6 +860,34 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
+    def floormod(
+        self: ivy.Array,
+        x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.floormod. This method simply wraps the
+        function, and so the docstring for ivy.floormod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        x
+            input array for the denominator
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array of the same shape and type as x, with the elements floor modded.
+
+        """
+        return ivy.floormod(self, x, out=out)
+
     def greater(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
@@ -1268,6 +1296,15 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a real-valued floating-point data
             type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([2., 5., 15.])
+        >>> y = ivy.array([3., 2., 4.])
+        >>> z = x.logaddexp(y)
+        >>> print(z)
+        ivy.array([ 3.31,  5.05, 15.  ])
+
         """
         return ivy.logaddexp(self._data, x2, out=out)
 
@@ -1571,6 +1608,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        modulus: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1586,6 +1624,8 @@ class ArrayWithElementwise(abc.ABC):
             divisor input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        modulus
+            whether to compute the modulus instead of the remainder. Default is True.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1616,7 +1656,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1., 4., 2.])
         """
-        return ivy.remainder(self._data, x2, out=out)
+        return ivy.remainder(self._data, x2, modulus=modulus, out=out)
 
     def round(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
