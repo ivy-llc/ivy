@@ -31,7 +31,7 @@ def test_tensorflow_Acos(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Acos",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -58,7 +58,7 @@ def test_tensorflow_Acosh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Acosh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -155,7 +155,7 @@ def test_tensorflow_Cos(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Cos",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -182,7 +182,7 @@ def test_tensorflow_Cosh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Cosh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -228,7 +228,6 @@ def test_tensorflow_fill(
     shape,
     fill_value,
     dtypes,
-    with_out,
     as_variable,
     native_array,
     num_positional_args,
@@ -237,7 +236,7 @@ def test_tensorflow_fill(
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -272,7 +271,7 @@ def test_tensorflow_Asin(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Asin",
-        x=np.asarray(x, dtype=dtype),
+        x=x,
     )
 
 
@@ -296,7 +295,6 @@ def test_tensorflow_Asin(
 def test_tensorflow_ArgMax(
     dtype_x_axis,
     as_variable,
-    with_out,
     num_positional_args,
     fw,
     native_array,
@@ -306,13 +304,13 @@ def test_tensorflow_ArgMax(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.ArgMax",
-        input=np.asarray(x, dtype=dtype),
+        input=x,
         dimension=axis,
         output_type=output_type,
     )
@@ -341,7 +339,7 @@ def test_tensorflow_Atan(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Atan",
-        x=np.asarray(x, dtype=dtype),
+        x=x,
     )
 
 
@@ -370,8 +368,8 @@ def test_tensorflow_BitwiseAnd(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.BitwiseAnd",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -400,8 +398,8 @@ def test_tensorflow_BitwiseOr(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.BitwiseOr",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -430,8 +428,8 @@ def test_tensorflow_BitwiseXor(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.BitwiseXor",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -458,7 +456,7 @@ def test_tensorflow_Atanh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Atanh",
-        x=np.asarray(x, dtype=dtype),
+        x=x,
     )
 
 
@@ -485,7 +483,7 @@ def test_tensorflow_Tan(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Tan",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -512,7 +510,7 @@ def test_tensorflow_Square(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Square",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -539,7 +537,7 @@ def test_tensorflow_Sqrt(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Sqrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -566,7 +564,7 @@ def test_tensorflow_Tanh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Tanh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -595,8 +593,8 @@ def test_tensorflow_Maximum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Maximum",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -625,8 +623,8 @@ def test_tensorflow_Minimum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Minimum",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -653,8 +651,8 @@ def test_tensorflow_Sub(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Sub",
-        x=np.asarray(x[0], dtype=dtype[0]),
-        y=np.asarray(x[1], dtype=dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -683,8 +681,8 @@ def test_tensorflow_Less(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Less",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -713,8 +711,8 @@ def test_tensorflow_LessEqual(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.LessEqual",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -741,7 +739,7 @@ def test_tensorflow_Floor(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Floor",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -770,8 +768,8 @@ def test_tensorflow_FloorDiv(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.FloorDiv",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -798,7 +796,7 @@ def test_tensorflow_Exp(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Exp",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -825,7 +823,7 @@ def test_tensorflow_Expm1(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Expm1",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -852,7 +850,7 @@ def test_tensorflow_Log(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Log",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -877,7 +875,7 @@ def test_tensorflow_Sinh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Sinh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -887,8 +885,8 @@ def _reshape_helper(draw):
     # generate a shape s.t len(shape) > 0
     shape = draw(helpers.get_shape(min_num_dims=1))
     reshape_shape = draw(helpers.reshape_shapes(shape=shape))
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    x = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.get_dtypes("valid", full=False))
+    x = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     return x, dtype, reshape_shape
 
 
@@ -916,6 +914,6 @@ def test_tensorflow_Reshape(
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Reshape",
-        tensor=np.asarray(x, dtype=dtype),
+        tensor=x,
         shape=shape,
     )

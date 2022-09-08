@@ -61,7 +61,7 @@ def test_tensorflow_tan(
         fw=fw,
         frontend="tensorflow",
         fn_tree="tan",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -90,8 +90,8 @@ def test_tensorflow_multiply(
         fw=fw,
         frontend="tensorflow",
         fn_tree="multiply",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -120,8 +120,8 @@ def test_tensorflow_subtract(
         fw=fw,
         frontend="tensorflow",
         fn_tree="subtract",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -180,8 +180,8 @@ def test_tensorflow_divide(
         fw=fw,
         frontend="tensorflow",
         fn_tree="divide",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -212,7 +212,7 @@ def test_tensorflow_negative(
         fw=fw,
         frontend="tensorflow",
         fn_tree="negative",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -241,8 +241,8 @@ def test_tensorflow_logical_and(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.logical_and",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1]),
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -271,7 +271,7 @@ def test_tensorflow_log_sigmoid(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.log_sigmoid",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -293,12 +293,12 @@ def test_tensorflow_reciprocal_no_nan(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.reciprocal_no_nan",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -328,7 +328,7 @@ def test_tensorflow_reduce_all(
         fw=fw,
         frontend="tensorflow",
         fn_tree="reduce_all",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -358,7 +358,7 @@ def test_tensorflow_reduce_any(
         fw=fw,
         frontend="tensorflow",
         fn_tree="reduce_any",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -388,7 +388,7 @@ def test_tensorflow_reduce_euclidean_norm(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.reduce_euclidean_norm",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -418,14 +418,20 @@ def test_tensorflow_reduce_logsumexp(
         fw=fw,
         frontend="tensorflow",
         fn_tree="reduce_logsumexp",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
 # argmax
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.statistical_dtype_values(function="argmax"),
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.argmax"
     ),
@@ -438,8 +444,6 @@ def test_tensorflow_argmax(
     fw,
 ):
     input_dtype, x, axis = dtype_and_x
-    if isinstance(axis, tuple):
-        axis = axis[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -449,7 +453,7 @@ def test_tensorflow_argmax(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.argmax",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x,
         axis=axis,
         output_type="int64",
     )
@@ -478,7 +482,7 @@ def test_tensorflow_reduce_max(
         fw=fw,
         frontend="tensorflow",
         fn_tree="reduce_max",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -505,7 +509,7 @@ def test_tensorflow_reduce_min(
         fw=fw,
         frontend="tensorflow",
         fn_tree="reduce_min",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -532,7 +536,7 @@ def test_tensorflow_reduce_prod(
         fw=fw,
         frontend="tensorflow",
         fn_tree="reduce_prod",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -559,7 +563,7 @@ def test_tensorflow_reduce_std(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.reduce_std",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -586,7 +590,7 @@ def test_tensorflow_asinh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="asinh",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -613,7 +617,7 @@ def test_tensorflow_reduce_sum(
         fw=fw,
         frontend="tensorflow",
         fn_tree="reduce_sum",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -640,7 +644,7 @@ def test_tensorflow_reduce_variance(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.reduce_variance",
-        input_tensor=np.asarray(x, dtype=input_dtype),
+        input_tensor=x,
     )
 
 
@@ -671,7 +675,7 @@ def test_tensorflow_scalar_mul(
         frontend="tensorflow",
         fn_tree="scalar_mul",
         scalar=scalar_val[0],
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -700,8 +704,8 @@ def test_tensorflow_divide_no_nan(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.divide_no_nan",
-        x=np.asarray(xy[0], dtype=input_dtypes[0]),
-        y=np.asarray(xy[1], dtype=input_dtypes[1]),
+        x=xy[0],
+        y=xy[1],
     )
 
 
@@ -728,7 +732,7 @@ def test_tensorflow_erfcinv(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.erfcinv",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -755,7 +759,7 @@ def test_tensorflow_is_non_decreasing(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.is_non_decreasing",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -782,7 +786,7 @@ def test_tensorflow_is_strictly_increasing(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.is_strictly_increasing",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
     )
 
 
@@ -834,7 +838,7 @@ def test_tensorflow_confusion_matrix(
     labels, predictions, num_classes, as_variable, num_positional_args, native_array, fw
 ):
     helpers.test_frontend_function(
-        input_dtypes=ivy.int32,
+        input_dtypes=[ivy.int32],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -857,10 +861,10 @@ def test_tensorflow_confusion_matrix(
         fn_name="ivy.functional.frontends.tensorflow.polyval"
     ),
 )
-def test_tensorflow_polyval(dtype_and_x, x, as_variable, num_positional_args, 
-                            native_array, fw):
+def test_tensorflow_polyval(
+    dtype_and_x, x, as_variable, num_positional_args, native_array, fw
+):
     input_dtype, coeffs = dtype_and_x
-    coeffs = [coeffs]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -878,16 +882,13 @@ def test_tensorflow_polyval(dtype_and_x, x, as_variable, num_positional_args,
 # unsorted_segment_mean
 @handle_cmd_line_args
 @given(
-    data=helpers.array_values(
-        dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
     ),
-    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5, ), 
-                                     min_value=0, max_value=4),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_mean"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_unsorted_segment_mean(
     data, segment_ids, as_variable, num_positional_args, native_array, fw
@@ -901,25 +902,22 @@ def test_tensorflow_unsorted_segment_mean(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.unsorted_segment_mean",
-        data=np.asarray(data, dtype=np.float32),
-        segment_ids=np.asarray(segment_ids, dtype=np.int32),
-        num_segments=np.max(segment_ids) + 1
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=np.max(segment_ids) + 1,
     )
 
 
 # unsorted_segment_sqrt_n
 @handle_cmd_line_args
 @given(
-    data=helpers.array_values(
-        dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
     ),
-    segment_ids=helpers.array_values(dtype=ivy.int32, shape=(5,), 
-                                     min_value=0, max_value=4),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_sqrt_n"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_unsorted_segment_sqrt_n(
     data, segment_ids, as_variable, num_positional_args, native_array, fw
@@ -933,9 +931,9 @@ def test_tensorflow_unsorted_segment_sqrt_n(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.unsorted_segment_sqrt_n",
-        data=np.asarray(data, dtype=np.float32),
-        segment_ids=np.asarray(segment_ids, dtype=np.int32),
-        num_segments=np.max(segment_ids) + 1
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=np.max(segment_ids) + 1,
     )
 
 
@@ -943,15 +941,11 @@ def test_tensorflow_unsorted_segment_sqrt_n(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.zero_fraction"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_zero_fraction(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -966,5 +960,5 @@ def test_tensorflow_zero_fraction(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.zero_fraction",
-        value=np.asarray(x, dtype=input_dtype),
+        value=x,
     )

@@ -30,11 +30,11 @@ def negative(x, name=None):
     return ivy.negative(x)
 
 
-def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
+def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
-        input_tensor == 0,
-        ivy.array(0.0, dtype=input_tensor.dtype),
-        ivy.ones_like(input_tensor, dtype=input_tensor.dtype) / input_tensor,
+        x == 0,
+        ivy.array(0.0, dtype=x.dtype),
+        ivy.ones_like(x, dtype=x.dtype) / x,
     )
 
 
