@@ -324,6 +324,41 @@ The same logic applies to unsupported devices. Even if the wrapped Ivy function 
 more devices, we should still flag the frontend function devices to be the same as those
 supported by the function in the native framework.
 
+Instance Methods
+----------------------
+
+To allow for the Frontend API to be used with Instance Methods, we have created frontend 
+framework specific classes which behave similiar to the Ivy Array class. These framework 
+specific classes wrap any existing Ivy Array or Native Array and allow for them to be used
+with framework specific instance methods. The example below highlights the difference between 
+the functional method and its relevant instance method.
+
+**Examples**
+
+**tensorflow.add**
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/math.py
+    def add(x, y, name=None):
+    return ivy.add(x, y)
+
+
+**tensorflow.add Instance Method**
+
+.. code-block:: python
+
+    # ivy/functional/frontends/tensorflow/tensor.py
+    def add(self, y, name="add"):
+        return tf_frontend.add(self.data, y, name)
+
+* As you can see, the instance method is very similar to the functional method, but it 
+  takes the first argument as self. This is because the instance method is called 
+  on an instance of the framework specific class, which wraps the Ivy Array or Native Array.
+* We then return the relevant frontend function, passing in the wrapped Ivy Array or Native Array 
+  as :code:`self.data`
+
+
 Framework-Specific Classes
 --------------------------
 

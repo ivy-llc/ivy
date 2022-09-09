@@ -1270,18 +1270,13 @@ def clip_vector_norm(
     return ret
 
 
-clip_vector_norm.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
-
-
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
-    p: float = 2.0,
+    /,
     *,
+    p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
@@ -1370,23 +1365,15 @@ def clip_matrix_norm(
         b: ivy.array([[0.849, 1.13, 1.41]])
     }
     """
-    norms = ivy.matrix_norm(x, p, keepdims=True)
+    norms = ivy.matrix_norm(x, ord=p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
-
-
-clip_matrix_norm.unsupported_dtypes = {
-    "jax": ("float16",),
-    "numpy": ("float16",),
-    "tensorflow": ("float16",),
-    "torch": ("float16",),
-}
 
 
 @to_native_arrays_and_back
 @handle_nestable
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -2258,9 +2245,6 @@ def einops_repeat(
     return ret
 
 
-einops_repeat.unsupported_dtypes = {"tensorflow": ("uint16",)}
-
-
 def get_min_denominator() -> float:
     """Get the global minimum denominator used by ivy for numerically stable division.
 
@@ -2687,25 +2671,67 @@ def inplace_variables_supported(f=None):
 
 @inputs_to_native_arrays
 @handle_nestable
-def supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
-    """Determine whether inplace operations are supported for the data type of x.
+def supports_inplace(
+    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
+) -> bool:
+    """
+    Determines whether in-place operations are supported for x's data type,
+    by the current backend framework setting.
 
     Parameters
     ----------
     x
-        Input variable or array to check for inplace support for.
+        Input variable for whose data type we check whether the current backend
+        framework supports in-place operations.
 
     Returns
     -------
     ret
-        Boolean, whether or not inplace operations are supported for x.
+        Value depends on whether in-place operations are supported for
+        data type of x.
 
+    Raises
+    ------
+    ValueError
+        If x isn't a class instance of ivy.Variable, ivy.Array,
+        or ivy.NativeArray, an exception will be raised.
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
+    Examples
+    --------
+    With :code:'ivy.DType("bool")' input:
+    >>> x = True
+    >>> ivy.supports_inplace(x)
+    ValueError: Input x must be either a variable or an array.
+
+    With :code:'ivy.Array' input and default backend set as 'numpy':
+    >>> x = ivy.array([0, 1, 2])
+    >>> ret = ivy.supports_inplace(x)
+    >>> print(ret)
+    True
+
+    With :code:'ivy.Variable' input and backend set as 'jax':
+    >>> x = ivy.variable(ivy.array(5.5))
+    >>> ret = ivy.supports_inplace(x)
+    >>> print(ret)
+    False
+
+    With :code:'ivy.Container' input and backend set as 'torch':
+    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
+    >>> ret = ivy.supports_inplace(x)
+    >>> print(ret)
+    {
+        a: true,
+        b: true
+    }
     """
     if ivy.is_variable(x):
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
-    raise Exception("Input x must be either a variable or an array.")
+    raise ValueError("Input x must be either a variable or an array.")
 
 
 @inputs_to_native_arrays
@@ -3547,6 +3573,7 @@ def multiprocessing(context: str = None):
 @handle_nestable
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -3854,22 +3881,21 @@ def _get_devices_and_dtypes(fn, complement=True):
 
     # Their values are formated like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
-    # 2. fn.supported_devices = {"numpy": {"cpu":("float16",},)}
-    backend = ivy.current_backend_str()
 
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.values())[0], dict):
-            fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
+        if not isinstance(list(fn_supported_dnd.values())[0], tuple):
+            raise ValueError("supported_device_and_dtype must be a dict of tuples")
+
+        # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
-            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+
+        if not isinstance(list(fn_unsupported_dnd.values())[0], tuple):
+            raise ValueError("unsupported_device_and_dtype must be a dict of tuples")
 
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
