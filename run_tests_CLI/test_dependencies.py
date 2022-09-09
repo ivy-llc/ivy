@@ -112,6 +112,8 @@ def test_imports(fname, assert_version, update_versions):
 
 def main(filepaths, assert_matching_versions, update_versions):
     for filepath in filepaths.replace(" ", "").split(","):
+        print(filepath)
+        assert os.path.exists(filepath)
         assert os.path.isfile(filepath)
         test_imports(
             filepath,

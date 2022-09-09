@@ -5,14 +5,15 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
 def _outer_get_dtype_and_data(draw):
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))), key="shared_dtype"
+        )
     )
 
     shape = (
@@ -34,7 +35,7 @@ def _outer_get_dtype_and_data(draw):
     )
     data2 = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
+            available_dtypes=helpers.get_dtypes("numeric"),
             shape=shape,
         )
     )

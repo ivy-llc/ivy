@@ -1843,3 +1843,64 @@ def test_jax_lax_transpose(
         operand=np.asarray(x, dtype=input_dtype),
         permutation=dims,
     )
+
+
+@st.composite
+def _two_valid_xs(draw):
+    n = draw(st.integers(min_value=0, max_value=5))
+    m = draw(st.integers(min_value=0, max_value=5))
+    k = draw(st.integers(min_value=0, max_value=5))
+    valid_shapes = [
+        ((n, 1), (1, n)),
+        ((n, 1), (n, 1)),
+        ((m, k), (k, 1)),
+        ((m, k), (k, n)),
+    ]
+    s1, s2 = draw(st.sampled_from(valid_shapes))
+    d1, v1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=s1,
+        )
+    )
+    d2, v2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=s2,
+        )
+    )
+    return (d1, d2), (v1, v2)
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=_two_valid_xs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.dot"
+    ),
+    dtype=helpers.get_dtypes("valid", full=False, none=True),
+)
+def test_jax_lax_dot(
+    dtypes_and_xs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    dtype,
+):
+    input_dtypes, xs = dtypes_and_xs
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.dot",
+        lhs=xs[0],
+        rhs=xs[1],
+        precision=None,
+        preferred_element_type=dtype,
+    )

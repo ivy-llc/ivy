@@ -15,6 +15,8 @@ from . import sorting_searching_counting
 from .sorting_searching_counting import *
 from . import statistics
 from .statistics import *
+from . import ndarray
+from .ndarray import *
 
 from . import ma
 from . import fft

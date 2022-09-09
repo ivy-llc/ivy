@@ -106,7 +106,10 @@ def matrix_norm(
     return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
 
 
-matrix_norm.unsupported_dtypes = ("float16",)
+matrix_norm.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_power(
