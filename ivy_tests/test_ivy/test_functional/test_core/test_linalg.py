@@ -3,7 +3,6 @@
 
 # global
 import sys
-
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -20,7 +19,7 @@ def dtype_value1_value2_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=1,
@@ -28,6 +27,8 @@ def dtype_value1_value2_axis(
     min_dim_size=1,
     max_dim_size=10,
     specific_dim_size=3,
+    small_value_safety_factor=1.5,
+    large_value_safety_factor=10,
 ):
     # For cross product, a dim with size 3 is required
     shape = draw(
@@ -45,7 +46,7 @@ def dtype_value1_value2_axis(
     shape = shape[:axis] + [specific_dim_size] + shape[axis:]
     shape = tuple(shape)
 
-    dtype = draw(available_dtypes)
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
 
     values = []
     for i in range(2):
@@ -59,6 +60,8 @@ def dtype_value1_value2_axis(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    small_value_safety_factor=small_value_safety_factor,
+                    large_value_safety_factor=large_value_safety_factor,
                 )
             )
         )
@@ -73,7 +76,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=1,
@@ -92,7 +95,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
         )
     )
     axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    dtype = draw(available_dtypes)
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
 
     values = []
     for i in range(2):
@@ -106,6 +109,8 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    small_value_safety_factor=1.5,
+                    large_value_safety_factor=10,
                 )
             )
         )
@@ -473,6 +478,7 @@ def test_eigvalsh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
+        small_value_safety_factor=2.5,
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
 )
@@ -1193,6 +1199,8 @@ def test_cholesky(
         max_num_dims=10,
         min_dim_size=3,
         max_dim_size=3,
+        small_value_safety_factor=2.5,
+        large_value_safety_factor=20,
     ),
 )
 def test_cross(

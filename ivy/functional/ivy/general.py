@@ -7,7 +7,7 @@ import gc
 import inspect
 import math
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
+from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
 import einops
 import numpy as np
 
@@ -26,9 +26,9 @@ from ivy.functional.ivy.device import dev
 
 FN_CACHE = dict()
 INF = float("inf")
-TIMEOUT = 15.0
 TMP_DIR = "/tmp"
 
+queue_timeout_stack = list()
 array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
@@ -422,7 +422,7 @@ def copy_array(
         a: ivy.array([-1, 0, 1]),
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
-    
+
     With one :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -434,7 +434,7 @@ def copy_array(
     >>> y = x.copy_array()
     >>> print(y)
     ivy.array([1, 0, 1, 1])
-    
+
     With :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
@@ -732,7 +732,7 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
         input array
     copy
         whether to copy the array to a new address or not. Default is True.
-    
+
     Returns
     -------
     ret
@@ -1158,8 +1158,9 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
-    p: float = 2.0,
+    /,
     *,
+    p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the vector p-norm of an array.
@@ -1269,15 +1270,13 @@ def clip_vector_norm(
     return ret
 
 
-clip_vector_norm.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
-    p: float = 2.0,
+    /,
     *,
+    p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
@@ -1366,53 +1365,15 @@ def clip_matrix_norm(
         b: ivy.array([[0.849, 1.13, 1.41]])
     }
     """
-    norms = ivy.matrix_norm(x, p, keepdims=True)
+    norms = ivy.matrix_norm(x, ord=p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
-
-
-clip_matrix_norm.unsupported_dtypes = {
-    "jax": ("float16",),
-    "numpy": ("float16",),
-    "tensorflow": ("float16",),
-    "torch": ("float16",),
-}
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def floormod(
-    x: Union[ivy.Array, ivy.NativeArray],
-    y: Union[ivy.Array, ivy.NativeArray],
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns element-wise remainder of division.
-
-    Parameters
-    ----------
-    x
-        array, input to floormod
-    y
-        array, denominator input for floormod.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        An array of the same shape and type as x, with the elements floor modded.
-
-    """
-    return current_backend(x).floormod(x, y, out=out)
 
 
 @to_native_arrays_and_back
 @handle_nestable
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -1806,7 +1767,7 @@ def default(
     >>> x = ""
     >>> y = ivy.default(x, "default_string")
     >>> print(y)
-    
+
 
     >>> x = ivy.array([4, 5, 6])
     >>> y = ivy.default(x, ivy.array([1, 2, 3]), rev=True)
@@ -2284,9 +2245,6 @@ def einops_repeat(
     return ret
 
 
-einops_repeat.unsupported_dtypes = {"tensorflow": ("uint16",)}
-
-
 def get_min_denominator() -> float:
     """Get the global minimum denominator used by ivy for numerically stable division.
 
@@ -2559,7 +2517,7 @@ def print_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
 
-def set_queue_timeout(timeout):
+def set_queue_timeout(timeout: float):
     """
     Set the global queue timeout value (in seconds)
     Default value without this function being called is 15 seconds.
@@ -2585,14 +2543,16 @@ def set_queue_timeout(timeout):
     30
 
     """
-    global TIMEOUT
-    TIMEOUT = timeout
+    global queue_timeout_stack
+    if not isinstance(timeout, (int, float)):
+        raise Exception("set_array_mode only accepts type int or float")
+    queue_timeout_stack.append(timeout)
 
 
-def get_queue_timeout():
+def get_queue_timeout() -> float:
     """
     Get the global queue timeout value (in seconds).
-    The default value without this function being called is 10 seconds.
+    The default value without this function being called is 15 seconds.
 
     Returns
     -------
@@ -2607,8 +2567,30 @@ def get_queue_timeout():
     10.0
 
     """
-    global TIMEOUT
-    return TIMEOUT
+    global queue_timeout_stack
+    if not queue_timeout_stack:
+        return 15.0
+    return queue_timeout_stack[-1]
+
+
+def unset_queue_timeout() -> None:
+    """
+    Reset the global queue timeout value (in seconds) to the previous state
+
+    Examples
+    --------
+    >>> ivy.set_queue_timeout(10.0)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
+    10.0
+
+    >>> ivy.unset_shape_array_mode()
+    >>> ivy.get_queue_timeout()
+    15.0
+    """
+    global queue_timeout_stack
+    if queue_timeout_stack:
+        queue_timeout_stack.pop(-1)
 
 
 def get_tmp_dir():
@@ -2689,25 +2671,67 @@ def inplace_variables_supported(f=None):
 
 @inputs_to_native_arrays
 @handle_nestable
-def supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
-    """Determine whether inplace operations are supported for the data type of x.
+def supports_inplace_updates(
+    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
+) -> bool:
+    """
+    Determines whether in-place operations are supported for x's data type,
+    by the current backend framework setting.
 
     Parameters
     ----------
     x
-        Input variable or array to check for inplace support for.
+        Input variable for whose data type we check whether the current backend
+        framework supports in-place operations.
 
     Returns
     -------
     ret
-        Boolean, whether or not inplace operations are supported for x.
+        Value depends on whether in-place operations are supported for
+        data type of x.
 
+    Raises
+    ------
+    ValueError
+        If x isn't a class instance of ivy.Variable, ivy.Array,
+        or ivy.NativeArray, an exception will be raised.
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
+    Examples
+    --------
+    With :code:'ivy.DType("bool")' input:
+    >>> x = True
+    >>> ivy.supports_inplace_updates(x)
+    ValueError: Input x must be either a variable or an array.
+
+    With :code:'ivy.Array' input and default backend set as 'numpy':
+    >>> x = ivy.array([0, 1, 2])
+    >>> ret = ivy.supports_inplace_updates(x)
+    >>> print(ret)
+    True
+
+    With :code:'ivy.Variable' input and backend set as 'jax':
+    >>> x = ivy.variable(ivy.array(5.5))
+    >>> ret = ivy.supports_inplace_updates(x)
+    >>> print(ret)
+    False
+
+    With :code:'ivy.Container' input and backend set as 'torch':
+    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
+    >>> ret = ivy.supports_inplace_updates(x)
+    >>> print(ret)
+    {
+        a: true,
+        b: true
+    }
     """
     if ivy.is_variable(x):
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
-    raise Exception("Input x must be either a variable or an array.")
+    raise ValueError("Input x must be either a variable or an array.")
 
 
 @inputs_to_native_arrays
@@ -3549,6 +3573,7 @@ def multiprocessing(context: str = None):
 @handle_nestable
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -3578,6 +3603,7 @@ def indices_where(
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
+    /,
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -3855,22 +3881,21 @@ def _get_devices_and_dtypes(fn, complement=True):
 
     # Their values are formated like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
-    # 2. fn.supported_devices = {"numpy": {"cpu":("float16",},)}
-    backend = ivy.current_backend_str()
 
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.values())[0], dict):
-            fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
+        if not isinstance(list(fn_supported_dnd.values())[0], tuple):
+            raise ValueError("supported_device_and_dtype must be a dict of tuples")
+
+        # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
-            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+
+        if not isinstance(list(fn_unsupported_dnd.values())[0], tuple):
+            raise ValueError("unsupported_device_and_dtype must be a dict of tuples")
 
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
@@ -3954,3 +3979,57 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
         )
 
     return unsupported_devices_dtype
+
+
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
+    """Vectorizing map. Creates a function which maps func over argument axes.
+
+    Parameters
+    ----------
+    func
+        Function to be mapped over additional axes.
+    in_axes
+       An integer, None, or (nested) standard Python container
+       (tuple/list) thereof specifying which input array
+       axes to map over.If each positional argument to fun
+       is an array, then in_axes can be an integer, a None,
+       or a tuple of integers and Nones with length equal
+       to the number of positional arguments to fun. An
+       integer or None indicates which array axis to map
+       over for all arguments (with None indicating not to map any axis),
+       and a tuple indicates which axis to map for each
+       corresponding positional argument. Axis integers must
+       be in the range [-ndim, ndim) for each array,
+       where ndim is the number of dimensions (axes) of the
+       corresponding input array.
+    out_axes
+        An integer indicating where the mapped axis should appear in the output.
+
+    Returns
+    -------
+    ret
+        Batched/vectorized version of func with arguments
+        that correspond to those of func, but with extra
+        array axes at positions indicated by in_axes,
+        and a return value that corresponds
+        to that of fun, but with extra array axes
+        at positions indicated by out_axes.
+    This docstring is a summarised version of the
+    `docstring <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for  # noqa
+    vmap from JAX documentation.
+
+    Examples
+    --------
+    With :code:`ivy.matmul` func and :code:`ivy.Array` input:
+    >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
+    >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
+    >>> z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)
+    >>> print(z.shape)
+    (3, 5, 2)
+    """
+    # TODO: optimize in the numpy and tensorflow backends and extend functionality
+    return current_backend().vmap(func, in_axes, out_axes)

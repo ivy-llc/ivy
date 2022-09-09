@@ -2,15 +2,16 @@ name: test-nn-ivy
 on:
   push:
   pull_request:
-    types: [labeled, review_requested]
+    types: [labeled, opened, synchronize, reopened, review_requested]
 permissions:
   actions: read
 jobs:
    run-nightly-tests:
+     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Ivy Functional API')}}
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
-         submodules: [test_activations, test_layers, test_losses, test_norms]
+         submodules: [activations, layers, losses, norms]
      continue-on-error: true
      runs-on: ubuntu-latest
      steps:
@@ -20,19 +21,43 @@ jobs:
            path: ivy
            persist-credentials: false
            submodules: "recursive"
+           fetch-depth: 2
+
+       - name: Check Files Changed
+         shell: pwsh
+         id: check_file_changed
+         run: |
+           cd ivy
+           $diff = git diff --name-only HEAD^ HEAD
+           $SourceDiff = $diff | Where-Object { `
+             $_ -match 'ivy_tests/test_ivy/test_functional/test_nn/test_${{ matrix.submodules }}.py' `
+             -or $_ -match 'ivy_tests/test_ivy/helpers.py' `
+             -or $_ -match 'ivy/array/${{ matrix.submodules }}.py' `
+             -or $_ -match 'ivy/container/${{ matrix.submodules }}.py' `
+             -or $_ -match 'ivy/functional/backends/${{ matrix.backends }}/${{ matrix.submodules }}.py' `
+             -or $_ -match 'ivy/functional/ivy/${{ matrix.submodules }}.py' `
+           }
+           $HasDiff = $SourceDiff.Length -gt 0
+           $a = Get-Random -Maximum 10
+           $HasDiff = $HasDiff -or ($a -eq 1)
+           Write-Host "::set-output name=changed::$HasDiff"
 
        - name: Download artifact
          uses: dawidd6/action-download-artifact@v2
+         if: steps.check_file_changed.outputs.changed == 'True'
          with:
+           github_token: ${{secrets.GITHUB_TOKEN}}
            workflow: test-ivy-nn.yml
-           workflow_conclusion: completed
-           name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
+           workflow_conclusion: ""
+           search_artifacts: true
+           name: hypothesis_${{ matrix.backends }}_test_${{ matrix.submodules }}_zip
            path: |
              ivy/.hypothesis/
          continue-on-error: true
 
        - name: Unzip Hypothesis Examples
          id: unzip
+         if: steps.check_file_changed.outputs.changed == 'True'
          run: |
            cd ivy/.hypothesis
            unzip examples.zip
@@ -40,7 +65,7 @@ jobs:
          continue-on-error: true
 
        - name: Create Hypothesis Directory
-         if: steps.unzip.outcome != 'success'
+         if: steps.check_file_changed.outputs.changed == 'True' && steps.unzip.outcome != 'success'
          run: |
            cd ivy
            mkdir -p .hypothesis
@@ -50,12 +75,14 @@ jobs:
 
        - name: Run Functional-NN Tests
          id: tests
+         if: steps.check_file_changed.outputs.changed == 'True'
          run: |
            cd ivy
-           ./test_ivy_nn.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+           ./test_ivy_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
+         if: steps.check_file_changed.outputs.changed == 'True'
          run: |
            cd ivy/.hypothesis
            zip -r examples.zip examples
@@ -63,12 +90,13 @@ jobs:
 
        - name: Upload hypothesis
          uses: actions/upload-artifact@v3
+         if: steps.check_file_changed.outputs.changed == 'True'
          with:
-           name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
+           name: hypothesis_${{ matrix.backends }}_test_${{ matrix.submodules }}_zip
            path: |
              ivy/.hypothesis/examples.zip
          continue-on-error: true
 
        - name: Check on failures
-         if: steps.tests.outcome != 'success'
+         if: steps.check_file_changed.outputs.changed == 'True' && steps.tests.outcome != 'success'
          run: exit 1
