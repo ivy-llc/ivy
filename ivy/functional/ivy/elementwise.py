@@ -5715,6 +5715,13 @@ def deg2rad(
     >>> print(y)
     ivy.array([ 0.    , -0.0262, -0.873 ,     nan])
 
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                    [-4.4, -5.5, -6.6]])
+    >>> ivy.deg2rad(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.96 , -1.37 ,  0.16 ],
+        [-3.1  ,  0.996, -0.328]])
+
     With :code:`ivy.NativeArray` input:
 
     >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
@@ -5742,6 +5749,19 @@ def deg2rad(
     >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
          b=ivy.native_array([0,-1.5,-50,ivy.nan]))
     >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
+        b: ivy.array([0., -0.0262, -0.873, nan])
+    }
+
+
+
+    Container Static Method Examples
+    ------------------------
+    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
+         b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+    >>> y=ivy.Container.static_deg2rad(x)
     >>> print(y)
     {
         a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
