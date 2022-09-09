@@ -386,6 +386,7 @@ def test_torch_chunk(
     as_variable,
     with_out,
     fw,
+    chunks,
     num_positional_args,
     native_array,
 
