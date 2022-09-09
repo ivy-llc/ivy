@@ -259,14 +259,13 @@ def test_torch_diagonal(
     )
 
 
+@handle_cmd_line_args
 @given(
     array_and_shape=array_and_broadcastable_shape(dtype_shared),
     input_dtype=dtype_shared,
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.broadcast_to"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_broadcast_to(
     array_and_shape,
