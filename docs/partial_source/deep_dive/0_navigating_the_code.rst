@@ -304,7 +304,7 @@ but new releases of the backend frameworks will then of course be made and there
 sometimes be a short period of time in which we are working towards the next Ivy
 release, and we opt to keep the repo pinned to the older version until the next release
 is out. This helps to prevent our work growing in an unbounded manner, as we work
-towards getting all tests passing and everyting in good shape before making the release.
+towards getting all tests passing and everything in good shape before making the release.
 If we always pulled the latest version of every framework into master, we might end up
 constantly battling new subtle bugs, without knowing whether the bugs come from the
 change in version or our own incremental changes to the code. Therefore, when working
@@ -314,7 +314,7 @@ our development target remains fixed for this period of time.
 As an example, at the time of writing the latest version of PyTorch is :code:`1.12.1`,
 whereas Ivy is pinned to version :code:`1.11.0`.
 Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not
-include arguments and behaviours which are exclusive to PyTorch version :code:`1.12.1`.
+include any arguments or behaviours which are exclusive to PyTorch version :code:`1.12.1`.
 
 **Round Up**
 
