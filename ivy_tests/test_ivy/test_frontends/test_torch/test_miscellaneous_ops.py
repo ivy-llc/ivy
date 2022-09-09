@@ -251,6 +251,7 @@ def test_torch_diagonal(
     )
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
@@ -265,16 +266,15 @@ def test_torch_diagonal(
         max_value=10, min_value=-10
     ),  # Bounded because large values cause the output to
     # be so large the system runs out of memory.
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.diagflat"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_diagflat(
     dtype_and_values,
     offset,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -286,7 +286,7 @@ def test_torch_diagflat(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
