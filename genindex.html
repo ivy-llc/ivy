@@ -247,6 +247,8 @@
 </li>
         <li><a href="functional/ivy/device.html#ivy.functional.ivy.device.Profiler.__init__">(ivy.functional.ivy.device.Profiler method)</a>, <a href="functional/ivy/device/Profiler.html#ivy.functional.ivy.device.Profiler.__init__">[1]</a>
 </li>
+        <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.__init__">(ivy.functional.ivy.extensions.SparseArray method)</a>
+</li>
         <li><a href="functional/ivy/gradients.html#ivy.functional.ivy.gradients.GradientTracking.__init__">(ivy.functional.ivy.gradients.GradientTracking method)</a>
 </li>
         <li><a href="stateful/activations.html#ivy.stateful.activations.GEGLU.__init__">(ivy.stateful.activations.GEGLU method)</a>, <a href="stateful/activations/GEGLU.html#ivy.stateful.activations.GEGLU.__init__">[1]</a>
@@ -1311,7 +1313,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="array/array.html#ivy.array.array.Array.data">data (ivy.array.array.Array property)</a>, <a href="array/array/Array.html#ivy.array.array.Array.data">[1]</a>
+
+      <ul>
+        <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.data">(ivy.functional.ivy.extensions.SparseArray property)</a>
 </li>
+      </ul></li>
       <li><a href="functional/ivy/layers.html#ivy.functional.ivy.layers.deconv_length">deconv_length() (in module ivy.functional.ivy.layers)</a>, <a href="functional/ivy/layers/deconv_length.html#ivy.functional.ivy.layers.deconv_length">[1]</a>
 
       <ul>
@@ -1381,6 +1387,8 @@
       <li><a href="functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultIntDtype">DefaultIntDtype (class in ivy.functional.ivy.data_type)</a>
 </li>
       <li><a href="functional/ivy/data_type.html#ivy.functional.ivy.data_type.DefaultUintDtype">DefaultUintDtype (class in ivy.functional.ivy.data_type)</a>
+</li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.dense_shape">dense_shape (ivy.functional.ivy.extensions.SparseArray property)</a>
 </li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.depthwise_conv2d">depthwise_conv2d() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/depthwise_conv2d.html#ivy.array.array_methods.depthwise_conv2d">[1]</a>
 
@@ -2156,6 +2164,8 @@
       </ul></li>
       <li><a href="functional/ivy/nest.html#ivy.functional.ivy.nest.index_nest">index_nest() (in module ivy.functional.ivy.nest)</a>, <a href="functional/ivy/nest/index_nest.html#ivy.functional.ivy.nest.index_nest">[1]</a>
 </li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.indices">indices (ivy.functional.ivy.extensions.SparseArray property)</a>
+</li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.indices_where">indices_where() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/indices_where.html#ivy.array.array_methods.indices_where">[1]</a>
 
       <ul>
@@ -2368,6 +2378,8 @@
         <li><a href="container/general.html#ivy.container.general.ContainerWithGeneral.is_ivy_container">(ivy.container.general.ContainerWithGeneral method)</a>, <a href="container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.is_ivy_container">[1]</a>
 </li>
       </ul></li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.is_ivy_sparse_array">is_ivy_sparse_array() (in module ivy.functional.ivy.extensions)</a>, <a href="functional/ivy/extensions/is_ivy_sparse_array.html#ivy.functional.ivy.extensions.is_ivy_sparse_array">[1]</a>
+</li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.is_native_array">is_native_array() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/is_native_array.html#ivy.array.array_methods.is_native_array">[1]</a>
 
       <ul>
@@ -2380,6 +2392,8 @@
         <li><a href="container/general.html#ivy.container.general.ContainerWithGeneral.is_native_array">(ivy.container.general.ContainerWithGeneral method)</a>, <a href="container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.is_native_array">[1]</a>
 </li>
       </ul></li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.is_native_sparse_array">is_native_sparse_array() (in module ivy.functional.ivy.extensions)</a>, <a href="functional/ivy/extensions/is_native_sparse_array.html#ivy.functional.ivy.extensions.is_native_sparse_array">[1]</a>
+</li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.is_uint_dtype">is_uint_dtype() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/is_uint_dtype.html#ivy.array.array_methods.is_uint_dtype">[1]</a>
 
       <ul>
@@ -2504,6 +2518,8 @@
         <li><a href="array/data_type.html#module-ivy.array.data_type">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.array.device
 
@@ -2511,8 +2527,6 @@
         <li><a href="array/device.html#module-ivy.array.device">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.array.elementwise
 
@@ -3719,6 +3733,12 @@
         <li><a href="container/creation.html#ivy.container.creation.ContainerWithCreation.native_array">(ivy.container.creation.ContainerWithCreation method)</a>, <a href="container/creation/ContainerWithCreation.html#ivy.container.creation.ContainerWithCreation.native_array">[1]</a>
 </li>
       </ul></li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.native_sparse_array">native_sparse_array() (in module ivy.functional.ivy.extensions)</a>, <a href="functional/ivy/extensions/native_sparse_array.html#ivy.functional.ivy.extensions.native_sparse_array">[1]</a>
+</li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape">native_sparse_array_to_indices_values_and_shape() (in module ivy.functional.ivy.extensions)</a>, <a href="functional/ivy/extensions/native_sparse_array_to_indices_values_and_shape.html#ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape">[1]</a>
+</li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.NativeSparseArray">NativeSparseArray (class in ivy.functional.ivy.extensions)</a>
+</li>
       <li><a href="array/array.html#ivy.array.array.Array.ndim">ndim (ivy.array.array.Array property)</a>, <a href="array/array/Array.html#ivy.array.array.Array.ndim">[1]</a>
 </li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.negative">negative() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/negative.html#ivy.array.array_methods.negative">[1]</a>
@@ -4571,6 +4591,8 @@
         <li><a href="container/losses.html#ivy.container.losses.ContainerWithLosses.sparse_cross_entropy">(ivy.container.losses.ContainerWithLosses method)</a>, <a href="container/losses/ContainerWithLosses.html#ivy.container.losses.ContainerWithLosses.sparse_cross_entropy">[1]</a>
 </li>
       </ul></li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray">SparseArray (class in ivy.functional.ivy.extensions)</a>
+</li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.split">split() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/split.html#ivy.array.array_methods.split">[1]</a>
 
       <ul>
@@ -6357,6 +6379,8 @@
         <li><a href="container/manipulation.html#ivy.container.manipulation.ContainerWithManipulation.tile">(ivy.container.manipulation.ContainerWithManipulation method)</a>, <a href="container/manipulation/ContainerWithManipulation.html#ivy.container.manipulation.ContainerWithManipulation.tile">[1]</a>
 </li>
       </ul></li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.to_dense_array">to_dense_array() (ivy.functional.ivy.extensions.SparseArray method)</a>
+</li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.to_device">to_device() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/to_device.html#ivy.array.array_methods.to_device">[1]</a>
 
       <ul>
@@ -6775,6 +6799,8 @@
         <li><a href="container/general.html#ivy.container.general.ContainerWithGeneral.value_is_nan">(ivy.container.general.ContainerWithGeneral method)</a>, <a href="container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.value_is_nan">[1]</a>
 </li>
       </ul></li>
+      <li><a href="functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.values">values (ivy.functional.ivy.extensions.SparseArray property)</a>
+</li>
       <li><a href="array/array_methods.html#ivy.array.array_methods.var">var() (in module ivy.array.array_methods)</a>, <a href="array/array_methods/var.html#ivy.array.array_methods.var">[1]</a>
 
       <ul>

@@ -21,7 +21,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="General" href="general.html" />
+    <link rel="next" title="is_ivy_sparse_array" href="extensions/is_ivy_sparse_array.html" />
     <link rel="prev" title="minimum" href="elementwise/minimum.html" /> 
 </head>
 
@@ -113,7 +113,11 @@
 <li class="toctree-l1"><a class="reference internal" href="data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elementwise.html">Elementwise</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Extensions</a><ul class="simple">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Extensions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extensions/is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions/native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="general.html">General</a></li>
@@ -182,8 +186,71 @@
              
   <section id="module-ivy.functional.ivy.extensions">
 <span id="extensions"></span><h1>Extensions<a class="headerlink" href="#module-ivy.functional.ivy.extensions" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.NativeSparseArray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">NativeSparseArray</span></span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#NativeSparseArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.NativeSparseArray" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.SparseArray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">SparseArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#SparseArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.SparseArray" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.SparseArray.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#SparseArray.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.SparseArray.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.SparseArray.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#ivy.functional.ivy.extensions.SparseArray.data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.SparseArray.dense_shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dense_shape</span></span><a class="headerlink" href="#ivy.functional.ivy.extensions.SparseArray.dense_shape" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.SparseArray.indices">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indices</span></span><a class="headerlink" href="#ivy.functional.ivy.extensions.SparseArray.indices" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.SparseArray.to_dense_array">
+<span class="sig-name descname"><span class="pre">to_dense_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#SparseArray.to_dense_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.SparseArray.to_dense_array" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.SparseArray.values">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">values</span></span><a class="headerlink" href="#ivy.functional.ivy.extensions.SparseArray.values" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.is_ivy_sparse_array">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_ivy_sparse_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#is_ivy_sparse_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.is_ivy_sparse_array" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.is_native_sparse_array">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">is_native_sparse_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#is_native_sparse_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.is_native_sparse_array" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.native_sparse_array">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">native_sparse_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#native_sparse_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.native_sparse_array" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">native_sparse_array_to_indices_values_and_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/extensions.html#native_sparse_array_to_indices_values_and_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
+<p>def is_ivy_sparse_array.rst</p>
 </section>
 
 
@@ -191,7 +258,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="elementwise/minimum.html" class="btn btn-neutral float-left" title="minimum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="extensions/is_ivy_sparse_array.html" class="btn btn-neutral float-right" title="is_ivy_sparse_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
