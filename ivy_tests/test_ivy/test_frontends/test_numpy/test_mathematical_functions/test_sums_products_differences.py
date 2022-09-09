@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -27,8 +26,8 @@ def _dtype_x_axis(draw, **kwargs):
 # sum
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_axis(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
@@ -70,8 +69,8 @@ def test_numpy_sum(
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_axis(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
@@ -114,7 +113,7 @@ def test_numpy_prod(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
@@ -153,7 +152,7 @@ def test_numpy_cumsum(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
@@ -191,7 +190,7 @@ def test_numpy_cumprod(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
@@ -229,7 +228,7 @@ def test_numpy_nancumprod(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,

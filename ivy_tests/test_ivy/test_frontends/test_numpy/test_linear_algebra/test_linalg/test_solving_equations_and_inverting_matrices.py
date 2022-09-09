@@ -4,7 +4,6 @@ from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 # inv
@@ -13,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         min_dim_size=6,
         max_dim_size=6,
         min_num_dims=2,
@@ -44,7 +43,7 @@ def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args, 
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=2,
     ),
