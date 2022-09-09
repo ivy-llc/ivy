@@ -105,20 +105,26 @@ def test_numpy_any(
         where=where,
         input_dtype=input_dtypes,
         as_variable=as_variable,
-        native_array=native_array
+        native_array=native_array,
     )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="any",
-        x=x,
-        axis=axis,
-        out=out,
-        keepdims=keepdims,
-        where=where
+    ret, ret_gt = helpers.test_frontend_function(
+       input_dtypes=input_dtypes,
+       as_variable_flags=as_variable,
+       with_out=with_out,
+       num_positional_args=num_positional_args,
+       native_array_flags=native_array,
+       fw=fw,
+       frontend="numpy",
+       fn_tree="any",
+       x=x,
+       axis=axis,
+       out=out,
+       keepdims=keepdims,
+       where=where,
+       test_values=False,
     )
+
+    if len(ret[0].shape) == 0:
+        assert (ret[0] == ret_gt[0])
+    else:
+        assert (ret[0].shape == ret_gt[0].shape and np.all(ret[0]) == ret_gt[0])
