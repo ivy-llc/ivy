@@ -195,3 +195,17 @@ def absolute(input, *, out=None):
 
 
 absolute.unsupported_dtypes = ("float16",)
+
+
+def divide(input, other, *, rounding_mode=None, out=None):
+    if not rounding_mode:
+        return ivy.divide(input, other, out=out)
+    elif rounding_mode == "trunc":
+        return ivy.trunc(ivy.divide(input, other, out=out))
+    elif rounding_mode == "floor":
+        return ivy.floor_divide(input, other, out=out)
+    else:
+        raise ValueError(f"{rounding_mode} is not a valid value for rounding_mode")    
+
+
+divide.unsupported_dtypes = ("float16",)
