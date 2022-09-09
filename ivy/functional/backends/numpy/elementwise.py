@@ -715,6 +715,7 @@ def minimum(
 
 minimum.support_native_out = True
 
+@_handle_0_dim_output
 def greater_equal(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
