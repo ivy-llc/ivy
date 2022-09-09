@@ -32,8 +32,6 @@ def Cosh(*, x, name="cosh"):
 def fill(dims, value, name="full"):
     return ivy.full(dims, value)
 
-def Sinh(*, x, name="Sinh"):
-    return ivy.sinh(x)
 def Asin(*, x, name="asin"):
     return ivy.asin(x)
 
@@ -116,3 +114,7 @@ def Expm1(*, x, name="Expm1"):
 
 def Log(*, x, name="Log"):
     return ivy.log(x)
+
+
+def Sinh(*, x, name="Sinh"):
+    return ivy.sinh(x)
