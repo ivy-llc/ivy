@@ -48,6 +48,6 @@ def correlate(
             r = m-n+1
         else:
             assert False, "Invalid Mode"
-        ret = ivy.flip(ivy.array([(a[:n]*ivy.roll(v,-t)[:n]).sum().tolist() for t in range(0,r)]), dtype = max(dtypes))
+        ret = ivy.flip(ivy.array([(a[:n]*ivy.roll(v,-t)[:n]).sum().tolist() for t in range(0,r)], dtype = max(dtypes)))
         
     return ret
