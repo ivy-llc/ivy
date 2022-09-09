@@ -271,6 +271,12 @@ def matrix_rank(
     return tf.cast(ret, ivy.default_int_dtype(as_native=True))
 
 
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
+
+
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
     *,

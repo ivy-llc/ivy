@@ -3,13 +3,13 @@
 # $1 : Path to the doc-builder folder relative to the ivy/docs folder
 
 # install libraries for the doc-builder
-cat $1/requirements.txt | xargs -n 1 pip install;
+cat $1/requirements/requirements.txt | xargs -n 1 pip install;
 
 # install libraries for ivy
-pip install -r ../requirements.txt
+pip install -r ../requirements/requirements.txt
 pip install torch==1.11.0
 pip install torch-scatter==2.0.9
-pip install -r ../optional.txt
+pip install -r ../requirements/optional.txt
 
 # syncing ivy folder with the doc-builder folder
 rsync -rav $1/docs/ .

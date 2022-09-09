@@ -6,8 +6,9 @@ import numpy as np
 import torch
 from operator import mul
 from functools import reduce
-from typing import List, Optional, Union, Sequence
+from typing import List, Optional, Union, Sequence, Callable
 from numbers import Number
+import functorch
 
 
 torch_scatter = None
@@ -69,12 +70,6 @@ def to_list(x: torch.Tensor) -> list:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def floormod(
-    x: torch.Tensor, y: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return x % y
-
-
 def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
@@ -111,7 +106,8 @@ def inplace_arrays_supported():
     return True
 
 
-inplace_variables_supported = lambda: True
+def inplace_variables_supported():
+    return True
 
 
 def inplace_decrement(
@@ -282,7 +278,6 @@ def _parse_ellipsis(so, ndims):
     )
 
 
-# noinspection PyShadowingNames
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -300,7 +295,7 @@ def scatter_nd(
         else ivy.default_dtype(item=updates, as_native=True),
     )
 
-    # hanle non-tensor indices
+    # handle non-tensor indices
     if indices == ():
         return updates
     elif indices is Ellipsis or (isinstance(indices, tuple) and indices == (Ellipsis,)):
@@ -312,7 +307,7 @@ def scatter_nd(
                 torch.reshape(value, (-1,))
                 for value in torch.meshgrid(*[torch.range(0, shape[0] - 1)])
             ],
-            axis=-1,
+            dim=-1,
         )
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
         shape = out.shape if ivy.exists(out) else updates.shape
@@ -330,7 +325,7 @@ def scatter_nd(
                     indexing="ij",
                 )
             ],
-            axis=-1,
+            dim=-1,
         )
     else:
         indices = [[indices]] if isinstance(indices, Number) else indices
@@ -408,7 +403,6 @@ def scatter_nd(
             reduce=reduction,
         )
     if not target_given:
-        # noinspection PyTypeChecker
         flat_scatter = torch.where(
             flat_scatter == initial_val,
             torch.zeros(flat_result_size, dtype=updates.dtype),
@@ -420,13 +414,7 @@ def scatter_nd(
     return res
 
 
-scatter_nd.support_native_out = True
-scatter_nd.unsupported_dtypes = (
-    "float16",
-    "uint16",
-    "uint32",
-    "uint64",
-)
+scatter_nd.unsupported_dtypes = ("float16",)
 
 
 def gather(
@@ -496,7 +484,9 @@ def one_hot(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(device)
+    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
+        device, indices.dtype
+    )
 
 
 def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
@@ -512,3 +502,14 @@ def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
 
 def current_backend_str():
     return "torch"
+
+
+def vmap(func: Callable,
+         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+         out_axes: Optional[int] = 0) -> Callable:
+    def _vmap(*args):
+        new_fun = lambda *args: ivy.to_native(func(*args))
+        new_func = functorch.vmap(new_fun, in_axes, out_axes)
+        return ivy.to_ivy(new_func(*args))
+
+    return _vmap
