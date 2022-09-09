@@ -435,16 +435,17 @@ def test_clip_vector_norm(
 @handle_cmd_line_args
 @given(
     x_n_dtype_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_dtypes, min_num_dims=5, min_axis=1, max_axis=4
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=5,
+        min_axis=1,
+        max_axis=4,
     ),
     keepdims=st.booleans(),
-    num_positional_args=st.integers(0, 3),
 )
 def test_unstack(
     x_n_dtype_axis,
     keepdims,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -453,15 +454,15 @@ def test_unstack(
 ):
     # smoke test
     dtype, x, axis = x_n_dtype_axis
-    if axis >= len(ivy.array(x).shape):
-        axis = len(ivy.array(x).shape) - 1
+    if axis >= len(np.asarray(x, dtype=dtype).shape):
+        axis = len(np.asarray(x, dtype=dtype).shape) - 1
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
         return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
