@@ -13,6 +13,3 @@ tile.unsupported_dtypes = {
 
 def repeat(a, repeats, axis=None):
     return ivy.repeat(a, repeats, axis=axis)
-
-
-repeat.supported_dtypes = {"tensorflow": ("int32", "int64")}

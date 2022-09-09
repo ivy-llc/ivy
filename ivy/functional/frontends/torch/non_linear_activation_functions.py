@@ -123,13 +123,13 @@ def celu(input, alpha=1.0, inplace=False):
             1,
         ),
     )
-    if inplace:
-        return ivy.add(
-            ivy.maximum(0, input),
-            ivy.minimum(0, prod),
-            out=input,
-        )
-    return ivy.add(
+    ret = ivy.add(
         ivy.maximum(0, input),
         ivy.minimum(0, prod),
     )
+    if inplace:
+        return ivy.inplace_update(input, ret)
+    return ret
+
+
+celu.unsupported_dtypes = ("float16",)
