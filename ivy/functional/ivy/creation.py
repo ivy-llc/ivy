@@ -1,7 +1,8 @@
 # For Review
 # global
+import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Callable
 
 import numpy as np
 
@@ -15,11 +16,105 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
+    inputs_to_native_arrays,
+    _get_first_array,
 )
 
 
 # Helpers #
 # --------#
+
+
+def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        """
+        Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
+        and return arrays are all converted to `ivy.Array` instances. This wrapper is
+        specifically for the backend implementations of asarray.
+        """
+        if type(args[0]) == list:
+            return outputs_to_ivy_arrays(fn)
+        return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+
+    return new_fn
+
+
+def asarray_infer_device(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, device=None, **kwargs):
+        """
+        Determines the correct `device`, and then calls the function with the `device`
+        passed explicitly. This wrapper is specifically for the backend implementations
+        of asarray.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        device
+            The device for the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `device` passed explicitly.
+        """
+        if type(args[0]) == list:
+            return fn(*args, device=ivy.default_device(), **kwargs)
+
+        # find the first array argument, if required
+        arr = None if ivy.exists(device) else _get_first_array(*args, **kwargs)
+        # infer the correct device
+        device = ivy.default_device(device, item=arr, as_native=True)
+        # call the function with device provided explicitly
+        return fn(*args, device=device, **kwargs)
+
+    new_fn.infer_device = True
+    return new_fn
+
+
+# def asarray_handle_nestable(fn: Callable) -> Callable:
+# fn_name = fn.__name__
+
+# @functools.wraps(fn)
+# def new_fn(*args, **kwargs):
+# """
+# Calls `fn` with the *nestable* property of the function correctly handled.
+# This means mapping the function to the container leaves if any containers are
+# passed in the input.
+
+# Parameters
+# ----------
+# args
+#    The arguments to be passed to the function.
+
+# kwargs
+#    The keyword arguments to be passed to the function.
+
+# Returns
+# -------
+#    The return of the function, with the nestable property handled correctly.
+# """
+# if any of the arguments or keyword arguments passed to the function contains
+# a container, get the container's version of the function and call it using
+# the passed arguments.
+# cont_fn = getattr(ivy.Container, "static_" + fn_name)
+# if ivy.get_nestable_mode() and (
+#    ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
+#    or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
+# ):
+#    return cont_fn(*args, **kwargs)
+
+# if the passed arguments does not contain a container, the function using
+# the passed arguments, returning an ivy or a native array.
+# return fn(*args, **kwargs)
+
+# new_fn.handle_nestable = True
+# return new_fn
 
 # Used to speed up ivy.asarray.
 def _is_raw_python_list_or_scalar(array) -> bool:
@@ -121,8 +216,8 @@ def arange(
     )
 
 
-@handle_out_argument
-@infer_device
+# @handle_out_argument
+@asarray_infer_device
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -165,32 +260,15 @@ def asarray(
 
     """
 
-    # if _is_raw_python_list_or_scalar(x):
-    if type(x) in (list, tuple):
-        return _asarray_for_raw_python_list(x, copy=copy, dtype=dtype, device=device)
-
-    return _asarray_typical(x, copy=copy, dtype=dtype, device=device)
-
-
-# Under these conditions, inputs_to_ivy_arrays is an expensive identity function.
-@outputs_to_ivy_arrays
-@handle_out_argument
-@infer_device
-def _asarray_for_raw_python_list(
-    x: Union[List[Number], Tuple[Number]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-) -> ivy.Array:
+    # return _asarray_typical(x, copy=copy, dtype=dtype, device=device)
     return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@infer_device
-@handle_nestable
+# @asarray_to_native_arrays_and_back
+# @handle_out_argument
+# @asarray_infer_device
+# @asarray_handle_nestable
+# @handle_nestable
 def _asarray_typical(
     x: Union[ivy.Array, ivy.NativeArray, np.ndarray],
     /,

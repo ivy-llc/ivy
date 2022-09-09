@@ -5,7 +5,15 @@ from typing import Union, List, Optional, Iterable, Sequence, Tuple
 
 # local
 import ivy
-from ivy import as_native_dtype, default_dtype, as_ivy_dtype
+from ivy import (
+    as_native_dtype,
+    default_dtype,
+    as_ivy_dtype,
+    asarray_to_native_arrays_and_back,
+    handle_out_argument,
+    asarray_infer_device,
+    handle_nestable,
+)
 from ivy.functional.backends.mxnet import _1_dim_array_to_flat_array
 
 
@@ -40,6 +48,11 @@ def arange(
     return mx.nd.arange(start, stop, ctx=device, step=step, dtype=dtype)
 
 
+@asarray_to_native_arrays_and_back
+@handle_out_argument
+@asarray_infer_device
+# @asarray_handle_nestable
+@handle_nestable
 def asarray(
     object_in: Union[mx.nd.NDArray, List[float], Tuple[float]],
     dtype: Optional[type] = None,

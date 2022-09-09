@@ -6,12 +6,18 @@ from typing import Union, Tuple, Optional, List, Sequence
 
 # local
 import ivy
+from ivy import handle_out_argument, handle_nestable
 from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
 
 # noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+from ivy.functional.ivy.creation import (
+    _assert_fill_value_and_dtype_are_compatible,
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+)
+
 
 # Array API Standard #
 # -------------------#
@@ -38,6 +44,11 @@ def arange(
     return res
 
 
+@asarray_to_native_arrays_and_back
+@handle_out_argument
+@asarray_infer_device
+# @asarray_handle_nestable
+@handle_nestable
 def asarray(
     object_in: Union[np.ndarray, List[float], Tuple[float]],
     /,

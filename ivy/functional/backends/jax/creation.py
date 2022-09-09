@@ -8,13 +8,17 @@ import jaxlib.xla_extension
 
 # local
 import ivy
-from ivy import as_native_dtype
+from ivy import as_native_dtype, handle_out_argument, handle_nestable
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy import default_dtype
 
 # noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+from ivy.functional.ivy.creation import (
+    _assert_fill_value_and_dtype_are_compatible,
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+)
 
 
 # Array API Standard #
@@ -42,6 +46,11 @@ def arange(
     return res
 
 
+@asarray_to_native_arrays_and_back
+@handle_out_argument
+@asarray_infer_device
+# @asarray_handle_nestable
+@handle_nestable
 def asarray(
     object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
     /,
