@@ -4,8 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.torch as ivy_torch
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -15,12 +13,7 @@ def _dtypes(draw):
         st.shared(
             helpers.list_of_length(
                 x=st.sampled_from(
-                    tuple(
-                        set(ivy_np.valid_float_dtypes).intersection(
-                            set(ivy_torch.valid_float_dtypes)
-                        )
-                    )
-                    + (None,)
+                    draw(helpers.get_dtypes("float", none=True)),
                 ),
                 length=1,
             ),
@@ -29,26 +22,14 @@ def _dtypes(draw):
     )
 
 
-@st.composite
-def _dtype_x_bounded_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    max_value = len(shape) - 1
-    if len(shape) == 0:
-        max_value = 0
-    axis = draw(helpers.ints(min_value=0, max_value=max_value))
-    return dtype, x, axis
-
-
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        )
+        available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.sigmoid"
+    ),
 )
 def test_torch_sigmoid(
     dtype_and_x,
@@ -68,46 +49,44 @@ def test_torch_sigmoid(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="sigmoid",
+        fn_tree="nn.functional.sigmoid",
         input=np.asarray(x, dtype=input_dtype),
-        out=None,
     )
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
     ),
-    axis=st.integers(-1, 0),
     dtypes=_dtypes(),
-    num_positional_args=helpers.num_positional_args(fn_name="softmax"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.softmax"
+    ),
 )
 def test_torch_softmax(
-    dtype_and_x,
+    dtype_x_and_axis,
     as_variable,
-    axis,
+    with_out,
     dtypes,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-
+    input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="softmax",
+        fn_tree="nn.functional.softmax",
         input=np.asarray(x, dtype=input_dtype),
         dim=axis,
         dtype=dtypes[0],
@@ -117,68 +96,61 @@ def test_torch_softmax(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        )
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.gelu"
     ),
-    approximate=st.sampled_from(["none", "tanh"]),
 )
 def test_torch_gelu(
     dtype_and_x,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    approximate,
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.gelu",
         input=np.asarray(x, dtype=input_dtype),
-        approximate=approximate,
+        rtol=1e-02,
     )
 
 
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        )
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.leaky_relu"
+        fn_name="ivy.functional.frontends.torch.leaky_relu"
     ),
     alpha=st.floats(min_value=0, max_value=1),
 )
 def test_torch_leaky_relu(
     dtype_and_x,
     num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
     fw,
     alpha,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.leaky_relu",
@@ -190,11 +162,7 @@ def test_torch_leaky_relu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        )
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.tanh"
@@ -209,7 +177,6 @@ def test_torch_tanh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
@@ -218,28 +185,24 @@ def test_torch_tanh(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="tanh",
+        fn_tree="nn.functional.tanh",
         input=np.asarray(x, dtype=input_dtype),
-        out=None,
     )
 
 
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        )
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.logsigmoid"
+        fn_name="ivy.functional.frontends.torch.logsigmoid"
     ),
 )
 def test_torch_logsigmoid(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -248,7 +211,7 @@ def test_torch_logsigmoid(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -260,17 +223,16 @@ def test_torch_logsigmoid(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_and_axis=_dtype_x_bounded_axis(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
     ),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.softmin"
+        fn_name="ivy.functional.frontends.torch.softmin"
     ),
 )
 def test_torch_softmin(
@@ -283,7 +245,6 @@ def test_torch_softmin(
     fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -339,11 +300,7 @@ def test_torch_hardtanh(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold"
@@ -354,6 +311,7 @@ def test_torch_threshold(
     dtype_and_input,
     inplace,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -362,7 +320,7 @@ def test_torch_threshold(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -379,11 +337,7 @@ def test_torch_threshold(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold_"
@@ -392,6 +346,7 @@ def test_torch_threshold(
 def test_torch_threshold_(
     dtype_and_input,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -400,7 +355,7 @@ def test_torch_threshold_(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -416,11 +371,7 @@ def test_torch_threshold_(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.relu6"
@@ -431,6 +382,7 @@ def test_torch_relu6(
     dtype_and_input,
     inplace,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -439,7 +391,7 @@ def test_torch_relu6(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -454,11 +406,7 @@ def test_torch_relu6(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.elu"
@@ -471,6 +419,7 @@ def test_torch_elu(
     inplace,
     alpha,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -479,7 +428,7 @@ def test_torch_elu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -495,11 +444,7 @@ def test_torch_elu(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.elu_"
@@ -510,6 +455,7 @@ def test_torch_elu_(
     dtype_and_input,
     alpha,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -518,7 +464,7 @@ def test_torch_elu_(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -526,4 +472,39 @@ def test_torch_elu_(
         fn_tree="nn.functional.elu_",
         input=np.asarray(input, dtype=input_dtype),
         alpha=alpha,
+    )
+
+
+# celu
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.celu"
+    ),
+    inplace=st.booleans(),
+)
+def test_torch_celu(
+    dtype_and_input,
+    inplace,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.celu",
+        input=np.asarray(input, dtype=input_dtype),
+        inplace=inplace,
     )
