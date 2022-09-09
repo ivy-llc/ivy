@@ -348,11 +348,9 @@ def multiprocessing(context=None):
     )
 
 
-# noinspection PyUnusedLocal
 def one_hot(
     indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = jnp.eye(depth, dtype=indices.dtype)[
         jnp.array(indices, dtype="int64").reshape(-1)
     ]
@@ -364,23 +362,25 @@ def indices_where(x: JaxArray) -> JaxArray:
     return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
 
 
-def inplace_decrement(x, val):
+def inplace_decrement(
+    x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data -= val_native
     else:
-        x = ivy.Array(val_native)
+        x = ivy.Array(x_native - val_native)
     return x
 
 
 def inplace_increment(
     x: Union[ivy.Array, JaxArray], val: Union[ivy.Array, JaxArray]
-) -> Union[ivy.Array, ivy.Container]:
+) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
     if ivy.is_ivy_array(x):
         x.data += val_native
     else:
-        x = ivy.Array(val_native)
+        x = ivy.Array(x_native + val_native)
     return x
 
 

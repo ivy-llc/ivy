@@ -970,7 +970,7 @@ def test_jax_lax_exp(
 @st.composite
 def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
-    to_dtype = draw(helpers.get_dtypes("numeric"), full=False)
+    to_dtype = draw(helpers.get_dtypes("numeric", full=False))
     assume(ivy.can_cast(dtype, to_dtype))
     return to_dtype
 
