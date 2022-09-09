@@ -1373,7 +1373,7 @@ def clip_matrix_norm(
 @to_native_arrays_and_back
 @handle_nestable
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
