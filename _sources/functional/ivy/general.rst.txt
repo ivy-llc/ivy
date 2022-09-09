@@ -66,7 +66,7 @@ General
    general/container_types.rst
    general/inplace_arrays_supported.rst
    general/inplace_variables_supported.rst
-   general/supports_inplace.rst
+   general/supports_inplace_updates.rst
    general/assert_supports_inplace.rst
    general/inplace_update.rst
    general/inplace_decrement.rst

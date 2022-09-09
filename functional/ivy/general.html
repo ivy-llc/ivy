@@ -115,7 +115,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/container_types.html">container_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_arrays_supported.html">inplace_arrays_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_variables_supported.html">inplace_variables_supported</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/supports_inplace.html">supports_inplace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/supports_inplace_updates.html">supports_inplace_updates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
@@ -2841,8 +2841,8 @@ for numerical stability.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.general.supports_inplace">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">supports_inplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#supports_inplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.supports_inplace" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.general.supports_inplace_updates">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">supports_inplace_updates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#supports_inplace_updates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.supports_inplace_updates" title="Permalink to this definition"></a></dt>
 <dd><p>Determines whether in-place operations are supported for x’s data type,
 by the current backend framework setting.</p>
 <dl class="field-list simple">
@@ -2869,21 +2869,21 @@ data type of x.</p>
 <p class="rubric">Examples</p>
 <p>With :code:’ivy.DType(“bool”)’ input:
 &gt;&gt;&gt; x = True
-&gt;&gt;&gt; ivy.supports_inplace(x)
+&gt;&gt;&gt; ivy.supports_inplace_updates(x)
 ValueError: Input x must be either a variable or an array.</p>
 <p>With :code:’ivy.Array’ input and default backend set as ‘numpy’:
 &gt;&gt;&gt; x = ivy.array([0, 1, 2])
-&gt;&gt;&gt; ret = ivy.supports_inplace(x)
+&gt;&gt;&gt; ret = ivy.supports_inplace_updates(x)
 &gt;&gt;&gt; print(ret)
 True</p>
 <p>With :code:’ivy.Variable’ input and backend set as ‘jax’:
 &gt;&gt;&gt; x = ivy.variable(ivy.array(5.5))
-&gt;&gt;&gt; ret = ivy.supports_inplace(x)
+&gt;&gt;&gt; ret = ivy.supports_inplace_updates(x)
 &gt;&gt;&gt; print(ret)
 False</p>
 <p>With :code:’ivy.Container’ input and backend set as ‘torch’:
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
-&gt;&gt;&gt; ret = ivy.supports_inplace(x)
+&gt;&gt;&gt; ret = ivy.supports_inplace_updates(x)
 &gt;&gt;&gt; print(ret)
 {</p>
 <blockquote>
