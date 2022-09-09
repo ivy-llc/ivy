@@ -8,7 +8,6 @@ def tile(A, reps):
 
 tile.unsupported_dtypes = {
     "tensorflow": ("uint8", "uint16", "uint32", "int8", "int16"),
-    "torch": ("uint16", "uint32", "uint64"),
 }
 
 

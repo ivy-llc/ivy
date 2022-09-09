@@ -864,8 +864,6 @@ def test_floor_divide(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
     # Make sure it's not dividing value too close to zero
     assume(not np.any(np.isclose(x2, 0)))
 
@@ -884,6 +882,45 @@ def test_floor_divide(
         x1=x1,
         x2=x2,
         atol_=1,
+    )
+
+
+# floormod
+@handle_cmd_line_args
+@given(
+    xy=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=1,
+        large_value_safety_factor=20,
+    ),
+)
+def test_floormod(
+    xy,
+    as_variable,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    # smoke test
+    dtype = xy[0]
+    x = xy[1][0]
+    divisor = xy[1][1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=2,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="floormod",
+        x=np.asarray(x, dtype=dtype[0]),
+        y=np.asarray(divisor, dtype=dtype[1]),
     )
 
 
@@ -1269,6 +1306,7 @@ def test_log2(
         instance_method=instance_method,
         fw=fw,
         fn_name="log2",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -1305,6 +1343,7 @@ def test_log10(
         instance_method=instance_method,
         fw=fw,
         fn_name="log10",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
