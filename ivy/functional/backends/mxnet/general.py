@@ -55,7 +55,8 @@ def to_list(x: mx.nd.NDArray) -> list:
     return to_numpy(x).tolist()
 
 
-container_types = lambda: []
+def container_types():
+    return []
 
 
 def unstack(
@@ -91,7 +92,8 @@ def inplace_arrays_supported():
     return True
 
 
-inplace_variables_supported = lambda: True
+def inplace_variables_supported():
+    return True
 
 
 def inplace_decrement(
@@ -298,5 +300,8 @@ def indices_where(x):
     return res
 
 
-current_backend_str = lambda: "mxnet"
+def current_backend_str():
+    return "mxnet"
+
+
 current_backend_str.__name__ = "current_backend_str"

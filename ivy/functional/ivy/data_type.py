@@ -96,10 +96,14 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         visited.add(fn)
 
-        # Assuming that it's set in backend or the ivy functional module
-        if "backend" in fn.__module__ or "functional.ivy" in fn.__module__:
-            f_suported = wrapper(get_fn(fn, False))
-            out = merge_fn(f_suported, out)
+        # Assuming that it's set in backend
+        if "backend" in fn.__module__:
+            f_supported = wrapper(get_fn(fn, False))
+            out = merge_fn(f_supported, out)
+            continue
+
+        # skip if it's not a function
+        if not inspect.isfunction(fn):
             continue
 
         fl = _get_function_list(fn)
@@ -114,9 +118,16 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
 def _get_dtypes(fn, complement=True):
     supported = set(ivy.valid_dtypes)
 
-    # Their values are formated like either
+    # We only care about getting dtype info from the base function
+    # if we do need to at some point use dtype information from the parent function
+    # we can comment out the following condition
+    if "backend" not in fn.__module__:
+        if complement:
+            supported = set(ivy.all_dtypes).difference(supported)
+        return supported
+
+    # Their values are formatted like either
     # 1. fn.supported_dtypes = ("float16",)
-    # 2. fn.supported_dtypes = {"numpy": ("float16",)}
     # Could also have the "all" value for the framework
     basic = [
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
@@ -125,9 +136,10 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if isinstance(v, dict):
-                vb = v.get(ivy.current_backend_str(), base)
-                v = merge_fn(set(vb), v.get("all", base))
+            if not isinstance(v, tuple):
+                raise ValueError(
+                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
+                )
             supported = merge_fn(supported, set(v))
 
     if complement:
