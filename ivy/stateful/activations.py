@@ -28,25 +28,38 @@ class GELU(Module):
         """
         return ivy.gelu(x, approximate=ivy.default(approximate, self._approximate))
 
+    _forward.unsupported_dtypes = {"torch": ("float16",)}
+
 
 class GEGLU(Module):
-    def __init__(self):
+    def __init__(self, *, approximate=True):
         """Applies the GEGLU activation function."""
+        self._approximate = approximate
         Module.__init__(self)
 
-    def _forward(self, inputs, gates):
+    def _forward(self, inputs, gates, /, *, approximate=None):
         """
-        Perform forward pass of the GEGLU activation.
+        Perform forward pass of the GEGLU activation. Calculated by the following
+        formula: activation = GELU(inputs) * gates
 
         Parameters
         ----------
         inputs
-            Inputs to process *[batch_shape, 2d]*.
+            Inputs to process
+
+        gates
+            Array of gates used in the GEGLU activation function. Must have the same
+            shape as the inputs
 
         Returns
         -------
         ret
-            The outputs following the GEGLU activation *[batch_shape, d]*
+            The outputs the GEGLU activation of the inputs and the gates
 
         """
-        return ivy.gelu(inputs) * gates
+        return (
+            ivy.gelu(inputs, approximate=ivy.default(approximate, self._approximate))
+            * gates
+        )
+
+    _forward.unsupported_dtypes = {"torch": ("float16",)}
