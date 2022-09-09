@@ -360,7 +360,7 @@ def get_current_frontend():
 def get_dtypes(draw, kind, index=0, full=True, none=False):
     """
     Draws a valid dtypes for the test function. For frontend tests,
-    it draws the ddata types from the intersection between backend
+    it draws the data types from the intersection between backend
     framework data types and frontend framework dtypes, otherwise,
     draws it from backend framework data types.
 
