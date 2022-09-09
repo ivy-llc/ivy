@@ -1,11 +1,10 @@
 def dtype_from_version(dic,version):
-    for i in dic.keys():
-        if i.strip(' ').split(" ")[0]==str(version):
-            return dic[i]
-        if "above" in i and int(str(version).strip('.'))>=int(i.strip(' ').split(" ")[0].strip('.')):
-            return dic[i]
-        if "below" in i and int(str(version).strip('.'))<=int(i.strip(' ').split(" ")[0].strip('.')):
-            return dic[i]
-        if "to" in i and (int(str(version).strip('.'))>=int(i.strip(' ').split(" ")[0].strip('.')) and int(str(version).strip('.'))<=int(i.strip(' ').split(" ")[2].strip('.'))):
-            return dic[i]
-
+    for key in dic.keys():
+        if tuple(key.strip().split(" ")[0].split('.'))==tuple(version.split('.')):
+            return dic[key]
+        if "above" in key and tuple(key.strip().split(" ")[0].split('.'))<=tuple(version.split('.')):
+            return dic[key]
+        if "below" in key and tuple(key.strip().split(" ")[0].split('.'))>=tuple(version.split('.')):
+            return dic[key]
+        if "to" in key and (tuple(key.strip().split(" ")[0].split('.'))>=tuple(version.split('.'))) and tuple(key.strip().split(" ")[0].split('.'))<=tuple(version.split('.')):
+            return dic[key]
