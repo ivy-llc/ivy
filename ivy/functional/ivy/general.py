@@ -1280,8 +1280,9 @@ clip_vector_norm.unsupported_dtypes = {
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
-    p: float = 2.0,
+    /,
     *,
+    p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Clips (limits) the matrix norm of an array.
@@ -1370,16 +1371,28 @@ def clip_matrix_norm(
         b: ivy.array([[0.849, 1.13, 1.41]])
     }
     """
-    norms = ivy.matrix_norm(x, p, keepdims=True)
+    norms = ivy.matrix_norm(x, ord=p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
 
 
 clip_matrix_norm.unsupported_dtypes = {
-    "jax": ("float16",),
-    "numpy": ("float16",),
-    "tensorflow": ("float16",),
-    "torch": ("float16",),
+    "jax": (
+        "float16",
+        "bfloat16",
+    ),
+    "numpy": (
+        "float16",
+        "bfloat16",
+    ),
+    "tensorflow": (
+        "float16",
+        "bfloat16",
+    ),
+    "torch": (
+        "float16",
+        "bfloat16",
+    ),
 }
 
 

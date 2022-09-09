@@ -1049,8 +1049,9 @@ class ArrayWithGeneral(abc.ABC):
     def clip_matrix_norm(
         self: ivy.Array,
         max_norm: float,
-        p: float = 2.0,
+        /,
         *,
+        p: float = 2.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

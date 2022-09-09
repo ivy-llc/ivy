@@ -3952,12 +3952,13 @@ class ContainerWithGeneral(ContainerBase):
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
-        p: float = 2.0,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
+        p: float = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -4010,23 +4011,24 @@ class ContainerWithGeneral(ContainerBase):
             "clip_matrix_norm",
             x,
             max_norm,
-            p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            p=p,
             out=out,
         )
 
     def clip_matrix_norm(
         self: ivy.Container,
         max_norm: float,
-        p: float = 2.0,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
+        p: float = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
