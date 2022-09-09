@@ -34,6 +34,7 @@ def _dtypes(draw):
 def test_torch_sigmoid(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -43,7 +44,7 @@ def test_torch_sigmoid(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -105,6 +106,7 @@ def test_torch_gelu(
     dtype_and_x,
     num_positional_args,
     as_variable,
+    with_out,
     native_array,
     fw,
 ):
@@ -113,7 +115,7 @@ def test_torch_gelu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -170,6 +172,7 @@ def test_torch_leaky_relu(
 def test_torch_tanh(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -179,7 +182,7 @@ def test_torch_tanh(
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -452,6 +455,7 @@ def test_torch_celu(
     dtype_and_input,
     inplace,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -460,7 +464,7 @@ def test_torch_celu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
