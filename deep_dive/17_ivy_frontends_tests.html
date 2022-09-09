@@ -67,9 +67,15 @@
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Ivy Frontend Tests</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-test-examples">Frontend Test Examples</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ivy-tan">ivy.tan()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ivy-full">ivy.full()</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-instance-method-tests">Frontend Instance Method Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-instance-method-test-examples">Frontend Instance Method Test Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ivy-add">ivy.add()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ivy-reshape">ivy.reshape()</a></li>
 </ul>
 </li>
 </ul>
@@ -234,8 +240,8 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 </ul>
 <p>To get a better understanding for writing frontend tests lets run through some examples!</p>
 </section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
+<section id="frontend-test-examples">
+<h2>Frontend Test Examples<a class="headerlink" href="#frontend-test-examples" title="Permalink to this heading"></a></h2>
 <section id="ivy-tan">
 <h3>ivy.tan()<a class="headerlink" href="#ivy-tan" title="Permalink to this heading"></a></h3>
 <p><strong>Jax</strong></p>
@@ -710,6 +716,446 @@ This function requires us to create extra functions for generating <code class="
 <li><p>Here we created another extra function, <code class="code docutils literal notranslate"><span class="pre">_requires_grad()</span></code>, to accommodate the <code class="code docutils literal notranslate"><span class="pre">requires_grad</span></code> argument. This is because when the dtype is an integer or unsigned integer the <code class="code docutils literal notranslate"><span class="pre">requires_grad</span></code> argument is not supported.</p></li>
 <li><p>We use <code class="code docutils literal notranslate"><span class="pre">ivy_torch.valid_numeric_dtypes</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, these are valid numeric data types specifically for Torch.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">torch.full()</span></code> supports <code class="code docutils literal notranslate"><span class="pre">out</span></code> so we generate <code class="code docutils literal notranslate"><span class="pre">with_out</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="frontend-instance-method-tests">
+<h2>Frontend Instance Method Tests<a class="headerlink" href="#frontend-instance-method-tests" title="Permalink to this heading"></a></h2>
+<p>The frontend instance method tests are similar to the frontend function test, but instead
+of testing the function directly we test the instance method of the frontend class.</p>
+<p><strong>Important Helper Functions</strong></p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">helpers.test_frontend_instance_method()</span></code> is used to test frontend instance methods.</p></li>
+</ul>
+<p>It is used in the same way as <code class="code docutils literal notranslate"><span class="pre">helpers.test_frontend_function()</span></code>.</p>
+<p><strong>Useful Notes</strong>
+The <code class="code docutils literal notranslate"><span class="pre">helpers.test_frontend_instance_method()</span></code> takes an argument <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code>
+which is the frontend class to test. This is the relevant Ivy frontend class and not the native framework class.</p>
+</section>
+<section id="frontend-instance-method-test-examples">
+<h2>Frontend Instance Method Test Examples<a class="headerlink" href="#frontend-instance-method-test-examples" title="Permalink to this heading"></a></h2>
+<section id="ivy-add">
+<h3>ivy.add()<a class="headerlink" href="#ivy-add" title="Permalink to this heading"></a></h3>
+<p><strong>Jax</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py</span>
+<span class="c1"># add</span>
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.jax.DeviceArray.add&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_jax_instance_add</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">DeviceArray</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;DeviceArray.add&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">other</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We use <code class="code docutils literal notranslate"><span class="pre">test_frontend_array_instance_method()</span></code> to test the instance method.</p></li>
+<li><p>We import the frontend class <code class="code docutils literal notranslate"><span class="pre">DeviceArray</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.jax.DeviceArray</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="code docutils literal notranslate"><span class="pre">devicearray.add</span></code> which is the path to the function in the frontend class.</p></li>
+</ul>
+<p><strong>NumPy</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py</span>
+<span class="c1"># add</span>
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">,</span> <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">),</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)),</span>
+    <span class="n">where</span><span class="o">=</span><span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">where</span><span class="p">(),</span>
+    <span class="n">as_variable</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_bools</span><span class="p">(),</span>
+    <span class="n">with_out</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.ndarray.add&quot;</span>
+    <span class="p">),</span>
+    <span class="n">native_array</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_bools</span><span class="p">(),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_numpy_instance_add</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">,</span>
+    <span class="n">where</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+    <span class="n">where</span> <span class="o">=</span> <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">handle_where_and_array_bools</span><span class="p">(</span>
+        <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
+        <span class="n">input_dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">native_array</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;ndarray.add&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">other</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
+        <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">test_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We use <code class="code docutils literal notranslate"><span class="pre">np_frontend_helpers.test_frontend_array_instance_method()</span></code> to test the instance method. This handles the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument.</p></li>
+<li><p>We import the frontend class <code class="code docutils literal notranslate"><span class="pre">ndarray</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.numpy.ndarray</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="code docutils literal notranslate"><span class="pre">ndarray.add</span></code> which is the path to the function in the frontend class.</p></li>
+</ul>
+<p><strong>TensorFlow</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py</span>
+<span class="c1"># add</span>
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ivy_tf</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">))</span>
+        <span class="p">),</span>
+        <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.tensorflow.Tensor.add&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_tensorflow_instance_add</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="p">,</span> <span class="n">as_variable</span><span class="p">,</span> <span class="n">num_positional_args</span><span class="p">,</span> <span class="n">native_array</span><span class="p">,</span> <span class="n">fw</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;Tensor.add&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We import the frontend class <code class="code docutils literal notranslate"><span class="pre">Tensor</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.tensorflow.tensor</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="code docutils literal notranslate"><span class="pre">Tensor.add</span></code> which is the path to the function in the frontend class.</p></li>
+</ul>
+<p><strong>PyTorch</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py</span>
+<span class="c1"># add</span>
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">ivy_torch</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">min_value</span><span class="o">=-</span><span class="mf">1e04</span><span class="p">,</span>
+        <span class="n">max_value</span><span class="o">=</span><span class="mf">1e04</span><span class="p">,</span>
+        <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mf">1e06</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">1e06</span><span class="p">,</span> <span class="n">allow_infinity</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;functional.frontends.torch.Tensor.add&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_torch_instance_add</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;Tensor.add&quot;</span><span class="p">,</span>
+        <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">other</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We import the frontend class <code class="code docutils literal notranslate"><span class="pre">Tensor</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.torch.tensor</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="code docutils literal notranslate"><span class="pre">Tensor.add</span></code> which is the path to the function in the frontend class.</p></li>
+</ul>
+</section>
+<section id="ivy-reshape">
+<h3>ivy.reshape()<a class="headerlink" href="#ivy-reshape" title="Permalink to this heading"></a></h3>
+<p><strong>Jax</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py</span>
+<span class="c1"># reshape</span>
+<span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">_reshape_helper</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
+    <span class="c1"># generate a shape s.t len(shape) &gt; 0</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span><span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">reshape_shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">reshape_shapes</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_dtypes</span><span class="p">(</span><span class="n">num_arrays</span><span class="o">=</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_values</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="n">is_dim</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">is_dim</span><span class="p">:</span>
+        <span class="c1"># generate a permutation of [0, 1, 2, ... len(shape) - 1]</span>
+        <span class="n">permut</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)))))</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">reshape_shape</span><span class="p">,</span> <span class="n">permut</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">reshape_shape</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">x_reshape_permut</span><span class="o">=</span><span class="n">_reshape_helper</span><span class="p">(),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.jax.DeviceArray.reshape&quot;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_jax_instance_reshape</span><span class="p">(</span>
+    <span class="n">x_reshape_permut</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dimensions</span> <span class="o">=</span> <span class="n">x_reshape_permut</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">DeviceArray</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;DeviceArray.reshape&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span>
+        <span class="n">new_sizes</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>For <code class="code docutils literal notranslate"><span class="pre">jax.reshape()</span></code>, we create a helper function to generate correct data to test the function.</p></li>
+</ul>
+<p><strong>NumPy</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py</span>
+<span class="c1"># reshape</span>
+<span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">dtypes_x_reshape</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
+    <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
+                <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">reshape_shapes</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">shape</span>
+
+
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">dtypes_x_shape</span><span class="o">=</span><span class="n">dtypes_x_reshape</span><span class="p">(),</span>
+    <span class="n">copy</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+    <span class="n">with_out</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+    <span class="n">as_variable</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_bools</span><span class="p">(),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.ndarray.reshape&quot;</span>
+    <span class="p">),</span>
+    <span class="n">native_array</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_bools</span><span class="p">(),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_numpy_instance_reshape</span><span class="p">(</span>
+    <span class="n">dtypes_x_shape</span><span class="p">,</span>
+    <span class="n">copy</span><span class="p">,</span>
+    <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">dtypes_x_shape</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;ndarray.reshape&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>For <code class="code docutils literal notranslate"><span class="pre">NumPy.reshape()</span></code>, we create a helper function to generate correct data to test the function.</p></li>
+</ul>
+<p><strong>TensorFlow</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py</span>
+<span class="c1"># reshape</span>
+<span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">dtypes_x_reshape</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
+    <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
+                <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">reshape_shapes</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">shape</span>
+
+
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">dtypes_x_shape</span><span class="o">=</span><span class="n">dtypes_x_reshape</span><span class="p">(),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.tensorflow.Tensor.Reshape&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_tensorflow_instance_Reshape</span><span class="p">(</span>
+    <span class="n">dtypes_x_shape</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">dtypes_x_shape</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;Tensor.Reshape&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="p">),</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>For <code class="code docutils literal notranslate"><span class="pre">tensorflow.Reshape()</span></code>, we create a helper function to generate correct data to test the function.</p></li>
+</ul>
+<p><strong>PyTorch</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py</span>
+<span class="c1"># reshape</span>
+<span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">dtypes_x_reshape</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
+    <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
+                <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">reshape_shapes</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">shape</span>
+
+
+<span class="nd">@handle_cmd_line_args</span>
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">dtypes_x_reshape</span> <span class="o">=</span> <span class="n">dtypes_x_reshape</span><span class="p">(),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.torch.Tensor.reshape&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_torch_instance_reshape</span><span class="p">(</span>
+    <span class="n">dtypes_x_reshape</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">with_out</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">fw</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">dtypes_x_reshape</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
+        <span class="n">frontend_class</span><span class="o">=</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;Tensor.reshape&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">),</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>For <code class="code docutils literal notranslate"><span class="pre">torch.reshape()</span></code>, we create a helper function to generate correct data to test the function.</p></li>
 </ul>
 <p><strong>Round Up</strong></p>
 <p>These examples have hopefully given you a good understanding of Ivy Frontend Tests!</p>

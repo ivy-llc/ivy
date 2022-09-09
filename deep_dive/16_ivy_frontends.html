@@ -70,6 +70,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instance-methods">Instance Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#framework-specific-classes">Framework-Specific Classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ivy-sum">ivy.sum()</a></li>
 </ul>
@@ -469,6 +470,34 @@ in a manner like the following:</p>
 <p>The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
 more devices, we should still flag the frontend function devices to be the same as those
 supported by the function in the native framework.</p>
+</section>
+<section id="instance-methods">
+<h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this heading"></a></h2>
+<p>To allow for the Frontend API to be used with Instance Methods, we have created frontend
+framework specific classes which behave similiar to the Ivy Array class. These framework
+specific classes wrap any existing Ivy Array or Native Array and allow for them to be used
+with framework specific instance methods. The example below highlights the difference between
+the functional method and its relevant instance method.</p>
+<p><strong>Examples</strong></p>
+<p><strong>tensorflow.add</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>tensorflow.add Instance Method</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/tensor.py</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>As you can see, the instance method is very similar to the functional method, but it
+takes the first argument as self. This is because the instance method is called
+on an instance of the framework specific class, which wraps the Ivy Array or Native Array.</p></li>
+<li><p>We then return the relevant frontend function, passing in the wrapped Ivy Array or Native Array
+as <code class="code docutils literal notranslate"><span class="pre">self.data</span></code></p></li>
+</ul>
 </section>
 <section id="framework-specific-classes">
 <h2>Framework-Specific Classes<a class="headerlink" href="#framework-specific-classes" title="Permalink to this heading"></a></h2>
