@@ -35,7 +35,8 @@ def test_numpy_norm(
     fw
 ):
     dtype, x, axis = dtype_values_axis
-    if len(np.shape(x)) == 1: axis=None
+    if len(np.shape(x)) == 1:
+        axis = None
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
