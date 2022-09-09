@@ -1110,6 +1110,7 @@ which is the frontend class to test. This is the relevant Ivy frontend class and
 <span class="k">def</span> <span class="nf">dtypes_x_reshape</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
     <span class="n">dtypes</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
         <span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+            <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
                 <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -1125,7 +1126,7 @@ which is the frontend class to test. This is the relevant Ivy frontend class and
 
 <span class="nd">@handle_cmd_line_args</span>
 <span class="nd">@given</span><span class="p">(</span>
-    <span class="n">dtypes_x_reshape</span> <span class="o">=</span> <span class="n">dtypes_x_reshape</span><span class="p">(),</span>
+    <span class="n">dtypes_x_reshape</span><span class="o">=</span><span class="n">dtypes_x_reshape</span><span class="p">(),</span>
     <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
         <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.torch.Tensor.reshape&quot;</span><span class="p">,</span>
     <span class="p">),</span>
