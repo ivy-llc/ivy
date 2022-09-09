@@ -1032,7 +1032,9 @@ def test_torch_absolute(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=1),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.logical_not"
     ),
@@ -1062,7 +1064,9 @@ def test_torch_logical_not(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.logical_and"
     ),
@@ -1093,7 +1097,9 @@ def test_torch_logical_and(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.logical_or"
     ),
@@ -1124,7 +1130,9 @@ def test_torch_logical_or(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.logical_xor"
     ),
