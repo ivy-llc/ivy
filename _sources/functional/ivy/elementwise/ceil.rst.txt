@@ -2,6 +2,12 @@ ceil
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.ceil
+
+.. autofunction:: ivy.array.array_methods.ceil
+
+.. autofunction:: ivy.container.container_methods.static_ceil
+
+.. autofunction:: ivy.container.container_methods.ceil
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ ceil
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: ceil
+
+   ceil/ceil_functional.rst
+   ceil/ceil_array.rst
+   ceil/ceil_container.rst
+   ceil/static_ceil_container.rst
+

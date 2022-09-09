@@ -2,6 +2,12 @@ exp
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.exp
+
+.. autofunction:: ivy.array.array_methods.exp
+
+.. autofunction:: ivy.container.container_methods.exp
+
+.. autofunction:: ivy.container.container_methods.static_exp
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ exp
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: exp
+
+   exp/exp_functional.rst
+   exp/exp_array.rst
+   exp/exp_container.rst
+   exp/static_exp_container.rst
+

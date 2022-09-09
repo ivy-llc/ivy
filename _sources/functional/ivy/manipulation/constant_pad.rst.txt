@@ -2,6 +2,12 @@ constant_pad
 ============
 
 .. autofunction:: ivy.functional.ivy.manipulation.constant_pad
+
+.. autofunction:: ivy.array.array_methods.constant_pad
+
+.. autofunction:: ivy.container.container_methods.static_constant_pad
+
+.. autofunction:: ivy.container.container_methods.constant_pad
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ constant_pad
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: constant_pad
+
+   constant_pad/constant_pad_functional.rst
+   constant_pad/constant_pad_array.rst
+   constant_pad/constant_pad_container.rst
+   constant_pad/static_constant_pad_container.rst
+

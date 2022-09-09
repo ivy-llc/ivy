@@ -2,6 +2,8 @@ get_num_dims
 ============
 
 .. autofunction:: ivy.functional.ivy.general.get_num_dims
+
+.. autofunction:: ivy.array.array_methods.get_num_dims
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ get_num_dims
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: get_num_dims
+
+   get_num_dims/get_num_dims_functional.rst
+   get_num_dims/get_num_dims_array.rst
+

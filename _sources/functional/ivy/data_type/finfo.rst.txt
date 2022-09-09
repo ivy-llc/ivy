@@ -2,6 +2,12 @@ finfo
 =====
 
 .. autofunction:: ivy.functional.ivy.data_type.finfo
+
+.. autofunction:: ivy.array.array_methods.finfo
+
+.. autofunction:: ivy.container.container_methods.static_finfo
+
+.. autofunction:: ivy.container.container_methods.finfo
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ finfo
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: finfo
+
+   finfo/finfo_functional.rst
+   finfo/finfo_array.rst
+   finfo/finfo_container.rst
+   finfo/static_finfo_container.rst
+

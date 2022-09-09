@@ -2,6 +2,12 @@ dtype
 =====
 
 .. autofunction:: ivy.functional.ivy.data_type.dtype
+
+.. autofunction:: ivy.array.array_methods.dtype
+
+.. autofunction:: ivy.container.container_methods.dtype
+
+.. autofunction:: ivy.container.container_methods.static_dtype
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ dtype
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: dtype
+
+   dtype/dtype_functional.rst
+   dtype/dtype_array.rst
+   dtype/dtype_container.rst
+   dtype/static_dtype_container.rst
+

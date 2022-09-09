@@ -29,3 +29,7 @@ Manipulation
    manipulation/tile.rst
    manipulation/zero_pad.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Manipulation discussion`: https://github.com/unifyai/ivy/discussions/2196
+.. _`Manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
+This should have hopefully given you an overview of the Manipulation submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Manipulation discussion`_,or reach out on `discord`_ in the `Manipulation channel`_!

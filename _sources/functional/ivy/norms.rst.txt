@@ -15,3 +15,7 @@ Norms
 
    norms/layer_norm.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Norms discussion`: https://github.com/unifyai/ivy/discussions/2199
+.. _`Norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
+This should have hopefully given you an overview of the Norms submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Norms discussion`_,or reach out on `discord`_ in the `Norms channel`_!

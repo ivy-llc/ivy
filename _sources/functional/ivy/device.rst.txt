@@ -44,3 +44,7 @@ Device
     def __init__.rst
    device/Profiler.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Device discussion`: https://github.com/unifyai/ivy/discussions/2188
+.. _`Device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+This should have hopefully given you an overview of the Device submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Device discussion`_,or reach out on `discord`_ in the `Device channel`_!

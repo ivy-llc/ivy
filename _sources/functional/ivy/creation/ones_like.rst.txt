@@ -2,6 +2,12 @@ ones_like
 =========
 
 .. autofunction:: ivy.functional.ivy.creation.ones_like
+
+.. autofunction:: ivy.array.array_methods.ones_like
+
+.. autofunction:: ivy.container.container_methods.ones_like
+
+.. autofunction:: ivy.container.container_methods.static_ones_like
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ ones_like
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: ones_like
+
+   ones_like/ones_like_functional.rst
+   ones_like/ones_like_array.rst
+   ones_like/ones_like_container.rst
+   ones_like/static_ones_like_container.rst
+

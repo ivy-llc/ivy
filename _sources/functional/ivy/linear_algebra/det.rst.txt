@@ -2,6 +2,12 @@ det
 ===
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.det
+
+.. autofunction:: ivy.array.array_methods.det
+
+.. autofunction:: ivy.container.container_methods.static_det
+
+.. autofunction:: ivy.container.container_methods.det
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ det
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: det
+
+   det/det_functional.rst
+   det/det_array.rst
+   det/det_container.rst
+   det/static_det_container.rst
+

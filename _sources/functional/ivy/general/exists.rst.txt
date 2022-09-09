@@ -2,6 +2,8 @@ exists
 ======
 
 .. autofunction:: ivy.functional.ivy.general.exists
+
+.. autofunction:: ivy.array.array_methods.exists
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ exists
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: exists
+
+   exists/exists_functional.rst
+   exists/exists_array.rst
+

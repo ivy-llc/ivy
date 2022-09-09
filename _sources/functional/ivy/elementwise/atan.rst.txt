@@ -2,6 +2,12 @@ atan
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.atan
+
+.. autofunction:: ivy.array.array_methods.atan
+
+.. autofunction:: ivy.container.container_methods.static_atan
+
+.. autofunction:: ivy.container.container_methods.atan
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ atan
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: atan
+
+   atan/atan_functional.rst
+   atan/atan_array.rst
+   atan/atan_container.rst
+   atan/static_atan_container.rst
+

@@ -2,6 +2,12 @@ atanh
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.atanh
+
+.. autofunction:: ivy.array.array_methods.atanh
+
+.. autofunction:: ivy.container.container_methods.static_atanh
+
+.. autofunction:: ivy.container.container_methods.atanh
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ atanh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: atanh
+
+   atanh/atanh_functional.rst
+   atanh/atanh_array.rst
+   atanh/atanh_container.rst
+   atanh/static_atanh_container.rst
+

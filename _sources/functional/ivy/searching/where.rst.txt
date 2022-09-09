@@ -2,6 +2,12 @@ where
 =====
 
 .. autofunction:: ivy.functional.ivy.searching.where
+
+.. autofunction:: ivy.array.array_methods.where
+
+.. autofunction:: ivy.container.container_methods.static_where
+
+.. autofunction:: ivy.container.container_methods.where
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ where
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: where
+
+   where/where_functional.rst
+   where/static_where_container.rst
+   where/where_array.rst
+   where/where_container.rst
+

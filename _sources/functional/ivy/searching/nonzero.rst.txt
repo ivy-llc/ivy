@@ -2,6 +2,12 @@ nonzero
 =======
 
 .. autofunction:: ivy.functional.ivy.searching.nonzero
+
+.. autofunction:: ivy.array.array_methods.nonzero
+
+.. autofunction:: ivy.container.container_methods.static_nonzero
+
+.. autofunction:: ivy.container.container_methods.nonzero
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ nonzero
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: nonzero
+
+   nonzero/nonzero_functional.rst
+   nonzero/nonzero_array.rst
+   nonzero/nonzero_container.rst
+   nonzero/static_nonzero_container.rst
+

@@ -2,6 +2,12 @@ all
 ===
 
 .. autofunction:: ivy.functional.ivy.utility.all
+
+.. autofunction:: ivy.array.array_methods.all
+
+.. autofunction:: ivy.container.container_methods.static_all
+
+.. autofunction:: ivy.container.container_methods.all
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ all
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: all
+
+   all/all_functional.rst
+   all/all_array.rst
+   all/all_container.rst
+   all/static_all_container.rst
+

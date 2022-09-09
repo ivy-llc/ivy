@@ -2,6 +2,12 @@ bitwise_or
 ==========
 
 .. autofunction:: ivy.functional.ivy.elementwise.bitwise_or
+
+.. autofunction:: ivy.array.array_methods.bitwise_or
+
+.. autofunction:: ivy.container.container_methods.static_bitwise_or
+
+.. autofunction:: ivy.container.container_methods.bitwise_or
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ bitwise_or
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: bitwise_or
+
+   bitwise_or/bitwise_or_functional.rst
+   bitwise_or/bitwise_or_array.rst
+   bitwise_or/bitwise_or_container.rst
+   bitwise_or/static_bitwise_or_container.rst
+

@@ -2,6 +2,12 @@ searchsorted
 ============
 
 .. autofunction:: ivy.functional.ivy.sorting.searchsorted
+
+.. autofunction:: ivy.array.array_methods.searchsorted
+
+.. autofunction:: ivy.container.container_methods.static_searchsorted
+
+.. autofunction:: ivy.container.container_methods.searchsorted
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ searchsorted
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: searchsorted
+
+   searchsorted/searchsorted_functional.rst
+   searchsorted/searchsorted_array.rst
+   searchsorted/searchsorted_container.rst
+   searchsorted/static_searchsorted_container.rst
+

@@ -2,6 +2,12 @@ is_ivy_container
 ================
 
 .. autofunction:: ivy.functional.ivy.general.is_ivy_container
+
+.. autofunction:: ivy.array.array_methods.is_ivy_container
+
+.. autofunction:: ivy.container.container_methods.is_ivy_container
+
+.. autofunction:: ivy.container.container_methods.static_is_ivy_container
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ is_ivy_container
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: is_ivy_container
+
+   is_ivy_container/is_ivy_container_functional.rst
+   is_ivy_container/is_ivy_container_array.rst
+   is_ivy_container/is_ivy_container_container.rst
+   is_ivy_container/static_is_ivy_container_container.rst
+

@@ -21,7 +21,7 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Container.inplace_update" href="inplace_update_container.html" />
+    <link rel="next" title="ivy.Array.inplace_update" href="inplace_update_array.html" />
     <link rel="prev" title="inplace_update" href="../inplace_update.html" /> 
 </head>
 
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../general.html">General</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../get_referrers_recursive.html">get_referrers_recursive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../is_native_array.html">is_native_array</a></li>
@@ -81,7 +82,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../clip_vector_norm.html">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../clip_matrix_norm.html">clip_matrix_norm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../value_is_nan.html">value_is_nan</a></li>
@@ -108,8 +108,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../set_queue_timeout.html">set_queue_timeout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../queue_timeout.html">queue_timeout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tmp_dir.html">tmp_dir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../get_queue_timeout.html">get_queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_queue_timeout.html">unset_queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../get_tmp_dir.html">get_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../set_tmp_dir.html">set_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../container_types.html">container_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inplace_arrays_supported.html">inplace_arrays_supported</a></li>
@@ -118,6 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../inplace_update.html">inplace_update</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.inplace_update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inplace_update_array.html">ivy.Array.inplace_update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="inplace_update_container.html">ivy.Container.inplace_update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="static_inplace_update_container.html">ivy.Container.static_inplace_update</a></li>
 </ul>
@@ -139,8 +141,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../shape_array_mode.html">shape_array_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../get_num_dims.html">get_num_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../arg_info.html">arg_info</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../function_unsupported_devices_and_dtypes.html">function_unsupported_devices_and_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../function_supported_devices_and_dtypes.html">function_supported_devices_and_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../function_unsupported_devices_and_dtypes.html">function_unsupported_devices_and_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vmap.html">vmap</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
@@ -254,7 +257,7 @@ updates will raise an exception.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../inplace_update.html" class="btn btn-neutral float-left" title="inplace_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="inplace_update_container.html" class="btn btn-neutral float-right" title="ivy.Container.inplace_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="inplace_update_array.html" class="btn btn-neutral float-right" title="ivy.Array.inplace_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

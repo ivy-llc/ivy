@@ -2,6 +2,12 @@ clip
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.clip
+
+.. autofunction:: ivy.array.array_methods.clip
+
+.. autofunction:: ivy.container.container_methods.static_clip
+
+.. autofunction:: ivy.container.container_methods.clip
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ clip
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: clip
+
+   clip/clip_functional.rst
+   clip/clip_array.rst
+   clip/clip_container.rst
+   clip/static_clip_container.rst
+

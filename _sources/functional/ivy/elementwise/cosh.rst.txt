@@ -2,6 +2,12 @@ cosh
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.cosh
+
+.. autofunction:: ivy.array.array_methods.cosh
+
+.. autofunction:: ivy.container.container_methods.static_cosh
+
+.. autofunction:: ivy.container.container_methods.cosh
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ cosh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: cosh
+
+   cosh/cosh_functional.rst
+   cosh/cosh_array.rst
+   cosh/cosh_container.rst
+   cosh/static_cosh_container.rst
+

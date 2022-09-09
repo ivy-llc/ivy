@@ -14,3 +14,7 @@ Constants
    :caption: Constants
 
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Constants discussion`: https://github.com/unifyai/ivy/discussions/2185
+.. _`Constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+This should have hopefully given you an overview of the Constants submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Constants discussion`_,or reach out on `discord`_ in the `Constants channel`_!

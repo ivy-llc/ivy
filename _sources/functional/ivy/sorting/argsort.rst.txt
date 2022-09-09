@@ -2,6 +2,12 @@ argsort
 =======
 
 .. autofunction:: ivy.functional.ivy.sorting.argsort
+
+.. autofunction:: ivy.array.array_methods.argsort
+
+.. autofunction:: ivy.container.container_methods.argsort
+
+.. autofunction:: ivy.container.container_methods.static_argsort
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ argsort
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: argsort
+
+   argsort/argsort_functional.rst
+   argsort/argsort_array.rst
+   argsort/argsort_container.rst
+   argsort/static_argsort_container.rst
+

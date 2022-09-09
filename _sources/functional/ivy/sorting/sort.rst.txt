@@ -2,6 +2,12 @@ sort
 ====
 
 .. autofunction:: ivy.functional.ivy.sorting.sort
+
+.. autofunction:: ivy.array.array_methods.sort
+
+.. autofunction:: ivy.container.container_methods.sort
+
+.. autofunction:: ivy.container.container_methods.static_sort
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ sort
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: sort
+
+   sort/sort_functional.rst
+   sort/sort_array.rst
+   sort/sort_container.rst
+   sort/static_sort_container.rst
+

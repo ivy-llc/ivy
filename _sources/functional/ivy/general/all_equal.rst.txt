@@ -2,6 +2,12 @@ all_equal
 =========
 
 .. autofunction:: ivy.functional.ivy.general.all_equal
+
+.. autofunction:: ivy.array.array_methods.all_equal
+
+.. autofunction:: ivy.container.container_methods.all_equal
+
+.. autofunction:: ivy.container.container_methods.static_all_equal
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ all_equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: all_equal
+
+   all_equal/all_equal_functional.rst
+   all_equal/all_equal_array.rst
+   all_equal/all_equal_container.rst
+   all_equal/static_all_equal_container.rst
+

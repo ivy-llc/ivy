@@ -17,3 +17,7 @@ Meta
    meta/reptile_step.rst
    meta/maml_step.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Meta discussion`: https://github.com/unifyai/ivy/discussions/2197
+.. _`Meta channel`: https://discord.com/channels/799879767196958751/1000044106959044659
+This should have hopefully given you an overview of the Meta submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Meta discussion`_,or reach out on `discord`_ in the `Meta channel`_!

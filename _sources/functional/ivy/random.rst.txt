@@ -20,3 +20,7 @@ Random
    random/seed.rst
    random/shuffle.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Random discussion`: https://github.com/unifyai/ivy/discussions/2201
+.. _`Random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
+This should have hopefully given you an overview of the Random submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Random discussion`_,or reach out on `discord`_ in the `Random channel`_!

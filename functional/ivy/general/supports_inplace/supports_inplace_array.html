@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="assert_supports_inplace" href="../assert_supports_inplace.html" />
-    <link rel="prev" title="ivy.supports_inplace" href="supports_inplace_functional.html" /> 
+    <link rel="next" title="ivy.Container.supports_inplace" href="supports_inplace_container.html" />
+    <link rel="prev" title="ivy.Container.static_supports_inplace" href="static_supports_inplace_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -82,7 +82,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../clip_vector_norm.html">clip_vector_norm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../clip_matrix_norm.html">clip_matrix_norm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../value_is_nan.html">value_is_nan</a></li>
@@ -110,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../set_queue_timeout.html">set_queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../get_queue_timeout.html">get_queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unset_queue_timeout.html">unset_queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../get_tmp_dir.html">get_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../set_tmp_dir.html">set_tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../container_types.html">container_types</a></li>
@@ -117,7 +117,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../inplace_variables_supported.html">inplace_variables_supported</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../supports_inplace.html">supports_inplace</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="supports_inplace_functional.html">ivy.supports_inplace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_supports_inplace_container.html">ivy.Container.static_supports_inplace</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.supports_inplace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="supports_inplace_container.html">ivy.Container.supports_inplace</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../assert_supports_inplace.html">assert_supports_inplace</a></li>
@@ -139,8 +141,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../shape_array_mode.html">shape_array_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../get_num_dims.html">get_num_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../arg_info.html">arg_info</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../function_unsupported_devices_and_dtypes.html">function_unsupported_devices_and_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../function_supported_devices_and_dtypes.html">function_supported_devices_and_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../function_unsupported_devices_and_dtypes.html">function_unsupported_devices_and_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../vmap.html">vmap</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
@@ -223,15 +226,22 @@ wraps the function, and so the docstring for <a href="../supports_inplace/suppor
 to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – input array</p>
+<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – The input array whose elements’ data type is to be checked.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Boolean, whether or not inplace operations are supported for x.</p>
+<dd class="field-odd"><p><em>ret</em> – Bool value depends on whether the currently active backend
+framework supports in-place operations with argument’s data type.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <cite>ivy.Array</cite> input and backend set as “tensorflow”:
+&gt;&gt;&gt; x = ivy.array([1., 4.2, 2.2])
+&gt;&gt;&gt; ret = x.supports_inplace()
+&gt;&gt;&gt; print(ret)
+False</p>
 </dd></dl>
 
 <div class="line-block">
@@ -245,8 +255,8 @@ to this method with minimal changes.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="supports_inplace_functional.html" class="btn btn-neutral float-left" title="ivy.supports_inplace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../assert_supports_inplace.html" class="btn btn-neutral float-right" title="assert_supports_inplace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="static_supports_inplace_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_supports_inplace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="supports_inplace_container.html" class="btn btn-neutral float-right" title="ivy.Container.supports_inplace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -2,6 +2,12 @@ tan
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.tan
+
+.. autofunction:: ivy.array.array_methods.tan
+
+.. autofunction:: ivy.container.container_methods.tan
+
+.. autofunction:: ivy.container.container_methods.static_tan
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ tan
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: tan
+
+   tan/tan_functional.rst
+   tan/static_tan_container.rst
+   tan/tan_array.rst
+   tan/tan_container.rst
+

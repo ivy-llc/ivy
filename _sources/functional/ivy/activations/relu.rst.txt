@@ -2,6 +2,12 @@ relu
 ====
 
 .. autofunction:: ivy.functional.ivy.activations.relu
+
+.. autofunction:: ivy.array.array_methods.relu
+
+.. autofunction:: ivy.container.container_methods.static_relu
+
+.. autofunction:: ivy.container.container_methods.relu
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ relu
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: relu
+
+   relu/relu_functional.rst
+   relu/relu_array.rst
+   relu/relu_container.rst
+   relu/static_relu_container.rst
+

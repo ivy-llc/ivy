@@ -2,6 +2,12 @@ flip
 ====
 
 .. autofunction:: ivy.functional.ivy.manipulation.flip
+
+.. autofunction:: ivy.array.array_methods.flip
+
+.. autofunction:: ivy.container.container_methods.static_flip
+
+.. autofunction:: ivy.container.container_methods.flip
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ flip
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: flip
+
+   flip/flip_functional.rst
+   flip/flip_array.rst
+   flip/flip_container.rst
+   flip/static_flip_container.rst
+

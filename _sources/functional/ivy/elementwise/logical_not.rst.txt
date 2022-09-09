@@ -2,6 +2,12 @@ logical_not
 ===========
 
 .. autofunction:: ivy.functional.ivy.elementwise.logical_not
+
+.. autofunction:: ivy.array.array_methods.logical_not
+
+.. autofunction:: ivy.container.container_methods.static_logical_not
+
+.. autofunction:: ivy.container.container_methods.logical_not
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ logical_not
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: logical_not
+
+   logical_not/logical_not_functional.rst
+   logical_not/logical_not_array.rst
+   logical_not/logical_not_container.rst
+   logical_not/static_logical_not_container.rst
+

@@ -2,6 +2,12 @@ outer
 =====
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.outer
+
+.. autofunction:: ivy.array.array_methods.outer
+
+.. autofunction:: ivy.container.container_methods.outer
+
+.. autofunction:: ivy.container.container_methods.static_outer
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ outer
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: outer
+
+   outer/outer_functional.rst
+   outer/outer_array.rst
+   outer/outer_container.rst
+   outer/static_outer_container.rst
+

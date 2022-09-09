@@ -23,3 +23,7 @@ Initializers
    initializers/Siren.rst
    initializers/KaimingNormal.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Initializers discussion`: https://github.com/unifyai/ivy/discussions/2210
+.. _`Initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
+This should have hopefully given you an overview of the Initializers submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Initializers discussion`_,or reach out on `discord`_ in the `Initializers channel`_!

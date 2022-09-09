@@ -2,6 +2,12 @@ conv1d_transpose
 ================
 
 .. autofunction:: ivy.functional.ivy.layers.conv1d_transpose
+
+.. autofunction:: ivy.array.array_methods.conv1d_transpose
+
+.. autofunction:: ivy.container.container_methods.static_conv1d_transpose
+
+.. autofunction:: ivy.container.container_methods.conv1d_transpose
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ conv1d_transpose
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: conv1d_transpose
+
+   conv1d_transpose/conv1d_transpose_functional.rst
+   conv1d_transpose/conv1d_transpose_array.rst
+   conv1d_transpose/conv1d_transpose_container.rst
+   conv1d_transpose/static_conv1d_transpose_container.rst
+

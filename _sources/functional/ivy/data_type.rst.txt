@@ -70,3 +70,7 @@ Data type
 
     def __init__.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Data Type discussion`: https://github.com/unifyai/ivy/discussions/2187
+.. _`Data Type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
+This should have hopefully given you an overview of the Data Type submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Data Type discussion`_,or reach out on `discord`_ in the `Data Type channel`_!

@@ -2,6 +2,10 @@ std
 ===
 
 .. autofunction:: ivy.functional.ivy.statistical.std
+
+.. autofunction:: ivy.array.array_methods.std
+
+.. autofunction:: ivy.container.container_methods.std
 |
 | **Supported Frameworks:**
 
@@ -21,3 +25,14 @@ std
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: std
+
+   std/std_functional.rst
+   std/std_array.rst
+   std/std_container.rst
+

@@ -2,6 +2,12 @@ scatter_nd
 ==========
 
 .. autofunction:: ivy.functional.ivy.general.scatter_nd
+
+.. autofunction:: ivy.array.array_methods.scatter_nd
+
+.. autofunction:: ivy.container.container_methods.scatter_nd
+
+.. autofunction:: ivy.container.container_methods.static_scatter_nd
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ scatter_nd
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: scatter_nd
+
+   scatter_nd/scatter_nd_functional.rst
+   scatter_nd/scatter_nd_array.rst
+   scatter_nd/scatter_nd_container.rst
+   scatter_nd/static_scatter_nd_container.rst
+

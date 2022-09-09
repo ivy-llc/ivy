@@ -17,3 +17,7 @@ Sorting
    sorting/sort.rst
    sorting/searchsorted.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Sorting discussion`: https://github.com/unifyai/ivy/discussions/2360
+.. _`Sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
+This should have hopefully given you an overview of the Sorting submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Sorting discussion`_,or reach out on `discord`_ in the `Sorting channel`_!

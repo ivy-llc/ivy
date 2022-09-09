@@ -2,6 +2,12 @@ matrix_norm
 ===========
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_norm
+
+.. autofunction:: ivy.array.array_methods.matrix_norm
+
+.. autofunction:: ivy.container.container_methods.matrix_norm
+
+.. autofunction:: ivy.container.container_methods.static_matrix_norm
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ matrix_norm
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: matrix_norm
+
+   matrix_norm/matrix_norm_functional.rst
+   matrix_norm/matrix_norm_array.rst
+   matrix_norm/matrix_norm_container.rst
+   matrix_norm/static_matrix_norm_container.rst
+

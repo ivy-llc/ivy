@@ -2,6 +2,12 @@ softplus
 ========
 
 .. autofunction:: ivy.functional.ivy.activations.softplus
+
+.. autofunction:: ivy.array.array_methods.softplus
+
+.. autofunction:: ivy.container.container_methods.softplus
+
+.. autofunction:: ivy.container.container_methods.static_softplus
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ softplus
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: softplus
+
+   softplus/softplus_functional.rst
+   softplus/softplus_array.rst
+   softplus/softplus_container.rst
+   softplus/static_softplus_container.rst
+

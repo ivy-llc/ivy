@@ -111,6 +111,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../not_equal.html">not_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../positive.html">positive</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pow.html">pow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reciprocal.html">reciprocal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../remainder.html">remainder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../round.html">round</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sign.html">sign</a></li>
@@ -123,10 +124,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trunc.html">trunc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../erf.html">erf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../maximum.html">maximum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../minimum.html">minimum</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
@@ -232,6 +235,18 @@ must have a real-valued floating-point data type determined
 by <span class="xref std std-ref">type-promotion</span>.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Using <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]),</span>                          <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">7.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([4.05, 5.05, 6.05]),</span>
+<span class="go">    b: ivy.array([5.05, 6.05, 7.05])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

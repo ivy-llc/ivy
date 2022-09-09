@@ -2,6 +2,12 @@ add
 ===
 
 .. autofunction:: ivy.functional.ivy.elementwise.add
+
+.. autofunction:: ivy.array.array_methods.add
+
+.. autofunction:: ivy.container.container_methods.static_add
+
+.. autofunction:: ivy.container.container_methods.add
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ add
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: add
+
+   add/add_functional.rst
+   add/add_array.rst
+   add/add_container.rst
+   add/static_add_container.rst
+

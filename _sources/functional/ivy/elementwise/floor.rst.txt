@@ -2,6 +2,12 @@ floor
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.floor
+
+.. autofunction:: ivy.array.array_methods.floor
+
+.. autofunction:: ivy.container.container_methods.static_floor
+
+.. autofunction:: ivy.container.container_methods.floor
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ floor
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: floor
+
+   floor/floor_functional.rst
+   floor/floor_array.rst
+   floor/floor_container.rst
+   floor/static_floor_container.rst
+

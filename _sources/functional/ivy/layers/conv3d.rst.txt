@@ -2,6 +2,12 @@ conv3d
 ======
 
 .. autofunction:: ivy.functional.ivy.layers.conv3d
+
+.. autofunction:: ivy.array.array_methods.conv3d
+
+.. autofunction:: ivy.container.container_methods.conv3d
+
+.. autofunction:: ivy.container.container_methods.static_conv3d
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ conv3d
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: conv3d
+
+   conv3d/conv3d_functional.rst
+   conv3d/conv3d_array.rst
+   conv3d/conv3d_container.rst
+   conv3d/static_conv3d_container.rst
+

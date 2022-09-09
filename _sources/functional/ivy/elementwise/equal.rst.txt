@@ -2,6 +2,12 @@ equal
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.equal
+
+.. autofunction:: ivy.array.array_methods.equal
+
+.. autofunction:: ivy.container.container_methods.static_equal
+
+.. autofunction:: ivy.container.container_methods.equal
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ equal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: equal
+
+   equal/equal_functional.rst
+   equal/equal_array.rst
+   equal/equal_container.rst
+   equal/static_equal_container.rst
+

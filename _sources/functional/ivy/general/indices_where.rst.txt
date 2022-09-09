@@ -2,6 +2,12 @@ indices_where
 =============
 
 .. autofunction:: ivy.functional.ivy.general.indices_where
+
+.. autofunction:: ivy.array.array_methods.indices_where
+
+.. autofunction:: ivy.container.container_methods.static_indices_where
+
+.. autofunction:: ivy.container.container_methods.indices_where
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ indices_where
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: indices_where
+
+   indices_where/indices_where_functional.rst
+   indices_where/indices_where_array.rst
+   indices_where/indices_where_container.rst
+   indices_where/static_indices_where_container.rst
+

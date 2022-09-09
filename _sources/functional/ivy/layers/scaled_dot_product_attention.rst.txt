@@ -2,6 +2,12 @@ scaled_dot_product_attention
 ============================
 
 .. autofunction:: ivy.functional.ivy.layers.scaled_dot_product_attention
+
+.. autofunction:: ivy.array.array_methods.scaled_dot_product_attention
+
+.. autofunction:: ivy.container.container_methods.static_scaled_dot_product_attention
+
+.. autofunction:: ivy.container.container_methods.scaled_dot_product_attention
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ scaled_dot_product_attention
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: scaled_dot_product_attention
+
+   scaled_dot_product_attention/scaled_dot_product_attention_functional.rst
+   scaled_dot_product_attention/scaled_dot_product_attention_array.rst
+   scaled_dot_product_attention/scaled_dot_product_attention_container.rst
+   scaled_dot_product_attention/static_scaled_dot_product_attention_container.rst
+

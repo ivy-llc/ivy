@@ -2,6 +2,12 @@ asin
 ====
 
 .. autofunction:: ivy.functional.ivy.elementwise.asin
+
+.. autofunction:: ivy.array.array_methods.asin
+
+.. autofunction:: ivy.container.container_methods.static_asin
+
+.. autofunction:: ivy.container.container_methods.asin
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ asin
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: asin
+
+   asin/asin_functional.rst
+   asin/asin_array.rst
+   asin/asin_container.rst
+   asin/static_asin_container.rst
+

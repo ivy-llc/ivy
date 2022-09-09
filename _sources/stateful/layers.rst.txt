@@ -25,3 +25,7 @@ Layers
    layers/Conv3DTranspose.rst
    layers/LSTM.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Layers discussion`: https://github.com/unifyai/ivy/discussions/2211
+.. _`Layers channel`: https://discord.com/channels/799879767196958751/1000043206840426686
+This should have hopefully given you an overview of the Layers submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Layers discussion`_,or reach out on `discord`_ in the `Layers channel`_!

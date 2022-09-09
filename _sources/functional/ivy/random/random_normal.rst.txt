@@ -2,6 +2,12 @@ random_normal
 =============
 
 .. autofunction:: ivy.functional.ivy.random.random_normal
+
+.. autofunction:: ivy.array.array_methods.random_normal
+
+.. autofunction:: ivy.container.container_methods.static_random_normal
+
+.. autofunction:: ivy.container.container_methods.random_normal
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ random_normal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: random_normal
+
+   random_normal/random_normal_functional.rst
+   random_normal/random_normal_array.rst
+   random_normal/random_normal_container.rst
+   random_normal/static_random_normal_container.rst
+

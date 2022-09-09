@@ -36,3 +36,7 @@ Gradients
     # noinspection PyShadowingNames
     def __init__.rst
 
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ 
+.. _`Gradients discussion`: https://github.com/unifyai/ivy/discussions/2192
+.. _`Gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+This should have hopefully given you an overview of the Gradients submodule,If you're ever unsure of how best to proceed, please feel free to engage with the `Gradients discussion`_,or reach out on `discord`_ in the `Gradients channel`_!

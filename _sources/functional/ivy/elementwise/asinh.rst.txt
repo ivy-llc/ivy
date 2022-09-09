@@ -2,6 +2,12 @@ asinh
 =====
 
 .. autofunction:: ivy.functional.ivy.elementwise.asinh
+
+.. autofunction:: ivy.array.array_methods.asinh
+
+.. autofunction:: ivy.container.container_methods.static_asinh
+
+.. autofunction:: ivy.container.container_methods.asinh
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ asinh
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: asinh
+
+   asinh/asinh_functional.rst
+   asinh/asinh_array.rst
+   asinh/asinh_container.rst
+   asinh/static_asinh_container.rst
+

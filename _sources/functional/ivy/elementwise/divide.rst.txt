@@ -2,6 +2,12 @@ divide
 ======
 
 .. autofunction:: ivy.functional.ivy.elementwise.divide
+
+.. autofunction:: ivy.array.array_methods.divide
+
+.. autofunction:: ivy.container.container_methods.divide
+
+.. autofunction:: ivy.container.container_methods.static_divide
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ divide
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: divide
+
+   divide/divide_functional.rst
+   divide/divide_array.rst
+   divide/divide_container.rst
+   divide/static_divide_container.rst
+
