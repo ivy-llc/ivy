@@ -117,5 +117,9 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
+def Reshape(tensor, shape, name="reshape"):
+    return ivy.reshape(tensor, shape)
+
+
 def Sinh(*, x, name="Sinh"):
     return ivy.sinh(x)
