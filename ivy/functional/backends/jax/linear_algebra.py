@@ -24,7 +24,10 @@ def cholesky(
     return ret
 
 
-cholesky.unsupported_dtypes = ("float16",)
+cholesky.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def cross(
@@ -170,7 +173,10 @@ def pinv(
     return ret
 
 
-pinv.unsupported_dtypes = ("float16",)
+pinv.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
@@ -188,7 +194,10 @@ def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = ("float16",)
+slogdet.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -241,7 +250,10 @@ def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
 
 
-svdvals.unsupported_dtypes = ("float16",)
+svdvals.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def tensordot(

@@ -1061,12 +1061,12 @@ def split(
     [ivy.array([1]),ivy.array([2]),ivy.array([3])]
 
     >>> x = ivy.array([[3, 2, 1], [4, 5, 6]])
-    >>> y = ivy.split(x, 2, 1, False)
+    >>> y = ivy.split(x, num_or_size_splits=2, axis=1, with_remainder=True)
     >>> print(y)
     [ivy.array([[3,2],[4,5]]),ivy.array([[1],[6]])]
 
     >>> x = ivy.array([4, 6, 5, 3])
-    >>> y = ivy.split(x, [1, 2], 0, True)
+    >>> y = x.split(num_or_size_splits=[1, 3], axis=0, with_remainder=False)
     >>> print(y)
     ivy.array([[4], [6, 5, 3]])
 

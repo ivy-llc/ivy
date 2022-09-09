@@ -10,6 +10,7 @@ from ivy_tests.test_array_api.array_api_tests.test_operators_and_elementwise_fun
     oneway_broadcastable_shapes,
     oneway_promotable_dtypes,
 )
+
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import (
     array_and_broadcastable_shape,
@@ -22,21 +23,15 @@ from ivy_tests.test_ivy.test_functional.test_core.test_dtype import (
 @given(
     dtype_and_values=helpers.dtype_and_values(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         force_tuple=True,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.flip"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_flip(
     dtype_and_values,
@@ -62,13 +57,10 @@ def test_torch_flip(
 
 
 # roll
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     shift=helpers.get_axis(
@@ -77,11 +69,9 @@ def test_torch_flip(
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.roll"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_roll(
     dtype_and_values,
@@ -116,20 +106,15 @@ def test_torch_roll(
 
 
 # fliplr
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=helpers.get_shape(min_num_dims=2),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.fliplr"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_fliplr(
     dtype_and_values,
@@ -156,21 +141,15 @@ def test_torch_fliplr(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.cumsum"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_cumsum(
     dtype_and_values,
@@ -208,23 +187,18 @@ def dims_and_offset(draw, shape):
     return dim1, dim2, offset
 
 
+@handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
     dims_and_offset=dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.diagonal"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_diagonal(
     dtype_and_values,
@@ -281,11 +255,50 @@ def test_torch_broadcast_to(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        fn_tree="broadcast_to",
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch"
+        input=array,
+        size=shape,
+    )
+    
+    
+# cumprod
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.cumprod"
+    ),
+)
+def test_torch_cumprod(
+    dtype_and_values,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="broadcast_to",
-        input=array,
-        size=shape,
+        fn_tree="cumprod",
+        input=np.asarray(value, dtype=input_dtype),
+        dim=axis,
+        dtype=input_dtype,
+        out=None,
     )
