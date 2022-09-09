@@ -161,26 +161,33 @@ class SparseArray:
         self._dense_shape = ivy.Shape(shape)
 
     def _init_coo_components(self, coo_indices, values, shape):
+        coo_indices = ivy.array(coo_indices, dtype="int64")
+        values = ivy.array(values)
+        shape = ivy.Shape(shape)
         self._data = ivy.native_sparse_array(
             coo_indices=coo_indices, values=values, dense_shape=shape
         )
-        self._coo_indices = ivy.array(coo_indices, dtype="int64")
-        self._values = ivy.array(values)
-        self._dense_shape = ivy.Shape(shape)
+        self._coo_indices = coo_indices
+        self._values = values
+        self._dense_shape = shape
         self._csr_crow_indices = None
         self._csr_col_indices = None
 
     def _init_csr_components(self, csr_crow_indices, csr_col_indices, values, shape):
+        csr_crow_indices = ivy.array(csr_crow_indices, dtype="int64")
+        csr_col_indices = ivy.array(csr_col_indices, dtype="int64")
+        values = ivy.array(values)
+        shape = ivy.Shape(shape)
         self._data = ivy.native_sparse_array(
             csr_crow_indices=csr_crow_indices,
             csr_col_indices=csr_col_indices,
             values=values,
             dense_shape=shape,
         )
-        self._csr_crow_indices = ivy.array(csr_crow_indices, dtype="int64")
-        self._csr_col_indices = ivy.array(csr_col_indices, dtype="int64")
-        self._values = ivy.array(values)
-        self._dense_shape = ivy.Shape(shape)
+        self._csr_crow_indices = csr_crow_indices
+        self._csr_col_indices = csr_col_indices
+        self._values = values
+        self._dense_shape = shape
         self._coo_indices = None
 
     # Properties #
@@ -251,7 +258,7 @@ class SparseArray:
     def values(self, values):
         values = ivy.array(values)
         _verify_coo_components(
-            indices=self._indices, values=values, dense_shape=self._dense_shape
+            indices=self._coo_indices, values=values, dense_shape=self._dense_shape
         )
         self._values = values
 
@@ -259,7 +266,7 @@ class SparseArray:
     def dense_shape(self, dense_shape):
         dense_shape = ivy.Shape(dense_shape)
         _verify_coo_components(
-            indices=self._indices, values=self._values, dense_shape=dense_shape
+            indices=self._coo_indices, values=self._values, dense_shape=dense_shape
         )
         self._dense_shape = dense_shape
 
@@ -271,17 +278,19 @@ class SparseArray:
         if self._coo_indices is not None:
             # COO sparse array
             for i in range(self._values.shape[0]):
-                coordinate = ivy.gather(self._indices, ivy.array([[i]]))
-                coordinate = ivy.reshape(coordinate, (self._indices.shape[0],))
+                coordinate = ivy.gather(
+                    self._coo_indices, ivy.array([[i]] * self._coo_indices.shape[0])
+                )
+                coordinate = ivy.reshape(coordinate, (self._coo_indices.shape[0],))
                 all_coordinates.append(coordinate.to_list())
         else:
             # CSR sparse array
             row = 0
             total_rows = self._dense_shape[0]
+            all_cols = self._csr_col_indices.to_list()
+            all_rows = self._csr_crow_indices.to_list()
             while row < total_rows:
-                cols = self._csr_col_indices[
-                    self._csr_crow_indices[row] : self._csr_crow_indices[row + 1]
-                ].to_list()
+                cols = all_cols[all_rows[row] : all_rows[row + 1]]
                 for col in cols:
                     all_coordinates.append([row, col])
                 row += 1
