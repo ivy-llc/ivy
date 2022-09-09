@@ -1,6 +1,7 @@
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
+    _verify_csr_components,
     _is_data_not_indices_values_and_shape,
     _is_coo_not_csr,
 )
@@ -35,7 +36,12 @@ def native_sparse_array(
             indices=coo_indices, values=values, size=dense_shape
         )
     else:
-        # TODO: verify csr components
+        _verify_csr_components(
+            crow_indices=csr_crow_indices,
+            col_indices=csr_col_indices,
+            values=values,
+            dense_shape=dense_shape,
+        )
         return torch.sparse_csr_tensor(
             crow_indices=csr_crow_indices,
             col_indices=csr_col_indices,
