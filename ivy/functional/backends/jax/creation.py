@@ -49,7 +49,6 @@ def arange(
 @asarray_to_native_arrays_and_back
 @handle_out_argument
 @asarray_infer_device
-# @asarray_handle_nestable
 @handle_nestable
 def asarray(
     object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],

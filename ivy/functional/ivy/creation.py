@@ -77,60 +77,6 @@ def asarray_infer_device(fn: Callable) -> Callable:
     return new_fn
 
 
-# def asarray_handle_nestable(fn: Callable) -> Callable:
-# fn_name = fn.__name__
-
-# @functools.wraps(fn)
-# def new_fn(*args, **kwargs):
-# """
-# Calls `fn` with the *nestable* property of the function correctly handled.
-# This means mapping the function to the container leaves if any containers are
-# passed in the input.
-
-# Parameters
-# ----------
-# args
-#    The arguments to be passed to the function.
-
-# kwargs
-#    The keyword arguments to be passed to the function.
-
-# Returns
-# -------
-#    The return of the function, with the nestable property handled correctly.
-# """
-# if any of the arguments or keyword arguments passed to the function contains
-# a container, get the container's version of the function and call it using
-# the passed arguments.
-# cont_fn = getattr(ivy.Container, "static_" + fn_name)
-# if ivy.get_nestable_mode() and (
-#    ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
-#    or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
-# ):
-#    return cont_fn(*args, **kwargs)
-
-# if the passed arguments does not contain a container, the function using
-# the passed arguments, returning an ivy or a native array.
-# return fn(*args, **kwargs)
-
-# new_fn.handle_nestable = True
-# return new_fn
-
-# Used to speed up ivy.asarray.
-def _is_raw_python_list_or_scalar(array) -> bool:
-    if isinstance(array, (list, tuple, dict)):
-        is_list_or_python_data = [_is_raw_python_list_or_scalar(item) for item in array]
-        return all(is_list_or_python_data)  # If every item in there is True
-    elif isinstance(
-        array, (float, int, bool)
-    ):  # If this is the first input that's fine,
-        return (
-            True  # If this is not the first input, it means we've found a "leaf" item.
-        )
-    else:
-        return False
-
-
 def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
     assert (
         (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
@@ -216,7 +162,6 @@ def arange(
     )
 
 
-# @handle_out_argument
 @asarray_infer_device
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
@@ -260,23 +205,6 @@ def asarray(
 
     """
 
-    # return _asarray_typical(x, copy=copy, dtype=dtype, device=device)
-    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
-
-
-# @asarray_to_native_arrays_and_back
-# @handle_out_argument
-# @asarray_infer_device
-# @asarray_handle_nestable
-# @handle_nestable
-def _asarray_typical(
-    x: Union[ivy.Array, ivy.NativeArray, np.ndarray],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-) -> ivy.Array:
     return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
