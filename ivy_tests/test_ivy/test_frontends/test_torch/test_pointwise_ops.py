@@ -868,9 +868,7 @@ def test_torch_bitwise_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
     ),
     with_out=st.booleans(),
@@ -904,9 +902,7 @@ def test_torch_bitwise_not(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -942,9 +938,7 @@ def test_torch_bitwise_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -980,9 +974,7 @@ def test_torch_bitwise_or(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_int_dtypes).intersection(set(ivy_torch.valid_int_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1019,11 +1011,7 @@ def test_torch_bitwise_left_shift(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_torch.valid_int_dtypes).intersection(
-                set(ivy_torch.valid_int_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
