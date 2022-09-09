@@ -1,6 +1,7 @@
 Data Types
 ==========
 
+.. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`infer_dtype`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
 .. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
@@ -100,6 +101,101 @@ and `ivy.default_dtype`_, which returns the correct data type to use.
 `ivy.default_dtype`_ is arguably the most important function.
 Any function in the functional API that receives a :code:`dtype` argument will make use of this function,
 as explained below.
+
+
+Data Type Promotion
+-------------------
+
+In order to ensure that the same data type is always returned when operations are
+performed on arrays with different data types, regardless of which backend framework is
+set, Ivy has it's own set of data type promotion rules and corresponding  functions.
+These rules build directly on top of the
+`rules <https://data-apis.org/array-api/latest/API_specification/type_promotion.html>`_
+outlined in the `Array API Standard`_.
+
+The rules are simple: all data type promotions in Ivy should adhere to this
+`promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L366>`_,
+which is the union of the Array API Standard
+`promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L223>`_
+and an extra
+`promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L292>`_.
+
+In order to ensure adherance to this promotion table, many backend functions make use of
+the functions
+`ivy.promote_types <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1804>`_,
+`ivy.type_promote_arrays <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1940>`_,
+or
+`ivy.promote_types_of_inputs <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L2085>`_.
+These functions: promote data types in the inputs and return the new data types,
+promote the data types of the arrays in the input and return new arrays,
+and promote the data types of the numeric or array values inputs and
+return new type promoted values, respectively.
+
+For an example of how some of these functions are used,
+the implementations for :code:`ivy.add` in each backend framework are as follows:
+
+# JAX
+
+.. code-block:: python
+
+    def add(
+        x1: Union[float, JaxArray],
+        x2: Union[float, JaxArray],
+        /,
+        *,
+        out: Optional[JaxArray] = None,
+    ) -> JaxArray:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return jnp.add(x1, x2)
+
+# NumPy
+
+.. code-block:: python
+
+    @_handle_0_dim_output
+    def add(
+        x1: Union[float, np.ndarray],
+        x2: Union[float, np.ndarray],
+        /,
+        *,
+        out: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return np.add(x1, x2, out=out)
+
+# TensorFlow
+
+.. code-block:: python
+
+    def add(
+        x1: Union[float, tf.Tensor, tf.Variable],
+        x2: Union[float, tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return tf.experimental.numpy.add(x1, x2)
+
+# PyTorch
+
+.. code-block:: python
+
+    def add(
+        x1: Union[float, torch.Tensor],
+        x2: Union[float, torch.Tensor],
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return torch.add(x1, x2, out=out)
+
+It's important to always make use of the Ivy promotion functions as opposed to
+backend-specific promotion functions such as :code:`jax.numpy.promote_types`,
+:code:`numpy.promote_types`, :code:`tf.experimental.numpy.promote_types` and
+:code:`torch.promote_types`, as these will generally have promotion rules which will
+subtly differ from one another and from Ivy's unified promotion rules.
 
 Arguments in other Functions
 ----------------------------
