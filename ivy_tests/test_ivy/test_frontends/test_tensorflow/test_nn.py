@@ -500,7 +500,7 @@ def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         strides=stride,
         padding=padding,
         data_format=data_format,
-        dilations=dilation,
+        dilations=1 if not ivy.gpu_is_available() else dilation,
     )
 
 
@@ -586,7 +586,7 @@ def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         strides=stride,
         padding=padding,
         data_format=data_format,
-        dilations=dilation,
+        dilations=1 if not ivy.gpu_is_available() else dilation,
     )
 
 
