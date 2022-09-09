@@ -1,6 +1,7 @@
 # global
-import tensorflow as tf
 from typing import Union, Optional
+
+import tensorflow as tf
 
 # local
 import ivy
@@ -276,8 +277,7 @@ def floor_divide(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = tf.experimental.numpy.floor_divide(x1, x2)
-    return ret
+    return tf.experimental.numpy.floor_divide(x1, x2)
 
 
 def greater(
@@ -405,6 +405,9 @@ def logaddexp(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.logaddexp(x1, x2)
+
+
+logaddexp.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def logical_and(
@@ -683,6 +686,17 @@ def erf(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.erf(x)
+
+
+def floormod(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x, y = ivy.promote_types_of_inputs(x, y)
+    return tf.math.floormod(x, y)
 
 
 def maximum(

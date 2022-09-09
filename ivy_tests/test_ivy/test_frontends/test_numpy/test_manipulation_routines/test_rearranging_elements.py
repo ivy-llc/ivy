@@ -1,4 +1,3 @@
-import ivy.functional.backends.numpy as ivy_np
 from hypothesis import given, strategies as st
 import numpy as np
 
@@ -11,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         min_dim_size=2,
     ),
@@ -56,7 +55,7 @@ def _dtype_x_bounded_axis(draw, **kwargs):
 @handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_bounded_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
     ),

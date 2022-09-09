@@ -1,6 +1,7 @@
 Data Types
 ==========
 
+.. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`infer_dtype`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
 .. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
@@ -100,6 +101,101 @@ and `ivy.default_dtype`_, which returns the correct data type to use.
 `ivy.default_dtype`_ is arguably the most important function.
 Any function in the functional API that receives a :code:`dtype` argument will make use of this function,
 as explained below.
+
+
+Data Type Promotion
+-------------------
+
+In order to ensure that the same data type is always returned when operations are
+performed on arrays with different data types, regardless of which backend framework is
+set, Ivy has it's own set of data type promotion rules and corresponding  functions.
+These rules build directly on top of the
+`rules <https://data-apis.org/array-api/latest/API_specification/type_promotion.html>`_
+outlined in the `Array API Standard`_.
+
+The rules are simple: all data type promotions in Ivy should adhere to this
+`promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L366>`_,
+which is the union of the Array API Standard
+`promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L223>`_
+and an extra
+`promotion table <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L292>`_.
+
+In order to ensure adherance to this promotion table, many backend functions make use of
+the functions
+`ivy.promote_types <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1804>`_,
+`ivy.type_promote_arrays <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1940>`_,
+or
+`ivy.promote_types_of_inputs <https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L2085>`_.
+These functions: promote data types in the inputs and return the new data types,
+promote the data types of the arrays in the input and return new arrays,
+and promote the data types of the numeric or array values inputs and
+return new type promoted values, respectively.
+
+For an example of how some of these functions are used,
+the implementations for :code:`ivy.add` in each backend framework are as follows:
+
+# JAX
+
+.. code-block:: python
+
+    def add(
+        x1: Union[float, JaxArray],
+        x2: Union[float, JaxArray],
+        /,
+        *,
+        out: Optional[JaxArray] = None,
+    ) -> JaxArray:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return jnp.add(x1, x2)
+
+# NumPy
+
+.. code-block:: python
+
+    @_handle_0_dim_output
+    def add(
+        x1: Union[float, np.ndarray],
+        x2: Union[float, np.ndarray],
+        /,
+        *,
+        out: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return np.add(x1, x2, out=out)
+
+# TensorFlow
+
+.. code-block:: python
+
+    def add(
+        x1: Union[float, tf.Tensor, tf.Variable],
+        x2: Union[float, tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return tf.experimental.numpy.add(x1, x2)
+
+# PyTorch
+
+.. code-block:: python
+
+    def add(
+        x1: Union[float, torch.Tensor],
+        x2: Union[float, torch.Tensor],
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return torch.add(x1, x2, out=out)
+
+It's important to always make use of the Ivy promotion functions as opposed to
+backend-specific promotion functions such as :code:`jax.numpy.promote_types`,
+:code:`numpy.promote_types`, :code:`tf.experimental.numpy.promote_types` and
+:code:`torch.promote_types`, as these will generally have promotion rules which will
+subtly differ from one another and from Ivy's unified promotion rules.
 
 Arguments in other Functions
 ----------------------------
@@ -254,27 +350,145 @@ The implementations for all other backends follow a similar pattern to this PyTo
 where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
 backend-specific implementation.
 
-Unsupported data types
-----------------------
+Supported and Unsupported Data Types
+------------------------------------
 
-Some backend functions have an attribute named :code:`unsupported_dtypes` which flags data types
-which this particular backend version of the function doesn't support but other backends might
-do. It should be noted that the :code:`unsupported_dtypes` is different from :code:`ivy.invalid_dtypes`
-which consists of all the :code:`dtypes` that every function of that particular backend doesn't support
-and so if a certain :code:`dtype` is already present in the :code:`ivy.invalid_dtypes` then we should
-not repeat flag it by adding it into the :code:`unsupported_dtypes`.
+Some backend functions (implemented in :code`ivy/functional/backends/<some_backend>`)
+have attributes named :code:`supported_dtypes` or :code:`unsupported_dtypes`,
+which flag the data types which this particular function does and does not support
+respectively for the associated backend.
+Only one of these attributes can be specified for any given function.
+In the case of :code:`supported_dtypes` it is assumed that all unmentioned data types
+are unsupported, and in the case of :code:`unsupported_dtypes` it is assumed that all
+unmentioned data types are supported.
 
-Support for Integer Arrays
+These attributes should always be in :code:`tuple` form, with each entry in the tuple
+being of type :code:`str`, like so:
+
+.. code-block:: python
+
+    def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        return torch.expm1(x, out=out)
+
+    expm1.unsupported_dtypes = ("float16",)
+
+For compositional functions, the supported and unsupported data types can then be
+inferred automatically using the helper functions
+`function_supported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370>`_
+and
+`function_unsupported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407>`_
+respestively, which traverse the abstract syntax tree of the compositional function and
+evaluate the relevant attributes for each primary function in the composition.
+The same approach applies for most stateful methods, which are themselves compositional.
+
+It should be noted that the :code:`unsupported_dtypes` is different from
+:code:`ivy.invalid_dtypes` which consists of all the :code:`dtypes` that every function
+of that particular backend does not support, and so if a certain :code:`dtype` is
+already present in the :code:`ivy.invalid_dtypes` then we should not add it into the
+:code:`unsupported_dtypes` attribute.
+
+Sometimes, it might be possible to support a natively unsupported data type by either
+casting to a supported data type and then casting back, or explicitly handling these
+data types without deferring to a backend function at all.
+
+An example of the former is :code:`ivy.logical_not` with a :code:`tensorflow` backend:
+
+.. code-block:: python
+
+    def logical_not(
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        return tf.logical_not(tf.cast(x, tf.bool))
+
+An example of the latter is :code:`ivy.abs` with a :code:`tensorflow` backend:
+
+.. code-block:: python
+
+    def abs(
+        x: Union[float, tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        if "uint" in ivy.dtype(x):
+            return x
+        else:
+            return tf.abs(x)
+
+In some cases, the lack of support for a particular data type by the backend function
+might be more difficult to handle correctly. For example, in many cases casting to
+another data type will result in a loss of precision, input range, or both.
+In such cases, the best solution is to simply add the data type to the
+:code:`unsupported_dtypes` attribute,
+rather than trying to implement a long and complex patch to achieve the desired
+behaviour.
+
+In some cases, the lack of support might just be a bug which will likely be resolved in
+a future release of the framework. In these cases, as well as adding to the
+:code:`unsupported_dtypes` attribute, we should also add a :code:`#ToDo` comment
+in the implementation, explaining that the support of the data type will be added as
+soon as the bug is fixed, with a link to an associated open issue in the framework
+repos included in the comment.
+
+For example, the following code throws an error when :code:`dtype` is
+:code:`torch.int32` but not when it is :code:`torch.int64`.
+This is tested with :code:`torch` version :code:`1.12.1`,
+which is the latest stable release at the time of writing. This is a
+`know bug <https://github.com/pytorch/pytorch/issues/84530>`_.:
+
+.. code-block:: python
+
+    dtype = torch.int32  # or torch.int64
+    x = torch.randint(1, 10, ([1, 2, 3]), dtype=dtype)
+    torch.tensordot(x, x, dims=([0], [0]))
+
+Despite :code:`torch.int32` working correctly with :code:`torch.tensordot` in the vast
+majority of cases, our solution is to still add :code:`"int32"` into the
+:code:`unsupported_dtypes` attribute, which will prevent the unit tests from failing in the CI.
+We also add the following comment above the :code:`unsupported_dtypes` attribute:
+
+.. code-block:: python
+
+    # ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
+    #  is fixed.
+    tensordot.unsupported_dtypes = ("int32",)
+
+Similarly, the following code throws an error for :code:`torch` version :code:`1.11.0`
+but not :code:`1.12.1`.
+
+.. code-block:: python
+
+    x = torch.tensor([0], dtype=torch.float32)
+    torch.cumsum(x, axis=0, dtype=torch.bfloat16)
+
+Writing short-lived patches for these temporary issues would add unwarranted complexity
+to the backend implementations, and introduce the risk of forgetting about the patch,
+needlessly bloating the codebase with redundant code.
+In such cases, we can explicitly flag which versions support which data types like so:
+
+[ToDo add a code example]
+
+The slight downside of this approach is that there is less data type coverage for each
+version of each backend, but taking responsibility for patching this support for all
+versions would substantially inflate the implementational requirements for ivy, and so
+we have decided to opt out of this responsibility!
+
+Superset Data Type Support
 --------------------------
 
-Some backends like :code:`tensorflow` donot support integer array inputs for certain functions. For example
-:code:`ivy.cos` wouldn't work for an input like :code:`ivy.array([1,2,3])` when the backend is set to :code:`tensorflow`
-the reason being that :code:`tensorflow` only supports non-integer values for this function. However, backends like
-:code:`torch` and :code:`jax` support integer arrays as inputs. So to provide this same functionality in
-:code:`tensorflow` we simply promote any integer array passed to such functions to the default float dtype.
-This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
-lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
-of implementing the superset of all behavior, rather than the lowest common denominator
+As explained in the superset section of the Deep Dive, we generally go for the superset
+of behaviour for all Ivy functions, and data type support is no exception.
+Some backends like :code:`tensorflow` do not support integer array inputs for certain
+functions. For example :code:`tensorflow.cos` only supports non-integer values.
+However, backends like :code:`torch` and :code:`jax` support integer arrays as inputs.
+To ensure that integer types are supported in Ivy when a :code:`tensorflow` backend is set,
+we simply promote any integer array passed to the function to the default float dtype.
+As with all superset design decisions, this behavior makes it much easier to support all
+frameworks in our frontends, without the need for lots of extra logic for handling
+integer array inputs for the frameworks which support it natively.
 
 **Round Up**
 
