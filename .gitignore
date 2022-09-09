@@ -21,3 +21,4 @@ with_time_logs/
 *.json
 .hypothesis
 .array_api_tests_k_flag*
+internal_automation_tools/

@@ -246,13 +246,24 @@ The PyTorch-specific implementation is as follows:
         return torch.full(
             shape_to_tuple(shape),
             fill_value,
-            dtype=ivy.default_dtype(dtype, item=fill_value, as_native=True),
+            dtype=ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True),
             device=device,
         )
 
 The implementations for all other backends follow a similar pattern to this PyTorch implementation,
 where the :code:`dtype` argument is optional and :code:`ivy.default_dtype` is called inside the
 backend-specific implementation.
+
+Unsupported data types
+----------------------
+
+Some backend functions have an attribute named :code:`unsupported_dtypes` which flags data types
+which this particular backend version of the function doesn't support but other backends might
+do. It should be noted that the :code:`unsupported_dtypes` is different from :code:`ivy.invalid_dtypes`
+which consists of all the :code:`dtypes` that every function of that particular backend doesn't support
+and so if a certain :code:`dtype` is already present in the :code:`ivy.invalid_dtypes` then we should
+not repeat flag it by adding it into the :code:`unsupported_dtypes`.
+
 
 **Round Up**
 
@@ -261,3 +272,12 @@ This should have hopefully given you a good feel for data types, and how these a
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `data types discussion`_,
 or reach out on `discord`_ in the `data types channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
+    </iframe>

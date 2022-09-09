@@ -124,7 +124,7 @@ def test_dropout_layer(x_shape, dtype, as_variable, device, compile_graph, call)
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    ivy.seed(0)
+    ivy.seed(seed_value=0)
     assert np.min(call(dropout_layer, x)) == 0.0
     # compilation test
     if call is helpers.torch_call:

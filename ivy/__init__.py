@@ -1,4 +1,5 @@
 # global
+import builtins
 import warnings
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
@@ -44,12 +45,17 @@ class NativeDtype:
     pass
 
 
+class NativeShape:
+    pass
+
+
 class Device(str):
     def __new__(cls, dev_str):
-        assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
-        if dev_str != "cpu":
-            assert dev_str[3] == ":"
-            assert dev_str[4:].isnumeric()
+        if dev_str != "":
+            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+            if dev_str != "cpu":
+                assert dev_str[3] == ":"
+                assert dev_str[4:].isnumeric()
         return str.__new__(cls, dev_str)
 
 
@@ -57,6 +63,24 @@ class Dtype(str):
     def __new__(cls, dtype_str):
         assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
         return str.__new__(cls, dtype_str)
+
+
+class Shape(tuple):
+    def __new__(cls, shape_tup):
+        valid_types = (int, list, tuple)
+        if len(backend_stack) != 0:
+            valid_types += (ivy.NativeShape,)
+        assert isinstance(shape_tup, valid_types)
+        if isinstance(shape_tup, int):
+            shape_tup = (shape_tup,)
+        elif isinstance(shape_tup, list):
+            shape_tup = tuple(shape_tup)
+        assert builtins.all(
+            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup]
+        )
+        if ivy.shape_array_mode():
+            return ivy.array(shape_tup)
+        return tuple.__new__(cls, shape_tup)
 
 
 class IntDtype(Dtype):
@@ -68,6 +92,12 @@ class IntDtype(Dtype):
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
         assert "float" in dtype_str
+        return str.__new__(cls, dtype_str)
+
+
+class UintDtype(IntDtype):
+    def __new__(cls, dtype_str):
+        assert "uint" in dtype_str
         return str.__new__(cls, dtype_str)
 
 
@@ -91,10 +121,11 @@ _MIN_BASE = 1e-5
 import threading
 from .array import Array, Variable, add_ivy_array_instance_methods
 from .array.conversions import *
+from .array import conversions as arr_conversions
+from .container import conversions as cont_conversions
 from .container import (
     ContainerBase,
     Container,
-    MultiDevContainer,
     add_ivy_container_instance_methods,
 )
 from .backend_handler import (
@@ -130,7 +161,6 @@ from ivy.functional.ivy import (
     elementwise,
     general,
     gradients,
-    image,
     layers,
     linear_algebra,
     losses,
@@ -148,13 +178,13 @@ add_ivy_array_instance_methods(
     Array,
     [
         activations,
+        arr_conversions,
         creation,
         data_type,
         device,
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -173,13 +203,13 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -199,13 +229,13 @@ add_ivy_container_instance_methods(
     Container,
     [
         activations,
+        cont_conversions,
         creation,
         data_type,
         device,
         elementwise,
         general,
         gradients,
-        image,
         layers,
         linear_algebra,
         losses,
@@ -226,10 +256,10 @@ int8 = IntDtype("int8")
 int16 = IntDtype("int16")
 int32 = IntDtype("int32")
 int64 = IntDtype("int64")
-uint8 = IntDtype("uint8")
-uint16 = IntDtype("uint16")
-uint32 = IntDtype("uint32")
-uint64 = IntDtype("uint64")
+uint8 = UintDtype("uint8")
+uint16 = UintDtype("uint16")
+uint32 = UintDtype("uint32")
+uint64 = UintDtype("uint64")
 bfloat16 = FloatDtype("bfloat16")
 float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
@@ -242,10 +272,10 @@ native_int8 = IntDtype("int8")
 native_int16 = IntDtype("int16")
 native_int32 = IntDtype("int32")
 native_int64 = IntDtype("int64")
-native_uint8 = IntDtype("uint8")
-native_uint16 = IntDtype("uint16")
-native_uint32 = IntDtype("uint32")
-native_uint64 = IntDtype("uint64")
+native_uint8 = UintDtype("uint8")
+native_uint16 = UintDtype("uint16")
+native_uint32 = UintDtype("uint32")
+native_uint64 = UintDtype("uint64")
 native_bfloat16 = FloatDtype("bfloat16")
 native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
@@ -298,21 +328,29 @@ all_float_dtypes = (
     float32,
     float64,
 )
+all_uint_dtypes = (
+    uint8,
+    uint16,
+    uint32,
+    uint64,
+)
 
 # valid data types
 valid_dtypes = all_dtypes
 valid_numeric_dtypes = all_numeric_dtypes
 valid_int_dtypes = all_int_dtypes
 valid_float_dtypes = all_float_dtypes
+valid_uint_dtypes = all_uint_dtypes
 
 # invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
+invalid_uint_dtypes = ()
 
 # data type promotion
-promotion_table = {
+array_api_promotion_table = {
     (int8, int8): int8,
     (int8, int16): int16,
     (int8, int32): int32,
@@ -380,10 +418,66 @@ promotion_table = {
     (float64, float64): float64,
     (bool, bool): bool,
 }
-
 locks = {"backend_setter": threading.Lock()}
+extra_promotion_table = {
+    (int8, float16): float16,
+    (float16, int8): float16,
+    (int8, float32): float32,
+    (float32, int8): float32,
+    (int8, float64): float64,
+    (float64, int8): float64,
+    (int16, float16): float16,
+    (float16, int16): float16,
+    (int16, float32): float32,
+    (float32, int16): float32,
+    (int16, float64): float64,
+    (float64, int16): float64,
+    (int32, float16): float16,
+    (float16, int32): float16,
+    (int32, float32): float32,
+    (float32, int32): float32,
+    (int32, float64): float64,
+    (float64, int32): float64,
+    (int64, float16): float16,
+    (float16, int64): float16,
+    (int64, float32): float32,
+    (float32, int64): float32,
+    (int64, float64): float64,
+    (float64, int64): float64,
+    (uint8, float16): float16,
+    (float16, uint8): float16,
+    (uint8, float32): float32,
+    (float32, uint8): float32,
+    (uint8, float64): float64,
+    (float64, uint8): float64,
+    (uint16, float16): float16,
+    (float16, uint16): float16,
+    (uint16, float32): float32,
+    (float32, uint16): float32,
+    (uint16, float64): float64,
+    (float64, uint16): float64,
+    (uint32, float16): float16,
+    (float16, uint32): float16,
+    (uint32, float32): float32,
+    (float32, uint32): float32,
+    (uint32, float64): float64,
+    (float64, uint32): float64,
+    (uint64, float16): float16,
+    (float16, uint64): float16,
+    (uint64, float32): float32,
+    (float32, uint64): float32,
+    (uint64, float64): float64,
+    (float64, uint64): float64,
+}
+
+promotion_table = {**array_api_promotion_table, **extra_promotion_table}
+
 
 backend = "none"
+
+native_inplace_support = None
+
+supports_gradients = None
 
 if "IVY_BACKEND" in os.environ:
     ivy.set_backend(os.environ["IVY_BACKEND"])

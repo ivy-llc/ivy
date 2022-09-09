@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import List, Optional, Union
+from typing import Optional, Union, Sequence
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -10,13 +10,13 @@ from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import dev, _to_device
+from ivy.functional.backends.numpy.device import _to_device
 
 # Helpers #
 # --------#
 
 
-def copy_array(x: np.ndarray) -> np.ndarray:
+def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return x.copy()
 
 
@@ -24,8 +24,11 @@ def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
     return np.array_equal(x0, x1)
 
 
-def to_numpy(x: np.ndarray) -> np.ndarray:
-    return x
+def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy()
+    else:
+        return x
 
 
 def to_scalar(x: np.ndarray) -> Number:
@@ -40,7 +43,10 @@ def container_types():
     return []
 
 
-inplace_arrays_supported = lambda: True
+def inplace_arrays_supported():
+    return True
+
+
 inplace_variables_supported = lambda: True
 
 
@@ -57,8 +63,10 @@ def inplace_update(
     if not val_native.flags.c_contiguous:
         val_native = np.ascontiguousarray(val_native)
 
-    x_native.data = val_native
-
+    if val_native.shape == x_native.shape:
+        np.copyto(x_native, val_native)
+    else:
+        x_native = val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
@@ -72,7 +80,9 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def floormod(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+def floormod(
+    x: np.ndarray, y: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     ret = np.asarray(x % y)
     return ret
 
@@ -112,6 +122,9 @@ def cumsum(
     return np.cumsum(x, axis, out=out)
 
 
+cumsum.support_native_out = True
+
+
 def cumprod(
     x: np.ndarray,
     axis: int = 0,
@@ -120,19 +133,28 @@ def cumprod(
 ) -> np.ndarray:
     if exclusive:
         x = np.swapaxes(x, axis, -1)
-        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = np.cumprod(x, -1, out=out)
+        x = np.concatenate((np.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = np.cumprod(x, -1)
         return np.swapaxes(res, axis, -1)
     return np.cumprod(x, axis, out=out)
 
 
-def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, device):
+cumprod.support_native_out = True
+
+
+def scatter_flat(
+    indices: np.ndarray,
+    updates: np.ndarray,
+    size: Optional[int] = None,
+    tensor: Optional[np.ndarray] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
-    if device is None:
-        device = dev(updates)
     if reduction == "sum":
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
@@ -161,17 +183,23 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction="sum", *, d
                 reduction
             )
         )
-    return _to_device(target, device)
+    return _to_device(target)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, device):
+def scatter_nd(
+    indices: np.ndarray,
+    updates: np.ndarray,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    tensor: Optional[np.ndarray] = None,
+    reduction: str = "sum",
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     target = tensor
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
-    if device is None:
-        device = dev(updates)
+        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
     shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -203,20 +231,22 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction="sum", *, de
                 reduction
             )
         )
-    return _to_device(target, device)
+    return _to_device(target)
 
 
 def gather(
-    params: np.ndarray, indices: np.ndarray, axis: Optional[int] = -1, *, device: str
+    params: np.ndarray,
+    indices: np.ndarray,
+    axis: Optional[int] = -1,
+    *,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if device is None:
-        device = dev(params)
-    return _to_device(np.take_along_axis(params, indices, axis), device)
+    return _to_device(np.take_along_axis(params, indices, axis))
 
 
-def gather_nd(params, indices, *, device: str):
-    if device is None:
-        device = dev(params)
+def gather_nd(
+    params: np.ndarray, indices: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -241,7 +271,7 @@ def gather_nd(params, indices, *, device: str):
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
-    return _to_device(res, device)
+    return _to_device(res)
 
 
 def multiprocessing(context=None):
@@ -258,18 +288,23 @@ def indices_where(x, out: Optional[np.ndarray] = None):
     return res
 
 
+indices_where.support_native_out = True
+
+
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, *, device):
+def one_hot(
+    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = np.eye(depth)[np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])
 
 
-def shape(x: np.ndarray, as_tensor: bool = False) -> Union[np.ndarray, List[int]]:
-    if as_tensor:
-        return np.asarray(np.shape(x))
+def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+    if as_array:
+        return ivy.array(np.shape(x))
     else:
-        return x.shape
+        return ivy.Shape(x.shape)
 
 
 def get_num_dims(x, as_tensor=False):
