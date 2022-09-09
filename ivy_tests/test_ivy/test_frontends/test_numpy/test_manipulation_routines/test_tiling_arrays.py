@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     dtype_and_repeats=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("signed_integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
             lambda rep: (len(rep),)
         ),
