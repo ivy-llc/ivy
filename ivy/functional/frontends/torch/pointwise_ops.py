@@ -121,8 +121,6 @@ def sign(input, *, out=None):
 def absolute(input, *, out=None):
     return ivy.abs(input, out=out)
 
-absolute.unsupported_dtypes = ("float16",)
-
 
 def logical_not(input, *, out=None):
     return ivy.logical_not(input, out=out)
