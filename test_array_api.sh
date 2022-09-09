@@ -1,5 +1,4 @@
 #!/bin/bash -e
-cd ..
 python3 ivy_tests/write_array_api_tests_k_flag.py
 # shellcheck disable=SC2155
 export ARRAY_API_TESTS_K_FLAG=$(cat ivy_tests/.array_api_tests_k_flag_$1)
