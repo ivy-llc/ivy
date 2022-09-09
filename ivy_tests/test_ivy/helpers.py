@@ -359,7 +359,9 @@ def get_current_frontend():
 @st.composite
 def get_dtypes(draw, kind, index=0, full=True, none=False):
     """
-    Draws valid dtypes based on the backend set on the stack
+    Draws a valid dtypes for the test function. For frontend tests, it draws the ddata types
+    from the intersection between backend framework data types and frontend framework dtypes,
+    otherwise, draws it from backend framework data types.
 
     Parameters
     ----------
@@ -399,6 +401,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
     else:
         valid_dtypes = backend_dtypes
+    
     if none:
         return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
     if full:
