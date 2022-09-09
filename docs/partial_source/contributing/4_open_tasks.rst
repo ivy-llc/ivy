@@ -18,6 +18,13 @@ tasks, each of which is made up of many individual sub-tasks,
 distributed across task-specific
 `ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
+Please read about
+`ToDo List Issues <https://lets-unify.ai/ivy/contributing/1_the_basics.html#todo-list-issues>`_
+in detail before continuing.
+ALl tasks should be selected and allocated as described in the ToDo List Issues section.
+We make no mention of task selection and allocation in the explanations below, which
+instead focus on the steps to complete only once a sub-task has been allocated to you.
+
 The tasks currently open are:
 
 #. Function Formatting
@@ -213,6 +220,10 @@ would help with the implementation for many of the functions in the frontend.
 Your task is to implement these functions in Ivy, along with their Implementation 
 in the respective backends which are :code:`Jax`, :code:`PyTorch`, :code:`TensorFlow` 
 and :code:`NumPy`. You must also implement tests for these functions.
+
+There is only one central ToDo list
+`issue <https://github.com/unifyai/ivy/issues/3856>`_
+for this task.
 
 A general workflow for these tasks would be:
 
