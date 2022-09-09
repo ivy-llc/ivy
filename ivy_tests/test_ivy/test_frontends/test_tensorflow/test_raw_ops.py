@@ -2,10 +2,98 @@
 import ivy
 import numpy as np
 from hypothesis import given, strategies as st
+from functools import reduce  # for making strategy
+from operator import mul  # for making strategy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
+
+# Functions to use in strategy #
+# ---------------------------- #
+
+# from array-api repo
+def _broadcast_shapes(shape1, shape2):
+    """Broadcasts `shape1` and `shape2`"""
+    N1 = len(shape1)
+    N2 = len(shape2)
+    N = max(N1, N2)
+    shape = [None for _ in range(N)]
+    i = N - 1
+    while i >= 0:
+        n1 = N1 - N + i
+        if N1 - N + i >= 0:
+            d1 = shape1[n1]
+        else:
+            d1 = 1
+        n2 = N2 - N + i
+        if N2 - N + i >= 0:
+            d2 = shape2[n2]
+        else:
+            d2 = 1
+
+        if d1 == 1:
+            shape[i] = d2
+        elif d2 == 1:
+            shape[i] = d1
+        elif d1 == d2:
+            shape[i] = d1
+        else:
+            raise Exception("Broadcast error")
+
+        i = i - 1
+
+    return tuple(shape)
+
+
+# from array-api repo
+def broadcast_shapes(*shapes):
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shapes(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shapes(result, shapes[i])
+    return result
+
+
+# np.prod and others have overflow and math.prod is Python 3.8+ only
+def prod(seq):
+    return reduce(mul, seq, 1)
+
+
+# from array-api repo
+def mutually_broadcastable_shapes(
+    num_shapes: int,
+    *,
+    base_shape=(),
+    min_dims: int = 1,
+    max_dims: int = 4,
+    min_side: int = 1,
+    max_side: int = 4,
+):
+    if max_dims is None:
+        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
+    if max_side is None:
+        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
+    return (
+        helpers.nph.mutually_broadcastable_shapes(
+            num_shapes=num_shapes,
+            base_shape=base_shape,
+            min_dims=min_dims,
+            max_dims=max_dims,
+            min_side=min_side,
+            max_side=max_side,
+        )
+        .map(lambda BS: BS.input_shapes)
+        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
+    )
+
+
+# for data generation in multiple tests
+dtype_shared = st.shared(st.sampled_from(ivy.valid_dtypes), key="dtype")
 
 
 # Acos
@@ -63,50 +151,48 @@ def test_tensorflow_Acosh(
 
 
 def _get_broadcastable_shapes(draw):
-    to_shape = draw(helpers.get_shape(allow_none=False))
-    in_shape = draw(helpers.nph.broadcastable_shapes(shape=to_shape))
+    to_shape = draw(helpers.get_shape(allow_none=False, min_num_dims=2))
+    in_shape = draw(helpers.nph.broadcastable_shapes(shape=to_shape, min_dims=3))
     return in_shape, to_shape
 
 
 @st.composite
-def _array_and_broadcast_shape(draw):
-    in_shape, to_shape = _get_broadcastable_shapes(draw)
-    dtype_and_x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            shape=in_shape,
-            min_value=-10,
-            max_value=10,
-        )
+def array_and_broadcastable_shape(draw, dtype):
+    in_shape = draw(helpers.nph.array_shapes(min_dims=1, max_dims=4))
+    x = draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
+    to_shape = draw(
+        mutually_broadcastable_shapes(1, base_shape=in_shape)
+        .map(lambda S: S[0])
+        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
+        label="shape",
     )
-    return dtype_and_x, to_shape
+    return (x, to_shape)
 
 
-# broadcast_to
+# BroadcastTo
 @handle_cmd_line_args
 @given(
-    array_and_shape=_array_and_broadcast_shape(),
+    array_and_shape=array_and_broadcastable_shape(dtype_shared),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.broadcast_to"
+        fn_name="ivy.functional.frontends.tensorflow.BroadcastTo"
     ),
     native_array=st.booleans(),
 )
-def test_tensorflow_broadcast_to(
+def test_tensorflow_BroadcastTo(
     array_and_shape, as_variable, num_positional_args, native_array, fw
 ):
-    dtype_and_x, to_shape = array_and_shape
-    input_dtype, x = dtype_and_x
+    x, to_shape = array_and_shape
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=False,
+        input_dtypes=x.dtype,
+        as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="broadcast_to",
-        input=np.asarray(x, dtype=input_dtype),
+        fn_tree="raw_ops.BroadcastTo",
+        input=x,
         shape=to_shape,
     )
 
@@ -150,15 +236,15 @@ def _arrays_idx_n_dtypes(draw):
     return xs, input_dtypes, unique_idx
 
 
-# concat
+# Concat
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.concat"
+        fn_name="ivy.functional.frontends.tensorflow.Concat"
     ),
 )
-def test_tensorflow_concat(
+def test_tensorflow_Concat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
     num_positional_args,
@@ -175,9 +261,9 @@ def test_tensorflow_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="concat",
+        fn_tree="raw_ops.Concat",
+        concat_dim=unique_idx,
         values=xs,
-        axis=unique_idx,
     )
 
 
@@ -270,10 +356,10 @@ def _fill_value(draw):
     fill_value=_fill_value(),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.fill"
+        fn_name="ivy.functional.frontends.tensorflow.Fill"
     ),
 )
-def test_tensorflow_fill(
+def test_tensorflow_Fill(
     shape,
     fill_value,
     dtypes,
@@ -291,7 +377,7 @@ def test_tensorflow_fill(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="fill",
+        fn_tree="raw_ops.Fill",
         dims=shape,
         value=fill_value,
         rtol=1e-05,
@@ -647,7 +733,7 @@ def test_tensorflow_transpose(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=0,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
@@ -1008,12 +1094,12 @@ def test_tensorflow_Reshape(
     )
 
 
-# Zeros_like
+# ZerosLike
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.zeros_like"
+        fn_name="ivy.functional.frontends.tensorflow.ZerosLike"
     ),
 )
 def test_tensorflow_zeros_like(
@@ -1024,10 +1110,10 @@ def test_tensorflow_zeros_like(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="zeros_like",
+        fn_tree="raw_ops.ZerosLike",
         x=np.asarray(x, dtype=dtype),
     )
