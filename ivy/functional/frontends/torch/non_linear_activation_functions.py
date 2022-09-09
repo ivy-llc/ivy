@@ -19,6 +19,30 @@ def _compute_elu(input, alpha=1.0, inplace=False):
     return ivy.where(ivy.greater(input, 0), input, prod)
 
 
+def _selu_with_inplace(input, inplace=False):
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(input),
+            1,
+        ),
+    )
+    min_ = ivy.multiply(
+        scale,
+        ivy.minimum(0, prod),
+    )
+    max_ = ivy.multiply(
+        scale,
+        ivy.maximum(0, input),
+    )
+    ret = ivy.add(min_, max_)
+    if inplace:
+        return ivy.inplace_update(input, ret)
+    return ret
+
+
 def sigmoid(input):
     return ivy.sigmoid(input)
 
@@ -136,29 +160,7 @@ def celu(input, alpha=1.0, inplace=False):
 
 
 def selu(input, inplace=False):
-    alpha = 1.6732632423543772848170429916717
-    scale = 1.0507009873554804934193349852946
-    prod = ivy.multiply(
-        alpha,
-        ivy.subtract(
-            ivy.exp(input),
-            1,
-        ),
-    )
-    min_ = ivy.multiply(
-        scale,
-        ivy.minimum(0, prod),
-    )
-    max_ = ivy.multiply(
-        scale,
-        ivy.maximum(0, input),
-    )
-    if inplace:
-        return ivy.add(min_, max_, out=input)
-    return ivy.add(
-        min_,
-        max_,
-    )
+    return _selu_with_inplace(input, inplace=inplace)
 
 
 selu.unsupported_dtypes = ("float16",)
