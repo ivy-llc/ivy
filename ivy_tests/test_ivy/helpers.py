@@ -1950,7 +1950,7 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret_np_flat, frontend_ret_np_flat
+        return ret, frontend_ret
 
     # value tests, iterating through each array in the flattened returns
     value_test(
