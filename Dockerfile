@@ -18,22 +18,21 @@ RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/to
 # Install Ivy Upstream
 RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
     cd ivy && \
-    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 -m pip install --user -e . && \
     cd ivy_tests/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
-COPY requirements/requirements.txt /
-RUN pip3 install --no-cache-dir -r requirements/requirements.txt
+COPY requirements.txt /
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
-COPY requirements/optional.txt /
-RUN pip3 install --no-cache-dir -r requirements/optional.txt
+COPY optional.txt /
+RUN pip3 install --no-cache-dir -r optional.txt
 
-
-COPY run_tests_CLI/test_dependencies.py /
-RUN python3 run_tests_CLI/test_dependencies.py -fp requirements/requirements.txt,requirements/optional.txt && \
-    rm -rf requirements/requirements.txt && \
-    rm -rf requirements/optional.txt
+COPY test_dependencies.py /
+RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
+    rm -rf requirements.txt && \
+    rm -rf optional.txt
