@@ -113,3 +113,13 @@ def conv3d_transpose(
 
 
 conv3d_transpose.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
+    inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
+    if scale is not None:
+        inv *= scale
+
+    return x * ivy.astype(inv, x.dtype, copy=False) + ivy.astype(
+        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+    )
