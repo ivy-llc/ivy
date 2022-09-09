@@ -155,7 +155,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.has_nans(self, include_infs)
 
-    def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
+    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
         this method with minimal changes.
@@ -188,7 +188,7 @@ class ArrayWithGeneral(abc.ABC):
                 [3]]), ivy.array([[2],
                 [4]])]
         """
-        return ivy.unstack(self._data, axis, keepdims)
+        return ivy.unstack(self._data, axis, keepdims=keepdims)
 
     def cumsum(
         self: ivy.Array,
