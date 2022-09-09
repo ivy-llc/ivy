@@ -114,30 +114,58 @@ def test_linear_layer(
 # --------#
 
 # dropout
+@handle_cmd_line_args
 @given(
-    x_shape=st.sampled_from([(1, 2, 3)]),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    prob=helpers.floats(min_value=0, max_value=0.9, width=64),
+    scale=st.booleans(),
+    num_positional_args_init=helpers.num_positional_args(fn_name="Dropout.__init__"),
+    num_positional_args_method=helpers.num_positional_args(fn_name="Dropout._forward"),
 )
-def test_dropout_layer(x_shape, dtype, as_variable, device, compile_graph):
-    # smoke test
-    if as_variable:
-        x = ivy.variable(ivy.array(ivy.random_uniform(shape=x_shape), dtype=dtype))
-    else:
-        x = ivy.array(ivy.random_uniform(shape=x_shape), dtype=dtype)
-    dropout_layer = ivy.Dropout(0.9)
-    ret = dropout_layer(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    ivy.seed(seed_value=0)
-    assert np.min(ivy.to_numpy(dropout_layer(x))) == 0.0
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytest scripting does not **kwargs
-        return
+def test_dropout_layer(
+    *,
+    dtype_and_x,
+    prob,
+    scale,
+    num_positional_args_init,
+    num_positional_args_method,
+    as_variable,
+    native_array,
+    container,
+    fw,
+    device,
+):
+    input_dtype, x = dtype_and_x
+    x = np.asarray(x, dtype=input_dtype)
+    ret = helpers.test_method(
+        num_positional_args_init=num_positional_args_init,
+        all_as_kwargs_np_init={
+            "prob": prob,
+            "scale": scale,
+            "dtype": input_dtype,
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_method=native_array,
+        container_flags_method=container,
+        all_as_kwargs_np_method={"inputs": x},
+        fw=fw,
+        class_name="Dropout",
+        test_values=False,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    for u in ret:
+        # cardinality test
+        assert u.shape == x.shape
 
 
 # Attention #

@@ -14,6 +14,13 @@ def concat(values, axis, name="concat"):
     return ivy.concat(values, axis=axis)
 
 
+def ArgMax(*, input, dimension, output_type=None, name=None):
+    if output_type in ["uint16", "int16", "int32", "int64"]:
+        return ivy.astype(ivy.argmax(input, axis=dimension), output_type)
+    else:
+        return ivy.astype(ivy.argmax(input, axis=dimension), "int64")
+
+
 def Cos(*, x, name="Cos"):
     return ivy.cos(x)
 
@@ -76,3 +83,35 @@ def Maximum(*, x, y, name="Maximum"):
 
 def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
+
+
+def Sub(*, x, y, name="Sub"):
+    return ivy.subtract(x, y)
+
+
+def Less(*, x, y, name="Less"):
+    return ivy.less(x, y)
+
+
+def LessEqual(*, x, y, name="LessEqual"):
+    return ivy.less_equal(x, y)
+
+
+def Floor(*, x, name="Floor"):
+    return ivy.floor(x)
+
+
+def FloorDiv(*, x, y, name="FloorDiv"):
+    return ivy.floor_divide(x, y)
+
+
+def Exp(*, x, name="Exp"):
+    return ivy.exp(x)
+
+
+def Expm1(*, x, name="Expm1"):
+    return ivy.expm1(x)
+
+
+def Log(*, x, name="Log"):
+    return ivy.log(x)

@@ -5,4 +5,4 @@ pip3 install flake8
 
 git submodule update --init --recursive
 
-python3 setup.py develop
+python3 -m pip install --user -e .

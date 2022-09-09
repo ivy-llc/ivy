@@ -50,8 +50,8 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 def softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    exp_x = np.exp(x - np.max(x))
-    return np.divide(exp_x, np.sum(exp_x, axis, keepdims=True), out=out)
+    exp_x = np.exp(x - np.max(x, axis=axis, keepdims=True))
+    return np.divide(exp_x, np.sum(exp_x, axis=axis, keepdims=True), out=out)
 
 
 softmax.support_native_out = True

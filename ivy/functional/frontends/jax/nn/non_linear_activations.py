@@ -207,8 +207,7 @@ def log_softmax(x, axis=-1):
     x_max = ivy.max(x)
     shifted = ivy.subtract(x, x_max)
     shifted_logsumexp = ivy.log(ivy.sum(ivy.exp(shifted), axis=axis, keepdims=True))
-    ret = shifted - shifted_logsumexp
-    return ret
+    return shifted - shifted_logsumexp
 
 
 log_softmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
@@ -334,3 +333,11 @@ def swish(x):
 
 
 swish.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def hard_swish(x):
+    res = (x * ivy.minimum(ivy.maximum(x + 3, 0.0), 6.0)) / 6
+    return ivy.asarray(res, dtype=x.dtype)
+
+
+hard_swish.unsupported_dtypes = {"torch": ("float16", "bfloat16")}

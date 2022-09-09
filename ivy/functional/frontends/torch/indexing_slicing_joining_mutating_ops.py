@@ -10,12 +10,25 @@ def concat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
 
+def nonzero(input, *, out=None, as_tuple=False):
+    ret = ivy.nonzero(input)
+    if as_tuple is False:
+        ret = ivy.matrix_transpose(ivy.stack(ret))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
 def chunk(input, chunks, dim=0):
     return ivy.chunk(input, chunks=chunks, axis=dim)
     
 
 def permute(input, dims):
     return ivy.permute_dims(input, axes=dims)
+
+
+def reshape(input, shape):
+    return ivy.reshape(input, shape)
 
 
 def swapdims(input, dim0, dim1):
@@ -29,12 +42,19 @@ swapdims.unsupported_dtypes = (
 )
 
 
+def swapaxes(input, axis0, axis1):
+    return ivy.swapaxes(input, axis0, axis1)
+
+
+swapaxes.unsupported_dtypes = (
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+
 def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
-
-
-def reshape(input, shape):
-    return ivy.reshape(input, shape)
 
 
 def stack(tensors, dim=0, *, out=None):

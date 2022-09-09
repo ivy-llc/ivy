@@ -350,19 +350,21 @@ def test_numpy_sqrt(
     )
 
 
-# cbrt
+# positive
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_numeric_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, min_num_dims=1
+    ),
     dtype=st.sampled_from(ivy_np.valid_numeric_dtypes + (None,)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
+    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.cbrt"
+        fn_name="ivy.functional.frontends.numpy.positive"
     ),
-    native_array=helpers.array_bools(),
+    native_array=helpers.array_bools(num_arrays=1),
 )
-def test_numpy_cbrt(
+def test_numpy_positive(
     dtype_and_x,
     dtype,
     where,
@@ -373,6 +375,7 @@ def test_numpy_cbrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -387,8 +390,8 @@ def test_numpy_cbrt(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_tree="cbrt",
-        x=np.asarray(x, dtype=input_dtype),
+        fn_tree="positive",
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
