@@ -389,7 +389,7 @@ from .backend_handler import (
     try_import_ivy_numpy,
     clear_backend_stack,
 )
-from . import backend_handler, func_wrapper
+from . import backend_handler, func_wrapper, exceptions
 from . import functional
 from .functional import *
 from . import stateful

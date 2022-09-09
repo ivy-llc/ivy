@@ -13,8 +13,6 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import exceptions
-from .exceptions import *
 from . import extensions
 from .extensions import *
 from . import general
