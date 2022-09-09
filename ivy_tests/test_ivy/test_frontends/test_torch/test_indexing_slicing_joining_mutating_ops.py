@@ -365,6 +365,7 @@ def test_torch_chunk(
         frontend='torch',
         fn_tree='chunk',
         input = np.asarray(value,dtype=input_dtype),
+        chunks = np.random.randint(np.asarray(value,dtype=input_dtype))
         axis = dim, 
         )
         
