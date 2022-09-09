@@ -118,15 +118,9 @@ def relu(x):
     return ivy.relu(x)
 
 
-relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def relu6(x):
     res = ivy.minimum(ivy.maximum(x, 0.0), 6.0)
     return _type_conversion_64(res)
-
-
-relu6.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def soft_sign(x):
@@ -135,15 +129,9 @@ def soft_sign(x):
     return ret.astype(dtype)
 
 
-soft_sign.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def silu(x):
     x = _type_conversion(x)
     return x * sigmoid(x)
-
-
-silu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def leaky_relu(x, negative_slope=0.01):
@@ -151,14 +139,8 @@ def leaky_relu(x, negative_slope=0.01):
     return ivy.leaky_relu(x, alpha=negative_slope)
 
 
-leaky_relu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def gelu(x, approximate=True):
     return ivy.gelu(x, approximate=approximate)
-
-
-gelu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def sigmoid(x):
@@ -167,15 +149,9 @@ def sigmoid(x):
     return ivy.astype(ret, x.dtype)
 
 
-sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def one_hot(x, num_classes, *, device=None, out=None):
     ret = ivy.one_hot(x, num_classes, device=device, out=out)
     return ret.astype("float64")
-
-
-one_hot.supported_dtypes = {"tensorflow": ("uint8", "int32", "int64")}
 
 
 def softmax(x, /, *, axis=-1):
@@ -184,23 +160,14 @@ def softmax(x, /, *, axis=-1):
     return ret.astype(dtype)
 
 
-softmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def softplus(x):
     x = _type_conversion(x)
     return ivy.softplus(x).astype(x.dtype)
 
 
-softplus.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def log_sigmoid(x):
     x = _type_conversion(x)
     return -ivy.softplus(-x).astype(x.dtype)
-
-
-log_sigmoid.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def log_softmax(x, axis=-1):
@@ -210,17 +177,11 @@ def log_softmax(x, axis=-1):
     return shifted - shifted_logsumexp
 
 
-log_softmax.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def glu(x, axis=-1):
     size = x.shape[axis]
     assert size % 2 == 0, "axis size must be divisible by 2"
     x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
     return ivy.multiply(x1, ivy.sigmoid(x2))
-
-
-glu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
@@ -241,9 +202,6 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
     return ivy.asarray(res, dtype=out_type)
 
 
-normalize.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def hard_tanh(x):
     x = ivy.asarray(x)
     n1 = -1
@@ -255,25 +213,16 @@ def hard_tanh(x):
     return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
 
 
-hard_tanh.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def celu(x, alpha=1.0):
     ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
     dtype = _batch_promotion(x, alpha, default_dtype="float32")
     return ivy.asarray(ret, dtype=dtype)
 
 
-celu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def elu(x, alpha=1.0):
     ret = ivy.where(x > 0, x, alpha * ivy.expm1(x))
     dtype = _batch_promotion(x, alpha, default_dtype="float64")
     return ivy.asarray(ret, dtype=dtype)
-
-
-elu.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
@@ -324,20 +273,11 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
     return out.astype(out_dtype)
 
 
-logsumexp.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)
 
 
-swish.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
-
-
 def hard_swish(x):
     res = (x * ivy.minimum(ivy.maximum(x + 3, 0.0), 6.0)) / 6
     return ivy.asarray(res, dtype=x.dtype)
-
-
-hard_swish.unsupported_dtypes = {"torch": ("float16", "bfloat16")}

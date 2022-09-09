@@ -1,9 +1,10 @@
 # global
 import mxnet as mx
 import math
-from typing import Union
+from typing import Optional, Union
 
 # local
+import ivy
 from ivy.functional.backends.mxnet import (
     _handle_flat_arrays_in_out,
     _scalar_or_flat_array_to_scalar,
@@ -34,6 +35,18 @@ def ceil(x: mx.nd.NDArray) -> mx.nd.NDArray:
 @_handle_flat_arrays_in_out
 def floor(x: mx.nd.NDArray) -> mx.nd.NDArray:
     return mx.nd.floor(x)
+
+
+@_handle_flat_arrays_in_out
+def floormod(
+    x: mx.nd.NDArray,
+    y: mx.nd.NDArray,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    ret = x % y
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @_handle_flat_arrays_in_out

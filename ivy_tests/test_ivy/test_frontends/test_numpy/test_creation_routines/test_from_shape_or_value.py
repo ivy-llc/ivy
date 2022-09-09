@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -14,7 +13,7 @@ def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_length(
-                x=st.sampled_from(ivy_np.valid_numeric_dtypes), length=1
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
             ),
             key="dtype",
         )
@@ -61,8 +60,7 @@ def test_numpy_empty(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     shape=helpers.get_shape(
         allow_none=True,
@@ -205,8 +203,7 @@ def test_numpy_ones(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     shape=helpers.get_shape(
         allow_none=True,
@@ -284,8 +281,7 @@ def test_numpy_zeros(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     shape=helpers.get_shape(
         allow_none=True,
@@ -376,8 +372,7 @@ def test_numpy_full(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     fill_value=_fill_value(),
     dtypes=_dtypes(),
