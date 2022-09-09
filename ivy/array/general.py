@@ -615,6 +615,33 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
+    def supports_inplace(self: ivy.Array) -> bool:
+        """
+        ivy.Array instance method variant of ivy.supports_inplace. This method simply
+        wraps the function, and so the docstring for ivy.supports_inplace also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array whose elements' data type is to be checked.
+
+        Returns
+        -------
+        ret
+            Bool value depends on whether the currently active backend
+            framework supports in-place operations with argument's data type.
+
+        Examples
+        --------
+        With `ivy.Array` input and backend set as "tensorflow":
+        >>> x = ivy.array([1., 4.2, 2.2])
+        >>> ret = x.supports_inplace()
+        >>> print(ret)
+        False
+        """
+        return ivy.supports_inplace(self)
+
     def inplace_decrement(
         self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
@@ -960,25 +987,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
-
-    def supports_inplace(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.supports_inplace. This method simply
-        wraps the function, and so the docstring for ivy.supports_inplace also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not inplace operations are supported for x.
-
-        """
-        return ivy.supports_inplace(self)
 
     def inplace_update(
         self: ivy.Array,
