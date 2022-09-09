@@ -1961,7 +1961,7 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
         ret
-             Container data in it's raw form.
+             Container data in its raw form.
 
         """
         return_item = dict()
