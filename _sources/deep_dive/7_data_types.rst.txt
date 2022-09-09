@@ -380,17 +380,19 @@ version of each backend, but taking responsibility for patching this support for
 versions would substantially inflate the implementational requirements for ivy, and so
 we have decided to opt out of this responsibility!
 
-Support for Integer Arrays
+Superset Data Type Support
 --------------------------
 
-Some backends like :code:`tensorflow` donot support integer array inputs for certain functions. For example
-:code:`ivy.cos` wouldn't work for an input like :code:`ivy.array([1,2,3])` when the backend is set to :code:`tensorflow`
-the reason being that :code:`tensorflow` only supports non-integer values for this function. However, backends like
-:code:`torch` and :code:`jax` support integer arrays as inputs. So to provide this same functionality in
-:code:`tensorflow` we simply promote any integer array passed to such functions to the default float dtype.
-This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
-lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
-of implementing the superset of all behavior, rather than the lowest common denominator
+As explained in the superset section of the Deep Dive, we generally go for the superset
+of behaviour for all Ivy functions, and data type support is no exception.
+Some backends like :code:`tensorflow` do not support integer array inputs for certain
+functions. For example :code:`tensorflow.cos` only supports non-integer values.
+However, backends like :code:`torch` and :code:`jax` support integer arrays as inputs.
+To ensure that integer types are supported in Ivy when a :code:`tensorflow` backend is set,
+we simply promote any integer array passed to the function to the default float dtype.
+As with all superset design decisions, this behavior makes it much easier to support all
+frameworks in our frontends, without the need for lots of extra logic for handling
+integer array inputs for the frameworks which support it natively.
 
 **Round Up**
 

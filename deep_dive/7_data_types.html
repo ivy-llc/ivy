@@ -59,7 +59,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#data-type-module">Data Type Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-and-unsupported-data-types">Supported and Unsupported Data Types</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#support-for-integer-arrays">Support for Integer Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#superset-data-type-support">Superset Data Type Support</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="8_devices.html">Devices</a></li>
@@ -493,16 +493,18 @@ version of each backend, but taking responsibility for patching this support for
 versions would substantially inflate the implementational requirements for ivy, and so
 we have decided to opt out of this responsibility!</p>
 </section>
-<section id="support-for-integer-arrays">
-<h2>Support for Integer Arrays<a class="headerlink" href="#support-for-integer-arrays" title="Permalink to this heading"></a></h2>
-<p>Some backends like <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> donot support integer array inputs for certain functions. For example
-<code class="code docutils literal notranslate"><span class="pre">ivy.cos</span></code> wouldn’t work for an input like <code class="code docutils literal notranslate"><span class="pre">ivy.array([1,2,3])</span></code> when the backend is set to <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>
-the reason being that <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> only supports non-integer values for this function. However, backends like
-<code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax</span></code> support integer arrays as inputs. So to provide this same functionality in
-<code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> we simply promote any integer array passed to such functions to the default float dtype.
-This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
-lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
-of implementing the superset of all behavior, rather than the lowest common denominator</p>
+<section id="superset-data-type-support">
+<h2>Superset Data Type Support<a class="headerlink" href="#superset-data-type-support" title="Permalink to this heading"></a></h2>
+<p>As explained in the superset section of the Deep Dive, we generally go for the superset
+of behaviour for all Ivy functions, and data type support is no exception.
+Some backends like <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> do not support integer array inputs for certain
+functions. For example <code class="code docutils literal notranslate"><span class="pre">tensorflow.cos</span></code> only supports non-integer values.
+However, backends like <code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax</span></code> support integer arrays as inputs.
+To ensure that integer types are supported in Ivy when a <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> backend is set,
+we simply promote any integer array passed to the function to the default float dtype.
+As with all superset design decisions, this behavior makes it much easier to support all
+frameworks in our frontends, without the need for lots of extra logic for handling
+integer array inputs for the frameworks which support it natively.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for data types, and how these are handled in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,

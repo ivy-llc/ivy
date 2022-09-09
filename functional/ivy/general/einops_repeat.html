@@ -259,61 +259,6 @@
              
   <section id="einops-repeat">
 <h1>einops_repeat<a class="headerlink" href="#einops-repeat" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.general.einops_repeat">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">einops_repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">axes_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/general.html#einops_repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.einops_repeat" title="Permalink to this definition"></a></dt>
-<dd><p>Perform einops repeat operation on input array x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input array to be repeated.</p></li>
-<li><p><strong>pattern</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Rearrangement pattern.</p></li>
-<li><p><strong>axes_lengths</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Any additional specifications for dimensions.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-inputs broadcast to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – New array with einops.repeat having been applied.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.array</span></code> input:
-&gt;&gt; x = ivy.array([1, 2, 3, 4])
-&gt;&gt; repeated = ivy.einops_repeat(x, ‘a -&gt; b a’, b=2)
-&gt;&gt; print(repeated)
-ivy.array([[1, 2, 3, 4],</p>
-<blockquote>
-<div><p>[1, 2, 3, 4]])</p>
-</div></blockquote>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt; x = ivy.Container(a=ivy.array([[4,5],</p>
-<blockquote>
-<div><blockquote>
-<div><p>[1, 3]]),</p>
-</div></blockquote>
-<dl class="simple">
-<dt>b=ivy.array([[9, 10],</dt><dd><p>[4, 2]]))</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>&gt;&gt; repeated = ivy.einops_repeat(x, ‘h w -&gt; h (c w)’, c=2)
-&gt;&gt; print(repeated)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([[4, 5, 4, 5],</dt><dd><p>[1, 3, 1, 3]]),</p>
-</dd>
-<dt>b: ivy.array([[9, 10, 9, 10],</dt><dd><p>[4, 2, 4, 2]])</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
