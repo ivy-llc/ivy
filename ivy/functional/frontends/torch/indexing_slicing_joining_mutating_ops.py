@@ -14,7 +14,6 @@ def nonzero(input, *, out=None, as_tuple=False):
     ret = ivy.nonzero(input)
     if as_tuple is False:
         ret = ivy.matrix_transpose(ivy.stack(ret))
-
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -60,10 +59,3 @@ def transpose(input, dim0, dim1):
 
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)
-
-
-def squeeze(input, dim):
-    if isinstance(dim, int):
-        if input.shape[dim] > 1:
-            return input if ivy.is_ivy_array(input) else ivy.array(input)
-    return ivy.squeeze(input, dim)
