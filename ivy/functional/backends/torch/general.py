@@ -8,7 +8,7 @@ from operator import mul
 from functools import reduce
 from typing import List, Optional, Union, Sequence
 from numbers import Number
-
+from . import torch_version,dtype_from_version
 
 torch_scatter = None
 
@@ -181,7 +181,7 @@ def cumsum(
 
 
 cumsum.support_native_out = True
-cumsum.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
+cumsum.unsupported_dtypes = dtype_from_version({"1.11.0":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
 
 
 def cumprod(
@@ -207,7 +207,7 @@ def cumprod(
 
 
 cumprod.support_native_out = True
-cumprod.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
+cumprod.unsupported_dtypes = dtype_from_version({"1.11.0":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
 
 
 # noinspection PyShadowingNames
@@ -421,12 +421,12 @@ def scatter_nd(
 
 
 scatter_nd.support_native_out = True
-scatter_nd.unsupported_dtypes = (
+scatter_nd.unsupported_dtypes = dtype_from_version({"1.11.0":(
     "float16",
     "uint16",
     "uint32",
-    "uint64",
-)
+    "uint64",)
+},torch_version.split('+')[0])
 
 
 def gather(

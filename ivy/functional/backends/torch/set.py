@@ -2,7 +2,7 @@
 import torch
 from typing import NamedTuple, Optional
 from collections import namedtuple
-
+from . import torch_version,dtype_from_version
 
 def unique_all(
     x: torch.Tensor,
@@ -47,7 +47,7 @@ def unique_all(
     )
 
 
-unique_all.unsupported_dtypes = ("float16",)
+unique_all.unsupported_dtypes = dtype_from_version({"1.11.0":("float16"),},torch_version.split('+')[0])
 
 
 def unique_counts(x: torch.Tensor, /) -> NamedTuple:
@@ -58,7 +58,7 @@ def unique_counts(x: torch.Tensor, /) -> NamedTuple:
     return uc(v, c)
 
 
-unique_counts.unsupported_dtypes = ("float16",)
+unique_counts.unsupported_dtypes = dtype_from_version({"1.11.0":("float16"),},torch_version.split('+')[0])
 
 
 def unique_inverse(x: torch.Tensor, /) -> NamedTuple:
@@ -71,7 +71,7 @@ def unique_inverse(x: torch.Tensor, /) -> NamedTuple:
     return out(values, inverse_indices)
 
 
-unique_inverse.unsupported_dtypes = ("float16",)
+unique_inverse.unsupported_dtypes = dtype_from_version({"1.11.0":("float16"),},torch_version.split('+')[0])
 
 
 def unique_values(
@@ -80,4 +80,4 @@ def unique_values(
     return torch.unique(x)
 
 
-unique_values.unsupported_dtypes = ("float16",)
+unique_values.unsupported_dtypes = dtype_from_version({"1.11.0":("float16"),},torch_version.split('+')[0])

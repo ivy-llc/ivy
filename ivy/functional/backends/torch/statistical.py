@@ -5,6 +5,7 @@ from typing import Tuple, Union, Optional, Sequence
 
 # local
 import ivy
+from . import torch_version,dtype_from_version
 
 
 # Array API Standard #
@@ -105,7 +106,7 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-prod.unsupported_dtypes = ("float16",)
+prod.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
 
 
 def std(
@@ -140,7 +141,7 @@ def std(
     return ret
 
 
-std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
+std.unsupported_dtypes = dtype_from_version({"1.11.0":("int8", "int16", "int32", "int64", "float16")},torch_version.split('+')[0])
 
 
 def sum(

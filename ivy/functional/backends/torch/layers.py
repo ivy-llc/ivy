@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple, Union, Sequence
 
 # local
 import ivy
-
+from . import torch_version,dtype_from_version
 
 def _out_shape(x, strides, pad, dilations, filters):
     return (x - 1) * strides - 2 * pad + dilations * (filters - 1) + 1
@@ -46,7 +46,7 @@ def conv1d(
     return res
 
 
-conv1d.unsupported_dtypes = ("float16",)
+conv1d.unsupported_dtypes = dtype_from_version({"1.11.0":("float16"),},torch_version.split('+')[0])
 
 
 # noinspection PyUnresolvedReferences
@@ -107,7 +107,7 @@ def conv1d_transpose(
     return res
 
 
-conv1d_transpose.unsupported_dtypes = ("float16", "bfloat16")
+conv1d_transpose.unsupported_dtypes = dtype_from_version({"1.11.0":("float16", "bfloat16")},torch_version.split('+')[0])
 
 
 # noinspection PyUnresolvedReferences
@@ -159,7 +159,7 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = ("float16",)
+conv2d.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
 
 
 # noinspection PyUnresolvedReferences
@@ -240,7 +240,7 @@ def conv2d_transpose(
     return res
 
 
-conv2d_transpose.unsupported_dtypes = ("float16", "bfloat16")
+conv2d_transpose.unsupported_dtypes = dtype_from_version({"1.11.0":("float16", "bfloat16")},torch_version.split('+')[0])
 
 
 # noinspection PyUnresolvedReferences
@@ -291,7 +291,7 @@ def depthwise_conv2d(
     return res
 
 
-depthwise_conv2d.unsupported_dtypes = ("float16",)
+depthwise_conv2d.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
 
 
 # noinspection PyUnresolvedReferences
@@ -348,7 +348,7 @@ def conv3d(
     return res
 
 
-conv3d.unsupported_dtypes = ("float16",)
+conv3d.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
 
 
 # noinspection PyUnresolvedReferences
@@ -448,4 +448,4 @@ def conv3d_transpose(
     return res
 
 
-conv3d_transpose.unsupported_dtypes = ("float16", "bfloat16")
+conv3d_transpose.unsupported_dtypes = dtype_from_version({"1.11.0":("float16", "bfloat16")},torch_version.split('+')[0])

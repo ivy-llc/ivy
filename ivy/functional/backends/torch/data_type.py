@@ -170,7 +170,7 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
         )
 
 
-as_native_dtype.unsupported_dtypes = ("uint16",)
+as_native_dtype.unsupported_dtypes = dtype_from_version({"1.11.0":("uint16"),},torch_version.split('+')[0])
 
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:

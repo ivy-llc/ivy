@@ -5,7 +5,7 @@ import torch
 import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
-
+from . import torch_version,dtype_from_version
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 
@@ -279,4 +279,4 @@ def clip(
 
 
 clip.support_native_out = True
-clip.unsupported_dtypes = ("float16",)
+clip.unsupported_dtypes = dtype_from_version({"1.11.0":"float16",},torch_version.split('+')[0])
