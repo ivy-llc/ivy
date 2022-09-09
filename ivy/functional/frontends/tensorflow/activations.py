@@ -8,6 +8,3 @@ def hard_sigmoid(x):
     x = ivy.add(x, point_five)
     x = ivy.clip(x, 0.0, 1.0)
     return x
-
-
-hard_sigmoid.unsupported_dtypes = {"torch": "float16"}

@@ -1270,12 +1270,6 @@ def clip_vector_norm(
     return ret
 
 
-clip_vector_norm.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
-
-
 @handle_nestable
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1374,26 +1368,6 @@ def clip_matrix_norm(
     norms = ivy.matrix_norm(x, ord=p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
-
-
-clip_matrix_norm.unsupported_dtypes = {
-    "jax": (
-        "float16",
-        "bfloat16",
-    ),
-    "numpy": (
-        "float16",
-        "bfloat16",
-    ),
-    "tensorflow": (
-        "float16",
-        "bfloat16",
-    ),
-    "torch": (
-        "float16",
-        "bfloat16",
-    ),
-}
 
 
 @to_native_arrays_and_back
@@ -2271,9 +2245,6 @@ def einops_repeat(
     return ret
 
 
-einops_repeat.unsupported_dtypes = {"tensorflow": ("uint16",)}
-
-
 def get_min_denominator() -> float:
     """Get the global minimum denominator used by ivy for numerically stable division.
 
@@ -2701,7 +2672,7 @@ def inplace_variables_supported(f=None):
 @inputs_to_native_arrays
 @handle_nestable
 def supports_inplace(
-        x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
+    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
 ) -> bool:
     """
     Determines whether in-place operations are supported for x's data type,
@@ -3909,22 +3880,21 @@ def _get_devices_and_dtypes(fn, complement=True):
 
     # Their values are formated like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
-    # 2. fn.supported_devices = {"numpy": {"cpu":("float16",},)}
-    backend = ivy.current_backend_str()
 
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.values())[0], dict):
-            fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
+        if not isinstance(list(fn_supported_dnd.values())[0], tuple):
+            raise ValueError("supported_device_and_dtype must be a dict of tuples")
+
+        # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
-        # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.values())[0], dict):
-            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
+
+        if not isinstance(list(fn_unsupported_dnd.values())[0], tuple):
+            raise ValueError("unsupported_device_and_dtype must be a dict of tuples")
 
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
