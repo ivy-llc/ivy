@@ -124,7 +124,7 @@ def test_numpy_any(
         test_values=False,
     )
 
-    if len(ret[0].shape) == 0:
-        assert (ret[0] == ret_gt[0])
+    if len(ret.shape) == 0:
+        assert (ret == ret_gt)
     else:
-        assert (ret[0].shape == ret_gt[0].shape and np.all(ret[0]) == ret_gt[0])
+        assert (ret.shape == ret_gt.shape and np.all(ret) == ret_gt)
