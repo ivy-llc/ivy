@@ -2,6 +2,13 @@
 import ivy
 
 
+# solve
+def solve(a, b):
+    return ivy.solve(a, b)
+
+
+solve.unsupported_dtypes = ("float16",)
+
 # inv
 def inv(a):
     return ivy.inv(a)
