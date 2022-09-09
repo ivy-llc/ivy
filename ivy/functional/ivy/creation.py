@@ -165,7 +165,8 @@ def asarray(
 
     """
 
-    if _is_raw_python_list_or_scalar(x):
+    # if _is_raw_python_list_or_scalar(x):
+    if type(x) in (list, tuple):
         return _asarray_for_raw_python_list(x, copy=copy, dtype=dtype, device=device)
 
     return _asarray_typical(x, copy=copy, dtype=dtype, device=device)
