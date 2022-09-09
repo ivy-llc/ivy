@@ -860,6 +860,34 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
+    def floormod(
+        self: ivy.Array,
+        x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Union[ivy.Array, ivy.NativeArray]:
+        """
+        ivy.Array instance method variant of ivy.floormod. This method simply wraps the
+        function, and so the docstring for ivy.floormod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        x
+            input array for the denominator
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array of the same shape and type as x, with the elements floor modded.
+
+        """
+        return ivy.floormod(self, x, out=out)
+
     def greater(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],

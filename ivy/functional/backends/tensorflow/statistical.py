@@ -27,12 +27,12 @@ def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
+    return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def min(
