@@ -2700,25 +2700,67 @@ def inplace_variables_supported(f=None):
 
 @inputs_to_native_arrays
 @handle_nestable
-def supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
-    """Determine whether inplace operations are supported for the data type of x.
+def supports_inplace(
+        x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
+) -> bool:
+    """
+    Determines whether in-place operations are supported for x's data type,
+    by the current backend framework setting.
 
     Parameters
     ----------
     x
-        Input variable or array to check for inplace support for.
+        Input variable for whose data type we check whether the current backend
+        framework supports in-place operations.
 
     Returns
     -------
     ret
-        Boolean, whether or not inplace operations are supported for x.
+        Value depends on whether in-place operations are supported for
+        data type of x.
 
+    Raises
+    ------
+    ValueError
+        If x isn't a class instance of ivy.Variable, ivy.Array,
+        or ivy.NativeArray, an exception will be raised.
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
+    Examples
+    --------
+    With :code:'ivy.DType("bool")' input:
+    >>> x = True
+    >>> ivy.supports_inplace(x)
+    ValueError: Input x must be either a variable or an array.
+
+    With :code:'ivy.Array' input and default backend set as 'numpy':
+    >>> x = ivy.array([0, 1, 2])
+    >>> ret = ivy.supports_inplace(x)
+    >>> print(ret)
+    True
+
+    With :code:'ivy.Variable' input and backend set as 'jax':
+    >>> x = ivy.variable(ivy.array(5.5))
+    >>> ret = ivy.supports_inplace(x)
+    >>> print(ret)
+    False
+
+    With :code:'ivy.Container' input and backend set as 'torch':
+    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
+    >>> ret = ivy.supports_inplace(x)
+    >>> print(ret)
+    {
+        a: true,
+        b: true
+    }
     """
     if ivy.is_variable(x):
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
-    raise Exception("Input x must be either a variable or an array.")
+    raise ValueError("Input x must be either a variable or an array.")
 
 
 @inputs_to_native_arrays
