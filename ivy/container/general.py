@@ -493,7 +493,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            p=p,
             out=out,
         )
 
@@ -1395,7 +1394,7 @@ class ContainerWithGeneral(ContainerBase):
             "unstack",
             x,
             axis,
-            keepdims,
+            keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2296,7 +2295,7 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,        
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -4001,11 +4000,11 @@ class ContainerWithGeneral(ContainerBase):
         max_norm: float,
         /,
         *,
-        p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        p: float = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -4058,11 +4057,11 @@ class ContainerWithGeneral(ContainerBase):
             "clip_matrix_norm",
             x,
             max_norm,
-            p=p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            p=p,
             out=out,
         )
 
@@ -4071,11 +4070,11 @@ class ContainerWithGeneral(ContainerBase):
         max_norm: float,
         /,
         *,
-        p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        p: float = 2.0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -4133,4 +4132,146 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+        )
+
+    @staticmethod
+    def static_supports_inplace_updates(
+        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.supports_inplace. This method
+        simply wraps the function, and so the docstring for ivy.supports_inplace
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            An ivy.Container.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+            Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+
+        Returns
+        -------
+        ret
+            An ivy.Container instance of bool values.
+            True if nodes of x support in-place operations. False otherwise.
+
+        Raises
+        ------
+        ValueError
+            If a node(s) of the container isn't a class instance of ivy.Variable,
+            ivy.Array, or ivy.NativeArray, an exception will be raised.
+
+        Examples
+        --------
+        With `ivy.Container` input and backend set as 'numpy':
+        >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
+        >>> ret = ivy.Container.static_supports_inplace_updates(x)
+        >>> print(ret)
+        {
+            a: true,
+            b: true
+        }
+
+        With `ivy.Container` input and backend set as 'tensorflow':
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
+                              b=ivy.array([0., 5.5, -8]))
+        >>> ret = ivy.Container.static_supports_inplace_updates(x)
+        >>> print(ret)
+        {
+            a: true,
+            b: false
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "supports_inplace_updates",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def supports_inplace_updates(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.supports_inplace_updates.
+        This method simply wraps the static function, and so the docstring for
+        the static variant also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            An ivy.Container whose elements are data types supported by Ivy.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped.
+            Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+
+        Returns
+        -------
+        ret
+            An ivy.Container instance of bool values.
+            True if nodes of the Container support in-place operations. False otherwise.
+
+        Examples
+        --------
+        With an `ivy.Container` instance and backend set as 'numpy':
+        >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        {
+            a: true,
+            b: true
+        }
+
+        With an `ivy.Container` instance and backend set as 'tensorflow':
+        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
+                              b=ivy.array([0., 5.5, -8]))
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        {
+            a: true,
+            b: true
+        }
+        """
+        return ContainerWithGeneral.static_supports_inplace_updates(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
