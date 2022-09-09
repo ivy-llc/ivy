@@ -9,6 +9,7 @@ def _verify_coo_components(*, indices=None, values=None, dense_shape=None):
     ), "indices, values and dense_shape must all be specified"
     # coordinates style (COO), must be shaped (x, y)
     assert len(ivy.shape(indices)) == 2, "indices must be 2D"
+    assert len(ivy.shape(values)) == 1, "values must be 1D"
     assert (
         len(ivy.to_ivy_shape(dense_shape)) == ivy.shape(indices)[0]
     ), "shape and indices shape do not match"
@@ -25,7 +26,30 @@ def _verify_coo_components(*, indices=None, values=None, dense_shape=None):
 def _verify_csr_components(
     *, crow_indices=None, col_indices=None, values=None, dense_shape=None
 ):
-    pass  # TODO
+    assert (
+        ivy.exists(crow_indices)
+        and ivy.exists(col_indices)
+        and ivy.exists(values)
+        and ivy.exists(dense_shape)
+    ), "crow_indices, col_indices, values and dense_shape must all be specified"
+    assert len(ivy.shape(crow_indices)) == 1, "crow_indices must be 1D"
+    assert len(ivy.shape(col_indices)) == 1, "col_indices must be 1D"
+    assert len(ivy.shape(values)) == 1, "values must be 1D"
+    assert len(dense_shape) == 2, "only 2D arrays can be converted to CSR sparse arrays"
+    # number of intervals must be equal to x in shape (x, y)
+    assert ivy.shape(crow_indices)[0] - 1 == dense_shape[0]
+    # index in col_indices must not exceed y in shape (x, y)
+    assert ivy.all(
+        ivy.less(col_indices, dense_shape[1])
+    ), "index in col_indices does not match shape"
+    # number of values must match number of coordinates
+    assert (
+        ivy.shape(col_indices)[0] == ivy.shape(values)[0]
+    ), "values and col_indices do not match"
+    # index in crow_indices must not exceed length of col_indices
+    assert ivy.all(
+        ivy.less_equal(crow_indices, ivy.shape(col_indices)[0])
+    ), "index in crow_indices does not match the number of col_indices"
 
 
 def _is_data_not_indices_values_and_shape(
@@ -106,13 +130,14 @@ class SparseArray:
         else:
             self._init_csr_components(
                 csr_crow_indices, csr_col_indices, values, dense_shape
-            )  # TODO
+            )
 
     def _init_data(self, data):
         if ivy.is_ivy_sparse_array(data):
             self._data = data.data
             self._coo_indices = data.coo_indices
-            # TODO: add csr indices components
+            self._csr_crow_indices = data.csr_crow_indices
+            self._csr_col_indices = data.csr_col_indices
             self._values = data.values
             self._dense_shape = data.dense_shape
         else:
@@ -156,6 +181,7 @@ class SparseArray:
         self._csr_col_indices = ivy.array(csr_col_indices, dtype="int64")
         self._values = ivy.array(values)
         self._dense_shape = ivy.Shape(shape)
+        self._coo_indices = None
 
     # Properties #
     # -----------#
@@ -197,25 +223,29 @@ class SparseArray:
         _verify_coo_components(
             indices=indices, values=self._values, dense_shape=self._dense_shape
         )
-        self._indices = indices
+        self._coo_indices = indices
 
     @csr_crow_indices.setter
     def csr_crow_indices(self, indices):
-        # TODO: check and update
         indices = ivy.array(indices, dtype="int64")
-        _verify_coo_components(
-            indices=indices, values=self._values, dense_shape=self._dense_shape
+        _verify_csr_components(
+            crow_indices=indices,
+            col_indices=self._csr_col_indices,
+            values=self._values,
+            dense_shape=self._dense_shape,
         )
-        self._indices = indices
+        self._csr_crow_indices = indices
 
     @csr_col_indices.setter
     def csr_col_indices(self, indices):
-        # TODO: check and update
         indices = ivy.array(indices, dtype="int64")
-        _verify_coo_components(
-            indices=indices, values=self._values, dense_shape=self._dense_shape
+        _verify_csr_components(
+            crow_indices=self._csr_crow_indices,
+            col_indices=indices,
+            values=self._values,
+            dense_shape=self._dense_shape,
         )
-        self._indices = indices
+        self._csr_col_indices = indices
 
     @values.setter
     def values(self, values):
