@@ -49,7 +49,7 @@ def diagflat(input, offset=0):
 
     output_size = len(input_flat) + abs(offset)
 
-    ret = ivy.zeros((output_size, output_size), dtype=input.dtype)
+    ret = ivy.zeros((output_size, output_size), dtype=input.dtype, device=input.device)
 
     index = 0
     for i in range(0, len(input_flat)):
