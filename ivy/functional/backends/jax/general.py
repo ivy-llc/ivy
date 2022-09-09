@@ -19,12 +19,10 @@ from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
 
-def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
-    default_dtype = ivy.infer_default_dtype(x_dtype)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
+def _infer_dtype(dtype: jnp.dtype):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
     return dtype
 
 
@@ -139,7 +137,7 @@ def gather_nd(
     return _to_device(ret)
 
 
-def get_num_dims(x, as_tensor=False):
+def get_num_dims(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, int]:
     return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
 
@@ -196,7 +194,7 @@ def inplace_variables_supported():
     return False
 
 
-def is_native_array(x, exclusive=False):
+def is_native_array(x, exclusive: bool = False) -> bool:
     if exclusive:
         return isinstance(
             x,
@@ -226,7 +224,11 @@ def multiprocessing(context=None):
 
 
 def one_hot(
-    indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
+    indices: JaxArray,
+    depth: int,
+    *,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     res = jnp.eye(depth, dtype=indices.dtype)[
         jnp.array(indices, dtype="int64").reshape(-1)
