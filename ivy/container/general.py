@@ -4135,7 +4135,7 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_supports_inplace(
+    def static_supports_inplace_updates(
         x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable],
         /,
         *,
@@ -4183,7 +4183,7 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With `ivy.Container` input and backend set as 'numpy':
         >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
-        >>> ret = ivy.Container.static_supports_inplace(x)
+        >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)
         {
             a: true,
@@ -4193,7 +4193,7 @@ class ContainerWithGeneral(ContainerBase):
         With `ivy.Container` input and backend set as 'tensorflow':
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
                               b=ivy.array([0., 5.5, -8]))
-        >>> ret = ivy.Container.static_supports_inplace(x)
+        >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)
         {
             a: true,
@@ -4201,7 +4201,7 @@ class ContainerWithGeneral(ContainerBase):
         }
         """
         return ContainerBase.multi_map_in_static_method(
-            "supports_inplace",
+            "supports_inplace_updates",
             x,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -4209,7 +4209,7 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences=map_sequences,
         )
 
-    def supports_inplace(
+    def supports_inplace_updates(
         self: ivy.Container,
         /,
         *,
@@ -4219,7 +4219,7 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.Container.static_supports_inplace.
+        ivy.Container instance method variant of ivy.supports_inplace_updates.
         This method simply wraps the static function, and so the docstring for
         the static variant also applies to this method with minimal changes.
 
@@ -4251,7 +4251,7 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With an `ivy.Container` instance and backend set as 'numpy':
         >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
-        >>> ret = x.supports_inplace()
+        >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
             a: true,
@@ -4261,14 +4261,14 @@ class ContainerWithGeneral(ContainerBase):
         With an `ivy.Container` instance and backend set as 'tensorflow':
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
                               b=ivy.array([0., 5.5, -8]))
-        >>> ret = x.supports_inplace()
+        >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
             a: true,
             b: true
         }
         """
-        return ContainerWithGeneral.static_supports_inplace(
+        return ContainerWithGeneral.static_supports_inplace_updates(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

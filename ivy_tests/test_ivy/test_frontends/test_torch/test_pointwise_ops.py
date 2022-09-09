@@ -41,7 +41,7 @@ def test_torch_add(
         fw=fw,
         frontend="torch",
         fn_tree="add",
-        rtol=1e-04,
+        rtol=1e-03,
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
         alpha=alpha,
@@ -423,16 +423,14 @@ def test_torch_subtract(
 
 
 # exp
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.exp"
     ),
-    native_array=st.booleans(),
 )
 def test_torch_exp(
     dtype_and_x,
@@ -722,6 +720,7 @@ def test_torch_log2(
 
 
 # square
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -793,6 +792,7 @@ def test_torch_atan2(
 
 
 # negative
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
