@@ -27,12 +27,12 @@ def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
+    return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def min(
@@ -96,9 +96,9 @@ def sum(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: tf.DType = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
@@ -123,9 +123,14 @@ def var(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * tf.experimental.numpy.var(
-        x, axis=axis, out=out, keepdims=keepdims
-    )
+    if size - correction <= 0:
+        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    else:
+        return (size / (size - correction)) ** 0.5 * tf.experimental.numpy.var(
+            x, axis=axis, out=out, keepdims=keepdims
+        )
 
 
 # Extra #

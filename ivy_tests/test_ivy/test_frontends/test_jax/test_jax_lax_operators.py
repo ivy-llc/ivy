@@ -5,8 +5,6 @@ from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.jax as ivy_jax
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -14,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -47,7 +45,7 @@ def test_jax_lax_add(
 # tan
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.tan"
     ),
@@ -77,7 +75,7 @@ def test_jax_lax_tan(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -131,11 +129,11 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    available_dtypes = tuple(
-        set(ivy_np.valid_float_dtypes).intersection(ivy_jax.valid_float_dtypes)
-    )
     input_dtypes = draw(
-        helpers.array_dtypes(available_dtypes=available_dtypes, shared_dtype=True)
+        helpers.array_dtypes(
+            available_dtypes=draw(helpers.get_dtypes("numeric")),
+            shared_dtype=True,
+        )
     )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
@@ -245,9 +243,7 @@ def test_jax_lax_full(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy.valid_numeric_dtypes).difference(ivy.valid_uint_dtypes)
-        )
+        available_dtypes=helpers.get_dtypes("signed_integer", full=True),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.abs"
@@ -277,7 +273,7 @@ def test_jax_lax_abs(
 # sqrt
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sqrt"
     ),
@@ -306,7 +302,7 @@ def test_jax_lax_sqrt(
 # acos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.acos"
     ),
@@ -335,7 +331,7 @@ def test_jax_lax_acos(
 # sin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sin"
     ),
@@ -364,7 +360,9 @@ def test_jax_lax_sin(
 # sign
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_numeric_dtypes),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sign"
     ),
@@ -393,7 +391,7 @@ def test_jax_lax_sign(
 # asin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.asin"
     ),
@@ -422,7 +420,7 @@ def test_jax_lax_asin(
 # sinh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sinh"
     ),
@@ -453,7 +451,7 @@ def test_jax_lax_sinh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -486,7 +484,7 @@ def test_jax_lax_atan2(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -520,7 +518,7 @@ def test_jax_lax_min(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -554,7 +552,7 @@ def test_jax_lax_eq(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -588,7 +586,7 @@ def test_jax_lax_mul(
 # atan
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.atan"
     ),
@@ -617,7 +615,7 @@ def test_jax_lax_atan(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.ceil"
@@ -648,7 +646,7 @@ def test_jax_lax_ceil(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -682,7 +680,7 @@ def test_jax_lax_bitwise_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -712,12 +710,44 @@ def test_jax_lax_bitwise_or(
     )
 
 
+# bitwise_not
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy.valid_numeric_dtypes).difference(ivy.all_uint_dtypes)
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.bitwise_not"
+    ),
+)
+def test_jax_lax_bitwise_not(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.bitwise_not",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer", full=True),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.neg"
@@ -744,29 +774,20 @@ def test_jax_lax_neg(
     )
 
 
-@st.composite
-def _dtype_x_bounded_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
-    return dtype, x, axis
-
-
-@st.composite
-def _sample_int_dtype(draw):
-    return draw(st.sampled_from(ivy.valid_int_dtypes))
-
-
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
-        available_dtypes=ivy.valid_numeric_dtypes,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmax"
     ),
-    index_dtype=_sample_int_dtype(),
+    index_dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_jax_lax_argmax(
     dtype_x_axis,
@@ -794,15 +815,18 @@ def test_jax_lax_argmax(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
-        available_dtypes=ivy.valid_numeric_dtypes,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.argmin"
     ),
-    index_dtype=_sample_int_dtype(),
+    index_dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_jax_lax_argmin(
     dtype_x_axis,
@@ -832,7 +856,7 @@ def test_jax_lax_argmin(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_int_dtypes,
+        available_dtypes=helpers.get_dtypes("integer", full=True),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -916,7 +940,7 @@ def test_jax_lax_full_like(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.exp"
@@ -946,7 +970,7 @@ def test_jax_lax_exp(
 @st.composite
 def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
-    to_dtype = draw(st.sampled_from(ivy.valid_numeric_dtypes))
+    to_dtype = draw(helpers.get_dtypes("numeric"), full=False)
     assume(ivy.can_cast(dtype, to_dtype))
     return to_dtype
 
@@ -984,12 +1008,14 @@ def test_jax_lax_convert_element_type(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
-        available_dtypes=ivy.valid_numeric_dtypes,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        min_value=-5,
-        max_value=5,
-        max_dim_size=5,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.cumprod"
@@ -1022,12 +1048,14 @@ def test_jax_lax_cumprod(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
-        available_dtypes=ivy.valid_numeric_dtypes,
-        min_value=-5,
-        max_value=5,
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_dim_size=5,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.cumsum"
@@ -1061,7 +1089,7 @@ def test_jax_lax_cumsum(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1144,7 +1172,7 @@ def test_jax_lax_reshape(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.broadcast"
@@ -1177,7 +1205,7 @@ def test_jax_lax_broadcast(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.reciprocal"
@@ -1206,9 +1234,11 @@ def test_jax_lax_reciprocal(
 
 @handle_cmd_line_args
 @given(
-    dtype_x_bounded_axis=_dtype_x_bounded_axis(
-        available_dtypes=ivy.valid_numeric_dtypes,
+    dtype_x_bounded_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.sort"
@@ -1242,7 +1272,7 @@ def test_jax_lax_sort(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1276,7 +1306,7 @@ def test_jax_lax_le(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1310,7 +1340,7 @@ def test_jax_lax_ne(
 # cosh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.cosh"
     ),
@@ -1339,7 +1369,7 @@ def test_jax_lax_cosh(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1373,7 +1403,7 @@ def test_jax_lax_lt(
 # round
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.round"
     ),
@@ -1402,7 +1432,7 @@ def test_jax_lax_round(
 @handle_cmd_line_args
 @given(
     dtypes_and_values=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1436,7 +1466,7 @@ def test_jax_lax_pow(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1470,7 +1500,7 @@ def test_jax_lax_gt(
 # cos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.cos"
     ),
@@ -1496,23 +1526,367 @@ def test_jax_lax_cos(
     )
 
 
+@st.composite
+def _same_dims_min_x_max(draw):
+    dtypes, xs, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shared_dtype=True,
+            ret_shape=True,
+            min_value=0,
+            max_value=10,
+        )
+    )
+    max_val = draw(
+        helpers.array_values(dtype=dtypes[0], shape=shape, min_value=11, max_value=20)
+    )  # TODO remove hardcoded values.
+    return ([dtypes[0]] * 3), (xs[0], xs[1], max_val)
+
+
+@st.composite
+def _basic_min_x_max(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+        )
+    )
+    min_val = draw(
+        helpers.array_values(dtype=dtype, shape=(), min_value=1, max_value=10)
+    )
+    max_val = draw(
+        helpers.array_values(dtype=dtype, shape=(), min_value=11, max_value=20)
+    )  # TODO remove hardcoded values.
+    return ([dtype] * 3), (value, min_val, max_val)
+
+
 @handle_cmd_line_args
 @given(
-    dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_numeric_dtypes,
-        num_arrays=3,
-        shared_dtype=True,
-    ),
+    dtype_x_min_max=(_same_dims_min_x_max() | _basic_min_x_max()),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.clamp"
     ),
 )
 def test_jax_lax_clamp(
+    dtype_x_min_max,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    (x_dtype, min_dtype, max_dtype), (x, min_vals, max_vals) = dtype_x_min_max
+    helpers.test_frontend_function(
+        input_dtypes=[x_dtype, min_dtype, max_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.clamp",
+        min=np.array(min_vals, dtype=min_dtype),
+        x=np.asarray(x, dtype=x_dtype),
+        max=np.array(max_vals, dtype=max_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.log"
+    ),
+)
+def test_jax_lax_log(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.log",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=2,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_neg_axes=False,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.rev"
+    ),
+)
+def test_jax_lax_rev(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.rev",
+        operand=np.asarray(x, dtype=input_dtype),
+        dimensions=(axis,),
+    )
+
+
+@st.composite
+def _div_dtypes_and_xs(draw):
+    dtype, dividend, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"), ret_shape=True
+        )
+    )
+    divisor = draw(
+        helpers.array_values(dtype=dtype, min_value=1, max_value=20, shape=shape)
+        | helpers.array_values(dtype=dtype, min_value=-20, max_value=-1, shape=shape)
+    )
+    return [dtype, dtype], [dividend, divisor]
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=_div_dtypes_and_xs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.div"
+    ),
+)
+def test_jax_lax_div(
+    dtypes_and_xs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtypes, xs = dtypes_and_xs
+    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.div",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.rsqrt"
+    ),
+)
+def test_jax_lax_rsqrt(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.rsqrt",
+        x=np.asarray(x, dtype=input_dtype),
+        rtol=1e-02,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.expm1"
+    ),
+)
+def test_jax_lax_expm1(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.expm1",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# log1p
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.log1p"
+    ),
+)
+def test_jax_lax_log1p(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.log1p",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@st.composite
+def _dtype_values_dims(draw):
+    dtype, values, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    size = len(shape)
+    permutations = draw(
+        st.lists(
+            st.integers(min_value=0, max_value=len(shape) - 1),
+            min_size=size,
+            max_size=size,
+            unique=True,
+        )
+    )
+    return dtype, values, tuple(permutations)
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_dims=_dtype_values_dims(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.transpose"
+    ),
+)
+def test_jax_lax_transpose(
+    dtype_x_dims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, dims = dtype_x_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.transpose",
+        operand=np.asarray(x, dtype=input_dtype),
+        permutation=dims,
+    )
+
+
+@st.composite
+def _two_valid_xs(draw):
+    n = draw(st.integers(min_value=0, max_value=5))
+    m = draw(st.integers(min_value=0, max_value=5))
+    k = draw(st.integers(min_value=0, max_value=5))
+    valid_shapes = [
+        ((n, 1), (1, n)),
+        ((n, 1), (n, 1)),
+        ((m, k), (k, 1)),
+        ((m, k), (k, n)),
+    ]
+    s1, s2 = draw(st.sampled_from(valid_shapes))
+    d1, v1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=s1,
+        )
+    )
+    d2, v2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=s2,
+        )
+    )
+    return (d1, d2), (v1, v2)
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=_two_valid_xs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.dot"
+    ),
+    dtype=helpers.get_dtypes("valid", full=False, none=True),
+)
+def test_jax_lax_dot(
     dtypes_and_xs,
     as_variable,
     num_positional_args,
     native_array,
     fw,
+    dtype,
 ):
     input_dtypes, xs = dtypes_and_xs
     xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
@@ -1524,8 +1898,9 @@ def test_jax_lax_clamp(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_tree="lax.clamp",
-        min=xs[0],
-        x=xs[1],
-        max=xs[2],
+        fn_tree="lax.dot",
+        lhs=xs[0],
+        rhs=xs[1],
+        precision=None,
+        preferred_element_type=dtype,
     )

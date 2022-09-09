@@ -374,9 +374,10 @@ def unset_backend():
         # wrap backend functions if there still is a backend, and add functions
         # to ivy namespace
         for k, v in new_backend_dict.items():
-            if backend_stack and k in ivy.__dict__:
-                v = _wrap_function(k, v, ivy.__dict__[k])
-            ivy.__dict__[k] = v
+            if backend_stack and k in ivy_original_dict:
+                v = _wrap_function(k, v, ivy_original_dict[k])
+            if k in ivy_original_dict:
+                ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend

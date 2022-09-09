@@ -480,21 +480,33 @@ def test_stack(
 # ------#
 
 
+@st.composite
+def _basic_min_x_max(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+        )
+    )
+    min_val = draw(
+        helpers.array_values(dtype=dtype, shape=(), min_value=1, max_value=10)
+    )
+    max_val = draw(
+        helpers.array_values(dtype=dtype, shape=(), min_value=11, max_value=20)
+    )  # TODO remove hardcoded values.
+    return ([dtype] * 3), (value, min_val, max_val)
+
+
 # clip
 @handle_cmd_line_args
 @given(
-    x_min_n_max=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
-        num_arrays=3,
-        shared_dtype=True,
-    ),
+    dtype_x_min_max=_basic_min_x_max(),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
     data=st.data(),
 )
 def test_clip(
     *,
     data,
-    x_min_n_max,
+    dtype_x_min_max,
     as_variable,
     with_out,
     num_positional_args,
@@ -504,12 +516,7 @@ def test_clip(
     device,
     fw,
 ):
-    (x_dtype, min_dtype, max_dtype), (x_list, min_val_list, max_val_list) = x_min_n_max
-    min_val_raw = np.array(min_val_list, dtype=min_dtype)
-    max_val_raw = np.array(max_val_list, dtype=max_dtype)
-    min_val = np.asarray(np.minimum(min_val_raw, max_val_raw))
-    max_val = np.asarray(np.maximum(min_val_raw, max_val_raw))
-
+    (x_dtype, min_dtype, max_dtype), (x_list, min_val, max_val) = dtype_x_min_max
     helpers.test_function(
         input_dtypes=[x_dtype, min_dtype, max_dtype],
         as_variable_flags=as_variable,
@@ -521,8 +528,8 @@ def test_clip(
         fw=fw,
         fn_name="clip",
         x=np.asarray(x_list, dtype=x_dtype),
-        x_min=min_val,
-        x_max=max_val,
+        x_min=np.array(min_val, dtype=min_dtype),
+        x_max=np.array(max_val, dtype=max_dtype),
     )
 
 

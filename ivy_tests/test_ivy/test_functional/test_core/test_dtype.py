@@ -1,23 +1,23 @@
 """Collection of tests for unified dtype functions."""
 
-# global
-import numpy as np
-from hypothesis import given, assume, strategies as st
-
-
-# local
-import ivy
-import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.jax as ivy_jax
-import ivy.functional.backends.tensorflow as ivy_tf
-import ivy.functional.backends.torch as ivy_torch
-import ivy.functional.backends.mxnet as ivy_mxn
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from functools import reduce  # for making strategy
 from operator import mul  # for making strategy
 from typing import Tuple
+
+# global
+import numpy as np
 import pytest
+from hypothesis import given, assume, strategies as st
+
+# local
+import ivy
+import ivy.functional.backends.jax as ivy_jax
+import ivy.functional.backends.mxnet as ivy_mxn
+import ivy.functional.backends.numpy as ivy_np
+import ivy.functional.backends.tensorflow as ivy_tf
+import ivy.functional.backends.torch as ivy_torch
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # dtype objects
@@ -147,9 +147,12 @@ def dtypes_shared(draw, num_dtypes):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=1
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        num_arrays=1,
+        small_value_safety_factor=1.5,
+        large_value_safety_factor=10,
     ),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_astype(
     dtype_and_x,
@@ -212,7 +215,6 @@ def test_broadcast_arrays(
     for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     num_positional_args = len(kw)
-    print("input: ", kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -238,7 +240,7 @@ def array_and_broadcastable_shape(draw, dtype):
         .filter(lambda s: broadcast_shapes(in_shape, s) == s),
         label="shape",
     )
-    return (x, to_shape)
+    return x, to_shape
 
 
 @handle_cmd_line_args
@@ -284,7 +286,7 @@ def test_broadcast_to(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=1
     ),
-    to_dtype=helpers.get_dtypes("valid"),
+    to_dtype=helpers.get_dtypes("valid", full=False),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
     native_array=st.booleans(),
@@ -417,14 +419,11 @@ def test_iinfo(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
         shared_dtype=False,
     ),
     as_variable=st.booleans(),
-    num_positional_args=st.shared(
-        helpers.ints(min_value=2, max_value=5), key="num_arrays"
-    ),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -432,7 +431,6 @@ def test_iinfo(
 def test_result_type(
     dtype_and_x,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -446,7 +444,7 @@ def test_result_type(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=len(x),
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -527,7 +525,7 @@ def test_closest_valid_dtype(
 # default_dtype
 @handle_cmd_line_args
 @given(
-    input_dtype=helpers.get_dtypes("valid"),
+    input_dtype=helpers.get_dtypes("valid", full=False),
     as_native=st.booleans(),
 )
 def test_default_dtype(
@@ -595,7 +593,7 @@ def test_dtype(
 # dtype_bits
 @handle_cmd_line_args
 @given(
-    input_dtype=helpers.get_dtypes("valid"),
+    input_dtype=helpers.get_dtypes("valid", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
 )
 def test_dtype_bits(
@@ -899,34 +897,85 @@ def dtypes_list(draw):
     )
 
 
-# function_unsupported_dtypes
-@handle_cmd_line_args
-@given(supported_dtypes=dtypes_list())
-def test_function_supported_dtypes(
-    supported_dtypes,
-):
-    def func():
-        return
+def _composition_1():
+    return ivy.relu().argmax()
 
-    func.supported_dtypes = tuple(supported_dtypes)
+
+def _composition_2():
+    a = ivy.floor
+    return ivy.ceil() or a
+
+
+# function_unsupported_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (
+            _composition_1,
+            [
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+            ],
+        ),
+        (
+            _composition_2,
+            [
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+            ],
+        ),
+    ],
+)
+def test_function_supported_dtypes(func, expected):
     res = ivy.function_supported_dtypes(func)
-    supported_dtypes_true = tuple(set(func.supported_dtypes))
-    assert sorted(supported_dtypes_true) == sorted(res)
+    exp = set.intersection(set(expected), set(ivy.valid_dtypes))
+
+    # Since float16 is only not valid for the torch backend, we remove from expected
+    if "torch" in ivy.current_backend_str():
+        exp.remove("float16")
+
+    assert sorted(tuple(exp)) == sorted(res)
 
 
 # function_unsupported_dtypes
-@handle_cmd_line_args
-@given(unsupported_dtypes=dtypes_list())
-def test_function_unsupported_dtypes(
-    unsupported_dtypes,
-):
-    def func():
-        return
-
-    func.unsupported_dtypes = tuple(unsupported_dtypes)
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (_composition_1, []),
+        (_composition_2, []),
+    ],
+)
+def test_function_unsupported_dtypes(func, expected):
     res = ivy.function_unsupported_dtypes(func)
-    unsupported_dtypes_true = tuple(set(ivy.invalid_dtypes + func.unsupported_dtypes))
-    assert sorted(unsupported_dtypes_true) == sorted(res)
+    exp = set.union(set(expected), set(ivy.invalid_dtypes))
+
+    # Since float16 is only not valid for the torch backend, we add to expected
+    if "torch" in ivy.current_backend_str():
+        exp.add("float16")
+
+    assert sorted(tuple(exp)) == sorted(res)
 
 
 # invalid_dtype

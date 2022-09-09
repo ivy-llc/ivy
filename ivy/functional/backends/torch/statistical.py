@@ -36,8 +36,8 @@ def mean(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -76,12 +76,11 @@ min.support_native_out = True
 
 
 def _infer_dtype(x_dtype: torch.dtype):
-    default_dtype = ivy.infer_default_dtype(x_dtype, as_native=True)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
-    return dtype
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if default_dtype in ivy.valid_dtypes:
+        if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+            return default_dtype
+    return x_dtype
 
 
 def prod(
@@ -92,26 +91,18 @@ def prod(
     dtype: Optional[torch.dtype] = None,
     keepdims: Optional[bool] = False,
 ) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    axis = tuple(axis) if isinstance(axis, list) else axis
+    dtype = ivy.as_native_dtype(dtype)
     if axis is None:
-        axis = x.dim() - 1
-    elif type(axis) == tuple:
-        if len(axis) == 0:
-            axis = x.dim() - 1
-        else:
-            return torch.prod(
-                torch.Tensor(
-                    [
-                        torch.prod(input=x, dim=i, dtype=dtype, keepdim=keepdims)
-                        for i in axis
-                    ]
-                ),
-                dtype=dtype,
-            )
-    return torch.prod(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+        axis = 0
+    if axis == ():
+        return x.type(dtype)
+    if isinstance(axis, tuple) or isinstance(axis, list):
+        for i in axis:
+            x = torch.prod(x, i, keepdim=keepdims, dtype=dtype)
+        return x
+    return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
 prod.unsupported_dtypes = ("float16",)
@@ -127,18 +118,26 @@ def std(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        axis = tuple(range(len(x.shape)))
+        axis = list(range(len(x.shape)))
+    if axis == ():
+        return x
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
-        return torch.std(x, dim=axis, unbiased=False, keepdims=keepdims)
+        return torch.std(x, dim=axis, unbiased=False, keepdim=keepdims)
     elif correction == 1:
-        return torch.std(x, dim=axis, unbiased=True, keepdims=keepdims)
+        return torch.std(x, dim=axis, unbiased=True, keepdim=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) ** 0.5 * torch.std(
-        x, dim=axis, unbiased=False, keepdims=keepdims
+    if size - correction <= 0:
+        ret = torch.std(x, dim=axis, unbiased=False, keepdim=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    ret = torch.mul(
+        torch.std(x, dim=axis, unbiased=False, keepdim=keepdims),
+        (size / (size - correction)) ** 0.5,
     )
+    return ret
 
 
 std.unsupported_dtypes = ("int8", "int16", "int32", "int64", "float16")
@@ -148,13 +147,16 @@ def sum(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: torch.dtype = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
+    if axis == ():
+        return x.type(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
@@ -171,18 +173,26 @@ def var(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        axis = tuple(range(len(x.shape)))
+        axis = list(range(len(x.shape)))
+    if axis == ():
+        return x
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
-        return torch.var(x, dim=axis, unbiased=False, keepdims=keepdims)
+        return torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
     elif correction == 1:
-        return torch.var(x, dim=axis, unbiased=True, keepdims=keepdims)
+        return torch.var(x, dim=axis, unbiased=True, keepdim=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * torch.var(
-        x, dim=axis, unbiased=False, keepdims=keepdims
-    )
+    if size - correction <= 0:
+        ret = torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    else:
+        return torch.mul(
+            torch.var(x, dim=axis, unbiased=False, keepdim=keepdims),
+            (size / (size - correction)) ** 0.5,
+        )
 
 
 # Extra #

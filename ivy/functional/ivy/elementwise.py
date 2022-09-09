@@ -4317,6 +4317,47 @@ def positive(
     ret
         A new array with the positive value of each element in ``x``.
 
+    Functional Examples
+    -------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2, 3 ,5, 7])
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    ivy.array([2, 3, 5, 7])
+
+    >>> x = ivy.array([0, -1, -0.5, 2, 3])
+    >>> y = ivy.zeros(5)
+    >>> ivy.positive(x, out=y)
+    >>> print(y)
+    ivy.array([0., -1., -0.5,  2.,  3.])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                       [-4.4, -5.5, -6.6]])
+    >>> ivy.positive(x,out=x)
+    >>> print(x)
+    ivy.array([[ 1.1,  2.2,  3.3],
+       [-4.4, -5.5, -6.6]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1.1, -1, 0, 1, 1.1])
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    ivy.array([-1.1, -1.,  0.,  1.,  1.1])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+                         b=ivy.array([3., 4., -5.]))
+    >>> y = ivy.positive(x)
+    >>> print(y)
+    {
+    a: ivy.array([0., 1., 2.]),
+    b: ivy.array([3., 4., -5.])
+    }
+
     """
     return ivy.current_backend(x).positive(x, out=out)
 
@@ -4434,7 +4475,7 @@ def reciprocal(
     -------
     ret
         A new array with the positive value of each element in ``x``.
-    
+
     """
     return ivy.current_backend(x).reciprocal(x, out=out)
 
@@ -5395,6 +5436,37 @@ def erf(
 
     """
     return ivy.current_backend(x).erf(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def floormod(
+    x: Union[ivy.Array, ivy.NativeArray],
+    y: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Returns element-wise remainder of division.
+
+    Parameters
+    ----------
+    x
+        array, input to floormod
+    y
+        array, denominator input for floormod.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        An array of the same shape and type as x, with the elements floor modded.
+
+    """
+    return ivy.current_backend(x).floormod(x, y, out=out)
 
 
 @to_native_arrays_and_back

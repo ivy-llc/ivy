@@ -12,8 +12,7 @@ def argmax(
     out: Optional[mx.nd.NDArray] = None,
     keepdims: bool = False,
 ) -> mx.nd.NDArray:
-    ret = mx.nd.argmax(x, axis=axis, out=out, keepdims=keepdims)
-    return ret
+    return mx.nd.argmax(x, axis=axis, out=out, keepdims=keepdims)
 
 
 def argmin(
@@ -22,8 +21,7 @@ def argmin(
     out: Optional[mx.nd.NDArray] = None,
     keepdims: bool = False,
 ) -> mx.nd.NDArray:
-    ret = mx.nd.argmin(x, axis=axis, out=out, keepdims=keepdims)
-    return ret
+    return mx.nd.argmin(x, axis=axis, out=out, keepdims=keepdims)
 
 
 @_handle_flat_arrays_in_out

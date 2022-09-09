@@ -37,8 +37,7 @@ def concat(
         axis = 0
         if is_tuple:
             xs = tuple(xs)
-    ret = tf.concat(xs, axis)
-    return ret
+    return tf.concat(xs, axis)
 
 
 def expand_dims(
@@ -87,8 +86,7 @@ def permute_dims(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.transpose(x, perm=axes)
-    return ret
+    return tf.transpose(x, perm=axes)
 
 
 def reshape(
@@ -174,8 +172,7 @@ def stack(
     axis: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.stack(arrays, axis)
-    return ret
+    return tf.experimental.numpy.stack(arrays, axis)
 
 
 # Extra #
@@ -220,8 +217,7 @@ def repeat(
     axis: int = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.repeat(x, repeats, axis)
-    return ret
+    return tf.repeat(x, repeats, axis)
 
 
 repeat.supported_dtypes = (
@@ -230,15 +226,20 @@ repeat.supported_dtypes = (
 )
 
 
-def tile(x, /, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def tile(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    reps: Sequence[int],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
         reps = [reps]
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
-    ret = tf.tile(x, reps)
-    return ret
+    return tf.tile(x, reps)
 
 
 tile.unsupported_dtypes = (
@@ -255,15 +256,13 @@ def constant_pad(
 ):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
-    ret = tf.pad(x, pad_width, constant_values=value)
-    return ret
+    return tf.pad(x, pad_width, constant_values=value)
 
 
 def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
-    ret = tf.pad(x, pad_width)
-    return ret
+    return tf.pad(x, pad_width)
 
 
 def swapaxes(
@@ -278,8 +277,7 @@ def swapaxes(
     config.insert(axis0, axis1)
     config.pop(axis1)
     config.insert(axis1, axis0)
-    ret = tf.transpose(x, config)
-    return ret
+    return tf.transpose(x, config)
 
 
 def clip(
@@ -290,6 +288,7 @@ def clip(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    assert tf.reduce_all(tf.less(x_min, x_max)), "Min value must be less than max."
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)

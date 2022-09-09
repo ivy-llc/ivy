@@ -4,6 +4,7 @@ from typing import Union, Sequence, List
 
 # local
 import ivy
+from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -80,9 +81,6 @@ def broadcast_to(
     return torch.broadcast_to(x, shape)
 
 
-broadcast_to.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
-
-
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
     if isinstance(from_, torch.Tensor):
         from_ = from_.dtype
@@ -106,12 +104,14 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
     return True
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[torch.dtype, str, torch.Tensor]) -> torch.iinfo:
     if isinstance(type, torch.Tensor):
         type = type.dtype
@@ -165,9 +165,6 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
         raise TypeError(
             f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
-
-
-as_native_dtype.unsupported_dtypes = ("uint16",)
 
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:

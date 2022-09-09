@@ -157,7 +157,9 @@ def set_nest_at_index(
     if len(index) == 1:
         nest[index[0]] = value
     else:
-        ivy.set_nest_at_index(nest[index[0]], index[1:], value)
+        ret = nest[index[0]]
+        ivy.set_nest_at_index(ret, index[1:], value)
+        nest[index[0]] = ret
 
 
 def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
@@ -312,7 +314,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
         A tuple of tuples of indices for the indices at which to update.
     fn
         The function to perform on the nest at the given index.
-    
+
     Examples
     --------
     With :code:`List` inputs:
@@ -660,9 +662,9 @@ def nested_map(
     to_mutable: bool = False,
     max_depth: int = None,
     _depth: int = 0,
-    _tuple_check_fn: Optional[callable] = None,
-    _list_check_fn: Optional[callable] = None,
-    _dict_check_fn: Optional[callable] = None,
+    _tuple_check_fn: Optional[Callable] = None,
+    _list_check_fn: Optional[Callable] = None,
+    _dict_check_fn: Optional[Callable] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
