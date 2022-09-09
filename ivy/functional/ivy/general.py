@@ -2701,7 +2701,7 @@ def inplace_variables_supported(f=None):
 @inputs_to_native_arrays
 @handle_nestable
 def supports_inplace(
-        x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
+    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
 ) -> bool:
     """
     Determines whether in-place operations are supported for x's data type,
@@ -3602,6 +3602,7 @@ def multiprocessing(context: str = None):
 @handle_nestable
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
