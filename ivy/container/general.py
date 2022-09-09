@@ -6,7 +6,7 @@ from typing import Any, Union, List, Dict, Iterable, Optional, Callable
 from ivy.container.base import ContainerBase
 import ivy
 
-# ToDo: implement all methods here as public instance methods 
+# ToDo: implement all methods here as public instance methods
 
 
 # noinspection PyMissingConstructor
@@ -1394,7 +1394,7 @@ class ContainerWithGeneral(ContainerBase):
             "unstack",
             x,
             axis,
-            keepdims,
+            keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2295,7 +2295,7 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,        
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
         *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -4142,7 +4142,7 @@ class ContainerWithGeneral(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.supports_inplace. This method
@@ -4206,7 +4206,7 @@ class ContainerWithGeneral(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
 
     def supports_inplace(
@@ -4216,7 +4216,7 @@ class ContainerWithGeneral(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_sequences: bool = False
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.Container.static_supports_inplace.
@@ -4273,5 +4273,5 @@ class ContainerWithGeneral(ContainerBase):
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences
+            map_sequences=map_sequences,
         )
