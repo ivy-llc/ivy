@@ -258,11 +258,15 @@ def test_torch_diagonal(
         min_num_dims=2,  # Torch requires this.
     ),
     diagonal=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.triu"
+    ),
 )
 def test_torch_triu(
     dtype_and_values,
     diagonal,
     fw,
+    num_positional_args,
     as_variable,
     with_out,
     native_array,
@@ -273,7 +277,7 @@ def test_torch_triu(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
