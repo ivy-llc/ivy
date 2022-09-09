@@ -267,12 +267,25 @@ class SparseArray:
     # ---------------- #
 
     def to_dense_array(self, *, native=False):
-        # TODO: add csr conversion
         all_coordinates = []
-        for i in range(self._values.shape[0]):
-            coordinate = ivy.gather(self._indices, ivy.array([[i]]))
-            coordinate = ivy.reshape(coordinate, (self._indices.shape[0],))
-            all_coordinates.append(coordinate.to_list())
+        if self._coo_indices is not None:
+            # COO sparse array
+            for i in range(self._values.shape[0]):
+                coordinate = ivy.gather(self._indices, ivy.array([[i]]))
+                coordinate = ivy.reshape(coordinate, (self._indices.shape[0],))
+                all_coordinates.append(coordinate.to_list())
+        else:
+            # CSR sparse array
+            row = 0
+            total_rows = self._dense_shape[0]
+            while row < total_rows:
+                cols = self._csr_col_indices[
+                    self._csr_crow_indices[row] : self._csr_crow_indices[row + 1]
+                ].to_list()
+                for col in cols:
+                    all_coordinates.append([row, col])
+                row += 1
+        # make dense array
         ret = ivy.scatter_nd(
             ivy.array(all_coordinates), self._values, ivy.array(self._dense_shape)
         )
