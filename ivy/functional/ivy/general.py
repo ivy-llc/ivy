@@ -2671,7 +2671,7 @@ def inplace_variables_supported(f=None):
 
 @inputs_to_native_arrays
 @handle_nestable
-def supports_inplace(
+def supports_inplace_updates(
     x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
 ) -> bool:
     """
@@ -2703,24 +2703,24 @@ def supports_inplace(
     --------
     With :code:'ivy.DType("bool")' input:
     >>> x = True
-    >>> ivy.supports_inplace(x)
+    >>> ivy.supports_inplace_updates(x)
     ValueError: Input x must be either a variable or an array.
 
     With :code:'ivy.Array' input and default backend set as 'numpy':
     >>> x = ivy.array([0, 1, 2])
-    >>> ret = ivy.supports_inplace(x)
+    >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
     True
 
     With :code:'ivy.Variable' input and backend set as 'jax':
     >>> x = ivy.variable(ivy.array(5.5))
-    >>> ret = ivy.supports_inplace(x)
+    >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
     False
 
     With :code:'ivy.Container' input and backend set as 'torch':
     >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
-    >>> ret = ivy.supports_inplace(x)
+    >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
     {
         a: true,

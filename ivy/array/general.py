@@ -615,11 +615,11 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
-    def supports_inplace(self: ivy.Array) -> bool:
+    def supports_inplace_updates(self: ivy.Array) -> bool:
         """
-        ivy.Array instance method variant of ivy.supports_inplace. This method simply
-        wraps the function, and so the docstring for ivy.supports_inplace also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.supports_inplace_updates. This method
+        simply wraps the function, and so the docstring for ivy.supports_inplace also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -640,7 +640,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(ret)
         False
         """
-        return ivy.supports_inplace(self)
+        return ivy.supports_inplace_updates(self)
 
     def inplace_decrement(
         self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
