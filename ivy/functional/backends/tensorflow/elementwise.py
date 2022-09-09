@@ -719,3 +719,15 @@ def minimum(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.minimum(x1, x2)
+
+
+def deg2rad(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.deg2rad(x)
+
+
+deg2rad.unsupported_dtypes = ("bfloat16",)

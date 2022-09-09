@@ -1995,3 +1995,25 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the Gauss error of ``self``.
         """
         return ivy.erf(self._data, out=out)
+
+    def deg2rad(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.deg2rad.
+        This method simply wraps the function, and so the docstring
+        for ivy.deg2rad also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. to be converted from degrees to radians.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results.
+            The returned array must have a data type of ``bool``.
+        """
+        return ivy.deg2rad(self._data, out=out)

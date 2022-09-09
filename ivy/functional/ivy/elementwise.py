@@ -5652,3 +5652,123 @@ def minimum(
     }
     """
     return ivy.current_backend(x1).minimum(x1, x2, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def deg2rad(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Converts the input from degrees to radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``+0``.
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    Parameters
+    ----------
+    x
+        input array whose elements are each expressed in degrees. Should have a
+        floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the sine of each element in ``x``. The returned array must
+        have a floating-point data type determined by :ref:`type-promotion`.
+
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.elementwise_functions.sin.html>` _ in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+
+    >>> x=ivy.array([0,90,180,270,360])
+    >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    ivy.array([0.  , 1.57, 3.14, 4.71, 6.28])
+
+    >>> x=ivy.array([0,-1.5,-50,ivy.nan])
+    >>> y=ivy.zeros(5)
+    >>> ivy.deg2rad(x,out=y)
+    >>> print(y)
+    ivy.array([ 0.    , -0.0262, -0.873 ,     nan])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
+    >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    ivy.array([ 0.   ,  0.351, -0.881,    nan])
+
+    >>> x=ivy.native_array([-0,20.1,ivy.nan])
+    >>> y=ivy.zeros(3)
+    >>> ivy.deg2rad(x,out=y)
+    >>> print(y)
+    ivy.array([0.   , 0.351,   nan])
+
+    With :code:`ivy.Container` input:
+
+    >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),\
+                        b=ivy.array([0,90,180,270,360]))
+    >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.351, -0.881, nan]),
+        b: ivy.array([0., 1.57, 3.14, 4.71, 6.28])
+    }
+
+    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
+         b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+    >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
+        b: ivy.array([0., -0.0262, -0.873, nan])
+    }
+
+    Instance Method Examples
+    ------------------------
+
+    With :code:`ivy.Array` input:
+
+    >>> x=ivy.array([90,180,270,360])
+    >>> y=x.deg2rad()
+    >>> print(y)
+    ivy.array([1.57, 3.14, 4.71, 6.28])
+
+
+    With :code:`ivy.Container` input:
+
+    >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
+         b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+    >>> y=x.deg2rad()
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.00613, -0.0154, nan]),
+        b: ivy.array([0., -0.0262, -0.873, nan])
+    }
+
+    """
+    return ivy.current_backend(x).deg2rad(x, out=out)

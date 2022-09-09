@@ -443,3 +443,7 @@ def minimum(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.minimum(x1, x2)
+
+
+def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.deg2rad(x)

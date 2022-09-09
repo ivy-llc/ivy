@@ -659,3 +659,10 @@ def maximum(
 
 
 maximum.support_native_out = True
+
+
+def deg2rad(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.deg2rad(x, out=out)
+
+
+deg2rad.support_native_out = True
