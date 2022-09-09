@@ -352,6 +352,7 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 def get_current_frontend():
+    """Returns the current frontend framework, returns None if no frontend is set. """
     return frontend_fw()
 
 
@@ -3193,15 +3194,15 @@ def handle_cmd_line_args(test_fn):
     @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         gc.collect()
-        flag, fw_string = (False, "")
+        flag, backend_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":
             # Numpy does not support GPU
             pytest.skip()
         if not f:
             # randomly draw a backend if not set
-            fw_string = data.draw(st.sampled_from(FW_STRS))
-            f = TEST_BACKENDS[fw_string]()
+            backend_string = data.draw(st.sampled_from(FW_STRS))
+            f = TEST_BACKENDS[backend_string]()
         else:
             # use the one which is parametrized
             flag = True
@@ -3213,13 +3214,13 @@ def handle_cmd_line_args(test_fn):
             frontend_string = test_fn.__name__.split("_")[1]
             if frontend_string in FW_STRS:
                 frontend_fw = TEST_BACKENDS[frontend_string]
-            else:
+            else: # Clear the global variable
                 frontend_fw = None
         except IndexError:
-            raise ValueError(
+            raise RuntimeError(
                 "'{}' is not a valid test function, "
                 "a test function should start with 'test_'.".format(test_fn.__name__)
-            )  # ToDo: use another exception class
+            )
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
@@ -3229,7 +3230,7 @@ def handle_cmd_line_args(test_fn):
                         bool_val_flags(get_command_line_flags[param.name])
                     )
                 elif param.name == "fw":
-                    kwargs["fw"] = fw if flag else fw_string
+                    kwargs["fw"] = fw if flag else backend_string
                 elif param.name == "device":
                     kwargs["device"] = device
             return test_fn(*args, **kwargs)
