@@ -8,20 +8,24 @@ def correlate(
     *,
     old_behavior = False
 ):
-
+    
     mode = mode if mode is not None else "valid"
     assert a.ndim == 1 and v.ndim == 1
     n = min(a.shape[0], v.shape[0])
     m = max(a.shape[0], v.shape[0])
-    if a.shape[0] > v.shape[0]:
+    if a.shape[0] >= v.shape[0]:
         if mode == "full":
             r = n+m-1
             for j in range(0,n-1):
                 a = ivy.concat((ivy.array(0),a),axis = None)
         elif mode == "same":
             r = m
-            for j in range(0,(n-1)%2):
+            right_pad = (n-1)//2
+            left_pad = (n-1) - (n-1)//2
+            for j in range(0,left_pad):
                 a = ivy.concat((ivy.array(0),a),axis = None)
+            for j in range(0,right_pad):
+                a = ivy.concat((a,ivy.array(0)),axis = None)
         elif mode == "valid":
             r = m-n+1
         else:
@@ -34,8 +38,12 @@ def correlate(
                 v = ivy.concat((ivy.array(0),v),axis = None)
         elif mode == "same":
             r = m
-            for j in range(0,(n-1)%2):
+            right_pad = (n-1)//2
+            left_pad = (n-1) - (n-1)//2
+            for j in range(0,left_pad):
                 v = ivy.concat((ivy.array(0),v),axis = None)
+            for j in range(0,right_pad):
+                v = ivy.concat((v,ivy.array(0)),axis = None)
         elif mode == "valid":
             r = m-n+1
         else:
