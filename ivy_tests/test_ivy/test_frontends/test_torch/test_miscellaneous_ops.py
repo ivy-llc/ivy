@@ -298,7 +298,6 @@ def test_torch_diagflat(
 
 
 @handle_cmd_line_args
-@settings(max_examples=5)
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
