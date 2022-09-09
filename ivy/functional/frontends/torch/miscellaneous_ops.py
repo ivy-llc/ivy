@@ -19,7 +19,7 @@ def cumsum(input, dim, *, dtype=None, out=None):
 
 
 def cumprod(input, dim, *, dtype=None, out=None):
-    return ivy.cumprod(x=input, axis=dim, out=out)
+    return ivy.cumprod(x=input, axis=dim, out=out, dtype=dtype)
 
 
 def diagonal(input, offset=0, dim1=0, dim2=1):

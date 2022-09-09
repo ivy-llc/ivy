@@ -14,7 +14,6 @@ from ivy_tests.test_array_api.array_api_tests.test_operators_and_elementwise_fun
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import (
     array_and_broadcastable_shape,
-    dtype_shared,
 )
 
 
@@ -233,10 +232,13 @@ def test_torch_diagonal(
     )
 
 
+# broadcast_to
 @handle_cmd_line_args
 @given(
-    array_and_shape=array_and_broadcastable_shape(dtype_shared),
-    input_dtype=dtype_shared,
+    array_and_shape=array_and_broadcastable_shape(
+        st.shared(st.sampled_from(ivy_torch.valid_dtypes), key="dtype")
+    ),
+    input_dtype=st.shared(st.sampled_from(ivy_torch.valid_dtypes), key="dtype"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.broadcast_to"
     ),
@@ -259,17 +261,21 @@ def test_torch_broadcast_to(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
-        frontend="torch"
+        frontend="torch",
         input=array,
         size=shape,
     )
-    
-    
+
+
 # cumprod
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
+            .difference({"float16", "bool"}),
+        ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     axis=helpers.get_axis(
@@ -283,6 +289,7 @@ def test_torch_cumprod(
     dtype_and_values,
     axis,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -291,7 +298,7 @@ def test_torch_cumprod(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=True,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
