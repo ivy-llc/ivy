@@ -265,8 +265,8 @@ def test_torch_triu(
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes)
-            .intersection(set(ivy_torch.valid_float_dtypes))
+            set(ivy_np.valid_numeric_dtypes)
+            .intersection(set(ivy_torch.valid_numeric_dtypes))
             .difference({"float16", "bool"}),
         ),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
