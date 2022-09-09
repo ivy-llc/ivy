@@ -24,7 +24,7 @@ def _not_too_close_to_zero(x):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="abs"),
 )
@@ -57,9 +57,7 @@ def test_abs(
 # acosh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="acosh"),
 )
 def test_acosh(
@@ -91,9 +89,7 @@ def test_acosh(
 # acos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
 def test_acos(
@@ -126,7 +122,7 @@ def test_acos(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
 )
@@ -161,9 +157,7 @@ def test_add(
 # asin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="asin"),
 )
 def test_asin(
@@ -195,9 +189,7 @@ def test_asin(
 # asinh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="asinh"),
 )
 def test_asinh(
@@ -229,9 +221,7 @@ def test_asinh(
 # atan
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="atan"),
 )
 def test_atan(
@@ -264,7 +254,7 @@ def test_atan(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
         max_num_dims=5,
@@ -309,9 +299,7 @@ def test_atan2(
 # atanh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="atanh"),
 )
 def test_atanh(
@@ -336,6 +324,8 @@ def test_atanh(
         instance_method=instance_method,
         fw=fw,
         fn_name="atanh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -574,7 +564,7 @@ def test_bitwise_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         small_value_safety_factor=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
@@ -608,9 +598,7 @@ def test_ceil(
 # cos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="cos"),
 )
 def test_cos(
@@ -642,9 +630,7 @@ def test_cos(
 # cosh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="cosh"),
 )
 def test_cosh(
@@ -677,7 +663,7 @@ def test_cosh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="divide"),
 )
@@ -754,9 +740,7 @@ def test_equal(
 # exp
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="exp"),
 )
 def test_exp(
@@ -788,9 +772,7 @@ def test_exp(
 # expm1
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="expm1"),
 )
 def test_expm1(
@@ -823,7 +805,7 @@ def test_expm1(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor"),
 )
@@ -860,7 +842,7 @@ def test_floor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         large_value_safety_factor=1.1,
@@ -882,8 +864,6 @@ def test_floor_divide(
     x1 = np.asarray(x[0], dtype=input_dtype[0])
     x2 = np.asarray(x[1], dtype=input_dtype[1])
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
     # Make sure it's not dividing value too close to zero
     assume(not np.any(np.isclose(x2, 0)))
 
@@ -905,11 +885,50 @@ def test_floor_divide(
     )
 
 
+# floormod
+@handle_cmd_line_args
+@given(
+    xy=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=1,
+        large_value_safety_factor=20,
+    ),
+)
+def test_floormod(
+    xy,
+    as_variable,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    # smoke test
+    dtype = xy[0]
+    x = xy[1][0]
+    divisor = xy[1][1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=2,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="floormod",
+        x=np.asarray(x, dtype=dtype[0]),
+        y=np.asarray(divisor, dtype=dtype[1]),
+    )
+
+
 # greater
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="greater"),
 )
@@ -951,7 +970,7 @@ def test_greater(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="greater_equal"),
 )
@@ -995,7 +1014,7 @@ def test_greater_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="isfinite"),
 )
@@ -1029,7 +1048,7 @@ def test_isfinite(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="isinf"),
 )
@@ -1063,7 +1082,7 @@ def test_isinf(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="isnan"),
 )
@@ -1097,7 +1116,7 @@ def test_isnan(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_num_dims=1,
     ),
@@ -1143,7 +1162,7 @@ def test_less(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="less_equal"),
 )
@@ -1186,9 +1205,7 @@ def test_less_equal(
 # log
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="log"),
 )
 def test_log(
@@ -1224,9 +1241,7 @@ def test_log(
 # log1p
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="log1p"),
 )
 def test_log1p(
@@ -1262,9 +1277,7 @@ def test_log1p(
 # log2
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="log2"),
 )
 def test_log2(
@@ -1293,6 +1306,7 @@ def test_log2(
         instance_method=instance_method,
         fw=fw,
         fn_name="log2",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -1300,9 +1314,7 @@ def test_log2(
 # log10
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="log10"),
 )
 def test_log10(
@@ -1331,6 +1343,7 @@ def test_log10(
         instance_method=instance_method,
         fw=fw,
         fn_name="log10",
+        rtol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -1339,7 +1352,7 @@ def test_log10(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="logaddexp"),
 )
@@ -1510,7 +1523,7 @@ def test_logical_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="multiply"),
 )
@@ -1546,7 +1559,7 @@ def test_multiply(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="negative"),
 )
@@ -1616,7 +1629,7 @@ def test_not_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="positive"),
 )
@@ -1650,7 +1663,7 @@ def test_positive(
 def _pow_helper(draw):
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+            available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
         )
     )
     dtype1, dtype2 = dtype
@@ -1716,7 +1729,7 @@ def test_pow(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         allow_inf=True,
     ),
@@ -1752,11 +1765,10 @@ def test_reciprocal(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="remainder"),
     modulus=st.booleans(),
 )
 def test_remainder(
@@ -1764,7 +1776,6 @@ def test_remainder(
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     modulus,
     native_array,
     container,
@@ -1786,7 +1797,7 @@ def test_remainder(
         input_dtypes=input_dtype,
         as_variable_flags=[as_variable, False],
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1802,16 +1813,14 @@ def test_remainder(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="round"),
 )
 def test_round(
     *,
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1822,7 +1831,7 @@ def test_round(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1836,7 +1845,7 @@ def test_round(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sign"),
 )
@@ -1873,9 +1882,7 @@ def test_sign(
 # sin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="sin"),
 )
 def test_sin(
@@ -1907,9 +1914,7 @@ def test_sin(
 # sinh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="sinh"),
 )
 def test_sinh(
@@ -1942,7 +1947,7 @@ def test_sinh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="square"),
 )
@@ -1976,7 +1981,7 @@ def test_square(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True), allow_inf=False
+        available_dtypes=helpers.get_dtypes("float"), allow_inf=False
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sqrt"),
 )
@@ -2010,7 +2015,7 @@ def test_sqrt(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
 )
@@ -2045,9 +2050,7 @@ def test_subtract(
 # tan
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="tan"),
 )
 def test_tan(
@@ -2079,9 +2082,7 @@ def test_tan(
 # tanh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="tanh"),
 )
 def test_tanh(
@@ -2114,7 +2115,7 @@ def test_tanh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True)
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="trunc"),
 )
@@ -2151,9 +2152,7 @@ def test_trunc(
 # erf
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="erf"),
 )
 def test_erf(
@@ -2186,7 +2185,7 @@ def test_erf(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="minimum"),
 )
@@ -2231,7 +2230,7 @@ def test_minimum(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="maximum"),
 )

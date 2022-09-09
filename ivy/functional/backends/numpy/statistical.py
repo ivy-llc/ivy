@@ -29,8 +29,8 @@ def mean(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -106,19 +106,10 @@ def sum(
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
-    initial=None,
-    where=None,
 ) -> np.ndarray:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-
-    if initial is None:
-        initial = np._NoValue
-
-    if where is None:
-        where = np._NoValue
-
     return np.asarray(
         np.sum(
             a=x,
@@ -126,8 +117,6 @@ def sum(
             dtype=dtype,
             keepdims=keepdims,
             out=out,
-            initial=initial,
-            where=where,
         )
     )
 
