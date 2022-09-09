@@ -858,7 +858,7 @@ def gradient_test(
     )
 
 
-def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
+def check_unsupported_dtype(*, fn, input_dtypes, recurse=True, all_as_kwargs_np):
     """Checks whether a function does not support the input data types or the output
     data type.
 
@@ -877,8 +877,8 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     otherwise.
     """
     test_unsupported = False
-    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
-    supported_dtypes_fn = ivy.function_supported_dtypes(fn)
+    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn, recurse)
+    supported_dtypes_fn = ivy.function_supported_dtypes(fn, recurse)
     if unsupported_dtypes_fn:
         for d in input_dtypes:
             if d in unsupported_dtypes_fn:
@@ -902,7 +902,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     return test_unsupported
 
 
-def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
+def check_unsupported_device(*, fn, input_device, recurse=True, all_as_kwargs_np):
     """Checks whether a function does not support a given device.
 
     Parameters
@@ -919,8 +919,8 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
     True if the function does not support the given device, False otherwise.
     """
     test_unsupported = False
-    unsupported_devices_fn = ivy.function_unsupported_devices(fn)
-    supported_devices_fn = ivy.function_supported_devices(fn)
+    unsupported_devices_fn = ivy.function_unsupported_devices(fn, recurse)
+    supported_devices_fn = ivy.function_supported_devices(fn, recurse)
     if unsupported_devices_fn:
         if input_device in unsupported_devices_fn:
             test_unsupported = True
@@ -940,7 +940,9 @@ def check_unsupported_device(*, fn, input_device, all_as_kwargs_np):
     return test_unsupported
 
 
-def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwargs_np):
+def check_unsupported_device_and_dtype(
+    *, fn, device, input_dtypes, recurse=True, all_as_kwargs_np
+):
     """Checks whether a function does not support a given device or data types.
 
     Parameters
@@ -959,7 +961,9 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
     True if the function does not support both the device and any data type, False
     otherwise.
     """
-    unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)
+    unsupported_devices_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(
+        fn, recurse
+    )
 
     if device in unsupported_devices_dtypes_fn:
         for d in input_dtypes:
@@ -1251,56 +1255,173 @@ def test_method(
         for v, d in zip(as_variable_flags_method, input_dtypes_method)
     ]
 
-    # change all data types so that they are supported by this framework
-    input_dtypes_init = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_init
-    ]
-    input_dtypes_method = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
-    ]
-
-    # create args
-    args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_init,
-        kwargs=all_as_kwargs_np_init,
-    )
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
-        args_np=args_np_constructor,
-        kwargs_np=kwargs_np_constructor,
+    test_unsupported = check_unsupported_dtype(
+        fn=getattr(ivy.__dict__[class_name], "__init__"),
         input_dtypes=input_dtypes_init,
-        as_variable_flags=as_variable_flags_init,
-        native_array_flags=native_array_flags_init,
+        recurse=False,
+        all_as_kwargs_np=all_as_kwargs_np_init,
     )
-    args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
-    )
-    args_method, kwargs_method, _, _, _ = create_args_kwargs(
-        args_np=args_np_method,
-        kwargs_np=kwargs_np_method,
-        input_dtypes=input_dtypes_method,
-        as_variable_flags=as_variable_flags_method,
-        native_array_flags=native_array_flags_method,
-        container_flags=container_flags_method,
-    )
+
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device(
+            fn=getattr(ivy.__dict__[class_name], "__init__"),
+            input_device=device_,
+            recurse=False,
+            all_as_kwargs_np=all_as_kwargs_np_init,
+        )
+
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device_and_dtype(
+            fn=getattr(ivy.__dict__[class_name], "__init__"),
+            device=device_,
+            input_dtypes=input_dtypes_init,
+            recurse=False,
+            all_as_kwargs_np=all_as_kwargs_np_init,
+        )
+
+    if test_unsupported:
+        try:
+            # create args
+            args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
+                num_positional_args=num_positional_args_init,
+                kwargs=all_as_kwargs_np_init,
+            )
+            args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+                args_np=args_np_constructor,
+                kwargs_np=kwargs_np_constructor,
+                input_dtypes=input_dtypes_init,
+                as_variable_flags=as_variable_flags_init,
+                native_array_flags=native_array_flags_init,
+            )
+        except Exception:
+            return
+    else:
+        # create args
+        args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
+            num_positional_args=num_positional_args_init,
+            kwargs=all_as_kwargs_np_init,
+        )
+        args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+            args_np=args_np_constructor,
+            kwargs_np=kwargs_np_constructor,
+            input_dtypes=input_dtypes_init,
+            as_variable_flags=as_variable_flags_init,
+            native_array_flags=native_array_flags_init,
+        )
+
+    temp_ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+    if not test_unsupported:
+        test_unsupported = check_unsupported_dtype(
+            fn=temp_ins.__getattribute__(method_name),
+            input_dtypes=input_dtypes_method,
+            recurse=False,
+            all_as_kwargs_np=all_as_kwargs_np_method,
+        )
+
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device(
+            fn=temp_ins.__getattribute__(method_name),
+            input_device=device_,
+            recurse=False,
+            all_as_kwargs_np=all_as_kwargs_np_method,
+        )
+
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device_and_dtype(
+            fn=temp_ins.__getattribute__(method_name),
+            device=device_,
+            input_dtypes=input_dtypes_init,
+            recurse=False,
+            all_as_kwargs_np=all_as_kwargs_np_method,
+        )
+
+    if test_unsupported:
+        try:
+            args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
+                num_positional_args=num_positional_args_method,
+                kwargs=all_as_kwargs_np_method,
+            )
+            args_method, kwargs_method, _, _, _ = create_args_kwargs(
+                args_np=args_np_method,
+                kwargs_np=kwargs_np_method,
+                input_dtypes=input_dtypes_method,
+                as_variable_flags=as_variable_flags_method,
+                native_array_flags=native_array_flags_method,
+                container_flags=container_flags_method,
+            )
+        except Exception:
+            return
+    else:
+        args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
+            num_positional_args=num_positional_args_method,
+            kwargs=all_as_kwargs_np_method,
+        )
+        args_method, kwargs_method, _, _, _ = create_args_kwargs(
+            args_np=args_np_method,
+            kwargs_np=kwargs_np_method,
+            input_dtypes=input_dtypes_method,
+            as_variable_flags=as_variable_flags_method,
+            native_array_flags=native_array_flags_method,
+            container_flags=container_flags_method,
+        )
+
     # run
+    if test_unsupported:
+        try:
+            ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+        except Exception:
+            return
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
+
     v_np = None
     if isinstance(ins, ivy.Module):
         if init_with_v:
             v = ivy.Container(
                 ins._create_variables(device=device_, dtype=input_dtypes_method[0])
             )
+            if test_unsupported:
+                try:
+                    ins = ivy.__dict__[class_name](
+                        *args_constructor, **kwargs_constructor, v=v
+                    )
+                except Exception:
+                    return
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
         else:
             v = ins.__getattribute__("v")
         v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
+    if test_unsupported:
+        test_unsupported_function(
+            fn=ins.__getattribute__(method_name), args=args_method, kwargs=kwargs_method
+        )
+        return
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
     # compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
+    if test_unsupported:
+        try:
+            args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
+                args_np=args_np_constructor,
+                kwargs_np=kwargs_np_constructor,
+                input_dtypes=input_dtypes_init,
+                as_variable_flags=as_variable_flags_init,
+            )
+            args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
+                args_np=args_np_method,
+                kwargs_np=kwargs_np_method,
+                input_dtypes=input_dtypes_method,
+                as_variable_flags=as_variable_flags_method,
+            )
+            ins_gt = ivy.__dict__[class_name](
+                *args_gt_constructor, **kwargs_gt_constructor
+            )
+        except Exception:
+            ivy.unset_backend()
+            return
     args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
         args_np=args_np_constructor,
         kwargs_np=kwargs_np_constructor,
@@ -1314,11 +1435,20 @@ def test_method(
         as_variable_flags=as_variable_flags_method,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
-    if isinstance(ins_gt, ivy.Module):
+    if isinstance(ins_gt, ivy.Module) and method_with_v:
         v_gt = v_np.map(
             lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
         )
         kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
+
+    if test_unsupported:
+        test_unsupported_function(
+            ins_gt.__getattribute__(method_name),
+            args=args_gt_method,
+            kwargs=kwargs_gt_method,
+        )
+        ivy.unset_backend()
+        return
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )

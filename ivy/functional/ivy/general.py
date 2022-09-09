@@ -3819,9 +3819,9 @@ def _dnd_dict_union(a, b):
     return res
 
 
-def _get_devices_and_dtypes(fn, complement=True):
-    supported_devices = ivy.function_supported_devices(fn)
-    supported_dtypes = ivy.function_supported_dtypes(fn)
+def _get_devices_and_dtypes(fn, complement=True, recurse=True):
+    supported_devices = ivy.function_supported_devices(fn, recurse)
+    supported_dtypes = ivy.function_supported_dtypes(fn, recurse)
 
     supported = {}
     # Generate a base supported set from other attributes
@@ -3917,7 +3917,9 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
              attributes cannot both exist in a particular backend"
         )
 
-    unsupported_devices_dtype = _get_devices_and_dtypes(fn, complement=True)
+    unsupported_devices_dtype = _get_devices_and_dtypes(
+        fn, complement=True, recurse=False
+    )
 
     if recurse:
         unsupported_devices_dtype = ivy.functional.data_type._nested_get(
