@@ -352,16 +352,17 @@ def var_fn(x, *, dtype=None, device=None):
 
 
 def get_current_frontend():
-    """Returns the current frontend framework, returns None if no frontend is set. """
+    """Returns the current frontend framework, returns None if no frontend is set."""
     return frontend_fw()
 
 
 @st.composite
 def get_dtypes(draw, kind, index=0, full=True, none=False):
     """
-    Draws a valid dtypes for the test function. For frontend tests, it draws the ddata types
-    from the intersection between backend framework data types and frontend framework dtypes,
-    otherwise, draws it from backend framework data types.
+    Draws a valid dtypes for the test function. For frontend tests,
+    it draws the ddata types from the intersection between backend
+    framework data types and frontend framework dtypes, otherwise,
+    draws it from backend framework data types.
 
     Parameters
     ----------
@@ -401,7 +402,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
     else:
         valid_dtypes = backend_dtypes
-    
+
     if none:
         return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
     if full:
@@ -1810,9 +1811,6 @@ def test_frontend_function(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
-
     # create args
     if test_unsupported:
         try:
@@ -3217,7 +3215,7 @@ def handle_cmd_line_args(test_fn):
             frontend_string = test_fn.__name__.split("_")[1]
             if frontend_string in FW_STRS:
                 frontend_fw = TEST_BACKENDS[frontend_string]
-            else: # Clear the global variable
+            else:  # Clear the global variable
                 frontend_fw = None
         except IndexError:
             raise RuntimeError(
