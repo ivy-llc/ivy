@@ -2400,7 +2400,7 @@ def dtype_values_axis(
 
 
 # taken from
-# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py
+# https://github.com/data-apis/array-api-tests/array_api_tests/test_manipulation_functions.py # noqa E501
 @st.composite
 def reshape_shapes(draw, *, shape):
     """Draws a random shape with the same number of elements as the given shape.
