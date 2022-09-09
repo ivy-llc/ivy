@@ -59,7 +59,7 @@ def tan(
     *,
     where=True,
     casting="same_kind",
-    order="k",
+    order="K",
     dtype=None,
     subok=True,
 ):
@@ -164,3 +164,70 @@ def cosh(
 
 
 cosh.unsupported_dtypes = {"torch": ("float16",)}
+
+
+@from_zero_dim_arrays_to_float
+def deg2rad(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+    signature=None,
+    extobj=None,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.multiply(ivy.divide(x, 180), ivy.pi, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@from_zero_dim_arrays_to_float
+def arctan2(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    ret = ivy.atan2(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+arctan2.unsupported_dtypes = {"torch": ("float16",)}
+
+
+@from_zero_dim_arrays_to_float
+def radians(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting='same_kind',
+    order='K',
+    dtype=None,
+    subok=True
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.divide(ivy.multiply(x, ivy.pi, out=out), 180)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret

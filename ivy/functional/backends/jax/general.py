@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence, List
+from typing import Iterable, Optional, Union, Sequence, List, Callable
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -71,7 +71,7 @@ def to_list(x: JaxArray) -> list:
 
 def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(jnp.shape(x))
+        return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 
@@ -82,11 +82,6 @@ def get_num_dims(x, as_tensor=False):
 
 def container_types():
     return [FlatMapping]
-
-
-def floormod(x: JaxArray, y: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = x % y
-    return ret
 
 
 def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
@@ -122,7 +117,8 @@ def inplace_arrays_supported():
     return False
 
 
-inplace_variables_supported = lambda: False
+def inplace_variables_supported():
+    return False
 
 
 def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
@@ -137,16 +133,35 @@ def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
 def cumsum(
     x: JaxArray,
     axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
     *,
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
-    if dtype != x.dtype:
-        x = x.astype(dtype)
-    return jnp.cumsum(x, axis)
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(dtype, x.dtype)
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jnp.swapaxes(x, axis, -1)
+            res = jnp.flip(x, axis=(axis,))
+        elif exclusive:
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jnp.cumsum(x, -1, dtype=dtype)
+            res = jnp.swapaxes(x, axis, -1)
+        elif reverse:
+            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            res = jnp.flip(x, axis=axis)
+        return res
+    return jnp.cumsum(x, axis, dtype=dtype)
 
 
 def cumprod(
@@ -174,12 +189,11 @@ def scatter_flat(
     indices: JaxArray,
     updates: JaxArray,
     size: Optional[int] = None,
-    tensor: Optional[JaxArray] = None,
     reduction: str = "sum",
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
         assert len(target.shape) == 1 and target.shape[0] == size
@@ -217,11 +231,11 @@ def scatter_nd(
     indices: JaxArray,
     updates: JaxArray,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    tensor: Optional[JaxArray] = None,
-    reduction: str = "sum",
+    reduction="sum",
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
         isinstance(indices, Iterable) and Ellipsis in indices
@@ -236,8 +250,8 @@ def scatter_nd(
 
     updates = jnp.array(
         updates,
-        dtype=ivy.dtype(tensor, as_native=True)
-        if ivy.exists(tensor)
+        dtype=ivy.dtype(out, as_native=True)
+        if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
 
@@ -249,11 +263,11 @@ def scatter_nd(
         indices_tuple = tuple(indices_flat) + (Ellipsis,)
 
     # implementation
-    target = tensor
+    target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.to_ivy_shape(target.shape) == ivy.to_ivy_shape(shape)
-    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
+        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros(shape, dtype=updates.dtype)
@@ -280,7 +294,12 @@ def scatter_nd(
                 reduction
             )
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
+
+
+scatter_nd.support_native_out = True
 
 
 def gather(
@@ -334,14 +353,15 @@ def one_hot(
     indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
 ) -> JaxArray:
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
-    res = jnp.eye(depth)[jnp.array(indices).reshape(-1)]
+    res = jnp.eye(depth, dtype=indices.dtype)[
+        jnp.array(indices, dtype="int64").reshape(-1)
+    ]
     return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
-def indices_where(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+def indices_where(x: JaxArray) -> JaxArray:
     where_x = jnp.where(x)
-    ret = jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
-    return ret
+    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
 
 
 def inplace_decrement(x, val):
@@ -364,5 +384,15 @@ def inplace_increment(
     return x
 
 
-current_backend_str = lambda: "jax"
-current_backend_str.__name__ = "current_backend_str"
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
+    return ivy.to_native_arrays_and_back(
+        jax.vmap(func, in_axes=in_axes, out_axes=out_axes)
+    )
+
+
+def current_backend_str():
+    return "jax"

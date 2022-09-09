@@ -9,7 +9,7 @@ import shutil
 import sys
 
 import numpy as np
-import nvidia_smi
+import pynvml
 import psutil
 import pytest
 from hypothesis import strategies as st, given, assume
@@ -78,10 +78,9 @@ def _empty_dir(path, recreate=False):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_dev(*, array_shape, dtype, as_variable, fw):
-
     assume(not (fw == "torch" and "int" in dtype))
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -113,10 +112,9 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
-
     assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
@@ -144,10 +142,9 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("float", index=1),
+    dtype=helpers.get_dtypes("float", index=1, full=False),
 )
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw):
-
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
     for device in _get_possible_devices():
@@ -218,7 +215,7 @@ def test_default_device(device):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     stream=helpers.ints(min_value=0, max_value=50),
 )
 def test_to_device(*, array_shape, dtype, as_variable, with_out, fw, device, stream):
@@ -285,16 +282,13 @@ def _axis(draw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=_axis(),
 )
 def test_split_func_call(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device
 ):
-    assume(not ("bfloat16" in dtype))
-    assume(not (fw == "torch" and "int" in dtype))
-
     # inputs
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
@@ -318,9 +312,9 @@ def test_split_func_call(
     a_true, b_true, c_true = func(x1, x2)
 
     # value test
-    assert np.allclose(ivy.to_numpy(a), ivy.to_numpy(a_true))
-    assert np.allclose(ivy.to_numpy(b), ivy.to_numpy(b_true))
-    assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
+    helpers.assert_all_close(ivy.to_numpy(a), ivy.to_numpy(a_true))
+    helpers.assert_all_close(ivy.to_numpy(b), ivy.to_numpy(b_true))
+    helpers.assert_all_close(ivy.to_numpy(c), ivy.to_numpy(c_true))
 
 
 @handle_cmd_line_args
@@ -331,22 +325,13 @@ def test_split_func_call(
         max_size="num_dims",
         size_bounds=[2, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=helpers.ints(min_value=0, max_value=1),
 )
 def test_split_func_call_with_cont_input(
     *, array_shape, dtype, as_variable, chunk_size, axis, fw, device
 ):
-    # Skipping some dtype for certain frameworks
-    assume(
-        not (
-            (fw == "torch" and "int" in dtype)
-            or (fw == "numpy" and "float16" in dtype)
-            or (fw == "tensorflow" and "u" in dtype)
-        )
-    )
-
     shape = tuple(array_shape)
     x1 = np.random.uniform(size=shape).astype(dtype)
     x2 = np.random.uniform(size=shape).astype(dtype)
@@ -374,9 +359,9 @@ def test_split_func_call_with_cont_input(
     a_true, b_true, c_true = func(in0, in1)
 
     # value test
-    assert np.allclose(ivy.to_numpy(a.cont_key), ivy.to_numpy(a_true.cont_key))
-    assert np.allclose(ivy.to_numpy(b.cont_key), ivy.to_numpy(b_true.cont_key))
-    assert np.allclose(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
+    helpers.assert_all_close(ivy.to_numpy(a.cont_key), ivy.to_numpy(a_true.cont_key))
+    helpers.assert_all_close(ivy.to_numpy(b.cont_key), ivy.to_numpy(b_true.cont_key))
+    helpers.assert_all_close(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
 
 
 # profiler
@@ -487,7 +472,7 @@ def test_total_mem_on_dev(device):
     if "cpu" in device:
         assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
     elif "gpu" in device:
-        gpu_mem = nvidia_smi.nvmlDeviceGetMemoryInfo(device)
+        gpu_mem = pynvml.nvmlDeviceGetMemoryInfo(device)
         assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
 
 
@@ -526,11 +511,8 @@ def test_gpu_is_available(fw):
     # If gpu is available but cannot be initialised it will fail the test
     if ivy.gpu_is_available():
         try:
-            nvidia_smi.nvmlInit()
-        except (
-            nvidia_smi.NVMLError_LibraryNotFound,
-            nvidia_smi.NVMLError_DriverNotLoaded,
-        ):
+            pynvml.nvmlInit()
+        except pynvml.NVMLError:
             assert False
 
 
@@ -542,6 +524,39 @@ def test_num_cpu_cores():
     assert type(ivy.num_cpu_cores()) == int
     assert ivy.num_cpu_cores() == p_cpu_cores
     assert ivy.num_cpu_cores() == m_cpu_cores
+
+
+def _composition_1():
+    return ivy.relu().argmax()
+
+
+def _composition_2():
+    a = ivy.floor
+    return ivy.ceil() or a
+
+
+# function_unsupported_devices
+@pytest.mark.parametrize(
+    "func, expected",
+    [(_composition_1, ["cpu"]), (_composition_2, ["cpu"])],
+)
+def test_function_supported_devices(func, expected):
+    res = ivy.function_supported_devices(func)
+    exp = set(expected)
+
+    assert sorted(tuple(exp)) == sorted(res)
+
+
+# function_unsupported_devices
+@pytest.mark.parametrize(
+    "func, expected",
+    [(_composition_1, ["gpu", "tpu"]), (_composition_2, ["gpu", "tpu"])],
+)
+def test_function_unsupported_devices(func, expected):
+    res = ivy.function_unsupported_devices(func)
+    exp = set(expected)
+
+    assert sorted(tuple(exp)) == sorted(res)
 
 
 # Still to Add #

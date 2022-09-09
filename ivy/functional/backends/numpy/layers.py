@@ -207,9 +207,9 @@ def conv2d_transpose(
         new_w = ivy.deconv_length(
             x.shape[2], strides[1], filters.shape[1], padding, dilations[1]
         )
-        output_shape = [x.shape[0], new_h, new_w, x.shape[-1]]
+        output_shape = [x.shape[0], new_h, new_w, filters.shape[-1]]
     elif len(output_shape) == 2:
-        output_shape = [x.shape[0]] + output_shape + [x.shape[-1]]
+        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
     if strides[1] > 1:
         x = _add_dilations(x, strides[1], axis=2)
     if strides[0] > 1:
@@ -240,7 +240,6 @@ def conv2d_transpose(
         "constant",
     )
 
-    filters = np.swapaxes(filters, 2, 3)
     x = np.flip(x, (1, 2))
     res = np.flip(
         conv2d(x, filters, 1, "VALID", data_format="NHWC", dilations=1),
@@ -422,9 +421,9 @@ def conv3d_transpose(
         new_w = ivy.deconv_length(
             x.shape[3], strides[2], filters.shape[2], padding, dilations[2]
         )
-        output_shape = [x.shape[0], new_d, new_h, new_w, x.shape[-1]]
+        output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-1]]
     elif len(output_shape) == 3:
-        output_shape = [x.shape[0]] + output_shape + [x.shape[-1]]
+        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
 
     if strides[2] > 1:
         x = _add_dilations(x, strides[2], axis=3)
@@ -470,7 +469,6 @@ def conv3d_transpose(
         ],
         "constant",
     )
-    filters = np.swapaxes(filters, 3, 4)
     x = np.flip(x, (1, 2, 3))
     res = np.flip(
         conv3d(x, filters, 1, "VALID", data_format="NDHWC", dilations=1),

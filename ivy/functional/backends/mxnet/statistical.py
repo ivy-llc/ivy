@@ -17,7 +17,7 @@ from ivy.functional.backends.mxnet import (
 
 def max(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: Optional[bool] = False,
     *,
     out: Optional[mx.nd.NDArray] = None,
@@ -40,8 +40,8 @@ def max(
 
 def mean(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if axis is None:
@@ -130,8 +130,8 @@ def std(
 
 def sum(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if axis is None:

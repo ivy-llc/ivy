@@ -92,7 +92,11 @@ class Linear(Module):
             v = dict(
                 **v,
                 b=self._b_init.create_variables(
-                    self._b_shape, device, self._output_channels, dtype=dtype
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
                 ),
             )
         return v

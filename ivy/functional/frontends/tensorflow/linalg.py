@@ -1,4 +1,9 @@
+# global
 import ivy
+
+
+def matrix_rank(a, tol=None, valiate_args=False, name=None):
+    return ivy.matrix_rank(a, tol)
 
 
 def det(input, name=None):
@@ -27,3 +32,25 @@ def slogdet(input, name=None):
 
 
 slogdet.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def cholesky_solve(chol, rhs, name=None):
+    y = ivy.solve(chol, rhs)
+    return ivy.solve(ivy.matrix_transpose(chol), y)
+
+
+cholesky_solve.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def pinv(a, rcond=None, validate_args=False, name=None):
+    return ivy.pinv(a, rcond)
+
+
+pinv.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def tensordot(x, y, axes, name=None):
+    return ivy.tensordot(x, y, axes)
+
+
+tensordot.supported_dtypes = ("float32", "float64")

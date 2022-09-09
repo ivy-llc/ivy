@@ -19,7 +19,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union
+from typing import Union, Tuple
 from builtins import set
 
 # local
@@ -126,7 +126,7 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -165,7 +165,7 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=None,
         out=None,
         **kwargs,
-    ) -> ivy.Container:
+    ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
         arg_cont_idxs = ivy.nested_indices_where(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
@@ -1961,7 +1961,7 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
         ret
-             Container data in it's raw form.
+             Container data in its raw form.
 
         """
         return_item = dict()
