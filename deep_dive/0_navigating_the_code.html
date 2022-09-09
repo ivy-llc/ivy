@@ -54,6 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ivy-api">Ivy API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#backend-api">Backend API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#submodule-helper-functions">Submodule Helper Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-pinning">Version Pinning</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
@@ -459,6 +460,29 @@ where examples for each backend is shown below.</p>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="version-pinning">
+<h2>Version Pinning<a class="headerlink" href="#version-pinning" title="Permalink to this heading"></a></h2>
+<p>At any point in time, Ivy’s development will be predominantly focused around a
+particular version (and all prior versions) for each of the backend frameworks.
+These are the pinned versions shown in the
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/master/requirements/optional.txt">optional.txt</a>
+file.</p>
+<p>At the time of pinning, these will be the most up-to-date versions for each framework,
+but new releases of the backend frameworks will then of course be made and there will
+sometimes be a short period of time in which we are working towards the next Ivy
+release, and we opt to keep the repo pinned to the older version until the next release
+is out. This helps to prevent our work growing in an unbounded manner, as we work
+towards getting all tests passing and everything in good shape before making the release.
+If we always pulled the latest version of every framework into master, we might end up
+constantly battling new subtle bugs, without knowing whether the bugs come from the
+change in version or our own incremental changes to the code. Therefore, when working
+towards an Ivy release, keeping the backends temporarily pinned essentially ensures that
+our development target remains fixed for this period of time.</p>
+<p>As an example, at the time of writing the latest version of PyTorch is <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code>,
+whereas Ivy is pinned to version <code class="code docutils literal notranslate"><span class="pre">1.11.0</span></code>.
+Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not
+include any arguments or behaviours which are exclusive to PyTorch version <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code>.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for how to navigate the Ivy codebase.</p>
 <p>If you’re ever unsure of how best to proceed,
