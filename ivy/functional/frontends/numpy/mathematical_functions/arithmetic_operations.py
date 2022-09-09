@@ -23,9 +23,6 @@ def add(
     return ret
 
 
-add.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def subtract(
     x1,
     x2,
@@ -45,9 +42,6 @@ def subtract(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-subtract.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def divide(
@@ -92,11 +86,15 @@ def multiply(
     return ret
 
 
-multiply.unsupported_dtypes = {"torch": ("float16",)}
+def vdot(
+    a,
+    b,
+    /,
+):
+    return ivy.multiply(a, b).sum()
 
 
-# square
-def square(
+def positive(
     x,
     /,
     out=None,
@@ -109,22 +107,26 @@ def square(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.square(x, out=out)
+    ret = ivy.positive(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
-square.unsupported_dtypes = {"torch": ("float16",)}
-
-
-def vdot(
-    a,
-    b,
-    /,
+def negative(
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
 ):
-    ret = ivy.multiply(a, b).sum()
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.negative(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-vdot.unsupported_dtypes = {"torch": ("float16",)}

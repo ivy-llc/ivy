@@ -18,6 +18,8 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_float_dtypes,
             num_arrays=num_arrays,
+            small_value_safety_factor=4.0,
+            large_value_safety_factor=20.0,
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
@@ -59,11 +61,10 @@ def test_unset_with_grads(grads):
 
 
 # variable
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
 def test_variable(
     *,
     dtype_and_x,
@@ -88,11 +89,10 @@ def test_variable(
 
 
 # is_variable
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
 def test_is_variable(
     *,
     dtype_and_x,
@@ -109,7 +109,7 @@ def test_is_variable(
         num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=instance_method,
+        instance_method=False,
         fw=fw,
         fn_name="is_variable",
         x=np.asarray(x, dtype=dtype),
@@ -117,11 +117,10 @@ def test_is_variable(
 
 
 # variable data
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
 def test_variable_data(dtype_and_x, native_array, container, instance_method, fw):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -139,12 +138,11 @@ def test_variable_data(dtype_and_x, native_array, container, instance_method, fw
 
 
 # stop_gradient
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    preserve_type=st.booleans(),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    preserve_type=st.booleans(),
+)
 def test_stop_gradient(
     dtype_and_x, preserve_type, with_out, native_array, container, instance_method, fw
 ):
@@ -165,18 +163,17 @@ def test_stop_gradient(
 
 
 # execute_with_gradients
+@handle_cmd_line_args
 @given(
     dtype_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         min_dim_size=1,
         min_value=0,
         max_value=100,
     ),
     retain_grads=st.booleans(),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_execute_with_gradients(
     *,
     dtype_and_xs,
@@ -188,7 +185,7 @@ def test_execute_with_gradients(
         array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
         array_vals = ivy.multi_index_nest(xs, array_idxs)
         final_array = ivy.stack(array_vals)
-        ret = ivy.sum(final_array)
+        ret = ivy.mean(final_array)
         return ret
 
     dtype, xs = dtype_and_xs
@@ -203,6 +200,8 @@ def test_execute_with_gradients(
         fw=fw,
         fn_name="execute_with_gradients",
         func=func,
+        rtol_=1e-2,
+        atol_=1e-2,
         xs=np.asarray(xs, dtype=dtype),
         retain_grads=retain_grads,
     )
@@ -297,6 +296,7 @@ def test_grad(x, dtype, func, fw):
 
 
 # adam_step
+@handle_cmd_line_args
 @given(
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),
     step=helpers.ints(min_value=1, max_value=100),
@@ -305,9 +305,7 @@ def test_grad(x, dtype, func, fw):
         min_size=3,
         max_size=3,
     ),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_adam_step(
     *,
     dtype_n_dcdw_n_mw_n_vw,
@@ -347,12 +345,11 @@ def test_adam_step(
 
 
 # optimizer_update
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_effgrad_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_optimizer_update(
     dtype_n_ws_n_effgrad_n_lr,
     stop_gradients,
@@ -382,12 +379,11 @@ def test_optimizer_update(
 
 
 # gradient_descent_update
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     stop_gradients=st.booleans(),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_gradient_descent_update(
     *,
     dtype_n_ws_n_dcdw_n_lr,
@@ -418,13 +414,12 @@ def test_gradient_descent_update(
 
 
 # lars_update
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
     decay_lambda=helpers.floats(min_value=0, max_value=1, exclude_min=True),
     stop_gradients=st.booleans(),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_lars_update(
     *,
     dtype_n_ws_n_dcdw_n_lr,
@@ -457,6 +452,7 @@ def test_lars_update(
 
 
 # adam_update
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=st.integers(min_value=1, max_value=100),
@@ -466,9 +462,7 @@ def test_lars_update(
         max_size=3,
     ),
     stopgrad=st.booleans(),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_adam_update(
     *,
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr,
@@ -509,6 +503,7 @@ def test_adam_update(
 
 
 # lamb_update
+@handle_cmd_line_args
 @given(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=helpers.ints(min_value=1, max_value=100),
@@ -521,9 +516,7 @@ def test_adam_update(
         helpers.ints(min_value=1), st.floats(min_value=0, exclude_min=True, width=16)
     ),
     stopgrad=st.booleans(),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_lamb_update(
     *,
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr,

@@ -5,3 +5,4 @@ from . import norms_and_other_numbers
 from .norms_and_other_numbers import *
 
 from . import linalg
+from .linalg import *

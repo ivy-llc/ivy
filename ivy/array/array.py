@@ -101,7 +101,7 @@ class Array(
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
-        self.framework_str = ivy.current_backend_str()
+        self.backend = ivy.current_backend_str()
         self._is_variable = ivy.is_variable(self._data)
 
     # Properties #
@@ -248,9 +248,7 @@ class Array(
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(
-                query, val, tensor=self._data, reduction="replace"
-            )._data
+            self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 
     @_native_wrapper
@@ -265,7 +263,7 @@ class Array(
         data_dict["data"] = self.data
 
         # also store the local ivy framework that created this array
-        data_dict["framework_str"] = self.framework_str
+        data_dict["backend"] = self.backend
         data_dict["device_str"] = ivy.as_ivy_dev(self.device)
 
         return data_dict
@@ -276,7 +274,7 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        ivy.set_backend(state["framework_str"])
+        ivy.set_backend(state["backend"])
         ivy_array = ivy.array(state["data"])
         ivy.unset_backend()
 
@@ -578,10 +576,79 @@ class Array(
 
     @_native_wrapper
     def __rshift__(self, other):
+        """
+        ivy.Array special method variant of ivy.bitwise_right_shift. This method
+        simply wraps the function, and so the docstring for ivy.bitwise_right_shift
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have an integer data type.
+        other
+            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            Should have an integer data type. Each element must be greater than or equal
+            to ``0``.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have
+            a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instances only:
+
+        >>> a = ivy.array([2, 3, 4])
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = a >> b
+        >>> print(y)
+        ivy.array([2, 1, 1])
+
+        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+        >>> a = ivy.array([5, 10, 64])
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([3]))
+        >>> y = a >> b
+        >>> print(y)
+        {
+            a: ivy.array([5, 5, 16]),
+            b: ivy.array([0, 1, 8])
+        }
+        """
         return ivy.bitwise_right_shift(self._data, other)
 
     @_native_wrapper
     def __rrshift__(self, other):
+        """
+        ivy.Array reverse special method variant of ivy.bitwise_right_shift.
+        This method simply wraps the function, and so the docstring for
+        ivy.bitwise_right_shift also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have an integer data type.
+        other
+            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            Should have an integer data type. Each element must be greater than or equal
+            to ``0``.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have
+            a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = 32
+        >>> b = ivy.array([0, 1, 2])
+        >>> y = a >> b
+        >>> print(y)
+        ivy.array([32, 16,  8])
+        """
         return ivy.bitwise_right_shift(other, self._data)
 
     # noinspection PyDefaultArgument

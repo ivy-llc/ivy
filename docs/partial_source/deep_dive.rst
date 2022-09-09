@@ -23,35 +23,35 @@ We're excited for you to get involved!  🦾
 | (b) :ref:`Function Types`
 | Primary, compositional, mixed and nestable functions  🧮
 |
-| (c) :ref:`Backend Setting`
+| (c) :ref:`Superset Behaviour`
+| Ivy goes for the superset when unifyin the backend functions ⭕
+|
+| (d) :ref:`Backend Setting`
 | How the backend is set, and what this means for each function type ⚙️
 |
-| (d) :ref:`Function Wrapping`
+| (e) :ref:`Function Wrapping`
 | How functions are dynamically wrapped at runtime  🎁
 |
-| (e) :ref:`Arrays`
+| (f) :ref:`Arrays`
 | Different types of arrays, and how they're handled 🔢
 |
-| (f) :ref:`Containers`
+| (g) :ref:`Containers`
 | What the :code:`ivy.Container` does  🗂️
 |
-| (g) :ref:`Data Types`
+| (h) :ref:`Data Types`
 | How functions infer the correct data type  💾
 |
-| (h) :ref:`Devices`
+| (i) :ref:`Devices`
 | How functions infer the correct device  💽
 |
-| (i) :ref:`Inplace Updates`
+| (j) :ref:`Inplace Updates`
 | How the :code:`out` argument is used to specify the output target  🎯
 |
-| (j) :ref:`Formatting`
+| (k) :ref:`Formatting`
 | How the code is automatically formatted 📋
 |
-| (k) :ref:`Function Arguments`
+| (l) :ref:`Function Arguments`
 | How to add the correct function arguments 📑
-|
-| (l) :ref:`Submodule Helper Functions`
-| When to create submodule-specific helper functions, and how to use them 🔧
 |
 | (m) :ref:`Docstrings`
 | How to properly write docstrings 📄
@@ -78,16 +78,16 @@ We're excited for you to get involved!  🦾
 
    deep_dive/0_navigating_the_code.rst
    deep_dive/1_function_types.rst
-   deep_dive/2_backend_setting.rst
-   deep_dive/3_function_wrapping.rst
-   deep_dive/4_arrays.rst
-   deep_dive/5_containers.rst
-   deep_dive/6_data_types.rst
-   deep_dive/7_devices.rst
-   deep_dive/8_inplace_updates.rst
-   deep_dive/9_formatting.rst
-   deep_dive/10_function_arguments.rst
-   deep_dive/11_submodule_helpers.rst
+   deep_dive/2_superset_behaviour.rst
+   deep_dive/3_backend_setting.rst
+   deep_dive/4_function_wrapping.rst
+   deep_dive/5_arrays.rst
+   deep_dive/6_containers.rst
+   deep_dive/7_data_types.rst
+   deep_dive/8_devices.rst
+   deep_dive/9_inplace_updates.rst
+   deep_dive/10_formatting.rst
+   deep_dive/11_function_arguments.rst
    deep_dive/12_docstrings.rst
    deep_dive/13_docstring_examples.rst
    deep_dive/14_array_api_tests.rst

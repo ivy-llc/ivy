@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Union, Tuple
 
+import ivy
 import tensorflow as tf
 
 
@@ -27,8 +28,7 @@ def argmin(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
-    ret = tf.convert_to_tensor(ret, dtype=ret.dtype)
-    return ret
+    return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def nonzero(
@@ -46,4 +46,5 @@ def where(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.where(condition, x1, x2)
