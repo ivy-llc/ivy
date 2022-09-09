@@ -447,12 +447,10 @@ def test_torch_elu_(
         fn_name="ivy.functional.frontends.torch.celu"
     ),
     inplace=st.booleans(),
-    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
 )
 def test_torch_celu(
     dtype_and_input,
     inplace,
-    alpha,
     as_variable,
     num_positional_args,
     native_array,
@@ -469,6 +467,5 @@ def test_torch_celu(
         frontend="torch",
         fn_tree="nn.functional.celu",
         input=np.asarray(input, dtype=input_dtype),
-        alpha=alpha,
         inplace=inplace,
     )
