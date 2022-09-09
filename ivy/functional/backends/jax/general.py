@@ -117,7 +117,8 @@ def inplace_arrays_supported():
     return False
 
 
-inplace_variables_supported = lambda: False
+def inplace_variables_supported():
+    return False
 
 
 def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
@@ -383,13 +384,15 @@ def inplace_increment(
     return x
 
 
-def vmap(func: Callable,
-         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-         out_axes: Optional[int] = 0) -> Callable:
-    return ivy.to_native_arrays_and_back(jax.vmap(func,
-                                                  in_axes=in_axes,
-                                                  out_axes=out_axes))
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
+    return ivy.to_native_arrays_and_back(
+        jax.vmap(func, in_axes=in_axes, out_axes=out_axes)
+    )
 
 
-current_backend_str = lambda: "jax"
-current_backend_str.__name__ = "current_backend_str"
+def current_backend_str():
+    return "jax"
