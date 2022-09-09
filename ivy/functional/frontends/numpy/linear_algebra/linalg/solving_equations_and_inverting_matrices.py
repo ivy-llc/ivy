@@ -9,6 +9,7 @@ def solve(a, b):
 
 solve.unsupported_dtypes = ("float16",)
 
+
 # inv
 def inv(a):
     return ivy.inv(a)
