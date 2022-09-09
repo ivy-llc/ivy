@@ -1,10 +1,11 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
+from ivy.functional.ivy.creation import native_array
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, num_positional_args
 
 
 # noinspection DuplicatedCode
@@ -384,6 +385,7 @@ def test_torch_chunk(
     dim,
     as_variable,
     with_out,
+    fw,
     num_positional_args,
     native_array,
 
@@ -393,13 +395,13 @@ def test_torch_chunk(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=num_positional_args
         native_array_flags=native_array,
         fw=fw,
         frontend='torch',
         fn_tree='chunk',
         input = np.asarray(value,dtype=input_dtype),
+        chunks = np.random.randint(np.asarray(value))
         axis = dim, 
-        chunks = np.random.randint(np.asarray(value)),
         )
         
