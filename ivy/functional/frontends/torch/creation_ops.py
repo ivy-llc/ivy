@@ -20,9 +20,6 @@ def full(
     return ret
 
 
-full.unsupported_dtypes = ("float16",)
-
-
 def ones_like_v_0p4p0_and_above(
     input,
     *,

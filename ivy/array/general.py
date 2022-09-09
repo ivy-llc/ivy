@@ -155,7 +155,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.has_nans(self, include_infs)
 
-    def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
+    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
         this method with minimal changes.
@@ -188,7 +188,7 @@ class ArrayWithGeneral(abc.ABC):
                 [3]]), ivy.array([[2],
                 [4]])]
         """
-        return ivy.unstack(self._data, axis, keepdims)
+        return ivy.unstack(self._data, axis, keepdims=keepdims)
 
     def cumsum(
         self: ivy.Array,
@@ -615,6 +615,33 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
+    def supports_inplace_updates(self: ivy.Array) -> bool:
+        """
+        ivy.Array instance method variant of ivy.supports_inplace_updates. This method
+        simply wraps the function, and so the docstring for ivy.supports_inplace also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array whose elements' data type is to be checked.
+
+        Returns
+        -------
+        ret
+            Bool value depends on whether the currently active backend
+            framework supports in-place operations with argument's data type.
+
+        Examples
+        --------
+        With `ivy.Array` input and backend set as "tensorflow":
+        >>> x = ivy.array([1., 4.2, 2.2])
+        >>> ret = x.supports_inplace()
+        >>> print(ret)
+        False
+        """
+        return ivy.supports_inplace_updates(self)
+
     def inplace_decrement(
         self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
@@ -712,7 +739,7 @@ class ArrayWithGeneral(abc.ABC):
             An array with the vector norm downscaled to the max norm if needed.
 
         """
-        return ivy.clip_vector_norm(self, max_norm, p, out=out)
+        return ivy.clip_vector_norm(self, max_norm, p=p, out=out)
 
     def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray]) -> bool:
         """
@@ -817,34 +844,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.to_scalar(self)
-
-    def floormod(
-        self: ivy.Array,
-        x: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.floormod. This method simply wraps the
-        function, and so the docstring for ivy.floormod also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        x
-            input array for the denominator
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            An array of the same shape and type as x, with the elements floor modded.
-
-        """
-        return ivy.floormod(self, x, out=out)
 
     def fourier_encode(
         self: ivy.Array,
@@ -989,25 +988,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
 
-    def supports_inplace(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.supports_inplace. This method simply
-        wraps the function, and so the docstring for ivy.supports_inplace also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not inplace operations are supported for x.
-
-        """
-        return ivy.supports_inplace(self)
-
     def inplace_update(
         self: ivy.Array,
         val: Union[ivy.Array, ivy.NativeArray],
@@ -1041,21 +1021,35 @@ class ArrayWithGeneral(abc.ABC):
         self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.inplace_increment. This method simply
-        wraps the function, and so the docstring for ivy.inplace_increment also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.inplace_increment. This
+        method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input array to increment
+            The input array to be incremented by the defined value.
         val
-            The array to increment the variable with.
+            The value of increment.
 
         Returns
         -------
         ret
-            The array following the in-place increment.
+            The array following an in-place increment.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
+        >>> y = x.inplace_increment(1)
+        >>> print(y)
+        ivy.array([6.7, 5.3, 3.5, 2.9])
+
+        >>> x = ivy.asarray([4., 5., 6.])
+        >>> y = x.inplace_increment(2.5)
+        >>> print(y)
+        ivy.array([6.5, 7.5, 8.5])
 
         """
         return ivy.inplace_increment(self, val)
@@ -1063,8 +1057,9 @@ class ArrayWithGeneral(abc.ABC):
     def clip_matrix_norm(
         self: ivy.Array,
         max_norm: float,
-        p: float = 2.0,
+        /,
         *,
+        p: float = 2.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

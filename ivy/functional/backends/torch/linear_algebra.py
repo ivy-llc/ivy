@@ -62,7 +62,7 @@ def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 
 det.support_native_out = True
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def diagonal(
@@ -301,6 +301,11 @@ def tensordot(
     else:
         ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
     return ret
+
+
+# ToDo: re-add int32 support once (https://github.com/pytorch/pytorch/issues/84530)
+#  is fixed.
+tensordot.unsupported_dtypes = ("int32",)
 
 
 def trace(
