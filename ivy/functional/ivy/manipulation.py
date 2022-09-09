@@ -1262,7 +1262,7 @@ def chunk(
         A List of sub-arrays 
     
     Functional Examples :
-    ----------
+    -------------------
     With :code: 'ivy.Array' input:
     
     >>> x = ivy.NativeArray([1,2,3,4,5,6,7,8,9])
