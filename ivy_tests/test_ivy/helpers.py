@@ -43,6 +43,7 @@ cmd_line_args = (
     "instance_method",
     "test_gradients",
 )
+frontend_fw = None
 
 try:
     import tensorflow as tf
@@ -350,10 +351,18 @@ def var_fn(x, *, dtype=None, device=None):
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
 
 
+def get_current_frontend():
+    """Returns the current frontend framework, returns None if no frontend is set."""
+    return frontend_fw()
+
+
 @st.composite
 def get_dtypes(draw, kind, index=0, full=True, none=False):
     """
-    Draws valid dtypes based on the backend set on the stack
+    Draws a valid dtypes for the test function. For frontend tests,
+    it draws the data types from the intersection between backend
+    framework data types and frontend framework dtypes, otherwise,
+    draws it from backend framework data types.
 
     Parameters
     ----------
@@ -374,21 +383,31 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
     ret
         dtype string
     """
-    type_dict = {
-        "valid": ivy.valid_dtypes,
-        "numeric": ivy.valid_numeric_dtypes,
-        "float": ivy.valid_float_dtypes,
-        "integer": ivy.valid_int_dtypes,
-        "unsigned": ivy.valid_uint_dtypes,
-        "signed_integer": tuple(
-            set(ivy.valid_int_dtypes).difference(ivy.valid_uint_dtypes)
-        ),
-    }
+
+    def _get_type_dict(framework):
+        return {
+            "valid": framework.valid_dtypes,
+            "numeric": framework.valid_numeric_dtypes,
+            "float": framework.valid_float_dtypes,
+            "integer": framework.valid_int_dtypes,
+            "unsigned": framework.valid_uint_dtypes,
+            "signed_integer": tuple(
+                set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
+            ),
+        }
+
+    backend_dtypes = _get_type_dict(ivy)[kind]
+    if frontend_fw:
+        fw_dtypes = _get_type_dict(frontend_fw())[kind]
+        valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
+    else:
+        valid_dtypes = backend_dtypes
+
     if none:
-        return draw(st.sampled_from(type_dict[kind][index:] + (None,)))
+        return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
     if full:
-        return type_dict[kind][index:]
-    return draw(st.sampled_from(type_dict[kind][index:]))
+        return valid_dtypes[index:]
+    return draw(st.sampled_from(valid_dtypes[index:]))
 
 
 @st.composite
@@ -1800,9 +1819,6 @@ def test_frontend_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
-
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
     if test_unsupported:
@@ -3804,19 +3820,33 @@ def handle_cmd_line_args(test_fn):
     @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         gc.collect()
-        flag, fw_string = (False, "")
+        flag, backend_string = (False, "")
         # skip test if device is gpu and backend is numpy
         if "gpu" in device and ivy.current_backend_str() == "numpy":
             # Numpy does not support GPU
             pytest.skip()
         if not f:
             # randomly draw a backend if not set
-            fw_string = data.draw(st.sampled_from(FW_STRS))
-            f = TEST_BACKENDS[fw_string]()
+            backend_string = data.draw(st.sampled_from(FW_STRS))
+            f = TEST_BACKENDS[backend_string]()
         else:
             # use the one which is parametrized
             flag = True
 
+        global frontend_fw
+        # Infer the frontend
+        try:
+            # naming convention `test_framework_`
+            frontend_string = test_fn.__name__.split("_")[1]
+            if frontend_string in FW_STRS:
+                frontend_fw = TEST_BACKENDS[frontend_string]
+            else:  # Clear the global variable
+                frontend_fw = None
+        except IndexError:
+            raise RuntimeError(
+                "'{}' is not a valid test function, "
+                "a test function should start with 'test_'.".format(test_fn.__name__)
+            )
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
@@ -3826,7 +3856,7 @@ def handle_cmd_line_args(test_fn):
                         bool_val_flags(get_command_line_flags[param.name])
                     )
                 elif param.name == "fw":
-                    kwargs["fw"] = fw if flag else fw_string
+                    kwargs["fw"] = fw if flag else backend_string
                 elif param.name == "device":
                     kwargs["device"] = device
             return test_fn(*args, **kwargs)
