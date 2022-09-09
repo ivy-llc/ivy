@@ -320,13 +320,6 @@ def test_torch_diag(
 
     values = np.asarray(values)
 
-    if len(values.shape) == 2:
-        offset = min(offset, values.shape[1])
-        offset = max(offset, -values.shape[1])
-        # This is to avoid a bug in the real Torch function where it will crash
-        # with a bug where `alloc_cpu() seems to have been called with a negative
-        # number`.
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
