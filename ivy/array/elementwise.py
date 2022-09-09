@@ -2013,7 +2013,6 @@ class ArrayWithElementwise(abc.ABC):
         Returns
         -------
         ret
-            an array containing the element-wise results.
-            The returned array must have a data type of ``bool``.
+            an array containing the element-wise conversion from degrees to radians.
         """
         return ivy.deg2rad(self._data, out=out)
