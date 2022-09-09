@@ -435,16 +435,17 @@ def test_clip_vector_norm(
 @handle_cmd_line_args
 @given(
     x_n_dtype_axis=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_dtypes, min_num_dims=5, min_axis=1, max_axis=4
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=5,
+        min_axis=1,
+        max_axis=4,
     ),
     keepdims=st.booleans(),
-    num_positional_args=st.integers(0, 3),
 )
 def test_unstack(
     x_n_dtype_axis,
     keepdims,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -453,15 +454,15 @@ def test_unstack(
 ):
     # smoke test
     dtype, x, axis = x_n_dtype_axis
-    if axis >= len(ivy.array(x).shape):
-        axis = len(ivy.array(x).shape) - 1
+    if axis >= len(np.asarray(x, dtype=dtype).shape):
+        axis = len(np.asarray(x, dtype=dtype).shape) - 1
     if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
         return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -523,7 +524,6 @@ def test_unstack(
     x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
     with_out=st.booleans(),
     as_variable=st.booleans(),
-    num_positional_args=st.integers(0, 3),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -532,7 +532,6 @@ def test_indices_where(
     x,
     with_out,
     as_variable,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -543,8 +542,8 @@ def test_indices_where(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
+        with_out=with_out,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1556,11 +1555,16 @@ def test_all_equal(
 @handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=2
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_value=-10,
+        max_value=10,
     ),
-    max_norm=st.floats(),
+    max_norm=st.floats(min_value=0.137, max_value=1e05),
     p=st.sampled_from([1, 2, float("inf"), "fro", "nuc"]),
-    num_positional_args=helpers.num_positional_args(fn_name="clip_matrix_norm"),
 )
 def test_clip_matrix_norm(
     x,
@@ -1568,7 +1572,6 @@ def test_clip_matrix_norm(
     p,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1580,13 +1583,14 @@ def test_clip_matrix_norm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=2,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="clip_matrix_norm",
-        rtol_=1e-5,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         max_norm=max_norm,
         p=p,
