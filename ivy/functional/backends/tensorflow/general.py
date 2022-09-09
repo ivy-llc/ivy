@@ -36,6 +36,7 @@ def array_equal(
     x0: Union[tf.Tensor, tf.Variable],
     x1: Union[tf.Tensor, tf.Variable],
 ) -> bool:
+    x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
@@ -112,7 +113,8 @@ def inplace_arrays_supported():
     return False
 
 
-inplace_variables_supported = lambda: True
+def inplace_variables_supported():
+    return True
 
 
 def inplace_decrement(

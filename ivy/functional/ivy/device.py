@@ -492,7 +492,10 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 
 
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, process_specific: bool = False
+    device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+    *,
+    process_specific: bool = False,
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -502,13 +505,27 @@ def used_mem_on_dev(
     device
         The device string to convert to native device handle.
     process_specific
-        Whether the check the memory used by this python process alone. Default is
-        False.
+        Whether to check the memory used by this python process alone. Default is
+        False. Currently is only supported for cpu.
 
     Returns
     -------
     ret
         The used memory on the device in GB.
+
+    Examples
+    --------
+    >>> x = ivy.used_mem_on_dev("cpu", process_specific = False)
+    >>> print(x)
+    6.219563008
+
+    >>> x = ivy.used_mem_on_dev("cpu", process_specific = True)
+    >>> print(x)
+    0.902400346
+
+    >>> y = ivy.used_mem_on_dev("gpu:0", process_specific = False)
+    >>> print(y)
+    0.525205504
 
     """
     ivy.clear_mem_on_dev(device)
