@@ -82,11 +82,11 @@ def hardtanh(input, min_val=-1., max_val=1., inplace=False):
     if inplace:
         result = torch._C._nn.hardtanh_(input, min_val, max_val)
     else:
-        if input > max_val:
+        if ivy.all(ivy.greater(input,max_val)):
             result = max_val
-        elif input < min_val:
+        if ivy.all(ivy.less(input,min_val)):
             result = min_val
-        else:
+        if ivy.all(ivy.less_equal(input,max_val) and ivy.greater_equal(input,min_val)):
             result = input
 
     return result
