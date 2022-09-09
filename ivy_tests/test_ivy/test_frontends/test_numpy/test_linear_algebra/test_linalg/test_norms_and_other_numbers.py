@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
 
+
 @handle_cmd_line_args
 @given(
     dtype_values_axis=helpers.dtype_values_axis(
@@ -25,9 +26,16 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         fn_name="ivy.functional.frontends.numpy.linalg.norm"
     )
 )
-def test_numpy_norm(dtype_values_axis, keepdims, as_variable, native_array, num_positional_args, fw):
+def test_numpy_norm(
+    dtype_values_axis,
+    keepdims,
+    as_variable,
+    native_array,
+    num_positional_args,
+    fw
+):
     dtype, x, axis = dtype_values_axis
-    if len(np.shape(x))==1: axis=None
+    if len(np.shape(x)) == 1: axis=None
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
