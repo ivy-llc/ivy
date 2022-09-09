@@ -715,10 +715,15 @@ def minimum(
 
 minimum.support_native_out = True
 
-@_handle_0_dim_output
-def greater_equal(x1, x2, /, *, out: Optional[np.ndarray] = None):
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+def greater_equal(
+    x1: Union[float, np.ndarray],
+    x2: Union[float, np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     return np.greater_equal(x1, x2, out=out)
 
 
 greater_equal.support_native_out = True
+
