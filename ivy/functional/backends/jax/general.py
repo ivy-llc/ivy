@@ -117,7 +117,8 @@ def inplace_arrays_supported():
     return False
 
 
-inplace_variables_supported = lambda: False
+def inplace_variables_supported():
+    return False
 
 
 def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
