@@ -20,5 +20,8 @@ def native_sparse_array(
 
 
 def native_sparse_array_to_indices_values_and_shape(x):
-    logging.warning("Jax does not support sparse arrays natively, None is returned.")
+    logging.warning(
+        "Jax does not support sparse arrays natively, None is returned for \
+        indices, values and shape."
+    )
     return None, None, None
