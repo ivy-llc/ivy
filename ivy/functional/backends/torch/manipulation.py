@@ -280,22 +280,3 @@ def clip(
 
 clip.support_native_out = True
 clip.unsupported_dtypes = ("float16",)
-
-def chunk(
-    x: torch.Tensor,
-    /,
-    *,
-    chunks : int = None,
-    axis : int = 0,
-)-> List[torch.Tensor]:
-    if x.shape == ():
-        if chunks is not None and chunks != 1:
-            raise Exception(
-                'input array has no shape but chunks was specified as {}'.format(chunk)
-        return [x]
-            
-    if chunks is None :
-        chunks = 1
-    if isinstance(chunks, int): 
-        return torch.chunk(x, chunks, dim=axis)       
-    

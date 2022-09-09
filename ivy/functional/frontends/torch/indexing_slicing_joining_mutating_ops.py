@@ -20,7 +20,7 @@ def nonzero(input, *, out=None, as_tuple=False):
 
 
 def chunk(input, chunks, dim=0):
-    return ivy.chunk(input, chunks=chunks, axis=dim)
+    return ivy.split(input, num_or_size_splits=chunks, axis=dim, with_remainder=True)
     
 
 def permute(input, dims):
