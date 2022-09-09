@@ -138,9 +138,7 @@ def test_torch_binary_cross_entropy(
     true_dtype, true = dtype_and_true
     weight_dtype, weight = dtype_and_weight
 
-    assume(not (pred_dtype == "bfloat16"))
-    assume(not (true_dtype == "bfloat16"))
-    assume(not (weight_dtype == "bfloat16"))
+    assume("bfloat16" not in (pred_dtype, true_dtype, weight_dtype))
 
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype, true_dtype, weight_dtype],
