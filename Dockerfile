@@ -22,7 +22,7 @@ RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
     cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 -m pip install --user -e . && \
     cd ivy_tests/test_array_api && \
-    pip3 install --no-cache-dir -r requirements/requirements.txt
+    pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
 COPY requirements/requirements.txt /
