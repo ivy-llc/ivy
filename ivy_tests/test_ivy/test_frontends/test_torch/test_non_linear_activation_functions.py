@@ -69,7 +69,7 @@ def test_torch_sigmoid(
     ),
 )
 def test_torch_softmax(
-    dtype_x_and_axis
+    dtype_x_and_axis,
     as_variable,
     with_out,
     dtypes,
