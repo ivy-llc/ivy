@@ -81,6 +81,7 @@ def broadcast_to(
     return torch.broadcast_to(x, shape)
 
 
+
 broadcast_to.unsupported_dtypes = dtype_from_version({"1.11.0":("uint8", "uint16", "uint32", "uint64")},torch_version.split('+')[0])
 
 
@@ -170,8 +171,8 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
         )
 
 
-as_native_dtype.unsupported_dtypes = dtype_from_version({"1.11.0":("uint16"),},torch_version.split('+')[0])
 
+as_native_dtype.unsupported_dtypes = dtype_from_version({"1.11.0":("uint16"),},torch_version.split('+')[0])
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:
     if as_native:
