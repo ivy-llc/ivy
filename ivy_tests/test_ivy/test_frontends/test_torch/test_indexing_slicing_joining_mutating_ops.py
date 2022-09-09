@@ -54,10 +54,11 @@ def _array_idxes_n_dtype(draw, **kwargs):
         )
     )
     idxes = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=0, max_value=num_dims - 1),
-            min_size=num_dims,
+        st.lists(
+            helpers.ints(min_value=0, max_value=num_dims - 1),
+            min_size=num_dims, 
             max_size=num_dims,
+            unique=True
         )
     )
     return x, idxes, dtype
