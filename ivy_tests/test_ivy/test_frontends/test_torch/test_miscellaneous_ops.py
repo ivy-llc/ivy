@@ -254,11 +254,7 @@ def test_torch_diagonal(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
         max_dim_size=10,  # TODO: Increase these after ivy.asarray has been optimized.
         min_dim_size=1,
     ),
@@ -300,11 +296,7 @@ def test_torch_diagflat(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
         max_dim_size=4,  # TODO: Increase these after ivy.asarray has been optimized.
         min_dim_size=1,
         max_num_dims=2,
