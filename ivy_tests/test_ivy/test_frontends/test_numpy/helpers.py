@@ -52,6 +52,37 @@ def test_frontend_function(*args, where=None, **kwargs):
 
 
 # noinspection PyShadowingNames
+def _test_frontend_array_instance_method_ignoring_unitialized(*args, **kwargs):
+    where = kwargs["where"]
+    kwargs["test_values"] = False
+    values = helpers.test_frontend_array_instance_method(*args, **kwargs)
+    if values is None:
+        return
+    ret, frontend_ret = values
+    ret_flat = [
+        np.where(where, x, np.zeros_like(x))
+        for x in helpers.flatten_fw(ret=ret, fw=kwargs["fw"])
+    ]
+    frontend_ret_flat = [
+        np.where(where, x, np.zeros_like(x))
+        for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
+    ]
+    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
+
+
+# noinspection PyShadowingNames
+def test_frontend_array_instance_method(*args, where=None, **kwargs):
+    if not ivy.exists(where):
+        helpers.test_frontend_array_instance_method(*args, **kwargs)
+    else:
+        kwargs["where"] = where
+        if "out" in kwargs and kwargs["out"] is None:
+            _test_frontend_array_instance_method_ignoring_unitialized(*args, **kwargs)
+        else:
+            helpers.test_frontend_array_instance_method(*args, **kwargs)
+
+
+# noinspection PyShadowingNames
 def handle_where_and_array_bools(
     where, input_dtype=None, as_variable=None, native_array=None
 ):
@@ -59,9 +90,18 @@ def handle_where_and_array_bools(
     if where_array:
         where = np.asarray(where, dtype=np.bool_)
         if ivy.exists(input_dtype):
-            input_dtype += ["bool"]
+            try:
+                input_dtype += ["bool"]
+            except TypeError:
+                input_dtype = [input_dtype, "bool"]
         if ivy.exists(as_variable):
-            as_variable += [False]
+            try:
+                as_variable += [False]
+            except TypeError:
+                as_variable = [as_variable, False]
         if ivy.exists(native_array):
-            native_array += [False]
+            try:
+                native_array += [False]
+            except TypeError:
+                native_array = [native_array, False]
     return where
