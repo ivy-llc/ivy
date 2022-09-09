@@ -67,6 +67,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def is_native_array(
         self: ivy.Container,
+        /,
         *,
         exclusive: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -172,6 +173,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def is_ivy_array(
         self: ivy.Container,
+        /,
         *,
         exclusive: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -277,6 +279,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def is_array(
         self: ivy.Container,
+        /,
         *,
         exclusive: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -377,6 +380,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def is_ivy_container(
         self: ivy.Container,
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -425,12 +429,13 @@ class ContainerWithGeneral(ContainerBase):
     def static_clip_vector_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
+        /,
+        *,
         p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -483,23 +488,24 @@ class ContainerWithGeneral(ContainerBase):
             "clip_vector_norm",
             x,
             max_norm,
+            p=p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            p=p,
             out=out,
         )
 
     def clip_vector_norm(
         self: ivy.Container,
         max_norm: float,
+        /,
+        *,
         p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -551,11 +557,11 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_clip_vector_norm(
             self,
             max_norm,
+            p=p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            p=p,
             out=out,
         )
 
@@ -563,11 +569,12 @@ class ContainerWithGeneral(ContainerBase):
     def static_inplace_update(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -620,11 +627,12 @@ class ContainerWithGeneral(ContainerBase):
     def inplace_update(
         self: ivy.Container,
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -672,6 +680,8 @@ class ContainerWithGeneral(ContainerBase):
     def static_inplace_decrement(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -749,6 +759,8 @@ class ContainerWithGeneral(ContainerBase):
     def inplace_decrement(
         self: ivy.Container,
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -809,6 +821,8 @@ class ContainerWithGeneral(ContainerBase):
     def static_inplace_increment(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -886,6 +900,8 @@ class ContainerWithGeneral(ContainerBase):
     def inplace_increment(
         self: ivy.Container,
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1120,6 +1136,8 @@ class ContainerWithGeneral(ContainerBase):
     def static_all_equal(
         x1: Iterable[Any],
         x2: Iterable[Any],
+        /,
+        *,
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1198,6 +1216,8 @@ class ContainerWithGeneral(ContainerBase):
     def all_equal(
         self: ivy.Container,
         x2: Iterable[Any],
+        /,
+        *,
         equality_matrix: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1285,17 +1305,19 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_all_equal(
             self,
             x2,
-            equality_matrix,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            equality_matrix=equality_matrix,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
     def static_unstack(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: int,
+        /,
+        *,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1382,6 +1404,8 @@ class ContainerWithGeneral(ContainerBase):
     def unstack(
         self: ivy.Container,
         axis: int,
+        /,
+        *,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1439,11 +1463,11 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_unstack(
             self,
             axis,
-            keepdims,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -2046,12 +2070,13 @@ class ContainerWithGeneral(ContainerBase):
     def static_gather(
         params: ivy.Container,
         indices: ivy.Container,
+        /,
+        *,
         axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """Perform einops rearrange operation on each sub array in the container.
@@ -2084,7 +2109,7 @@ class ContainerWithGeneral(ContainerBase):
             "gather",
             params,
             indices,
-            axis,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2095,12 +2120,13 @@ class ContainerWithGeneral(ContainerBase):
     def gather(
         self: ivy.Container,
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2138,11 +2164,11 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_gather(
             self,
             indices,
-            axis,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -2199,7 +2225,7 @@ class ContainerWithGeneral(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "has_nans",
             x,
-            include_infs,
+            include_infs=include_infs,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2268,13 +2294,14 @@ class ContainerWithGeneral(ContainerBase):
     def static_scatter_nd(
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        /,
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,        
+        *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2353,8 +2380,8 @@ class ContainerWithGeneral(ContainerBase):
             "scatter_nd",
             indices,
             updates,
-            shape,
-            reduction,
+            shape=shape,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2365,13 +2392,14 @@ class ContainerWithGeneral(ContainerBase):
     def scatter_nd(
         self: ivy.Container,
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2446,12 +2474,12 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_scatter_nd(
             self,
             updates,
-            shape,
-            reduction,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            shape=shape,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -2459,13 +2487,14 @@ class ContainerWithGeneral(ContainerBase):
     def static_scatter_flat(
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         size: Optional[int] = None,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2519,13 +2548,14 @@ class ContainerWithGeneral(ContainerBase):
     def scatter_flat(
         self: ivy.Container,
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         size: Optional[int] = None,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2567,12 +2597,12 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_scatter_flat(
             self,
             updates,
-            size,
-            reduction,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            size=size,
+            reduction=reduction,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -2580,11 +2610,12 @@ class ContainerWithGeneral(ContainerBase):
     def static_gather_nd(
         params: ivy.Container,
         indices: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """Gather slices from all container params into a arrays with shape specified by
@@ -2624,11 +2655,12 @@ class ContainerWithGeneral(ContainerBase):
     def gather_nd(
         self: ivy.Container,
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2687,11 +2719,12 @@ class ContainerWithGeneral(ContainerBase):
         x: ivy.Container,
         pattern: str,
         reduction: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -2758,11 +2791,12 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         pattern: str,
         reduction: Union[str, Callable],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -2827,10 +2861,10 @@ class ContainerWithGeneral(ContainerBase):
             self,
             pattern,
             reduction,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
             **axes_lengths,
         )
@@ -2839,11 +2873,12 @@ class ContainerWithGeneral(ContainerBase):
     def static_einops_repeat(
         x: ivy.Container,
         pattern: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -2961,10 +2996,10 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_einops_repeat(
             self,
             pattern,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
             **axes_lengths,
         )
@@ -3285,6 +3320,8 @@ class ContainerWithGeneral(ContainerBase):
     @staticmethod
     def static_to_list(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -3326,6 +3363,8 @@ class ContainerWithGeneral(ContainerBase):
 
     def to_list(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -3368,6 +3407,8 @@ class ContainerWithGeneral(ContainerBase):
     def static_stable_divide(
         numerator: ivy.Container,
         denominator: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
         min_denominator: Union[
             Number, ivy.Array, ivy.NativeArray, ivy.Container
         ] = None,
@@ -3469,6 +3510,8 @@ class ContainerWithGeneral(ContainerBase):
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         min_denominator: Union[
             Number, ivy.Array, ivy.NativeArray, ivy.Container
         ] = None,
@@ -3545,7 +3588,7 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_stable_divide(
             self,
             denominator,
-            min_denominator,
+            min_denominator=min_denominator,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -3660,11 +3703,12 @@ class ContainerWithGeneral(ContainerBase):
     def static_einops_rearrange(
         x: ivy.Container,
         pattern: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -3752,10 +3796,10 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_einops_rearrange(
             self,
             pattern,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
             **axes_lengths,
         )
@@ -3763,6 +3807,7 @@ class ContainerWithGeneral(ContainerBase):
     @staticmethod
     def static_indices_where(
         x: ivy.Container,
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -3807,6 +3852,7 @@ class ContainerWithGeneral(ContainerBase):
 
     def indices_where(
         self: ivy.Container,
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -3952,12 +3998,13 @@ class ContainerWithGeneral(ContainerBase):
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
+        /,
+        *,
         p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -4010,7 +4057,7 @@ class ContainerWithGeneral(ContainerBase):
             "clip_matrix_norm",
             x,
             max_norm,
-            p,
+            p=p,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -4021,12 +4068,13 @@ class ContainerWithGeneral(ContainerBase):
     def clip_matrix_norm(
         self: ivy.Container,
         max_norm: float,
+        /,
+        *,
         p: float = 2.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -4078,10 +4126,10 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_clip_matrix_norm(
             self,
             max_norm,
-            p,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            p=p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )

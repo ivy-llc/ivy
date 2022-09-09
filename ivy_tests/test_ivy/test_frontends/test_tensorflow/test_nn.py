@@ -408,7 +408,7 @@ def test_gelu(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype] * 2,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -418,4 +418,173 @@ def test_gelu(
         fn_tree="nn.gelu",
         features=np.asarray(x, dtype=input_dtype),
         approximate=approximate,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv2d"
+    ),
+    native_array=st.booleans(),
+)
+def test_conv2d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv2d",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        filters=np.asarray(filters, dtype=input_dtype[1]),
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+        transpose=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv2d_transpose"
+    ),
+    native_array=st.booleans(),
+)
+def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+    (
+        input_dtype,
+        x,
+        filters,
+        dilation,
+        data_format,
+        stride,
+        padding,
+        output_shape,
+    ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv2d_transpose",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        filters=np.asarray(filters, dtype=input_dtype[1]),
+        output_shape=output_shape,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["SAME"]),
+        type="3d",
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv3d"
+    ),
+    native_array=st.booleans(),
+)
+def test_conv3d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    x = np.asarray(x, dtype=input_dtype[0])
+    filters = np.asarray(filters, dtype=input_dtype[1])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv3d",
+        input=x,
+        filters=filters.reshape(filters.shape[:-2] + x.shape[-1] + filters.shape[-1]),
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["SAME"]),
+        type="3d",
+        transpose=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv3d_transpose"
+    ),
+    native_array=st.booleans(),
+)
+def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+    (
+        input_dtype,
+        x,
+        filters,
+        dilation,
+        data_format,
+        stride,
+        padding,
+        output_shape,
+    ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    x = np.asarray(x, dtype=input_dtype[0])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv3d_transpose",
+        input=x,
+        filters=np.asarray(filters, dtype=input_dtype[1]).reshape(x.shape),
+        output_shape=output_shape,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
     )
