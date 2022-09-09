@@ -452,9 +452,11 @@ def test_mean_absolute_percentage_error(
         dtype=ivy.float16, shape=(2, 5), min_value=-1, max_value=1
     ),
     y_pred=helpers.array_values(dtype=ivy.float16, shape=(2, 5)),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.hinge"
     ),
+    native_array=st.booleans(),
 )
 def test_hinge(y_true, y_pred, as_variable, num_positional_args, native_array, fw):
     helpers.test_frontend_function(
@@ -478,9 +480,11 @@ def test_hinge(y_true, y_pred, as_variable, num_positional_args, native_array, f
         dtype=ivy.float16, shape=(2, 5), min_value=-1, max_value=1
     ),
     y_pred=helpers.array_values(dtype=ivy.float16, shape=(2, 5)),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.squared_hinge"
     ),
+    native_array=st.booleans(),
 )
 def test_squared_hinge(
     y_true, y_pred, as_variable, num_positional_args, native_array, fw
