@@ -161,6 +161,7 @@
 <li class="toctree-l2"><a class="reference internal" href="array_methods/einops_repeat.html">einops_repeat array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/to_numpy.html">to_numpy array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/to_list.html">to_list array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_methods/supports_inplace.html">supports_inplace array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/inplace_decrement.html">inplace_decrement array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/stable_divide.html">stable_divide array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/clip_vector_norm.html">clip_vector_norm array</a></li>
@@ -174,7 +175,6 @@
 <li class="toctree-l2"><a class="reference internal" href="array_methods/exists.html">exists array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/default.html">default array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/stable_pow.html">stable_pow array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array_methods/supports_inplace.html">supports_inplace array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/inplace_update.html">inplace_update array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/inplace_increment.html">inplace_increment array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_methods/clip_matrix_norm.html">clip_matrix_norm array</a></li>
@@ -5717,15 +5717,22 @@ wraps the function, and so the docstring for ivy.supports_inplace also applies
 to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – input array</p>
+<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – The input array whose elements’ data type is to be checked.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Boolean, whether or not inplace operations are supported for x.</p>
+<dd class="field-odd"><p><em>ret</em> – Bool value depends on whether the currently active backend
+framework supports in-place operations with argument’s data type.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <cite>ivy.Array</cite> input and backend set as “tensorflow”:
+&gt;&gt;&gt; x = ivy.array([1., 4.2, 2.2])
+&gt;&gt;&gt; ret = x.supports_inplace()
+&gt;&gt;&gt; print(ret)
+False</p>
 </dd></dl>
 
 <dl class="py function">

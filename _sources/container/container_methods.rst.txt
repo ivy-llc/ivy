@@ -269,6 +269,8 @@ Container methods
    container_methods/one_hot.rst
    container_methods/static_clip_matrix_norm.rst
    container_methods/clip_matrix_norm.rst
+   container_methods/static_supports_inplace.rst
+   container_methods/supports_inplace.rst
    container_methods/static_variable.rst
    container_methods/variable.rst
    container_methods/static_is_variable.rst

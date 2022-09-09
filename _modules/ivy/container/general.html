@@ -184,7 +184,7 @@
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 
-<span class="c1"># ToDo: implement all methods here as public instance methods</span>
+<span class="c1"># ToDo: implement all methods here as public instance methods </span>
 
 
 <span class="c1"># noinspection PyMissingConstructor</span>
@@ -4310,6 +4310,148 @@
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithGeneral.static_supports_inplace"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_supports_inplace">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_supports_inplace</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container static method variant of ivy.supports_inplace. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.supports_inplace</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            An ivy.Container.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to.</span>
+<span class="sd">            Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An ivy.Container instance of bool values.</span>
+<span class="sd">            True if nodes of x support in-place operations. False otherwise.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If a node(s) of the container isn&#39;t a class instance of ivy.Variable,</span>
+<span class="sd">            ivy.Array, or ivy.NativeArray, an exception will be raised.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With `ivy.Container` input and backend set as &#39;numpy&#39;:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))</span>
+<span class="sd">        &gt;&gt;&gt; ret = ivy.Container.static_supports_inplace(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(ret)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With `ivy.Container` input and backend set as &#39;tensorflow&#39;:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\</span>
+<span class="sd">                              b=ivy.array([0., 5.5, -8]))</span>
+<span class="sd">        &gt;&gt;&gt; ret = ivy.Container.static_supports_inplace(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(ret)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: false</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="s2">&quot;supports_inplace&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithGeneral.supports_inplace"><a class="viewcode-back" href="../../../container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.supports_inplace">[docs]</a>    <span class="k">def</span> <span class="nf">supports_inplace</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.Container.static_supports_inplace.</span>
+<span class="sd">        This method simply wraps the static function, and so the docstring for</span>
+<span class="sd">        the static variant also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            An ivy.Container whose elements are data types supported by Ivy.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to.</span>
+<span class="sd">            Default is None.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An ivy.Container instance of bool values.</span>
+<span class="sd">            True if nodes of the Container support in-place operations. False otherwise.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With an `ivy.Container` instance and backend set as &#39;numpy&#39;:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))</span>
+<span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace()</span>
+<span class="sd">        &gt;&gt;&gt; print(ret)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With an `ivy.Container` instance and backend set as &#39;tensorflow&#39;:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\</span>
+<span class="sd">                              b=ivy.array([0., 5.5, -8]))</span>
+<span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace()</span>
+<span class="sd">        &gt;&gt;&gt; print(ret)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerWithGeneral</span><span class="o">.</span><span class="n">static_supports_inplace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span>
         <span class="p">)</span></div></div>
 </pre></div>
 
