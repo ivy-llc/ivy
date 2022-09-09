@@ -1,0 +1,73 @@
+name: test-nn-ivy-manual
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+jobs:
+   run-nightly-tests:
+     strategy:
+       matrix:
+         backends :  [numpy, torch, jax, tensorflow]
+         submodules: [test_activations, test_layers, test_losses, test_norms]
+     continue-on-error: true
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout 🛎️Ivy
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+
+       - name: Download artifact
+         uses: dawidd6/action-download-artifact@v2
+         with:
+           workflow: test-ivy-nn-manual.yml
+           workflow_conclusion: completed
+           name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
+           path: |
+             ivy/.hypothesis/
+         continue-on-error: true
+
+       - name: Unzip Hypothesis Examples
+         id: unzip
+         run: |
+           cd ivy/.hypothesis
+           unzip examples.zip
+           rm examples.zip
+         continue-on-error: true
+
+       - name: Create Hypothesis Directory
+         if: steps.unzip.outcome != 'success'
+         run: |
+           cd ivy
+           mkdir -p .hypothesis
+           cd .hypothesis
+           mkdir -p examples
+         continue-on-error: true
+
+       - name: Run Functional-NN Tests
+         id: tests
+         run: |
+           cd ivy
+           ./test_ivy_nn.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+         continue-on-error: true
+
+       - name: Zip Hypothesis Examples
+         run: |
+           cd ivy/.hypothesis
+           zip -r examples.zip examples
+         continue-on-error: true
+
+       - name: Upload hypothesis
+         uses: actions/upload-artifact@v3
+         with:
+           name: hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip
+           path: |
+             ivy/.hypothesis/examples.zip
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1

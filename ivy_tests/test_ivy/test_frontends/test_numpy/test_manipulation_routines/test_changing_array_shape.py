@@ -56,5 +56,5 @@ def test_numpy_reshape(
         frontend="numpy",
         fn_tree="reshape",
         x=x,
-        shape=shape
+        shape=shape,
     )
