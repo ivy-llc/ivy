@@ -1,8 +1,12 @@
 # flake8: noqa
+ tan-for-frontends
 tan-for-frontends
 from . import mathematical_functions
 from .mathematical_functions import *
 # flake8: noqa
+from . import tensor
+from .tensor import Tensor
+master
 from . import activations
 from .activations import *
 from . import layers

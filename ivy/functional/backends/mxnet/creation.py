@@ -24,8 +24,7 @@ def _linspace(start, stop, num, cont):
     increments = increment_tiled * mx.nd.array(
         mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont
     )
-    ret = mx.nd.concat(start, start + increments, dim=0)
-    return ret
+    return mx.nd.concat(start, start + increments, dim=0)
 
 
 def arange(
@@ -178,6 +177,7 @@ def ones(
 
 def ones_like(
     x: mx.nd.NDArray,
+    /,
     *,
     dtype: type,
     device: mx.context.Context,
@@ -205,6 +205,8 @@ def zeros(
 
 def zeros_like(
     x: mx.nd.NDArray,
+    /,
+    *,
     dtype: Optional[type] = None,
     device: Optional[mx.context.Context] = None,
 ) -> mx.nd.NDArray:

@@ -36,7 +36,7 @@ def random_uniform(
     RNG, rng_input = jax.random.split(RNG)
     return to_device(
         jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
-        device=device,
+        device,
     )
 
 
@@ -56,7 +56,7 @@ def random_normal(
     return (
         to_device(
             jax.random.normal(rng_input, shape, dtype=dtype),
-            device=device,
+            device,
         )
         * std
         + mean
@@ -98,7 +98,7 @@ def multinomial(
     samples_flat = jnp.stack(samples_stack)
     return to_device(
         jnp.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]),
-        device=device,
+        device,
     )
 
 
@@ -119,9 +119,7 @@ def randint(
     shape = _check_bounds_and_get_shape(low, high, shape)
     global RNG
     RNG, rng_input = jax.random.split(RNG)
-    return to_device(
-        jax.random.randint(rng_input, shape, low, high, dtype), device=device
-    )
+    return to_device(jax.random.randint(rng_input, shape, low, high, dtype), device)
 
 
 def seed(*, seed_value: int = 0) -> None:

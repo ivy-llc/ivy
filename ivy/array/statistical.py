@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import abc
 
 # local
@@ -11,37 +11,118 @@ import ivy
 class ArrayWithStatistical(abc.ABC):
     def min(
         self: ivy.Array,
+        /,
+        *,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.min(self._data, axis, keepdims, out=out)
+        return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def max(
         self: ivy.Array,
+        /,
+        *,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.max(self._data, axis, keepdims, out=out)
+        return ivy.max(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def mean(
         self: ivy.Array,
-        axis: Union[int, Tuple[int]] = None,
-        keepdims: bool = False,
+        /,
         *,
+        axis: Union[int, Sequence[int]] = None,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.mean(self._data, axis, keepdims, out=out)
+        """ivy.Array instance method variant of ivy.mean. This method simply
+        wraps the function, and so the docstring for ivy.mean also applies
+        to this method with minimal changes.
+
+        **Special Cases**
+
+        Let ``N`` equal the number of elements over which to compute the
+        arithmetic mean.
+        -   If ``N`` is ``0``, the arithmetic mean is ``NaN``.
+        -   If ``x_i`` is ``NaN``, the arithmetic mean is ``NaN`` (i.e., ``NaN``
+            values propagate).
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        axis
+            axis or axes along which arithmetic means must be computed. By default,
+            the mean must be computed over the entire array. If a Sequence of
+            integers, arithmetic means must be computed over multiple axes.
+            Default: ``None``.
+        keepdims
+            bool, if ``True``, the reduced axes (dimensions) must be included in the
+            result as singleton dimensions, and, accordingly, the result must be
+            compatible with the input array (see :ref:`broadcasting`). Otherwise,
+            if ``False``, the reduced axes (dimensions) must not be included in
+            the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            array, if the arithmetic mean was computed over the entire array, a
+            zero-dimensional array containing the arithmetic mean; otherwise, a
+            non-zero-dimensional array containing the arithmetic means.
+            The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([3., 4., 5.])
+        >>> y = x.mean()
+        >>> print(y)
+        ivy.array(4.)
+
+        >>> x = ivy.array([-1, 0, 1])
+        >>> y = ivy.mean(x)
+        >>> print(y)
+        ivy.array(0.)
+
+        >>> x = ivy.array([0.1, 1.1, 2.1])
+        >>> y = ivy.array(0.)
+        >>> x.mean(out=y)
+        >>> print(y)
+        ivy.array(1.1)
+
+        >>> x = ivy.array([1, 2, 3, 0, -1])
+        >>> y = ivy.array(0.)
+        >>> ivy.mean(x, out=y)
+        >>> print(y)
+        ivy.array(0.)
+
+        >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
+        >>> y = ivy.array([0., 0., 0.])
+        >>> x.mean(axis=0, out=y)
+        >>> print(y)
+        ivy.array([-0.25,  1.05,  2.1])
+
+        >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
+        >>> y = ivy.array([0., 0.])
+        >>> ivy.mean(x, axis=1, out=y)
+        >>> print(y)
+        ivy.array([1., 4.])
+
+        """
+        return ivy.mean(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def var(
         self: ivy.Array,
+        /,
+        *,
         axis: Union[int, Tuple[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -96,19 +177,22 @@ class ArrayWithStatistical(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[0.0, 1.0, 2.0], \
-        [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])
+                           [3.0, 4.0, 5.0], \
+                           [6.0, 7.0, 8.0]])
         >>> y = x.var()
         >>> print(y)
         ivy.array(6.6666665)
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], \
-        [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0], \
+                           [3.0, 4.0, 5.0], \
+                           [6.0, 7.0, .08]])
         >>> y = x.var(axis=0)
         >>> print(y)
-        ivy.array([6. , 6. , 4.1])
+        ivy.array([6., 6., 4.1])
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], \
-        [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0], \
+                           [3.0, 4.0, 5.0], \
+                           [6.0, 7.0, .08]])
         >>> y = ivy.array([0., 0., 0.])
         >>> x.var(axis=1, out=y)
         >>> print(y)
@@ -116,18 +200,15 @@ class ArrayWithStatistical(abc.ABC):
 
         """
         return ivy.var(
-            self._data,
-            axis=axis,
-            correction=correction,
-            keepdims=keepdims,
-            out=out
+            self._data, axis=axis, correction=correction, keepdims=keepdims, out=out
         )
 
     def prod(
         self: ivy.Array,
+        /,
+        *,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
-        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -135,9 +216,10 @@ class ArrayWithStatistical(abc.ABC):
 
     def sum(
         self: ivy.Array,
+        /,
+        *,
         axis: Union[int, Tuple[int]] = None,
         keepdims: bool = False,
-        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -145,13 +227,14 @@ class ArrayWithStatistical(abc.ABC):
 
     def std(
         self: ivy.Array,
+        /,
+        *,
         axis: Union[int, Tuple[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.std(self._data, axis, correction, keepdims, out=out)
+        return ivy.std(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def einsum(
         self: ivy.Array,
