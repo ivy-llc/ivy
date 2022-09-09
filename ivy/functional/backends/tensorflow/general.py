@@ -5,7 +5,6 @@ signature.
 # global
 from typing import Optional, Union, Sequence, List, Callable
 
-
 _round = round
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -16,20 +15,31 @@ import tensorflow as tf
 import ivy
 
 
-def is_native_array(x, exclusive=False):
-    if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
-        if exclusive and isinstance(x, tf.Variable):
-            return False
-        return True
-    return False
+def _infer_dtype(x_dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(x_dtype)
+    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
+        dtype = default_dtype
+    else:
+        dtype = x_dtype
+    return dtype
 
 
-def copy_array(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.identity(x)
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre
+        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+        + list(reversed(post))
+    )
 
 
 def array_equal(
@@ -40,81 +50,98 @@ def array_equal(
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
 
 
-def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
-    # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
-    if (
-        ivy.is_array(x)
-        and get_num_dims(x) == 0
-        and ivy.as_native_dtype(x.dtype) is tf.bfloat16
-    ):
-        x = tf.expand_dims(x, 0)
-        if copy:
-            return np.squeeze(np.array(tf.convert_to_tensor(x)), 0)
-        else:
-            return np.squeeze(np.asarray(tf.convert_to_tensor(x)), 0)
-    if copy:
-        return np.array(tf.convert_to_tensor(x))
-    else:
-        return np.asarray(tf.convert_to_tensor(x))
-
-
-def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
-    return to_numpy(x).item()
-
-
-def to_list(x: Union[tf.Tensor, tf.Variable]) -> list:
-    return x.numpy().tolist()
-
-
-def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
-) -> List[tf.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = tf.unstack(x, axis=axis)
-    if keepdims:
-        return [tf.expand_dims(r, axis) for r in ret]
-    return ret
-
-
 def container_types():
     return []
 
 
-def inplace_update(
-    x: Union[ivy.Array, tf.Tensor],
-    val: Union[ivy.Array, tf.Tensor],
-    ensure_in_backend: bool = False,
-) -> ivy.Array:
-    if ivy.is_array(x) and ivy.is_array(val):
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        if ivy.is_variable(x_native):
-            x_native.assign(val_native)
-            if ivy.is_ivy_array(x):
-                x.data = x_native
-            else:
-                x = ivy.Array(x_native)
-        elif ensure_in_backend:
-            raise Exception(
-                "TensorFlow does not support inplace updates of the tf.Tensor"
-            )
-        elif ivy.is_ivy_array(x):
-            x.data = val_native
+def copy_array(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.identity(x)
+
+
+def cumprod(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumprod(x, axis, exclusive)
+
+
+def cumsum(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: Optional[bool] = False,
+    reverse: Optional[bool] = False,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is tf.bool:
+            dtype = ivy.default_int_dtype()
         else:
-            raise Exception(
-                "TensorFlow does not support inplace updates of the tf.Tensor"
-            )
-        return x
-    else:
-        return val
+            dtype = _infer_dtype(x.dtype)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumsum(x, axis, exclusive, reverse)
+
+
+def current_backend_str():
+    return "tensorflow"
+
+
+def gather(
+    params: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    axis: Optional[int] = -1,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = axis % len(indices.shape)
+    return tf.gather(params, indices, axis=axis, batch_dims=axis)
+
+
+def gather_nd(
+    params: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.gather_nd(params, indices)
+
+
+def get_num_dims(x, as_tensor=False):
+    return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))
+
+
+def indices_where(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    where_x = tf.experimental.numpy.where(x)
+    if len(where_x) == 1:
+        return tf.expand_dims(where_x[0], -1)
+    res = tf.experimental.numpy.concatenate(
+        [tf.expand_dims(item, -1) for item in where_x], -1
+    )
+    return res
 
 
 def inplace_arrays_supported():
     return False
-
-
-def inplace_variables_supported():
-    return True
 
 
 def inplace_decrement(
@@ -153,52 +180,68 @@ def inplace_increment(
     return x
 
 
-def _infer_dtype(x_dtype: tf.DType):
-    default_dtype = ivy.infer_default_dtype(x_dtype)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
-    return dtype
-
-
-def cumsum(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is tf.bool:
-            dtype = ivy.default_int_dtype()
+def inplace_update(
+    x: Union[ivy.Array, tf.Tensor],
+    val: Union[ivy.Array, tf.Tensor],
+    ensure_in_backend: bool = False,
+) -> ivy.Array:
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        if ivy.is_variable(x_native):
+            x_native.assign(val_native)
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+            else:
+                x = ivy.Array(x_native)
+        elif ensure_in_backend:
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        elif ivy.is_ivy_array(x):
+            x.data = val_native
         else:
-            dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
-        x = tf.cast(x, dtype)
-    return tf.math.cumsum(x, axis, exclusive, reverse)
+            raise Exception(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
+        return x
+    else:
+        return val
 
 
-def cumprod(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
+def inplace_variables_supported():
+    return True
+
+
+def is_native_array(x, exclusive=False):
+    if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
+        if exclusive and isinstance(x, tf.Variable):
+            return False
+        return True
+    return False
+
+
+def multiprocessing(context=None):
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
+
+
+def one_hot(
+    indices: Union[tf.Tensor, tf.Variable],
+    depth: int,
     *,
-    dtype: Optional[tf.DType] = None,
+    device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
-        x = tf.cast(x, dtype)
-    return tf.math.cumprod(x, axis, exclusive)
+    device = ivy.default_device(device)
+    dtype = indices.dtype
+    if device is not None:
+        indices = tf.cast(indices, tf.int64)
+        with tf.device(ivy.as_native_dev(device)):
+            return tf.one_hot(indices, depth, dtype=dtype)
+    return tf.one_hot(indices, depth, dtype=dtype)
 
 
-# noinspection PyShadowingNames
 def scatter_flat(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -251,25 +294,6 @@ def scatter_flat(
     return res
 
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
-
-
-# noinspection PyShadowingNames
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -278,7 +302,6 @@ def scatter_nd(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     if ivy.exists(out) and not isinstance(updates, Number):
         out = (
             tf.cast(out, dtype=updates.dtype)
@@ -398,66 +421,6 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def gather(
-    params: Union[tf.Tensor, tf.Variable],
-    indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=axis)
-
-
-def gather_nd(
-    params: Union[tf.Tensor, tf.Variable],
-    indices: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.gather_nd(params, indices)
-
-
-def one_hot(
-    indices: Union[tf.Tensor, tf.Variable],
-    depth: int,
-    *,
-    device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    device = ivy.default_device(device)
-    dtype = indices.dtype
-    if device is not None:
-        indices = tf.cast(indices, tf.int64)
-        with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(indices, depth, dtype=dtype)
-    return tf.one_hot(indices, depth, dtype=dtype)
-
-
-def current_backend_str():
-    return "tensorflow"
-
-
-def multiprocessing(context=None):
-    return (
-        _multiprocessing if context is None else _multiprocessing.get_context(context)
-    )
-
-
-def indices_where(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    where_x = tf.experimental.numpy.where(x)
-    if len(where_x) == 1:
-        return tf.expand_dims(where_x[0], -1)
-    res = tf.experimental.numpy.concatenate(
-        [tf.expand_dims(item, -1) for item in where_x], -1
-    )
-    return res
-
-
 def shape(
     x: Union[tf.Tensor, tf.Variable],
     as_array: bool = False,
@@ -468,8 +431,41 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-def get_num_dims(x, as_tensor=False):
-    return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))
+def to_list(x: Union[tf.Tensor, tf.Variable]) -> list:
+    return x.numpy().tolist()
+
+
+def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
+    # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
+    if (
+        ivy.is_array(x)
+        and get_num_dims(x) == 0
+        and ivy.as_native_dtype(x.dtype) is tf.bfloat16
+    ):
+        x = tf.expand_dims(x, 0)
+        if copy:
+            return np.squeeze(np.array(tf.convert_to_tensor(x)), 0)
+        else:
+            return np.squeeze(np.asarray(tf.convert_to_tensor(x)), 0)
+    if copy:
+        return np.array(tf.convert_to_tensor(x))
+    else:
+        return np.asarray(tf.convert_to_tensor(x))
+
+
+def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
+    return to_numpy(x).item()
+
+
+def unstack(
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+) -> List[tf.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = tf.unstack(x, axis=axis)
+    if keepdims:
+        return [tf.expand_dims(r, axis) for r in ret]
+    return ret
 
 
 def vmap(
