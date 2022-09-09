@@ -1,0 +1,6 @@
+# global
+import ivy
+
+
+def inner(a, b, out=None):
+    return ivy.inner(a, b, out=out)
