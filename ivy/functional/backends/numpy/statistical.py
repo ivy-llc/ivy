@@ -34,7 +34,7 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims, out=out))
+    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims, out=out)).astype(x.dtype)
 
 
 mean.support_native_out = True
@@ -139,7 +139,7 @@ def var(
     if isinstance(correction, int):
         return np.asarray(
             np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        )
+        ).astype(x.dtype)
     size = 1
     for a in axis:
         size *= x.shape[a]

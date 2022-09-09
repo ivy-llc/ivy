@@ -500,7 +500,7 @@ def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         strides=stride,
         padding=padding,
         data_format=data_format,
-        dilations=dilation,
+        dilations=1 if not ivy.gpu_is_available() else dilation,
     )
 
 
@@ -586,5 +586,52 @@ def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
         strides=stride,
         padding=padding,
         data_format=data_format,
-        dilations=dilation,
+        dilations=1 if not ivy.gpu_is_available() else dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        shape=(3, 5),
+    ),
+    mean=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    variance=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    offset=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
+    scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.batch_normalization"
+    ),
+    native_array=st.booleans(),
+)
+def test_batch_normalization(
+    dtype_and_x,
+    mean,
+    variance,
+    offset,
+    scale,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.batch_normalization",
+        x=np.asarray(x, dtype=input_dtype),
+        mean=np.asarray(mean, dtype=input_dtype),
+        variance=np.asarray(variance, dtype=input_dtype),
+        offset=np.asarray(offset, dtype=input_dtype),
+        scale=np.asarray(scale, dtype=input_dtype),
+        variance_epsilon=1e-7,
     )
