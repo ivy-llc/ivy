@@ -1,11 +1,10 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
-from ivy.functional.ivy.creation import native_array
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args, num_positional_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # noinspection DuplicatedCode
@@ -360,36 +359,31 @@ def test_torch_transpose(
     )
 
 
-# chunk
+# squeeze
 @handle_cmd_line_args
 @given(
-    dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)),
-        ),
-        num_arrays=st.shared(helpers.ints(min_value=1), key="num_arrays"),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        max_size=1,
     ).filter(lambda axis: isinstance(axis, int)),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.chunk"
+        fn_name="ivy.functional.frontends.torch.squeeze"
     ),
 )
-    
-def test_torch_chunk(
-    dtype_value_shape,
+def test_torch_squeeze(
+    dtype_and_values,
     dim,
-    chunks
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    fw, 
+    fw,
 ):
-    input_dtype,value = dtype_value_shape
+    input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -397,10 +391,92 @@ def test_torch_chunk(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
+        frontend="torch",
+        fn_tree="squeeze",
+        input=np.asarray(value, dtype=input_dtype),
+        dim=dim,
+    )
+
+
+# swapaxes
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    axis0=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
+    axis1=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ).filter(lambda axis: isinstance(axis, int)),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.swapaxes"
+    ),
+)
+def test_torch_swapaxes(
+    dtype_and_values,
+    axis0,
+    axis1,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="swapaxes",
+        input=np.asarray(value, dtype=input_dtype),
+        axis0=axis0,
+        axis1=axis1,
+    )
+
+
+# chunk
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    chunks=helpers.ints(min_value=2, max_value=5),
+    dim=helpers.ints(min_value=0, max_value=1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.chunk"
+    ),
+)
+def test_torch_chunk(
+    dtype_value,
+    chunks,
+    dim,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
         frontend='torch',
         fn_tree='chunk',
-        input = np.asarray(value,dtype=input_dtype),
-        chunks = np.random.randint(np.asarray(value,dtype=input_dtype))
-        axis = dim, 
+        input=np.asarray(value, dtype=input_dtype),
+        chunks=chunks,
+        dim=dim,
     )
-    
