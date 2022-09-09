@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import \
         fn_name="ivy.functional.frontends.numpy.solve"
     )
 )
-def test_numpy_solve(x,y,as_variable,native_array,num_positional_args,fw):
+def test_numpy_solve(x, y, as_variable, native_array, num_positional_args, fw):
     dtype1, x1 = x
     dtype2, x2 = y
     helpers.test_frontend_function(
