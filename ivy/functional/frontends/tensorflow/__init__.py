@@ -1,4 +1,7 @@
 # flake8: noqa
+tan-for-frontends
+from . import mathematical_functions
+from .mathematical_functions import *
 # flake8: noqa
 from . import activations
 from .activations import *
@@ -28,3 +31,4 @@ from . import signal
 from .signal import *
 from . import sparse
 from .sparse import *
+ master

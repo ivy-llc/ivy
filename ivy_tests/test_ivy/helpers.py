@@ -2247,6 +2247,9 @@ def array_values(
                 length=size,
             )
         )
+  tan-for-frontends
+    elif dtype in ['float32', 'bfloat16']:
+
         values = [v * large_value_safety_factor for v in values]
     elif dtype in ["float32", "bfloat16"]:
         limit = math.log(small_value_safety_factor)
@@ -2262,6 +2265,7 @@ def array_values(
         if max_value_pos and min_value_pos > max_value_pos:
             max_value_pos, min_value_pos = min_value_pos, max_value_pos
 
+   master
         values = draw(
             list_of_length(
                 x=st.floats(
