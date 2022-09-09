@@ -721,4 +721,4 @@ def greater_equal(x1, x2, /, *, out: Optional[np.ndarray] = None):
     return np.greater_equal(x1, x2, out=out)
 
 
-maximum.support_native_out = True
+greater_equal.support_native_out = True
