@@ -1,11 +1,11 @@
 import ivy
 
 
-def argmax(input, dim=None, keepdim=False):
+def argmax(input, dim, keepdim=False):
     return ivy.argmax(input, axis=dim, keepdims=keepdim)
 
 
-def argmin(input, dim=None, keepdim=False):
+def argmin(input, dim, keepdim=False):
     return ivy.argmin(input, axis=dim, keepdims=keepdim)
 
 
