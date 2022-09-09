@@ -49,4 +49,10 @@ def correlate(
         else:
             assert False, "Invalid Mode"
         ret = ivy.flip(ivy.array([(a[:n]*ivy.roll(v,-t)[:n]).sum().tolist() for t in range(0,r)]))
-    return ret
+    
+    if a.dtype == "float16" and v.dtype == "float16":
+        return ret.astype(ivy.float16)
+    elif a.dtype == "float64" or v.dtype == "float64":
+        return ret.astype(ivy.float64)
+    else:
+        return ret
