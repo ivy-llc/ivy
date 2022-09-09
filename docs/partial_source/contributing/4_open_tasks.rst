@@ -22,6 +22,7 @@ The tasks currently open are:
 
 #. Function Formatting
 #. Frontend APIs
+#. Ivy API Extensions
 
 We try to explain these tasks as clearly as possible, but in cases where things are not
 clear, then please feel free to engage with the `open tasks discussion`_,
