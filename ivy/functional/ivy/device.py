@@ -1132,9 +1132,13 @@ def _get_devices(fn, complement=True):
 
     supported = set(VALID_DEVICES)
 
+    if "backend" not in fn.__module__:
+        if complement:
+            supported = set(ALL_DEVICES).difference(supported)
+        return supported
+
     # Their values are formated like either
     # 1. fn.supported_devices = ("cpu",)
-    # 2. fn.supported_devices = {"numpy": ("cpu",)}
     # Could also have the "all" value for the framework
     basic = [
         ("supported_devices", set.intersection, VALID_DEVICES),
@@ -1143,9 +1147,10 @@ def _get_devices(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if isinstance(v, dict):
-                vb = v.get(ivy.current_backend_str(), base)
-                v = merge_fn(set(vb), v.get("all", base))
+            if not isinstance(v, tuple):
+                raise ValueError(
+                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
+                )
             supported = merge_fn(supported, set(v))
 
     if complement:

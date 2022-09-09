@@ -1708,6 +1708,7 @@ def test_frontend_function(
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
     fw: str,
+    device="cpu",
     frontend: str,
     fn_tree: str,
     rtol: float = None,
@@ -1786,6 +1787,14 @@ def test_frontend_function(
     test_unsupported = check_unsupported_dtype(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
+
+    if not test_unsupported:
+        test_unsupported = check_unsupported_device_and_dtype(
+            fn=function,
+            device=device,
+            input_dtypes=input_dtypes,
+            all_as_kwargs_np=all_as_kwargs_np,
+        )
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
@@ -3274,33 +3283,39 @@ def seed(draw):
 
 
 @st.composite
-def arrays_and_axes(draw,
-                    allow_none=False,
-                    min_num_dims=0,
-                    max_num_dims=5,
-                    min_dim_size=1,
-                    max_dim_size=10,
-                    num=2):
+def arrays_and_axes(
+    draw,
+    allow_none=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    num=2,
+):
     shapes = list()
     for _ in range(num):
-        shape = draw(get_shape(allow_none=False,
-                               min_num_dims=min_num_dims,
-                               max_num_dims=max_num_dims,
-                               min_dim_size=min_dim_size,
-                               max_dim_size=max_dim_size))
+        shape = draw(
+            get_shape(
+                allow_none=False,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
         shapes.append(shape)
     arrays = list()
     for shape in shapes:
-        arrays.append(draw(array_values(dtype="int32",
-                                        shape=shape,
-                                        min_value=-200,
-                                        max_value=200)))
+        arrays.append(
+            draw(
+                array_values(dtype="int32", shape=shape, min_value=-200, max_value=200)
+            )
+        )
     all_axes_ranges = list()
     for shape in shapes:
         if None in all_axes_ranges:
             all_axes_ranges.append(st.integers(0, len(shape) - 1))
         else:
-            all_axes_ranges.append(st.one_of(st.none(),
-                                             st.integers(0, len(shape) - 1)))
+            all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
     axes = draw(st.tuples(*all_axes_ranges))
     return arrays, axes

@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -137,6 +137,8 @@ def test_torch_binary_cross_entropy(
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
     weight_dtype, weight = dtype_and_weight
+
+    assume("bfloat16" not in (pred_dtype, true_dtype, weight_dtype))
 
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype, true_dtype, weight_dtype],
