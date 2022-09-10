@@ -60,6 +60,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#data-type-promotion">Data Type Promotion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-and-unsupported-data-types">Supported and Unsupported Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-data-type-bugs">Backend Data Type Bugs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#superset-data-type-support">Superset Data Type Support</a></li>
 </ul>
 </li>
@@ -445,7 +446,7 @@ inferred automatically using the helper functions
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370">function_supported_dtypes</a>
 and
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407">function_unsupported_dtypes</a>
-respestively, which traverse the abstract syntax tree of the compositional function and
+respectively, which traverse the abstract syntax tree of the compositional function and
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.</p>
 <p>It should be noted that the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from
@@ -486,6 +487,23 @@ In such cases, the best solution is to simply add the data type to the
 <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute,
 rather than trying to implement a long and complex patch to achieve the desired
 behaviour.</p>
+<p>Some cases where a data type is not supported are very subtle. For example,
+<code class="code docutils literal notranslate"><span class="pre">uint8</span></code> is not supported for <code class="code docutils literal notranslate"><span class="pre">ivy.prod</span></code> with a <code class="code docutils literal notranslate"><span class="pre">torch</span></code> backend,
+despite <code class="code docutils literal notranslate"><span class="pre">torch.prod</span></code> handling <code class="code docutils literal notranslate"><span class="pre">torch.uint8</span></code> types in the input totally fine.</p>
+<p>The reason for this is that the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> mandates that the <code class="code docutils literal notranslate"><span class="pre">prod</span></code>
+function upcast the unsigned integer return to have the same number of bits as the
+default integer data type. By default, the default integer data type in Ivy is
+<code class="code docutils literal notranslate"><span class="pre">int32</span></code>, and so we should return an array of type <code class="code docutils literal notranslate"><span class="pre">uint32</span></code> despite the input
+arrays being of type <code class="code docutils literal notranslate"><span class="pre">uint8</span></code>. However, <code class="code docutils literal notranslate"><span class="pre">torch</span></code> does not support <cite>uint32</cite>,
+and so we cannot fully adhere to the requirements of the standard for <code class="code docutils literal notranslate"><span class="pre">uint8</span></code>
+inputs. Rather than breaking this rule and returning arrays of type <code class="code docutils literal notranslate"><span class="pre">uint8</span></code> only
+with a <code class="code docutils literal notranslate"><span class="pre">torch</span></code> backend, we instead opt to remove official support entirely for
+this combination of data type, function and backend framework.
+This will avoid all of the potential confusion that could arise if we were to have
+inconsistent and unexpected outputs when using officially supported data types in Ivy.</p>
+</section>
+<section id="backend-data-type-bugs">
+<h2>Backend Data Type Bugs<a class="headerlink" href="#backend-data-type-bugs" title="Permalink to this heading"></a></h2>
 <p>In some cases, the lack of support might just be a bug which will likely be resolved in
 a future release of the framework. In these cases, as well as adding to the
 <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute, we should also add a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment
