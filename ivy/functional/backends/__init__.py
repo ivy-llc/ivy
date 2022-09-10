@@ -6,5 +6,5 @@ def dtype_from_version(dic,version):
             return dic[key]
         if "below" in key and tuple(key.strip().split(" ")[0].split('.'))>=tuple(version.split('.')):
             return dic[key]
-        if "to" in key and (tuple(key.strip().split(" ")[0].split('.'))>=tuple(version.split('.'))) and tuple(key.strip().split(" ")[0].split('.'))<=tuple(version.split('.')):
+        if "to" in key and (tuple(key.strip().split(" ")[0].split('.'))>=tuple(version.split('.'))) and tuple(key.strip().split(" ")[2].split('.'))<=tuple(version.split('.')):
             return dic[key]
