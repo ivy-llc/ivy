@@ -282,12 +282,14 @@ def x_and_mha(draw, dtypes):
     dtype_mha=x_and_mha(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="multi_head_attention"),
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -304,7 +306,7 @@ def test_multi_head_attention(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -803,11 +805,13 @@ def x_and_lstm(draw, dtypes):
     dtype_lstm=x_and_lstm(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
 )
 def test_lstm_update(
     *,
     dtype_lstm,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -832,7 +836,7 @@ def test_lstm_update(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=5,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
