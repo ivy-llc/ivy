@@ -1037,8 +1037,8 @@ def default_float_dtype(
 
 
 def infer_default_dtype(
-    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
-):
+    dtype: Union[ivy.Dtype, ivy.NativeDtype, str], as_native: Optional[bool] = False
+) -> Union[ivy.Dtype, ivy.NativeDtype]:
     """Summary.
 
     Parameters
