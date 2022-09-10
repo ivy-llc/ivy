@@ -805,7 +805,7 @@ def x_and_lstm(draw, dtypes):
     dtype_lstm=x_and_lstm(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="lstm"),
+    num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
 )
 def test_lstm_update(
     *,
