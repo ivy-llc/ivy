@@ -93,7 +93,7 @@ class Module(abc.ABC):
         self._compiled = False
         self._compiled_fn = None
         self._compile_on_next_step = compile_on_next_step
-        self._v_in = v if (isinstance(v, Container) or v is None) else Container(v)
+        self._v_in = v if isinstance(v, Container) or v is None else Container(v)
         self.v = v
         self.top_v = None
         self.top_mod = None
