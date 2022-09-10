@@ -145,6 +145,8 @@ def test_sigmoid(
         container_flags=container,
         instance_method=instance_method,
         fn_name="sigmoid",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
