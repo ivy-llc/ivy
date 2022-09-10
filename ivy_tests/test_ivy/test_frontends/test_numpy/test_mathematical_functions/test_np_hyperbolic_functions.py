@@ -204,7 +204,7 @@ def test_numpy_arccosh(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_name="arccosh",
+        fn_tree="arccosh",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
