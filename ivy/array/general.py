@@ -16,7 +16,7 @@ class ArrayWithGeneral(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
-        wraps the function, and so the docstring for ivy.is_native_array 
+        wraps the function, and so the docstring for ivy.is_native_array
         also applies to this method with minimal changes.
 
         Parameters
@@ -32,14 +32,14 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ivy.is_native_array(self._data, out=out)
+        return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
 
     def is_ivy_array(
         self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply 
-        wraps the function, and so the docstring for ivy.is_ivy_array also applies 
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_array also applies
         to this method with minimal changes.
 
         Parameters
@@ -55,7 +55,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_ivy_array(self._data, out=out)
+        return ivy.is_ivy_array(self._data, exclusive=exclusive, out=out)
 
     def is_array(
         self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
@@ -78,7 +78,27 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self._data, out=out)
+        return ivy.is_array(self._data, exclusive=exclusive, out=out)
+
+    def is_ivy_container(
+        self: ivy.Array, *, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.is_ivy_container. This method simply
+        wraps the function, and so the docstring for ivy.is_ivy_container also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input to check
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy container.
+        """
+        return ivy.is_ivy_container(self._data, out=out)
 
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False
@@ -135,7 +155,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.has_nans(self, include_infs)
 
-    def unstack(self: ivy.Array, axis: int, keepdims: bool = False) -> ivy.Array:
+    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
         this method with minimal changes.
@@ -168,127 +188,7 @@ class ArrayWithGeneral(abc.ABC):
                 [3]]), ivy.array([[2],
                 [4]])]
         """
-        return ivy.unstack(self._data, axis, keepdims)
-
-    def cumsum(
-        self: ivy.Array,
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        reverse: Optional[bool] = False,
-        *,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cumsum. This method simply wraps the
-        function, and so the docstring for ivy.cumsum also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array to apply cumsum.
-        axis
-            Axis along which the cumulative sum is computed. Default is 0.
-        exclusive
-            Whether to perform cumsum exclusively. Default is ``False``.
-        reverse
-            Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
-        dtype
-            Data type of the returned array. Default is ``None``.
-        out
-            Optional array container. Default is None.
-
-        Returns
-        -------
-        ret
-            Array which holds the result of applying cumsum at each
-            original array elements along the specified axis.
-
-        Examples
-        --------
-        >>> x = ivy.array([1, 2, 3, 4, 5])
-        >>> y = x.cumsum()
-        >>> print(y)
-        ivy.array([ 1,  3,  6, 10, 15])
-
-        >>> x = ivy.array([2, 6, 4, 10])
-        >>> y = x.cumsum(axis=0, exclusive=False, reverse=True, dtype='float64')
-        >>> print(y)
-        ivy.array([22., 20., 14., 10.])
-
-        >>> x = ivy.array([[2, 3], [4, 6], [8, 12]])
-        >>> y = ivy.zeros((3, 2))
-        >>> x.cumsum(axis=1, exclusive=True, reverse=False, out=y)
-        >>> print(y)
-        ivy.array([[0, 2],
-                   [0, 4],
-                   [0, 8]])
-
-        >>> x = ivy.array([[1, 5, 2], \
-                           [4, 3, 0], \
-                           [4, 8, 2]])
-        >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
-        >>> print(y)
-        ivy.array([[ 7,  2,  0],
-                   [ 3,  0,  0],
-                   [10,  2,  0]])
-
-        >>> x = ivy.array([[1, 5, 10], [4, 8, 10], [2, 3, 5]])
-        >>> x.cumsum(axis=0, out=x)
-        >>> print(x)
-        ivy.array([[ 1,  5, 10],
-                   [ 5, 13, 20],
-                   [ 7, 16, 25]])
-        """
-        return ivy.cumsum(self._data, axis, exclusive, reverse, dtype=dtype, out=out)
-
-    def cumprod(
-        self: ivy.Array,
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cumprod. This method simply wraps the
-        function, and so the docstring for ivy.cumprod also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        axis
-            int, axis along which to take the cumulative product. Default is 0.
-        exclusive
-            optional bool, whether to exclude the first value of the input array.
-            Default is False.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Input array with cumulatively multiplied elements along the specified axis.
-
-        Examples
-        --------
-        >>> x = ivy.array([1, 2, 3, 4, 5])
-        >>> y = x.cumprod()
-        >>> print(y)
-        ivy.array([  1,   2,   6,  24, 120])
-
-        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
-        >>> y = ivy.zeros((3, 2))
-        >>> x.cumprod(axis=1, exclusive=True, out=y)
-        >>> print(y)
-        ivy.array([[ 1.,  2.],
-                   [ 1.,  5.],
-                   [ 1., 11.]])
-        """
-        return ivy.cumprod(self._data, axis, exclusive, out=out)
+        return ivy.unstack(self._data, axis, keepdims=keepdims)
 
     def gather(
         self: ivy.Array,
@@ -593,6 +493,33 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
+    def supports_inplace_updates(self: ivy.Array) -> bool:
+        """
+        ivy.Array instance method variant of ivy.supports_inplace_updates. This method
+        simply wraps the function, and so the docstring for ivy.supports_inplace also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array whose elements' data type is to be checked.
+
+        Returns
+        -------
+        ret
+            Bool value depends on whether the currently active backend
+            framework supports in-place operations with argument's data type.
+
+        Examples
+        --------
+        With `ivy.Array` input and backend set as "tensorflow":
+        >>> x = ivy.array([1., 4.2, 2.2])
+        >>> ret = x.supports_inplace()
+        >>> print(ret)
+        False
+        """
+        return ivy.supports_inplace_updates(self)
+
     def inplace_decrement(
         self: Union[ivy.Array, ivy.NativeArray], val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
@@ -690,7 +617,7 @@ class ArrayWithGeneral(abc.ABC):
             An array with the vector norm downscaled to the max norm if needed.
 
         """
-        return ivy.clip_vector_norm(self, max_norm, p, out=out)
+        return ivy.clip_vector_norm(self, max_norm, p=p, out=out)
 
     def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray]) -> bool:
         """
@@ -731,10 +658,10 @@ class ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            Boolean, whether or not the input arrays are equal
+            Boolean, whether the input arrays are equal
 
         """
-        return ivy.arrays_equal(List[self] + x)
+        return ivy.arrays_equal([self] + x)
 
     def assert_supports_inplace(self: ivy.Array) -> bool:
         """
@@ -796,37 +723,11 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_scalar(self)
 
-    def floormod(
-        self: ivy.Array,
-        x: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.floormod. This method simply wraps the
-        function, and so the docstring for ivy.floormod also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        x
-            input array for the denominator
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            An array of the same shape and type as x, with the elements floor modded.
-
-        """
-        return ivy.floormod(self, x, out=out)
-
     def fourier_encode(
         self: ivy.Array,
         max_freq: Union[float, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         num_bands: int = 4,
         linear: bool = False,
         concat: bool = True,
@@ -965,25 +866,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
 
-    def supports_inplace(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.supports_inplace. This method simply
-        wraps the function, and so the docstring for ivy.supports_inplace also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not inplace operations are supported for x.
-
-        """
-        return ivy.supports_inplace(self)
-
     def inplace_update(
         self: ivy.Array,
         val: Union[ivy.Array, ivy.NativeArray],
@@ -1017,21 +899,35 @@ class ArrayWithGeneral(abc.ABC):
         self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.inplace_increment. This method simply
-        wraps the function, and so the docstring for ivy.inplace_increment also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.inplace_increment. This
+        method wraps the function, and so the docstring for
+        ivy.inplace_increment also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            input array to increment
+            The input array to be incremented by the defined value.
         val
-            The array to increment the variable with.
+            The value of increment.
 
         Returns
         -------
         ret
-            The array following the in-place increment.
+            The array following an in-place increment.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance methods:
+
+        >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
+        >>> y = x.inplace_increment(1)
+        >>> print(y)
+        ivy.array([6.7, 5.3, 3.5, 2.9])
+
+        >>> x = ivy.asarray([4., 5., 6.])
+        >>> y = x.inplace_increment(2.5)
+        >>> print(y)
+        ivy.array([6.5, 7.5, 8.5])
 
         """
         return ivy.inplace_increment(self, val)
@@ -1039,8 +935,9 @@ class ArrayWithGeneral(abc.ABC):
     def clip_matrix_norm(
         self: ivy.Array,
         max_norm: float,
-        p: float = 2.0,
+        /,
         *,
+        p: float = 2.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

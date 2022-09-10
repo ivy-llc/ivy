@@ -11,10 +11,7 @@ import multiprocessing as _multiprocessing
 # local
 from ivy.functional.ivy.device import default_device
 from ivy.functional.backends.mxnet.device import dev
-from ivy.functional.backends.mxnet import (
-    _handle_flat_arrays_in_out,
-    _mxnet_init_context,
-)
+from ivy.functional.backends.mxnet import _mxnet_init_context
 
 
 def is_native_array(x, exclusive=False):
@@ -58,19 +55,8 @@ def to_list(x: mx.nd.NDArray) -> list:
     return to_numpy(x).tolist()
 
 
-@_handle_flat_arrays_in_out
-def floormod(
-    x: mx.nd.NDArray,
-    y: mx.nd.NDArray,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    ret = x % y
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
-
-
-container_types = lambda: []
+def container_types():
+    return []
 
 
 def unstack(
@@ -106,7 +92,8 @@ def inplace_arrays_supported():
     return True
 
 
-inplace_variables_supported = lambda: True
+def inplace_variables_supported():
+    return True
 
 
 def inplace_decrement(
@@ -138,8 +125,8 @@ def inplace_increment(
 def cumsum(
     x: mx.nd.NDArray,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
+    exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: type,
     out: Optional[mx.nd.NDArray] = None,
@@ -166,7 +153,7 @@ def cumsum(
 def cumprod(
     x: mx.nd.NDArray,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
+    exclusive: bool = False,
     dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
@@ -313,5 +300,8 @@ def indices_where(x):
     return res
 
 
-current_backend_str = lambda: "mxnet"
+def current_backend_str():
+    return "mxnet"
+
+
 current_backend_str.__name__ = "current_backend_str"

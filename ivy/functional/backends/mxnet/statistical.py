@@ -17,8 +17,8 @@ from ivy.functional.backends.mxnet import (
 
 def max(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     *,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
@@ -40,7 +40,7 @@ def max(
 
 def mean(
     x: mx.nd.NDArray,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
@@ -87,7 +87,7 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[type] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if axis is None:
@@ -131,7 +131,7 @@ def std(
 def sum(
     x: mx.nd.NDArray,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     if axis is None:
@@ -153,7 +153,7 @@ def sum(
 def var(
     x: mx.nd.NDArray,
     axis: Union[int, Sequence[int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     mean_of_x_sqrd = mean(x**2, axis, keepdims)

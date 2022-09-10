@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def _dtype_x_limited_axis(draw, *, allow_none=False):
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float", full=True),
+            available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=1,
             min_dim_size=1,
             ret_shape=True,
@@ -133,7 +133,6 @@ def test_nonzero(
     *,
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,

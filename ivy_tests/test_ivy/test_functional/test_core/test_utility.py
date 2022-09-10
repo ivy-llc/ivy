@@ -13,12 +13,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=-1,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="all"),
@@ -35,6 +32,7 @@ def test_all(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -55,12 +53,9 @@ def test_all(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_axis=-1,
-        max_axis=0,
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="any"),
@@ -77,6 +72,7 @@ def test_any(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
