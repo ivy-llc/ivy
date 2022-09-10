@@ -244,8 +244,8 @@ class ArrayWithStatistical(abc.ABC):
         /,
         *,
         axis: int = 0,
-        exclusive: Optional[bool] = False,
-        reverse: Optional[bool] = False,
+        exclusive: bool = False,
+        reverse: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -319,7 +319,7 @@ class ArrayWithStatistical(abc.ABC):
         /,
         *,
         axis: int = 0,
-        exclusive: Optional[bool] = False,
+        exclusive: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
