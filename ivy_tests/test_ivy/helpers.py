@@ -3965,3 +3965,81 @@ def arrays_and_axes(
             all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
     axes = draw(st.tuples(*all_axes_ranges))
     return arrays, axes
+
+
+@st.composite
+def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+    strides = draw(st.integers(min_value=1, max_value=2))
+    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    batch_size = draw(st.integers(1, 5))
+    filter_shape = draw(
+        get_shape(
+            min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+        )
+    )
+    input_channels = draw(st.integers(1, 5))
+    output_channels = draw(st.integers(1, 5))
+    dilations = draw(st.integers(1, 2))
+    dtype = draw(get_dtypes("float", full=False))
+    if dim == 2:
+        data_format = draw(st.sampled_from(["NCHW"]))
+    elif dim == 1:
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    else:
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
+
+    x_dim = []
+    if transpose:
+        output_shape = []
+        x_dim = draw(
+            get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=20
+            )
+        )
+        for i in range(dim):
+            output_shape.append(
+                ivy.deconv_length(
+                    x_dim[i], strides, filter_shape[i], padding, dilations
+                )
+            )
+    else:
+        for i in range(dim):
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            x_dim.append(draw(st.integers(min_x, 100)))
+        x_dim = tuple(x_dim)
+    if not depthwise:
+        filter_shape = filter_shape + (input_channels, output_channels)
+    else:
+        filter_shape = filter_shape + (input_channels,)
+    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+        x_shape = (batch_size,) + x_dim + (input_channels,)
+    else:
+        x_shape = (batch_size, input_channels) + x_dim
+    vals = draw(
+        array_values(
+            dtype=dtype,
+            shape=x_shape,
+            large_value_safety_factor=10,
+            small_value_safety_factor=0.1,
+        )
+    )
+    filters = draw(
+        array_values(
+            dtype=dtype,
+            shape=filter_shape,
+            large_value_safety_factor=10,
+            small_value_safety_factor=0.1,
+        )
+    )
+    if transpose:
+        return (
+            dtype,
+            vals,
+            filters,
+            dilations,
+            data_format,
+            strides,
+            padding,
+            output_shape,
+        )
+    return dtype, vals, filters, dilations, data_format, strides, padding
