@@ -16,7 +16,7 @@ def max(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -37,7 +37,7 @@ def mean(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -89,7 +89,7 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
     dtype: Optional[torch.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
 ) -> torch.Tensor:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
@@ -148,7 +148,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[torch.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
@@ -168,7 +168,7 @@ def var(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -201,7 +201,7 @@ def var(
 def cumprod(
     x: torch.Tensor,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
+    exclusive: bool = False,
     *,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
@@ -227,8 +227,8 @@ cumprod.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
 def cumsum(
     x: torch.Tensor,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
+    exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,

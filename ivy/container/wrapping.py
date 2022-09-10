@@ -78,7 +78,7 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
 def add_ivy_container_instance_methods(
     cls: Type[ivy.Container],
     modules: List[ModuleType],
-    static: Optional[bool] = False,
+    static: bool = False,
     to_ignore: Optional[Iterable] = (),
 ):
     """Loop over all ivy modules such as activations, general, etc. and add

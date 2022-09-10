@@ -120,7 +120,7 @@ Let’s look at the PyTorch backend code for both of these Ivy methods:
     def cumprod(
         x: torch.Tensor,
         axis: int = 0,
-        exclusive: Optional[bool] = False,
+        exclusive: bool = False,
         *,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:

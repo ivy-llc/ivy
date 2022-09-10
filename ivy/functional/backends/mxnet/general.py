@@ -125,8 +125,8 @@ def inplace_increment(
 def cumsum(
     x: mx.nd.NDArray,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
+    exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: type,
     out: Optional[mx.nd.NDArray] = None,
@@ -153,7 +153,7 @@ def cumsum(
 def cumprod(
     x: mx.nd.NDArray,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
+    exclusive: bool = False,
     dtype: Optional[type] = None,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
