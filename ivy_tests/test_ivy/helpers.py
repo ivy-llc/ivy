@@ -2761,6 +2761,11 @@ def _clamp_value(x, dtype):
         d_info = ivy.iinfo(dtype)
     elif ivy.is_float_dtype(dtype):
         d_info = ivy.finfo(dtype)
+    else:
+        raise TypeError(
+            f"{dtype} is not a valid data type. "
+            "dtype must be an integer or a float data type"
+        )
     if x > d_info.max or x < d_info.min:
         return None  # Calculated later using safety factor
     return x
