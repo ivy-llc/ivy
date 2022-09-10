@@ -72,9 +72,9 @@ def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
     for func_name in func_names:
-        if hasattr(ivy, func_name):
+        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name):
+        elif hasattr(module, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(module, func_name))
     return ret
 
