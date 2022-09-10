@@ -142,9 +142,7 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(
-    x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False
-) -> bool:
+def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 

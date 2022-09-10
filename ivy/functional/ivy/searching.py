@@ -23,7 +23,7 @@ def argmax(
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, int]:
     """Returns the indices of the maximum values along a specified axis. When the
@@ -120,7 +120,7 @@ def argmin(
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, int]:
     """Returns the indices of the minimum values along a specified axis. When the

@@ -8,6 +8,7 @@ from operator import mul
 from functools import reduce
 from typing import List, Optional, Union, Sequence, Callable
 from numbers import Number
+
 import functorch
 
 torch_scatter = None
