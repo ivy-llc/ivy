@@ -19,13 +19,6 @@ from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
 
-def _infer_dtype(dtype: jnp.dtype):
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-        return default_dtype
-    return dtype
-
-
 def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
@@ -36,61 +29,6 @@ def container_types():
 
 def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.array(x)
-
-
-def cumprod(
-    x: JaxArray,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
-    if dtype != x.dtype:
-        x = x.astype(dtype)
-    if exclusive:
-        x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = jnp.cumprod(x, -1)
-        return jnp.swapaxes(res, axis, -1)
-    return jnp.cumprod(x, axis)
-
-
-def cumsum(
-    x: JaxArray,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is jnp.bool_:
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(dtype, x.dtype)
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
-            x = jnp.swapaxes(x, axis, -1)
-            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jnp.swapaxes(x, axis, -1)
-            res = jnp.flip(x, axis=(axis,))
-        elif exclusive:
-            x = jnp.swapaxes(x, axis, -1)
-            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jnp.cumsum(x, -1, dtype=dtype)
-            res = jnp.swapaxes(x, axis, -1)
-        elif reverse:
-            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
-            res = jnp.flip(x, axis=axis)
-        return res
-    return jnp.cumsum(x, axis, dtype=dtype)
 
 
 def current_backend_str():
