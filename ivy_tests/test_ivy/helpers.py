@@ -1994,8 +1994,8 @@ def test_frontend_array_instance_method(
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
-    """Tests a frontend instance method for the current backend by comparing the result with
-    the function in the associated framework.
+    """Tests a frontend instance method for the current backend by comparing the
+    result with the function in the associated framework.
 
     Parameters
     ----------
