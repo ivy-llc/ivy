@@ -328,6 +328,87 @@ def test_std(
     )
 
 
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="cumsum"),
+)
+def test_cumsum(
+    dtype_x_axis,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="cumsum",
+        x=np.asarray(x, dtype=dtype),
+        axis=axis,
+    )
+
+
+# cumprod
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
+)
+def test_cumprod(
+    dtype_x_axis,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="cumprod",
+        x=np.asarray(x, dtype=dtype),
+        axis=axis,
+    )
+
+
 # einsum
 @handle_cmd_line_args
 @given(
