@@ -12,7 +12,7 @@ class ArrayWithSearching(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -51,7 +51,7 @@ class ArrayWithSearching(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
