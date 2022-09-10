@@ -126,7 +126,7 @@ class Module(abc.ABC):
     # --------#
 
     def _fn_with_var_arg(self, fn, v_fn, /, *):
-        def new_fn(*a, /, *, with_grads=None, **kw):
+        def new_fn(*a, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
                 del kw["v"]
