@@ -142,9 +142,7 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(
-    x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False
-) -> bool:
+def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -463,8 +461,6 @@ def array_equal(
         The first input array to compare.
     x1
         The second input array to compare.
-    dtype
-        array data type
 
     Returns
     -------
@@ -519,9 +515,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     Parameters
     ----------
     xs
-        Sequence of arrays to compare for equality
-    dtype
-        list data type
+        Sequence of arrays to compare for equality.
 
     Returns
     -------
@@ -1427,8 +1421,8 @@ def unstack(
     }]
 
     >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> vy.unstack(x, axis=1, keepdims=True)
+    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=1, keepdims=True)
     [{
         a: ivy.array([[[1, 2]],
                       [[5, 6]]]),
@@ -2500,18 +2494,6 @@ def print_all_arrays_in_memory():
     """
     Gets all the native Ivy arrays which are currently alive(in the garbage collector)
     from get_all_arrays_in_memory() function and prints them to the console.
-
-    Parameters
-    ----------
-    None
-
-    Output
-    ------
-    Type and shape of all the Ivy native arrays which are currently alive.
-
-    Returns
-    -------
-    None
     """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
@@ -2750,7 +2732,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
         True if support, raises exception otherwise
 
     """
-    if not ivy.supports_inplace(x):
+    if not ivy.supports_inplace_updates(x):
         raise Exception(
             "Inplace operations are not supported {} types with {} backend".format(
                 type(x), ivy.current_backend_str()
@@ -2933,289 +2915,6 @@ def inplace_increment(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def cumsum(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the cumulative sum of the elements along a given axis.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    axis
-        Axis along which the cumulative sum is computed. Default is ``0``.
-    exclusive
-        Whether to perform cumsum exclusively. Default is ``False``.
-    reverse
-        Whether to perform the cumsum from last to first element in the selected
-        axis. Default is False (from first to last element)
-    dtype
-        Data type of the returned array. Default is ``None``.
-        If None, if the default data type corresponding to the data type “kind”
-        (integer or floating-point) of x has a smaller range of values than the
-        data type of x (e.g., x has data type int64 and the default data type
-        is int32, or x has data type uint64 and the default data type is int64),
-        the returned array must have the same data type as x.
-        If x has a floating-point data type, the returned array must have the
-        default floating-point data type.
-        If x has a signed integer data type (e.g., int16), the returned array
-        must have the default integer data type.
-        If x has an unsigned integer data type (e.g., uint16), the returned
-        array must have an unsigned integer data type having the same number of
-        bits as the default integer data type (e.g., if the default integer data
-        type is int32, the returned array must have a uint32 data type).
-        If the data type (either specified or resolved) differs from the data type
-        of x, the input array should be cast to the specified data type before
-        computing the product.
-    out
-        Optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Array which holds the result of applying cumsum at each
-        original array elements along the specified axis.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 5, 2, 0])
-    >>> y = ivy.cumsum(x, exclusive= True, reverse=False)
-    >>> print(y)
-    ivy.array([0, 1, 6, 8])
-
-    >>> x = ivy.array([[6, 4, 2], \
-                       [1, 3, 0]])
-    >>> y = ivy.zeros((2,3))
-    >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
-    >>> print(y)
-    ivy.array([[7, 7, 2],
-               [1, 3, 0]])
-
-    >>> x = ivy.array([[1, 5, 2], \
-                       [4, 3, 0]])
-    >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
-    >>> print(y)
-    ivy.array([[4, 3, 0],
-               [0, 0, 0]])
-
-    >>> x = ivy.array([[2, 4, 5], \
-                       [3, 6, 5], \
-                       [1, 3, 10]])
-    >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
-    >>> print(x)
-    ivy.array([[11,  9,  5],
-               [14, 11,  5],
-               [14, 13, 10]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
-                          b=ivy.array([[3, 5, 7]]))
-    >>> y = ivy.cumsum(x, axis= 0)
-    >>> print(y)
-    {
-        a: ivy.array([[1, 3, 5]]),
-        b: ivy.array([[3, 5, 7]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                          b=ivy.array([[3, 5, 8], \
-                                       [5, 6, 5]]), \
-                          c=ivy.array([[2, 4, 1], \
-                                       [3, 6, 9], \
-                                       [0, 2, 3]]))
-    >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                          b = ivy.zeros((2, 3)), \
-                          c = ivy.zeros((3,3)))
-    >>> ivy.cumsum(x,axis=1,reverse=True, out=y)
-    >>> print(y)
-    {
-        a: ivy.array([[8, 7, 4]]),
-        b: ivy.array([[16, 13, 8],
-                      [16, 11, 5]]),
-        c: ivy.array([[7, 5, 1],
-                      [18, 15, 9],
-                      [5, 5, 3]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[0], \
-                                       [5]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [4, 2, 3]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
-    >>> ivy.cumsum(x,axis=0,out=x)
-    >>> print(x)
-    {
-        a: ivy.array([[0],
-                      [5]]),
-        b: ivy.array([[6, 8, 7],
-                      [10, 10, 10]]),
-        c: ivy.array([[1, 2],
-                      [4, 6],
-                      [10, 10]])
-    }
-    """
-    return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def cumprod(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the cumulative product of the elements along a given axis.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    axis
-        int , axis along which the cumulative product is computed. By default 0.
-    exclusive
-        optional bool, Whether to perform the cumprod exclusively. Defaults is False.
-    dtype
-        data type of the returned array. If None,
-        if the default data type corresponding to the data type “kind” (integer or
-        floating-point) of x has a smaller range of values than the data type of x
-        (e.g., x has data type int64 and the default data type is int32, or x has data
-        type uint64 and the default data type is int64), the returned array must have
-        the same data type as x. if x has a floating-point data type, the returned array
-        must have the default floating-point data type. if x has a signed integer data
-        type (e.g., int16), the returned array must have the default integer data type.
-        if x has an unsigned integer data type (e.g., uint16), the returned array must
-        have an unsigned integer data type having the same number of bits as the default
-        integer data type (e.g., if the default integer data type is int32, the returned
-        array must have a uint32 data type). If the data type (either specified or
-        resolved) differs from the data type of x, the input array should be cast to the
-        specified data type before computing the product. Default: None.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Input array with cumulatively multiplied elements along axis.
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = ivy.cumprod(x)
-    >>> print(y)
-    ivy.array([2, 6, 24])
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = ivy.cumprod(x, exclusive=True)
-    >>> print(y)
-    ivy.array([1, 2, 6])
-
-    >>> x = ivy.array([[2, 3],
-                       [5, 7],
-                       [11, 13]])
-    >>> y = ivy.zeros((3, 2))
-    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
-    >>> print(y)
-    ivy.array([[ 1.,  2.],
-               [ 1.,  5.],
-               [ 1., 11.]])
-
-    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
-    >>> print(x)
-    ivy.array([[1,  1],
-               [2,  3],
-               [10, 21]])
-
-    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> y = ivy.zeros((3, 2))
-    >>> x.cumprod(axis=0, exclusive=True, out=y)
-    >>> print(x)
-    ivy.array([[1.,  1.],
-                [2.,  3.],
-                [10., 21.]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.cumprod(x)
-    >>> print(y)
-    {
-        a: ivy.array([2, 6, 24]),
-        b: ivy.array([3, 12, 60])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.cumprod(x, exclusive=True)
-    >>> print(y)
-    {
-        a: ivy.array([1, 2, 6]),
-        b: ivy.array([1, 3, 12])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                       [5, 7],
-                                       [11, 13]]),
-                          b=ivy.array([[3, 4],
-                                       [4, 5],
-                                       [5, 6]]))
-    >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
-    >>> print(y)
-    {
-        a: ivy.array([[1, 2],
-                      [1, 5],
-                      [1, 11]]),
-        b: ivy.array([[1, 3],
-                      [1, 4],
-                      [1, 5]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                        [5, 7],
-                                        [11, 13]]),
-                            b=ivy.array([[3, 4],
-                                        [4, 5],
-                                        [5, 6]]))
-    >>> x.cumprod(axis=0, exclusive=True, out=x)
-    >>> print(x)
-    {
-        a: ivy.array([[1, 1],
-                      [2, 3],
-                      [10, 21]]),
-        b: ivy.array([[1, 1],
-                      [3, 4],
-                      [15, 42]])
-    }
-    """
-    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3236,9 +2935,6 @@ def scatter_flat(
         The size of the result.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-        updates if None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3275,15 +2971,8 @@ def scatter_nd(
     shape
         The shape of the result. Default is None, in which case tensor argument must be
         provided.
-    tensor
-        The tensor in which to scatter the results, default is None, in which case the
-        shape arg is used to
-        scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-        updates if None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3359,9 +3048,6 @@ def gather(
         array, index array.
     axis
         optional int, the axis from which to gather from. Default is -1.
-    device
-        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
-        'cpu' etc. Same as x if None.
     out
         optional output array, for writing the result to.
 
@@ -3485,9 +3171,6 @@ def gather_nd(
         The array from which to gather values.
     indices
         Index array.
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
-        None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

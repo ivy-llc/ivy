@@ -56,28 +56,28 @@ def test_torch_sigmoid(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_and_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
     ),
-    axis=st.integers(-1, 0),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.softmax"
     ),
 )
 def test_torch_softmax(
-    dtype_and_x,
+    dtype_x_and_axis,
     as_variable,
     with_out,
-    axis,
     dtypes,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-
+    input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -111,7 +111,6 @@ def test_torch_gelu(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -178,7 +177,6 @@ def test_torch_tanh(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
@@ -228,6 +226,8 @@ def test_torch_logsigmoid(
     dtype_x_and_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
         valid_axis=True,
     ),
     dtypes=_dtypes(),
@@ -245,7 +245,6 @@ def test_torch_softmin(
     fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

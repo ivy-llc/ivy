@@ -377,7 +377,7 @@ inferred automatically using the helper functions
 `function_supported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370>`_
 and
 `function_unsupported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407>`_
-respestively, which traverse the abstract syntax tree of the compositional function and
+respectively, which traverse the abstract syntax tree of the compositional function and
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.
 
@@ -425,6 +425,26 @@ In such cases, the best solution is to simply add the data type to the
 :code:`unsupported_dtypes` attribute,
 rather than trying to implement a long and complex patch to achieve the desired
 behaviour.
+
+Some cases where a data type is not supported are very subtle. For example,
+:code:`uint8` is not supported for :code:`ivy.prod` with a :code:`torch` backend,
+despite :code:`torch.prod` handling :code:`torch.uint8` types in the input totally fine.
+
+The reason for this is that the `Array API Standard`_ mandates that the :code:`prod`
+function upcast the unsigned integer return to have the same number of bits as the
+default integer data type. By default, the default integer data type in Ivy is
+:code:`int32`, and so we should return an array of type :code:`uint32` despite the input
+arrays being of type :code:`uint8`. However, :code:`torch` does not support `uint32`,
+and so we cannot fully adhere to the requirements of the standard for :code:`uint8`
+inputs. Rather than breaking this rule and returning arrays of type :code:`uint8` only
+with a :code:`torch` backend, we instead opt to remove official support entirely for
+this combination of data type, function and backend framework.
+This will avoid all of the potential confusion that could arise if we were to have
+inconsistent and unexpected outputs when using officially supported data types in Ivy.
+
+
+Backend Data Type Bugs
+----------------------
 
 In some cases, the lack of support might just be a bug which will likely be resolved in
 a future release of the framework. In these cases, as well as adding to the

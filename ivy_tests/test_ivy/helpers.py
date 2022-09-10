@@ -759,12 +759,12 @@ def flatten_and_to_np(*, ret):
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
-def get_ret_and_flattened_np_array(func, *args, **kwargs):
+def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     """
     Runs func with args and kwargs, and returns the result along with its flattened
     version.
     """
-    ret = func(*args, **kwargs)
+    ret = fn(*args, **kwargs)
     return ret, flatten_and_to_np(ret=ret)
 
 
@@ -1994,295 +1994,8 @@ def test_frontend_array_instance_method(
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
-    """Tests a frontend instance method for the current backend by comparing the result with
-    the function in the associated framework.
-
-    Parameters
-    ----------
-    input_dtypes
-        data types of the input arguments in order.
-    as_variable_flags
-        dictates whether the corresponding input argument should be treated
-        as an ivy Variable.
-    with_out
-        if True, the function is also tested with the optional out argument.
-    num_positional_args
-        number of input arguments that must be passed as positional
-        arguments.
-    native_array_flags
-        dictates whether the corresponding input argument should be treated
-        as a native array.
-    fw
-        current backend (framework).
-    frontend
-        current frontend (framework).
-    frontend_class
-        class in the frontend framework.
-    fn_tree
-        Path to function in frontend framework namespace.
-    rtol
-        relative tolerance value.
-    atol
-        absolute tolerance value.
-    test_values
-        if True, test for the correctness of the resulting values.
-    all_as_kwargs_np
-        input arguments to the function as keyword arguments.
-
-    Returns
-    -------
-    ret
-        optional, return value from the function
-    ret_np
-        optional, return value from the Numpy function
-    """
-    # num_positional_args ignores self, which we need to compensate for
-    num_positional_args += 1
-
-    # convert single values to length 1 lists
-    input_dtypes, as_variable_flags, native_array_flags = as_lists(
-        input_dtypes, as_variable_flags, native_array_flags
-    )
-    # make all lists equal in length
-    num_arrays = max(
-        len(input_dtypes),
-        len(as_variable_flags),
-        len(native_array_flags),
-    )
-    if len(input_dtypes) < num_arrays:
-        input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
-    if len(as_variable_flags) < num_arrays:
-        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
-    if len(native_array_flags) < num_arrays:
-        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
-
-    # update variable flags to be compatible with float dtype and with_out args
-    as_variable_flags = [
-        v if ivy.is_float_dtype(d) and not with_out else False
-        for v, d in zip(as_variable_flags, input_dtypes)
-    ]
-
-    # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
-    *frontend_submods, fn_tree = fn_tree.split(".")
-
-    # check for unsupported dtypes in backend framework
-    function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
-    test_unsupported = check_unsupported_dtype(
-        fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
-    )
-
-    # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
-    )
-
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
-
-    # create args
-    if test_unsupported:
-        try:
-            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-                args_np=args_np,
-                kwargs_np=kwargs_np,
-                input_dtypes=input_dtypes,
-                as_variable_flags=as_variable_flags,
-                native_array_flags=native_array_flags,
-            )
-            args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
-        except Exception:
-            return
-    else:
-        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
-            args_np=args_np,
-            kwargs_np=kwargs_np,
-            input_dtypes=input_dtypes,
-            as_variable_flags=as_variable_flags,
-            native_array_flags=native_array_flags,
-        )
-        args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
-
-    # get instance array
-    if args == []:
-        instance_array = list(kwargs.values())[0]
-        del kwargs[(list(kwargs.keys())[0])]
-    else:
-        instance_array = args[0]
-        args = args[1:]
-
-    # create class instance
-    class_instance = frontend_class(instance_array)
-
-    # frontend function
-    fn_name = fn_tree.split(".")[-1]
-    frontend_fn = class_instance.__getattribute__(fn_name)
-
-    # run from Ivy API directly
-    if test_unsupported:
-        test_unsupported_function(fn=frontend_fn, args=args, kwargs=kwargs)
-        return
-
-    ret = frontend_fn(*args, **kwargs)
-    ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
-
-    # assert idx of return if the idx of the out array provided
-    out = ret
-    if with_out:
-        assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
-        if "out" in kwargs:
-            kwargs["out"] = out
-            kwargs_ivy["out"] = ivy.asarray(out)  # case where ret is not ivy.array
-        else:
-            args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
-            args_ivy = list(args_ivy)
-            args_ivy[ivy.arg_info(frontend_fn, name="out")["idx"]] = ivy.asarray(
-                out
-            )  # case where ret is not ivy.array
-            args_ivy = tuple(args_ivy)
-        ret = frontend_fn(*args, **kwargs)
-
-        if ivy.native_inplace_support:
-            # these backends do not always support native inplace updates
-            assert ret.data is out.data
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
-
-    # create NumPy args
-    args_np = ivy.nested_map(
-        args_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
-    )
-    kwargs_np = ivy.nested_map(
-        kwargs_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
-    )
-
-    # get instance array
-    if args_np == [] or args_np == ():
-        instance_np_array = list(kwargs_np.values())[0]
-    else:
-        instance_np_array = args_np[0]
-
-    # create class instance
-    class_instance_np = frontend_class(instance_np_array)
-
-    # frontend function
-    frontend_fn_np = class_instance_np.__getattribute__(fn_name)
-
-    # remove self from all_as_kwargs_np
-    del all_as_kwargs_np[(list(kwargs_np.keys())[0])]
-
-    # temporarily set frontend framework as backend
-    ivy.set_backend(frontend)
-    backend_returned_scalar = False
-    try:
-        # run from Ivy API directly
-        test_unsupported = check_unsupported_dtype(
-            fn=frontend_fn_np,
-            input_dtypes=input_dtypes,
-            all_as_kwargs_np=all_as_kwargs_np,
-        )
-
-        # create frontend framework args
-        args_frontend = ivy.nested_map(
-            args_np,
-            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-        )
-        kwargs_frontend = ivy.nested_map(
-            kwargs_np,
-            lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
-        )
-
-        # change ivy dtypes to native dtypes
-        if "dtype" in kwargs_frontend:
-            kwargs_frontend["dtype"] = ivy.as_native_dtype(kwargs_frontend["dtype"])
-
-        # change ivy device to native devices
-        if "device" in kwargs_frontend:
-            kwargs_frontend["device"] = ivy.as_native_dev(kwargs_frontend["device"])
-
-        # change out argument to ivy array
-        if "out" in kwargs_frontend:
-            kwargs_frontend["out"] = ivy.asarray(kwargs_frontend["out"])
-
-        # get instance array
-        if args_frontend == () or args_frontend == []:
-            frontend_instance_array = list(kwargs_frontend.values())[0]
-            del kwargs_frontend[(list(kwargs_frontend.keys())[0])]
-        else:
-            frontend_instance_array = args_frontend[0]
-            args_frontend = args_frontend[1:]
-
-        # create class instance
-        frontend_class_instance = frontend_class(frontend_instance_array)
-
-        # frontend function
-        frontend_fn = frontend_class_instance.__getattribute__(fn_name)
-
-        # return from frontend framework
-        if test_unsupported:
-            test_unsupported_function(
-                fn=frontend_fn, args=args_frontend, kwargs=kwargs_frontend
-            )
-            return
-        frontend_ret = frontend_fn(*args_frontend, **kwargs_frontend)
-
-        if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
-            backend_returned_scalar = True
-            frontend_ret_np_flat = [np.asarray(frontend_ret)]
-        else:
-            # tuplify the frontend return
-            if not isinstance(frontend_ret, tuple):
-                frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_array)
-            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-    except Exception as e:
-        ivy.unset_backend()
-        raise e
-    # unset frontend framework from backend
-    ivy.unset_backend()
-
-    # handle scalar return
-    if backend_returned_scalar:
-        ret_np_flat = ivy.to_numpy([ret])
-    else:
-        ret_np_flat = flatten_and_to_np(ret=ret)
-
-    # assuming value test will be handled manually in the test function
-    if not test_values:
-        return ret, frontend_ret
-
-    # value tests, iterating through each array in the flattened returns
-    value_test(
-        ret_np_flat=ret_np_flat,
-        ret_np_from_gt_flat=frontend_ret_np_flat,
-        rtol=rtol,
-        atol=atol,
-        ground_truth_backend=frontend,
-    )
-
-
-def test_frontend_array_instance_method(
-    *,
-    input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags: Union[bool, List[bool]],
-    with_out: bool,
-    num_positional_args: int,
-    native_array_flags: Union[bool, List[bool]],
-    fw: str,
-    frontend: str,
-    frontend_class: object,
-    fn_tree: str,
-    rtol: float = None,
-    atol: float = 1e-06,
-    test_values: bool = True,
-    **all_as_kwargs_np,
-):
-    """Tests a frontend instance method for the current backend by comparing the result with
-    the function in the associated framework.
+    """Tests a frontend instance method for the current backend by comparing the
+    result with the function in the associated framework.
 
     Parameters
     ----------
@@ -3048,6 +2761,11 @@ def _clamp_value(x, dtype):
         d_info = ivy.iinfo(dtype)
     elif ivy.is_float_dtype(dtype):
         d_info = ivy.finfo(dtype)
+    else:
+        raise TypeError(
+            f"{dtype} is not a valid data type. "
+            "dtype must be an integer or a float data type"
+        )
     if x > d_info.max or x < d_info.min:
         return None  # Calculated later using safety factor
     return x
@@ -3965,3 +3683,79 @@ def arrays_and_axes(
             all_axes_ranges.append(st.one_of(st.none(), st.integers(0, len(shape) - 1)))
     axes = draw(st.tuples(*all_axes_ranges))
     return arrays, axes
+
+
+@st.composite
+def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+    strides = draw(st.integers(min_value=1, max_value=2))
+    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    batch_size = draw(st.integers(1, 5))
+    filter_shape = draw(
+        get_shape(min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5)
+    )
+    input_channels = draw(st.integers(1, 5))
+    output_channels = draw(st.integers(1, 5))
+    dilations = draw(st.integers(1, 2))
+    dtype = draw(get_dtypes("float", full=False))
+    if dim == 2:
+        data_format = draw(st.sampled_from(["NCHW"]))
+    elif dim == 1:
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    else:
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
+
+    x_dim = []
+    if transpose:
+        output_shape = []
+        x_dim = draw(
+            get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=20
+            )
+        )
+        for i in range(dim):
+            output_shape.append(
+                ivy.deconv_length(
+                    x_dim[i], strides, filter_shape[i], padding, dilations
+                )
+            )
+    else:
+        for i in range(dim):
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
+            x_dim.append(draw(st.integers(min_x, 100)))
+        x_dim = tuple(x_dim)
+    if not depthwise:
+        filter_shape = filter_shape + (input_channels, output_channels)
+    else:
+        filter_shape = filter_shape + (input_channels,)
+    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+        x_shape = (batch_size,) + x_dim + (input_channels,)
+    else:
+        x_shape = (batch_size, input_channels) + x_dim
+    vals = draw(
+        array_values(
+            dtype=dtype,
+            shape=x_shape,
+            large_value_safety_factor=10,
+            small_value_safety_factor=0.1,
+        )
+    )
+    filters = draw(
+        array_values(
+            dtype=dtype,
+            shape=filter_shape,
+            large_value_safety_factor=10,
+            small_value_safety_factor=0.1,
+        )
+    )
+    if transpose:
+        return (
+            dtype,
+            vals,
+            filters,
+            dilations,
+            data_format,
+            strides,
+            padding,
+            output_shape,
+        )
+    return dtype, vals, filters, dilations, data_format, strides, padding

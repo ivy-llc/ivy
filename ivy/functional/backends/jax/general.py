@@ -19,15 +19,6 @@ from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
 
-def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
-    default_dtype = ivy.infer_default_dtype(x_dtype)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
-    return dtype
-
-
 def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
@@ -38,61 +29,6 @@ def container_types():
 
 def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.array(x)
-
-
-def cumprod(
-    x: JaxArray,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
-    if dtype != x.dtype:
-        x = x.astype(dtype)
-    if exclusive:
-        x = jnp.swapaxes(x, axis, -1)
-        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        res = jnp.cumprod(x, -1)
-        return jnp.swapaxes(res, axis, -1)
-    return jnp.cumprod(x, axis)
-
-
-def cumsum(
-    x: JaxArray,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is jnp.bool_:
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(dtype, x.dtype)
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
-            x = jnp.swapaxes(x, axis, -1)
-            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jnp.swapaxes(x, axis, -1)
-            res = jnp.flip(x, axis=(axis,))
-        elif exclusive:
-            x = jnp.swapaxes(x, axis, -1)
-            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jnp.cumsum(x, -1, dtype=dtype)
-            res = jnp.swapaxes(x, axis, -1)
-        elif reverse:
-            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
-            res = jnp.flip(x, axis=axis)
-        return res
-    return jnp.cumsum(x, axis, dtype=dtype)
 
 
 def current_backend_str():
@@ -139,7 +75,7 @@ def gather_nd(
     return _to_device(ret)
 
 
-def get_num_dims(x, as_tensor=False):
+def get_num_dims(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, int]:
     return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
 
@@ -196,7 +132,7 @@ def inplace_variables_supported():
     return False
 
 
-def is_native_array(x, exclusive=False):
+def is_native_array(x, exclusive: bool = False) -> bool:
     if exclusive:
         return isinstance(
             x,
@@ -226,7 +162,11 @@ def multiprocessing(context=None):
 
 
 def one_hot(
-    indices: JaxArray, depth: int, *, device, out: Optional[JaxArray] = None
+    indices: JaxArray,
+    depth: int,
+    *,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     res = jnp.eye(depth, dtype=indices.dtype)[
         jnp.array(indices, dtype="int64").reshape(-1)
