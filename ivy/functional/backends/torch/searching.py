@@ -9,7 +9,7 @@ def argmax(
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = torch.tensor(x)
@@ -24,7 +24,7 @@ def argmin(
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = torch.tensor(x)
