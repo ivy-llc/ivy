@@ -41,7 +41,10 @@ cumsum.unsupported_dtypes = (
 
 
 def trace(input):
-    return ivy.trace(input)
+    if "int" in input.dtype:
+        input = input.astype("int64")
+    target_type = "int64" if "int" in input.dtype else input.dtype
+    return ivy.astype(ivy.trace(input), target_type)
 
 
 trace.unsupported_dtypes = ("float16",)
