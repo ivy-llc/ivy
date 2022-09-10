@@ -20,6 +20,8 @@ Statistical
    statistical/std.rst
    statistical/sum.rst
    statistical/var.rst
+   statistical/cumsum.rst
+   statistical/cumprod.rst
    statistical/einsum.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
