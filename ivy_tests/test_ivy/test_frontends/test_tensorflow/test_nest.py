@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -21,7 +20,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def test_tensorflow_flatten(
     dtype_and_x,
     expand_composite,
-    use_array,
     num_positional_args,
     as_variable,
     native_array,
@@ -29,7 +27,7 @@ def test_tensorflow_flatten(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -37,6 +35,6 @@ def test_tensorflow_flatten(
         fw=fw,
         frontend="tensorflow",
         fn_tree="nest.flatten",
-        structure=np.array(x, dtype=input_dtype) if use_array else x,
+        structure=x,
         expand_composites=expand_composite,
     )

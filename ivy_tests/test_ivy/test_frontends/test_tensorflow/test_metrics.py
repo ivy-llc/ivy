@@ -180,29 +180,31 @@ def test_sparse_categorical_crossentropy(
         max_value=1,
         shape=(2, 2),
         shared_dtype=True,
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.mean_absolute_error"
     ),
 )
 def test_mean_absolute_error(
-    y_true_dtype_y_pred, as_variable, num_positional_args, native_array, fw, with_out
+    y_true_dtype_y_pred,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
 ):
-    dtype, y_true_y_pred = y_true_dtype_y_pred
-    y_true_y_pred = ivy.array(y_true_y_pred, dtype=dtype)
-    y_true, y_pred = y_true_y_pred
-
+    dtype, xs = y_true_dtype_y_pred
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_error",
-        y_true=y_true,
-        y_pred=y_pred,
+        y_true=xs[0],
+        y_pred=xs[1],
     )
 
 
@@ -271,7 +273,7 @@ def test_sparse_top_k_categorical_accuracy(
     y_true, y_pred, k, as_variable, num_positional_args, native_array, fw
 ):
     helpers.test_frontend_function(
-        input_dtypes=ivy.float16,
+        input_dtypes=[ivy.int32, ivy.float16],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -300,7 +302,7 @@ def test_categorical_accuracy(
     y_true, y_pred, as_variable, num_positional_args, native_array, fw
 ):
     helpers.test_frontend_function(
-        input_dtypes=ivy.float16,
+        input_dtypes=[ivy.int32, ivy.float16],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -375,6 +377,7 @@ def test_poisson(dtype_and_x, as_variable, num_positional_args, native_array, fw
 
 
 # mean_squared_error
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -385,11 +388,9 @@ def test_poisson(dtype_and_x, as_variable, num_positional_args, native_array, fw
             min_num_dims=1,
         ),
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.mean_squared_error"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_mean_squared_error(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -404,8 +405,8 @@ def test_mean_squared_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -421,11 +422,9 @@ def test_mean_squared_error(
             min_num_dims=1,
         ),
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.mean_absolute_percentage_error"
     ),
-    native_array=st.booleans(),
 )
 def test_mean_absolute_percentage_error(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -452,15 +451,13 @@ def test_mean_absolute_percentage_error(
         dtype=ivy.float16, shape=(2, 5), min_value=-1, max_value=1
     ),
     y_pred=helpers.array_values(dtype=ivy.float16, shape=(2, 5)),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.hinge"
     ),
-    native_array=st.booleans(),
 )
 def test_hinge(y_true, y_pred, as_variable, num_positional_args, native_array, fw):
     helpers.test_frontend_function(
-        input_dtypes=ivy.float16,
+        input_dtypes=[ivy.float16, ivy.float16],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -480,17 +477,15 @@ def test_hinge(y_true, y_pred, as_variable, num_positional_args, native_array, f
         dtype=ivy.float16, shape=(2, 5), min_value=-1, max_value=1
     ),
     y_pred=helpers.array_values(dtype=ivy.float16, shape=(2, 5)),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.squared_hinge"
     ),
-    native_array=st.booleans(),
 )
 def test_squared_hinge(
     y_true, y_pred, as_variable, num_positional_args, native_array, fw
 ):
     helpers.test_frontend_function(
-        input_dtypes=ivy.float16,
+        input_dtypes=[ivy.float16, ivy.float16],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
