@@ -759,12 +759,12 @@ def flatten_and_to_np(*, ret):
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
-def get_ret_and_flattened_np_array(func, *args, **kwargs):
+def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     """
     Runs func with args and kwargs, and returns the result along with its flattened
     version.
     """
-    ret = func(*args, **kwargs)
+    ret = fn(*args, **kwargs)
     return ret, flatten_and_to_np(ret=ret)
 
 
