@@ -461,8 +461,6 @@ def array_equal(
         The first input array to compare.
     x1
         The second input array to compare.
-    dtype
-        array data type
 
     Returns
     -------
@@ -517,9 +515,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     Parameters
     ----------
     xs
-        Sequence of arrays to compare for equality
-    dtype
-        list data type
+        Sequence of arrays to compare for equality.
 
     Returns
     -------
@@ -1425,8 +1421,8 @@ def unstack(
     }]
 
     >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> vy.unstack(x, axis=1, keepdims=True)
+    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=1, keepdims=True)
     [{
         a: ivy.array([[[1, 2]],
                       [[5, 6]]]),
@@ -2498,18 +2494,6 @@ def print_all_arrays_in_memory():
     """
     Gets all the native Ivy arrays which are currently alive(in the garbage collector)
     from get_all_arrays_in_memory() function and prints them to the console.
-
-    Parameters
-    ----------
-    None
-
-    Output
-    ------
-    Type and shape of all the Ivy native arrays which are currently alive.
-
-    Returns
-    -------
-    None
     """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
@@ -2951,9 +2935,6 @@ def scatter_flat(
         The size of the result.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-        updates if None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2990,15 +2971,8 @@ def scatter_nd(
     shape
         The shape of the result. Default is None, in which case tensor argument must be
         provided.
-    tensor
-        The tensor in which to scatter the results, default is None, in which case the
-        shape arg is used to
-        scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-        updates if None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3074,9 +3048,6 @@ def gather(
         array, index array.
     axis
         optional int, the axis from which to gather from. Default is -1.
-    device
-        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
-        'cpu' etc. Same as x if None.
     out
         optional output array, for writing the result to.
 
@@ -3200,9 +3171,6 @@ def gather_nd(
         The array from which to gather values.
     indices
         Index array.
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
-        None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
