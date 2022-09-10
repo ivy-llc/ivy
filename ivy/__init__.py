@@ -1,30 +1,20 @@
 # global
-import builtins
+from typing import Union
+import jax.numpy as jnp
+import jax
+import jaxlib
+from jaxlib.xla_extension import Buffer
+import mxnet as mx
+import numpy as np
+import tensorflow as tf
+from tensorflow.python.types.core import Tensor
+from tensorflow.python.framework.tensor_shape import TensorShape
+import torch
 import warnings
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
 # class placeholders
-
-
-class Container:
-    pass
-
-
-class NativeArray:
-    pass
-
-
-class NativeVariable:
-    pass
-
-
-class Array:
-    pass
-
-
-class Variable:
-    pass
 
 
 class FrameworkStr(str):
@@ -37,15 +27,40 @@ class Framework:
     pass
 
 
-class NativeDevice:
+NativeArray = Union[
+    jax.interpreters.xla._DeviceArray,
+    jaxlib.xla_extension.DeviceArray,
+    Buffer,
+    mx.nd.NDArray,
+    np.ndarray,
+    Tensor,
+    torch.Tensor,
+]
+
+
+NativeVariable = Union[
+    jax.interpreters.xla._DeviceArray, mx.nd.NDArray, np.ndarray, Tensor, torch.Tensor
+]
+
+
+NativeDevice = Union[jaxlib.xla_extension.Device, mx.context.Context, str, torch.device]
+
+
+NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype]
+
+
+NativeShape = Union[tuple, TensorShape, torch.Size]
+
+
+class Container:
     pass
 
 
-class NativeDtype:
+class Array:
     pass
 
 
-class NativeShape:
+class Variable:
     pass
 
 
@@ -134,7 +149,6 @@ bfloat16 = FloatDtype("bfloat16")
 float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
-# noinspection PyShadowingBuiltins
 bool = Dtype("bool")
 
 # native data types
