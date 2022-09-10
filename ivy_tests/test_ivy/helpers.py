@@ -407,7 +407,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
     if full:
         return valid_dtypes[index:]
-    return draw(st.sampled_from(valid_dtypes[index:]))
+    return [draw(st.sampled_from(valid_dtypes[index:]))]
 
 
 @st.composite
@@ -447,6 +447,7 @@ def floats(
     *,
     min_value=None,
     max_value=None,
+    as_list=True,
     allow_nan=False,
     allow_inf=False,
     allow_subnormal=False,
@@ -518,7 +519,7 @@ def floats(
         min_value = float_of(min_value, width)
         max_value = float_of(max_value, width)
 
-        values = draw(
+        ret = draw(
             st.floats(
                 min_value=min_value,
                 max_value=max_value,
@@ -575,7 +576,7 @@ def floats(
             min_value = float_of(-lim_float64 * safety_factor, width)
             max_value = float_of(lim_float64 * safety_factor, width)
 
-        values = draw(
+        ret = draw(
             st.floats(
                 min_value=min_value,
                 max_value=max_value,
@@ -587,11 +588,13 @@ def floats(
                 exclude_max=exclude_max,
             )
         )
-    return values
+    if as_list:
+        return [ret]
+    return ret
 
 
 @st.composite
-def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+def ints(draw, *, min_value=None, max_value=None, as_list=True, safety_factor=0.95):
     """Draws an arbitrarily sized list of integers with a safety factor
     applied to values.
 
@@ -640,7 +643,10 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
         min_value = ivy.default(min_value, round(0 * safety_factor))
         max_value = ivy.default(max_value, round(18446744073709551615 * safety_factor))
 
-    return draw(st.integers(min_value, max_value))
+    ret = draw(st.integers(min_value, max_value))
+    if as_list:
+        return [ret]
+    return ret
 
 
 def assert_all_close(
@@ -1775,10 +1781,6 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
-    # convert single values to length 1 lists
-    input_dtypes, as_variable_flags, native_array_flags = as_lists(
-        input_dtypes, as_variable_flags, native_array_flags
-    )
     # make all lists equal in length
     num_arrays = max(
         len(input_dtypes),
@@ -2487,8 +2489,6 @@ def dtype_and_values(
                 )
             )
         )
-    if num_arrays == 1:
-        values = values[0]
     if ret_shape:
         return dtype, values, shape
     return dtype, values
@@ -3116,7 +3116,7 @@ def get_shape(
         shape = draw(
             st.none()
             | st.lists(
-                ints(min_value=min_dim_size, max_value=max_dim_size),
+                ints(min_value=min_dim_size, max_value=max_dim_size, as_list=False),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )
@@ -3124,7 +3124,7 @@ def get_shape(
     else:
         shape = draw(
             st.lists(
-                ints(min_value=min_dim_size, max_value=max_dim_size),
+                ints(min_value=min_dim_size, max_value=max_dim_size, as_list=False),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )
@@ -3311,7 +3311,7 @@ def get_bounds(draw, *, dtype):
             low, high = values[0], values[1]
         if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
             return draw(get_bounds(dtype=dtype))
-    return low, high
+    return [low, high]
 
 
 @st.composite
@@ -3590,7 +3590,7 @@ def gradient_incompatible_function(*, fn):
 
 @st.composite
 def statistical_dtype_values(draw, *, function):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
+    dtype = draw(get_dtypes("float", full=False))
 
     size = draw(st.integers(1, 10))
 
