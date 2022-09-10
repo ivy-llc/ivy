@@ -29,12 +29,12 @@ def mean(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims, out=out))
+    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims, out=out)).astype(x.dtype)
 
 
 mean.support_native_out = True
@@ -106,19 +106,10 @@ def sum(
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
-    initial=None,
-    where=None,
 ) -> np.ndarray:
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-
-    if initial is None:
-        initial = np._NoValue
-
-    if where is None:
-        where = np._NoValue
-
     return np.asarray(
         np.sum(
             a=x,
@@ -126,8 +117,6 @@ def sum(
             dtype=dtype,
             keepdims=keepdims,
             out=out,
-            initial=initial,
-            where=where,
         )
     )
 
@@ -150,7 +139,7 @@ def var(
     if isinstance(correction, int):
         return np.asarray(
             np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        )
+        ).astype(x.dtype)
     size = 1
     for a in axis:
         size *= x.shape[a]

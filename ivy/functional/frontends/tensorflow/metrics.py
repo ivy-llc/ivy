@@ -20,19 +20,8 @@ def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False, axis=-1):
     return ivy.sparse_cross_entropy(y_true, y_pred, axis=axis)
 
 
-sparse_categorical_crossentropy.unsupported_dtypes = {
-    "numpy": ("float16", "bfloat16", "float32", "float64"),
-}
-
-
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred))
-
-
-mean_absolute_error.unsupported_dtypes = {
-    "numpy": ("int8", "float64"),
-    "torch": ("int8", "float64"),
-}
 
 
 def binary_crossentropy(
@@ -156,3 +145,50 @@ def kl_divergence(y_true, y_pred):
     y_pred = ivy.clip(y_pred, 1e-7, 1)
 
     return ivy.sum(y_true * ivy.log(y_true / y_pred), axis=-1)
+
+
+def poisson(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.array(y_true)
+    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+
+    return ivy.mean(y_pred - y_true * ivy.log(y_pred + 1e-7), axis=-1)
+
+
+def mean_squared_error(y_true, y_pred):
+    return ivy.mean(ivy.square(ivy.subtract(y_true, y_pred)), axis=-1)
+
+
+def mean_absolute_percentage_error(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.array(y_true)
+    y_true = ivy.astype(y_true, y_pred.dtype, copy=False)
+
+    diff = ivy.abs((y_true - y_pred) / ivy.maximum(ivy.abs(y_true), 1e-7))
+    return 100.0 * ivy.mean(diff, axis=-1)
+
+
+def _cond_convert_labels(y_true):
+    are_zeros = ivy.equal(y_true, 0.0)
+    are_ones = ivy.equal(y_true, 1.0)
+    is_binary = ivy.all(ivy.logical_or(are_zeros, are_ones))
+
+    # convert [0, 1] labels to [-1, 1]
+    if is_binary:
+        return 2.0 * y_true - 1
+
+    return y_true
+
+
+def hinge(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype, copy=False)
+    y_true = _cond_convert_labels(y_true)
+    return ivy.mean(ivy.maximum(1.0 - y_true * y_pred, 0.0), axis=-1)
+
+
+def squared_hinge(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
+    y_true = _cond_convert_labels(y_true)
+    return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)

@@ -24,8 +24,7 @@ def _linspace(start, stop, num, cont):
     increments = increment_tiled * mx.nd.array(
         mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont
     )
-    ret = mx.nd.concat(start, start + increments, dim=0)
-    return ret
+    return mx.nd.concat(start, start + increments, dim=0)
 
 
 def arange(

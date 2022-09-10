@@ -59,9 +59,6 @@ def cross_entropy(
     return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
 
 
-cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @handle_nestable
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
@@ -160,9 +157,6 @@ def binary_cross_entropy(
         ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
         out=out,
     )
-
-
-binary_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @handle_nestable
