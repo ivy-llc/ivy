@@ -65,7 +65,7 @@ def prod(
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if dtype != x.dtype:
         x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -96,7 +96,7 @@ def sum(
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if dtype != x.dtype:
         x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -141,7 +141,7 @@ def cumprod(
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if dtype != x.dtype:
         x = x.astype(dtype)
     if exclusive:
@@ -166,7 +166,7 @@ def cumsum(
         if dtype is jnp.bool_:
             dtype = ivy.default_int_dtype(as_native=True)
         else:
-            dtype = _infer_dtype(dtype, x.dtype)
+            dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
