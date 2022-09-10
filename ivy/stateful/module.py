@@ -25,6 +25,8 @@ class Module(abc.ABC):
 
     def __init__(
         self,
+        /,
+        *,
         device=None,
         v=None,
         build_mode="on_init",
@@ -123,8 +125,8 @@ class Module(abc.ABC):
     # Private #
     # --------#
 
-    def _fn_with_var_arg(self, fn, v_fn):
-        def new_fn(*a, with_grads=None, **kw):
+    def _fn_with_var_arg(self, fn, v_fn, /, *):
+        def new_fn(*a, /, *, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
                 del kw["v"]
@@ -136,7 +138,7 @@ class Module(abc.ABC):
         new_fn.wrapped = True
         return new_fn
 
-    def _top_v_fn(self, depth=None, flatten_key_chains=False):
+    def _top_v_fn(self, /, *, depth=None, flatten_key_chains=False):
         """
         Help in visualising the top view of a nested network upto
         a certain depth (Need Discussion, I don't think `v` stands for visualization. Any clues?)
@@ -166,7 +168,7 @@ class Module(abc.ABC):
             return ret.flatten_key_chains()
         return ret
 
-    def _top_mod_fn(self, depth=None):
+    def _top_mod_fn(self, /, *, depth=None):
         """
         Find the top module at specific depth.
 
@@ -288,7 +290,7 @@ class Module(abc.ABC):
         """
         return self.sub_mods().max_depth - 1
 
-    def _find_variables(self, obj=None):
+    def _find_variables(self, /, *, obj=None):
         """
         Find all interval varibles in obj. Return empty Container if obj is None.
 
@@ -335,7 +337,7 @@ class Module(abc.ABC):
         return vs
 
     @staticmethod
-    def _extract_v(v, keychain_mappings: dict, orig_key_chain):
+    def _extract_v(v, keychain_mappings: dict, orig_key_chain, /, *):
         """
 
 
@@ -361,7 +363,7 @@ class Module(abc.ABC):
                 )
         return ret_cont
 
-    def _wrap_call_methods(self, keychain_mappings, key="", obj=None):
+    def _wrap_call_methods(self, keychain_mappings, /, *, key="", obj=None):
         """
         (TODO)
 
@@ -404,7 +406,7 @@ class Module(abc.ABC):
         return
 
     @staticmethod
-    def _remove_duplicate_variables(vs, created):
+    def _remove_duplicate_variables(vs, created, /, *):
         """
         Remove duplicate variables in `vs` referring to `created`.
 
@@ -450,7 +452,7 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device, dtype, /, *):
         """
         Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
@@ -515,7 +517,7 @@ class Module(abc.ABC):
             self._check_submod_ret()
         return ret
 
-    def _call(self, *args, v=None, with_grads=None, **kwargs):
+    def _call(self, *args, /, *, v=None, with_grads=None, **kwargs):
         """
         The forward pass of the layer,
         treating layer instance as callable function.
@@ -564,7 +566,7 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def sub_mods(self, show_v=True, depth=None, flatten_key_chains=False):
+    def sub_mods(self, /, *, show_v=True, depth=None, flatten_key_chains=False):
         """
         Return a container composing of all submodules.
 
@@ -608,7 +610,7 @@ class Module(abc.ABC):
             return self.v
         return ""
 
-    def show_v_in_top_v(self, depth=None):
+    def show_v_in_top_v(self, /, *, depth=None):
         """
         Show sub containers from the perspective of value of top layer.
         Will give prompt if either of `v` and `top_v` is not initialized.
@@ -632,7 +634,7 @@ class Module(abc.ABC):
                 "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
             )
 
-    def v_with_top_v_key_chains(self, depth=None, flatten_key_chains=False):
+    def v_with_top_v_key_chains(self, /, *, depth=None, flatten_key_chains=False):
         """
         Show current layer from the perspective of value of top layer.
         Will give prompt if either of `v` and `top_v` is not initialized.
@@ -667,7 +669,7 @@ class Module(abc.ABC):
                 "but found\n\ntop_v: {}\n\nv: {}.".format(self.top_v, self.v)
             )
 
-    def mod_with_top_mod_key_chain(self, depth=None, flatten_key_chain=False):
+    def mod_with_top_mod_key_chain(self, /, *, depth=None, flatten_key_chain=False):
         """
         (TODO)
 
@@ -704,7 +706,7 @@ class Module(abc.ABC):
         return [mod for mod in reversed(mods)]
 
     def show_mod_in_top_mod(
-        self, upper_depth=None, lower_depth=None, flatten_key_chains=False
+        self, /, *, upper_depth=None, lower_depth=None, flatten_key_chains=False
     ):
         """
         Show lower submodules in the top module. `uppper_depth` and `lower_depth`
@@ -750,6 +752,8 @@ class Module(abc.ABC):
         submods_to_track,
         track_submod_call_order,
         expected_submod_rets,
+        /,
+        *
     ):
         """
         Set flags of the submodule.
@@ -796,7 +800,7 @@ class Module(abc.ABC):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
 
-    def get_mod_key(self, top_mod=None):
+    def get_mod_key(self, /, *, top_mod=None):
         """
         Get the key of current module.
 
@@ -823,7 +827,7 @@ class Module(abc.ABC):
         idx_key = submod_dict[name_key][id_str]
         return " " * self.mod_depth() + "_".join([name_key, idx_key])
 
-    def _add_submod_ret(self, ret):
+    def _add_submod_ret(self, ret, /, *):
         """
         Add returns in the submodule return of the top module.
 
@@ -968,6 +972,8 @@ class Module(abc.ABC):
     def __call__(
         self,
         *args,
+        /,
+        *,
         v=None,
         with_grads=None,
         # consider remove unused parameters?
@@ -1033,7 +1039,7 @@ class Module(abc.ABC):
         self._unset_submod_flags()
         return ret
 
-    def save_weights(self, weights_path):
+    def save_weights(self, weights_path, /, *):
         """
         Save the weights on the Module.
 
@@ -1049,7 +1055,7 @@ class Module(abc.ABC):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
+    def build(self, *args, /, *, from_call=False, device=None, dtype=None, **kwargs):
         """
         Build the internal layers and variables for this module.
 
