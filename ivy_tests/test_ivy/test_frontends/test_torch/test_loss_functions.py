@@ -220,11 +220,6 @@ def test_binary_cross_entropy(
     ),
     reduction=st.sampled_from(["mean", "none", "sum"]),
     beta=helpers.floats(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
         min_value=1.0013580322265625e-05,
         allow_inf=False,
         allow_nan=False,
