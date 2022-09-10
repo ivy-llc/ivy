@@ -2732,7 +2732,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
         True if support, raises exception otherwise
 
     """
-    if not ivy.supports_inplace(x):
+    if not ivy.supports_inplace_updates(x):
         raise Exception(
             "Inplace operations are not supported {} types with {} backend".format(
                 type(x), ivy.current_backend_str()

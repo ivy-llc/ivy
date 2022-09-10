@@ -1841,9 +1841,9 @@ def test_set_tmp_dir():
 @handle_cmd_line_args
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="supports_inplace"),
+    num_positional_args=helpers.num_positional_args(fn_name="supports_inplace_updates"),
 )
-def test_supports_inplace(
+def test_supports_inplace_updates(
     x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
 ):
     dtype = x_val_and_dtypes[0]
@@ -1857,7 +1857,7 @@ def test_supports_inplace(
         container_flags=container,
         instance_method=True,
         fw=fw,
-        fn_name="supports_inplace",
+        fn_name="supports_inplace_updates",
         x=np.asarray(x, dtype=dtype),
     )
 
