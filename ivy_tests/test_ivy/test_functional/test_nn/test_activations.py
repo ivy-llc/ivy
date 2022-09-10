@@ -220,5 +220,7 @@ def test_softplus(
         container_flags=container,
         instance_method=instance_method,
         fn_name="softplus",
+        rtol_=1e-02,
+        atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
     )
