@@ -23,7 +23,7 @@ def max(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the maximum value of the input array ``x``.
@@ -131,7 +131,7 @@ def mean(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the arithmetic mean of the input array ``x``.
@@ -519,7 +519,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum of the input array ``x``.
@@ -639,7 +639,7 @@ def var(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -806,8 +806,8 @@ def var(
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
+    exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -949,7 +949,7 @@ def cumsum(
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
-    exclusive: Optional[bool] = False,
+    exclusive: bool = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,

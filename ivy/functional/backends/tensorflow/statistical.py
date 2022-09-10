@@ -16,7 +16,7 @@ def max(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -28,7 +28,7 @@ def mean(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -60,7 +60,7 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[tf.DType] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
@@ -96,7 +96,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[tf.DType] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
@@ -112,7 +112,7 @@ def var(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
@@ -138,7 +138,7 @@ def var(
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
-    exclusive: Optional[bool] = False,
+    exclusive: bool = False,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -154,8 +154,8 @@ def cumprod(
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
+    exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

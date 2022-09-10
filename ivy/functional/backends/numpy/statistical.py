@@ -15,7 +15,7 @@ def max(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -30,7 +30,7 @@ def mean(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -68,7 +68,7 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[np.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
@@ -102,7 +102,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
@@ -128,7 +128,7 @@ def var(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
@@ -156,7 +156,7 @@ var.support_native_out = True
 def cumprod(
     x: np.ndarray,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
+    exclusive: bool = False,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -179,8 +179,8 @@ cumprod.support_native_out = True
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
+    exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
