@@ -1445,35 +1445,34 @@ def test_is_ivy_container(
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
+    dtypes_and_xs=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2, min_num_dims=1
     ),
     equality_matrix=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="all_equal"),
 )
 def test_all_equal(
-    x_val_and_dtypes,
+    dtypes_and_xs,
     equality_matrix,
     as_variable,
     num_positional_args,
     native_array,
     container,
+    instance_method,
     fw,
 ):
-    dtype = x_val_and_dtypes[0]
-    x = x_val_and_dtypes[1]
+    dtype, x = dtypes_and_xs
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="all_equal",
-        x0=np.asarray(x[0], dtype=dtype[0]),
-        x1=np.asarray(x[1], dtype=dtype[1]),
+        xs=[np.asarray(x[0], dtype=dtype[0]), np.asarray(x[1], dtype=dtype[1])],
         equality_matrix=equality_matrix,
     )
 
