@@ -228,3 +228,11 @@ def conv(lhs, rhs, window_strides, padding, precision=None, preferred_element_ty
         lhs = ivy.astype(lhs, dtype=preferred_element_type)
         rhs = ivy.astype(rhs, dtype=preferred_element_type)
     return ivy.conv2d(lhs, rhs, window_strides, padding)
+
+
+def conv_transpose(lhs, rhs, strides, padding, rhs_dilation=None, dimension_numbers=None,
+                   transpose_kernel=False, precision=None, preferred_element_type=None):
+    if preferred_element_type:
+        lhs = ivy.astype(lhs, dtype=preferred_element_type)
+        rhs = ivy.astype(rhs, dtype=preferred_element_type)
+    return ivy.conv2d_transpose(lhs, rhs, strides, padding)
