@@ -1935,7 +1935,7 @@ def test_jax_lax_conv(
         lhs=np.asarray(x, dtype[0]),
         rhs=np.asarray(filters, dtype[0]),
         window_strides=(stride, stride),
-        padding=pad
+        padding=pad,
     )
 
 
@@ -1968,5 +1968,5 @@ def test_jax_lax_conv_transpose(
         lhs=np.asarray(x, dtype[0]),
         rhs=np.asarray(filters, dtype[0]),
         strides=(stride, stride),
-        padding=pad
+        padding=pad,
     )
