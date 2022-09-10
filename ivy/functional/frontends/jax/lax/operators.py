@@ -221,3 +221,10 @@ def dot(lhs, rhs, precision=None, preferred_element_type=None):
         lhs = ivy.astype(lhs, dtype=preferred_element_type)
         rhs = ivy.astype(rhs, dtype=preferred_element_type)
     return ivy.tensordot(lhs, rhs)
+
+
+def conv(lhs, rhs, window_strides, padding, precision=None, preferred_element_type=None):
+    if preferred_element_type:
+        lhs = ivy.astype(lhs, dtype=preferred_element_type)
+        rhs = ivy.astype(rhs, dtype=preferred_element_type)
+    return ivy.conv2d(lhs, rhs, window_strides, padding)
