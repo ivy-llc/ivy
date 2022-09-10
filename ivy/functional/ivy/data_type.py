@@ -1963,7 +1963,35 @@ def type_promote_arrays(
 
 
 def unset_default_dtype():
-    """"""
+    """
+    Unsets the datatype dtype from default data type.
+
+    Parameters
+    ----------
+    None
+
+    Examples
+    --------
+
+    >>> ivy.set_default_dtype('float64')
+    >>> ivy.default_dtype_stack
+        ['float64']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+
+    >>> ivy.set_default_dtype(ivy.int32)
+    >>> ivy.set_default_dtype(ivy.bool)
+    >>> ivy.default_dtype_stack
+        ['int32', 'bool']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        ['int32']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+        
+    """
     global default_dtype_stack
     if default_dtype_stack:
         default_dtype_stack.pop(-1)
