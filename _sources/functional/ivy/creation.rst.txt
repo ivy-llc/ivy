@@ -29,6 +29,7 @@ Creation
    creation/meshgrid.rst
    creation/full.rst
    creation/from_dlpack.rst
+   creation/copy_array.rst
    creation/native_array.rst
    creation/one_hot.rst
    creation/logspace.rst

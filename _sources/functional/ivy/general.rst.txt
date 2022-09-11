@@ -24,7 +24,6 @@ General
    general/set_nestable_mode.rst
    general/unset_nestable_mode.rst
    general/get_nestable_mode.rst
-   general/copy_array.rst
    general/array_equal.rst
    general/arrays_equal.rst
    general/all_equal.rst
@@ -75,7 +74,6 @@ General
    general/gather.rst
    general/gather_nd.rst
    general/multiprocessing.rst
-   general/indices_where.rst
    general/shape.rst
    general/set_shape_array_mode.rst
    general/unset_shape_array_mode.rst

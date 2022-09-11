@@ -17,6 +17,7 @@ Searching
    searching/argmin.rst
    searching/nonzero.rst
    searching/where.rst
+   searching/indices_where.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`Searching discussion`: https://github.com/unifyai/ivy/discussions/2202
