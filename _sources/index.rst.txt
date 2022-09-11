@@ -86,7 +86,7 @@ Contents
 Overview
 --------
 
-Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy.
+Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, and Numpy.
 We’re very excited for you to try it out!
 
 Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
@@ -152,7 +152,7 @@ You can immediately use Ivy to train a neural network, using your favorite frame
     print('Finished training!')
 
 This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favorite frameworks, such as TensorFlow, JAX, or MXNet.
+but the backend can easily be changed to your favorite frameworks, such as TensorFlow, or JAX.
 
 **Framework Agnostic Functions**
 
@@ -164,7 +164,6 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
     import jax.numpy as jnp
     import tensorflow as tf
     import numpy as np
-    import mxnet as mx
     import torch
 
     import ivy
@@ -172,7 +171,6 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
     jax_concatted   = ivy.concat((jnp.ones((1,)), jnp.ones((1,))), -1)
     tf_concatted    = ivy.concat((tf.ones((1,)), tf.ones((1,))), -1)
     np_concatted    = ivy.concat((np.ones((1,)), np.ones((1,))), -1)
-    mx_concatted    = ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1)
     torch_concatted = ivy.concat((torch.ones((1,)), torch.ones((1,))), -1)
 
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.

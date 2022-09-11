@@ -197,7 +197,7 @@
 </section>
 <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h1>
-<p>Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, MXNet, and Numpy.
+<p>Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, and Numpy.
 We’re very excited for you to try it out!</p>
 <p>Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
 and add instant multi-framework support for all open-source libraries with only a few lines of code changed!
@@ -253,14 +253,13 @@ You can immediately use Ivy to train a neural network, using your favorite frame
 </pre></div>
 </div>
 <p>This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favorite frameworks, such as TensorFlow, JAX, or MXNet.</p>
+but the backend can easily be changed to your favorite frameworks, such as TensorFlow, or JAX.</p>
 <p><strong>Framework Agnostic Functions</strong></p>
 <p>In the example below we show how Ivy’s concatenation function is compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">mxnet</span> <span class="k">as</span> <span class="nn">mx</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -268,7 +267,6 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
 <span class="n">jax_concatted</span>   <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">tf_concatted</span>    <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">np_concatted</span>    <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">mx_concatted</span>    <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">torch_concatted</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>

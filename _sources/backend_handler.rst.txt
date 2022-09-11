@@ -23,7 +23,6 @@ Backend handler
    backend_handler/try_import_ivy_jax.rst
    backend_handler/try_import_ivy_tf.rst
    backend_handler/try_import_ivy_torch.rst
-   backend_handler/try_import_ivy_mxnet.rst
    backend_handler/try_import_ivy_numpy.rst
    backend_handler/choose_random_backend.rst
    backend_handler/ContextManager:

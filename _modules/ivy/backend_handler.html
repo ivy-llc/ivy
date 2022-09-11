@@ -163,21 +163,18 @@
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;jaxlib.xla_extension&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;tensorflow.python.framework.ops&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;mxnet.ndarray.ndarray&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.mxnet&quot;</span>
 
 <span class="n">_backend_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
-<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;mxnet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.mxnet&quot;</span>
 
 <span class="n">_backend_reverse_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;jax&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tensorflow&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
-<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.mxnet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mxnet&quot;</span>
 
 
 <span class="c1"># Backend Getting/Setting #</span>
@@ -414,7 +411,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    backend</span>
 <span class="sd">        The backend for which we want to retrieve Ivy&#39;s backend i.e. one of &#39;jax&#39;,</span>
-<span class="sd">        &#39;torch&#39;, &#39;tensorflow&#39;, &#39;numpy&#39;, &#39;mxnet&#39;.</span>
+<span class="sd">        &#39;torch&#39;, &#39;tensorflow&#39;, &#39;numpy&#39;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -565,20 +562,6 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="try_import_ivy_mxnet"><a class="viewcode-back" href="../../backend_handler/try_import_ivy_mxnet.html#ivy.backend_handler.try_import_ivy_mxnet">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_mxnet</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ivy.functional.backends.mxnet</span>
-
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mxnet</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">mxnet does not appear to be installed, &quot;</span>
-            <span class="s2">&quot;ivy.functional.backends.mxnet can therefore not be imported.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="try_import_ivy_numpy"><a class="viewcode-back" href="../../backend_handler/try_import_ivy_numpy.html#ivy.backend_handler.try_import_ivy_numpy">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_numpy</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">ivy.functional.backends.numpy</span>
@@ -597,7 +580,6 @@
     <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="n">try_import_ivy_jax</span><span class="p">,</span>
     <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="n">try_import_ivy_tf</span><span class="p">,</span>
     <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="n">try_import_ivy_torch</span><span class="p">,</span>
-    <span class="s2">&quot;mxnet&quot;</span><span class="p">:</span> <span class="n">try_import_ivy_mxnet</span><span class="p">,</span>
     <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="n">try_import_ivy_numpy</span><span class="p">,</span>
 <span class="p">}</span>
 
@@ -605,7 +587,7 @@
 <div class="viewcode-block" id="choose_random_backend"><a class="viewcode-back" href="../../backend_handler/choose_random_backend.html#ivy.backend_handler.choose_random_backend">[docs]</a><span class="k">def</span> <span class="nf">choose_random_backend</span><span class="p">(</span><span class="n">excluded</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">excluded</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">excluded</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">excluded</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">excluded</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">excluded</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;Unable to select backend, all backends are either excluded &quot;</span>
                 <span class="s2">&quot;or not installed.&quot;</span>
