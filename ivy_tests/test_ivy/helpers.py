@@ -103,15 +103,6 @@ def get_ivy_torch():
     return ivy.functional.backends.torch
 
 
-def get_ivy_mxnet():
-    """Import MXNET module from ivy"""
-    try:
-        import ivy.functional.backends.mxnet
-    except ImportError:
-        return None
-    return ivy.functional.backends.mxnet
-
-
 def get_valid_numeric_dtypes():
     return ivy.valid_numeric_dtypes
 
@@ -122,7 +113,6 @@ _ivy_fws_dict = {
     "tensorflow": lambda: get_ivy_tensorflow(),
     "tensorflow_graph": lambda: get_ivy_tensorflow(),
     "torch": lambda: get_ivy_torch(),
-    "mxnet": lambda: get_ivy_mxnet(),
 }
 
 _iterable_types = [list, tuple, dict]
