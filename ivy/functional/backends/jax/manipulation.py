@@ -92,7 +92,7 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Tuple[int], List[int]],
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -111,11 +111,9 @@ def stack(
     arrays: Union[Tuple[JaxArray], List[JaxArray]],
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis is None:
-        axis = 0
     return jnp.stack(arrays, axis=axis)
 
 
