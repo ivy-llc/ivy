@@ -43,10 +43,6 @@ def container_types():
     return []
 
 
-def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return x.clone()
-
-
 def current_backend_str() -> str:
     return "torch"
 
@@ -92,16 +88,6 @@ def gather_nd(
 
 def get_num_dims(x: torch.Tensor, as_tensor: bool = False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
-
-
-def indices_where(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    where_x = torch.where(x)
-    return torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
-
-
-indices_where.support_native_out = True
 
 
 def inplace_arrays_supported():

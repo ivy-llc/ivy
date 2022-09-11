@@ -186,3 +186,39 @@ def test_where(
         x1=x1,
         x2=x2,
     )
+
+
+# indices_where
+@given(
+    x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
+    with_out=st.booleans(),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="indices_where"),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
+)
+def test_indices_where(
+    x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x = x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="indices_where",
+        x=np.asarray(x, dtype=dtype),
+    )
