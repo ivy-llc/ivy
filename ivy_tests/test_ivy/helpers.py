@@ -1860,13 +1860,13 @@ def test_frontend_function(
 
     ret = frontend_fn(*args, **kwargs)
     ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
+    out = ret
     assert not with_out or not with_inplace
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
         # pass correct return variable to out argument
         # check if passed reference is correctly updated
-        out = ret
         kwargs["out"] = out
         ret = frontend_fn(*args, **kwargs)
         assert ret.data is out.data
@@ -1879,7 +1879,6 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             kwargs["inplace"] = True
-            out = ret
             input_argument = args[0]
             ret = frontend_fn(*args, **kwargs)
             assert input_argument.data is ret.data and ret.data is out.data
