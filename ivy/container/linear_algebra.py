@@ -545,19 +545,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-            ``MxN`` matrices. Should have a floating-point data type.
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
+        ``MxN`` matrices. Should have a floating-point data type.
         rtol
-            relative tolerance for small singular values. Singular values approximately less
-            than or equal to ``rtol * largest_singular_value`` are set to zero. If a
-            ``float``, the value is equivalent to a zero-dimensional array having a
-            floating-point data type determined by :ref:`type-promotion` (as applied to
-            ``x``) and must be broadcast against each matrix. If an ``array``, must have a
-            floating-point data type and must be compatible with ``shape(x)[:-2]``
-            (see :ref:`broadcasting`). If ``None``, the default value is
-            ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with
-            the floating-point data type determined by :ref:`type-promotion` (as applied to
-            ``x``). Default: ``None``.
+            relative tolerance for small singular values approximately less
+            than or equal to ``rtol * largest_singular_value`` are set to zero. 
         out
             optional output array, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -615,19 +607,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            input array having shape ``(..., M, N)`` and whose innermost two dimensions form
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
             ``MxN`` matrices. Should have a floating-point data type.
         rtol
-            relative tolerance for small singular values. Singular values approximately less
-            than or equal to ``rtol * largest_singular_value`` are set to zero. If a
-            ``float``, the value is equivalent to a zero-dimensional array having a
-            floating-point data type determined by :ref:`type-promotion` (as applied to
-            ``x``) and must be broadcast against each matrix. If an ``array``, must have a
-            floating-point data type and must be compatible with ``shape(x)[:-2]``
-            (see :ref:`broadcasting`). If ``None``, the default value is
-            ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with
-            the floating-point data type determined by :ref:`type-promotion` (as applied to
-            ``x``). Default: ``None``.
+            relative tolerance for small singular values approximately less than or equal to 
+            ``rtol * largest_singular_value`` are set to zero. 
         out
             optional output array, for writing the result to. It must have a shape that the
             inputs broadcast to.
@@ -666,7 +650,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_pinv(self, rtol=rtol, out=out,)
     
-
     @staticmethod
     def static_matrix_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
