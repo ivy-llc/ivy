@@ -13,13 +13,13 @@ import ivy
 
 
 def gelu(
-    x: Tensor, /, *, approximate: Optional[bool] = True, out: Optional[Tensor] = None
+    x: Tensor, /, *, approximate: bool = True, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.gelu(x, approximate)
 
 
 def leaky_relu(
-    x: Tensor, /, *, alpha: Optional[float] = 0.2, out: Optional[Tensor] = None
+    x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 

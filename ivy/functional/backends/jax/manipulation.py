@@ -111,7 +111,7 @@ def stack(
     arrays: Union[Tuple[JaxArray], List[JaxArray]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.stack(arrays, axis=axis)

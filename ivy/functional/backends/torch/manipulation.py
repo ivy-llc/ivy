@@ -146,7 +146,7 @@ def stack(
     arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.stack(arrays, axis, out=out)
