@@ -282,7 +282,7 @@ class ArrayWithCreation(abc.ABC):
         self: ivy.Array,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray],
-        indexing: Optional[str] = "xy",
+        indexing: str = "xy",
     ) -> List[ivy.Array]:
         list_arrays = [self._data] + list(arrays)
         """
