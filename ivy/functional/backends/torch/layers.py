@@ -110,7 +110,10 @@ def conv1d_transpose(
     return res
 
 
-conv1d_transpose.unsupported_dtypes = ("float16", "bfloat16")
+conv1d_transpose.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences
