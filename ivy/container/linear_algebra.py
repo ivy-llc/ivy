@@ -551,16 +551,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
             relative tolerance for small singular values approximately less
             than or equal to ``rtol * largest_singular_value`` are set to zero. 
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
             an array containing the pseudo-inverses. The returned array must have a
-            floating-point data type determined by :ref:`type-promotion` and must have shape
-            ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost
-            two dimensions must be transposed).
+            floating-point data type determined by :ref:`type-promotion` and 
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            ``x``, except the innermost two dimensions must be transposed).
     
         Examples
         --------
@@ -613,16 +613,17 @@ class ContainerWithLinearAlgebra(ContainerBase):
             relative tolerance for small singular values approximately less than or equal to 
             ``rtol * largest_singular_value`` are set to zero. 
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
             an array containing the pseudo-inverses. The returned array must have a
-            floating-point data type determined by :ref:`type-promotion` and must have shape
-            ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost
-            two dimensions must be transposed).
+            floating-point data type determined by :ref:`type-promotion` and 
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            ``x``, except the innermost two dimensions must be transposed).
+    
     
         Examples
         --------
