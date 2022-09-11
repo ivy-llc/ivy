@@ -2820,9 +2820,10 @@ def array_values(
     max_op
         The operation to use when calculating the maximum value of the list. Can be
         "divide", "sqrt" or "log". Default value = "divide".
+
     Returns
     -------
-    A strategy that draws a list.
+        A strategy that draws a list.
     """
     assert large_value_safety_factor >= 1, "large_value_safety_factor must be >= 1"
     exclude_min = exclude_min if ivy.exists(min_value) else False
