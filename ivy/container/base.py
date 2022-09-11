@@ -1,6 +1,7 @@
 """Base Container Object."""
 
 # global
+import inspect
 from itertools import chain
 import re
 import abc
@@ -177,7 +178,10 @@ class ContainerBase(dict, abc.ABC):
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
-        conts = arg_conts + kwarg_conts
+        if inspect.signature(ivy.__dict__[fn_name]).parameters.get("out") is not None:
+            conts = arg_conts + kwarg_conts + [out]
+        else:
+            conts = arg_conts + kwarg_conts
         if not conts:
             raise Exception("no containers found in arguments")
         cont0 = conts[0]
