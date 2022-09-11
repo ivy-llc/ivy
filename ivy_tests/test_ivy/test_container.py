@@ -772,9 +772,6 @@ def test_container_slice_keys(str_slice, device):
 
 
 def test_container_show(device):
-    if ivy.current_backend_str() == "mxnet":
-        # ToDo: get this working for mxnet again, recent version update caused errors.
-        pytest.skip()
     dict_in = {
         "a": ivy.array([1], device=device),
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
@@ -837,9 +834,6 @@ def test_container_find_sub_structure(device):
 
 
 def test_container_show_sub_container(device):
-    if ivy.current_backend_str() == "mxnet":
-        # ToDo: get this working for mxnet again, recent version update caused errors.
-        pytest.skip()
     dict_in = {
         "a": ivy.array([1], device=device),
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
@@ -984,9 +978,6 @@ def test_container_einsum(device):
 
 
 def test_container_matrix_norm(device):
-    if ivy.current_backend_str() == "mxnet":
-        # MXNet does not support matrix norm
-        pytest.skip()
     dict_in = {
         "a": ivy.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], device=device),
         "b": {
@@ -3165,10 +3156,6 @@ def test_container_truediv(device):
 
 
 def test_container_scalar_floordiv(device):
-    if ivy.current_backend_str() == "mxnet":
-        # MXnet arrays do not overload the // operator, can add if explicit
-        # ivy.floordiv is implemented at some point
-        pytest.skip()
     container = Container(
         {
             "a": ivy.array([1], device=device),
@@ -3188,10 +3175,6 @@ def test_container_scalar_floordiv(device):
 
 
 def test_container_reverse_scalar_floordiv(device):
-    if ivy.current_backend_str() == "mxnet":
-        # MXnet arrays do not overload the // operator, can add if explicit
-        # ivy.floordiv is implemented at some point
-        pytest.skip()
     container = Container(
         {
             "a": ivy.array([2], device=device),
@@ -3211,10 +3194,6 @@ def test_container_reverse_scalar_floordiv(device):
 
 
 def test_container_floordiv(device):
-    if ivy.current_backend_str() == "mxnet":
-        # MXnet arrays do not overload the // operator, can add if explicit
-        # ivy.floordiv is implemented at some point
-        pytest.skip()
     container_a = Container(
         {
             "a": ivy.array([1], device=device),
@@ -3811,10 +3790,6 @@ def test_container_not(device):
 
 
 def test_container_scalar_xor(device):
-    if ivy.current_backend_str() == "mxnet":
-        # MXnet arrays do not overload the ^ operator, can add if explicit
-        # ivy.logical_xor is implemented at some point
-        pytest.skip()
     container = Container(
         {
             "a": ivy.array([True], device=device),
@@ -3834,10 +3809,6 @@ def test_container_scalar_xor(device):
 
 
 def test_container_reverse_scalar_xor(device):
-    if ivy.current_backend_str() == "mxnet":
-        # MXnet arrays do not overload the ^ operator, can add if explicit
-        # ivy.logical_xor is implemented at some point
-        pytest.skip()
     container = Container(
         {
             "a": ivy.array([True], device=device),
@@ -3857,10 +3828,6 @@ def test_container_reverse_scalar_xor(device):
 
 
 def test_container_xor(device):
-    if ivy.current_backend_str() == "mxnet":
-        # MXnet arrays do not overload the ^ operator, can add if explicit
-        # ivy.logical_xor is implemented at some point
-        pytest.skip()
     container_a = Container(
         {
             "a": ivy.array([True], device=device),

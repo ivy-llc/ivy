@@ -47,23 +47,14 @@ def sigmoid(input):
     return ivy.sigmoid(input)
 
 
-sigmoid.unsupported_dtypes = ("float16",)
-
-
 def leaky_relu(input, negative_slope=0.01):
     return ivy.leaky_relu(input, alpha=negative_slope)
-
-
-leaky_relu.unsupported_dtypes = ("float16",)
 
 
 def softmax(input, dim=None, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     return ivy.softmax(input, axis=dim)
-
-
-softmax.unsupported_dtypes = ("float16",)
 
 
 def gelu(
@@ -76,21 +67,12 @@ def gelu(
     return ivy.gelu(input)
 
 
-gelu.unsupported_dtypes = ("float16",)
-
-
 def tanh(input):
     return ivy.tanh(input)
 
 
-tanh.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def logsigmoid(input):
     return -ivy.softplus(-input)
-
-
-logsigmoid.unsupported_dtypes = ("float16",)
 
 
 def softmin(input, dim=None, dtype=None):
@@ -99,21 +81,12 @@ def softmin(input, dim=None, dtype=None):
     return ivy.softmax(-input, axis=dim)
 
 
-softmin.unsupported_dtypes = ("float16",)
-
-
 def threshold(input, threshold, value, inplace=False):
     return _compute_threshold(input, threshold, value, inplace)
 
 
-threshold.unsupported_dtypes = ("float16",)
-
-
 def threshold_(input, threshold, value):
     return _compute_threshold(input, threshold, value, inplace=True)
-
-
-threshold_.unsupported_dtypes = ("float16",)
 
 
 def relu6(input, inplace=False):
@@ -122,21 +95,12 @@ def relu6(input, inplace=False):
     return ivy.minimum(ivy.maximum(input, 0), 6)
 
 
-relu6.unsupported_dtypes = ("float16",)
-
-
 def elu(input, alpha=1.0, inplace=False):
     return _compute_elu(input, alpha, inplace=inplace)
 
 
-elu.unsupported_dtypes = ("float16",)
-
-
 def elu_(input, alpha=1.0):
     return _compute_elu(input, alpha, inplace=True)
-
-
-elu_.unsupported_dtypes = ("float16",)
 
 
 def celu(input, alpha=1.0, inplace=False):
