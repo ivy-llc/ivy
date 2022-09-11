@@ -66,7 +66,7 @@ def asarray_infer_device(fn: Callable) -> Callable:
             The return of the function, with `device` passed explicitly.
         """
         if type(args[0]) == list:
-            return fn(*args, device=ivy.default_device(), **kwargs)
+            return fn(*args, device=ivy.default_device(as_native=True), **kwargs)
 
         # find the first array argument, if required
         arr = None if ivy.exists(device) else _get_first_array(*args, **kwargs)
