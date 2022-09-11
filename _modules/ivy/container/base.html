@@ -308,7 +308,11 @@
         <span class="n">num_arg_conts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg_conts</span><span class="p">)</span>
         <span class="n">kwarg_conts</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">kwarg_cont_idxs</span><span class="p">)</span>
         <span class="c1"># Combine the retrieved containers from args and kwargs into a single list</span>
-        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">])</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">with_out</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">])</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">with_out</span><span class="p">:</span>
             <span class="n">conts</span> <span class="o">=</span> <span class="n">arg_conts</span> <span class="o">+</span> <span class="n">kwarg_conts</span> <span class="o">+</span> <span class="p">[</span><span class="n">out</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">conts</span> <span class="o">=</span> <span class="n">arg_conts</span> <span class="o">+</span> <span class="n">kwarg_conts</span>
@@ -320,13 +324,19 @@
         <span class="n">fn</span> <span class="o">=</span> <span class="n">cont0</span><span class="o">.</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">with_out</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">arg_vals</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[:</span><span class="n">num_arg_conts</span><span class="p">]</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">set_nest_at_indices</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">arg_cont_idxs</span><span class="p">,</span> <span class="n">arg_vals</span><span class="p">)</span>
             <span class="n">kwarg_vals</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">num_arg_conts</span><span class="p">:]</span>
             <span class="n">kw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">set_nest_at_indices</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="n">kwarg_cont_idxs</span><span class="p">,</span> <span class="n">kwarg_vals</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">with_out</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
 
         <span class="c1"># Replace each container in arg and kwarg with the arrays at the leaf</span>
         <span class="c1"># levels of that container using map_fn and call fn using those arrays</span>
