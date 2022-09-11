@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence, List, Callable
+from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -161,19 +161,6 @@ def multiprocessing(context=None):
     )
 
 
-def one_hot(
-    indices: JaxArray,
-    depth: int,
-    *,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    res = jnp.eye(depth, dtype=indices.dtype)[
-        jnp.array(indices, dtype="int64").reshape(-1)
-    ]
-    return _to_device(res.reshape(list(indices.shape) + [depth]), device)
-
-
 def scatter_flat(
     indices: JaxArray,
     updates: JaxArray,
@@ -312,17 +299,6 @@ def to_scalar(x: JaxArray) -> Number:
         return x
     else:
         return _to_array(x).item()
-
-
-def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
-    if x.shape == ():
-        return [x]
-    dim_size = x.shape[axis]
-    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
-    x_split = jnp.split(x, dim_size, axis)
-    if keepdims:
-        return x_split
-    return [jnp.squeeze(item, axis) for item in x_split]
 
 
 def vmap(

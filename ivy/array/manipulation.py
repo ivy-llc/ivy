@@ -421,6 +421,41 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.tile(self._data, reps=reps, out=out)
 
+    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.unstack. This method simply
+        wraps the function, and so the docstring for ivy.unstack also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array to unstack.
+        axis
+            Axis for which to unpack the array.
+        keepdims
+            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+
+        Returns
+        -------
+        ret
+            List of arrays, unpacked along specified dimensions.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=0)
+        >>> print(y)
+        [ivy.array([1, 2]), ivy.array([3, 4])]
+
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> y = x.unstack(axis=1, keepdims=True)
+        >>> print(y)
+        [ivy.array([[1],
+                [3]]), ivy.array([[2],
+                [4]])]
+        """
+        return ivy.unstack(self._data, axis, keepdims=keepdims)
+
     def zero_pad(
         self: ivy.Array,
         /,
