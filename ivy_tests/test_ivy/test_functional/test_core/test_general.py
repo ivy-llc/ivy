@@ -609,28 +609,13 @@ def test_scatter_flat(
         lambda n: st.tuples(
             helpers.dtype_and_values(
                 available_dtypes=ivy_np.valid_numeric_dtypes,
-                min_num_dims=n[0],
-                max_num_dims=n[0],
-                min_dim_size=n[1],
-                max_dim_size=n[1],
+                shape=(n[1], n[0]),
             ),
             helpers.dtype_and_values(
                 available_dtypes=["int32", "int64"],
                 min_value=0,
                 max_value=max(n[1] - 1, 0),
-                min_num_dims=1,
-                max_num_dims=1,
-                min_dim_size=n[1],
-                max_dim_size=n[1],
-                shape=st.shared(
-                    helpers.get_shape(
-                        min_num_dims=1,
-                        max_num_dims=1,
-                        min_dim_size=n[1],
-                        max_dim_size=n[1],
-                    ),
-                    key="shape2",
-                ),
+                shape=(n[1], ),
             ).filter(lambda l: len(set(l[1])) == len(l[1])),
         )
     ),
