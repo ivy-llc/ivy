@@ -38,7 +38,7 @@ def expand_dims(
     x: JaxArray,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
@@ -52,7 +52,7 @@ def flip(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flip(x, axis=axis)
@@ -92,7 +92,7 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
