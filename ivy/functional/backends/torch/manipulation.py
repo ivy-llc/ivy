@@ -36,7 +36,7 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
@@ -48,7 +48,7 @@ def flip(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
@@ -107,7 +107,7 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     /,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

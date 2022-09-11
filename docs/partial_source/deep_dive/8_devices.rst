@@ -105,7 +105,7 @@ The implementation in :code:`ivy/functional/ivy/creation.py` has the following s
     @infer_dtype
     @infer_device
     def zeros(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -119,7 +119,7 @@ Jax:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         *,
         dtype: jnp.dtype,
         device: jaxlib.xla_extension.Device,
@@ -130,7 +130,7 @@ NumPy:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         *,
         dtype: np.dtype,
         device: str,
@@ -141,7 +141,7 @@ TensorFlow:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         *,
         dtype: tf.DType,
         device: str,
@@ -152,7 +152,7 @@ PyTorch:
 .. code-block:: python
 
     def zeros(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         *,
         dtype: torch.dtype,
         device: torch.device,

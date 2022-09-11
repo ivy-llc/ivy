@@ -117,7 +117,6 @@ def eye(
     return _to_device(return_mat, device=device)
 
 
-# noinspection PyShadowingNames
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     capsule = jax.dlpack.to_dlpack(x)
     return jax.dlpack.from_dlpack(capsule)

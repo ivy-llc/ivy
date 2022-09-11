@@ -52,7 +52,7 @@ class ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Tuple[int], List[int]] = 0,
+        axis: Union[int, Sequence[int]] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -91,7 +91,7 @@ class ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

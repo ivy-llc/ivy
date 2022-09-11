@@ -87,7 +87,7 @@ look something like the following, (explained in much more detail in the followi
     def my_func(
         x: Union[ivy.Array, ivy.NativeArray],
         /,
-        axes: Union[int, Tuple[int], List[int]],
+        axes: Union[int, Sequence[int]],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -159,7 +159,7 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
     def my_func(
         x: torch.Tensor,
         /,
-        axes: Union[int, Tuple[int], List[int]],
+        axes: Union[int, Sequence[int]],
         *,
         dtype: torch.dtype,
         device: torch.device,
