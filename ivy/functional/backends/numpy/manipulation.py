@@ -41,7 +41,7 @@ def expand_dims(
     x: np.ndarray,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.expand_dims(x, axis)
@@ -51,7 +51,7 @@ def flip(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     num_dims = len(x.shape)
@@ -99,7 +99,7 @@ def roll(
 def squeeze(
     x: np.ndarray,
     /,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
