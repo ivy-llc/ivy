@@ -115,27 +115,6 @@ def test_get_referrers_recursive(device):
     assert len(some_obj_refs) == 1
 
 
-# copy array
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True)
-    )
-)
-def test_copy_array(dtype_and_x, device, fw):
-    dtype, x = dtype_and_x
-    # smoke test
-    x = ivy.array(x, dtype=dtype, device=device)
-    ret = ivy.copy_array(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
-    assert id(x) != id(ret)
-
-
 # array_equal
 @handle_cmd_line_args
 @given(
@@ -411,42 +390,6 @@ def test_clip_vector_norm(
 #     )
 
 
-# indices_where
-@given(
-    x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
-    with_out=st.booleans(),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="indices_where"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
-def test_indices_where(
-    x,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    dtype, x = x
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="indices_where",
-        x=np.asarray(x, dtype=dtype),
-    )
-
-
 # scatter_flat
 @handle_cmd_line_args
 @given(
@@ -524,7 +467,7 @@ def test_scatter_flat(
                 available_dtypes=["int32", "int64"],
                 min_value=0,
                 max_value=max(n[1] - 1, 0),
-                shape=(n[1], ),
+                shape=(n[1],),
             ).filter(lambda l: len(set(l[1])) == len(l[1])),
         )
     ),

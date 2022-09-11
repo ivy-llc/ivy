@@ -21,10 +21,6 @@ def container_types():
     return []
 
 
-def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return x.copy()
-
-
 def current_backend_str():
     return "numpy"
 
@@ -71,17 +67,6 @@ def gather_nd(
 
 def get_num_dims(x, as_tensor=False):
     return np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
-
-
-def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    where_x = np.where(x)
-    if len(where_x) == 1:
-        return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
-    return res
-
-
-indices_where.support_native_out = True
 
 
 def inplace_arrays_supported():

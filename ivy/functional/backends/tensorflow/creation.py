@@ -343,6 +343,14 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.identity(x)
+
+
 def logspace(
     start: Union[tf.Tensor, tf.Variable, int],
     stop: Union[tf.Tensor, tf.Variable, int],
