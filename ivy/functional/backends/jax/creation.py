@@ -18,7 +18,7 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 # Array API Standard #
-# -------------------#
+# ------------------ #
 
 
 def arange(
@@ -286,6 +286,10 @@ def zeros_like(
 
 
 array = asarray
+
+
+def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.array(x)
 
 
 def logspace(

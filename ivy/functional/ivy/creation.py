@@ -1113,6 +1113,108 @@ def from_dlpack(
 array = asarray
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def copy_array(
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Copy an array.
+
+    Parameters
+    ----------
+    x
+        array, input array containing elements to copy.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        a copy of the input array ``x``.
+
+    Examples
+    --------
+    With one :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    >>> x = ivy.array([1, 0, 1, -1])
+    >>> y = ivy.zeros((1, 4))
+    >>> ivy.copy_array(x, out=y)
+    >>> print(y)
+    ivy.array([1, 0, 1, -1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> ivy.copy_array(x, out=x)
+    >>> print(x)
+    ivy.array([1, 0, 1, 1])
+
+    With one :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    With one :code:`ivy.Container` static method:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    With one :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    With :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1])
+    }
+
+    """
+    return current_backend(x).copy_array(x, out=out)
+
+
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,

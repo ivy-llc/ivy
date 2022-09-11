@@ -4,6 +4,10 @@ import ivy
 import torch
 
 
+# Array API Standard #
+# ------------------ #
+
+
 def argmax(
     x: torch.Tensor,
     /,
@@ -51,3 +55,17 @@ def where(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.where(condition, x1, x2)
+
+
+# Extra #
+# ----- #
+
+
+def indices_where(
+    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    where_x = torch.where(x)
+    return torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
+
+
+indices_where.support_native_out = True

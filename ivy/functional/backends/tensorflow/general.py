@@ -45,14 +45,6 @@ def container_types():
     return []
 
 
-def copy_array(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.identity(x)
-
-
 def current_backend_str():
     return "tensorflow"
 
@@ -79,20 +71,6 @@ def gather_nd(
 
 def get_num_dims(x, as_tensor=False):
     return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))
-
-
-def indices_where(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    where_x = tf.experimental.numpy.where(x)
-    if len(where_x) == 1:
-        return tf.expand_dims(where_x[0], -1)
-    res = tf.experimental.numpy.concatenate(
-        [tf.expand_dims(item, -1) for item in where_x], -1
-    )
-    return res
 
 
 def inplace_arrays_supported():

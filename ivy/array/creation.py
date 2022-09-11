@@ -342,6 +342,28 @@ class ArrayWithCreation(abc.ABC):
     # Extra #
     # ----- #
 
+    def copy_array(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.copy_array. This method simply wraps
+        the function, and so the docstring for ivy.copy_array also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a copy of the input array ``x``.
+
+        """
+        return ivy.copy_array(self, out=out)
+
     def native_array(
         self: ivy.Array,
         /,
