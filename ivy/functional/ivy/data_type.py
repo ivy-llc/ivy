@@ -72,9 +72,9 @@ def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
     for func_name in func_names:
-        if hasattr(ivy, func_name):
+        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name):
+        elif hasattr(module, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(module, func_name))
     return ret
 
@@ -96,10 +96,14 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         visited.add(fn)
 
-        # Assuming that it's set in backend or the ivy functional module
-        if "backend" in fn.__module__ or "functional.ivy" in fn.__module__:
-            f_suported = wrapper(get_fn(fn, False))
-            out = merge_fn(f_suported, out)
+        # Assuming that it's set in backend
+        if "backend" in fn.__module__:
+            f_supported = wrapper(get_fn(fn, False))
+            out = merge_fn(f_supported, out)
+            continue
+
+        # skip if it's not a function
+        if not inspect.isfunction(fn):
             continue
 
         fl = _get_function_list(fn)
@@ -114,9 +118,16 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
 def _get_dtypes(fn, complement=True):
     supported = set(ivy.valid_dtypes)
 
-    # Their values are formated like either
+    # We only care about getting dtype info from the base function
+    # if we do need to at some point use dtype information from the parent function
+    # we can comment out the following condition
+    if "backend" not in fn.__module__:
+        if complement:
+            supported = set(ivy.all_dtypes).difference(supported)
+        return supported
+
+    # Their values are formatted like either
     # 1. fn.supported_dtypes = ("float16",)
-    # 2. fn.supported_dtypes = {"numpy": ("float16",)}
     # Could also have the "all" value for the framework
     basic = [
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
@@ -125,9 +136,10 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if isinstance(v, dict):
-                vb = v.get(ivy.current_backend_str(), base)
-                v = merge_fn(set(vb), v.get("all", base))
+            if not isinstance(v, tuple):
+                raise ValueError(
+                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
+                )
             supported = merge_fn(supported, set(v))
 
     if complement:
@@ -954,7 +966,6 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-# noinspection PyShadowingNames,PyShadowingBuiltins
 @handle_nestable
 def default_float_dtype(
     *,
@@ -1025,8 +1036,8 @@ def default_float_dtype(
 
 
 def infer_default_dtype(
-    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
-):
+    dtype: Union[ivy.Dtype, ivy.NativeDtype, str], as_native: bool = False
+) -> Union[ivy.Dtype, ivy.NativeDtype]:
     """Summary.
 
     Parameters
@@ -1065,10 +1076,9 @@ def infer_default_dtype(
     return default_dtype
 
 
-# noinspection PyShadowingNames
 def default_dtype(
     *, dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
-) -> Union[ivy.Dtype, str]:
+) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
     """Summary.
 
     Parameters
@@ -1117,12 +1127,11 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-# noinspection PyShadowingNames,PyShadowingBuiltins
 def default_int_dtype(
     *,
     input=None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 
