@@ -534,7 +534,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_dtype(
         x: ivy.Container,
-        as_native: Optional[bool] = False,
+        as_native: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -554,7 +554,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def dtype(
         self: ivy.Container,
-        as_native: Optional[bool] = False,
+        as_native: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
