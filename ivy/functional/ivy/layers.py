@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, List, Any, Callable
+from typing import Optional, Tuple, Union, List, Callable
 
 # local
 import ivy
@@ -20,7 +20,6 @@ from ivy.func_wrapper import (
 # Linear #
 
 
-@handle_nestable
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -92,7 +91,6 @@ def linear(
 # Dropout #
 
 
-@handle_nestable
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -139,7 +137,6 @@ def dropout(
 # Attention #
 
 
-@handle_nestable
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -397,12 +394,6 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-scaled_dot_product_attention.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
-
-
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale,
@@ -500,12 +491,6 @@ def multi_head_attention(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
-
-
-multi_head_attention.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
 
 
 # Convolutions #
@@ -1110,7 +1095,6 @@ def conv3d_transpose(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
@@ -1121,7 +1105,7 @@ def lstm_update(
     *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
+) -> Tuple[ivy.Array, ivy.Array]:
     """Perform long-short term memory update by unrolling time dimension of input array.
 
     Parameters
@@ -1200,9 +1184,6 @@ def lstm_update(
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
     return ivy.concat(hts_list, axis=-2), ct
-
-
-lstm_update.unsupported_dtypes = {"torch": ("float16",)}
 
 
 # Helpers #

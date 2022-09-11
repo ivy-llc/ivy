@@ -90,7 +90,7 @@ def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    alpha: Optional[float] = 0.2,
+    alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
@@ -185,7 +185,7 @@ def gelu(
         The input array with gelu applied element-wise.
 
     """
-    return current_backend(x).gelu(x, approximate, out=out)
+    return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
 @integer_arrays_to_float

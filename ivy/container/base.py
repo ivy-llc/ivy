@@ -1,6 +1,7 @@
 """Base Container Object."""
 
 # global
+import inspect
 from itertools import chain
 import re
 import abc
@@ -19,7 +20,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union
+from typing import Union, Tuple
 from builtins import set
 
 # local
@@ -126,7 +127,7 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -165,7 +166,7 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=None,
         out=None,
         **kwargs,
-    ) -> ivy.Container:
+    ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
         arg_cont_idxs = ivy.nested_indices_where(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
@@ -177,7 +178,14 @@ class ContainerBase(dict, abc.ABC):
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
-        conts = arg_conts + kwarg_conts
+        with_out = (
+            inspect.signature(ivy.__dict__[fn_name]).parameters.get("out") is not None
+            and out is not None
+        )
+        if with_out:
+            conts = arg_conts + kwarg_conts + [out]
+        else:
+            conts = arg_conts + kwarg_conts
         if not conts:
             raise Exception("no containers found in arguments")
         cont0 = conts[0]
@@ -186,13 +194,19 @@ class ContainerBase(dict, abc.ABC):
         fn = cont0.ivy.__dict__[fn_name]
 
         def map_fn(vals, _):
+            if with_out:
+                out = vals[-1]
+                del vals[-1]
             arg_vals = vals[:num_arg_conts]
             a = ivy.copy_nest(args, to_mutable=True)
             ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
             kwarg_vals = vals[num_arg_conts:]
             kw = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
-            return fn(*a, **kw)
+            if with_out:
+                return fn(*a, out=out, **kw)
+            else:
+                return fn(*a, **kw)
 
         # Replace each container in arg and kwarg with the arrays at the leaf
         # levels of that container using map_fn and call fn using those arrays
@@ -1961,7 +1975,7 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
         ret
-             Container data in it's raw form.
+             Container data in its raw form.
 
         """
         return_item = dict()

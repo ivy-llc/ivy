@@ -4,7 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy
@@ -14,7 +13,7 @@ import ivy
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.statistical_dtype_values(function="mean"),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -22,7 +21,7 @@ import ivy
         fn_name="ivy.functional.frontends.numpy.mean"
     ),
     native_array=helpers.array_bools(num_arrays=1),
-    keep_dims=st.booleans()
+    keep_dims=st.booleans(),
 )
 def test_numpy_mean(
     dtype_and_x,

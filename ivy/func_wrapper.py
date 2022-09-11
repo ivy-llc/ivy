@@ -8,7 +8,6 @@ FW_FN_KEYWORDS = {
     "jax": [],
     "tensorflow": [],
     "torch": [],
-    "mxnet": ["ndarray"],
 }
 
 NATIVE_KEYS_TO_SKIP = {
@@ -27,7 +26,6 @@ NATIVE_KEYS_TO_SKIP = {
         "type",
         "requires_grad_",
     ],
-    "mxnet": [],
 }
 
 # Helpers #
@@ -452,6 +450,10 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             # private attribute or decorator
             if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
                 continue
+            setattr(to_wrap, attr, getattr(original, attr))
+        # Copy docstring
+        docstring_attr = ["__annotations__", "__doc__"]
+        for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators (sequence matters)
         for attr in [

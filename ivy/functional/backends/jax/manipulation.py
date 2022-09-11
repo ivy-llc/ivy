@@ -31,15 +31,14 @@ def concat(
                 xs[i] = jnp.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-    ret = jnp.concatenate(xs, axis)
-    return ret
+    return jnp.concatenate(xs, axis)
 
 
 def expand_dims(
     x: JaxArray,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
@@ -53,18 +52,16 @@ def flip(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.flip(x, axis=axis)
-    return ret
+    return jnp.flip(x, axis=axis)
 
 
 def permute_dims(
     x: JaxArray, /, axes: Tuple[int, ...], *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.transpose(x, axes)
-    return ret
+    return jnp.transpose(x, axes)
 
 
 def reshape(
@@ -95,7 +92,7 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -114,13 +111,10 @@ def stack(
     arrays: Union[Tuple[JaxArray], List[JaxArray]],
     /,
     *,
-    axis: Optional[int] = None,
+    axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis is None:
-        axis = 0
-    ret = jnp.stack(arrays, axis=axis)
-    return ret
+    return jnp.stack(arrays, axis=axis)
 
 
 # Extra #
@@ -134,7 +128,6 @@ def split(
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
-    out: Optional[JaxArray] = None,
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -168,13 +161,13 @@ def repeat(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
-    ret = jnp.repeat(x, repeats, axis)
-    return ret
+    return jnp.repeat(x, repeats, axis)
 
 
-def tile(x: JaxArray, /, reps, *, out: Optional[JaxArray] = None) -> JaxArray:
-    ret = jnp.tile(x, reps)
-    return ret
+def tile(
+    x: JaxArray, /, reps: Iterable[int], *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.tile(x, reps)
 
 
 def clip(
@@ -185,6 +178,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
@@ -215,8 +209,7 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
             x = jnp.asarray(x, dtype=promoted_type)
-    ret = jnp.clip(x, x_min, x_max)
-    return ret
+    return jnp.clip(x, x_min, x_max)
 
 
 def constant_pad(
@@ -227,22 +220,30 @@ def constant_pad(
     value: Number = 0.0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-    return ret
+    return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
 constant_pad.unsupported_dtypes = ("uint64",)
 
 
+def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
+    if x.shape == ():
+        return [x]
+    dim_size = x.shape[axis]
+    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
+    x_split = jnp.split(x, dim_size, axis)
+    if keepdims:
+        return x_split
+    return [jnp.squeeze(item, axis) for item in x_split]
+
+
 def zero_pad(
     x: JaxArray, /, pad_width: List[List[int]], *, out: Optional[JaxArray] = None
 ):
-    ret = jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
-    return ret
+    return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
 
 
 def swapaxes(
     x: JaxArray, axis0: int, axis1: int, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    ret = jnp.swapaxes(x, axis0, axis1)
-    return ret
+    return jnp.swapaxes(x, axis0, axis1)

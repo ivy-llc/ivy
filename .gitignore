@@ -23,3 +23,4 @@ with_time_logs/
 .array_api_tests_k_flag*
 internal_automation_tools/
 .vscode/*
+.idea/*

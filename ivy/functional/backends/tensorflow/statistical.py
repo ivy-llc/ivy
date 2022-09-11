@@ -7,23 +7,6 @@ from typing import Tuple, Union, Optional, Sequence
 import ivy
 
 
-def _new_var_fun(x, *, axis, correction, dtype):
-    output = tf.cast(x, dtype)
-    length = tf.cast(tf.shape(output)[axis], dtype)
-    divisor = tf.cast(length - correction, dtype)
-    mean = tf.math.reduce_sum(output, axis=axis) / length
-    output = tf.math.abs(
-        tf.cast(output, dtype=dtype) - tf.cast(tf.expand_dims(mean, axis), dtype=dtype)
-    )
-    output = output**2
-    output = tf.math.reduce_sum(output, axis=axis) / divisor
-    return output
-
-
-def _new_std_fun(x, *, axis, correction, dtype):
-    return tf.math.sqrt(_new_var_fun(x, axis=axis, correction=correction, dtype=dtype))
-
-
 # Array API Standard #
 # -------------------#
 
@@ -33,7 +16,7 @@ def max(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -44,12 +27,12 @@ def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.reduce_mean(x, axis=axis, keepdims=keepdims)
+    return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def min(
@@ -64,12 +47,10 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
-def _infer_dtype(x_dtype: tf.DType):
-    default_dtype = ivy.infer_default_dtype(x_dtype)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
+def _infer_dtype(dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
     return dtype
 
 
@@ -79,7 +60,7 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[tf.DType] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
@@ -98,34 +79,23 @@ def std(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    dtype = x.dtype
-    if isinstance(axis, tuple):
-        ret = []
-        for i in axis:
-            ret.append(
-                _new_std_fun(x, axis=i, correction=correction, dtype=dtype).numpy()
-            )
-        ret = tf.constant(ret, dtype=dtype)
-    elif isinstance(axis, int):
-        ret = _new_std_fun(x, axis=axis, correction=correction, dtype=dtype)
-    else:
-        size = tf.size(x).numpy()
-        ret = _new_std_fun(
-            tf.reshape(x, size), axis=0, correction=correction, dtype=dtype
-        )
-
-    if keepdims:
-        ret = tf.constant(ret, shape=x.shape)
-    return ret
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    return (size / (size - correction)) ** 0.5 * tf.experimental.numpy.std(
+        x, axis=axis, keepdims=keepdims
+    )
 
 
 def sum(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    dtype: tf.DType = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[tf.DType] = None,
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -142,7 +112,7 @@ def var(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
@@ -151,13 +121,54 @@ def var(
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * tf.experimental.numpy.var(
-        x, axis=axis, out=out, keepdims=keepdims
-    )
+    if size - correction <= 0:
+        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    else:
+        return (size / (size - correction)) ** 0.5 * tf.experimental.numpy.var(
+            x, axis=axis, out=out, keepdims=keepdims
+        )
 
 
 # Extra #
 # ------#
+
+
+def cumprod(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: bool = False,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumprod(x, axis, exclusive)
+
+
+def cumsum(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is tf.bool:
+            dtype = ivy.default_int_dtype()
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if dtype != x.dtype:
+        x = tf.cast(x, dtype)
+    return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
 def einsum(
