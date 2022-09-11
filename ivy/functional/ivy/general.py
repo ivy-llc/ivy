@@ -15,7 +15,6 @@ import numpy as np
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
-    infer_device,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
@@ -142,9 +141,7 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(
-    x: Union[ivy.Array, ivy.NativeArray], exclusive: Optional[bool] = False
-) -> bool:
+def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -348,108 +345,6 @@ def get_nestable_mode() -> bool:
     return nestable_mode_stack[-1]
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def copy_array(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """Copy an array.
-
-    Parameters
-    ----------
-    x
-        array, input array containing elements to copy.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        a copy of the input array ``x``.
-
-    Examples
-    --------
-    With one :code:`ivy.Array` input:
-
-    >>> x = ivy.array([-1, 0, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([-1, 0, 1])
-
-    >>> x = ivy.array([1, 0, 1, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([1, 0, 1, 1])
-
-    >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = ivy.zeros((1, 4))
-    >>> ivy.copy_array(x, out=y)
-    >>> print(y)
-    ivy.array([1, 0, 1, -1])
-
-    >>> x = ivy.array([1, 0, 1, 1])
-    >>> ivy.copy_array(x, out=x)
-    >>> print(x)
-    ivy.array([1, 0, 1, 1])
-
-    With one :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0])
-    }
-
-    With one :code:`ivy.Container` static method:
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
-    >>> y = ivy.Container.static_copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0])
-    }
-
-    With one :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1, 0, 1])
-    >>> y = x.copy_array()
-    >>> print(y)
-    ivy.array([-1, 0, 1])
-
-    >>> x = ivy.array([1, 0, 1, 1])
-    >>> y = x.copy_array()
-    >>> print(y)
-    ivy.array([1, 0, 1, 1])
-
-    With :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1]))
-    >>> y = x.copy_array()
-    >>> print(y)
-    {
-        a: ivy.array([1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1])
-    }
-
-    """
-    return current_backend(x).copy_array(x, out=out)
-
-
 @inputs_to_native_arrays
 @handle_nestable
 def array_equal(
@@ -463,8 +358,6 @@ def array_equal(
         The first input array to compare.
     x1
         The second input array to compare.
-    dtype
-        array data type
 
     Returns
     -------
@@ -519,9 +412,7 @@ def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
     Parameters
     ----------
     xs
-        Sequence of arrays to compare for equality
-    dtype
-        list data type
+        Sequence of arrays to compare for equality.
 
     Returns
     -------
@@ -1372,80 +1263,6 @@ def clip_matrix_norm(
 
 @to_native_arrays_and_back
 @handle_nestable
-def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
-
-    Parameters
-    ----------
-    x
-        Input array to unstack.
-    axis
-        Axis for which to unpack the array.
-    keepdims
-        Whether to keep dimension 1 in the unstack dimensions. Default is False.
-
-    Returns
-    -------
-    ret
-        List of arrays, unpacked along specified dimensions.
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
-    >>> y = ivy.unstack(x, axis=0)
-    >>> print(y)
-    [ivy.array([[1, 2],
-                [3, 4]]), ivy.array([[5, 6],
-                [7, 8]])]
-
-    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
-    >>> y = ivy.unstack(x, axis=1, keepdims=True)
-    >>> print(y)
-    [ivy.array([[[1, 2]],
-                [[5, 6]]]), ivy.array([[[3, 4]],
-                [[7, 8]]])]
-
-    With :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> ivy.unstack(x, axis=0)
-    [{
-        a: ivy.array([[1, 2],
-                      [3, 4]]),
-        b: ivy.array([[9, 10],
-                      [11, 12]])
-    }, {
-        a: ivy.array([[5, 6],
-                      [7, 8]]),
-        b: ivy.array([[13, 14],
-                      [15, 16]])
-    }]
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                          b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> vy.unstack(x, axis=1, keepdims=True)
-    [{
-        a: ivy.array([[[1, 2]],
-                      [[5, 6]]]),
-        b: ivy.array([[[9, 10]],
-                      [[13, 14]]])
-    }, {
-        a: ivy.array([[[3, 4]],
-                      [[7, 8]]]),
-        b: ivy.array([[[11, 12]],
-                      [[15, 16]]])
-    }]
-    """
-    return current_backend(x).unstack(x, axis, keepdims)
-
-
-@to_native_arrays_and_back
-@handle_nestable
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],
@@ -2215,19 +2032,19 @@ def einops_repeat(
     Examples
     --------
     With :code:`ivy.array` input:
-    >> x = ivy.array([1, 2, 3, 4])
-    >> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
-    >> print(repeated)
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
+    >>> print(repeated)
     ivy.array([[1, 2, 3, 4],
                [1, 2, 3, 4]])
 
     With :code:`ivy.Container` input:
-    >> x = ivy.Container(a=ivy.array([[4,5],
+    >>> x = ivy.Container(a=ivy.array([[4,5],
                                     [1, 3]]),
                         b=ivy.array([[9, 10],
                                     [4, 2]]))
-    >> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
-    >> print(repeated)
+    >>> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
+    >>> print(repeated)
     {
         a: ivy.array([[4, 5, 4, 5],
                       [1, 3, 1, 3]]),
@@ -2500,18 +2317,6 @@ def print_all_arrays_in_memory():
     """
     Gets all the native Ivy arrays which are currently alive(in the garbage collector)
     from get_all_arrays_in_memory() function and prints them to the console.
-
-    Parameters
-    ----------
-    None
-
-    Output
-    ------
-    Type and shape of all the Ivy native arrays which are currently alive.
-
-    Returns
-    -------
-    None
     """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
@@ -2531,15 +2336,15 @@ def set_queue_timeout(timeout: float):
 
     Examples
     --------
-    >> x = ivy.get_queue_timeout()
-    >> print(x)
+    >>> x = ivy.get_queue_timeout()
+    >>> print(x)
     15.0
 
     To set the timeout for example 30 seconds
 
-    >> ivy.set_queue_timeout(30)
-    >> y = ivy.get_queue_timeout()
-    >> print(y)
+    >>> ivy.set_queue_timeout(30)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
     30
 
     """
@@ -2750,7 +2555,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
         True if support, raises exception otherwise
 
     """
-    if not ivy.supports_inplace(x):
+    if not ivy.supports_inplace_updates(x):
         raise Exception(
             "Inplace operations are not supported {} types with {} backend".format(
                 type(x), ivy.current_backend_str()
@@ -2933,289 +2738,6 @@ def inplace_increment(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def cumsum(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the cumulative sum of the elements along a given axis.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    axis
-        Axis along which the cumulative sum is computed. Default is ``0``.
-    exclusive
-        Whether to perform cumsum exclusively. Default is ``False``.
-    reverse
-        Whether to perform the cumsum from last to first element in the selected
-        axis. Default is False (from first to last element)
-    dtype
-        Data type of the returned array. Default is ``None``.
-        If None, if the default data type corresponding to the data type “kind”
-        (integer or floating-point) of x has a smaller range of values than the
-        data type of x (e.g., x has data type int64 and the default data type
-        is int32, or x has data type uint64 and the default data type is int64),
-        the returned array must have the same data type as x.
-        If x has a floating-point data type, the returned array must have the
-        default floating-point data type.
-        If x has a signed integer data type (e.g., int16), the returned array
-        must have the default integer data type.
-        If x has an unsigned integer data type (e.g., uint16), the returned
-        array must have an unsigned integer data type having the same number of
-        bits as the default integer data type (e.g., if the default integer data
-        type is int32, the returned array must have a uint32 data type).
-        If the data type (either specified or resolved) differs from the data type
-        of x, the input array should be cast to the specified data type before
-        computing the product.
-    out
-        Optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Array which holds the result of applying cumsum at each
-        original array elements along the specified axis.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 5, 2, 0])
-    >>> y = ivy.cumsum(x, exclusive= True, reverse=False)
-    >>> print(y)
-    ivy.array([0, 1, 6, 8])
-
-    >>> x = ivy.array([[6, 4, 2], \
-                       [1, 3, 0]])
-    >>> y = ivy.zeros((2,3))
-    >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
-    >>> print(y)
-    ivy.array([[7, 7, 2],
-               [1, 3, 0]])
-
-    >>> x = ivy.array([[1, 5, 2], \
-                       [4, 3, 0]])
-    >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
-    >>> print(y)
-    ivy.array([[4, 3, 0],
-               [0, 0, 0]])
-
-    >>> x = ivy.array([[2, 4, 5], \
-                       [3, 6, 5], \
-                       [1, 3, 10]])
-    >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
-    >>> print(x)
-    ivy.array([[11,  9,  5],
-               [14, 11,  5],
-               [14, 13, 10]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
-                          b=ivy.array([[3, 5, 7]]))
-    >>> y = ivy.cumsum(x, axis= 0)
-    >>> print(y)
-    {
-        a: ivy.array([[1, 3, 5]]),
-        b: ivy.array([[3, 5, 7]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                          b=ivy.array([[3, 5, 8], \
-                                       [5, 6, 5]]), \
-                          c=ivy.array([[2, 4, 1], \
-                                       [3, 6, 9], \
-                                       [0, 2, 3]]))
-    >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                          b = ivy.zeros((2, 3)), \
-                          c = ivy.zeros((3,3)))
-    >>> ivy.cumsum(x,axis=1,reverse=True, out=y)
-    >>> print(y)
-    {
-        a: ivy.array([[8, 7, 4]]),
-        b: ivy.array([[16, 13, 8],
-                      [16, 11, 5]]),
-        c: ivy.array([[7, 5, 1],
-                      [18, 15, 9],
-                      [5, 5, 3]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[0], \
-                                       [5]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [4, 2, 3]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
-    >>> ivy.cumsum(x,axis=0,out=x)
-    >>> print(x)
-    {
-        a: ivy.array([[0],
-                      [5]]),
-        b: ivy.array([[6, 8, 7],
-                      [10, 10, 10]]),
-        c: ivy.array([[1, 2],
-                      [4, 6],
-                      [10, 10]])
-    }
-    """
-    return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def cumprod(
-    x: Union[ivy.Array, ivy.NativeArray],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns the cumulative product of the elements along a given axis.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    axis
-        int , axis along which the cumulative product is computed. By default 0.
-    exclusive
-        optional bool, Whether to perform the cumprod exclusively. Defaults is False.
-    dtype
-        data type of the returned array. If None,
-        if the default data type corresponding to the data type “kind” (integer or
-        floating-point) of x has a smaller range of values than the data type of x
-        (e.g., x has data type int64 and the default data type is int32, or x has data
-        type uint64 and the default data type is int64), the returned array must have
-        the same data type as x. if x has a floating-point data type, the returned array
-        must have the default floating-point data type. if x has a signed integer data
-        type (e.g., int16), the returned array must have the default integer data type.
-        if x has an unsigned integer data type (e.g., uint16), the returned array must
-        have an unsigned integer data type having the same number of bits as the default
-        integer data type (e.g., if the default integer data type is int32, the returned
-        array must have a uint32 data type). If the data type (either specified or
-        resolved) differs from the data type of x, the input array should be cast to the
-        specified data type before computing the product. Default: None.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Input array with cumulatively multiplied elements along axis.
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = ivy.cumprod(x)
-    >>> print(y)
-    ivy.array([2, 6, 24])
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = ivy.cumprod(x, exclusive=True)
-    >>> print(y)
-    ivy.array([1, 2, 6])
-
-    >>> x = ivy.array([[2, 3],
-                       [5, 7],
-                       [11, 13]])
-    >>> y = ivy.zeros((3, 2))
-    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
-    >>> print(y)
-    ivy.array([[ 1.,  2.],
-               [ 1.,  5.],
-               [ 1., 11.]])
-
-    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
-    >>> print(x)
-    ivy.array([[1,  1],
-               [2,  3],
-               [10, 21]])
-
-    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> y = ivy.zeros((3, 2))
-    >>> x.cumprod(axis=0, exclusive=True, out=y)
-    >>> print(x)
-    ivy.array([[1.,  1.],
-                [2.,  3.],
-                [10., 21.]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.cumprod(x)
-    >>> print(y)
-    {
-        a: ivy.array([2, 6, 24]),
-        b: ivy.array([3, 12, 60])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.cumprod(x, exclusive=True)
-    >>> print(y)
-    {
-        a: ivy.array([1, 2, 6]),
-        b: ivy.array([1, 3, 12])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                       [5, 7],
-                                       [11, 13]]),
-                          b=ivy.array([[3, 4],
-                                       [4, 5],
-                                       [5, 6]]))
-    >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
-    >>> print(y)
-    {
-        a: ivy.array([[1, 2],
-                      [1, 5],
-                      [1, 11]]),
-        b: ivy.array([[1, 3],
-                      [1, 4],
-                      [1, 5]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                        [5, 7],
-                                        [11, 13]]),
-                            b=ivy.array([[3, 4],
-                                        [4, 5],
-                                        [5, 6]]))
-    >>> x.cumprod(axis=0, exclusive=True, out=x)
-    >>> print(x)
-    {
-        a: ivy.array([[1, 1],
-                      [2, 3],
-                      [10, 21]]),
-        b: ivy.array([[1, 1],
-                      [3, 4],
-                      [15, 42]])
-    }
-    """
-    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3236,9 +2758,6 @@ def scatter_flat(
         The size of the result.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-        updates if None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3275,15 +2794,8 @@ def scatter_nd(
     shape
         The shape of the result. Default is None, in which case tensor argument must be
         provided.
-    tensor
-        The tensor in which to scatter the results, default is None, in which case the
-        shape arg is used to
-        scatter into a zeros array.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-        updates if None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3297,23 +2809,23 @@ def scatter_nd(
     --------
     scatter values into an empty array, With :code:`ivy.Array` input:
 
-    >> indices = ivy.array([[4], [3], [1], [7]])
-    >> updates = ivy.array([9, 10, 11, 12])
-    >> shape = ivy.array([8])
-    >> scatter = ivy.scatter_nd(indices, updates, shape)
-    >> print(scatter)
+    >>> indices = ivy.array([[4], [3], [1], [7]])
+    >>> updates = ivy.array([9, 10, 11, 12])
+    >>> shape = ivy.array([8])
+    >>> scatter = ivy.scatter_nd(indices, updates, shape)
+    >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
     scatter into an empty array, With: `ivy.Container` input:
 
-    >> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+    >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
                         b=ivy.array([[5],[1],[2]]))
-    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+    >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),
                         b=ivy.array([20, 30, 40]))
-    >> shape = ivy.Container(a=ivy.array([10]),
+    >>> shape = ivy.Container(a=ivy.array([10]),
                         b = ivy.array([10]))
-    >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
-    >> print(z)
+    >>> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    >>> print(z)
     {
         a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
@@ -3321,14 +2833,13 @@ def scatter_nd(
 
     scatter into an array, With : `ivy.Container` and `ivy.Array` input:
 
-    >> indices = ivy.array([[4],[3],[1]])
-    >> updates = ivy.Container(a=ivy.array([10, 20, 30]),
+    >>> indices = ivy.array([[4],[3],[1]])
+    >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),
                     b=ivy.array([200, 300, 400]))
-    >> shape = ivy.array([10, 10])
-    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+    >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
                             b = ivy.array([10, 20, 30, 40, 50]))
-    >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
-    >> print(z)
+    >>> z = ivy.scatter_nd(indices, updates, reduction='replace', out=arr)
+    >>> print(z)
     {
         a: ivy.array([1, 30, 3, 20, 10]),
         b: ivy.array([10, 400, 30, 300, 200])
@@ -3359,9 +2870,6 @@ def gather(
         array, index array.
     axis
         optional int, the axis from which to gather from. Default is -1.
-    device
-        optional ivy.Device, device on which to create the array 'cuda:0', 'cuda:1',
-        'cpu' etc. Same as x if None.
     out
         optional output array, for writing the result to.
 
@@ -3485,9 +2993,6 @@ def gather_nd(
         The array from which to gather values.
     indices
         Index array.
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
-        None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -3566,71 +3071,6 @@ def multiprocessing(context: str = None):
 
     """
     return current_backend().multiprocessing(context)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def indices_where(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns indices or true elements in an input boolean array.
-
-    Parameters
-    ----------
-    x
-        Boolean array, for which indices are desired.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Indices for where the boolean array is True.
-
-    """
-    return current_backend(x).indices_where(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@infer_device
-@handle_nestable
-def one_hot(
-    indices: Union[ivy.Array, ivy.NativeArray],
-    depth: int,
-    /,
-    *,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns a one-hot array.
-
-    Parameters
-    ----------
-    indices
-        Indices for where the ones should be scattered *[batch_shape, dim]*
-    depth
-        Scalar defining the depth of the one-hot dimension.
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
-        None.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Tensor of zeros with the same shape and type as a, unless dtype provided which
-        overrides.
-
-    """
-    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
 
 
 @to_native_arrays_and_back

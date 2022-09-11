@@ -78,7 +78,7 @@ class ContainerWithManipulation(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int], List[int]] = 0,
+        axis: Union[int, Sequence[int]] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -167,7 +167,7 @@ class ContainerWithManipulation(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int], List[int]] = 0,
+        axis: Union[int, Sequence[int]] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -405,7 +405,7 @@ class ContainerWithManipulation(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -432,7 +432,7 @@ class ContainerWithManipulation(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -864,7 +864,7 @@ class ContainerWithManipulation(ContainerBase):
         ],
         /,
         *,
-        axis: Optional[int] = 0,
+        axis: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -895,7 +895,7 @@ class ContainerWithManipulation(ContainerBase):
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
-        axis: Optional[int] = 0,
+        axis: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1245,6 +1245,164 @@ class ContainerWithManipulation(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+        )
+
+    @staticmethod
+    def static_unstack(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: int,
+        /,
+        *,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.unstack. This method
+        simply wraps the function, and so the docstring for ivy.unstack
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container to unstack.
+        axis
+            Axis for which to unpack the array.
+        keepdims
+            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            List of arrays, unpacked along specified dimensions, or containers
+            with arrays unpacked at leaves
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> y = ivy.Container.static_unstack(x, axis=0)
+        >>> print(y)
+        [{
+            a: ivy.array([[1, 2],
+                         [3, 4]]),
+            b: ivy.array([[9, 10],
+                         [11, 12]])
+        }, {
+            a: ivy.array([[5, 6],
+                         [7, 8]]),
+             b: ivy.array([[13, 14],
+                          [15, 16]])
+        }]
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> y = ivy.Container.static_unstack(x, axis=1, keepdims=True)
+        >>> print(y)
+        [{
+            a: ivy.array([[[1, 2]],
+                         [[5, 6]]]),
+            b: ivy.array([[[9, 10]],
+                         [[13, 14]]])
+        }, {
+            a: ivy.array([[[3, 4]],
+                         [[7, 8]]]),
+            b: ivy.array([[[11, 12]],
+                         [[15, 16]]])
+        }]
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "unstack",
+            x,
+            axis,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unstack(
+        self: ivy.Container,
+        axis: int,
+        /,
+        *,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.unstack. This method
+        simply wraps the function, and so the docstring for ivy.unstack
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container to unstack at leaves.
+        axis
+            Axis for which to unpack the array.
+        keepdims
+            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Containers with arrays unpacked at leaves
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> x.unstack(axis=0)
+        [{
+            a: ivy.array([[1, 2],
+                         [3, 4]]),
+            b: ivy.array([[9, 10],
+                          [11, 12]])
+        }, {
+            a: ivy.array([[5, 6],
+                          [7, 8]]),
+            b: ivy.array([[13, 14],
+                          [15, 16]])
+        }]
+        """
+        return self.static_unstack(
+            self,
+            axis,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod

@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, List, Callable
+from typing import Optional, Union, Sequence, Callable
 
 _round = round
 import numpy as np
@@ -13,15 +13,6 @@ import tensorflow as tf
 
 # local
 import ivy
-
-
-def _infer_dtype(x_dtype: tf.DType):
-    default_dtype = ivy.infer_default_dtype(x_dtype)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
-    return dtype
 
 
 def _parse_ellipsis(so, ndims):
@@ -54,50 +45,6 @@ def container_types():
     return []
 
 
-def copy_array(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.identity(x)
-
-
-def cumprod(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
-        x = tf.cast(x, dtype)
-    return tf.math.cumprod(x, axis, exclusive)
-
-
-def cumsum(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is tf.bool:
-            dtype = ivy.default_int_dtype()
-        else:
-            dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
-        x = tf.cast(x, dtype)
-    return tf.math.cumsum(x, axis, exclusive, reverse)
-
-
 def current_backend_str():
     return "tensorflow"
 
@@ -124,20 +71,6 @@ def gather_nd(
 
 def get_num_dims(x, as_tensor=False):
     return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))
-
-
-def indices_where(
-    x: Union[tf.Tensor, tf.Variable],
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    where_x = tf.experimental.numpy.where(x)
-    if len(where_x) == 1:
-        return tf.expand_dims(where_x[0], -1)
-    res = tf.experimental.numpy.concatenate(
-        [tf.expand_dims(item, -1) for item in where_x], -1
-    )
-    return res
 
 
 def inplace_arrays_supported():
@@ -224,22 +157,6 @@ def multiprocessing(context=None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
-
-
-def one_hot(
-    indices: Union[tf.Tensor, tf.Variable],
-    depth: int,
-    *,
-    device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    device = ivy.default_device(device)
-    dtype = indices.dtype
-    if device is not None:
-        indices = tf.cast(indices, tf.int64)
-        with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(indices, depth, dtype=dtype)
-    return tf.one_hot(indices, depth, dtype=dtype)
 
 
 def scatter_flat(
@@ -378,24 +295,44 @@ def scatter_nd(
             res = tf.scatter_nd(indices, updates, shape)
     elif reduction == "min":
         if not target_given:
-            max_value = tf.cast(
-                min(
-                    tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max, 1e12
-                ),
-                updates.dtype,
-            )
+            if "int" in dtype.name:
+                max_value = tf.cast(
+                    min(
+                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max,
+                        1e12,
+                    ),
+                    updates.dtype,
+                )
+            else:
+                max_value = tf.cast(
+                    min(
+                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).max,
+                        1e12,
+                    ),
+                    updates.dtype,
+                )
             target = tf.fill(shape, max_value)
         res = tf.tensor_scatter_nd_min(target, indices, updates)
         if not target_given:
             res = tf.where(res == max_value, 0, res)
     elif reduction == "max":
         if not target_given:
-            min_value = tf.cast(
-                max(
-                    tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min, -1e12
-                ),
-                updates.dtype,
-            )
+            if "int" in dtype.name:
+                min_value = tf.cast(
+                    max(
+                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min,
+                        -1e12,
+                    ),
+                    updates.dtype,
+                )
+            else:
+                min_value = tf.cast(
+                    max(
+                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).min,
+                        -1e12,
+                    ),
+                    updates.dtype,
+                )
             target = tf.fill(shape, min_value)
         res = tf.tensor_scatter_nd_max(target, indices, updates)
         if not target_given:
@@ -455,17 +392,6 @@ def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
     return to_numpy(x).item()
-
-
-def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
-) -> List[tf.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = tf.unstack(x, axis=axis)
-    if keepdims:
-        return [tf.expand_dims(r, axis) for r in ret]
-    return ret
 
 
 def vmap(
