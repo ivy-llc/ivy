@@ -153,6 +153,15 @@ def full_like(x, fill_value, dtype=None, shape=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
+def cummin(operand, axis=0, reverse=False):
+    if reverse:
+        return ivy.flip(ivy.cummin(ivy.flip(operand), axis, dtype=operand.dtype))
+    return ivy.cummin(operand, axis, dtype=operand.dtype)
+
+
+cummin.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
 def ge(x, y):
     return ivy.greater_equal(x, y)
 
