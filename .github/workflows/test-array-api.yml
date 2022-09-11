@@ -6,6 +6,20 @@ on:
   workflow_dispatch:
 
 jobs:
+#  Download-Artifacts:
+#    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download artifact
+#        uses: dawidd6/action-download-artifact@v2
+#        with:
+#          workflow: test-array-api.yml
+#          workflow_conclusion: completed
+#          name: 'Hypothesis Download'
+#          path: |
+#            ivy/.hypothesis/
+#        continue-on-error: true
+
   run-array-api-tests:
     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
     strategy:
@@ -19,6 +33,7 @@ jobs:
                      meta/test_hypothesis_helpers, meta/test_partial_adopters, meta/test_pytest_helpers,
                      meta/test_signatures, meta/test_special_cases, meta/test_utils]
     continue-on-error: true
+    needs: Download-Artifacts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -27,16 +42,6 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: 'recursive'
-
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: test-array-api.yml
-          workflow_conclusion: completed
-          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
-          path: |
-            ivy/.hypothesis/
-        continue-on-error: true
 
       - name: Unzip Hypothesis Examples
         id: unzip
@@ -62,6 +67,11 @@ jobs:
           ./test_array_api.sh ${{matrix.backends}} ${{matrix.submodules}}
         continue-on-error: true
 
+  Upload-Artifacts:
+     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}
+     runs-on: ubuntu-latest
+     needs: run-array-api-tests
+     steps:
       - name: Zip Hypothesis Examples
         run: |
           cd ivy/.hypothesis
@@ -71,11 +81,11 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
+          name: 'Hypothesis Upload'
           path: |
             ivy/.hypothesis/examples.zip
         continue-on-error: true
 
       - name: Check on failures
-        if: steps.tests.outcome != 'success'
+        if: needs.run-array-api-tests.steps.tests.outcome != 'success'
         run: exit 1
