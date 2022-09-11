@@ -169,7 +169,7 @@ def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.stack(arrays, axis)
