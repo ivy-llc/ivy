@@ -15,7 +15,6 @@ import numpy as np
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
-    infer_device,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
@@ -1362,80 +1361,6 @@ def clip_matrix_norm(
     norms = ivy.matrix_norm(x, ord=p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_nestable
-def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
-
-    Parameters
-    ----------
-    x
-        Input array to unstack.
-    axis
-        Axis for which to unpack the array.
-    keepdims
-        Whether to keep dimension 1 in the unstack dimensions. Default is False.
-
-    Returns
-    -------
-    ret
-        List of arrays, unpacked along specified dimensions.
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
-    >>> y = ivy.unstack(x, axis=0)
-    >>> print(y)
-    [ivy.array([[1, 2],
-                [3, 4]]), ivy.array([[5, 6],
-                [7, 8]])]
-
-    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
-    >>> y = ivy.unstack(x, axis=1, keepdims=True)
-    >>> print(y)
-    [ivy.array([[[1, 2]],
-                [[5, 6]]]), ivy.array([[[3, 4]],
-                [[7, 8]]])]
-
-    With :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> ivy.unstack(x, axis=0)
-    [{
-        a: ivy.array([[1, 2],
-                      [3, 4]]),
-        b: ivy.array([[9, 10],
-                      [11, 12]])
-    }, {
-        a: ivy.array([[5, 6],
-                      [7, 8]]),
-        b: ivy.array([[13, 14],
-                      [15, 16]])
-    }]
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> ivy.unstack(x, axis=1, keepdims=True)
-    [{
-        a: ivy.array([[[1, 2]],
-                      [[5, 6]]]),
-        b: ivy.array([[[9, 10]],
-                      [[13, 14]]])
-    }, {
-        a: ivy.array([[[3, 4]],
-                      [[7, 8]]]),
-        b: ivy.array([[[11, 12]],
-                      [[15, 16]]])
-    }]
-    """
-    return current_backend(x).unstack(x, axis, keepdims)
 
 
 @to_native_arrays_and_back
@@ -3277,43 +3202,6 @@ def indices_where(
 
     """
     return current_backend(x).indices_where(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@infer_device
-@handle_nestable
-def one_hot(
-    indices: Union[ivy.Array, ivy.NativeArray],
-    depth: int,
-    /,
-    *,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns a one-hot array.
-
-    Parameters
-    ----------
-    indices
-        Indices for where the ones should be scattered *[batch_shape, dim]*
-    depth
-        Scalar defining the depth of the one-hot dimension.
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
-        None.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Tensor of zeros with the same shape and type as a, unless dtype provided which
-        overrides.
-
-    """
-    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
 
 
 @to_native_arrays_and_back
