@@ -16,7 +16,7 @@ def max(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -28,8 +28,8 @@ def mean(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[JaxArray] = None
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.mean(x, axis=axis, keepdims=keepdims)
@@ -47,12 +47,10 @@ def min(
     return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
-def _infer_dtype(dtype: jnp.dtype, x_dtype: jnp.dtype):
-    default_dtype = ivy.infer_default_dtype(x_dtype)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
+def _infer_dtype(dtype: jnp.dtype):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
     return dtype
 
 
@@ -62,12 +60,12 @@ def prod(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     dtype: Optional[jnp.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if dtype != x.dtype:
         x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -93,12 +91,12 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[jnp.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(dtype, x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if dtype != x.dtype:
         x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -111,7 +109,7 @@ def var(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
@@ -131,6 +129,61 @@ def var(
 
 # Extra #
 # ------#
+
+
+def cumprod(
+    x: JaxArray,
+    axis: int = 0,
+    exclusive: bool = False,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if dtype != x.dtype:
+        x = x.astype(dtype)
+    if exclusive:
+        x = jnp.swapaxes(x, axis, -1)
+        x = jnp.concatenate((jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = jnp.cumprod(x, -1)
+        return jnp.swapaxes(res, axis, -1)
+    return jnp.cumprod(x, axis)
+
+
+def cumsum(
+    x: JaxArray,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jnp.swapaxes(x, axis, -1)
+            res = jnp.flip(x, axis=(axis,))
+        elif exclusive:
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jnp.cumsum(x, -1, dtype=dtype)
+            res = jnp.swapaxes(x, axis, -1)
+        elif reverse:
+            x = jnp.cumsum(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+            res = jnp.flip(x, axis=axis)
+        return res
+    return jnp.cumsum(x, axis, dtype=dtype)
 
 
 def einsum(

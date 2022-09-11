@@ -133,7 +133,6 @@ def test_nonzero(
     *,
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,

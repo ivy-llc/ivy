@@ -970,7 +970,7 @@ def test_jax_lax_exp(
 @st.composite
 def _sample_castable_numeric_dtype(draw):
     dtype = draw(_dtypes())[0]
-    to_dtype = draw(helpers.get_dtypes("numeric"), full=False)
+    to_dtype = draw(helpers.get_dtypes("numeric", full=False))
     assume(ivy.can_cast(dtype, to_dtype))
     return to_dtype
 
@@ -1903,4 +1903,70 @@ def test_jax_lax_dot(
         rhs=xs[1],
         precision=None,
         preferred_element_type=dtype,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=helpers.x_and_filters(dim=2),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.conv"
+    ),
+)
+def test_jax_lax_conv(
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype = [dtype] * 2
+    as_variable = [as_variable, as_variable]
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.conv",
+        lhs=np.asarray(x, dtype[0]),
+        rhs=np.asarray(filters, dtype[0]),
+        window_strides=(stride, stride),
+        padding=pad,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=helpers.x_and_filters(dim=2),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.conv_transpose"
+    ),
+)
+def test_jax_lax_conv_transpose(
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype = [dtype] * 2
+    as_variable = [as_variable, as_variable]
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.conv_transpose",
+        lhs=np.asarray(x, dtype[0]),
+        rhs=np.asarray(filters, dtype[0]),
+        strides=(stride, stride),
+        padding=pad,
     )

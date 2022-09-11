@@ -1,7 +1,5 @@
 """Collection of tests for elementwise functions."""
 
-from numbers import Number
-
 # global
 import numpy as np
 from hypothesis import given, assume, strategies as st
@@ -848,12 +846,14 @@ def test_floor(
         large_value_safety_factor=1.1,
         shared_dtype=True,
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
 )
 def test_floor_divide(
     *,
     dtype_and_x,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -873,7 +873,7 @@ def test_floor_divide(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -894,11 +894,13 @@ def test_floor_divide(
         min_value=1,
         large_value_safety_factor=20,
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="floormod"),
 )
 def test_floormod(
     xy,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -913,7 +915,7 @@ def test_floormod(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1770,13 +1772,15 @@ def test_reciprocal(
         allow_inf=False,
     ),
     modulus=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="remainder"),
 )
 def test_remainder(
     *,
     dtype_and_x,
+    modulus,
     as_variable,
     with_out,
-    modulus,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1797,7 +1801,7 @@ def test_remainder(
         input_dtypes=input_dtype,
         as_variable_flags=[as_variable, False],
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1815,12 +1819,14 @@ def test_remainder(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="round"),
 )
 def test_round(
     *,
     dtype_and_x,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1831,7 +1837,7 @@ def test_round(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -2201,16 +2207,6 @@ def test_minimum(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(
-        not (
-            (
-                (isinstance(x[0], Number) or isinstance(x[1], Number))
-                and as_variable is True
-                and fw == "mxnet"
-            )
-        )
-    )
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2246,15 +2242,6 @@ def test_maximum(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    assume(
-        not (
-            (isinstance(x[0], Number) or isinstance(x[1], Number))
-            and as_variable is True
-            and fw == "mxnet"
-        )
-    )
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

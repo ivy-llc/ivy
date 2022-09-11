@@ -14,7 +14,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -53,7 +53,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -91,7 +91,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -130,7 +130,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
