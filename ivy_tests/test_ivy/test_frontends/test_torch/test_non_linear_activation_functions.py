@@ -483,7 +483,6 @@ def test_torch_celu(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.selu"
     ),
-    inplace=st.booleans(),
 )
 def test_torch_selu(
     dtype_and_input,
@@ -504,5 +503,5 @@ def test_torch_selu(
         frontend="torch",
         fn_tree="nn.functional.selu",
         input=np.asarray(input, dtype=input_dtype),
-        inplace=inplace,
+        inplace=False,
     )
