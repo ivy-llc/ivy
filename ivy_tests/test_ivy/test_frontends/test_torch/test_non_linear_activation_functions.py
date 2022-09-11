@@ -341,11 +341,9 @@ def test_torch_threshold_(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.relu6"
     ),
-    inplace=st.booleans(),
 )
 def test_torch_relu6(
     dtype_and_input,
-    inplace,
     as_variable,
     with_out,
     num_positional_args,
@@ -363,7 +361,7 @@ def test_torch_relu6(
         frontend="torch",
         fn_tree="nn.functional.relu6",
         input=np.asarray(input, dtype=input_dtype),
-        inplace=inplace,
+        inplace=False,
     )
 
 
@@ -376,12 +374,10 @@ def test_torch_relu6(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.elu"
     ),
-    inplace=st.booleans(),
-    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
 )
 def test_torch_elu(
     dtype_and_input,
-    inplace,
     alpha,
     as_variable,
     with_out,
@@ -401,7 +397,7 @@ def test_torch_elu(
         fn_tree="nn.functional.elu",
         input=np.asarray(input, dtype=input_dtype),
         alpha=alpha,
-        inplace=inplace,
+        inplace=False,
     )
 
 
@@ -449,11 +445,9 @@ def test_torch_elu_(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.celu"
     ),
-    inplace=st.booleans(),
 )
 def test_torch_celu(
     dtype_and_input,
-    inplace,
     as_variable,
     with_out,
     num_positional_args,
@@ -471,5 +465,5 @@ def test_torch_celu(
         frontend="torch",
         fn_tree="nn.functional.celu",
         input=np.asarray(input, dtype=input_dtype),
-        inplace=inplace,
+        inplace=False,
     )

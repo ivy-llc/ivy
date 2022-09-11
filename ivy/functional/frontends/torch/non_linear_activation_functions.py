@@ -15,10 +15,14 @@ def _compute_elu(input, alpha=1.0, inplace=False):
         alpha,
         ivy.subtract(ivy.exp(input), 1),
     )
+    ret = ivy.where(ivy.greater(input, 0), input, prod)
     if inplace:
-        input = ivy.where(ivy.greater(input, 0), input, prod)
+        ivy.inplace_update(input, ret)
         return input
-    return ivy.where(ivy.greater(input, 0), input, prod)
+    return ret
+
+
+_compute_elu.unsupported_dtypes = ("float16",)
 
 
 def sigmoid(input):
@@ -63,14 +67,25 @@ def threshold(input, threshold, value, inplace=False):
     return _compute_threshold(input, threshold, value, inplace)
 
 
+threshold.unsupported_dtypes = ("float16",)
+
+
 def threshold_(input, threshold, value):
     return _compute_threshold(input, threshold, value, inplace=True)
 
 
+threshold_.unsupported_dtypes = ("float16",)
+
+
 def relu6(input, inplace=False):
+    ret = ivy.minimum(ivy.maximum(input, 0), 6)
     if inplace:
-        return ivy.minimum(ivy.maximum(input, 0), 6, out=input)
-    return ivy.minimum(ivy.maximum(input, 0), 6)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+relu6.unsupported_dtypes = ("float16",)
 
 
 def elu(input, alpha=1.0, inplace=False):
@@ -94,7 +109,8 @@ def celu(input, alpha=1.0, inplace=False):
         ivy.minimum(0, prod),
     )
     if inplace:
-        return ivy.inplace_update(input, ret)
+        ivy.inplace_update(input, ret)
+        return input
     return ret
 
 
