@@ -2383,6 +2383,7 @@ def dtype_and_values(
     max_value=None,
     large_value_safety_factor=1.1,
     small_value_safety_factor=1.1,
+    max_op="divide",
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
@@ -2410,8 +2411,13 @@ def dtype_and_values(
         minimum value of elements in each array.
     max_value
         maximum value of elements in each array.
-    safety_factor
-        Ratio of max_value to maximum allowed number in the data type.
+    large_value_safety_factor
+        Factor to divide the values by to ensure that they are not too large.
+    small_value_safety_factor
+        Factor to multiply the values by to ensure that they are not too small.
+    max_op
+        The operation to use when calculating the maximum value of the list. Can be
+        "divide", "sqrt" or "log". Default value = "divide".
     allow_inf
         if True, allow inf in the arrays.
     exclude_min
@@ -2484,6 +2490,7 @@ def dtype_and_values(
                     exclude_max=exclude_max,
                     large_value_safety_factor=large_value_safety_factor,
                     small_value_safety_factor=small_value_safety_factor,
+                    max_op=max_op,
                 )
             )
         )
@@ -2787,6 +2794,7 @@ def array_values(
     allow_negative=True,
     large_value_safety_factor=1.1,
     small_value_safety_factor=1.1,
+    max_op="divide",
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -2815,8 +2823,13 @@ def array_values(
         if True, exclude the maximum limit.
     allow_negative
         if True, allow negative numbers.
-    safety_factor
-        Ratio of max_value to maximum allowed number in the data type
+    large_value_safety_factor
+        Factor to divide the values by to ensure that they are not too large.
+    small_value_safety_factor
+        Factor to multiply the values by to ensure that they are not too small.
+    max_op
+        The operation to use when calculating the maximum value of the list. Can be
+        "divide", "sqrt" or "log". Default value = "divide".
     Returns
     -------
     A strategy that draws a list.
@@ -2937,13 +2950,21 @@ def array_values(
                     length=size,
                 )
             )
-    elif dtype in ["float16", "bfloat16"]:
+    elif "float" in dtype:
+        dtype_info = {
+            "float16": {"cast_type": "float16", "round_places": 3, "width": 16},
+            "bfloat16": {"cast_type": "float16", "round_places": 3, "width": 16},
+            "float32": {"cast_type": "float32", "round_places": 6, "width": 32},
+            "float64": {"cast_type": "float16", "round_places": 15, "width": 64},
+        }
         min_value_neg = min_value
-        max_value_neg = round(-1 * limit, 3)
-        min_value_pos = round(limit, 3)
+        max_value_neg = round(-1 * limit, dtype_info[dtype]["round_places"])
+        min_value_pos = round(limit, dtype_info[dtype]["round_places"])
         max_value_pos = max_value
         max_value_neg, min_value_pos = (
-            np.array([max_value_neg, min_value_pos]).astype("float16").tolist()
+            np.array([max_value_neg, min_value_pos])
+            .astype(dtype_info[dtype]["cast_type"])
+            .tolist()
         )
         if min_value_neg is not None and min_value_neg >= max_value_neg:
             min_value_neg = min_value_pos
@@ -2963,7 +2984,7 @@ def array_values(
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
                     allow_infinity=allow_inf,
-                    width=16,
+                    width=dtype_info[dtype]["width"],
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 )
@@ -2973,103 +2994,19 @@ def array_values(
                     allow_nan=allow_nan,
                     allow_subnormal=allow_subnormal,
                     allow_infinity=allow_inf,
-                    width=16,
+                    width=dtype_info[dtype]["width"],
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                 ),
                 length=size,
             )
         )
-        values = [v / large_value_safety_factor for v in values]
-    elif dtype == "float32":
-        min_value_neg = min_value
-        max_value_neg = round(-1 * limit, 6)
-        min_value_pos = round(limit, 6)
-        max_value_neg, min_value_pos = (
-            np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
-        )
-        max_value_pos = max_value
-        if min_value_neg is not None and min_value_neg >= max_value_neg:
-            min_value_neg = min_value_pos
-            max_value_neg = max_value_pos
-        elif max_value_pos is not None and max_value_pos <= min_value_pos:
-            min_value_pos = min_value_neg
-            max_value_pos = max_value_neg
-        min_value_pos = _zeroing(min_value_pos)
-        max_value_pos = _zeroing(max_value_pos)
-        min_value_neg = _zeroing(min_value_neg)
-        max_value_neg = _zeroing(max_value_neg)
-        values = draw(
-            list_of_length(
-                x=st.floats(
-                    min_value=min_value_neg,
-                    max_value=max_value_neg,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=32,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                )
-                | st.floats(
-                    min_value=min_value_pos,
-                    max_value=max_value_pos,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=32,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-        )
-        values = [v / large_value_safety_factor for v in values]
-    elif dtype == "float64":
-        limit = math.log(small_value_safety_factor)
-        min_value_neg = min_value
-        max_value_neg = round(-1 * limit, 15)
-        min_value_pos = round(limit, 15)
-        max_value_pos = max_value
-        max_value_neg, min_value_pos = (
-            np.array([max_value_neg, min_value_pos]).astype(dtype).tolist()
-        )
-        if min_value_neg is not None and min_value_neg >= max_value_neg:
-            min_value_neg = min_value_pos
-            max_value_neg = max_value_pos
-        elif max_value_pos is not None and max_value_pos <= min_value_pos:
-            min_value_pos = min_value_neg
-            max_value_pos = max_value_neg
-        min_value_pos = _zeroing(min_value_pos)
-        max_value_pos = _zeroing(max_value_pos)
-        min_value_neg = _zeroing(min_value_neg)
-        max_value_neg = _zeroing(max_value_neg)
-        values = draw(
-            list_of_length(
-                x=st.floats(
-                    min_value=min_value_neg,
-                    max_value=max_value_neg,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=64,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                )
-                | st.floats(
-                    min_value=min_value_pos,
-                    max_value=max_value_pos,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=64,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
-        )
-        values = [v / large_value_safety_factor for v in values]
+        for i, v in enumerate(values):
+            if max_op == "sqrt":
+                v = v / abs(v) * math.sqrt(abs(v))
+            elif max_op == "log":
+                v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
+            values[i] = v / large_value_safety_factor
     elif dtype == "bool":
         values = draw(list_of_length(x=st.booleans(), length=size))
     array = np.array(values)
