@@ -333,24 +333,44 @@ def scatter_nd(
             res = tf.scatter_nd(indices, updates, shape)
     elif reduction == "min":
         if not target_given:
-            max_value = tf.cast(
-                min(
-                    tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max, 1e12
-                ),
-                updates.dtype,
-            )
+            if "int" in dtype.name:
+                max_value = tf.cast(
+                    min(
+                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max,
+                        1e12,
+                    ),
+                    updates.dtype,
+                )
+            else:
+                max_value = tf.cast(
+                    min(
+                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).max,
+                        1e12,
+                    ),
+                    updates.dtype,
+                )
             target = tf.fill(shape, max_value)
         res = tf.tensor_scatter_nd_min(target, indices, updates)
         if not target_given:
             res = tf.where(res == max_value, 0, res)
     elif reduction == "max":
         if not target_given:
-            min_value = tf.cast(
-                max(
-                    tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min, -1e12
-                ),
-                updates.dtype,
-            )
+            if "int" in dtype.name:
+                min_value = tf.cast(
+                    max(
+                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min,
+                        -1e12,
+                    ),
+                    updates.dtype,
+                )
+            else:
+                min_value = tf.cast(
+                    max(
+                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).min,
+                        -1e12,
+                    ),
+                    updates.dtype,
+                )
             target = tf.fill(shape, min_value)
         res = tf.tensor_scatter_nd_max(target, indices, updates)
         if not target_given:
