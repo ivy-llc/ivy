@@ -2032,19 +2032,19 @@ def einops_repeat(
     Examples
     --------
     With :code:`ivy.array` input:
-    >> x = ivy.array([1, 2, 3, 4])
-    >> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
-    >> print(repeated)
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
+    >>> print(repeated)
     ivy.array([[1, 2, 3, 4],
                [1, 2, 3, 4]])
 
     With :code:`ivy.Container` input:
-    >> x = ivy.Container(a=ivy.array([[4,5],
+    >>> x = ivy.Container(a=ivy.array([[4,5],
                                     [1, 3]]),
                         b=ivy.array([[9, 10],
                                     [4, 2]]))
-    >> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
-    >> print(repeated)
+    >>> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
+    >>> print(repeated)
     {
         a: ivy.array([[4, 5, 4, 5],
                       [1, 3, 1, 3]]),
@@ -2336,15 +2336,15 @@ def set_queue_timeout(timeout: float):
 
     Examples
     --------
-    >> x = ivy.get_queue_timeout()
-    >> print(x)
+    >>> x = ivy.get_queue_timeout()
+    >>> print(x)
     15.0
 
     To set the timeout for example 30 seconds
 
-    >> ivy.set_queue_timeout(30)
-    >> y = ivy.get_queue_timeout()
-    >> print(y)
+    >>> ivy.set_queue_timeout(30)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
     30
 
     """
@@ -2809,23 +2809,23 @@ def scatter_nd(
     --------
     scatter values into an empty array, With :code:`ivy.Array` input:
 
-    >> indices = ivy.array([[4], [3], [1], [7]])
-    >> updates = ivy.array([9, 10, 11, 12])
-    >> shape = ivy.array([8])
-    >> scatter = ivy.scatter_nd(indices, updates, shape)
-    >> print(scatter)
+    >>> indices = ivy.array([[4], [3], [1], [7]])
+    >>> updates = ivy.array([9, 10, 11, 12])
+    >>> shape = ivy.array([8])
+    >>> scatter = ivy.scatter_nd(indices, updates, shape)
+    >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
     scatter into an empty array, With: `ivy.Container` input:
 
-    >> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+    >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
                         b=ivy.array([[5],[1],[2]]))
-    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+    >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),
                         b=ivy.array([20, 30, 40]))
-    >> shape = ivy.Container(a=ivy.array([10]),
+    >>> shape = ivy.Container(a=ivy.array([10]),
                         b = ivy.array([10]))
-    >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
-    >> print(z)
+    >>> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    >>> print(z)
     {
         a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
@@ -2833,14 +2833,13 @@ def scatter_nd(
 
     scatter into an array, With : `ivy.Container` and `ivy.Array` input:
 
-    >> indices = ivy.array([[4],[3],[1]])
-    >> updates = ivy.Container(a=ivy.array([10, 20, 30]),
+    >>> indices = ivy.array([[4],[3],[1]])
+    >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),
                     b=ivy.array([200, 300, 400]))
-    >> shape = ivy.array([10, 10])
-    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+    >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
                             b = ivy.array([10, 20, 30, 40, 50]))
-    >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
-    >> print(z)
+    >>> z = ivy.scatter_nd(indices, updates, reduction='replace', out=arr)
+    >>> print(z)
     {
         a: ivy.array([1, 30, 3, 20, 10]),
         b: ivy.array([10, 400, 30, 300, 200])
