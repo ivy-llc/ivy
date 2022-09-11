@@ -2,7 +2,6 @@
 # global
 from typing import Union, Optional, Tuple, List, Iterable, Sequence
 from numbers import Number
-from numpy.core.numeric import normalize_axis_tuple
 
 # local
 import ivy
@@ -12,23 +11,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
-
-
-# Helpers #
-# --------#
-
-
-def _calculate_out_shape(axis, array_shape):
-    if type(axis) not in (tuple, list):
-        axis = (axis,)
-    out_dims = len(axis) + len(array_shape)
-    norm_axis = normalize_axis_tuple(axis, out_dims)
-    shape_iter = iter(array_shape)
-    out_shape = [
-        1 if current_ax in norm_axis else next(shape_iter)
-        for current_ax in range(out_dims)
-    ]
-    return out_shape
 
 
 # Array API Standard #
@@ -653,7 +635,7 @@ def roll(
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -731,11 +713,12 @@ def squeeze(
 @handle_nestable
 def stack(
     arrays: Union[
-        Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
+        Tuple[Union[ivy.Array, ivy.NativeArray], ...],
+        List[Union[ivy.Array, ivy.NativeArray]],
     ],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
