@@ -1737,11 +1737,12 @@ def test_frontend_function(
         dictates whether the corresponding input argument should be treated
         as an ivy Variable.
     with_out
-        if True, the function is also tested with the optional out argument,
-        should not be True together with with_inplace.
+        if True, the function is also tested for inplace update to an array 
+        passed to the optional out argument, should not be True together 
+        with with_inplace.
     with_inplace
-        if True, the function is also tested with inplace update back to 
-        the input argument, should not be True together with with_out.
+        if True, the function is also tested with direct inplace update back to
+        the inputted array, should not be True together with with_out.
     num_positional_args
         number of input arguments that must be passed as positional
         arguments.
