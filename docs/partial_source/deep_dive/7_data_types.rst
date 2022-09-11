@@ -270,17 +270,6 @@ Jax:
         device: jaxlib.xla_extension.Device,
     ) -> JaxArray:
 
-MXNet:
-
-.. code-block:: python
-
-    def zeros(
-        shape: Union[int, Sequence[int]],
-        *,
-        dtype: type,
-        device: mx.context.Context,
-    ) -> mx.nd.NDArray:
-
 NumPy:
 
 .. code-block:: python
