@@ -178,7 +178,11 @@ class ContainerBase(dict, abc.ABC):
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
-        if inspect.signature(ivy.__dict__[fn_name]).parameters.get("out") is not None:
+        with_out = (
+            inspect.signature(ivy.__dict__[fn_name]).parameters.get("out") is not None
+            and out is not None
+        )
+        if with_out:
             conts = arg_conts + kwarg_conts + [out]
         else:
             conts = arg_conts + kwarg_conts
@@ -190,13 +194,19 @@ class ContainerBase(dict, abc.ABC):
         fn = cont0.ivy.__dict__[fn_name]
 
         def map_fn(vals, _):
+            if with_out:
+                out = vals[-1]
+                del vals[-1]
             arg_vals = vals[:num_arg_conts]
             a = ivy.copy_nest(args, to_mutable=True)
             ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
             kwarg_vals = vals[num_arg_conts:]
             kw = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
-            return fn(*a, **kw)
+            if with_out:
+                return fn(*a, out=out, **kw)
+            else:
+                return fn(*a, **kw)
 
         # Replace each container in arg and kwarg with the arrays at the leaf
         # levels of that container using map_fn and call fn using those arrays
