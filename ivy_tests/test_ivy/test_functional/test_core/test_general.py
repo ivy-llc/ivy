@@ -15,7 +15,6 @@ import ivy
 import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
-import ivy.functional.backends.mxnet
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -44,7 +43,7 @@ def _get_shape_of_list(lst, shape=()):
 
 # set_framework
 @handle_cmd_line_args
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "mxnet"]))
+@given(fw_str=st.sampled_from(["numpy", "jax", "torch"]))
 def test_set_framework(fw_str, device):
     ivy.set_backend(fw_str)
     ivy.unset_backend()
@@ -61,8 +60,6 @@ def test_use_within_use_framework(device):
         pass
     with ivy.functional.backends.torch.use:
         pass
-    # with ivy.functional.backends.mxnet.use:
-    #     pass
 
 
 @handle_cmd_line_args
@@ -128,10 +125,6 @@ def test_get_referrers_recursive(device):
 def test_copy_array(dtype_and_x, device, fw):
     dtype, x = dtype_and_x
     assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
-
-    # mxnet does not support int16
-    assume(not (fw == "mxnet" and dtype == "int16"))
-
     # smoke test
     x = ivy.array(x, dtype=dtype, device=device)
     ret = ivy.copy_array(x)
@@ -167,16 +160,6 @@ def test_array_equal(x0_n_x1_n_res, device, fw):
             )
         )
     )
-
-    # mxnet does not support int16, and does not support
-    # bool for broadcast_equal method used
-    assume(
-        not (
-            fw == "mxnet"
-            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
-        )
-    )
-
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -211,14 +194,6 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
         )
     )
     # torch does not support those dtypes
-    assume(
-        not (
-            fw == "mxnet"
-            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
-        )
-    )
-    # mxnet does not support int16, and does not support bool
-    # for broadcast_equal method used
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -270,8 +245,6 @@ def test_to_scalar(object_in, dtype, device, fw):
     # bfloat16 is not supported by numpy
     assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
     # torch does not support those dtypes
-    assume(not (fw == "mxnet" and dtype == "int16"))
-    # mxnet does not support int16
     # smoke test
     ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
@@ -1254,7 +1227,7 @@ def test_container_types(device):
 @handle_cmd_line_args
 def test_inplace_arrays_supported(device):
     cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "mxnet", "torch"]:
+    if cur_fw in ["numpy", "torch"]:
         assert ivy.inplace_arrays_supported()
     elif cur_fw in ["jax", "tensorflow"]:
         assert not ivy.inplace_arrays_supported()
@@ -1265,7 +1238,7 @@ def test_inplace_arrays_supported(device):
 @handle_cmd_line_args
 def test_inplace_variables_supported(device):
     cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "mxnet", "torch", "tensorflow"]:
+    if cur_fw in ["numpy", "torch", "tensorflow"]:
         assert ivy.inplace_variables_supported()
     elif cur_fw in ["jax"]:
         assert not ivy.inplace_variables_supported()

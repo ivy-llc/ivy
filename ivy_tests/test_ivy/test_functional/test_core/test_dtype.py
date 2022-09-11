@@ -12,7 +12,6 @@ from hypothesis import given, assume, strategies as st
 # local
 import ivy
 import ivy.functional.backends.jax as ivy_jax
-import ivy.functional.backends.mxnet as ivy_mxn
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
 import ivy.functional.backends.torch as ivy_torch
@@ -960,7 +959,6 @@ def test_invalid_dtype(dtype_in, fw):
         "torch": ivy_torch.invalid_dtypes,
         "tensorflow": ivy_tf.invalid_dtypes,
         "jax": ivy_jax.invalid_dtypes,
-        "mxnet": ivy_mxn.invalid_dtypes,
         "numpy": ivy_np.invalid_dtypes,
     }
     if dtype_in in fw_invalid_dtypes[fw]:
@@ -1030,7 +1028,6 @@ def test_valid_dtype(dtype_in, fw):
         "torch": ivy_torch.valid_dtypes,
         "tensorflow": ivy_tf.valid_dtypes,
         "jax": ivy_jax.valid_dtypes,
-        "mxnet": ivy_mxn.valid_dtypes,
         "numpy": ivy_np.valid_dtypes,
     }
     if dtype_in in fw_valid_dtypes[fw]:
