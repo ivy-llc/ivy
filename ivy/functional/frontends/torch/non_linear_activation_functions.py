@@ -3,9 +3,11 @@ import ivy
 
 
 def _compute_threshold(input, threshold, value, inplace):
+    ret = ivy.where(ivy.greater(input, threshold), input, value)
     if inplace:
-        return ivy.where(ivy.greater(input, threshold), input, value, out=input)
-    return ivy.where(ivy.greater(input, threshold), input, value)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def _compute_elu(input, alpha=1.0, inplace=False):
