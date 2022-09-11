@@ -237,48 +237,43 @@ inputs broadcast to.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <p>scatter values into an empty array, With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
-<p>&gt;&gt; indices = ivy.array([[4], [3], [1], [7]])
-&gt;&gt; updates = ivy.array([9, 10, 11, 12])
-&gt;&gt; shape = ivy.array([8])
-&gt;&gt; scatter = ivy.scatter_nd(indices, updates, shape)
-&gt;&gt; print(scatter)
-ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">updates</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scatter</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">scatter</span><span class="p">)</span>
+<span class="go">ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])</span>
+</pre></div>
+</div>
 <p>scatter into an empty array, With: <cite>ivy.Container</cite> input:</p>
-<dl class="simple">
-<dt>&gt;&gt; indices = ivy.Container(a=ivy.array([[4],[3],[6]]),</dt><dd><p>b=ivy.array([[5],[1],[2]]))</p>
-</dd>
-<dt>&gt;&gt; updates = ivy.Container(a=ivy.array([100, 200, 200]),</dt><dd><p>b=ivy.array([20, 30, 40]))</p>
-</dd>
-<dt>&gt;&gt; shape = ivy.Container(a=ivy.array([10]),</dt><dd><p>b = ivy.array([10]))</p>
-</dd>
-</dl>
-<p>&gt;&gt; z = ivy.scatter_nd(indices, updates, shape=shape, reduction=’replace’)
-&gt;&gt; print(z)
-{</p>
-<blockquote>
-<div><p>a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
-b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])</p>
-</div></blockquote>
-<p>}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">],[</span><span class="mi">3</span><span class="p">],[</span><span class="mi">6</span><span class="p">]]),</span>
+<span class="go">                    b=ivy.array([[5],[1],[2]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">updates</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">]),</span>
+<span class="go">                    b=ivy.array([20, 30, 40]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">]),</span>
+<span class="go">                    b = ivy.array([10]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),</span>
+<span class="go">    b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 <p>scatter into an array, With : <cite>ivy.Container</cite> and <cite>ivy.Array</cite> input:</p>
-<p>&gt;&gt; indices = ivy.array([[4],[3],[1]])
-&gt;&gt; updates = ivy.Container(a=ivy.array([10, 20, 30]),</p>
-<blockquote>
-<div><p>b=ivy.array([200, 300, 400]))</p>
-</div></blockquote>
-<p>&gt;&gt; shape = ivy.array([10, 10])
-&gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),</p>
-<blockquote>
-<div><p>b = ivy.array([10, 20, 30, 40, 50]))</p>
-</div></blockquote>
-<p>&gt;&gt; z = ivy.scatter_nd(indices, updates, tensor=arr, reduction=’replace’)
-&gt;&gt; print(z)
-{</p>
-<blockquote>
-<div><p>a: ivy.array([1, 30, 3, 20, 10]),
-b: ivy.array([10, 400, 30, 300, 200])</p>
-</div></blockquote>
-<p>}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">],[</span><span class="mi">3</span><span class="p">],[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">updates</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]),</span>
+<span class="go">                b=ivy.array([200, 300, 400]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+<span class="go">                        b = ivy.array([10, 20, 30, 40, 50]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">arr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([1, 30, 3, 20, 10]),</span>
+<span class="go">    b: ivy.array([10, 400, 30, 300, 200])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

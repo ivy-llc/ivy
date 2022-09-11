@@ -2162,19 +2162,19 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.array` input:</span>
-<span class="sd">    &gt;&gt; x = ivy.array([1, 2, 3, 4])</span>
-<span class="sd">    &gt;&gt; repeated = ivy.einops_repeat(x, &#39;a -&gt; b a&#39;, b=2)</span>
-<span class="sd">    &gt;&gt; print(repeated)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; repeated = ivy.einops_repeat(x, &#39;a -&gt; b a&#39;, b=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(repeated)</span>
 <span class="sd">    ivy.array([[1, 2, 3, 4],</span>
 <span class="sd">               [1, 2, 3, 4]])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
-<span class="sd">    &gt;&gt; x = ivy.Container(a=ivy.array([[4,5],</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[4,5],</span>
 <span class="sd">                                    [1, 3]]),</span>
 <span class="sd">                        b=ivy.array([[9, 10],</span>
 <span class="sd">                                    [4, 2]]))</span>
-<span class="sd">    &gt;&gt; repeated = ivy.einops_repeat(x, &#39;h w -&gt; h (c w)&#39;, c=2)</span>
-<span class="sd">    &gt;&gt; print(repeated)</span>
+<span class="sd">    &gt;&gt;&gt; repeated = ivy.einops_repeat(x, &#39;h w -&gt; h (c w)&#39;, c=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(repeated)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([[4, 5, 4, 5],</span>
 <span class="sd">                      [1, 3, 1, 3]]),</span>
@@ -2466,15 +2466,15 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt; x = ivy.get_queue_timeout()</span>
-<span class="sd">    &gt;&gt; print(x)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.get_queue_timeout()</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    15.0</span>
 
 <span class="sd">    To set the timeout for example 30 seconds</span>
 
-<span class="sd">    &gt;&gt; ivy.set_queue_timeout(30)</span>
-<span class="sd">    &gt;&gt; y = ivy.get_queue_timeout()</span>
-<span class="sd">    &gt;&gt; print(y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_queue_timeout(30)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.get_queue_timeout()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    30</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2939,23 +2939,23 @@
 <span class="sd">    --------</span>
 <span class="sd">    scatter values into an empty array, With :code:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt; indices = ivy.array([[4], [3], [1], [7]])</span>
-<span class="sd">    &gt;&gt; updates = ivy.array([9, 10, 11, 12])</span>
-<span class="sd">    &gt;&gt; shape = ivy.array([8])</span>
-<span class="sd">    &gt;&gt; scatter = ivy.scatter_nd(indices, updates, shape)</span>
-<span class="sd">    &gt;&gt; print(scatter)</span>
+<span class="sd">    &gt;&gt;&gt; indices = ivy.array([[4], [3], [1], [7]])</span>
+<span class="sd">    &gt;&gt;&gt; updates = ivy.array([9, 10, 11, 12])</span>
+<span class="sd">    &gt;&gt;&gt; shape = ivy.array([8])</span>
+<span class="sd">    &gt;&gt;&gt; scatter = ivy.scatter_nd(indices, updates, shape)</span>
+<span class="sd">    &gt;&gt;&gt; print(scatter)</span>
 <span class="sd">    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])</span>
 
 <span class="sd">    scatter into an empty array, With: `ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt; indices = ivy.Container(a=ivy.array([[4],[3],[6]]),</span>
+<span class="sd">    &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[4],[3],[6]]),</span>
 <span class="sd">                        b=ivy.array([[5],[1],[2]]))</span>
-<span class="sd">    &gt;&gt; updates = ivy.Container(a=ivy.array([100, 200, 200]),</span>
+<span class="sd">    &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([100, 200, 200]),</span>
 <span class="sd">                        b=ivy.array([20, 30, 40]))</span>
-<span class="sd">    &gt;&gt; shape = ivy.Container(a=ivy.array([10]),</span>
+<span class="sd">    &gt;&gt;&gt; shape = ivy.Container(a=ivy.array([10]),</span>
 <span class="sd">                        b = ivy.array([10]))</span>
-<span class="sd">    &gt;&gt; z = ivy.scatter_nd(indices, updates, shape=shape, reduction=&#39;replace&#39;)</span>
-<span class="sd">    &gt;&gt; print(z)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.scatter_nd(indices, updates, shape=shape, reduction=&#39;replace&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),</span>
 <span class="sd">        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])</span>
@@ -2963,14 +2963,13 @@
 
 <span class="sd">    scatter into an array, With : `ivy.Container` and `ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt; indices = ivy.array([[4],[3],[1]])</span>
-<span class="sd">    &gt;&gt; updates = ivy.Container(a=ivy.array([10, 20, 30]),</span>
+<span class="sd">    &gt;&gt;&gt; indices = ivy.array([[4],[3],[1]])</span>
+<span class="sd">    &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([10, 20, 30]),</span>
 <span class="sd">                    b=ivy.array([200, 300, 400]))</span>
-<span class="sd">    &gt;&gt; shape = ivy.array([10, 10])</span>
-<span class="sd">    &gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),</span>
+<span class="sd">    &gt;&gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),</span>
 <span class="sd">                            b = ivy.array([10, 20, 30, 40, 50]))</span>
-<span class="sd">    &gt;&gt; z = ivy.scatter_nd(indices, updates, tensor=arr, reduction=&#39;replace&#39;)</span>
-<span class="sd">    &gt;&gt; print(z)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.scatter_nd(indices, updates, reduction=&#39;replace&#39;, out=arr)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([1, 30, 3, 20, 10]),</span>
 <span class="sd">        b: ivy.array([10, 400, 30, 300, 200])</span>
