@@ -397,16 +397,16 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         helpers.array_values(
             dtype=dtype,
             shape=x_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            small_value_safety_factor=2.5,
+            max_op="log",
         )
     )
     filters = draw(
         helpers.array_values(
             dtype=dtype,
             shape=filter_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            small_value_safety_factor=2.5,
+            max_op="log",
         )
     )
     if transpose:
@@ -456,9 +456,11 @@ def test_conv1d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv1d",
+        rtol_=1e-02,
+        atol_=1e-02,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        filters=np.asarray(filters, dtype[1]),
         strides=stride,
         padding=pad,
         data_format=data_format,
