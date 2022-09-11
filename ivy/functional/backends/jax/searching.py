@@ -6,6 +6,10 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
 
+# Array API Standard #
+# ------------------ #
+
+
 def argmax(
     x: JaxArray,
     /,
@@ -51,3 +55,12 @@ def where(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.where(condition, x1, x2)
+
+
+# Extra #
+# ----- #
+
+
+def indices_where(x: JaxArray) -> JaxArray:
+    where_x = jnp.where(x)
+    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)

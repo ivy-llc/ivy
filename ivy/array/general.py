@@ -647,28 +647,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.assert_supports_inplace(self)
 
-    def copy_array(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.copy_array. This method simply wraps
-        the function, and so the docstring for ivy.copy_array also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            a copy of the input array ``x``.
-
-        """
-        return ivy.copy_array(self, out=out)
-
     def to_scalar(self: ivy.Array) -> Number:
         """
         ivy.Array instance method variant of ivy.to_scalar. This method simply wraps
@@ -977,30 +955,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.scatter_flat(self, updates, size=size, reduction=reduction, out=out)
-
-    def indices_where(
-        self: ivy.Array, *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.indices_where. This method simply
-        wraps the function, and so the docstring for ivy.indices_where also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array for which indices are desired
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Indices for where the boolean array is True.
-
-        """
-        return ivy.indices_where(self, out=out)
 
     def get_num_dims(self: ivy.Array, as_array: bool = False) -> int:
         """

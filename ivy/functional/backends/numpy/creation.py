@@ -225,6 +225,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return x.copy()
+
+
 def logspace(
     start: Union[np.ndarray, int],
     stop: Union[np.ndarray, int],

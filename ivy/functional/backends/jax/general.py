@@ -27,10 +27,6 @@ def container_types():
     return [FlatMapping]
 
 
-def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.array(x)
-
-
 def current_backend_str():
     return "jax"
 
@@ -77,11 +73,6 @@ def gather_nd(
 
 def get_num_dims(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, int]:
     return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
-
-
-def indices_where(x: JaxArray) -> JaxArray:
-    where_x = jnp.where(x)
-    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
 
 
 def inplace_arrays_supported():

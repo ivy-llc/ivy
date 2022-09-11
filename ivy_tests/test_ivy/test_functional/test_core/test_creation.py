@@ -815,6 +815,27 @@ def test_zeros_like(
     )
 
 
+# copy array
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    )
+)
+def test_copy_array(dtype_and_x, device, fw):
+    dtype, x = dtype_and_x
+    # smoke test
+    x = ivy.array(x, dtype=dtype, device=device)
+    ret = ivy.copy_array(x)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
+    assert id(x) != id(ret)
+
+
 @st.composite
 def _dtype_indices_depth(draw):
     depth = draw(helpers.ints(min_value=2, max_value=100))
