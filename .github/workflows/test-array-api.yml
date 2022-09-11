@@ -15,7 +15,7 @@ jobs:
         with:
           workflow: test-array-api.yml
           workflow_conclusion: completed
-          name: 'Hypothesis Download'
+          name: 'Hypothesis_zip'
           path: |
             ivy/.hypothesis/
         continue-on-error: true
@@ -85,7 +85,7 @@ jobs:
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
-          name: 'Hypothesis Upload'
+          name: 'Hypothesis_zip'
           path: |
             ivy/.hypothesis/examples.zip
         continue-on-error: true
