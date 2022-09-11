@@ -33,7 +33,6 @@ General
    general/to_list.rst
    general/clip_vector_norm.rst
    general/clip_matrix_norm.rst
-   general/unstack.rst
    general/fourier_encode.rst
    general/value_is_nan.rst
    general/has_nans.rst
@@ -77,7 +76,6 @@ General
    general/gather_nd.rst
    general/multiprocessing.rst
    general/indices_where.rst
-   general/one_hot.rst
    general/shape.rst
    general/set_shape_array_mode.rst
    general/unset_shape_array_mode.rst

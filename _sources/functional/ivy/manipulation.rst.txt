@@ -27,6 +27,7 @@ Manipulation
    manipulation/split.rst
    manipulation/swapaxes.rst
    manipulation/tile.rst
+   manipulation/unstack.rst
    manipulation/zero_pad.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 

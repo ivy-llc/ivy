@@ -1,0 +1,41 @@
+unstack
+=======
+
+.. autofunction:: ivy.functional.ivy.manipulation.unstack
+
+.. autofunction:: ivy.array.array_methods.unstack
+
+.. autofunction:: ivy.container.container_methods.static_unstack
+
+.. autofunction:: ivy.container.container_methods.unstack
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |mxnet_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |mxnet_logo| image:: ../../../logos/supported/mxnet_logo.png
+   :target: https://mxnet.apache.org
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: unstack
+
+   unstack/unstack_functional.rst
+   unstack/static_unstack_container.rst
+   unstack/unstack_array.rst
+   unstack/unstack_container.rst
+
