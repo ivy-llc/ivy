@@ -124,6 +124,7 @@ def test_linspace(
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
+    num_positional_args=helpers.num_positional_args(fn_name="logspace"),
 )
 def test_logspace(
     *,
@@ -133,6 +134,7 @@ def test_logspace(
     axis,
     device,
     with_out,
+    num_positional_args,
     fw,
 ):
     dtype, start_stop = dtype_and_start_stop
@@ -140,7 +142,7 @@ def test_logspace(
         input_dtypes=dtype,
         as_variable_flags=False,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=False,
         container_flags=False,
         instance_method=False,

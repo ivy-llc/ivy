@@ -14,14 +14,12 @@ fpaths = func_fpaths
 # test lists
 framework_tests_to_run = {
     "jax": list(),
-    "mxnet": list(),
     "numpy": list(),
     "torch": list(),
     "tensorflow": list(),
 }
 framework_tests_to_skip = {
     "jax": list(),
-    "mxnet": list(),
     "numpy": list(),
     "torch": list(),
     "tensorflow": list(),
