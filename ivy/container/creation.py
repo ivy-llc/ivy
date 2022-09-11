@@ -893,3 +893,103 @@ class ContainerWithCreation(ContainerBase):
             out,
             device=device,
         )
+
+    @staticmethod
+    def static_one_hot(
+        indices: ivy.Container,
+        depth: int,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.one_hot. This method
+        simply wraps the function, and so the docstring for ivy.one_hot
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        indices
+            Indices for where the ones should be scattered *[batch_shape, dim]*
+        depth
+            Scalar defining the depth of the one-hot dimension.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            container with tensors of zeros with the same shape and type as the inputs,
+            unless dtype provided which overrides.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "one_hot",
+            indices,
+            depth,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def one_hot(
+        self: ivy.Container,
+        depth: int,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.one_hot. This method
+        simply wraps the function, and so the docstring for ivy.one_hot
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Indices for where the ones should be scattered *[batch_shape, dim]*
+        depth
+            Scalar defining the depth of the one-hot dimension.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            container with tensors of zeros with the same shape and type as the inputs,
+            unless dtype provided which overrides.
+        """
+        return self.static_one_hot(
+            self,
+            depth,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

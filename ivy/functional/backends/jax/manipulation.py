@@ -228,6 +228,17 @@ def constant_pad(
 constant_pad.unsupported_dtypes = ("uint64",)
 
 
+def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
+    if x.shape == ():
+        return [x]
+    dim_size = x.shape[axis]
+    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
+    x_split = jnp.split(x, dim_size, axis)
+    if keepdims:
+        return x_split
+    return [jnp.squeeze(item, axis) for item in x_split]
+
+
 def zero_pad(
     x: JaxArray, /, pad_width: List[List[int]], *, out: Optional[JaxArray] = None
 ):

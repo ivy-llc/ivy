@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence, List, Callable
+from typing import Optional, Union, Sequence, Callable
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -157,15 +157,6 @@ def multiprocessing(context=None):
     )
 
 
-def one_hot(
-    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    res = np.eye(depth, dtype=indices.dtype)[
-        np.array(indices, dtype="int64").reshape(-1)
-    ]
-    return res.reshape(list(indices.shape) + [depth])
-
-
 def scatter_flat(
     indices: np.ndarray,
     updates: np.ndarray,
@@ -286,15 +277,6 @@ def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
 
 def to_scalar(x: np.ndarray) -> Number:
     return x.item()
-
-
-def unstack(x: np.ndarray, axis: int, keepdims: bool = False) -> List[np.ndarray]:
-    if x.shape == ():
-        return [x]
-    x_split = np.split(x, x.shape[axis], axis)
-    if keepdims:
-        return x_split
-    return [np.squeeze(item, axis) for item in x_split]
 
 
 def vmap(

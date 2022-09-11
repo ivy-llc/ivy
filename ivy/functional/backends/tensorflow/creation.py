@@ -354,3 +354,19 @@ def logspace(
 ) -> Union[tf.Tensor, tf.Variable]:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
     return base**power_seq
+
+
+def one_hot(
+    indices: Union[tf.Tensor, tf.Variable],
+    depth: int,
+    *,
+    device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    device = ivy.default_device(device)
+    dtype = indices.dtype
+    if device is not None:
+        indices = tf.cast(indices, tf.int64)
+        with tf.device(ivy.as_native_dev(device)):
+            return tf.one_hot(indices, depth, dtype=dtype)
+    return tf.one_hot(indices, depth, dtype=dtype)

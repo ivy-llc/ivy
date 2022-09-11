@@ -1147,6 +1147,43 @@ def native_array(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@infer_device
+@handle_nestable
+def one_hot(
+    indices: Union[ivy.Array, ivy.NativeArray],
+    depth: int,
+    /,
+    *,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Returns a one-hot array.
+
+    Parameters
+    ----------
+    indices
+        Indices for where the ones should be scattered *[batch_shape, dim]*
+    depth
+        Scalar defining the depth of the one-hot dimension.
+    device
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Tensor of zeros with the same shape and type as a, unless dtype provided which
+        overrides.
+
+    """
+    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
 @infer_dtype
 @infer_device
 @handle_nestable

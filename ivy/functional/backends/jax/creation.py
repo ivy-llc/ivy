@@ -306,3 +306,16 @@ def logspace(
     return _to_device(
         jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
     )
+
+
+def one_hot(
+    indices: JaxArray,
+    depth: int,
+    *,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    res = jnp.eye(depth, dtype=indices.dtype)[
+        jnp.array(indices, dtype="int64").reshape(-1)
+    ]
+    return _to_device(res.reshape(list(indices.shape) + [depth]), device)

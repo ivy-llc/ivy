@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, List, Callable
+from typing import Optional, Union, Sequence, Callable
 
 _round = round
 import numpy as np
@@ -179,22 +179,6 @@ def multiprocessing(context=None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
-
-
-def one_hot(
-    indices: Union[tf.Tensor, tf.Variable],
-    depth: int,
-    *,
-    device: str,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    device = ivy.default_device(device)
-    dtype = indices.dtype
-    if device is not None:
-        indices = tf.cast(indices, tf.int64)
-        with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(indices, depth, dtype=dtype)
-    return tf.one_hot(indices, depth, dtype=dtype)
 
 
 def scatter_flat(
@@ -430,17 +414,6 @@ def to_numpy(x: Union[tf.Tensor, tf.Variable], copy: bool = True) -> np.ndarray:
 
 def to_scalar(x: Union[tf.Tensor, tf.Variable]) -> Number:
     return to_numpy(x).item()
-
-
-def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
-) -> List[tf.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = tf.unstack(x, axis=axis)
-    if keepdims:
-        return [tf.expand_dims(r, axis) for r in ret]
-    return ret
 
 
 def vmap(
