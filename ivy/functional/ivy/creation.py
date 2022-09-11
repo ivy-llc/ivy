@@ -34,8 +34,10 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         specifically for the backend implementations of asarray.
         """
         if type(args[0]) == list:
-            return outputs_to_ivy_arrays(fn)
-        return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
+            return outputs_to_ivy_arrays(fn)(*args, dtype=dtype, **kwargs)
+        return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))(
+            *args, dtype=dtype, **kwargs
+        )
 
     return new_fn
 
