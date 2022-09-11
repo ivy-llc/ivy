@@ -68,7 +68,7 @@ jobs:
         continue-on-error: true
 
   Upload-Artifacts:
-     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}
+     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
      runs-on: ubuntu-latest
      needs: run-array-api-tests
      steps:
