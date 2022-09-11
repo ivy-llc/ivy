@@ -456,6 +456,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return x.clone()
+
+
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],
