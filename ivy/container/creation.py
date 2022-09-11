@@ -664,7 +664,7 @@ class ContainerWithCreation(ContainerBase):
         n_rows: int,
         n_cols: Optional[int] = None,
         /,
-        k: Optional[int] = 0,
+        k: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -724,7 +724,7 @@ class ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_meshgrid(
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
-        indexing: Optional[str] = "xy",
+        indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -746,7 +746,7 @@ class ContainerWithCreation(ContainerBase):
         self: ivy.Container,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
-        indexing: Optional[str] = "xy",
+        indexing: str = "xy",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

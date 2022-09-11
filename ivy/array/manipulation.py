@@ -244,7 +244,7 @@ class ArrayWithManipulation(abc.ABC):
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
         *,
-        axis: Optional[int] = 0,
+        axis: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

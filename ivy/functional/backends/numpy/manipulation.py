@@ -118,7 +118,7 @@ def stack(
     arrays: Union[Tuple[np.ndarray], List[np.ndarray]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.stack(arrays, axis, out=out)

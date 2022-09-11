@@ -730,7 +730,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.fourier_encode(self, max_freq, num_bands, linear, concat, flatten)
 
-    def value_is_nan(self: ivy.Array, include_infs: Optional[bool] = True) -> bool:
+    def value_is_nan(self: ivy.Array, include_infs: bool = True) -> bool:
         """
         ivy.Array instance method variant of ivy.value_is_nan. This method simply wraps
         the function, and so the docstring for ivy.value_is_nan also applies to this
