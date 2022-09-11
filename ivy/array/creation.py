@@ -340,7 +340,7 @@ class ArrayWithCreation(abc.ABC):
         return ivy.from_dlpack(self._data, out=out)
 
     # Extra #
-    # ------#
+    # ----- #
 
     def native_array(
         self: ivy.Array,
@@ -370,3 +370,37 @@ class ArrayWithCreation(abc.ABC):
 
         """
         return ivy.native_array(self._data, dtype=dtype, device=device)
+
+    def one_hot(
+        self: ivy.Array,
+        depth: int,
+        *,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.one_hot. This method simply wraps the
+        function, and so the docstring for ivy.one_hot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array containing the indices for which the ones should be scattered
+        depth
+            Scalar defining the depth of the one-hot dimension.
+        device
+            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+            Same as x if None.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Tensor of zeros with the same shape and type as a, unless dtype provided
+            which overrides.
+
+        """
+        return ivy.one_hot(self, depth, device=device, out=out)

@@ -372,7 +372,6 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
-# noinspection PyShadowingNames
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -475,3 +474,15 @@ def logspace(
 
 logspace.support_native_out = True
 logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
+
+
+def one_hot(
+    indices: torch.Tensor,
+    depth: int,
+    *,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
+        device, indices.dtype
+    )

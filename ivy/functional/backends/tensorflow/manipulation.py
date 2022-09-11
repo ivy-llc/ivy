@@ -303,3 +303,14 @@ def clip(
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
     return ret
+
+
+def unstack(
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+) -> List[tf.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = tf.unstack(x, axis=axis)
+    if keepdims:
+        return [tf.expand_dims(r, axis) for r in ret]
+    return ret

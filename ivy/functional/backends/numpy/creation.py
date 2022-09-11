@@ -243,3 +243,12 @@ def logspace(
         np.logspace(start, stop, num=num, base=base, dtype=dtype, axis=axis),
         device=device,
     )
+
+
+def one_hot(
+    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    res = np.eye(depth, dtype=indices.dtype)[
+        np.array(indices, dtype="int64").reshape(-1)
+    ]
+    return res.reshape(list(indices.shape) + [depth])

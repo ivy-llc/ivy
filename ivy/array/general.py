@@ -155,41 +155,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.has_nans(self, include_infs)
 
-    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.unstack. This method simply
-        wraps the function, and so the docstring for ivy.unstack also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array to unstack.
-        axis
-            Axis for which to unpack the array.
-        keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
-
-        Returns
-        -------
-        ret
-            List of arrays, unpacked along specified dimensions.
-
-        Examples
-        --------
-        >>> x = ivy.array([[1, 2], [3, 4]])
-        >>> y = x.unstack(axis=0)
-        >>> print(y)
-        [ivy.array([1, 2]), ivy.array([3, 4])]
-
-        >>> x = ivy.array([[1, 2], [3, 4]])
-        >>> y = x.unstack(axis=1, keepdims=True)
-        >>> print(y)
-        [ivy.array([[1],
-                [3]]), ivy.array([[2],
-                [4]])]
-        """
-        return ivy.unstack(self._data, axis, keepdims=keepdims)
-
     def gather(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
@@ -1036,40 +1001,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.indices_where(self, out=out)
-
-    def one_hot(
-        self: ivy.Array,
-        depth: int,
-        *,
-        device: Union[ivy.Device, ivy.NativeDevice] = None,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.one_hot. This method simply wraps the
-        function, and so the docstring for ivy.one_hot also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array containing the indices for which the ones should be scattered
-        depth
-            Scalar defining the depth of the one-hot dimension.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-            Same as x if None.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Tensor of zeros with the same shape and type as a, unless dtype provided
-            which overrides.
-
-        """
-        return ivy.one_hot(self, depth, device=device, out=out)
 
     def get_num_dims(self: ivy.Array, as_array: bool = False) -> int:
         """

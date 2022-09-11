@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from operator import mul
 from functools import reduce
-from typing import List, Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable
 from numbers import Number
 
 import functorch
@@ -171,18 +171,6 @@ def multiprocessing(context=None):
     if context is None:
         return torch.multiprocessing
     return torch.multiprocessing.get_context(context)
-
-
-def one_hot(
-    indices: torch.Tensor,
-    depth: int,
-    *,
-    device: torch.device,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
-        device, indices.dtype
-    )
 
 
 def scatter_flat(
@@ -418,15 +406,6 @@ def to_scalar(x: torch.Tensor) -> Number:
     if isinstance(x, (float, int)):
         return x
     return x.item()
-
-
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = list(torch.unbind(x, axis))
-    if keepdims:
-        return [r.unsqueeze(axis) for r in ret]
-    return ret
 
 
 def vmap(
