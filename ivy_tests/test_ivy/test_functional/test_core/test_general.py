@@ -43,7 +43,7 @@ def _get_shape_of_list(lst, shape=()):
 
 # set_framework
 @handle_cmd_line_args
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch"]))
+@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
 def test_set_framework(fw_str, device):
     ivy.set_backend(fw_str)
     ivy.unset_backend()
@@ -124,7 +124,6 @@ def test_get_referrers_recursive(device):
 )
 def test_copy_array(dtype_and_x, device, fw):
     dtype, x = dtype_and_x
-    assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
     # smoke test
     x = ivy.array(x, dtype=dtype, device=device)
     ret = ivy.copy_array(x)
@@ -147,19 +146,6 @@ def test_copy_array(dtype_and_x, device, fw):
 def test_array_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in (dtype0, dtype1)))
-    # torch does not support those dtypes
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype0 in ["uint16", "uint32", "uint64"]
-                or dtype1 in ["uint16", "uint32", "uint64"]
-            )
-        )
-    )
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -183,17 +169,6 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
     dtype2, x2 = x0_n_x1_n_res[0][2], x0_n_x1_n_res[1][2]
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype0 in ["uint16", "uint32", "uint64"]
-                or dtype1 in ["uint16", "uint32", "uint64"]
-                or dtype2 in ["uint16", "uint32", "uint64"]
-            )
-        )
-    )
-    # torch does not support those dtypes
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -243,8 +218,6 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
 def test_to_scalar(object_in, dtype, device, fw):
     assume(not ("bfloat16" in dtype))
     # bfloat16 is not supported by numpy
-    assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
-    # torch does not support those dtypes
     # smoke test
     ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
@@ -265,7 +238,6 @@ def test_to_list(x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in dtype))
-    assume(dtype in ivy.valid_dtypes)
     # smoke test
     arr = ivy.array(object_in, dtype=dtype, device=device)
     ret = ivy.to_list(arr)
@@ -331,19 +303,7 @@ def test_shape(
 )
 def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     dtype, object_in = x0_n_x1_n_res
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype in ["uint16", "uint32", "uint64"]
-                or (
-                    dtype not in ivy_np.valid_float_dtypes
-                    and tensor_fn == helpers.var_fn
-                )
-            )
-        )
-    )
-    # torch does not support those dtypes
+    assume(not (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn))
     ret = ivy.get_num_dims(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
     # type test
     if as_tensor:
@@ -433,8 +393,6 @@ def test_unstack(
     dtype, x, axis = x_n_dtype_axis
     if axis >= len(np.asarray(x, dtype=dtype).shape):
         axis = len(np.asarray(x, dtype=dtype).shape) - 1
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
