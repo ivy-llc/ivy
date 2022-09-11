@@ -15,7 +15,6 @@ import ivy
 import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
-import ivy.functional.backends.mxnet
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -44,7 +43,7 @@ def _get_shape_of_list(lst, shape=()):
 
 # set_framework
 @handle_cmd_line_args
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "mxnet"]))
+@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
 def test_set_framework(fw_str, device):
     ivy.set_backend(fw_str)
     ivy.unset_backend()
@@ -61,8 +60,6 @@ def test_use_within_use_framework(device):
         pass
     with ivy.functional.backends.torch.use:
         pass
-    # with ivy.functional.backends.mxnet.use:
-    #     pass
 
 
 @handle_cmd_line_args
@@ -127,11 +124,6 @@ def test_get_referrers_recursive(device):
 )
 def test_copy_array(dtype_and_x, device, fw):
     dtype, x = dtype_and_x
-    assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
-
-    # mxnet does not support int16
-    assume(not (fw == "mxnet" and dtype == "int16"))
-
     # smoke test
     x = ivy.array(x, dtype=dtype, device=device)
     ret = ivy.copy_array(x)
@@ -154,29 +146,6 @@ def test_copy_array(dtype_and_x, device, fw):
 def test_array_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in (dtype0, dtype1)))
-    # torch does not support those dtypes
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype0 in ["uint16", "uint32", "uint64"]
-                or dtype1 in ["uint16", "uint32", "uint64"]
-            )
-        )
-    )
-
-    # mxnet does not support int16, and does not support
-    # bool for broadcast_equal method used
-    assume(
-        not (
-            fw == "mxnet"
-            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
-        )
-    )
-
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -200,25 +169,6 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
     dtype2, x2 = x0_n_x1_n_res[0][2], x0_n_x1_n_res[1][2]
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype0 in ["uint16", "uint32", "uint64"]
-                or dtype1 in ["uint16", "uint32", "uint64"]
-                or dtype2 in ["uint16", "uint32", "uint64"]
-            )
-        )
-    )
-    # torch does not support those dtypes
-    assume(
-        not (
-            fw == "mxnet"
-            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
-        )
-    )
-    # mxnet does not support int16, and does not support bool
-    # for broadcast_equal method used
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -268,10 +218,6 @@ def test_to_numpy(x0_n_x1_n_res, device, fw):
 def test_to_scalar(object_in, dtype, device, fw):
     assume(not ("bfloat16" in dtype))
     # bfloat16 is not supported by numpy
-    assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
-    # torch does not support those dtypes
-    assume(not (fw == "mxnet" and dtype == "int16"))
-    # mxnet does not support int16
     # smoke test
     ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
@@ -292,7 +238,6 @@ def test_to_list(x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in dtype))
-    assume(dtype in ivy.valid_dtypes)
     # smoke test
     arr = ivy.array(object_in, dtype=dtype, device=device)
     ret = ivy.to_list(arr)
@@ -358,19 +303,7 @@ def test_shape(
 )
 def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     dtype, object_in = x0_n_x1_n_res
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype in ["uint16", "uint32", "uint64"]
-                or (
-                    dtype not in ivy_np.valid_float_dtypes
-                    and tensor_fn == helpers.var_fn
-                )
-            )
-        )
-    )
-    # torch does not support those dtypes
+    assume(not (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn))
     ret = ivy.get_num_dims(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
     # type test
     if as_tensor:
@@ -396,6 +329,7 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     ),
     max_norm=st.floats(),
     p=st.floats(),
+    num_positional_args=helpers.num_positional_args(fn_name="clip_vector_norm"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
     native_array=st.booleans(),
@@ -407,6 +341,7 @@ def test_clip_vector_norm(
     max_norm,
     p,
     as_variable,
+    num_positional_args,
     with_out,
     native_array,
     container,
@@ -419,7 +354,7 @@ def test_clip_vector_norm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -441,11 +376,13 @@ def test_clip_vector_norm(
         max_axis=4,
     ),
     keepdims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="unstack"),
 )
 def test_unstack(
     x_n_dtype_axis,
     keepdims,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -456,13 +393,11 @@ def test_unstack(
     dtype, x, axis = x_n_dtype_axis
     if axis >= len(np.asarray(x, dtype=dtype).shape):
         axis = len(np.asarray(x, dtype=dtype).shape) - 1
-    if fw == "torch" and dtype in ["uint16", "uint32", "uint64"]:
-        return
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -524,6 +459,7 @@ def test_unstack(
     x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
     with_out=st.booleans(),
     as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="indices_where"),
     native_array=st.booleans(),
     container=st.booleans(),
     instance_method=st.booleans(),
@@ -532,6 +468,7 @@ def test_indices_where(
     x,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -543,7 +480,7 @@ def test_indices_where(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=1,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -571,11 +508,13 @@ def _dtype_indices_depth(draw):
 @handle_cmd_line_args
 @given(
     dtype_indices_depth=_dtype_indices_depth(),
+    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
 )
 def test_one_hot(
     dtype_indices_depth,
     with_out,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -588,7 +527,7 @@ def test_one_hot(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -596,88 +535,6 @@ def test_one_hot(
         fn_name="one_hot",
         indices=np.asarray(indices, dtype=dtype),
         depth=depth,
-    )
-
-
-# cumsum
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    num_positional_args=st.integers(0, 3),
-)
-def test_cumsum(
-    dtype_x_axis,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    dtype, x, axis = dtype_x_axis
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="cumsum",
-        x=np.asarray(x, dtype=dtype),
-        axis=axis,
-    )
-
-
-# cumprod
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
-)
-def test_cumprod(
-    dtype_x_axis,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    dtype, x, axis = dtype_x_axis
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="cumprod",
-        x=np.asarray(x, dtype=dtype),
-        axis=axis,
     )
 
 
@@ -706,7 +563,7 @@ def test_cumprod(
         )
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
-    num_positional_args=st.integers(0, 3),
+    num_positional_args=helpers.num_positional_args(fn_name="scatter_flat"),
 )
 def test_scatter_flat(
     x,
@@ -1328,7 +1185,7 @@ def test_container_types(device):
 @handle_cmd_line_args
 def test_inplace_arrays_supported(device):
     cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "mxnet", "torch"]:
+    if cur_fw in ["numpy", "torch"]:
         assert ivy.inplace_arrays_supported()
     elif cur_fw in ["jax", "tensorflow"]:
         assert not ivy.inplace_arrays_supported()
@@ -1339,7 +1196,7 @@ def test_inplace_arrays_supported(device):
 @handle_cmd_line_args
 def test_inplace_variables_supported(device):
     cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "mxnet", "torch", "tensorflow"]:
+    if cur_fw in ["numpy", "torch", "tensorflow"]:
         assert ivy.inplace_variables_supported()
     elif cur_fw in ["jax"]:
         assert not ivy.inplace_variables_supported()
@@ -1519,35 +1376,34 @@ def test_is_ivy_container(
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(
+    dtypes_and_xs=helpers.dtype_and_values(
         available_dtypes=ivy_np.valid_dtypes, num_arrays=2, min_num_dims=1
     ),
     equality_matrix=st.booleans(),
-    num_positional_args=st.integers(min_value=2, max_value=3),
+    num_positional_args=helpers.num_positional_args(fn_name="all_equal"),
 )
 def test_all_equal(
-    x_val_and_dtypes,
+    dtypes_and_xs,
     equality_matrix,
     as_variable,
     num_positional_args,
     native_array,
     container,
+    instance_method,
     fw,
 ):
-    dtype = x_val_and_dtypes[0]
-    x = x_val_and_dtypes[1]
+    dtype, x = dtypes_and_xs
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=1,
         native_array_flags=native_array,
         container_flags=container,
-        instance_method=False,
+        instance_method=instance_method,
         fw=fw,
         fn_name="all_equal",
-        x0=np.asarray(x[0], dtype=dtype[0]),
-        x1=np.asarray(x[1], dtype=dtype[1]),
+        xs=[np.asarray(x[0], dtype=dtype[0]), np.asarray(x[1], dtype=dtype[1])],
         equality_matrix=equality_matrix,
     )
 
@@ -1565,6 +1421,7 @@ def test_all_equal(
     ),
     max_norm=st.floats(min_value=0.137, max_value=1e05),
     p=st.sampled_from([1, 2, float("inf"), "fro", "nuc"]),
+    num_positional_args=helpers.num_positional_args(fn_name="clip_matrix_norm"),
 )
 def test_clip_matrix_norm(
     x,
@@ -1572,6 +1429,7 @@ def test_clip_matrix_norm(
     p,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -1583,7 +1441,7 @@ def test_clip_matrix_norm(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -1913,9 +1771,9 @@ def test_set_tmp_dir():
 @handle_cmd_line_args
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="supports_inplace"),
+    num_positional_args=helpers.num_positional_args(fn_name="supports_inplace_updates"),
 )
-def test_supports_inplace(
+def test_supports_inplace_updates(
     x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
 ):
     dtype = x_val_and_dtypes[0]
@@ -1929,7 +1787,7 @@ def test_supports_inplace(
         container_flags=container,
         instance_method=True,
         fw=fw,
-        fn_name="supports_inplace",
+        fn_name="supports_inplace_updates",
         x=np.asarray(x, dtype=dtype),
     )
 

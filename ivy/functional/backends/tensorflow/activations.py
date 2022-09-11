@@ -12,8 +12,10 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
-def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
-    return tf.nn.relu(x)
+def gelu(
+    x: Tensor, /, *, approximate: Optional[bool] = True, out: Optional[Tensor] = None
+) -> Tensor:
+    return tf.nn.gelu(x, approximate)
 
 
 def leaky_relu(
@@ -22,10 +24,8 @@ def leaky_relu(
     return tf.nn.leaky_relu(x, alpha)
 
 
-def gelu(
-    x: Tensor, /, *, approximate: Optional[bool] = True, out: Optional[Tensor] = None
-) -> Tensor:
-    return tf.nn.gelu(x, approximate)
+def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.relu(x)
 
 
 def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
