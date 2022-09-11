@@ -366,49 +366,6 @@ def test_clip_vector_norm(
     )
 
 
-# unstack
-@handle_cmd_line_args
-@given(
-    x_n_dtype_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=5,
-        min_axis=1,
-        max_axis=4,
-    ),
-    keepdims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="unstack"),
-)
-def test_unstack(
-    x_n_dtype_axis,
-    keepdims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    # smoke test
-    dtype, x, axis = x_n_dtype_axis
-    if axis >= len(np.asarray(x, dtype=dtype).shape):
-        axis = len(np.asarray(x, dtype=dtype).shape) - 1
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="unstack",
-        x=np.asarray(x, dtype=dtype),
-        axis=axis,
-        keepdims=keepdims,
-    )
-
-
 # fourier_encode
 # @given(
 #     x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
@@ -487,54 +444,6 @@ def test_indices_where(
         fw=fw,
         fn_name="indices_where",
         x=np.asarray(x, dtype=dtype),
-    )
-
-
-@st.composite
-def _dtype_indices_depth(draw):
-    depth = draw(helpers.ints(min_value=2, max_value=100))
-    dtype_and_indices = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            min_value=0,
-            max_value=depth - 1,
-            small_value_safety_factor=2.5,
-        )
-    )
-    return dtype_and_indices, depth
-
-
-# one_hot
-@handle_cmd_line_args
-@given(
-    dtype_indices_depth=_dtype_indices_depth(),
-    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
-)
-def test_one_hot(
-    dtype_indices_depth,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    dtype_and_indices, depth = dtype_indices_depth
-    dtype, indices = dtype_and_indices
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="one_hot",
-        indices=np.asarray(indices, dtype=dtype),
-        depth=depth,
     )
 
 
