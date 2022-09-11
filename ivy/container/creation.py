@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Tuple, Dict
+from typing import Optional, Union, List, Tuple, Dict, Sequence
 from numbers import Number
 import numpy as np
 
@@ -75,7 +75,7 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_zeros(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -100,7 +100,7 @@ class ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def static_ones(
-        shape: Union[int, Tuple[int], List[int]],
+        shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
