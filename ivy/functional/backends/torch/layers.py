@@ -46,7 +46,10 @@ def conv1d(
     return res
 
 
-conv1d.unsupported_dtypes = ("float16",)
+conv1d.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences
