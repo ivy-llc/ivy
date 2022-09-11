@@ -6,19 +6,19 @@ on:
   workflow_dispatch:
 
 jobs:
-#  Download-Artifacts:
-#    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Download artifact
-#        uses: dawidd6/action-download-artifact@v2
-#        with:
-#          workflow: test-array-api.yml
-#          workflow_conclusion: completed
-#          name: 'Hypothesis Download'
-#          path: |
-#            ivy/.hypothesis/
-#        continue-on-error: true
+  Download-Artifacts:
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-array-api.yml
+          workflow_conclusion: completed
+          name: 'Hypothesis Download'
+          path: |
+            ivy/.hypothesis/
+        continue-on-error: true
 
   run-array-api-tests:
     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
@@ -33,7 +33,7 @@ jobs:
                      meta/test_hypothesis_helpers, meta/test_partial_adopters, meta/test_pytest_helpers,
                      meta/test_signatures, meta/test_special_cases, meta/test_utils]
     continue-on-error: true
-    #needs: Download-Artifacts
+    needs: Download-Artifacts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
