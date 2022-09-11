@@ -610,7 +610,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         input array having shape ``(..., M, N)`` and whose innermost two dimensions form
             ``MxN`` matrices. Should have a floating-point data type.
         rtol
-            relative tolerance for small singular values approximately less than or equal to 
+        relative tolerance for small singular values approximately less than or equal to 
             ``rtol * largest_singular_value`` are set to zero. 
         out
             optional output array, for writing the result to. 
