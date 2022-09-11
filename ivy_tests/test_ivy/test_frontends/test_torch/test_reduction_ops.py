@@ -14,6 +14,7 @@ def is_broadcastable(shp1, shp2):
             return False
     return True
 
+
 @pytest.mark.filterwarnings("ignore: dist")
 @handle_cmd_line_args
 @given(
@@ -37,7 +38,7 @@ def test_torch_dist(
 ):
     input_x_dtype, x, dim_x = dtype_and_x
     input_y_dtype, y, dim_y = dtype_and_y
-    if is_broadcastable(np.array(x).shape,np.array(y).shape):
+    if is_broadcastable(np.array(x).shape, np.array(y).shape):
         helpers.test_frontend_function(
             input_dtypes=[input_x_dtype],
             as_variable_flags=as_variable,
