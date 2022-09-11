@@ -34,6 +34,28 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
 
+    def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
+        """
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply wraps the
+        function, and so the docstring for ivy.is_ivy_array also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        exclusive
+            Whether to check if the data type is exclusively an array, rather than a
+            variable or traced array.
+
+        Returns
+        -------
+        ret
+            Boolean, whether or not x is an ivy array.
+
+        """
+        return ivy.is_ivy_array(self, exclusive=exclusive)
+
     def is_array(
         self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
@@ -642,29 +664,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.assert_supports_inplace(self)
-
-    def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
-        """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply wraps the
-        function, and so the docstring for ivy.is_ivy_array also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        exclusive
-            Whether to check if the data type is exclusively an array, rather than a
-            variable or traced array.
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not x is an ivy array.
-
-        """
-        return ivy.is_ivy_array(self, exclusive=exclusive)
-
 
     def to_scalar(self: ivy.Array) -> Number:
         """
