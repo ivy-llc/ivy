@@ -426,7 +426,7 @@ def test_numpy_arctan2(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype=helpers.get_dtypes("float64", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(

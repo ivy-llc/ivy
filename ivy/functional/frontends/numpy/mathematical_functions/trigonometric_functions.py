@@ -214,6 +214,7 @@ arctan2.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @from_zero_dim_arrays_to_float
+#The math should be replaced once the rad to degree function is done
 def degrees(
     x,
     /,
