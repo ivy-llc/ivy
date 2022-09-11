@@ -1714,6 +1714,7 @@ def test_frontend_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
+    with_inplace: bool,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
     fw: str,
@@ -1736,7 +1737,11 @@ def test_frontend_function(
         dictates whether the corresponding input argument should be treated
         as an ivy Variable.
     with_out
-        if True, the function is also tested with the optional out argument.
+        if True, the function is also tested with the optional out argument,
+        should not be True together with with_inplace.
+    with_inplace
+        if True, the function is also tested with inplace update back to 
+        the input argument, should not be True together with with_out.
     num_positional_args
         number of input arguments that must be passed as positional
         arguments.
@@ -1855,24 +1860,34 @@ def test_frontend_function(
 
     ret = frontend_fn(*args, **kwargs)
     ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
-    # assert idx of return if the idx of the out array provided
-    out = ret
+    assert not with_out or not with_inplace
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
-        if "out" in kwargs:
-            kwargs["out"] = out
-            kwargs_ivy["out"] = out
-        else:
-            args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
-            args_ivy = list(args_ivy)
-            args_ivy[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
-            args_ivy = tuple(args_ivy)
+        # pass correct return variable to out argument
+        # check if passed reference is correctly updated
+        out = ret
+        kwargs["out"] = out
         ret = frontend_fn(*args, **kwargs)
-
-        if ivy.native_inplace_support:
-            # these backends do not always support native inplace updates
-            assert ret.data is out.data
+        assert ret.data is out.data
+    elif with_inplace:
+        assert not isinstance(ret, tuple)
+        assert ivy.is_array(ret)
+        if hasattr(frontend_fn, "inplace"):
+            # the function provides optional inplace update
+            # set inplace update to be True and check
+            # if returned reference is inputted reference
+            # and if inputted reference's content is correctly updated
+            kwargs["inplace"] = True
+            out = ret
+            input_argument = args[0]
+            ret = frontend_fn(*args, **kwargs)
+            assert input_argument.data is ret.data and ret.data is out.data
+        else:
+            # the function provides inplace update by default
+            # check if returned reference is inputted reference
+            input_argument = args[0]
+            assert input_argument is ret
 
     # create NumPy args
     args_np = ivy.nested_map(
