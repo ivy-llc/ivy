@@ -12,7 +12,7 @@ import ivy
 
 class ArrayWithGeneral(abc.ABC):
     def is_native_array(
-        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
@@ -34,18 +34,16 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
 
-    def is_ivy_array(
-        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply
-        wraps the function, and so the docstring for ivy.is_ivy_array also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply 
+        wraps the function, and so the docstring for ivy.is_ivy_array also 
+        applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            The input to check
+            input array
         exclusive
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
@@ -53,12 +51,13 @@ class ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            Boolean, whether or not x is an array.
+            Boolean, whether or not x is an ivy array.
+
         """
-        return ivy.is_ivy_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_ivy_array(self, exclusive=exclusive)
 
     def is_array(
-        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_array. This method simply wraps the
@@ -81,7 +80,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.is_array(self._data, exclusive=exclusive, out=out)
 
     def is_ivy_container(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_ivy_container. This method simply
@@ -101,7 +100,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.is_ivy_container(self._data, out=out)
 
     def all_equal(
-        self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False
+        self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.all_equal. This method simply wraps the
@@ -455,6 +454,15 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> y = x.to_list()
+        >>> print(y)
+        [0, 1, 2]
         """
         return ivy.to_list(self)
 
@@ -555,8 +563,9 @@ class ArrayWithGeneral(abc.ABC):
     def clip_vector_norm(
         self: ivy.Array,
         max_norm: float,
-        p: float = 2.0,
+        /,
         *,
+        p: float = 2.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -581,10 +590,19 @@ class ArrayWithGeneral(abc.ABC):
         ret
             An array with the vector norm downscaled to the max norm if needed.
 
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.clip_vector_norm(2.0)
+        >>> print(y)
+        ivy.array([0., 0.894, 1.79])
+
         """
         return ivy.clip_vector_norm(self, max_norm, p=p, out=out)
 
-    def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray]) -> bool:
+    def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
         """
         ivy.Array instance method variant of ivy.array_equal. This method simply wraps
         the function, and so the docstring for ivy.array_equal also applies to this
@@ -662,6 +680,23 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             a scalar copying the element of the array ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([-1])
+        >>> y = x.to_scalar()
+        >>> print(y)
+        -1
+
+        >>> print(ivy.is_int_dtype(y))
+        True
+
+        >>> x = ivy.array([3])
+        >>> y = x.to_scalar()
+        >>> print(y)
+        3
 
         """
         return ivy.to_scalar(self)

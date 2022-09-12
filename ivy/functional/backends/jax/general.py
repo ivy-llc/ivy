@@ -19,16 +19,57 @@ from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
 
-def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
-    return bool(jnp.array_equal(x0, x1))
-
-
 def container_types():
     return [FlatMapping]
 
 
 def current_backend_str():
     return "jax"
+
+
+def is_native_array(x, /, *, exclusive=False):
+    if exclusive:
+        return isinstance(
+            x,
+            (
+                jax.interpreters.xla._DeviceArray,
+                jaxlib.xla_extension.DeviceArray,
+                Buffer,
+            ),
+        )
+    return isinstance(
+        x,
+        (
+            jax.interpreters.xla._DeviceArray,
+            jaxlib.xla_extension.DeviceArray,
+            Buffer,
+            jax.interpreters.ad.JVPTracer,
+            jax.core.ShapedArray,
+            jax.interpreters.partial_eval.DynamicJaxprTracer,
+        ),
+    )
+
+
+def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
+    return bool(jnp.array_equal(x0, x1))
+
+
+def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(_to_array(x))
+    else:
+        return np.asarray(_to_array(x))
+
+
+def to_scalar(x: JaxArray, /) -> Number:
+    if isinstance(x, Number):
+        return x
+    else:
+        return _to_array(x).item()
+
+
+def to_list(x: JaxArray, /) -> list:
+    return _to_array(x).tolist()
 
 
 def gather(
@@ -123,29 +164,6 @@ def inplace_variables_supported():
     return False
 
 
-def is_native_array(x, exclusive: bool = False) -> bool:
-    if exclusive:
-        return isinstance(
-            x,
-            (
-                jax.interpreters.xla._DeviceArray,
-                jaxlib.xla_extension.DeviceArray,
-                Buffer,
-            ),
-        )
-    return isinstance(
-        x,
-        (
-            jax.interpreters.xla._DeviceArray,
-            jaxlib.xla_extension.DeviceArray,
-            Buffer,
-            jax.interpreters.ad.JVPTracer,
-            jax.core.ShapedArray,
-            jax.interpreters.partial_eval.DynamicJaxprTracer,
-        ),
-    )
-
-
 def multiprocessing(context=None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
@@ -201,6 +219,7 @@ def scatter_nd(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
         isinstance(indices, Iterable) and Ellipsis in indices
@@ -266,30 +285,14 @@ def scatter_nd(
 
 scatter_nd.support_native_out = True
 
+scatter_nd.support_native_out = True
+
 
 def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
-
-
-def to_list(x: JaxArray) -> list:
-    return _to_array(x).tolist()
-
-
-def to_numpy(x: JaxArray, copy: bool = True) -> np.ndarray:
-    if copy:
-        return np.array(_to_array(x))
-    else:
-        return np.asarray(_to_array(x))
-
-
-def to_scalar(x: JaxArray) -> Number:
-    if isinstance(x, Number):
-        return x
-    else:
-        return _to_array(x).item()
 
 
 def vmap(
