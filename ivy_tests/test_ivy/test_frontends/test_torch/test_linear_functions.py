@@ -59,8 +59,6 @@ def x_and_bilinear(draw, dtypes):
 )
 def test_torch_bilinear(
     dtype_input1_input2_weight_bias,
-    weight,
-    bias,
     as_variable,
     with_out,
     native_array,
