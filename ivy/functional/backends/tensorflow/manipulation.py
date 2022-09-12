@@ -44,7 +44,7 @@ def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
@@ -59,7 +59,7 @@ def flip(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
@@ -127,7 +127,7 @@ def roll(
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -169,7 +169,7 @@ def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.stack(arrays, axis)
@@ -302,4 +302,15 @@ def clip(
         ret = tf.cast(ret, x.dtype)
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
+    return ret
+
+
+def unstack(
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+) -> List[tf.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = tf.unstack(x, axis=axis)
+    if keepdims:
+        return [tf.expand_dims(r, axis) for r in ret]
     return ret

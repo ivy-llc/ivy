@@ -4,7 +4,6 @@ import jax.numpy as jnp
 import jax
 import jaxlib
 from jaxlib.xla_extension import Buffer
-import mxnet as mx
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
@@ -19,7 +18,7 @@ warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
 class FrameworkStr(str):
     def __new__(cls, fw_str):
-        assert fw_str in ["jax", "tensorflow", "torch", "mxnet", "numpy"]
+        assert fw_str in ["jax", "tensorflow", "torch", "numpy"]
         return str.__new__(cls, fw_str)
 
 
@@ -31,7 +30,6 @@ NativeArray = Union[
     jax.interpreters.xla._DeviceArray,
     jaxlib.xla_extension.DeviceArray,
     Buffer,
-    mx.nd.NDArray,
     np.ndarray,
     Tensor,
     torch.Tensor,
@@ -39,11 +37,11 @@ NativeArray = Union[
 
 
 NativeVariable = Union[
-    jax.interpreters.xla._DeviceArray, mx.nd.NDArray, np.ndarray, Tensor, torch.Tensor
+    jax.interpreters.xla._DeviceArray, np.ndarray, Tensor, torch.Tensor
 ]
 
 
-NativeDevice = Union[jaxlib.xla_extension.Device, mx.context.Context, str, torch.device]
+NativeDevice = Union[jaxlib.xla_extension.Device, str, torch.device]
 
 
 NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype]
@@ -399,7 +397,6 @@ from .backend_handler import (
     try_import_ivy_jax,
     try_import_ivy_tf,
     try_import_ivy_torch,
-    try_import_ivy_mxnet,
     try_import_ivy_numpy,
     clear_backend_stack,
 )

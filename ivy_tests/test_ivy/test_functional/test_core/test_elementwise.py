@@ -1,7 +1,5 @@
 """Collection of tests for elementwise functions."""
 
-from numbers import Number
-
 # global
 import numpy as np
 from hypothesis import given, assume, strategies as st
@@ -2209,16 +2207,6 @@ def test_minimum(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(
-        not (
-            (
-                (isinstance(x[0], Number) or isinstance(x[1], Number))
-                and as_variable is True
-                and fw == "mxnet"
-            )
-        )
-    )
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2254,15 +2242,6 @@ def test_maximum(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
-    assume(
-        not (
-            (isinstance(x[0], Number) or isinstance(x[1], Number))
-            and as_variable is True
-            and fw == "mxnet"
-        )
-    )
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
