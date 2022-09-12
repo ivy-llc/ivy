@@ -78,10 +78,9 @@ def _empty_dir(path, recreate=False):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_dev(*, array_shape, dtype, as_variable, fw):
-
     assume(not (fw == "torch" and "int" in dtype))
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
@@ -113,10 +112,9 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
-
     assume(not (fw == "torch" and "int" in dtype))
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
@@ -144,10 +142,9 @@ def test_as_ivy_dev(*, array_shape, dtype, as_variable, fw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("float", index=1),
+    dtype=helpers.get_dtypes("float", index=1, full=False),
 )
 def test_as_native_dev(*, array_shape, dtype, as_variable, fw):
-
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype)
 
     for device in _get_possible_devices():
@@ -218,7 +215,7 @@ def test_default_device(device):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     stream=helpers.ints(min_value=0, max_value=50),
 )
 def test_to_device(*, array_shape, dtype, as_variable, with_out, fw, device, stream):
@@ -285,7 +282,7 @@ def _axis(draw):
         max_size="num_dims",
         size_bounds=[1, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=_axis(),
 )
@@ -328,7 +325,7 @@ def test_split_func_call(
         max_size="num_dims",
         size_bounds=[2, 3],
     ),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     chunk_size=helpers.ints(min_value=1, max_value=3),
     axis=helpers.ints(min_value=0, max_value=1),
 )
@@ -527,6 +524,39 @@ def test_num_cpu_cores():
     assert type(ivy.num_cpu_cores()) == int
     assert ivy.num_cpu_cores() == p_cpu_cores
     assert ivy.num_cpu_cores() == m_cpu_cores
+
+
+def _composition_1():
+    return ivy.relu().argmax()
+
+
+def _composition_2():
+    a = ivy.floor
+    return ivy.ceil() or a
+
+
+# function_unsupported_devices
+@pytest.mark.parametrize(
+    "func, expected",
+    [(_composition_1, ["cpu"]), (_composition_2, ["cpu"])],
+)
+def test_function_supported_devices(func, expected):
+    res = ivy.function_supported_devices(func)
+    exp = set(expected)
+
+    assert sorted(tuple(exp)) == sorted(res)
+
+
+# function_unsupported_devices
+@pytest.mark.parametrize(
+    "func, expected",
+    [(_composition_1, ["gpu", "tpu"]), (_composition_2, ["gpu", "tpu"])],
+)
+def test_function_unsupported_devices(func, expected):
+    res = ivy.function_unsupported_devices(func)
+    exp = set(expected)
+
+    assert sorted(tuple(exp)) == sorted(res)
 
 
 # Still to Add #
