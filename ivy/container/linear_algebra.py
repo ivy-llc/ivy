@@ -1255,10 +1255,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            a container containing the traces and whose shape is determined by removing the
-            last two dimensions and storing the traces in the last array dimension. For
-            example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an
-            output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+            a container containing the traces and whose shape is determined by removing 
+            the last two dimensions and storing the traces in the last array dimension. 
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, 
+            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
 
             ::
 
@@ -1335,10 +1335,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            a container containing the traces and whose shape is determined by removing the
-            last two dimensions and storing the traces in the last array dimension. For
-            example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an
-            output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+            a container containing the traces and whose shape is determined by removing 
+            the last two dimensions and storing the traces in the last array dimension. 
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, 
+            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
 
             ::
 
