@@ -978,6 +978,15 @@ def test_function_unsupported_dtypes(func, expected):
     assert sorted(tuple(exp)) == sorted(res)
 
 
+def test_function_dtype_versioning():
+    print(ivy.functional.backends.jax.jax_version)
+    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.relu))
+    ivy.functional.backends.jax.jax_version["version"] = "0.1"
+    print(ivy.functional.backends.jax.jax_version)
+    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.relu))
+
+
+
 # invalid_dtype
 @handle_cmd_line_args
 @given(

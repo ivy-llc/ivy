@@ -1,5 +1,9 @@
 # Gets dtype from a version dictionary
 def dtype_from_version(dic, version):
+    # if version is a dict, extract the version
+    if isinstance(version, dict):
+        version = version["version"]
+
     # If key is already in the dictionary, return the value
     if version in dic:
         return dic[version]
