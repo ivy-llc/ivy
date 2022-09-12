@@ -701,11 +701,11 @@ class ContainerWithGeneral(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
@@ -2194,16 +2194,17 @@ class ContainerWithGeneral(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
+
 
         Returns
         -------
@@ -2380,88 +2381,6 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_scalar(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.to_scalar. This method simply wraps
-        the function, and so the docstring for ivy.to_scalar also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            a container of scalars copying the element of the array ``x``.
-
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "to_scalar",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    def to_scalar(
-        self: ivy.Container,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
-        the function, and so the docstring for ivy.to_scalar also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input container.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            a container of scalars copying the element of the array ``self``.
-
-        """
-        return self.static_to_scalar(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
-        )
-
-    @staticmethod
     def static_value_is_nan(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2486,11 +2405,11 @@ class ContainerWithGeneral(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
@@ -2498,7 +2417,6 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean as to whether the input value is a nan or not.
-
         """
         return ContainerBase.multi_map_in_static_method(
             "value_is_nan",
@@ -2561,6 +2479,7 @@ class ContainerWithGeneral(ContainerBase):
     def static_to_numpy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2626,6 +2545,8 @@ class ContainerWithGeneral(ContainerBase):
 
     def to_numpy(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2689,7 +2610,137 @@ class ContainerWithGeneral(ContainerBase):
 
         """
         return self.static_to_numpy(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_to_scalar(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of scalar values copying all the element of the container
+            ``x``.
+
+        Examples
+        --------
+
+        With one :code:`ivy.Container` inputs:
+
+
+        >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
+        >>> y = ivy.Container.static_to_scalar(x)
+        >>> print(y)
+        {
+            a: -1,
+            b: 3
+        }
+
+        >>> print(ivy.is_int_dtype(y))
+        {
+            a: true,
+            b: true
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "to_scalar",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def to_scalar(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of scalar values copying all the element of the container
+            ``self``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
+                            c=ivy.array([-1]))
+        >>> y = x.to_scalar()
+        >>> print(y)
+        {
+            a: 1,
+            b: 0,
+            c: -1
+        }
+
+        
+        """
+        return self.static_to_scalar(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -2726,6 +2777,17 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = ivy.Container.static_to_list(x)
+        >>> print(y)
+        {a:[0,1,2]}
+
         """
         return ContainerBase.multi_map_in_static_method(
             "to_list",
@@ -2769,13 +2831,24 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = x.to_list()
+        >>> print(y)
+        {a:[0,1,2]}
+
         """
         return self.static_to_list(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -3179,7 +3252,6 @@ class ContainerWithGeneral(ContainerBase):
             **axes_lengths,
         )
 
-    @staticmethod
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
