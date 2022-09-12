@@ -8,12 +8,14 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_nestable
 def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
@@ -248,6 +250,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     return ivy.current_backend(x).unique_all(x)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_nestable
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
@@ -346,6 +349,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     return ivy.current_backend(x).unique_inverse(x)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -401,6 +405,7 @@ def unique_values(
     return ivy.current_backend(x).unique_values(x, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_nestable
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
