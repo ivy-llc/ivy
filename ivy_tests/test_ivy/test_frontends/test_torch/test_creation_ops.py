@@ -24,10 +24,10 @@ def _dtypes(draw):
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5, as_list=False))
+        return draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5, as_list=False))
-    return draw(helpers.floats(min_value=-5, max_value=5, as_list=False))
+        return draw(helpers.ints(min_value=-5, max_value=5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 @st.composite

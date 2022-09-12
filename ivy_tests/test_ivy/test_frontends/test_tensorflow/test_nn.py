@@ -24,35 +24,31 @@ def _x_and_filters(
     data_format = draw(data_format)
     dtype = draw(dtypes)
     padding = draw(padding)
-    dilations = draw(
-        helpers.ints(min_value=dilation_min, max_value=dilation_max, as_list=False)
-    )
+    dilations = draw(helpers.ints(min_value=dilation_min, max_value=dilation_max))
     if transpose and atrous:
         stride = dilations
     else:
-        stride = draw(
-            helpers.ints(min_value=stride_min, max_value=stride_max, as_list=False)
-        )
+        stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
     if type == "1d":
         if not transpose:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
             min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
         else:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
+                    helpers.ints(min_value=3, max_value=5),
                     st.shared(
-                        helpers.ints(min_value=1, max_value=3, as_list=False),
+                        helpers.ints(min_value=1, max_value=3),
                         key="d_in",
                     ),
                     st.shared(
-                        helpers.ints(min_value=1, max_value=3, as_list=False),
+                        helpers.ints(min_value=1, max_value=3),
                         key="d_in",
                     ),
                 )
@@ -62,18 +58,18 @@ def _x_and_filters(
         if data_format == "NWC":
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5, as_list=False),
-                    helpers.ints(min_value=min_x_width, max_value=100, as_list=False),
-                    helpers.ints(min_value=d_in, max_value=d_in, as_list=False),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
             x_w = x_shape[1]
         else:
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5, as_list=False),
-                    helpers.ints(min_value=d_in, max_value=d_in, as_list=False),
-                    helpers.ints(min_value=min_x_width, max_value=100, as_list=False),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                    helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
             x_w = x_shape[2]
@@ -89,31 +85,31 @@ def _x_and_filters(
         if type == "depthwise":
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
         elif not transpose:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
         else:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
                     st.shared(
-                        helpers.ints(min_value=1, max_value=3, as_list=False),
+                        helpers.ints(min_value=1, max_value=3),
                         key="d_in",
                     ),
                     st.shared(
-                        helpers.ints(min_value=1, max_value=3, as_list=False),
+                        helpers.ints(min_value=1, max_value=3),
                         key="d_in",
                     ),
                 )
@@ -125,10 +121,10 @@ def _x_and_filters(
         if data_format == "NHWC":
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5, as_list=False),
-                    helpers.ints(min_value=min_x_height, max_value=100, as_list=False),
-                    helpers.ints(min_value=min_x_width, max_value=100, as_list=False),
-                    helpers.ints(min_value=d_in, max_value=d_in, as_list=False),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
             x_h = x_shape[1]
@@ -136,10 +132,10 @@ def _x_and_filters(
         else:
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5, as_list=False),
-                    helpers.ints(min_value=d_in, max_value=d_in, as_list=False),
-                    helpers.ints(min_value=min_x_height, max_value=100, as_list=False),
-                    helpers.ints(min_value=min_x_width, max_value=100, as_list=False),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
             x_h = x_shape[2]
@@ -156,11 +152,11 @@ def _x_and_filters(
         if not transpose:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
-                    helpers.ints(min_value=1, max_value=3, as_list=False),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=1, max_value=3),
+                    helpers.ints(min_value=1, max_value=3),
                 )
             )
             min_x_depth = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
@@ -169,15 +165,15 @@ def _x_and_filters(
         else:
             filter_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
-                    helpers.ints(min_value=3, max_value=5, as_list=False),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
+                    helpers.ints(min_value=3, max_value=5),
                     st.shared(
-                        helpers.ints(min_value=1, max_value=3, as_list=False),
+                        helpers.ints(min_value=1, max_value=3),
                         key="d_in",
                     ),
                     st.shared(
-                        helpers.ints(min_value=1, max_value=3, as_list=False),
+                        helpers.ints(min_value=1, max_value=3),
                         key="d_in",
                     ),
                 )
@@ -189,11 +185,11 @@ def _x_and_filters(
         if data_format == "NDHWC":
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5, as_list=False),
-                    helpers.ints(min_value=min_x_depth, max_value=100, as_list=False),
-                    helpers.ints(min_value=min_x_height, max_value=100, as_list=False),
-                    helpers.ints(min_value=min_x_width, max_value=100, as_list=False),
-                    helpers.ints(min_value=d_in, max_value=d_in, as_list=False),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=min_x_depth, max_value=100),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
             x_d = x_shape[1]
@@ -202,11 +198,11 @@ def _x_and_filters(
         else:
             x_shape = draw(
                 st.tuples(
-                    helpers.ints(min_value=1, max_value=5, as_list=False),
-                    helpers.ints(min_value=d_in, max_value=d_in, as_list=False),
-                    helpers.ints(min_value=min_x_depth, max_value=100, as_list=False),
-                    helpers.ints(min_value=min_x_width, max_value=100, as_list=False),
-                    helpers.ints(min_value=min_x_width, max_value=100, as_list=False),
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                    helpers.ints(min_value=min_x_depth, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
             x_d = x_shape[2]

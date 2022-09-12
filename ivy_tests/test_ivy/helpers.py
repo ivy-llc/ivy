@@ -37,13 +37,13 @@ from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 cmd_line_args = (
     "with_out",
-    "container",
     "instance_method",
     "test_gradients",
 )
 cmd_line_args_lists = (
     "as_variable",
     "native_array",
+    "container",
 )
 frontend_fw = None
 
@@ -396,7 +396,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes = backend_dtypes
 
     if none:
-        return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
+        valid_dtypes += (None,)
     if full:
         return valid_dtypes[index:]
     return [draw(st.sampled_from(valid_dtypes[index:]))]
@@ -439,7 +439,6 @@ def floats(
     *,
     min_value=None,
     max_value=None,
-    as_list=True,
     allow_nan=False,
     allow_inf=False,
     allow_subnormal=False,
@@ -580,13 +579,11 @@ def floats(
                 exclude_max=exclude_max,
             )
         )
-    if as_list:
-        return [ret]
     return ret
 
 
 @st.composite
-def ints(draw, *, min_value=None, max_value=None, as_list=True, safety_factor=0.95):
+def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     """Draws an arbitrarily sized list of integers with a safety factor
     applied to values.
 
@@ -635,10 +632,7 @@ def ints(draw, *, min_value=None, max_value=None, as_list=True, safety_factor=0.
         min_value = ivy.default(min_value, round(0 * safety_factor))
         max_value = ivy.default(max_value, round(18446744073709551615 * safety_factor))
 
-    ret = draw(st.integers(min_value, max_value))
-    if as_list:
-        return [ret]
-    return ret
+    return draw(st.integers(min_value, max_value))
 
 
 def assert_all_close(
@@ -2267,9 +2261,7 @@ def test_frontend_array_instance_method(
 def array_dtypes(
     draw,
     *,
-    num_arrays=st.shared(
-        ints(min_value=1, max_value=4, as_list=False), key="num_arrays"
-    ),
+    num_arrays=st.shared(ints(min_value=1, max_value=4), key="num_arrays"),
     available_dtypes=ivy_np.valid_float_dtypes,
     shared_dtype=False,
 ):
@@ -2314,9 +2306,7 @@ def array_dtypes(
 def array_bools(
     draw,
     *,
-    num_arrays=st.shared(
-        ints(min_value=1, max_value=4, as_list=False), key="num_arrays"
-    ),
+    num_arrays=st.shared(ints(min_value=1, max_value=4), key="num_arrays"),
 ):
     """Draws a boolean list of a given size.
 
@@ -2360,9 +2350,9 @@ def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
     A strategy that draws a list.
     """
     integers = (
-        ints(min_value=size_bounds[0], max_value=size_bounds[1], as_list=False)
+        ints(min_value=size_bounds[0], max_value=size_bounds[1])
         if size_bounds
-        else ints(as_list=False)
+        else ints()
     )
     if isinstance(min_size, str):
         min_size = draw(st.shared(integers, key=min_size))
@@ -2624,9 +2614,7 @@ def dtype_values_axis(
             )
     else:
         axis = draw(
-            list_of_length(
-                x=ints(min_value=min_axis, max_value=max_axis, as_list=False), length=1
-            )
+            list_of_length(x=ints(min_value=min_axis, max_value=max_axis), length=1)
         )
         if force_int_axis:
             axis = axis[0]
@@ -2656,14 +2644,10 @@ def reshape_shapes(draw, *, shape):
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
     size = 1 if len(shape) == 0 else math.prod(shape)
-    rshape = draw(
-        st.lists(ints(min_value=0, as_list=False)).filter(
-            lambda s: math.prod(s) == size
-        )
-    )
+    rshape = draw(st.lists(ints(min_value=0)).filter(lambda s: math.prod(s) == size))
     # assume(all(side <= MAX_SIDE for side in rshape))
     if len(rshape) != 0 and size > 0 and draw(st.booleans()):
-        index = draw(ints(min_value=0, max_value=len(rshape) - 1, as_list=False))
+        index = draw(ints(min_value=0, max_value=len(rshape) - 1))
         rshape[index] = -1
     return tuple(rshape)
 
@@ -2743,12 +2727,8 @@ def array_and_indices(
         array_and_indices=array_and_indices( last_dim_same_size= True)
     )
     """
-    x_num_dims = draw(
-        ints(min_value=min_num_dims, max_value=max_num_dims, as_list=False)
-    )
-    x_dim_size = draw(
-        ints(min_value=min_dim_size, max_value=max_dim_size, as_list=False)
-    )
+    x_num_dims = draw(ints(min_value=min_num_dims, max_value=max_num_dims))
+    x_dim_size = draw(ints(min_value=min_dim_size, max_value=max_dim_size))
     x = draw(
         dtype_and_values(
             available_dtypes=ivy_np.valid_numeric_dtypes,
@@ -2762,7 +2742,7 @@ def array_and_indices(
     )
     indices_shape = list(x[2])
     if not last_dim_same_size:
-        indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size, as_list=False))
+        indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
         indices_shape[-1] = indices_dim_size
     indices = draw(
         dtype_and_values(
@@ -3077,7 +3057,7 @@ def get_shape(
         shape = draw(
             st.none()
             | st.lists(
-                ints(min_value=min_dim_size, max_value=max_dim_size, as_list=False),
+                ints(min_value=min_dim_size, max_value=max_dim_size),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )
@@ -3085,7 +3065,7 @@ def get_shape(
     else:
         shape = draw(
             st.lists(
-                ints(min_value=min_dim_size, max_value=max_dim_size, as_list=False),
+                ints(min_value=min_dim_size, max_value=max_dim_size),
                 min_size=min_num_dims,
                 max_size=max_num_dims,
             )
@@ -3436,7 +3416,6 @@ def num_positional_args(draw, *, fn_name: str = None):
         ints(
             min_value=num_positional_only,
             max_value=(total - num_keyword_only),
-            as_list=False,
         )
     )
 
@@ -3482,7 +3461,6 @@ def num_positional_args_from_fn(draw, *, fn):
         ints(
             min_value=num_positional_only,
             max_value=(total - num_keyword_only),
-            as_list=False,
         )
     )
 
