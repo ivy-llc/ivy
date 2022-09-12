@@ -32,3 +32,10 @@ def subtract(x, y, name=None):
 
 
 subtract.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def layers_concatenate(value, axis, name="layers_Concatenate"):
+    return ivy.layers_concatenate(value, axis)
+
+layers_concatenate.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
