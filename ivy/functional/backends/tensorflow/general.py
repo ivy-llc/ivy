@@ -57,6 +57,12 @@ def current_backend_str():
     return "tensorflow"
 
 
+def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+    if ivy.dtype(query) == "bool":
+        return tf.boolean_mask(x, query)
+    return tf.gather(x, query)
+
+
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if (

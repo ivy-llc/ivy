@@ -55,6 +55,10 @@ def current_backend_str() -> str:
     return "torch"
 
 
+def get_item(x: torch.Tensor, query: torch.Tensor) -> torch.Tensor:
+    return x.__getitem__(query.to(torch.int64))
+
+
 def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
     if isinstance(x, (float, int, bool)):
         return x

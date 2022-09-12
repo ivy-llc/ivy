@@ -2501,6 +2501,14 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     return True
 
 
+@to_native_arrays_and_back
+def get_item(
+    x: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray],
+) -> Union[ivy.Array, ivy.NativeArray]:
+    return current_backend(x).get_item(x, query)
+
+
 @handle_nestable
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],

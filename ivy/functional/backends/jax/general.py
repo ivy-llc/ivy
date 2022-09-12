@@ -50,6 +50,10 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
+def get_item(x: JaxArray, query: JaxArray) -> JaxArray:
+    return x.__getitem__(query)
+
+
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
