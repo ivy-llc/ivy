@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -208,6 +208,7 @@ def test_torch_logsigmoid(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -245,6 +246,7 @@ def test_torch_softmin(
     fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -279,6 +281,7 @@ def test_torch_threshold(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -299,7 +302,7 @@ def test_torch_threshold(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold_"
@@ -313,6 +316,7 @@ def test_torch_threshold_(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -347,6 +351,7 @@ def test_torch_relu6(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -382,6 +387,7 @@ def test_torch_elu(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -397,6 +403,7 @@ def test_torch_elu(
     )
 
 
+# ToDo test for values once inplace test implemented
 # elu_
 @handle_cmd_line_args
 @given(
@@ -418,6 +425,7 @@ def test_torch_elu_(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -429,6 +437,7 @@ def test_torch_elu_(
         fn_tree="nn.functional.elu_",
         input=np.asarray(input, dtype=input_dtype),
         alpha=alpha,
+        test_values=False,
     )
 
 
@@ -451,6 +460,7 @@ def test_torch_celu(
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
