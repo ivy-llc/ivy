@@ -20,19 +20,8 @@ def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False, axis=-1):
     return ivy.sparse_cross_entropy(y_true, y_pred, axis=axis)
 
 
-sparse_categorical_crossentropy.unsupported_dtypes = {
-    "numpy": ("float16", "bfloat16", "float32", "float64"),
-}
-
-
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred))
-
-
-mean_absolute_error.unsupported_dtypes = {
-    "numpy": ("int8", "float64"),
-    "torch": ("int8", "float64"),
-}
 
 
 def binary_crossentropy(
@@ -203,3 +192,11 @@ def squared_hinge(y_true, y_pred):
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
     y_true = _cond_convert_labels(y_true)
     return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)
+
+
+def mean_squared_logarithmic_error(y_true, y_pred):
+    y_pred = ivy.asarray(y_pred)
+    y_true = ivy.astype(y_true, y_pred.dtype)
+    first_log = ivy.log(ivy.maximum(y_pred, 1e-7) + 1.0)
+    second_log = ivy.log(ivy.maximum(y_true, 1e-7) + 1.0)
+    return ivy.mean(ivy.square(ivy.subtract(first_log, second_log)), axis=-1)

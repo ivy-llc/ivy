@@ -158,11 +158,13 @@ def _pop_size_num_samples_replace_n_probs(draw):
 @handle_cmd_line_args
 @given(
     everything=_pop_size_num_samples_replace_n_probs(),
+    num_positional_args=helpers.num_positional_args(fn_name="multinomial"),
 )
 def test_multinomial(
     everything,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -176,7 +178,7 @@ def test_multinomial(
         input_dtypes=[prob_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,

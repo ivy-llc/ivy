@@ -120,7 +120,7 @@ Let’s look at the PyTorch backend code for both of these Ivy methods:
     def cumprod(
         x: torch.Tensor,
         axis: int = 0,
-        exclusive: Optional[bool] = False,
+        exclusive: bool = False,
         *,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
@@ -136,7 +136,7 @@ Let’s look at the PyTorch backend code for both of these Ivy methods:
    # ivy/functional/backends/torch/manipulation.py
     def flip(
         x: torch.Tensor,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:

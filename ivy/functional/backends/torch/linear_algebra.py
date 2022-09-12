@@ -62,7 +62,7 @@ def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 
 det.support_native_out = True
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def diagonal(
