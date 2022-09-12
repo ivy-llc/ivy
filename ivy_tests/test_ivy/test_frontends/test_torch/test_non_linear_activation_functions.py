@@ -13,7 +13,7 @@ def _dtypes(draw):
         st.shared(
             helpers.list_of_length(
                 x=st.sampled_from(
-                    draw(helpers.get_dtypes("float", none=True)),
+                    draw(helpers.get_dtypes("float")),
                 ),
                 length=1,
             ),

@@ -51,7 +51,7 @@ def tanh(input):
 
 
 def logsigmoid(input):
-    return -ivy.softplus(-input)
+    return ivy.log(ivy.sigmoid(input))
 
 
 def softmin(input, dim=None, dtype=None):
