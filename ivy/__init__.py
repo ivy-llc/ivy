@@ -74,7 +74,12 @@ class Device(str):
 
 class Dtype(str):
     def __new__(cls, dtype_str):
-        assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
+        assert (
+            "int" in dtype_str
+            or "float" in dtype_str
+            or "bool" in dtype_str
+            or "complex" in dtype_str
+        )
         return str.__new__(cls, dtype_str)
 
 
@@ -114,6 +119,12 @@ class UintDtype(IntDtype):
         return str.__new__(cls, dtype_str)
 
 
+class ComplexDtype(Dtype):
+    def __new__(cls, dtype_str):
+        assert "complex" in dtype_str
+        return str.__new__(cls, dtype_str)
+
+
 class Node(str):
     # ToDo: add formatting checks once multi-node is supported
     pass
@@ -147,6 +158,9 @@ bfloat16 = FloatDtype("bfloat16")
 float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
+complex64 = ComplexDtype("complex64")
+complex128 = ComplexDtype("complex128")
+complex256 = ComplexDtype("complex256")
 bool = Dtype("bool")
 
 # native data types
@@ -162,6 +176,9 @@ native_bfloat16 = FloatDtype("bfloat16")
 native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
+native_complex64 = ComplexDtype("complex64")
+native_complex128 = ComplexDtype("complex128")
+native_complex256 = ComplexDtype("complex256")
 native_bool = Dtype("bool")
 
 # all
@@ -178,6 +195,9 @@ all_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
+    complex256,
     bool,
 )
 all_numeric_dtypes = (
@@ -193,6 +213,9 @@ all_numeric_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
+    complex256,
 )
 all_int_dtypes = (
     int8,
@@ -216,6 +239,11 @@ all_uint_dtypes = (
     uint32,
     uint64,
 )
+all_complex_dtypes = (
+    complex64,
+    complex128,
+    complex256,
+)
 
 # valid data types
 valid_dtypes = all_dtypes
@@ -223,6 +251,7 @@ valid_numeric_dtypes = all_numeric_dtypes
 valid_int_dtypes = all_int_dtypes
 valid_float_dtypes = all_float_dtypes
 valid_uint_dtypes = all_uint_dtypes
+valid_complex_dtypes = all_complex_dtypes
 
 # invalid data types
 invalid_dtypes = ()
@@ -230,6 +259,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = ()
 
 # data type promotion
 array_api_promotion_table = {
@@ -298,6 +328,15 @@ array_api_promotion_table = {
     (float64, float16): float64,
     (float64, float32): float64,
     (float64, float64): float64,
+    (complex64, complex64): complex64,
+    (complex128, complex128): complex128,
+    (complex256, complex256): complex256,
+    (complex64, complex128): complex128,
+    (complex128, complex64): complex128,
+    (complex64, complex256): complex256,
+    (complex256, complex64): complex256,
+    (complex128, complex256): complex256,
+    (complex256, complex128): complex256,
     (bool, bool): bool,
 }
 locks = {"backend_setter": threading.Lock()}
@@ -373,6 +412,30 @@ extra_promotion_table = {
     (float32, bfloat16): float32,
     (bfloat16, float64): float64,
     (float64, bfloat16): float64,
+    (complex64, int8): complex64,
+    (complex64, int16): complex64,
+    (complex64, int32): complex64,
+    (complex64, int64): complex64,
+    (complex64, uint8): complex64,
+    (complex64, uint16): complex64,
+    (complex64, uint32): complex64,
+    (complex64, uint64): complex64,
+    (complex128, int8): complex128,
+    (complex128, int16): complex128,
+    (complex128, int32): complex128,
+    (complex128, int64): complex128,
+    (complex128, uint8): complex128,
+    (complex128, uint16): complex128,
+    (complex128, uint32): complex128,
+    (complex128, uint64): complex128,
+    (complex256, int8): complex256,
+    (complex256, int16): complex256,
+    (complex256, int32): complex256,
+    (complex256, int64): complex256,
+    (complex256, uint8): complex256,
+    (complex256, uint16): complex256,
+    (complex256, uint32): complex256,
+    (complex256, uint64): complex256,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
