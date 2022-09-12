@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @st.composite
 def statistical_dtype_values(draw, *, function):
     max_op = "divide"
-    if function in ["prod", "sum"]:
+    if function in ["prod", "sum", "mean"]:
         max_op = "log"
     elif function in ["var", "std"]:
         max_op = "sqrt"
@@ -155,6 +155,7 @@ def test_mean(
         instance_method=instance_method,
         fw=fw,
         fn_name="mean",
+        atol_=1e-1,
         rtol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
