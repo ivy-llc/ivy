@@ -64,6 +64,13 @@ def diagonal(
     return ret
 
 
+def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray, JaxArray]:
+    return jnp.linalg.eig(x)
+
+
+eig.unsupported_dtypes = ("float16",)
+
+
 def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigh(x)
 
