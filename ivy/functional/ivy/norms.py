@@ -8,12 +8,14 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     integer_arrays_to_float,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
 # ------#
 
 
+@handle_exceptions
 @inputs_to_ivy_arrays
 @integer_arrays_to_float
 def layer_norm(
@@ -51,7 +53,7 @@ def layer_norm(
     -------
      ret
         The layer after applying layer normalization.
-    
+
     Examples
     --------
     With :code:`ivy.Array` input:
@@ -101,7 +103,7 @@ def layer_norm(
     >>> print(y)
     {
         a: ivy.array([0.658, 1.04, 1.3]),
-        b: ivy.array([[0.759, 0.759, 0.759], 
+        b: ivy.array([[0.759, 0.759, 0.759],
                       [1.24, 1.24, 1.24]])
     }
 
@@ -116,7 +118,7 @@ def layer_norm(
     >>> print(y)
     {
         a: ivy.array([0.772, 1.03, 1.2]),
-        b: ivy.array([[0.796, 1., 1.2], 
+        b: ivy.array([[0.796, 1., 1.2],
                       [0.796, 1., 1.2]])
     }
 
