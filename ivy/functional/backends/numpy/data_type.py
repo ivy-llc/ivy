@@ -20,6 +20,9 @@ ivy_dtype_dict = {
     np.dtype("float16"): "float16",
     np.dtype("float32"): "float32",
     np.dtype("float64"): "float64",
+    np.dtype("complex64"): "complex64",
+    np.dtype("complex128"): "complex128",
+    np.dtype("complex256"): "complex256",
     np.dtype("bool"): "bool",
     np.int8: "int8",
     np.int16: "int16",
@@ -32,6 +35,9 @@ ivy_dtype_dict = {
     np.float16: "float16",
     np.float32: "float32",
     np.float64: "float64",
+    np.complex64: "complex64",
+    np.complex128: "complex128",
+    np.complex256: "complex256",
     np.bool_: "bool",
 }
 
@@ -47,6 +53,9 @@ native_dtype_dict = {
     "float16": np.dtype("float16"),
     "float32": np.dtype("float32"),
     "float64": np.dtype("float64"),
+    "complex64": np.dtype("complex64"),
+    "complex128": np.dtype("complex128"),
+    "complex256": np.dtype("complex256"),
     "bool": np.dtype("bool"),
 }
 
@@ -189,4 +198,5 @@ def dtype_bits(dtype_in: Union[np.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )
