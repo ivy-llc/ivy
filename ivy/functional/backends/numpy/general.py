@@ -13,7 +13,7 @@ import ivy
 from ivy.functional.backends.numpy.device import _to_device
 
 
-def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
+def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
     return np.array_equal(x0, x1)
 
 
@@ -25,12 +25,27 @@ def current_backend_str():
     return "numpy"
 
 
+def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy()
+    else:
+        return x
+
+
+def to_scalar(x: np.ndarray, /) -> Number:
+    return x.item()
+
+
+def to_list(x: np.ndarray, /) -> list:
+    return x.tolist()
+
+
 def gather(
     params: np.ndarray,
     indices: np.ndarray,
     axis: Optional[int] = -1,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.take_along_axis(params, indices, axis))
 
@@ -130,7 +145,7 @@ def inplace_variables_supported():
     return True
 
 
-def is_native_array(x, exclusive=False):
+def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, np.ndarray):
         return True
     return False
@@ -148,7 +163,7 @@ def scatter_flat(
     size: Optional[int] = None,
     reduction: str = "sum",
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
     target_given = ivy.exists(target)
@@ -195,7 +210,7 @@ def scatter_nd(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
     target_given = ivy.exists(target)
@@ -247,21 +262,6 @@ def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
         return ivy.array(np.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
-
-
-def to_list(x: np.ndarray) -> list:
-    return x.tolist()
-
-
-def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
-    if copy:
-        return x.copy()
-    else:
-        return x
-
-
-def to_scalar(x: np.ndarray) -> Number:
-    return x.item()
 
 
 def vmap(
