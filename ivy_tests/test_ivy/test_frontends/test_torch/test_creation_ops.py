@@ -1,6 +1,5 @@
 # global
 import ivy
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -25,10 +24,10 @@ def _dtypes(draw):
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        return draw(helpers.ints(min_value=0, max_value=5, as_list=False))
     elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
+        return draw(helpers.ints(min_value=-5, max_value=5, as_list=False))
+    return draw(helpers.floats(min_value=-5, max_value=5, as_list=False))
 
 
 @st.composite
@@ -64,13 +63,14 @@ def test_torch_full(
     device,
     num_positional_args,
     fw,
+    with_out,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
-        with_out=False,
+        as_variable_flags=[False],
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=[False],
         fw=fw,
         frontend="torch",
         fn_tree="full",
@@ -103,14 +103,14 @@ def test_torch_ones_like(
     dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=[False],
         fw=fw,
         frontend="torch",
         fn_tree="ones_like",
-        input=np.asarray(input, dtype=dtype),
+        input=input,
         dtype=dtypes[0],
         device=device,
         requires_grad=requires_grad,
@@ -140,13 +140,14 @@ def test_torch_ones(
     device,
     num_positional_args,
     fw,
+    with_out,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
-        with_out=False,
+        as_variable_flags=[False],
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=[False],
         fw=fw,
         frontend="torch",
         fn_tree="ones",
@@ -180,13 +181,14 @@ def test_torch_zeros(
     device,
     num_positional_args,
     fw,
+    with_out,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
-        with_out=False,
+        as_variable_flags=[False],
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=[False],
         fw=fw,
         frontend="torch",
         fn_tree="zeros",
