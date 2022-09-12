@@ -77,6 +77,17 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
+def eig(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    return torch.linalg.eig(x, out=out)
+
+
+eig.unsupported_dtypes = ("float16",)
+
+eig.support_native_out = True
+
+
 def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.eigh(x, out=out)
 
