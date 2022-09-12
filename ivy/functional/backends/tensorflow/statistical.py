@@ -126,8 +126,12 @@ def var(
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     else:
-        return (size / (size - correction)) ** 0.5 * tf.experimental.numpy.var(
-            x, axis=axis, out=out, keepdims=keepdims
+        return tf.cast(
+            tf.math.multiply(
+                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
+                size / (size - correction),
+            ),
+            x.dtype,
         )
 
 
