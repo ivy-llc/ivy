@@ -8,12 +8,14 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -98,6 +100,7 @@ def argsort(
     )
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -141,7 +144,7 @@ def sort(
     Examples
     --------
     With：code:`ivy.Array` inputs:
-    
+
     >>> x = ivy.array([7, 8, 6])
     >>> y = ivy.sort(x)
     >>> print(y)
@@ -155,7 +158,7 @@ def sort(
                [[ 6. ,  0.3], [19. ,  0.5]]])
 
     With：code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.native_array([1.5, 3.2, 0.7, 2.5])
     >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)
@@ -215,6 +218,7 @@ def sort(
     )
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
