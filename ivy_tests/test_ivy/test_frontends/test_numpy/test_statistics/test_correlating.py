@@ -5,7 +5,8 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+import ivy_tests.test_ivy.test_frontends.\
+        test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -23,9 +24,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     mode=st.sampled_from(["valid", "same", "full"]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.correlate"
-),
-native_array=helpers.array_bools(num_arrays=2),
-)
+    ),
+    native_array=helpers.array_bools(num_arrays=2),)
 def test_numpy_correlate(
     dtype_and_x,
     mode,
