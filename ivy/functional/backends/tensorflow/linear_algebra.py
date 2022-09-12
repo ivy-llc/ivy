@@ -98,7 +98,14 @@ def inner(
     return tf.experimental.numpy.inner(x1, x2)
 
 
-inner.unsupported_dtypes = ("int8",)
+inner.unsupported_dtypes = (
+    "int8",
+    "uint8",
+    "int16",
+    "uint16",
+    "uint32",
+    "uint64",
+)
 
 
 def inv(
