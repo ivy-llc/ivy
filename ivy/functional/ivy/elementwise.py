@@ -5755,40 +5755,5 @@ def deg2rad(
         b: ivy.array([0., -0.0262, -0.873, nan])
     }
 
-
-
-    Container Static Method Examples
-    ------------------------
-    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
-         b=ivy.native_array([0,-1.5,-50,ivy.nan]))
-    >>> y=ivy.Container.static_deg2rad(x)
-    >>> print(y)
-    {
-        a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
-        b: ivy.array([0., -0.0262, -0.873, nan])
-    }
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` input:
-
-    >>> x=ivy.array([90,180,270,360])
-    >>> y=x.deg2rad()
-    >>> print(y)
-    ivy.array([1.57, 3.14, 4.71, 6.28])
-
-
-    With :code:`ivy.Container` input:
-
-    >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
-         b=ivy.native_array([0,-1.5,-50,ivy.nan]))
-    >>> y=x.deg2rad()
-    >>> print(y)
-    {
-        a: ivy.array([0., 0.00613, -0.0154, nan]),
-        b: ivy.array([0., -0.0262, -0.873, nan])
-    }
-
     """
     return ivy.current_backend(x).deg2rad(x, out=out)

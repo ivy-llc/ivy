@@ -7386,6 +7386,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``x``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        ------------------------
+        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
+            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> y=ivy.Container.static_deg2rad(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
+            b: ivy.array([0., -0.0262, -0.873, nan])
+        }
+        
         """
         return ContainerBase.multi_map_in_static_method(
             "deg2rad",
@@ -7435,6 +7447,20 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``self``.
             The returned container must have a floating-point data type
             determined by :ref:`type-promotion`.
+        
+        Examples
+        ------------------------
+
+        With :code:`ivy.Container` input:
+
+        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
+            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> y=x.deg2rad()
+        >>> print(y)
+        {
+            a: ivy.array([0., 0.00613, -0.0154, nan]),
+            b: ivy.array([0., -0.0262, -0.873, nan])
+        }
 
         """
         return self.static_deg2rad(

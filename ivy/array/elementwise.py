@@ -2014,5 +2014,16 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the element-wise conversion from degrees to radians.
+
+        Examples
+        ------------------------
+
+        With :code:`ivy.Array` input:
+
+        >>> x=ivy.array([90,180,270,360])
+        >>> y=x.deg2rad()
+        >>> print(y)
+        ivy.array([1.57, 3.14, 4.71, 6.28])
+
         """
         return ivy.deg2rad(self._data, out=out)
