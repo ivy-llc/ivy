@@ -72,6 +72,13 @@ def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarra
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
+def inner(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return ivy.array(np.inner(x1, x2), dtype=x1.dtype)
+
+
 def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.inv(x)
 
