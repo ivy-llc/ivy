@@ -359,7 +359,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    type
+    kind
         Supported types are integer, float, valid, numeric, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
