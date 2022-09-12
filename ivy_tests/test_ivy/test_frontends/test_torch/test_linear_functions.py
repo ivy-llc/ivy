@@ -29,7 +29,8 @@ def x_and_bilinear(draw, dtypes):
 
     input1_shape = outer_batch_shape + inner_batch_shape + (in1_features,)
     input2_shape = outer_batch_shape + inner_batch_shape + (in2_features,)
-    weight_shape = outer_batch_shape + (out_features,) + (in1_features,) + (in2_features,)
+    weight_shape = outer_batch_shape + \
+        (out_features,) + (in1_features,) + (in2_features,)
     bias_shape = outer_batch_shape + (out_features,)
 
     input1 = draw(

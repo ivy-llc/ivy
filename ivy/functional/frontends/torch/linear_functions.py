@@ -7,4 +7,3 @@ def bilinear(input1, input2, weight, bias=None):
         input2, 
         bias=bias
     )
-    
