@@ -18,6 +18,6 @@ def argmax(x,
            *,
            axis=None,
            keepdims=False,
-           out=None
+           out=None,
 ):
     return ivy.argmax(x, axis=axis)

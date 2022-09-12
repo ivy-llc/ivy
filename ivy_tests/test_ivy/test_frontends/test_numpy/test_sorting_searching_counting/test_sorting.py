@@ -86,5 +86,5 @@ def test_numpy_argmax(
         input=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=False,
-        out=None
+        out=None,
     )
