@@ -394,7 +394,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes = backend_dtypes
 
     if none:
-        return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
+        valid_dtypes += (None,)
     if full:
         return valid_dtypes[index:]
     return draw(st.sampled_from(valid_dtypes[index:]))
