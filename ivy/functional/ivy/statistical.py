@@ -16,10 +16,10 @@ from ivy.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -125,10 +125,10 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -318,10 +318,10 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -373,10 +373,10 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -441,10 +441,10 @@ def prod(
     )
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -516,10 +516,10 @@ def std(
     )
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -637,10 +637,10 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -808,10 +808,10 @@ def var(
 # ------#
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -952,10 +952,10 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1093,10 +1093,10 @@ def cumprod(
     return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],
