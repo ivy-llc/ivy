@@ -12,7 +12,7 @@ class ArrayWithSearching(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -51,7 +51,7 @@ class ArrayWithSearching(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
         """
@@ -138,3 +138,27 @@ class ArrayWithSearching(abc.ABC):
 
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)
+
+    def indices_where(
+        self: ivy.Array, *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.indices_where. This method simply
+        wraps the function, and so the docstring for ivy.indices_where also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array for which indices are desired
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+
+        """
+        return ivy.indices_where(self, out=out)
