@@ -3,6 +3,7 @@
 import copy
 import functools
 import numpy as np
+import tensorflow as tf
 from operator import mul
 
 # local
@@ -240,8 +241,14 @@ class Array(
 
     @_native_wrapper
     def __getitem__(self, query):
-        query = to_native(query)
-        return to_ivy(self._data.__getitem__(query))
+        backend = self.backend
+        if backend == "torch" and ivy.dtype(query) != "bool":
+            query = ivy.astype(query, "int64")
+        elif backend == "tensorflow":
+            if ivy.dtype(query) == "bool":
+                return to_ivy(tf.boolean_mask(self._data, query))
+            return ivy.gather(self._data, query)
+        return to_ivy(self._data.__getitem__(to_native(query)))
 
     @_native_wrapper
     def __setitem__(self, query, val):
