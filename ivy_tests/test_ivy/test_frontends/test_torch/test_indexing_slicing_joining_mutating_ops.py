@@ -248,13 +248,14 @@ def test_torch_swapdims(
 def dtypes_x_reshape(draw):
     dtypes, x = draw(
         helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
             shape=helpers.get_shape(
                 allow_none=False,
                 min_num_dims=1,
                 max_num_dims=5,
                 min_dim_size=1,
                 max_dim_size=10,
-            )
+            ),
         )
     )
     shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
