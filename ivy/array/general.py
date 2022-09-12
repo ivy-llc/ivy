@@ -12,7 +12,7 @@ import ivy
 
 class ArrayWithGeneral(abc.ABC):
     def is_native_array(
-        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
@@ -34,18 +34,16 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
 
-    def is_ivy_array(
-        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply
-        wraps the function, and so the docstring for ivy.is_ivy_array also applies
-        to this method with minimal changes.
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply 
+        wraps the function, and so the docstring for ivy.is_ivy_array also 
+        applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            The input to check
+            input array
         exclusive
             Whether to check if the data type is exclusively an array, rather than a
             variable or traced array.
@@ -53,12 +51,13 @@ class ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            Boolean, whether or not x is an array.
+            Boolean, whether or not x is an ivy array.
+
         """
-        return ivy.is_ivy_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_ivy_array(self, exclusive=exclusive)
 
     def is_array(
-        self: ivy.Array, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_array. This method simply wraps the
@@ -81,7 +80,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.is_array(self._data, exclusive=exclusive, out=out)
 
     def is_ivy_container(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_ivy_container. This method simply
@@ -101,7 +100,7 @@ class ArrayWithGeneral(abc.ABC):
         return ivy.is_ivy_container(self._data, out=out)
 
     def all_equal(
-        self: ivy.Array, x2: Iterable[Any], equality_matrix: bool = False
+        self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.all_equal. This method simply wraps the
@@ -154,163 +153,6 @@ class ArrayWithGeneral(abc.ABC):
         False
         """
         return ivy.has_nans(self, include_infs)
-
-    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.unstack. This method simply
-        wraps the function, and so the docstring for ivy.unstack also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array to unstack.
-        axis
-            Axis for which to unpack the array.
-        keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
-
-        Returns
-        -------
-        ret
-            List of arrays, unpacked along specified dimensions.
-
-        Examples
-        --------
-        >>> x = ivy.array([[1, 2], [3, 4]])
-        >>> y = x.unstack(axis=0)
-        >>> print(y)
-        [ivy.array([1, 2]), ivy.array([3, 4])]
-
-        >>> x = ivy.array([[1, 2], [3, 4]])
-        >>> y = x.unstack(axis=1, keepdims=True)
-        >>> print(y)
-        [ivy.array([[1],
-                [3]]), ivy.array([[2],
-                [4]])]
-        """
-        return ivy.unstack(self._data, axis, keepdims=keepdims)
-
-    def cumsum(
-        self: ivy.Array,
-        /,
-        *,
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        reverse: Optional[bool] = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cumsum. This method simply wraps the
-        function, and so the docstring for ivy.cumsum also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array to apply cumsum.
-        axis
-            Axis along which the cumulative sum is computed. Default is 0.
-        exclusive
-            Whether to perform cumsum exclusively. Default is ``False``.
-        reverse
-            Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
-        dtype
-            Data type of the returned array. Default is ``None``.
-        out
-            Optional array container. Default is None.
-
-        Returns
-        -------
-        ret
-            Array which holds the result of applying cumsum at each
-            original array elements along the specified axis.
-
-        Examples
-        --------
-        >>> x = ivy.array([1, 2, 3, 4, 5])
-        >>> y = x.cumsum()
-        >>> print(y)
-        ivy.array([ 1,  3,  6, 10, 15])
-
-        >>> x = ivy.array([2, 6, 4, 10])
-        >>> y = x.cumsum(axis=0, exclusive=False, reverse=True, dtype='float64')
-        >>> print(y)
-        ivy.array([22., 20., 14., 10.])
-
-        >>> x = ivy.array([[2, 3], [4, 6], [8, 12]])
-        >>> y = ivy.zeros((3, 2))
-        >>> x.cumsum(axis=1, exclusive=True, reverse=False, out=y)
-        >>> print(y)
-        ivy.array([[0, 2],
-                   [0, 4],
-                   [0, 8]])
-
-        >>> x = ivy.array([[1, 5, 2], \
-                           [4, 3, 0], \
-                           [4, 8, 2]])
-        >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
-        >>> print(y)
-        ivy.array([[ 7,  2,  0],
-                   [ 3,  0,  0],
-                   [10,  2,  0]])
-
-        >>> x = ivy.array([[1, 5, 10], [4, 8, 10], [2, 3, 5]])
-        >>> x.cumsum(axis=0, out=x)
-        >>> print(x)
-        ivy.array([[ 1,  5, 10],
-                   [ 5, 13, 20],
-                   [ 7, 16, 25]])
-        """
-        return ivy.cumsum(self._data, axis, exclusive, reverse, dtype=dtype, out=out)
-
-    def cumprod(
-        self: ivy.Array,
-        /,
-        *,
-        axis: int = 0,
-        exclusive: Optional[bool] = False,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cumprod. This method simply wraps the
-        function, and so the docstring for ivy.cumprod also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        axis
-            int, axis along which to take the cumulative product. Default is 0.
-        exclusive
-            optional bool, whether to exclude the first value of the input array.
-            Default is False.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Input array with cumulatively multiplied elements along the specified axis.
-
-        Examples
-        --------
-        >>> x = ivy.array([1, 2, 3, 4, 5])
-        >>> y = x.cumprod()
-        >>> print(y)
-        ivy.array([1, 2, 6, 24, 120])
-
-        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
-        >>> y = ivy.zeros((3, 2), dtype="int32")
-        >>> x.cumprod(axis=1, exclusive=True, out=y)
-        >>> print(y)
-        ivy.array([[1, 2],
-                   [1, 5],
-                   [1, 11]])
-        """
-        return ivy.cumprod(self._data, axis, exclusive, out=out)
 
     def gather(
         self: ivy.Array,
@@ -612,6 +454,15 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> y = x.to_list()
+        >>> print(y)
+        [0, 1, 2]
         """
         return ivy.to_list(self)
 
@@ -712,8 +563,9 @@ class ArrayWithGeneral(abc.ABC):
     def clip_vector_norm(
         self: ivy.Array,
         max_norm: float,
-        p: float = 2.0,
+        /,
         *,
+        p: float = 2.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -738,10 +590,19 @@ class ArrayWithGeneral(abc.ABC):
         ret
             An array with the vector norm downscaled to the max norm if needed.
 
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.clip_vector_norm(2.0)
+        >>> print(y)
+        ivy.array([0., 0.894, 1.79])
+
         """
         return ivy.clip_vector_norm(self, max_norm, p=p, out=out)
 
-    def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray]) -> bool:
+    def array_equal(self: ivy.Array, x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
         """
         ivy.Array instance method variant of ivy.array_equal. This method simply wraps
         the function, and so the docstring for ivy.array_equal also applies to this
@@ -804,28 +665,6 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.assert_supports_inplace(self)
 
-    def copy_array(self: ivy.Array, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.copy_array. This method simply wraps
-        the function, and so the docstring for ivy.copy_array also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            a copy of the input array ``x``.
-
-        """
-        return ivy.copy_array(self, out=out)
-
     def to_scalar(self: ivy.Array) -> Number:
         """
         ivy.Array instance method variant of ivy.to_scalar. This method simply wraps
@@ -841,6 +680,23 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             a scalar copying the element of the array ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instance method:
+
+        >>> x = ivy.array([-1])
+        >>> y = x.to_scalar()
+        >>> print(y)
+        -1
+
+        >>> print(ivy.is_int_dtype(y))
+        True
+
+        >>> x = ivy.array([3])
+        >>> y = x.to_scalar()
+        >>> print(y)
+        3
 
         """
         return ivy.to_scalar(self)
@@ -887,7 +743,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.fourier_encode(self, max_freq, num_bands, linear, concat, flatten)
 
-    def value_is_nan(self: ivy.Array, include_infs: Optional[bool] = True) -> bool:
+    def value_is_nan(self: ivy.Array, include_infs: bool = True) -> bool:
         """
         ivy.Array instance method variant of ivy.value_is_nan. This method simply wraps
         the function, and so the docstring for ivy.value_is_nan also applies to this
@@ -1134,64 +990,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.scatter_flat(self, updates, size=size, reduction=reduction, out=out)
-
-    def indices_where(
-        self: ivy.Array, *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.indices_where. This method simply
-        wraps the function, and so the docstring for ivy.indices_where also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array for which indices are desired
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Indices for where the boolean array is True.
-
-        """
-        return ivy.indices_where(self, out=out)
-
-    def one_hot(
-        self: ivy.Array,
-        depth: int,
-        *,
-        device: Union[ivy.Device, ivy.NativeDevice] = None,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.one_hot. This method simply wraps the
-        function, and so the docstring for ivy.one_hot also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array containing the indices for which the ones should be scattered
-        depth
-            Scalar defining the depth of the one-hot dimension.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-            Same as x if None.
-        out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Tensor of zeros with the same shape and type as a, unless dtype provided
-            which overrides.
-
-        """
-        return ivy.one_hot(self, depth, device=device, out=out)
 
     def get_num_dims(self: ivy.Array, as_array: bool = False) -> int:
         """

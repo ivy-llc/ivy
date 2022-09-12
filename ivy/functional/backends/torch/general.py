@@ -6,20 +6,12 @@ import numpy as np
 import torch
 from operator import mul
 from functools import reduce
-from typing import List, Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable
 from numbers import Number
+
 import functorch
 
 torch_scatter = None
-
-
-def _infer_dtype(x_dtype: torch.dtype):
-    default_dtype = ivy.infer_default_dtype(x_dtype, as_native=True)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
-    return dtype
 
 
 def _parse_ellipsis(so, ndims):
@@ -40,7 +32,15 @@ def _parse_ellipsis(so, ndims):
     )
 
 
-def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
+def is_native_array(x, /, *, exclusive=False):
+    if isinstance(x, torch.Tensor):
+        if exclusive and x.requires_grad:
+            return False
+        return True
+    return False
+
+
+def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     dtype = torch.promote_types(x0.dtype, x1.dtype)
     x0 = x0.type(dtype=dtype)
     x1 = x1.type(dtype=dtype)
@@ -51,73 +51,45 @@ def container_types():
     return []
 
 
-def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return x.clone()
-
-
-def cumprod(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is torch.bool:
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
-    if exclusive:
-        x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = torch.cumprod(x, -1, dtype=dtype, out=out)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis, dtype=dtype, out=out)
-
-
-cumprod.support_native_out = True
-cumprod.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
-
-
-def cumsum(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-            x = torch.transpose(x, axis, -1)
-            x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.transpose(x, axis, -1)
-            res = torch.flip(x, dims=(axis,))
-        elif exclusive:
-            x = torch.transpose(x, axis, -1)
-            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.cumsum(x, -1, dtype=dtype)
-            res = torch.transpose(x, axis, -1)
-        elif reverse:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-            res = torch.flip(x, dims=(axis,))
-        return res
-    return torch.cumsum(x, axis, dtype=dtype, out=out)
-
-
-cumsum.support_native_out = True
-cumsum.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
-
-
 def current_backend_str() -> str:
     return "torch"
+
+
+def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
+    if isinstance(x, (float, int, bool)):
+        return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
+    elif torch.is_tensor(x):
+        if copy:
+            if x.dtype is torch.bfloat16:
+                default_dtype = ivy.default_float_dtype(as_native=True)
+                if default_dtype is torch.bfloat16:
+                    x = x.to(torch.float32)
+                else:
+                    x = x.to(default_dtype)
+                return x.detach().cpu().numpy().astype("bfloat16")
+            return x.detach().cpu().numpy()
+        else:
+            raise ValueError("Overwriting the same address is not supported for torch.")
+    raise ValueError("Expected a pytorch tensor.")
+
+
+def to_scalar(x: torch.Tensor, /) -> Number:
+    if isinstance(x, (float, int)):
+        return x
+    return x.item()
+
+
+def to_list(x: torch.Tensor, /) -> list:
+    if isinstance(x, np.ndarray):
+        return x.tolist()
+    elif torch.is_tensor(x):
+        return x.detach().cpu().tolist()
+    raise ValueError("Expected a pytorch tensor.")
 
 
 def gather(
@@ -161,16 +133,6 @@ def gather_nd(
 
 def get_num_dims(x: torch.Tensor, as_tensor: bool = False) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
-
-
-def indices_where(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    where_x = torch.where(x)
-    return torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
-
-
-indices_where.support_native_out = True
 
 
 def inplace_arrays_supported():
@@ -226,32 +188,12 @@ def inplace_variables_supported():
     return True
 
 
-def is_native_array(x, exclusive: bool = False) -> bool:
-    if isinstance(x, torch.Tensor):
-        if exclusive and x.requires_grad:
-            return False
-        return True
-    return False
-
-
 def multiprocessing(context=None):
     import torch.multiprocessing
 
     if context is None:
         return torch.multiprocessing
     return torch.multiprocessing.get_context(context)
-
-
-def one_hot(
-    indices: torch.Tensor,
-    depth: int,
-    *,
-    device: torch.device,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
-        device, indices.dtype
-    )
 
 
 def scatter_flat(
@@ -450,52 +392,6 @@ def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array
         return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
-
-
-def to_list(x: torch.Tensor) -> list:
-    if isinstance(x, np.ndarray):
-        return x.tolist()
-    elif torch.is_tensor(x):
-        return x.detach().cpu().tolist()
-    raise ValueError("Expected a pytorch tensor.")
-
-
-def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
-    if isinstance(x, (float, int, bool)):
-        return x
-    elif isinstance(x, np.ndarray):
-        if copy:
-            return x.copy()
-        else:
-            return x
-    elif torch.is_tensor(x):
-        if copy:
-            if x.dtype is torch.bfloat16:
-                default_dtype = ivy.default_float_dtype(as_native=True)
-                if default_dtype is torch.bfloat16:
-                    x = x.to(torch.float32)
-                else:
-                    x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype("bfloat16")
-            return x.detach().cpu().numpy()
-        else:
-            raise ValueError("Overwriting the same address is not supported for torch.")
-    raise ValueError("Expected a pytorch tensor.")
-
-
-def to_scalar(x: torch.Tensor) -> Number:
-    if isinstance(x, (float, int)):
-        return x
-    return x.item()
-
-
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = list(torch.unbind(x, axis))
-    if keepdims:
-        return [r.unsqueeze(axis) for r in ret]
-    return ret
 
 
 def vmap(

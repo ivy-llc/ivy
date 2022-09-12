@@ -915,6 +915,7 @@ def test_tensorflow_unsorted_segment_mean(
     segment_ids=helpers.array_values(
         dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
     ),
+    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_sqrt_n"
     ),
