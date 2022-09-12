@@ -50,7 +50,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Superset Behaviour</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Superset Behaviour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-linspace">ivy.linspace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-eye">ivy.eye</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-scatter-nd">ivy.scatter_nd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-logical-and">ivy.logical_and</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-where">ivy.where</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_arrays.html">Arrays</a></li>
@@ -154,7 +161,86 @@
              
   <section id="superset-behaviour">
 <h1>Superset Behaviour<a class="headerlink" href="#superset-behaviour" title="Permalink to this heading"></a></h1>
-<p>ToDo</p>
+<p>When implementing functions in Ivy, we are constantly faced with the question: which
+backend implementation should Ivy most closely follow?</p>
+<p>It might seem as though this question is already answered.
+Ivy fully adheres to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, which helpfully limits our design space
+for the functions, but in its current form this only covers a relatively small number of
+functions which together make up less than half of the functions in Ivy.
+Even for Ivy functions which adhere to the standard,
+the standard permits the addition of extra arguments and function features,
+provided that they do not contradict the requirements of the standard.
+Therefore, we are still faced with the same kind of design decisions for all Ivy
+functions, even those appearing in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.</p>
+<p>In this section, we explain through examples how Ivy always goes for the superset of
+functionality among the backend frameworks. This is not always totally possible,
+and in some cases certain framework-specific features must be sacrificed,
+but usually it’s possible to implement a very generalized function which covers most of
+the unique features among the corresponding functions in each framework.</p>
+<p>Despite this general approach, the total superset is not always strived for, especially
+in cases where the behaviour can very easily be replicated by a simple composition of
+other functions, or where the extra behaviour is redundant as it is already covered by
+another function.
+As an example, many pointwise functions in NumPy support the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument,
+which enables a mask array to be specified, with the function then only evaluated
+at elements for which the <code class="code docutils literal notranslate"><span class="pre">where</span></code> array is <code class="code docutils literal notranslate"><span class="pre">True</span></code>.
+This inclusion of this feature in NumPy is totally understandable,
+compositions of NumPy functions are never compiled into computation graph which span
+multiple operations, and therefore a good way to maximize efficiency of NumPy code is to
+minimize the number of unique NumPy functions which are called, each of which are
+implemented with very high efficiency in <code class="code docutils literal notranslate"><span class="pre">C</span></code>. In this case, the inclusion of
+<code class="code docutils literal notranslate"><span class="pre">where</span></code> as an argument also prevents unnecessary values from being computed,
+only to be masked out in the immediately subsequent operation.
+For these reasons, calling <code class="code docutils literal notranslate"><span class="pre">np.absolute(x,</span> <span class="pre">where=mask)</span></code> is much better than
+calling <code class="code docutils literal notranslate"><span class="pre">np.where(mask,</span> <span class="pre">np.absolute(x),</span> <span class="pre">np.empty_like(x))</span></code> in NumPy.
+However, other frameworks are able to compile compositions of python operations directly
+to computation graphs in low-level languages, and are also able to intelligently fuse
+operations into combined kernels, via libraries such as
+<a class="reference external" href="https://github.com/NVIDIA/TensorRT">TensorRT</a>.
+This removes the need for highly general function signatures such as those found in
+NumPy. Instead, a compositional approach is preferred, where each function in Python
+serves a particular and non-overlapping purpose.
+This helps to keep things more clean and clear at the Python level,
+without sacrificing efficiency at the lower level.</p>
+<p>We now take a look at some examples, and explain our rational for deciding upon the
+function signature that we should use in Ivy. The first three examples are more-or-less
+superset examples, while the last two include deliberate decisions to not implement the
+superset, for some of the reasons explained above.</p>
+<section id="ivy-linspace">
+<h2>ivy.linspace<a class="headerlink" href="#ivy-linspace" title="Permalink to this heading"></a></h2>
+<p>When looking at the <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> (or clost equivalent) implementations for
+<a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/linspace.html">Ivy</a>,
+<a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html">JAX</a>,
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html">NumPy</a>,
+<a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/linspace">TensorFlow</a>,
+and
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.linspace.html">PyTorch</a>,
+we can see that <code class="code docutils literal notranslate"><span class="pre">torch</span></code> does not support arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">end</span></code> arguments, while <code class="code docutils literal notranslate"><span class="pre">jax</span></code>, <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> all do.
+Likewise, Ivy also supports arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">stop</span></code> arguments,
+and in doing so provides the generalized superset implementation among the backend
+frameworks.</p>
+</section>
+<section id="ivy-eye">
+<h2>ivy.eye<a class="headerlink" href="#ivy-eye" title="Permalink to this heading"></a></h2>
+<p>batch shape - ss</p>
+</section>
+<section id="ivy-scatter-nd">
+<h2>ivy.scatter_nd<a class="headerlink" href="#ivy-scatter-nd" title="Permalink to this heading"></a></h2>
+<p>multiple axes - ss</p>
+</section>
+<section id="ivy-logical-and">
+<h2>ivy.logical_and<a class="headerlink" href="#ivy-logical-and" title="Permalink to this heading"></a></h2>
+<p>out - ss</p>
+<p>bool - ss</p>
+<p>np where - no</p>
+</section>
+<section id="ivy-where">
+<h2>ivy.where<a class="headerlink" href="#ivy-where" title="Permalink to this heading"></a></h2>
+<p>np non-zero stuff - no</p>
+<p><strong>Round Up</strong></p>
+<p>Something</p>
+</section>
 </section>
 
 
