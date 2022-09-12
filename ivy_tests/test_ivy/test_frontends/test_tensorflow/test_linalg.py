@@ -180,6 +180,31 @@ def test_tensorflow_solve(
     )
 
 
+# adjoint
+@handle_cmd_line_args
+@given(
+    dtype_and_input=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.adjoint"
+    ),
+)
+def test_tensorflow_adjoint(
+    dtype_and_input, as_variable, with_out, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="linalg.adjoint",
+        matrix=np.asarray(x, dtype=input_dtype),
+    )
+
+
 # slogdet
 @handle_cmd_line_args
 @given(
