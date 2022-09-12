@@ -6,6 +6,8 @@ sum
 .. autofunction:: ivy.array.array_methods.sum
 
 .. autofunction:: ivy.container.container_methods.sum
+
+.. autofunction:: ivy.container.container_methods.static_sum
 |
 | **Supported Frameworks:**
 
@@ -33,6 +35,7 @@ sum
    :caption: sum
 
    sum/sum_functional.rst
+   sum/static_sum_container.rst
    sum/sum_array.rst
    sum/sum_container.rst
 
