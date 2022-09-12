@@ -142,7 +142,25 @@
 
 <span class="n">NATIVE_KEYS_TO_SKIP</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;device&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;platform&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;clone&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;block_host_until_ready&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;block_until_ready&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;copy_to_device&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;copy_to_host_async&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;copy_to_remote_device&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_deleted&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_known_ready&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_ready&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;on_device_size_in_bytes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;to_py&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;unsafe_buffer_pointer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xla_dynamic_shape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xla_shape&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
     <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="p">[],</span>
     <span class="s2">&quot;torch&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="s2">&quot;classes&quot;</span><span class="p">,</span>
