@@ -142,7 +142,9 @@ def var(
     for a in axis:
         size *= x.shape[a]
     return np.asarray(
-        np.var(x, axis=axis, keepdims=keepdims, out=out) * (size / (size - correction))
+        np.multiply(
+            np.var(x, axis=axis, keepdims=keepdims, out=out), size / (size - correction)
+        )
     ).astype(x.dtype)
 
 
