@@ -15,10 +15,10 @@ from ivy.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -165,10 +165,10 @@ def all(
     return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
