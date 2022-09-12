@@ -19,16 +19,7 @@ def cumsum(input, dim, *, dtype=None, out=None):
 
 
 def cumprod(input, dim, *, dtype=None, out=None):
-    return ivy.cumprod(x=input, axis=dim, out=out, dtype=dtype)
-
-
-cumprod.unsupported_dtypes = (
-    "float16",
-    "uint16",
-    "uint32",
-    "uint64",
-    "bool",
-)
+    return ivy.cumprod(x=input, axis=dim, out=out)
 
 
 def diagonal(input, offset=0, dim1=0, dim2=1):
