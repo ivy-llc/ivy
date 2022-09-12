@@ -51,7 +51,16 @@ def arange(
                 return tf.range(start, stop, delta=step)
         else:
             dtype = as_native_dtype(default_dtype(dtype=dtype))
-            if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
+            if dtype in [
+                tf.int8,
+                tf.uint8,
+                tf.int16,
+                tf.uint16,
+                tf.uint32,
+                tf.uint64,
+                tf.complex64,
+                tf.complex128,
+            ]:
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
                 return tf.range(start, stop, delta=step, dtype=dtype)
