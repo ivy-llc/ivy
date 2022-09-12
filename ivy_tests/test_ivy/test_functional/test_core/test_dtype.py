@@ -13,10 +13,7 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
 import ivy.functional.backends.torch as ivy_torch
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import (
-    handle_cmd_line_args,
-    array_and_broadcastable_shape,
-)
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # dtype objects
@@ -144,22 +141,9 @@ def test_broadcast_arrays(
     )
 
 
-# broadcast_to
-@st.composite
-def array_and_broadcastable_shape(draw, dtype):
-    in_shape = draw(helpers.nph.array_shapes(min_dims=1, max_dims=4))
-    x = draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
-    to_shape = draw(
-        mutually_broadcastable_shapes(1, base_shape=in_shape)
-        .map(lambda S: S[0])
-        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
-        label="shape",
-    )
-    return x, to_shape
-
 @handle_cmd_line_args
 @given(
-    array_and_shape=array_and_broadcastable_shape(dtype_shared),
+    array_and_shape=helpers.array_and_broadcastable_shape(dtype_shared),
     input_dtype=dtype_shared,
     num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
 )
