@@ -145,6 +145,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
             self._data, offset=offset, axis1=axis1, axis2=axis2, out=out
         )
 
+    def eig(self: ivy.Array) -> NamedTuple:
+        return ivy.eig(self._data)
+
     def eigh(
         self: ivy.Array,
     ) -> NamedTuple:
