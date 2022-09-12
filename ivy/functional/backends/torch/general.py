@@ -32,7 +32,15 @@ def _parse_ellipsis(so, ndims):
     )
 
 
-def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
+def is_native_array(x, /, *, exclusive=False):
+    if isinstance(x, torch.Tensor):
+        if exclusive and x.requires_grad:
+            return False
+        return True
+    return False
+
+
+def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     dtype = torch.promote_types(x0.dtype, x1.dtype)
     x0 = x0.type(dtype=dtype)
     x1 = x1.type(dtype=dtype)
@@ -45,6 +53,38 @@ def container_types():
 
 def current_backend_str() -> str:
     return "torch"
+
+
+def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
+    if isinstance(x, (float, int, bool)):
+        return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
+    elif torch.is_tensor(x):
+        if x.dtype is torch.bfloat16:
+            x = x.to(torch.float16)
+        if copy:
+            return x.detach().cpu().numpy()
+        else:
+            raise ValueError("Overwriting the same address is not supported for torch.")
+    raise ValueError("Expected a pytorch tensor.")
+
+
+def to_scalar(x: torch.Tensor, /) -> Number:
+    if isinstance(x, (float, int)):
+        return x
+    return x.item()
+
+
+def to_list(x: torch.Tensor, /) -> list:
+    if isinstance(x, np.ndarray):
+        return x.tolist()
+    elif torch.is_tensor(x):
+        return x.detach().cpu().tolist()
+    raise ValueError("Expected a pytorch tensor.")
 
 
 def gather(
@@ -141,14 +181,6 @@ def inplace_update(
 
 def inplace_variables_supported():
     return True
-
-
-def is_native_array(x, exclusive: bool = False) -> bool:
-    if isinstance(x, torch.Tensor):
-        if exclusive and x.requires_grad:
-            return False
-        return True
-    return False
 
 
 def multiprocessing(context=None):
@@ -355,43 +387,6 @@ def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array
         return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
-
-
-def to_list(x: torch.Tensor) -> list:
-    if isinstance(x, np.ndarray):
-        return x.tolist()
-    elif torch.is_tensor(x):
-        return x.detach().cpu().tolist()
-    raise ValueError("Expected a pytorch tensor.")
-
-
-def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
-    if isinstance(x, (float, int, bool)):
-        return x
-    elif isinstance(x, np.ndarray):
-        if copy:
-            return x.copy()
-        else:
-            return x
-    elif torch.is_tensor(x):
-        if copy:
-            if x.dtype is torch.bfloat16:
-                default_dtype = ivy.default_float_dtype(as_native=True)
-                if default_dtype is torch.bfloat16:
-                    x = x.to(torch.float32)
-                else:
-                    x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype("bfloat16")
-            return x.detach().cpu().numpy()
-        else:
-            raise ValueError("Overwriting the same address is not supported for torch.")
-    raise ValueError("Expected a pytorch tensor.")
-
-
-def to_scalar(x: torch.Tensor) -> Number:
-    if isinstance(x, (float, int)):
-        return x
-    return x.item()
 
 
 def vmap(

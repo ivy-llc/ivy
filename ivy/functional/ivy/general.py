@@ -94,7 +94,7 @@ def get_referrers_recursive(
 
 
 def is_native_array(
-    x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
     """
     Determines whether the input x is a Native Array.
@@ -123,25 +123,27 @@ def is_native_array(
     True
 
     >>> x = ivy.native_array([-1, 2, 7, -3])
-    >>> ivy.is_native_array(x, False)
+    >>> ivy.is_native_array(x, exclusive=False)
     True
 
     >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
-    >>> ivy.is_native_array(x, True)
+    >>> ivy.is_native_array(x, exclusive=True)
     True
 
     >>> x = ivy.array([5, 2, 6, 9])
-    >>> ivy.is_native_array(x, True)
+    >>> ivy.is_native_array(x, exclusive=True)
     False
 
     """
     try:
-        return current_backend(x).is_native_array(x, exclusive)
+        return current_backend(x).is_native_array(x, exclusive=exclusive)
     except ValueError:
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
+def is_ivy_array(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
+) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -169,22 +171,22 @@ def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) 
     False
 
     >>> x = ivy.native_array([-1, 2, 7, -3])
-    >>> ivy.is_ivy_array(x, False)
+    >>> ivy.is_ivy_array(x, exclusive=False)
     False
 
     >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
-    >>> ivy.is_ivy_array(x, True)
+    >>> ivy.is_ivy_array(x, exclusive=True)
     False
 
     >>> x = ivy.array([5, 2, 6, 9])
-    >>> ivy.is_ivy_array(x, True)
+    >>> ivy.is_ivy_array(x, exclusive=True)
     True
 
     """
-    return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
+    return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
 
 
-def is_array(x: Any, exclusive: bool = False) -> bool:
+def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """Determines whether the input x is either an Ivy Array or a Native Array.
 
     Parameters
@@ -201,10 +203,12 @@ def is_array(x: Any, exclusive: bool = False) -> bool:
         Boolean, whether or not x is an array.
 
     """
-    return ivy.is_ivy_array(x, exclusive) or ivy.is_native_array(x, exclusive)
+    return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
+        x, exclusive=exclusive
+    )
 
 
-def is_ivy_container(x: Any) -> bool:
+def is_ivy_container(x: Any, /) -> bool:
     """Determines whether the input x is an Ivy Container.
 
     Parameters
@@ -348,7 +352,7 @@ def get_nestable_mode() -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 def array_equal(
-    x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray]
+    x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray], /,
 ) -> bool:
     """Determines whether two input arrays are equal across all elements.
 
@@ -406,7 +410,7 @@ def array_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
+def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]], /) -> bool:
     """Determines whether input arrays are equal across all elements.
 
     Parameters
@@ -614,7 +618,9 @@ def all_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndarray:
+def to_numpy(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
+) -> np.ndarray:
     """Converts an array into a numpy array.
 
     Parameters
@@ -743,12 +749,12 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
     }
 
     """
-    return current_backend(x).to_numpy(x, copy)
+    return current_backend(x).to_numpy(x, copy=copy)
 
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
+def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """Converts an array with a single element into a scalar.
 
     Parameters
@@ -846,57 +852,13 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
         c: -1
     }
 
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    -1
-
-    >>> print(ivy.is_int_dtype(y))
-    True
-
-    >>> x = ivy.array([3])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    3
-
-    With a mix of :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
-    >>> y = x.to_scalar()
-    >>> print(y)
-    {
-        a: -1,
-        b: 3
-    }
-
-    >>> print(ivy.is_int_dtype(y))
-    {
-        a: true,
-        b: true
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
-                          c=ivy.array([-1]))
-    >>> y = x.to_scalar()
-    >>> print(y)
-    {
-        a: 1,
-        b: 0,
-        c: -1
-    }
-
     """
     return current_backend(x).to_scalar(x)
 
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
+def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """Creates a (possibly nested) list from input array.
 
     Parameters
@@ -1022,24 +984,6 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     {
         a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
     }
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0, 1, 2])
-    >>> y = x.to_list()
-    >>> print(y)
-    [0, 1, 2]
-
-    With :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
-    >>> y = x.to_list()
-    >>> print(y)
-    {a:[0,1,2]}
-
     """
     return current_backend(x).to_list(x)
 
@@ -1084,14 +1028,14 @@ def clip_vector_norm(
     ivy.array([0.   , 0.894, 1.79 ])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
-    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> y = ivy.clip_vector_norm(x, 3.0, p=1.0)
     >>> print(y)
     ivy.array([ 0.417, -0.583,  2.   ])
 
     >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
                        [[3., 9.], [4., 12.], [5., 15.]]])
     >>> y = ivy.zeros(((2, 3, 2)))
-    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> ivy.clip_vector_norm(x, 4.0, p=1.0, out=y)
     >>> print(y)
     ivy.array([[[0.    , 0.    ],
                 [0.0667, 0.2   ],
@@ -1102,7 +1046,7 @@ def clip_vector_norm(
 
     >>> x = ivy.array([[1.1, 2.2, 3.3], \
                        [-4.4, -5.5, -6.6]])
-    >>> ivy.clip_vector_norm(x, 1.0, 3.0, out=x)
+    >>> ivy.clip_vector_norm(x, 1.0, p=3.0, out=x)
     >>> print(x)
     ivy.array([[ 0.131,  0.263,  0.394],
                [-0.526, -0.657, -0.788]])
@@ -1115,14 +1059,14 @@ def clip_vector_norm(
     ivy.array([0.   , 0.894, 1.79 ])
 
     >>> x = ivy.native_array([0.5, -0.7, 2.4])
-    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> y = ivy.clip_vector_norm(x, 3.0, p=1.0)
     >>> print(y)
     ivy.array([ 0.417, -0.583,  2.   ])
 
     >>> x = ivy.native_array([[[0., 0.], [1., 3.], [2., 6.]], \
                               [[3., 9.], [4., 12.], [5., 15.]]])
     >>> y = ivy.zeros(((2, 3, 2)))
-    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> ivy.clip_vector_norm(x, 4.0, p=1.0, out=y)
     >>> print(y)
     ivy.array([[[0.    , 0.    ],
                 [0.0667, 0.2   ],
@@ -1141,14 +1085,7 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.clip_vector_norm(2.0)
-    >>> print(y)
-    ivy.array([0., 0.894, 1.79])
-
+    
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
