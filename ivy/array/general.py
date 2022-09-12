@@ -36,9 +36,9 @@ class ArrayWithGeneral(abc.ABC):
 
     def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
-        ivy.Array instance method variant of ivy.is_ivy_array. This method simply wraps the
-        function, and so the docstring for ivy.is_ivy_array also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.is_ivy_array. This method simply 
+        wraps the function, and so the docstring for ivy.is_ivy_array also 
+        applies to this method with minimal changes.
 
         Parameters
         ----------
