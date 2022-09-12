@@ -50,8 +50,8 @@ without sacrificing efficiency at the lower level.
 
 We now take a look at some examples, and explain our rational for deciding upon the
 function signature that we should use in Ivy. The first three examples are more-or-less
-superset examples, while the last two include deliberate decisions to not implement the
-superset, for some of the reasons explained above.
+superset examples, while the last example involves a deliberate decision to not
+implement the full superset, for the reason explained above.
 
 
 ivy.linspace
@@ -132,12 +132,6 @@ using a NumPy backend. However, in future releases our automatic graph compilati
 graph simplification processes will alleviate these minor inefficiencies entirely from
 the final computation graph, by fusing multiple operations into one at the API level
 where possible.
-
-
-ivy.where
----------
-
-np non-zero stuff - no
 
 
 **Round Up**
