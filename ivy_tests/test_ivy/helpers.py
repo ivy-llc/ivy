@@ -2766,12 +2766,12 @@ def _zeroing(x):
 def _clamp_value(x, dtype):
     if ivy.is_int_dtype(dtype):
         d_info = ivy.iinfo(dtype)
-    elif ivy.is_float_dtype(dtype):
+    elif ivy.is_float_dtype(dtype) or ivy.is_complex_dtype(dtype):
         d_info = ivy.finfo(dtype)
     else:
         raise TypeError(
             f"{dtype} is not a valid data type. "
-            "dtype must be an integer or a float data type"
+            "dtype must be an integer or a float or a complex data type"
         )
     if x > d_info.max or x < d_info.min:
         return None  # Calculated later using safety factor
