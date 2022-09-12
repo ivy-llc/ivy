@@ -189,16 +189,13 @@ def test_where(
 
 
 # indices_where
+@handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
-    with_out=st.booleans(),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="indices_where"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_indices_where(
+    *,
     x,
     with_out,
     as_variable,
