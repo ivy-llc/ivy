@@ -8,7 +8,6 @@ FW_FN_KEYWORDS = {
     "jax": [],
     "tensorflow": [],
     "torch": [],
-    "mxnet": ["ndarray"],
 }
 
 NATIVE_KEYS_TO_SKIP = {
@@ -27,7 +26,6 @@ NATIVE_KEYS_TO_SKIP = {
         "type",
         "requires_grad_",
     ],
-    "mxnet": [],
 }
 
 # Helpers #
