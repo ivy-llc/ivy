@@ -260,7 +260,24 @@ def test_torch_cumprod(
         out=None,
     )
 
-      
+
+@handle_cmd_line_args
+@given(
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.diagflat"
+    ),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        # Check the beginning of the test body, one or more types is later removed.
+        # This is a workaround for the test framework seemingly ignoring
+        # `unsupported_dtypes` for this function.
+        max_dim_size=4,  # TODO: Increase these after ivy.asarray has been optimized.
+        min_dim_size=1,
+        max_num_dims=2,
+        min_num_dims=1,
+    ),
+    offset=st.integers(max_value=4, min_value=-4),
+)
 def test_torch_diagflat(
     dtype_and_values,
     offset,
@@ -271,6 +288,7 @@ def test_torch_diagflat(
     fw,
 ):
     dtype, values = dtype_and_values
+    assume("float16" not in dtype)
 
     values = np.asarray(values)
 
@@ -292,6 +310,9 @@ def test_torch_diagflat(
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        # Check the beginning of the test body, one or more types is later removed.
+        # This is a workaround for the test framework seemingly ignoring
+        # `unsupported_dtypes` for this function.
         max_dim_size=4,  # TODO: Increase these after ivy.asarray has been optimized.
         min_dim_size=1,
         max_num_dims=2,
@@ -312,6 +333,7 @@ def test_torch_diag(
     fw,
 ):
     dtype, values = dtype_and_values
+    assume("float16" not in dtype)
 
     values = np.asarray(values)
 
