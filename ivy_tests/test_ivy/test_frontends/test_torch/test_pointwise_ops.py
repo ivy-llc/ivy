@@ -871,7 +871,6 @@ def test_torch_bitwise_and(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_not"
     ),
@@ -906,7 +905,6 @@ def test_torch_bitwise_not(
         num_arrays=2,
         shared_dtype=True,
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_xor"
     ),
@@ -942,7 +940,6 @@ def test_torch_bitwise_xor(
         num_arrays=2,
         shared_dtype=True,
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_or"
     ),
@@ -978,7 +975,6 @@ def test_torch_bitwise_or(
         num_arrays=2,
         shared_dtype=True,
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_left_shift"
     ),
@@ -992,6 +988,7 @@ def test_torch_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1015,7 +1012,6 @@ def test_torch_bitwise_left_shift(
         num_arrays=2,
         shared_dtype=True,
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_right_shift"
     ),
@@ -1029,6 +1025,8 @@ def test_torch_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
