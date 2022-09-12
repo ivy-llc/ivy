@@ -5,8 +5,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -189,11 +187,7 @@ def test_tensorflow_divide(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_tf.valid_numeric_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.negative"
@@ -883,11 +877,9 @@ def test_tensorflow_polyval(
     segment_ids=helpers.array_values(
         dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_mean"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_unsorted_segment_mean(
     data, segment_ids, as_variable, num_positional_args, native_array, fw
@@ -914,11 +906,9 @@ def test_tensorflow_unsorted_segment_mean(
     segment_ids=helpers.array_values(
         dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_sqrt_n"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_unsorted_segment_sqrt_n(
     data, segment_ids, as_variable, num_positional_args, native_array, fw
@@ -942,16 +932,12 @@ def test_tensorflow_unsorted_segment_sqrt_n(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
     ),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.zero_fraction"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_zero_fraction(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
