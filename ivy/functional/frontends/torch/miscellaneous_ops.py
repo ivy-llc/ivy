@@ -28,10 +28,3 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
 
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
-
-
-triu.unsupported_dtypes = (
-    "uint16",
-    "uint32",
-    "uint64",
-)
