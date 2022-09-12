@@ -352,7 +352,9 @@ def get_nestable_mode() -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 def array_equal(
-    x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray], /,
+    x0: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    /,
 ) -> bool:
     """Determines whether two input arrays are equal across all elements.
 
@@ -2506,7 +2508,7 @@ def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     query: Union[ivy.Array, ivy.NativeArray],
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    return current_backend(x).get_item(x, query)
+    return current_backend(x).get_item(x, query)  # ToDo add docstrings
 
 
 @handle_nestable

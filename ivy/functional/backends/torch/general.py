@@ -55,7 +55,12 @@ def current_backend_str() -> str:
     return "torch"
 
 
-def get_item(x: torch.Tensor, query: torch.Tensor) -> torch.Tensor:
+def get_item(
+    x: torch.Tensor,
+    query: torch.Tensor,
+) -> torch.Tensor:
+    if ivy.dtype(query, as_native=True) is torch.bool:
+        return x.__getitem__(query)
     return x.__getitem__(query.to(torch.int64))
 
 
