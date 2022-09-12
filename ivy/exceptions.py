@@ -4,12 +4,12 @@ from typing import Callable
 
 
 class IvyException(Exception):
-    def __init__(self, message):
+    def __init__(self, fn_name, message):
         self._default = (
             "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
         )
         self._delimiter = ": "
-        super().__init__(self._default + self._delimiter + message)
+        super().__init__(self._delimiter.join([fn_name, self._default, message]))
 
 
 def handle_exceptions(fn: Callable) -> Callable:
@@ -33,7 +33,7 @@ def handle_exceptions(fn: Callable) -> Callable:
         try:
             return fn(*args, **kwargs)
         except Exception as e:
-            raise ivy.exceptions.IvyException(str(e)) from None
+            raise ivy.exceptions.IvyException(fn.__name__, str(e)) from None
 
     new_fn.handle_exceptions = True
     return new_fn
