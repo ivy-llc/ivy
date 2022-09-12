@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -486,13 +486,13 @@ def test_torch_celu(
 )
 def test_torch_selu(
     dtype_and_input,
-    inplace,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
     input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
