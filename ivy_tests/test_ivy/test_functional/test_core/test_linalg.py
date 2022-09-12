@@ -388,6 +388,85 @@ def test_det(
     )
 
 
+# eig
+@handle_cmd_line_args
+@given(
+    dtype_x=_get_dtype_and_matrix(symmetric=True),
+    num_positional_args=helpers.num_positional_args(fn_name="eig"),
+)
+def test_eig(
+    *,
+    dtype_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_x
+
+    if input_dtype.endswith("64"):
+        input_dtype = "complex128"
+    else:
+        input_dtype = "complex64"
+
+    x = np.asarray(x, dtype=input_dtype)
+
+    results = helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="eig",
+        x=x,
+        test_values=False,
+        return_flat_np_arrays=True,
+    )
+    if results is None:
+        return
+
+    ret_np_flat, ret_from_np_flat = results
+    eigenvalues_np, eigenvectors_np = ret_np_flat
+    indices_np = np.argsort(eigenvalues_np, axis=-1)
+    reconstructed_np = None
+    for eigenvalue, eigenvector in zip(
+        eigenvalues_np[..., indices_np], eigenvectors_np[..., indices_np]
+    ):
+        if reconstructed_np is not None:
+            reconstructed_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+    eigenvalues_from_np, eigenvectors_from_np = ret_from_np_flat
+    indices_from_np = np.argsort(eigenvalues_from_np, axis=-1)
+    reconstructed_from_np = None
+    for eigenvalue, eigenvector in zip(
+        eigenvalues_from_np[..., indices_from_np],
+        eigenvectors_from_np[..., indices_from_np],
+    ):
+        if reconstructed_from_np is not None:
+            reconstructed_from_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_from_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+    # value test
+    helpers.assert_all_close(
+        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
+    )
+
+
 # eigh
 @handle_cmd_line_args
 @given(
