@@ -72,9 +72,9 @@ def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
     for func_name in func_names:
-        if hasattr(ivy, func_name):
+        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name):
+        elif hasattr(module, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(module, func_name))
     return ret
 
@@ -966,7 +966,6 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-# noinspection PyShadowingNames,PyShadowingBuiltins
 @handle_nestable
 def default_float_dtype(
     *,
@@ -1037,8 +1036,8 @@ def default_float_dtype(
 
 
 def infer_default_dtype(
-    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
-):
+    dtype: Union[ivy.Dtype, ivy.NativeDtype, str], as_native: bool = False
+) -> Union[ivy.Dtype, ivy.NativeDtype]:
     """Summary.
 
     Parameters
@@ -1077,10 +1076,9 @@ def infer_default_dtype(
     return default_dtype
 
 
-# noinspection PyShadowingNames
 def default_dtype(
     *, dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
-) -> Union[ivy.Dtype, str]:
+) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
     """Summary.
 
     Parameters
@@ -1129,12 +1127,11 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-# noinspection PyShadowingNames,PyShadowingBuiltins
 def default_int_dtype(
     *,
     input=None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 

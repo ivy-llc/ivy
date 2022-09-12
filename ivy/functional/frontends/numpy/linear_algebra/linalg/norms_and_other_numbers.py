@@ -2,6 +2,16 @@
 import ivy
 
 
+def norm(x, ord=None, axis=None, keepdims=False):
+    ret = ivy.vector_norm(x, axis, keepdims, ord)
+    if axis is None:
+        return ret[0]
+    return ret
+
+
+norm.unsupported_dtypes = ("float16",)
+
+
 # matrix_rank
 def matrix_rank(A, tol=None, hermitian=False):
     ret = ivy.matrix_rank(A, rtol=tol)
