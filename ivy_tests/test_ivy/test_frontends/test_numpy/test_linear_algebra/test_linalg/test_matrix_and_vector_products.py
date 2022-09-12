@@ -5,8 +5,10 @@ from hypothesis import given
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import \
-    _get_first_matrix_and_dtype, _get_second_matrix_and_dtype
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_first_matrix_and_dtype,
+    _get_second_matrix_and_dtype,
+)
 
 # matmul
 
@@ -17,16 +19,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import \
     y=_get_second_matrix_and_dtype(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.matmul"
-    )
+    ),
 )
 def test_numpy_matmul(
-    x,
-    y,
-    as_variable,
-    with_out,
-    native_array,
-    num_positional_args,
-    fw
+    x, y, as_variable, with_out, native_array, num_positional_args, fw
 ):
     dtype1, x1 = x
     dtype2, x2 = y
@@ -40,8 +36,9 @@ def test_numpy_matmul(
         frontend="numpy",
         fn_tree="matmul",
         x1=np.array(x1, dtype=dtype1),
-        x2=np.array(x2, dtype=dtype2)
+        x2=np.array(x2, dtype=dtype2),
     )
+
 
 # matrix_power
 
