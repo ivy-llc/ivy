@@ -139,6 +139,7 @@
     <span class="p">),</span> <span class="s2">&quot;indices, values and dense_shape must all be specified&quot;</span>
     <span class="c1"># coordinates style (COO), must be shaped (x, y)</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;indices must be 2D&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;values must be 1D&quot;</span>
     <span class="k">assert</span> <span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">))</span> <span class="o">==</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="p">),</span> <span class="s2">&quot;shape and indices shape do not match&quot;</span>
@@ -152,33 +153,121 @@
         <span class="p">),</span> <span class="s2">&quot;indices is larger than shape&quot;</span>
 
 
+<span class="k">def</span> <span class="nf">_verify_csr_components</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span> <span class="n">crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
+    <span class="p">),</span> <span class="s2">&quot;crow_indices, col_indices, values and dense_shape must all be specified&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;crow_indices must be 1D&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;col_indices must be 1D&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;values must be 1D&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;only 2D arrays can be converted to CSR sparse arrays&quot;</span>
+    <span class="c1"># number of intervals must be equal to x in shape (x, y)</span>
+    <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># index in col_indices must not exceed y in shape (x, y)</span>
+    <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">col_indices</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="p">),</span> <span class="s2">&quot;index in col_indices does not match shape&quot;</span>
+    <span class="c1"># number of values must match number of coordinates</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="p">),</span> <span class="s2">&quot;values and col_indices do not match&quot;</span>
+    <span class="c1"># index in crow_indices must not exceed length of col_indices</span>
+    <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">),</span> <span class="s2">&quot;index in crow_indices does not match the number of col_indices&quot;</span>
+
+
 <span class="k">def</span> <span class="nf">_is_data_not_indices_values_and_shape</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">coo_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">csr_crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">csr_col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">coo_indices</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csr_crow_indices</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csr_col_indices</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;only specify either data or or all three components: </span><span class="se">\</span>
-<span class="s2">                indices, values and dense_shape&quot;</span>
+                <span class="s2">&quot;only specify either data, all coo components (coo_indices, values </span><span class="se">\</span>
+<span class="s2">                and dense_shape), or all csr components (csr_crow_indices, </span><span class="se">\</span>
+<span class="s2">                csr_col_indices, values and dense_shape)&quot;</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span>
 
 
+<span class="k">def</span> <span class="nf">_is_coo_not_csr</span><span class="p">(</span>
+    <span class="n">coo_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">csr_crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">csr_col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">coo_indices</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">csr_crow_indices</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="n">csr_col_indices</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csr_crow_indices</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csr_col_indices</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">coo_indices</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="s2">&quot;specify either all coo components (coo_indices, values </span><span class="se">\</span>
+<span class="s2">            and dense_shape), or all csr components (csr_crow_indices, </span><span class="se">\</span>
+<span class="s2">            csr_col_indices, values and dense_shape)&quot;</span>
+        <span class="p">)</span>
+
+
 <div class="viewcode-block" id="SparseArray"><a class="viewcode-back" href="../../../../functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray">[docs]</a><span class="k">class</span> <span class="nc">SparseArray</span><span class="p">:</span>
-<div class="viewcode-block" id="SparseArray.__init__"><a class="viewcode-back" href="../../../../functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">_is_data_not_indices_values_and_shape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">):</span>
+<div class="viewcode-block" id="SparseArray.__init__"><a class="viewcode-back" href="../../../../functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">coo_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">csr_crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">csr_col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">_is_data_not_indices_values_and_shape</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">coo_indices</span><span class="p">,</span> <span class="n">csr_crow_indices</span><span class="p">,</span> <span class="n">csr_col_indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_init_coo_components</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">)</span>
-        <span class="c1"># TODO: to add csr</span>
+        <span class="k">elif</span> <span class="n">_is_coo_not_csr</span><span class="p">(</span>
+            <span class="n">coo_indices</span><span class="p">,</span> <span class="n">csr_crow_indices</span><span class="p">,</span> <span class="n">csr_col_indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_coo_components</span><span class="p">(</span><span class="n">coo_indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;indices, values and dense_shape must all be specified&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_csr_components</span><span class="p">(</span>
+                <span class="n">csr_crow_indices</span><span class="p">,</span> <span class="n">csr_col_indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span>
+            <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_init_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_sparse_array</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">indices</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">coo_indices</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">csr_crow_indices</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">csr_col_indices</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dense_shape</span>
         <span class="k">else</span><span class="p">:</span>
@@ -190,17 +279,46 @@
         <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_init_coo_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_init_coo_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coo_indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+        <span class="n">coo_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coo_indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_sparse_array</span><span class="p">(</span>
-            <span class="n">indices</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="n">shape</span>
+            <span class="n">coo_indices</span><span class="o">=</span><span class="n">coo_indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="n">shape</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="o">=</span> <span class="n">coo_indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_init_csr_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csr_crow_indices</span><span class="p">,</span> <span class="n">csr_col_indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+        <span class="n">csr_crow_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">csr_crow_indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+        <span class="n">csr_col_indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">csr_col_indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_sparse_array</span><span class="p">(</span>
+            <span class="n">csr_crow_indices</span><span class="o">=</span><span class="n">csr_crow_indices</span><span class="p">,</span>
+            <span class="n">csr_col_indices</span><span class="o">=</span><span class="n">csr_col_indices</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">dense_shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span> <span class="o">=</span> <span class="n">csr_crow_indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span> <span class="o">=</span> <span class="n">csr_col_indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Properties #</span>
     <span class="c1"># -----------#</span>
@@ -210,8 +328,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span>
+    <span class="k">def</span> <span class="nf">coo_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">csr_crow_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">csr_col_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -228,19 +354,41 @@
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="nd">@indices</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+    <span class="nd">@coo_indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">coo_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
         <span class="n">_verify_coo_components</span><span class="p">(</span>
             <span class="n">indices</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="o">=</span> <span class="n">indices</span>
+
+    <span class="nd">@csr_crow_indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">csr_crow_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+        <span class="n">_verify_csr_components</span><span class="p">(</span>
+            <span class="n">crow_indices</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">col_indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">,</span>
+            <span class="n">dense_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span> <span class="o">=</span> <span class="n">indices</span>
+
+    <span class="nd">@csr_col_indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">csr_col_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+        <span class="n">_verify_csr_components</span><span class="p">(</span>
+            <span class="n">crow_indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span><span class="p">,</span>
+            <span class="n">col_indices</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">,</span>
+            <span class="n">dense_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span> <span class="o">=</span> <span class="n">indices</span>
 
     <span class="nd">@values</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
         <span class="n">_verify_coo_components</span><span class="p">(</span>
-            <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span>
+            <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">values</span>
 
@@ -248,7 +396,7 @@
     <span class="k">def</span> <span class="nf">dense_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">):</span>
         <span class="n">dense_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
         <span class="n">_verify_coo_components</span><span class="p">(</span>
-            <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="n">dense_shape</span>
+            <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="n">dense_shape</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">dense_shape</span>
 
@@ -257,10 +405,26 @@
 
 <div class="viewcode-block" id="SparseArray.to_dense_array"><a class="viewcode-back" href="../../../../functional/ivy/extensions.html#ivy.functional.ivy.extensions.SparseArray.to_dense_array">[docs]</a>    <span class="k">def</span> <span class="nf">to_dense_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">native</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">all_coordinates</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">coordinate</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">i</span><span class="p">]]))</span>
-            <span class="n">coordinate</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinate</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span>
-            <span class="n">all_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coordinate</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># COO sparse array</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">coordinate</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">)</span>
+                <span class="n">coordinate</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinate</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span>
+                <span class="n">all_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coordinate</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># CSR sparse array</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">total_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">all_cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr_col_indices</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+            <span class="n">all_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr_crow_indices</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+            <span class="k">while</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">total_rows</span><span class="p">:</span>
+                <span class="n">cols</span> <span class="o">=</span> <span class="n">all_cols</span><span class="p">[</span><span class="n">all_rows</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="p">:</span> <span class="n">all_rows</span><span class="p">[</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+                    <span class="n">all_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">])</span>
+                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># make dense array</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_coordinates</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span><span class="p">)</span>
         <span class="p">)</span>
@@ -281,9 +445,22 @@
 
 
 <div class="viewcode-block" id="native_sparse_array"><a class="viewcode-back" href="../../../../functional/ivy/extensions/native_sparse_array.html#ivy.functional.ivy.extensions.native_sparse_array">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
-<span class="k">def</span> <span class="nf">native_sparse_array</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">native_sparse_array</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">coo_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">csr_crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">csr_col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">native_sparse_array</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="n">dense_shape</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">coo_indices</span><span class="o">=</span><span class="n">coo_indices</span><span class="p">,</span>
+        <span class="n">csr_crow_indices</span><span class="o">=</span><span class="n">csr_crow_indices</span><span class="p">,</span>
+        <span class="n">csr_col_indices</span><span class="o">=</span><span class="n">csr_col_indices</span><span class="p">,</span>
+        <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">dense_shape</span><span class="o">=</span><span class="n">dense_shape</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
