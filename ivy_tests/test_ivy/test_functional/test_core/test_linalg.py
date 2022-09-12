@@ -485,6 +485,54 @@ def test_eigvalsh(
     )
 
 
+# inner
+@handle_cmd_line_args
+@given(
+    dtype_xy=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=1,
+        max_value=50,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="outer"),
+)
+def test_inner(
+    *,
+    dtype_xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    types, arrays = dtype_xy
+    type1, type2 = types
+    x1, x2 = arrays
+    input_dtype = [type1, type2]
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+    with_out = False
+
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="inner",
+        x1=np.asarray(x1, input_dtype[0]),
+        x2=np.asarray(x2, input_dtype[1]),
+    )
+
+
 # inv
 @handle_cmd_line_args
 @given(
