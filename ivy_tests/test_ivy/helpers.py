@@ -1714,7 +1714,7 @@ def test_frontend_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
-    with_inplace: bool,
+    with_inplace: bool = False,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
     fw: str,
