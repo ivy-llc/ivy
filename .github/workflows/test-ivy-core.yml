@@ -80,7 +80,7 @@ jobs:
          if: steps.check_file_changed.outputs.changed == 'True'
          run: |
            cd ivy
-           ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }}
+           ./test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples

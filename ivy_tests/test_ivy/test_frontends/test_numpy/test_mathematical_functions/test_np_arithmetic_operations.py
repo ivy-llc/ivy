@@ -62,6 +62,7 @@ def test_numpy_add(
 
 
 # subtract
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2
@@ -114,6 +115,7 @@ def test_numpy_subtract(
 
 
 # vdot
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2
@@ -148,6 +150,7 @@ def test_numpy_vdot(
 
 
 # divide
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2
@@ -200,6 +203,7 @@ def test_numpy_divide(
 
 
 # multiply
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2
