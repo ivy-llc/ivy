@@ -16,7 +16,7 @@ def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
-        Catch all backend exceptions and throw them in ivy.IvyException
+        Catch all exceptions and raise them in IvyException
 
         Parameters
         ----------
@@ -28,7 +28,7 @@ def handle_exceptions(fn: Callable) -> Callable:
 
         Returns
         -------
-            The return of the function, or raise ivy.IvyException if error is thrown.
+            The return of the function, or raise IvyException if error is thrown.
         """
         try:
             return fn(*args, **kwargs)
