@@ -236,9 +236,9 @@ def test_torch_diagonal(
 @handle_cmd_line_args
 @given(
     array_and_shape=array_and_broadcastable_shape(
-        st.shared(st.sampled_from(ivy_torch.valid_dtypes), key="dtype")
+        dtype=helpers.get_dtypes("valid", full=False),
     ),
-    input_dtype=st.shared(st.sampled_from(ivy_torch.valid_dtypes), key="dtype"),
+    input_dtype=helpers.get_dtypes("valid", full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.broadcast_to"
     ),
