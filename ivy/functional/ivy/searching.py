@@ -9,12 +9,14 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -112,6 +114,7 @@ def argmax(
     return current_backend(x).argmax(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -217,6 +220,7 @@ def argmin(
     return current_backend(x).argmin(x, axis, keepdims, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_nestable
 def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
@@ -316,6 +320,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     return current_backend(x).nonzero(x)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -429,6 +434,7 @@ def where(
 # ------#
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
