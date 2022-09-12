@@ -496,7 +496,7 @@ def test_eigvalsh(
         min_num_dims=1,
         max_num_dims=1,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="outer"),
+    num_positional_args=helpers.num_positional_args(fn_name="inner"),
 )
 def test_inner(
     *,
@@ -516,7 +516,6 @@ def test_inner(
     as_variable = [as_variable, as_variable]
     native_array = [native_array, native_array]
     container = [container, container]
-    with_out = False
 
     helpers.test_function(
         input_dtypes=input_dtype,
