@@ -338,7 +338,7 @@ def test_torch_diag(
 ):
     dtype, values = dtype_and_values
 
-    values = np.asarray(values)
+    values = np.asarray(values, dtype=dtype)
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
