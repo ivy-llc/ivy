@@ -43,3 +43,7 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 
 
 eye.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+
+
+def band_part(input, num_lower, num_upper, name=Nome):
+    return ivy.band_part(input, num_lower, num_upper)
