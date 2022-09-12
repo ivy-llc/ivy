@@ -47,3 +47,7 @@ eye.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 def band_part(input, num_lower, num_upper, name=Nome):
     return ivy.band_part(input, num_lower, num_upper)
+
+
+def eigh(tensor, name=None):
+    return ivy.eigh(tensor)
