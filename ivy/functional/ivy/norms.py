@@ -127,5 +127,7 @@ def layer_norm(
     """
     mean = ivy.mean(x, axis=normalized_idxs, keepdims=True)
     var = ivy.var(x, axis=normalized_idxs, keepdims=True)
-    x = ivy.divide(ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, epsilon))
+    x = ivy.divide(
+        ivy.add(ivy.negative(mean), x), ivy.stable_pow(var, 0.5, min_base=epsilon)
+    )
     return ivy.add(ivy.multiply(ivy.multiply(x, new_std), scale), offset, out=out)

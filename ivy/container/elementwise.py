@@ -1,4 +1,5 @@
 # global
+from numbers import Number
 from typing import Optional, Union, List, Dict
 
 # local
@@ -3062,6 +3063,107 @@ class ContainerWithElementwise(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+        )
+
+    @staticmethod
+    def static_floormod(
+        x: ivy.Container,
+        y: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.floormod. This method simply
+        wraps the function, and so the docstring for ivy.floormod also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container to floordmod.
+        y
+            denominator input for floormod.
+        min_denominator
+            Container of the minimum denominator to use,
+            use global ivy._MIN_DENOMINATOR by default.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of the same shape and type as x, with the elements at its
+            leaves floor modded.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "floormod",
+            x,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def floormod(
+        self,
+        y: Union[Number, ivy.Array, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.floormod. This method
+        simply wraps the function, and so the docstring for ivy.floormod
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container to floordmod.
+        y
+            denominator input for floormod.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            A container of the same shape and type as self, with the elements at its
+            leaves floor modded.
+        """
+        return self.static_floormod(
+            self,
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod

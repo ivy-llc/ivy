@@ -149,7 +149,7 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: torch.dtype,
     device: torch.device,
@@ -283,7 +283,7 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
+linspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
@@ -372,7 +372,6 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
-# noinspection PyShadowingNames
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -457,6 +456,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return x.clone()
+
+
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],
@@ -474,4 +477,16 @@ def logspace(
 
 
 logspace.support_native_out = True
-logspace.unsupported_device_and_dtype = {"devices": ("cpu",), "dtypes": ("float16",)}
+logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
+
+
+def one_hot(
+    indices: torch.Tensor,
+    depth: int,
+    *,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
+        device, indices.dtype
+    )
