@@ -165,6 +165,10 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
+def _is_zero_dim_array(x):
+    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+
+
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -186,19 +190,26 @@ def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        # get out arg index
-        out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
-        # check if out is None or out is not present in args and kwargs.
-        out_args = (
-            out_arg_pos < len(args) and args[out_arg_pos] is None
-        ) or out_arg_pos >= len(args)
+        if "out" in ivy.arg_names(fn):
+            # get out arg index
+            out_arg_pos = ivy.arg_info(fn, name="out")["idx"]
+            # check if out is None or out is not present in args and kwargs.
+            out_args = (
+                out_arg_pos < len(args) and args[out_arg_pos] is None
+            ) or out_arg_pos >= len(args)
+        else:
+            # no out argument accepted by the function
+            out_args = False
+
         out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
-        if (
-            ret.shape == ()
-            and (out_args or out_kwargs)
-            and not (ivy.isinf(ret) or ivy.isnan(ret))
-        ):
-            return float(ret)
+        if out_args or out_kwargs:
+            if isinstance(ret, tuple):
+                ret_idx = ivy.nested_indices_where(ret, lambda x: x.shape == ())
+                ret_flat = ivy.multi_index_nest(ret, ret_idx)
+                ret = tuple([float(x) for x in ret_flat])
+            else:
+                if _is_zero_dim_array(ret):
+                    ret = ivy.to_scalar(ret)
         # convert to float from 0 dim
         return ret
 

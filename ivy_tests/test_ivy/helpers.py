@@ -1887,6 +1887,7 @@ def test_frontend_function(
     # temporarily set frontend framework as backend
     ivy.set_backend(frontend)
     backend_returned_scalar = False
+    backend_returned_scalar_in_tuple = False
     try:
         # check for unsupported dtypes in frontend framework
         function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
@@ -1931,9 +1932,31 @@ def test_frontend_function(
             return
         frontend_ret = frontend_fw.__dict__[fn_tree](*args_frontend, **kwargs_frontend)
 
-        if frontend == "numpy" and np.isscalar(frontend_ret):
+        if frontend == "numpy" and not isinstance(frontend_ret, np.ndarray):
             backend_returned_scalar = True
-            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+            if isinstance(frontend_ret, tuple):
+                frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, np.isscalar)
+                # no scalar values in the tuple
+                if len(frontend_ret_idxs) == 0:
+                    frontend_ret_idxs = ivy.nested_indices_where(
+                        frontend_ret, ivy.is_native_array
+                    )
+                    frontend_ret_flat = ivy.multi_index_nest(
+                        frontend_ret, frontend_ret_idxs
+                    )
+                    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+                else:
+                    # tuple contains scalar values
+                    backend_returned_scalar_in_tuple = True
+                    frontend_ret_flat = ivy.multi_index_nest(
+                        frontend_ret, frontend_ret_idxs
+                    )
+                    frontend_ret_np_flat = [
+                        np.asarray(x, dtype=np.float64) for x in frontend_ret_flat
+                    ]
+            else:
+                # returned only 1 scalar value
+                frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.float64)]
         else:
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
@@ -1950,7 +1973,12 @@ def test_frontend_function(
     ivy.unset_backend()
 
     if backend_returned_scalar:
-        ret_np_flat = [np.asarray(ret, dtype=frontend_ret.dtype)]
+        if backend_returned_scalar_in_tuple:
+            ret_idx = ivy.nested_indices_where(ret, lambda x: np.isscalar(x))
+            ret_flat = ivy.multi_index_nest(ret, ret_idx)
+            ret_np_flat = [np.asarray(x) for x in ret_flat]
+        else:
+            ret_np_flat = [np.asarray(ret)]
     else:
         ret_np_flat = flatten_and_to_np(ret=ret)
 
