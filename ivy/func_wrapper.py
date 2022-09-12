@@ -204,9 +204,9 @@ def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
         out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
         if out_args or out_kwargs:
             if isinstance(ret, tuple):
+                ret = ivy.copy_nest(ret, to_mutable=True)
                 ret_idx = ivy.nested_indices_where(ret, lambda x: x.shape == ())
-                ret_flat = ivy.multi_index_nest(ret, ret_idx)
-                ret = tuple([float(x) for x in ret_flat])
+                ivy.map_nest_at_indices(ret, ret_idx, lambda x: float(x))
             else:
                 if _is_zero_dim_array(ret):
                     ret = ivy.to_scalar(ret)
