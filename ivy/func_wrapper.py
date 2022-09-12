@@ -30,7 +30,7 @@ NATIVE_KEYS_TO_SKIP = {
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "handle_exceptions",
+    # "handle_exceptions",
     "infer_device",
     "infer_dtype",
     "integer_arrays_to_float",
@@ -39,6 +39,7 @@ FN_DECORATORS = [
     "inputs_to_ivy_arrays",
     "handle_out_argument",
     "handle_nestable",
+    "handle_exceptions",
 ]
 
 # Helpers #
