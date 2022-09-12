@@ -75,15 +75,7 @@ def test_numpy_outer(
         b=np.array(y, dtype=input_dtype2),
         out=None,
     )
-    
-
-import numpy as np
-from hypothesis import given, strategies as st
-# local
-import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
+   
 
 @st.composite
 def _inner_get_dtype_and_data(draw):
