@@ -44,12 +44,7 @@ def diagflat(input, offset=0):
     return ret
 
 
-diagflat.unsupported_dtypes = (
-    "float16",
-    "uint16",
-    "uint32",
-    "uint64",
-)
+diagflat.unsupported_dtypes = ("float16",)
 
 
 def diag(input, diagonal=0, *, out=None):
@@ -63,9 +58,4 @@ def diag(input, diagonal=0, *, out=None):
     return ret
 
 
-diag.unsupported_dtypes = (
-    "float16",
-    "uint16",
-    "uint32",
-    "uint64",
-)
+diag.unsupported_dtypes = ("float16",)
