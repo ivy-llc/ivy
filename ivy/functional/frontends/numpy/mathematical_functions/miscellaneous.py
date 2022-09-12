@@ -27,12 +27,9 @@ def clip(
 
     if not dtype:
         dtype = a.dtype
-    ret = ivy.where(
-        ivy.broadcast_to(where, a.shape),
-        ivy.clip(a, a_min, a_max),
-        ivy.default(out, a),
-        out=out,
-    )
+    ret = ivy.clip(a, a_min, a_max)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)))
     return ivy.astype(ret, dtype, out=out)
 
 
@@ -48,12 +45,11 @@ def sqrt(
     dtype=None,
     subok=True,
 ):
-    x = ivy.array(x)
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.where(
-        ivy.broadcast_to(where, x.shape), ivy.sqrt(x), ivy.default(out, x), out=out
-    )
+    ret = ivy.sqrt(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 

@@ -199,10 +199,10 @@ def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
             ) or out_arg_pos >= len(args)
         else:
             # no out argument accepted by the function
-            out_args = False
+            out_args = True
 
         out_kwargs = ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs
-        if out_args or out_kwargs:
+        if out_args and out_kwargs:
             if isinstance(ret, tuple):
                 ret = ivy.copy_nest(ret, to_mutable=True)
                 ret_idx = ivy.nested_indices_where(ret, lambda x: x.shape == ())
