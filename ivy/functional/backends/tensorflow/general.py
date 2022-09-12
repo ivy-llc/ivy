@@ -42,7 +42,8 @@ def is_native_array(x, /, *, exclusive=False):
 
 
 def array_equal(
-    x0: Union[tf.Tensor, tf.Variable], x1: Union[tf.Tensor, tf.Variable],
+    x0: Union[tf.Tensor, tf.Variable],
+    x1: Union[tf.Tensor, tf.Variable],
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
@@ -57,6 +58,17 @@ def current_backend_str():
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
+    # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
+    if (
+        ivy.is_array(x)
+        and get_num_dims(x) == 0
+        and ivy.as_native_dtype(x.dtype) is tf.bfloat16
+    ):
+        x = tf.expand_dims(x, 0)
+        if copy:
+            return np.squeeze(np.array(tf.convert_to_tensor(x)), 0)
+        else:
+            return np.squeeze(np.asarray(tf.convert_to_tensor(x)), 0)
     if copy:
         return np.array(tf.convert_to_tensor(x))
     else:
