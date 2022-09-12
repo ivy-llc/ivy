@@ -359,7 +359,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    type
+    kind
         Supported types are integer, float, valid, numeric, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
@@ -394,7 +394,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes = backend_dtypes
 
     if none:
-        return draw(st.sampled_from(valid_dtypes[index:] + (None,)))
+        valid_dtypes += (None,)
     if full:
         return valid_dtypes[index:]
     return draw(st.sampled_from(valid_dtypes[index:]))
@@ -2375,6 +2375,7 @@ def dtype_and_values(
     small_value_safety_factor=1.1,
     max_op="divide",
     allow_inf=False,
+    allow_nan=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=0,
@@ -2410,6 +2411,8 @@ def dtype_and_values(
         "divide", "sqrt" or "log". Default value = "divide".
     allow_inf
         if True, allow inf in the arrays.
+    allow_nan
+        if True, allow Nans in the arrays.
     exclude_min
         if True, exclude the minimum limit.
     exclude_max
@@ -2476,6 +2479,7 @@ def dtype_and_values(
                     min_value=min_value,
                     max_value=max_value,
                     allow_inf=allow_inf,
+                    allow_nan=allow_nan,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
                     large_value_safety_factor=large_value_safety_factor,
@@ -2501,7 +2505,9 @@ def dtype_values_axis(
     max_value=None,
     large_value_safety_factor=1.1,
     small_value_safety_factor=1.1,
+    max_op="divide",
     allow_inf=False,
+    allow_nan=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=0,
@@ -2535,6 +2541,8 @@ def dtype_values_axis(
         maximum value of elements in the array.
     allow_inf
         if True, allow inf in the array.
+    allow_nan
+        if True, allow Nans in the arrays.
     exclude_min
         if True, exclude the minimum limit.
     exclude_max
@@ -2579,7 +2587,9 @@ def dtype_values_axis(
             max_value=max_value,
             large_value_safety_factor=large_value_safety_factor,
             small_value_safety_factor=small_value_safety_factor,
+            max_op=max_op,
             allow_inf=allow_inf,
+            allow_nan=allow_nan,
             exclude_min=exclude_min,
             exclude_max=exclude_max,
             min_num_dims=min_num_dims,
@@ -3056,23 +3066,42 @@ tan-for-frontends
             "bfloat16": {"cast_type": "float16", "round_places": 3, "width": 16},
             "float32": {"cast_type": "float32", "round_places": 6, "width": 32},
             "float64": {"cast_type": "float16", "round_places": 15, "width": 64},
+   tan-for-frontends
 
 master
         min_value_neg = min_value
+
+        }
+        min_value_neg = (
+            float(np.array(min_value).astype(dtype_info[dtype]["cast_type"]))
+            if min_value is not None
+            else None
+        )
+  master
         max_value_neg = round(-1 * limit, dtype_info[dtype]["round_places"])
         min_value_pos = round(limit, dtype_info[dtype]["round_places"])
-        max_value_pos = max_value
+        max_value_pos = (
+            float(np.array(max_value).astype(dtype_info[dtype]["cast_type"]))
+            if max_value is not None
+            else None
+        )
         max_value_neg, min_value_pos = (
             np.array([max_value_neg, min_value_pos])
             .astype(dtype_info[dtype]["cast_type"])
             .tolist()
         )
-        if min_value_neg is not None and min_value_neg >= max_value_neg:
-            min_value_neg = min_value_pos
-            max_value_neg = max_value_pos
-        elif max_value_pos is not None and max_value_pos <= min_value_pos:
-            min_value_pos = min_value_neg
-            max_value_pos = max_value_neg
+        if min_value_neg is None or max_value is None:
+            if min_value_neg is not None and min_value_neg >= max_value_neg:
+                min_value_neg = max(min_value_pos, min_value_neg)
+                max_value_neg = max(max_value_pos, min_value_neg)
+            if max_value_pos is not None and max_value_pos <= min_value_pos:
+                min_value_pos = min(min_value_neg, min_value_pos)
+                max_value_pos = min(max_value_neg, min_value_pos)
+        else:
+            min_value_neg = min_value
+            max_value_neg = max_value
+            min_value_pos = min_value
+            max_value_pos = max_value
         min_value_pos = _zeroing(min_value_pos)
         max_value_pos = _zeroing(max_value_pos)
         min_value_neg = _zeroing(min_value_neg)
