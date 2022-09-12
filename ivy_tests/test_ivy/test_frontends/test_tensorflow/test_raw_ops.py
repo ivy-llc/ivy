@@ -2,98 +2,11 @@
 import ivy
 import numpy as np
 from hypothesis import given, strategies as st
-from functools import reduce  # for making strategy
-from operator import mul  # for making strategy
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
-
-# Functions to use in strategy #
-# ---------------------------- #
-
-# from array-api repo
-def _broadcast_shapes(shape1, shape2):
-    """Broadcasts `shape1` and `shape2`"""
-    N1 = len(shape1)
-    N2 = len(shape2)
-    N = max(N1, N2)
-    shape = [None for _ in range(N)]
-    i = N - 1
-    while i >= 0:
-        n1 = N1 - N + i
-        if N1 - N + i >= 0:
-            d1 = shape1[n1]
-        else:
-            d1 = 1
-        n2 = N2 - N + i
-        if N2 - N + i >= 0:
-            d2 = shape2[n2]
-        else:
-            d2 = 1
-
-        if d1 == 1:
-            shape[i] = d2
-        elif d2 == 1:
-            shape[i] = d1
-        elif d1 == d2:
-            shape[i] = d1
-        else:
-            raise Exception("Broadcast error")
-
-        i = i - 1
-
-    return tuple(shape)
-
-
-# from array-api repo
-def broadcast_shapes(*shapes):
-    if len(shapes) == 0:
-        raise ValueError("shapes=[] must be non-empty")
-    elif len(shapes) == 1:
-        return shapes[0]
-    result = _broadcast_shapes(shapes[0], shapes[1])
-    for i in range(2, len(shapes)):
-        result = _broadcast_shapes(result, shapes[i])
-    return result
-
-
-# np.prod and others have overflow and math.prod is Python 3.8+ only
-def prod(seq):
-    return reduce(mul, seq, 1)
-
-
-# from array-api repo
-def mutually_broadcastable_shapes(
-    num_shapes: int,
-    *,
-    base_shape=(),
-    min_dims: int = 1,
-    max_dims: int = 4,
-    min_side: int = 1,
-    max_side: int = 4,
-):
-    if max_dims is None:
-        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
-    if max_side is None:
-        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
-    return (
-        helpers.nph.mutually_broadcastable_shapes(
-            num_shapes=num_shapes,
-            base_shape=base_shape,
-            min_dims=min_dims,
-            max_dims=max_dims,
-            min_side=min_side,
-            max_side=max_side,
-        )
-        .map(lambda BS: BS.input_shapes)
-        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
-    )
-
-
-# for data generation in multiple tests
-dtype_shared = st.shared(st.sampled_from(ivy.valid_dtypes), key="dtype")
 
 
 # Acos
@@ -150,29 +63,19 @@ def test_tensorflow_Acosh(
     )
 
 
-def _get_broadcastable_shapes(draw):
-    to_shape = draw(helpers.get_shape(allow_none=False, min_num_dims=2))
-    in_shape = draw(helpers.nph.broadcastable_shapes(shape=to_shape, min_dims=3))
-    return in_shape, to_shape
+# for data generation
+dtype_shared = st.shared(st.sampled_from(helpers.get_dtypes("numeric")), key="dtype")
 
 
 @st.composite
-def array_and_broadcastable_shape(draw, dtype):
-    in_shape = draw(helpers.nph.array_shapes(min_dims=1, max_dims=4))
-    x = draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
-    to_shape = draw(
-        mutually_broadcastable_shapes(1, base_shape=in_shape)
-        .map(lambda S: S[0])
-        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
-        label="shape",
-    )
-    return (x, to_shape)
+def _get_shared_dtype(draw):
+    return st.shared(st.sampled_from(draw(helpers.get_dtypes("numeric"))), key="dtype")
 
 
 # BroadcastTo
 @handle_cmd_line_args
 @given(
-    array_and_shape=array_and_broadcastable_shape(dtype_shared),
+    array_and_shape=helpers.array_and_broadcastable_shape(_get_shared_dtype()),
     as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.BroadcastTo"
