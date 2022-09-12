@@ -1798,6 +1798,71 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
+@inputs_to_native_arrays
+@handle_nestable
+def is_complex_dtype(
+    dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
+    *,
+    out: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number] = None,
+) -> bool:
+    """
+    Determine whether the input data type is a complex dtype.
+
+    Parameters
+    ----------
+    dtype_in : Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]
+        The array or data type to check
+
+    Returns
+    -------
+    ret : bool
+        Whether or not the array or data type is of a complex dtype
+
+    Examples
+    --------
+    With :code:`ivy.Dtype` input:
+
+    >>> x = ivy.is_complex_dtype(ivy.complex64)
+    >>> print(x)
+    True
+
+    >>> x = ivy.is_complex_dtype(ivy.int64)
+    >>> print(x)
+    False
+
+    >>> x = ivy.is_complex_dtype(ivy.int32)
+    >>> print(x)
+    False
+
+    >>> x = ivy.is_complex_dtype(ivy.bool)
+    >>> print(x)
+    False
+
+    >>> arr = ivy.array([1.2, 3.2, 4.3], dtype=ivy.complex64)
+    >>> print(arr.is_complex_dtype())
+    True
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
+    >>> print(x.a.dtype, x.b.dtype)
+    float32 int32
+    """
+    if ivy.is_array(dtype_in):
+        dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, np.ndarray):
+        return "complex" in dtype_in.dtype.name
+    elif isinstance(dtype_in, Number):
+        return True if isinstance(dtype_in, (complex, np.complex)) else False
+    elif isinstance(dtype_in, (list, tuple, dict)):
+        return (
+            True
+            if ivy.nested_indices_where(
+                dtype_in, lambda x: isinstance(x, (complex, np.complex))
+            )
+            else False
+        )
+    return "complex" in as_ivy_dtype(dtype_in)
+
+
 def promote_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
