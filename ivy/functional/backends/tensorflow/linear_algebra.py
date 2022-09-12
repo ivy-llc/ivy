@@ -87,6 +87,20 @@ def eigvalsh(
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
+# noinspection PyUnusedLocal,PyShadowingBuiltins
+def inner(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return tf.experimental.numpy.inner(x1, x2)
+
+
+inner.unsupported_dtypes = ("int8",)
+
+
 def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,

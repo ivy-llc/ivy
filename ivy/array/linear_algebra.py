@@ -156,6 +156,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.inv(self._data, out=out)
 
+    def inner(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.inner(self._data, x2, out=out)
+
     def matrix_norm(
         self: ivy.Array,
         /,
