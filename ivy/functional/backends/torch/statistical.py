@@ -105,6 +105,8 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
 prod.unsupported_dtypes = ("bfloat16", "float16", "uint8")
 
 
@@ -163,6 +165,8 @@ def sum(
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
 sum.unsupported_dtypes = ("uint8",)
 
 
@@ -225,6 +229,8 @@ def cumprod(
 
 
 cumprod.support_native_out = True
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
 cumprod.unsupported_dtypes = (
     "uint8",
     "bfloat16",
@@ -263,6 +269,8 @@ def cumsum(
 
 
 cumsum.support_native_out = True
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
 cumsum.unsupported_dtypes = (
     "uint8",
     "bfloat16",
