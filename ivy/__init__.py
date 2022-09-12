@@ -44,7 +44,7 @@ NativeVariable = Union[
 NativeDevice = Union[jaxlib.xla_extension.Device, str, torch.device]
 
 
-NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype]
+NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype, str]
 
 
 NativeShape = Union[tuple, TensorShape, torch.Size]
