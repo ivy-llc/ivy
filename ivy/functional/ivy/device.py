@@ -315,19 +315,16 @@ def print_all_ivy_arrays_on_dev(
     Examples
     --------
 
-    With attr_only = True
-
-    >>> x = ivy.array([1,0,2], [3,2,1])
+    >>> x = ivy.array([[1,0,2], [3,2,1]])
     >>> y = ivy.dev(x)
     >>> ivy.print_all_ivy_arrays_on_dev(y)
     ((3,), 'int32')
     ((3,), 'int32')
     
     
-
     With attr_only = False:
     
-    >>> x = ivy.array([1,0,2], [3,2,1])
+    >>> x = ivy.array([[1,0,2], [3,2,1]])
     >>> y = ivy.dev(x)
     >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
     [1,0,2]
