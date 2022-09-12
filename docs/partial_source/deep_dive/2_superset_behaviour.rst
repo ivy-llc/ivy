@@ -1,7 +1,10 @@
-Superset Behaviour
-==================
+Superset Behavior
+=================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
+.. _`discord`: https://discord.gg/ZVQdvbzNQJ
+.. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
+.. _`superset behavior discussion`: https://github.com/unifyai/ivy/discussions/4367
 
 When implementing functions in Ivy, we are constantly faced with the question: which
 backend implementation should Ivy most closely follow?
@@ -136,4 +139,12 @@ where possible.
 
 **Round Up**
 
-Something
+This should have hopefully given you a good feel what should and should not be included
+when deciding how to design a new Ivy function.
+In many cases, there is not a clear right and wrong answer, and we arrive at the final
+decision via open discussion. If you find yourself proposing the addition of a new
+function in Ivy, then we will most likely have this discussion on your Pull Request!
+
+If you're ever unsure of how best to proceed,
+please feel free to engage with the `superset behavior discussion`_,
+or reach out on `discord`_ in the `superset behavior channel`_!
