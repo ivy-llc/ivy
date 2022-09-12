@@ -5,6 +5,7 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
+
 @st.composite
 def x_and_bilinear(draw, dtypes):
     dtype = draw(dtypes)
@@ -31,8 +32,12 @@ def x_and_bilinear(draw, dtypes):
     weight_shape = outer_batch_shape + (out_features,) + (in1_features,) + (in2_features,)
     bias_shape = outer_batch_shape + (out_features,)
 
-    input1 = draw(helpers.array_values(dtype=dtype, shape=input1_shape, min_value=0, max_value=1))
-    input2 = draw(helpers.array_values(dtype=dtype, shape=input2_shape, min_value=0, max_value=1))
+    input1 = draw(
+        helpers.array_values(dtype=dtype, shape=input1_shape, min_value=0, max_value=1)
+    )
+    input2 = draw(
+        helpers.array_values(dtype=dtype, shape=input2_shape, min_value=0, max_value=1)
+    )
     weight = draw(
         helpers.array_values(dtype=dtype, shape=weight_shape, min_value=0, max_value=1)
     )
@@ -51,7 +56,6 @@ def x_and_bilinear(draw, dtypes):
         fn_name="ivy.functional.frontends.torch.bilinear"
     )
 )
-
 def test_torch_bilinear(
     dtype_input1_input2_weight_bias,
     weight,

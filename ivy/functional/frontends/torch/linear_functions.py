@@ -8,5 +8,3 @@ def bilinear(input1, input2, weight, bias=None):
         bias=bias
     )
     
-
-
