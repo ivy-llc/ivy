@@ -2,12 +2,12 @@
 import ivy
 
 
-def _get_reduction_func(reduction):    
-    if reduction == 'none':
-        ret = lambda x : x
-    elif reduction == 'mean':
+def _get_reduction_func(reduction):
+    if reduction == "none":
+        ret = lambda x: x
+    elif reduction == "mean":
         ret = ivy.mean
-    elif reduction == 'sum':
+    elif reduction == "sum":
         ret = ivy.sum
     else:
         raise ValueError("{} is not a valid value for reduction".format(reduction))
@@ -20,17 +20,15 @@ def _legacy_get_string(size_average, reduce):
     if reduce is None:
         reduce = True
     if size_average and reduce:
-        ret = 'mean'
+        ret = "mean"
     elif reduce:
-        ret = 'sum'
+        ret = "sum"
     else:
-        ret = 'none'
+        ret = "none"
     return ret
 
 
-def _get_reduction(reduction, 
-                   size_average=None, 
-                   reduce=None):
+def _get_reduction(reduction, size_average=None, reduce=None):
     if size_average is not None or reduce is not None:
         return _get_reduction_func(_legacy_get_string(size_average, reduce))
     else:
@@ -89,24 +87,13 @@ def cross_entropy(
     return ret
 
 
-cross_entropy.unsupported_dtypes = ("float16",)
-
-
 def binary_cross_entropy(
-    input, 
-    target, 
-    weight=None, 
-    size_average=None, 
-    reduce=None, 
-    reduction='mean'
+    input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
-    
+
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result)
     return result
-
-
-binary_cross_entropy.unsupported_dtypes = ('float16', 'float64')
