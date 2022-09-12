@@ -8,14 +8,14 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     integer_arrays_to_float,
 )
-from ivy.exceptions import handle_exceptions
+
+# from ivy.exceptions import handle_exceptions
 
 
 # Extra #
 # ------#
 
 
-@handle_exceptions
 @inputs_to_ivy_arrays
 @integer_arrays_to_float
 def layer_norm(

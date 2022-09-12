@@ -12,7 +12,8 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
+
+# from ivy.exceptions import handle_exceptions
 from ivy.backend_handler import backend_stack
 
 
@@ -61,7 +62,6 @@ def _check_valid_scale(std):
 # ------#
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
@@ -171,7 +171,6 @@ def random_uniform(
     )
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
@@ -278,7 +277,6 @@ def random_normal(
     )
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
@@ -382,7 +380,6 @@ def multinomial(
     )
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @infer_device
@@ -455,7 +452,6 @@ def randint(
     )
 
 
-@handle_exceptions
 @handle_nestable
 def seed(*, seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
@@ -474,7 +470,6 @@ def seed(*, seed_value: int = 0) -> None:
     return ivy.current_backend().seed(seed_value=seed_value)
 
 
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

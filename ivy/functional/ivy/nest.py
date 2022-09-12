@@ -6,14 +6,14 @@ from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, 
 
 # local
 import ivy
-from ivy.exceptions import handle_exceptions
+
+# from ivy.exceptions import handle_exceptions
 
 
 # Extra #
 # ------#
 
 
-@handle_exceptions
 def index_nest(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
     index: Union[List[int], Tuple[int], Iterable[int]],
@@ -76,7 +76,6 @@ def index_nest(
     return ret
 
 
-@handle_exceptions
 def prune_nest_at_index(nest: Iterable, index: Tuple, /):
     """Prune a nested object at a specified index.
 
@@ -94,7 +93,6 @@ def prune_nest_at_index(nest: Iterable, index: Tuple, /):
         prune_nest_at_index(nest[index[0]], index[1:])
 
 
-@handle_exceptions
 def set_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
     index: Sequence[Union[str, int]],
@@ -166,7 +164,6 @@ def set_nest_at_index(
         nest[index[0]] = ret
 
 
-@handle_exceptions
 def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
     if len(index) == 1:
         idx = index[0]
@@ -178,7 +175,6 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-@handle_exceptions
 def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable, /):
     """Map a function to the value of a nested item at a specified index.
 
@@ -198,7 +194,6 @@ def map_nest_at_index(nest: Iterable, index: Tuple, fn: Callable, /):
         map_nest_at_index(nest[index[0]], index[1:], fn)
 
 
-@handle_exceptions
 def multi_index_nest(nest: Iterable, indices: Tuple, /):
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
@@ -214,7 +209,6 @@ def multi_index_nest(nest: Iterable, indices: Tuple, /):
     return [index_nest(nest, index) for index in indices]
 
 
-@handle_exceptions
 def prune_nest_at_indices(nest: Iterable, indices: Tuple, /):
     """Prune a nested object at specified indices.
 
@@ -229,7 +223,6 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /):
     [prune_nest_at_index(nest, index) for index in indices]
 
 
-@handle_exceptions
 def set_nest_at_indices(
     nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
     indices: Union[List[int], Tuple[int], Iterable[int]],
@@ -290,7 +283,6 @@ def set_nest_at_indices(
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
-@handle_exceptions
 def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /):
     """Insert a value into the nested item at specified indices with specified values.
 
@@ -313,7 +305,6 @@ def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /):
     ]
 
 
-@handle_exceptions
 def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     """Map a function to the values of a nested item at the specified indices.
 
@@ -367,7 +358,6 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     [map_nest_at_index(nest, index, fn) for index in indices]
 
 
-@handle_exceptions
 def nested_indices_where(
     nest: Iterable,
     fn: Callable,
@@ -514,7 +504,6 @@ def nested_indices_where(
     return [index for index in _indices if index]
 
 
-@handle_exceptions
 def all_nested_indices(
     nest: Iterable, include_nests: bool = False, _index: List = None, _base: bool = True
 ) -> Union[Iterable, bool]:
@@ -564,7 +553,8 @@ def all_nested_indices(
 
 
 # noinspection PyShadowingBuiltins
-@handle_exceptions
+
+
 def map(
     fn: Callable,
     constant: Dict[str, Any] = None,
@@ -668,7 +658,6 @@ def map(
     return rets
 
 
-@handle_exceptions
 def nested_map(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
@@ -804,7 +793,6 @@ def nested_map(
     return fn(x)
 
 
-@handle_exceptions
 def nested_any(
     nest: Iterable, fn: Callable, check_nests: bool = False, _base: bool = True
 ) -> bool:
@@ -847,7 +835,6 @@ def nested_any(
     return False
 
 
-@handle_exceptions
 def copy_nest(
     nest: Union[ivy.Array, ivy.NativeArray, Iterable],
     /,
@@ -933,7 +920,6 @@ def copy_nest(
     return nest
 
 
-@handle_exceptions
 def nested_multi_map(
     func: Callable,
     nests: List[Iterable],
