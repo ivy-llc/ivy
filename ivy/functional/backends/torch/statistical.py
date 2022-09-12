@@ -91,6 +91,7 @@ def prod(
     dtype: Optional[torch.dtype] = None,
     keepdims: bool = False,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     if axis is None:
@@ -104,7 +105,7 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-prod.unsupported_dtypes = ("float16",)
+prod.unsupported_dtypes = ("bfloat16", "float16", "uint8")
 
 
 def std(
@@ -160,6 +161,9 @@ def sum(
     if axis is None:
         return torch.sum(input=x, dtype=dtype)
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+
+
+sum.unsupported_dtypes = ("uint8",)
 
 
 def var(
@@ -221,7 +225,10 @@ def cumprod(
 
 
 cumprod.support_native_out = True
-cumprod.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
+cumprod.unsupported_dtypes = (
+    "uint8",
+    "bfloat16",
+)  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 
 def cumsum(
@@ -256,7 +263,10 @@ def cumsum(
 
 
 cumsum.support_native_out = True
-cumsum.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
+cumsum.unsupported_dtypes = (
+    "uint8",
+    "bfloat16",
+)  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 
 def einsum(
