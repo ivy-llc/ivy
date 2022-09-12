@@ -58,6 +58,15 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
+def eig(
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> Tuple[np.ndarray, np.ndarray]:
+    return np.linalg.eig(x)
+
+
+eig.unsupported_dtypes = ("float16",)
+
+
 def eigh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.eigh(x)
 
