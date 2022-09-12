@@ -18,4 +18,6 @@ def nonzero(a):
 
 
 def argmin(x, /, *, axis=None, keepdims=False, out=None):
-    return ivy.native_array(ivy.argmin(x, axis=axis, out=out, keepdims=keepdims), dtype=x.dtype)
+    return ivy.native_array(
+        ivy.argmin(x, axis=axis, out=out, keepdims=keepdims), dtype=x.dtype
+    )
