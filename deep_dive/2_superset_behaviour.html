@@ -208,8 +208,8 @@ superset examples, while the last two include deliberate decisions to not implem
 superset, for some of the reasons explained above.</p>
 <section id="ivy-linspace">
 <h2>ivy.linspace<a class="headerlink" href="#ivy-linspace" title="Permalink to this heading"></a></h2>
-<p>When looking at the <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> (or clost equivalent) implementations for
-<a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/linspace.html">Ivy</a>,
+<p>When looking at the <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> (or closest equivalent) implementations for
+<a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/linspace/linspace_functional.html">Ivy</a>,
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html">JAX</a>,
 <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html">NumPy</a>,
 <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/linspace">TensorFlow</a>,
@@ -223,17 +223,59 @@ frameworks.</p>
 </section>
 <section id="ivy-eye">
 <h2>ivy.eye<a class="headerlink" href="#ivy-eye" title="Permalink to this heading"></a></h2>
-<p>batch shape - ss</p>
+<p>When looking at the <code class="code docutils literal notranslate"><span class="pre">eye</span></code> (or closest equivalent) implementations for
+<a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/eye/eye_functional.html">Ivy</a>,
+<a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html">JAX</a>,
+<a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.eye.html">NumPy</a>,
+<a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/eye">TensorFlow</a>,
+and
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.eye.html">PyTorch</a>,
+we can see that <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> is the only framework which supports a
+<code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code> argument. Likewise, Ivy also supports a <code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code>
+argument, and in doing so provides the generalized superset implementation among the
+backend frameworks.</p>
 </section>
 <section id="ivy-scatter-nd">
 <h2>ivy.scatter_nd<a class="headerlink" href="#ivy-scatter-nd" title="Permalink to this heading"></a></h2>
-<p>multiple axes - ss</p>
+<p>When looking at the <code class="code docutils literal notranslate"><span class="pre">scatter_nd</span></code> (or closest equivalent) implementations for
+<a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/general/scatter_nd/scatter_nd_functional.html">Ivy</a>,
+<a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at">JAX</a>,
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html">NumPy</a>,
+<a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/scatter_nd">TensorFlow</a>,
+and
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.scatter.html">PyTorch</a>,
+we can see that <code class="code docutils literal notranslate"><span class="pre">torch</span></code> only supports scattering along a single dimension,
+while all other frameworks support scattering across multiple dimensions at once.
+Likewise, Ivy also supports scattering across multiple dimensions at once,
+and in doing so provides the generalized superset implementation among the backend
+frameworks.</p>
 </section>
 <section id="ivy-logical-and">
 <h2>ivy.logical_and<a class="headerlink" href="#ivy-logical-and" title="Permalink to this heading"></a></h2>
-<p>out - ss</p>
-<p>bool - ss</p>
-<p>np where - no</p>
+<p>When looking at the <code class="code docutils literal notranslate"><span class="pre">logical_and</span></code> (or closest equivalent) implementations for
+<a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/elementwise/logical_and/logical_and_functional.html">Ivy</a>,
+<a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html">JAX</a>,
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.logical_and.html">NumPy</a>,
+<a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/logical_and">TensorFlow</a>,
+and
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.logical_and.html">PyTorch</a>,
+we can see that <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch</span></code> support the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument for
+performing inplace updates, while <code class="code docutils literal notranslate"><span class="pre">jax</span></code> and <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> do not.
+With regards to the supported data types, <code class="code docutils literal notranslate"><span class="pre">jax</span></code>, <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch</span></code>
+support numeric arrays, while <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> supports only boolean arrays.
+With regards to both of these points, Ivy provides the generalized superset
+implementation among the backend frameworks, with support for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument
+and also support for both numeric and boolean arrays in the input.</p>
+<p>However, as discussed above, <code class="code docutils literal notranslate"><span class="pre">np.logical_and</span></code> also supports the <code class="code docutils literal notranslate"><span class="pre">where</span></code>
+argument, which we opt to <strong>not</strong> support in Ivy. This is because the behaviour can
+easily be created as a composition like so
+<code class="code docutils literal notranslate"><span class="pre">ivy.where(mask,</span> <span class="pre">ivy.logical_and(x,</span> <span class="pre">y),</span> <span class="pre">ivy.zeros_like(mask))</span></code>,
+and we prioritize the simplicity, clarity, and function uniqueness in Ivy’s API in this
+case, which comes at the cost of reduced runtime efficiency for some functions when
+using a NumPy backend. However, in future releases our automatic graph compilation and
+graph simplification processes will alleviate these minor inefficiencies entirely from
+the final computation graph, by fusing multiple operations into one at the API level
+where possible.</p>
 </section>
 <section id="ivy-where">
 <h2>ivy.where<a class="headerlink" href="#ivy-where" title="Permalink to this heading"></a></h2>
