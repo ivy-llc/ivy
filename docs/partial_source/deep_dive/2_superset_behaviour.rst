@@ -57,7 +57,7 @@ superset, for some of the reasons explained above.
 ivy.linspace
 ------------
 
-When looking at the :code:`linspace` (or clost equivalent) implementations for
+When looking at the :code:`linspace` (or closest equivalent) implementations for
 `Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/linspace.html>`_,
 `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html>`_,
 `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.linspace.html>`_,
@@ -74,13 +74,34 @@ frameworks.
 ivy.eye
 -------
 
-batch shape - ss
+When looking at the :code:`eye` (or closest equivalent) implementations for
+`Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/eye.html>`_,
+`JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html>`_,
+`NumPy <https://numpy.org/devdocs/reference/generated/numpy.eye.html>`_,
+`TensorFlow <https://www.tensorflow.org/api_docs/python/tf/eye>`_,
+and
+`PyTorch <https://pytorch.org/docs/stable/generated/torch.eye.html>`_,
+we can see that :code:`tensorflow` is the only framework which supports a
+:code:`batch_shape` argument. Likewise, Ivy also supports a :code:`batch_shape`
+argument, and in doing so provides the generalized superset implementation among the
+backend frameworks.
 
 
 ivy.scatter_nd
 --------------
 
-multiple axes - ss
+When looking at the :code:`scatter_nd` (or closest equivalent) implementations for
+`Ivy <https://lets-unify.ai/ivy/functional/ivy/general/scatter_nd.html>`_,
+`JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at>`_,
+`NumPy <https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html>`_,
+`TensorFlow <https://www.tensorflow.org/api_docs/python/tf/scatter_nd>`_,
+and
+`PyTorch <https://pytorch.org/docs/stable/generated/torch.scatter.html>`_,
+we can see that :code:`torch` only supports scattering along a single dimension,
+while all other frameworks support scattering across multiple dimensions at once.
+Likewise, Ivy also supports scattering across multiple dimensions at once,
+and in doing so provides the generalized superset implementation among the backend
+frameworks.
 
 
 ivy.logical_and
