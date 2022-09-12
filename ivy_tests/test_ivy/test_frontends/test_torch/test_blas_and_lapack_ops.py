@@ -112,10 +112,16 @@ def _get_dtype_and_3dbatch_matrices(draw, with_input=False, input_3d=False):
 
 
 @st.composite
-def _get_dtype_input_and_mat_vec(draw, with_input=False):
+def _get_dtype_input_and_mat_vec(draw, *, with_input=False, skip_float16=False):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
     shared_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=True))
+
+    if skip_float16:
+        dtype = tuple(set(dtype).difference({"float16"}))
+
+    dtype = draw(st.sampled_from(dtype))
+
     mat = draw(
         helpers.array_values(
             dtype=dtype, shape=(dim_size, shared_size), min_value=2, max_value=5
@@ -245,7 +251,7 @@ def test_torch_addmm(
 # addmv
 @handle_cmd_line_args
 @given(
-    dtype_and_matrices=_get_dtype_input_and_mat_vec(with_input=True),
+    dtype_and_matrices=_get_dtype_input_and_mat_vec(with_input=True, skip_float16=True),
     beta=st.floats(
         min_value=-5,
         max_value=5,
@@ -789,7 +795,7 @@ def test_torch_mm(
 # mv
 @handle_cmd_line_args
 @given(
-    dtype_mat_vec=_get_dtype_input_and_mat_vec(),
+    dtype_mat_vec=_get_dtype_input_and_mat_vec(skip_float16=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.mv"
     ),

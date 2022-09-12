@@ -50,9 +50,6 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
         return ivy.all(ret)
 
 
-allclose.unsupported_dtypes = ("float16",)
-
-
 def equal(input, other):
     return ivy.all_equal(input, other, equality_matrix=False)
 
@@ -100,9 +97,6 @@ def isclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
             both_nan = ivy.bitwise_and(ivy.isnan(input), ivy.isnan(other))
             ret[both_nan] = both_nan[both_nan]
         return ret
-
-
-isclose.unsupported_dtypes = ("float16",)
 
 
 def isfinite(input):

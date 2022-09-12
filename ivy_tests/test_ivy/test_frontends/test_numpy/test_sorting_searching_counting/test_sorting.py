@@ -7,7 +7,6 @@ from hypothesis import given, strategies as st
 # local
 # import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -25,7 +24,7 @@ def _dtype_x_axis(draw, **kwargs):
 @handle_cmd_line_args
 @given(
     dtype_x_axis=_dtype_x_axis(
-        available_dtypes=ivy_np.valid_numeric_dtypes, min_num_dims=1, min_dim_size=2
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1, min_dim_size=2
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.argsort"
