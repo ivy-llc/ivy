@@ -4,8 +4,6 @@ from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.torch as ivy_torch
 from ivy_tests.test_array_api.array_api_tests.test_operators_and_elementwise_functions import (  # noqa:501
     oneway_broadcastable_shapes,
     oneway_promotable_dtypes,
@@ -271,11 +269,7 @@ def test_torch_broadcast_to(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes)
-            .intersection(set(ivy_torch.valid_numeric_dtypes))
-            .difference({"float16", "bool"}),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     axis=helpers.get_axis(
@@ -289,7 +283,6 @@ def test_torch_cumprod(
     dtype_and_values,
     axis,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -298,7 +291,7 @@ def test_torch_cumprod(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
