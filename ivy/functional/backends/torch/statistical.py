@@ -194,8 +194,8 @@ def var(
     else:
         return torch.mul(
             torch.var(x, dim=axis, unbiased=False, keepdim=keepdims),
-            (size / (size - correction)) ** 0.5,
-        )
+            (size / (size - correction)),
+        ).to(x.dtype)
 
 
 # Extra #

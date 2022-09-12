@@ -118,13 +118,16 @@ def var(
     if isinstance(correction, int):
         return jnp.asarray(
             jnp.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        )
+        ).astype(x.dtype)
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return (size / (size - correction)) * jnp.asarray(
-        jnp.var(x, axis=axis, keepdims=keepdims, out=out)
-    )
+    return jnp.asarray(
+        jnp.multiply(
+            jnp.var(x, axis=axis, keepdims=keepdims, out=out),
+            size / (size - correction),
+        )
+    ).astype(x.dtype)
 
 
 # Extra #
