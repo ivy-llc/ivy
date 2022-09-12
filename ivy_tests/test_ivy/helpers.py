@@ -2494,6 +2494,8 @@ def dtype_and_values(
                 )
             )
         )
+    if num_arrays == 1:
+        values = values[0]
     if ret_shape:
         return dtype, values, shape
     return dtype, values
