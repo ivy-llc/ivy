@@ -90,7 +90,7 @@ def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    alpha: Optional[float] = 0.2,
+    alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
