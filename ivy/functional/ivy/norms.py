@@ -9,8 +9,6 @@ from ivy.func_wrapper import (
     integer_arrays_to_float,
 )
 
-# from ivy.exceptions import handle_exceptions
-
 
 # Extra #
 # ------#

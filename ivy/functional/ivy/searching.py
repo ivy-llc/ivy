@@ -10,8 +10,6 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 
-# from ivy.exceptions import handle_exceptions
-
 
 # Array API Standard #
 # -------------------#

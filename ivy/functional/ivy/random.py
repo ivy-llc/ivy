@@ -12,8 +12,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
-
-# from ivy.exceptions import handle_exceptions
 from ivy.backend_handler import backend_stack
 
 

@@ -7,8 +7,6 @@ from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, 
 # local
 import ivy
 
-# from ivy.exceptions import handle_exceptions
-
 
 # Extra #
 # ------#
