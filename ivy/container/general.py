@@ -9,7 +9,6 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-
 # noinspection PyMissingConstructor
 class ContainerWithGeneral(ContainerBase):
     @staticmethod
@@ -65,7 +64,7 @@ class ContainerWithGeneral(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        
+
     def is_native_array(
         self: ivy.Container,
         /,
@@ -1490,7 +1489,7 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def gather(
@@ -2025,7 +2024,7 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
 
     def gather_nd(
@@ -2089,6 +2088,7 @@ class ContainerWithGeneral(ContainerBase):
         return self.static_gather_nd(
             self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
         )
+
     @staticmethod
     def static_einops_reduce(
         x: ivy.Container,
@@ -2692,8 +2692,8 @@ class ContainerWithGeneral(ContainerBase):
 
         """
         return self.static_to_numpy(
-            self, 
-            key_chains=key_chains, 
+            self,
+            key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
@@ -2734,13 +2734,13 @@ class ContainerWithGeneral(ContainerBase):
         ret
             a container of scalar values copying all the element of the container
             ``x``.
-        
+
         Examples
         --------
 
         With one :code:`ivy.Container` inputs:
-        
-                    
+
+
         >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
         >>> y = ivy.Container.static_to_scalar(x)
         >>> print(y)
@@ -2818,8 +2818,8 @@ class ContainerWithGeneral(ContainerBase):
         
         """
         return self.static_to_scalar(
-            self, 
-            key_chains=key_chains, 
+            self,
+            key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
@@ -2864,7 +2864,7 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With one :code:`ivy.Container` inputs:
 
-        
+
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = ivy.Container.static_to_list(x)
         >>> print(y)
@@ -2918,7 +2918,7 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With one :code:`ivy.Container` instances:
 
-        
+
         >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
         >>> y = x.to_list()
         >>> print(y)

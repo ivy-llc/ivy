@@ -45,7 +45,7 @@ def gather(
     indices: np.ndarray,
     axis: Optional[int] = -1,
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.take_along_axis(params, indices, axis))
 
@@ -144,6 +144,7 @@ def inplace_update(
 def inplace_variables_supported():
     return True
 
+
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, np.ndarray):
         return True
@@ -162,7 +163,7 @@ def scatter_flat(
     size: Optional[int] = None,
     reduction: str = "sum",
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
     target_given = ivy.exists(target)
@@ -209,7 +210,7 @@ def scatter_nd(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
     target_given = ivy.exists(target)

@@ -141,11 +141,9 @@ def is_native_array(
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], 
-    /, 
-    *, 
-    exclusive: Optional[bool] = False)\
-    -> bool:
+def is_ivy_array(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
+) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -205,7 +203,9 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
         Boolean, whether or not x is an array.
 
     """
-    return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(x, exclusive=exclusive)
+    return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
+        x, exclusive=exclusive
+    )
 
 
 def is_ivy_container(x: Any, /) -> bool:
@@ -618,7 +618,9 @@ def all_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True) -> np.ndarray:
+def to_numpy(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
+) -> np.ndarray:
     """Converts an array into a numpy array.
 
     Parameters

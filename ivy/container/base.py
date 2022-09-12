@@ -1838,7 +1838,7 @@ class ContainerBase(dict, abc.ABC):
         return sum(
             self.map(
                 lambda x, kc: ivy.is_array(x, exclusive=exclusive)
-                ).to_iterator_values()
+            ).to_iterator_values()
         )
 
     def size_ordered_arrays(self, exclusive=False):

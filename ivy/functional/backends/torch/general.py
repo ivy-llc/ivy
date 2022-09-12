@@ -30,13 +30,14 @@ def _parse_ellipsis(so, ndims):
         + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
         + list(reversed(post))
     )
+
+
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, torch.Tensor):
         if exclusive and x.requires_grad:
             return False
         return True
     return False
-
 
 
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
@@ -52,6 +53,8 @@ def container_types():
 
 def current_backend_str() -> str:
     return "torch"
+
+
 def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
     if isinstance(x, (float, int, bool)):
         return x

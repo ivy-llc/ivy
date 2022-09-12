@@ -31,6 +31,8 @@ def _parse_ellipsis(so, ndims):
         + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
         + list(reversed(post))
     )
+
+
 def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
         if exclusive and isinstance(x, tf.Variable):
@@ -39,11 +41,8 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-
 def array_equal(
-    x0: Union[tf.Tensor, tf.Variable],
-    x1: Union[tf.Tensor, tf.Variable],
-    /
+    x0: Union[tf.Tensor, tf.Variable], x1: Union[tf.Tensor, tf.Variable], /
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return bool((tf.experimental.numpy.array_equal(x0, x1)))
@@ -55,6 +54,8 @@ def container_types():
 
 def current_backend_str():
     return "tensorflow"
+
+
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(tf.convert_to_tensor(x))

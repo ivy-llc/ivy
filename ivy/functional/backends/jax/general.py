@@ -170,7 +170,7 @@ def multiprocessing(context=None):
     )
 
 
-def scatter_flat(    
+def scatter_flat(
     indices: JaxArray,
     updates: JaxArray,
     size: Optional[int] = None,
@@ -281,6 +281,7 @@ def scatter_nd(
     if ivy.exists(out):
         return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
+
 
 scatter_nd.support_native_out = True
 
