@@ -16,7 +16,7 @@ def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.relu(x)
 
 
-relu.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+relu.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 def leaky_relu(
@@ -29,7 +29,7 @@ def leaky_relu(
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-leaky_relu.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+leaky_relu.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 def gelu(
@@ -42,7 +42,7 @@ def gelu(
     return torch.nn.functional.gelu(x)
 
 
-gelu.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+gelu.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
@@ -51,7 +51,7 @@ def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
     return torch.sigmoid(x, out=out)
 
 
-sigmoid.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+sigmoid.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 sigmoid.support_native_out = True
 
 
@@ -67,11 +67,11 @@ def softmax(
     return torch.nn.functional.softmax(x, axis)
 
 
-softmax.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+softmax.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 def softplus(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.softplus(x)
 
 
-softplus.unsupported_dtypes = dtype_from_version({"1.11.0":("float16", "bfloat16")},torch_version.split('+')[0])
+softplus.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16", "bfloat16")},torch_version.split('+')[0])

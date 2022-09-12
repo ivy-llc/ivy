@@ -82,7 +82,7 @@ def broadcast_to(
 
 
 
-broadcast_to.unsupported_dtypes = dtype_from_version({"1.11.0":("uint8", "uint16", "uint32", "uint64")},torch_version.split('+')[0])
+broadcast_to.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("uint8", "uint16", "uint32", "uint64")},torch_version.split('+')[0])
 
 
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
@@ -172,7 +172,7 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
 
 
 
-as_native_dtype.unsupported_dtypes = dtype_from_version({"1.11.0":("uint16"),},torch_version.split('+')[0])
+as_native_dtype.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("uint16"),},torch_version.split('+')[0])
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:
     if as_native:

@@ -242,7 +242,7 @@ def tile(
     return tf.tile(x, reps)
 
 
-tile.unsupported_dtypes = dtype_from_version({"2.9.1":(
+tile.unsupported_dtypes = dtype_from_version({"2.9.1 and below":(
     "uint8",
     "uint16",
     "uint32",

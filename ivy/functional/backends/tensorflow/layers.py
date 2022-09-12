@@ -4,7 +4,7 @@
 import tensorflow as tf
 from typing import Optional, Tuple, Union, List, Sequence
 from tensorflow.python.types.core import Tensor
-from . import tf_version
+from . import tf_version, dtype_from_version
 # local
 import ivy
 
@@ -28,7 +28,7 @@ def conv1d(
     return res
 
 
-conv1d.unsupported_dtypes = {"2.9.1":("bfloat16",)}[tf_version]
+conv1d.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("bfloat16",)},tf_version)
 
 
 def conv1d_transpose(
@@ -71,10 +71,10 @@ def conv1d_transpose(
     return res
 
 
-conv1d_transpose.unsupported_dtypes = {
-    "2.9.1":(
+conv1d_transpose.unsupported_dtypes = dtype_from_version({
+    "2.9.1 and below":(
     "bfloat16")
-}[tf_version]
+},tf_version)
 
 
 def conv2d(
@@ -96,10 +96,10 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = {
-    "2.9.1":(
+conv2d.unsupported_dtypes = dtype_from_version({
+    "2.9.1 and below":(
     "bfloat16")
-}[tf_version]
+},tf_version)
 
 
 def conv2d_transpose(
@@ -145,10 +145,10 @@ def conv2d_transpose(
     return res
 
 
-conv2d_transpose.unsupported_dtypes = {
-    "2.9.1":(
+conv2d_transpose.unsupported_dtypes = dtype_from_version({
+    "2.9.1 and below":(
     "bfloat16")
-}[tf_version]
+},tf_version)
 
 
 def depthwise_conv2d(
@@ -183,10 +183,10 @@ def depthwise_conv2d(
     return res
 
 
-depthwise_conv2d.unsupported_dtypes = {
-    "2.9.1":(
+depthwise_conv2d.unsupported_dtypes = dtype_from_version({
+    "2.9.1 and below":(
     "bfloat16")
-}[tf_version]
+},tf_version)
 
 
 # noinspection PyDefaultArgument
@@ -213,7 +213,7 @@ def conv3d(
     return res
 
 
-conv3d.unsupported_devices = ("cpu",)
+conv3d.unsupported_devices = dtype_from_version({"2.9.1 and below":("cpu",)},tf_version)
 
 
 def conv3d_transpose(
@@ -270,6 +270,6 @@ def conv3d_transpose(
 
 
 conv3d_transpose.unsupported_dtypes = dtype_from_version({
-    "2.9.1":(
+    "2.9.1 abd below":(
     "bfloat16")
 },tf_version)

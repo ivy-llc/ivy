@@ -28,7 +28,7 @@ def cholesky(
 
 
 cholesky.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -53,7 +53,7 @@ def det(
     return tf.linalg.det(x)
 
 
-det.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
+det.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("float16",)},tf_version)
 
 
 def diagonal(
@@ -72,7 +72,7 @@ def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.eigh(x)
 
 
-eigh.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
+eigh.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("float16",)},tf_version)
 
 
 def eigvalsh(
@@ -84,7 +84,7 @@ def eigvalsh(
     return tf.linalg.eigvalsh(x)
 
 
-eigvalsh.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
+eigvalsh.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("float16",)},tf_version)
 
 
 def inv(
@@ -101,7 +101,7 @@ def inv(
 
 
 inv.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -208,7 +208,7 @@ def matrix_norm(
 
 
 matrix_norm.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -245,7 +245,7 @@ def matrix_power(
 
 
 matrix_power.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("int8",
+    "2.9.1 and below":("int8",
     "bfloat16",)
 },tf_version)
 
@@ -275,7 +275,7 @@ def matrix_rank(
 
 
 matrix_rank.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -288,7 +288,7 @@ def matrix_transpose(
     return tf.experimental.numpy.swapaxes(x, -1, -2)
 
 
-matrix_transpose.unsupported_dtypes = dtype_from_version({"2.9.1":(
+matrix_transpose.unsupported_dtypes = dtype_from_version({"2.9.1 and below":(
     "float16",
     "int8",
     "int16",
@@ -327,7 +327,7 @@ def pinv(
 
 
 pinv.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -364,7 +364,7 @@ def slogdet(
 
 
 slogdet.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -405,7 +405,7 @@ def solve(
 
 
 solve.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16")
+    "2.9.1 and below":("float16")
 },tf_version)
 
 
@@ -424,7 +424,7 @@ def svd(
 
 
 svd.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -439,7 +439,7 @@ def svdvals(
 
 
 svdvals.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -474,7 +474,7 @@ def trace(
 
 
 trace.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16")
+    "2.9.1 and below":("float16")
 },tf_version)
 
 
@@ -494,7 +494,7 @@ def vecdot(
     return ret
 
 
-vecdot.supported_dtypes = dtype_from_version({"2.9.1":("bfloat16", "float16", "float32", "float64")},tf_version)
+vecdot.supported_dtypes = dtype_from_version({"2.9.1 and below":("bfloat16", "float16", "float32", "float64")},tf_version)
 
 
 def vector_norm(
@@ -526,7 +526,7 @@ def vector_norm(
     return ret
 
 
-vector_norm.unsupported_dtypes = dtype_from_version({"2.9.1":("float16",)},tf_version)
+vector_norm.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("float16",)},tf_version)
 
 
 # Extra #

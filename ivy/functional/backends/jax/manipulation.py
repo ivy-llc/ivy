@@ -225,7 +225,7 @@ def constant_pad(
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
-constant_pad.unsupported_dtypes = dtype_from_version({"0.3.14":("uint64",)},jax_version)
+constant_pad.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("uint64",)},jax_version)
 
 
 def zero_pad(

@@ -106,7 +106,7 @@ def prod(
     return torch.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
-prod.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+prod.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 def std(
@@ -141,7 +141,7 @@ def std(
     return ret
 
 
-std.unsupported_dtypes = dtype_from_version({"1.11.0":("int8", "int16", "int32", "int64", "float16")},torch_version.split('+')[0])
+std.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("int8", "int16", "int32", "int64", "float16")},torch_version.split('+')[0])
 
 
 def sum(

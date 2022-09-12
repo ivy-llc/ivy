@@ -442,6 +442,8 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 and linalg_k != "namedtuple"
                 and not linalg_k.startswith("_")
             ):
+                if linalg_k=='dtype_from_version':
+                    continue
                 to_wrap.__dict__[linalg_k] = _wrap_function(
                     linalg_k, linalg_v, ivy.__dict__[linalg_k]
                 )

@@ -58,7 +58,7 @@ def arange(
 
 
 arange.unsupported_dtypes = dtype_from_version({
-    "2.9.1":("float16",
+    "2.9.1 and below":("float16",
     "bfloat16",)
 },tf_version)
 
@@ -194,7 +194,7 @@ def eye(
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
-eye.unsupported_dtypes = dtype_from_version({"2.9.1":("uint16",)},tf_version)
+eye.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("uint16",)},tf_version)
 
 
 # noinspection PyShadowingNames

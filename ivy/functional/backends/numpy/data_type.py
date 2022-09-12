@@ -5,7 +5,7 @@ from typing import Optional, Union, Sequence, List
 # local
 import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-
+from . import np_version,dtype_from_version
 
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
@@ -171,7 +171,7 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
         )
 
 
-as_native_dtype.unsupported_dtypes = ("bfloat16",)
+as_native_dtype.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("bfloat16",)},np_version)
 
 
 def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:

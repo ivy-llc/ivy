@@ -174,7 +174,7 @@ def result_type(
     return as_ivy_dtype(result)
 
 
-result_type.unsupported_dtypes = dtype_from_version({"2.9.1":("bfloat16",)},tf_version)
+result_type.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("bfloat16",)},tf_version)
 
 
 # Extra #

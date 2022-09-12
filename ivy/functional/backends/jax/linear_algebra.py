@@ -40,7 +40,7 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-det.unsupported_dtypes = dtype_from_version({"0.3.14 and above":("float16",)},jax_version)
+det.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
 
 
 def diagonal(
@@ -68,14 +68,14 @@ def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigh(x)
 
 
-eigh.unsupported_dtypes = dtype_from_version({"0.3.14 and above":("float16",)},jax_version)
+eigh.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
 
 
 def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
 
 
-eigvalsh.unsupported_dtypes = dtype_from_version({"0.3.14":("float16",)},jax_version)
+eigvalsh.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
 
 
 def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -86,7 +86,7 @@ def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
-inv.unsupported_dtypes = dtype_from_version({"0.3.14":(
+inv.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "bfloat16",
     "float16",
 )},jax_version)
@@ -116,7 +116,7 @@ def matrix_norm(
     return ret
 
 
-matrix_norm.unsupported_dtypes = dtype_from_version({"0.3.14":(
+matrix_norm.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "float16",
     "bfloat16",
 )},jax_version)
@@ -144,14 +144,14 @@ def matrix_rank(
     return jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
 
 
-matrix_rank.unsupported_dtypes = dtype_from_version({"0.3.14":("float16",)},jax_version)
+matrix_rank.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
 
 
 def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.swapaxes(x, -1, -2)
 
 
-matrix_transpose.unsupported_dtypes = dtype_from_version({"0.3.14":("float16", "int8")},jax_version)
+matrix_transpose.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16", "int8")},jax_version)
 
 
 def outer(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -173,7 +173,7 @@ def pinv(
     return ret
 
 
-pinv.unsupported_dtypes = dtype_from_version({"0.3.14":(
+pinv.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "float16",
     "bfloat16",
 )},jax_version)
@@ -185,7 +185,7 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     return res(q, r)
 
 
-qr.unsupported_dtypes = dtype_from_version({"0.3.14":("float16",)},jax_version)
+qr.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
 
 
 def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
@@ -194,7 +194,7 @@ def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = dtype_from_version({"0.3.14":(
+slogdet.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "float16",
     "bfloat16",
 )},jax_version)
@@ -229,7 +229,7 @@ def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.asarray(ret, dtype=x1.dtype)
 
 
-solve.unsupported_dtypes = dtype_from_version({"0.3.14":(
+solve.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "float16"
 )},jax_version)
 
@@ -242,7 +242,7 @@ def svd(
     return results(U, D, VT)
 
 
-svd.unsupported_dtypes = dtype_from_version({"0.3.14":(
+svd.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "float16",
     "bfloat16",
 )},jax_version)
@@ -252,7 +252,7 @@ def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
 
 
-svdvals.unsupported_dtypes = dtype_from_version({"0.3.14":(
+svdvals.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "float16",
     "bfloat16",
 )},jax_version)
@@ -275,7 +275,7 @@ def trace(
     return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
 
 
-trace.unsupported_dtypes = dtype_from_version({"0.3.14":(
+trace.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
     "float16",
 )},jax_version)
 

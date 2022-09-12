@@ -179,7 +179,7 @@ def cumsum(
 
 
 cumsum.support_native_out = True
-cumsum.unsupported_dtypes = dtype_from_version({"1.11.0":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
+cumsum.unsupported_dtypes = dtype_from_version({"1.11.0 and below":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
 
 
 def cumprod(
@@ -205,7 +205,7 @@ def cumprod(
 
 
 cumprod.support_native_out = True
-cumprod.unsupported_dtypes = dtype_from_version({"1.11.0":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
+cumprod.unsupported_dtypes = dtype_from_version({"1.11.0 and below":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
 
 
 # noinspection PyShadowingNames
@@ -419,7 +419,7 @@ def scatter_nd(
 
 scatter_nd.support_native_out = True
 
-scatter_nd.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+scatter_nd.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 

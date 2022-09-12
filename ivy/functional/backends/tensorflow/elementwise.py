@@ -407,7 +407,7 @@ def logaddexp(
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
-logaddexp.unsupported_dtypes = ("float16", "bfloat16")
+logaddexp.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("float16", "bfloat16")},tf_version)
 
 
 def logical_and(
@@ -471,7 +471,7 @@ def negative(
     return tf.negative(x)
 
 
-negative.unsupported_dtypes = dtype_from_version({"2.9.1":("uint8", "uint16", "uint32", "uint64")},tf_version)
+negative.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("uint8", "uint16", "uint32", "uint64")},tf_version)
 
 
 def not_equal(
@@ -513,7 +513,7 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-pow.unsupported_dtypes = dtype_from_version({"2.9.1":("uint8", "uint16", "uint32", "uint64", "float64")},tf_version)
+pow.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("uint8", "uint16", "uint32", "uint64", "float64")},tf_version)
 
 
 def reciprocal(
@@ -525,7 +525,7 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
-reciprocal.unsupported_dtypes = dtype_from_version({"2.9.1":(
+reciprocal.unsupported_dtypes = dtype_from_version({"2.9.1 and below":(
     "uint8",
     "uint16",
     "uint32",
@@ -556,7 +556,7 @@ def remainder(
 
 
 remainder.unsupported_dtypes = dtype_from_version({
-    "2.9.1":(
+    "2.9.1 and below":(
     "bfloat16")
 },tf_version)
 
@@ -574,7 +574,7 @@ def round(
 
 
 round.unsupported_dtypes = dtype_from_version({
-    "2.9.1":(
+    "2.9.1 and below":(
     "bfloat16")
 },tf_version)
 

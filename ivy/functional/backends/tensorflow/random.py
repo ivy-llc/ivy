@@ -80,7 +80,7 @@ def multinomial(
 
 
 multinomial.unsupported_dtypes = dtype_from_version({
-    "2.9.1":(
+    "2.9.1 and below":(
     "bfloat16")
 },tf_version)
 

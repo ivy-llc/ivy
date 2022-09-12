@@ -433,7 +433,7 @@ def one_hot(
     return tf.one_hot(indices, depth)
 
 
-one_hot.unsupported_dtypes = dtype_from_version({"2.9.1":("int8", "int16", "uint16", "uint32", "uint64")},tf_version)
+one_hot.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("int8", "int16", "uint16", "uint32", "uint64")},tf_version)
 
 
 

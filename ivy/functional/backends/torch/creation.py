@@ -68,7 +68,7 @@ def arange(
 
 
 arange.support_native_out = True
-arange.unsupported_dtypes = dtype_from_version({"1.11.0":("float16",)},torch_version.split('+')[0])
+arange.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 def asarray(
@@ -283,7 +283,7 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
+linspace.unsupported_device_and_dtype = dtype_from_version({"1.11.0 and below":{"cpu": ("float16",)}},torch_version.split('+')[0])
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
@@ -474,4 +474,4 @@ def logspace(
 
 
 logspace.support_native_out = True
-logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
+logspace.unsupported_device_and_dtype = dtype_from_version({"1.11.0 and below":{"cpu": ("float16",)}},torch_version.split('+')[0])
