@@ -76,8 +76,6 @@ def test_numpy_outer(
         out=None,
     )
     
-    
-# global
 
 import numpy as np
 from hypothesis import given, strategies as st
