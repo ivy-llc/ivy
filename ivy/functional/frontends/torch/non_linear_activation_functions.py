@@ -22,9 +22,6 @@ def _compute_elu(input, alpha=1.0, inplace=False):
     return ret
 
 
-_compute_elu.unsupported_dtypes = ("float16",)
-
-
 def sigmoid(input):
     return ivy.sigmoid(input)
 
@@ -67,14 +64,8 @@ def threshold(input, threshold, value, inplace=False):
     return _compute_threshold(input, threshold, value, inplace)
 
 
-threshold.unsupported_dtypes = ("float16",)
-
-
 def threshold_(input, threshold, value):
     return _compute_threshold(input, threshold, value, inplace=True)
-
-
-threshold_.unsupported_dtypes = ("float16",)
 
 
 def relu6(input, inplace=False):
@@ -83,9 +74,6 @@ def relu6(input, inplace=False):
         ivy.inplace_update(input, ret)
         return input
     return ret
-
-
-relu6.unsupported_dtypes = ("float16",)
 
 
 def elu(input, alpha=1.0, inplace=False):
@@ -112,6 +100,3 @@ def celu(input, alpha=1.0, inplace=False):
         ivy.inplace_update(input, ret)
         return input
     return ret
-
-
-celu.unsupported_dtypes = ("float16",)

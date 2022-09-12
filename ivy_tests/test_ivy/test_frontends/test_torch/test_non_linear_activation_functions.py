@@ -264,16 +264,14 @@ def test_torch_softmin(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold"
     ),
-    threshold=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
 )
 def test_torch_threshold(
     dtype_and_input,
-    threshold,
     as_variable,
     with_out,
     num_positional_args,
@@ -291,7 +289,7 @@ def test_torch_threshold(
         frontend="torch",
         fn_tree="nn.functional.threshold",
         input=np.asarray(input, dtype=input_dtype),
-        threshold=threshold,
+        threshold=0.5,
         value=20,
         inplace=False,
     )
@@ -301,16 +299,14 @@ def test_torch_threshold(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold_"
     ),
-    threshold=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
 )
 def test_torch_threshold_(
     dtype_and_input,
-    threshold,
     as_variable,
     num_positional_args,
     native_array,
@@ -327,7 +323,7 @@ def test_torch_threshold_(
         frontend="torch",
         fn_tree="nn.functional.threshold_",
         input=np.asarray(input, dtype=input_dtype),
-        threshold=threshold,
+        threshold=0.5,
         value=20,
     )
 
