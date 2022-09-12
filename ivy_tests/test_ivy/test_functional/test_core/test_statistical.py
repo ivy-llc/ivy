@@ -214,14 +214,22 @@ def test_var(
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_and_x=statistical_dtype_values(function="prod"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
 def test_prod(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -231,7 +239,7 @@ def test_prod(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -252,14 +260,22 @@ def test_prod(
 # sum
 @handle_cmd_line_args
 @given(
-    dtype_and_x=statistical_dtype_values(function="sum"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
     container=st.booleans(),
     keep_dims=st.booleans(),
 )
 def test_sum(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -269,7 +285,7 @@ def test_sum(
     fw,
     keep_dims,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
