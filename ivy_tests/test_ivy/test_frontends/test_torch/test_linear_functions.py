@@ -50,7 +50,7 @@ def x_and_bilinear(draw, dtypes):
 
 @handle_cmd_line_args
 @given(
-    dtype_x_weight_bias=x_and_bilinear(
+    dtype_input1_input2_weight_bias=x_and_bilinear(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
     num_positional_args=helpers.num_positional_args(
