@@ -9,12 +9,14 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
 # -------------------#
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -123,6 +125,7 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -302,7 +305,7 @@ def mean(
         a: ivy.array([1., 2.]),
         b: ivy.array([3., 4.])
     }
-    
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
@@ -315,6 +318,7 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -369,6 +373,7 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -436,6 +441,7 @@ def prod(
     )
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -510,6 +516,7 @@ def std(
     )
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -630,6 +637,7 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -800,6 +808,7 @@ def var(
 # ------#
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -943,6 +952,7 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1083,6 +1093,7 @@ def cumprod(
     return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
 
 
+@handle_exceptions
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
