@@ -223,7 +223,7 @@ class ArrayWithStatistical(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.sum(self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+        return ivy.sum(self, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
     def std(
         self: ivy.Array,
