@@ -394,3 +394,33 @@ def test_tensorflow_eye(
         batch_shape=batch_shape,
         dtype=dtype,
     )
+
+    
+# band_part
+    @handle_cmd_line_args
+    @given(
+        dtype_and_input=_get_dtype_and_matrix(),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.tensorflow.band_part"
+        ),
+    )
+    def test_tensorflow_band_part(
+        dtype_and_input,
+        as_variable,
+        num_positional_args,
+        native_array,
+        fw
+    ):
+        input_dtype, x = dtype_and_input
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            fw=fw,
+            frontend="tensorflow",
+            fn_tree="linalg.band_part",
+            input=np.asarray(x, dtype=input_dtype)
+        )
+  
