@@ -291,11 +291,11 @@ def test_reshape(
         available_dtypes=[ivy.int32],
         max_num_dims=1,
         min_dim_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
         max_dim_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
     ),
@@ -304,11 +304,11 @@ def test_reshape(
         force_tuple=True,
         unique=False,
         min_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
         max_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
     ),
@@ -471,12 +471,10 @@ def _basic_min_x_max(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
         )
     )
-    min_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=1, max_value=10)
-    )
+    min_val = draw(helpers.array_values(dtype=dtype, shape=()))
     max_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=11, max_value=20)
-    )  # TODO remove hardcoded values.
+        helpers.array_values(dtype=dtype, shape=()).filter(lambda x: x > min_val)
+    )
     return ([dtype] * 3), (value, min_val, max_val)
 
 
@@ -519,15 +517,15 @@ def test_clip(
 def _pad_helper(draw):
     dtype, value, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_dtypes, ret_shape=True, min_num_dims=1
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True, min_num_dims=1
         )
     )
     pad_width = tuple(
         draw(
             st.lists(
                 st.tuples(
-                    helpers.ints(min_value=0, max_value=100),
-                    helpers.ints(min_value=0, max_value=100),
+                    helpers.ints(min_value=0, max_value=5),
+                    helpers.ints(min_value=0, max_value=5),
                 ),
                 min_size=len(shape),
                 max_size=len(shape),

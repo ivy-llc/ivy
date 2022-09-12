@@ -1,4 +1,104 @@
 Superset Behaviour
 ==================
 
-ToDo
+.. _`Array API Standard`: https://data-apis.org/array-api/latest/
+
+When implementing functions in Ivy, we are constantly faced with the question: which
+backend implementation should Ivy most closely follow?
+
+It might seem as though this question is already answered.
+Ivy fully adheres to the `Array API Standard`_, which helpfully limits our design space
+for the functions, but in its current form this only covers a relatively small number of
+functions which together make up less than half of the functions in Ivy.
+Even for Ivy functions which adhere to the standard,
+the standard permits the addition of extra arguments and function features,
+provided that they do not contradict the requirements of the standard.
+Therefore, we are still faced with the same kind of design decisions for all Ivy
+functions, even those appearing in the `Array API Standard`_.
+
+In this section, we explain through examples how Ivy always goes for the superset of
+functionality among the backend frameworks. This is not always totally possible,
+and in some cases certain framework-specific features must be sacrificed,
+but usually it's possible to implement a very generalized function which covers most of
+the unique features among the corresponding functions in each framework.
+
+Despite this general approach, the total superset is not always strived for, especially
+in cases where the behaviour can very easily be replicated by a simple composition of
+other functions, or where the extra behaviour is redundant as it is already covered by
+another function.
+As an example, many pointwise functions in NumPy support the :code:`where` argument,
+which enables a mask array to be specified, with the function then only evaluated
+at elements for which the :code:`where` array is :code:`True`.
+This inclusion of this feature in NumPy is totally understandable,
+compositions of NumPy functions are never compiled into computation graph which span
+multiple operations, and therefore a good way to maximize efficiency of NumPy code is to
+minimize the number of unique NumPy functions which are called, each of which are
+implemented with very high efficiency in :code:`C`. In this case, the inclusion of
+:code:`where` as an argument also prevents unnecessary values from being computed,
+only to be masked out in the immediately subsequent operation.
+For these reasons, calling :code:`np.absolute(x, where=mask)` is much better than
+calling :code:`np.where(mask, np.absolute(x), np.empty_like(x))` in NumPy.
+However, other frameworks are able to compile compositions of python operations directly
+to computation graphs in low-level languages, and are also able to intelligently fuse
+operations into combined kernels, via libraries such as
+`TensorRT <https://github.com/NVIDIA/TensorRT>`_.
+This removes the need for highly general function signatures such as those found in
+NumPy. Instead, a compositional approach is preferred, where each function in Python
+serves a particular and non-overlapping purpose.
+This helps to keep things more clean and clear at the Python level,
+without sacrificing efficiency at the lower level.
+
+We now take a look at some examples, and explain our rational for deciding upon the
+function signature that we should use in Ivy. The first three examples are more-or-less
+superset examples, while the last two include deliberate decisions to not implement the
+superset, for some of the reasons explained above.
+
+
+ivy.linspace
+------------
+
+When looking at the :code:`linspace` (or clost equivalent) implementations for
+`Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/linspace.html>`_,
+`JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html>`_,
+`NumPy <https://numpy.org/doc/stable/reference/generated/numpy.linspace.html>`_,
+`TensorFlow <https://www.tensorflow.org/api_docs/python/tf/linspace>`_,
+and
+`PyTorch <https://pytorch.org/docs/stable/generated/torch.linspace.html>`_,
+we can see that :code:`torch` does not support arrays for the :code:`start` and
+:code:`end` arguments, while :code:`jax`, :code:`numpy` and :code:`tensorflow` all do.
+Likewise, Ivy also supports arrays for the :code:`start` and :code:`stop` arguments,
+and in doing so provides the generalized superset implementation among the backend
+frameworks.
+
+
+ivy.eye
+-------
+
+batch shape - ss
+
+
+ivy.scatter_nd
+--------------
+
+multiple axes - ss
+
+
+ivy.logical_and
+---------------
+
+out - ss
+
+bool - ss
+
+np where - no
+
+
+ivy.where
+---------
+
+np non-zero stuff - no
+
+
+**Round Up**
+
+Something
