@@ -30,7 +30,6 @@ NATIVE_KEYS_TO_SKIP = {
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    # "handle_exceptions",
     "infer_device",
     "infer_dtype",
     "integer_arrays_to_float",
