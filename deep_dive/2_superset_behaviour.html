@@ -55,7 +55,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#ivy-eye">ivy.eye</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-scatter-nd">ivy.scatter_nd</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-logical-and">ivy.logical_and</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-where">ivy.where</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
@@ -204,8 +203,8 @@ This helps to keep things more clean and clear at the Python level,
 without sacrificing efficiency at the lower level.</p>
 <p>We now take a look at some examples, and explain our rational for deciding upon the
 function signature that we should use in Ivy. The first three examples are more-or-less
-superset examples, while the last two include deliberate decisions to not implement the
-superset, for some of the reasons explained above.</p>
+superset examples, while the last example involves a deliberate decision to not
+implement the full superset, for the reason explained above.</p>
 <section id="ivy-linspace">
 <h2>ivy.linspace<a class="headerlink" href="#ivy-linspace" title="Permalink to this heading"></a></h2>
 <p>When looking at the <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> (or closest equivalent) implementations for
@@ -276,10 +275,6 @@ using a NumPy backend. However, in future releases our automatic graph compilati
 graph simplification processes will alleviate these minor inefficiencies entirely from
 the final computation graph, by fusing multiple operations into one at the API level
 where possible.</p>
-</section>
-<section id="ivy-where">
-<h2>ivy.where<a class="headerlink" href="#ivy-where" title="Permalink to this heading"></a></h2>
-<p>np non-zero stuff - no</p>
 <p><strong>Round Up</strong></p>
 <p>Something</p>
 </section>
