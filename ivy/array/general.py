@@ -641,6 +641,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.Array instance method variant of ivy.stable_divide. This method simply wraps
         the function, and so the docstring for ivy.stable_divide also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -649,11 +650,13 @@ class ArrayWithGeneral(abc.ABC):
             denominator for division.
         min_denominator
             the minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
+
         Returns
         -------
         ret
             a numpy array containing the elements of numerator divided by
             the corresponding element of denominator
+
         """
         return ivy.stable_divide(self, denominator, min_denominator=min_denominator)
 
