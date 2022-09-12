@@ -5,8 +5,11 @@ from typing import Callable
 
 class IvyException(Exception):
     def __init__(self, message):
-        self._default_msg = ivy.current_backend_str() + ": "
-        super().__init__(self._default_msg + message)
+        self._default = (
+            "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
+        )
+        self._delimiter = ": "
+        super().__init__(self._default + self._delimiter + message)
 
 
 def handle_exceptions(fn: Callable) -> Callable:
@@ -30,7 +33,7 @@ def handle_exceptions(fn: Callable) -> Callable:
         try:
             return fn(*args, **kwargs)
         except Exception as e:
-            raise ivy.IvyException(str(e))
+            raise ivy.exceptions.IvyException(str(e)) from None
 
     new_fn.handle_exceptions = True
     return new_fn

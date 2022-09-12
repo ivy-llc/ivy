@@ -457,6 +457,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators (sequence matters)
         for attr in [
+            "handle_exceptions",
             "infer_device",
             "infer_dtype",
             "integer_arrays_to_float",
