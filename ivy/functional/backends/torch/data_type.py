@@ -16,6 +16,8 @@ native_dtype_dict = {
     "float16": torch.float16,
     "float32": torch.float32,
     "float64": torch.float64,
+    "complex64": torch.complex64,
+    "complex128": torch.complex128,
     "bool": torch.bool,
 }
 
@@ -183,4 +185,5 @@ def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )
