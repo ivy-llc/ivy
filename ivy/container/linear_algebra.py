@@ -468,6 +468,26 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
+    def eig(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> NamedTuple:
+        return self.handle_inplace(
+            self.map(
+                lambda x_, _: ivy.eig(x_) if ivy.is_array(x_) else x_,
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+            ),
+            out=None,
+        )
+
     def eigh(
         self: ivy.Container,
         /,
