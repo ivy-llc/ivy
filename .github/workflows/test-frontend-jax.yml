@@ -48,7 +48,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend jax ivy/ivy_tests/test_ivy/test_frontends/test_jax
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend all ivy/ivy_tests/test_ivy/test_frontends/test_jax
         continue-on-error: true
 
       - name: Zip Hypothesis Examples

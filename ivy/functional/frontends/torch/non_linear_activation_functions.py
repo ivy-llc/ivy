@@ -3,9 +3,11 @@ import ivy
 
 
 def _compute_threshold(input, threshold, value, inplace):
+    ret = ivy.where(ivy.greater(input, threshold), input, value)
     if inplace:
-        return ivy.where(ivy.greater(input, threshold), input, value, out=input)
-    return ivy.where(ivy.greater(input, threshold), input, value)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def _compute_elu(input, alpha=1.0, inplace=False):
@@ -13,10 +15,35 @@ def _compute_elu(input, alpha=1.0, inplace=False):
         alpha,
         ivy.subtract(ivy.exp(input), 1),
     )
+    ret = ivy.where(ivy.greater(input, 0), input, prod)
     if inplace:
-        input = ivy.where(ivy.greater(input, 0), input, prod)
+        ivy.inplace_update(input, ret)
         return input
-    return ivy.where(ivy.greater(input, 0), input, prod)
+    return ret
+
+
+def _selu_with_inplace(input, inplace=False):
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(input),
+            1,
+        ),
+    )
+    min_ = ivy.multiply(
+        scale,
+        ivy.minimum(0, prod),
+    )
+    max_ = ivy.multiply(
+        scale,
+        ivy.maximum(0, input),
+    )
+    ret = ivy.add(min_, max_)
+    if inplace:
+        return ivy.inplace_update(input, ret)
+    return ret
 
 
 def sigmoid(input):
@@ -48,7 +75,7 @@ def tanh(input):
 
 
 def logsigmoid(input):
-    return -ivy.softplus(-input)
+    return ivy.log(ivy.sigmoid(input))
 
 
 def softmin(input, dim=None, dtype=None):
@@ -69,9 +96,11 @@ def threshold_(input, threshold, value):
 
 
 def relu6(input, inplace=False):
+    ret = ivy.minimum(ivy.maximum(input, 0), 6)
     if inplace:
-        return ivy.minimum(ivy.maximum(input, 0), 6, out=input)
-    return ivy.minimum(ivy.maximum(input, 0), 6)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def elu(input, alpha=1.0, inplace=False):
@@ -95,7 +124,8 @@ def celu(input, alpha=1.0, inplace=False):
         ivy.minimum(0, prod),
     )
     if inplace:
-        return ivy.inplace_update(input, ret)
+        ivy.inplace_update(input, ret)
+        return input
     return ret
 
 
@@ -119,3 +149,7 @@ def hardtanh(input, min_val=-1., max_val=1., inplace=False):
 
 
 hardtanh.unsupported_dtypes = {"torch": ("float16",)}
+
+
+def selu(input, inplace=False):
+    return _selu_with_inplace(input, inplace=inplace)
