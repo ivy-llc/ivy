@@ -496,6 +496,43 @@ def diagonal(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def eig(
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+) -> NamedTuple:
+    """Returns an eigendecomposition x = QLQᵀ of a matrix
+    (or a stack of matrices) ``x``, where ``Q`` is an orthogonal matrix
+    (or a stack of matrices) and ``L`` is a vector (or a stack of vectors).
+
+    Parameters
+    ----------
+    x
+        input array having shape ``(..., M, M)``. Must have a floating-point data type.
+
+    Returns
+    -------
+    ret
+        a namedtuple (``eigenvalues``, ``eigenvectors``) whose
+
+        -   first element must have the field name ``eigenvalues`` (corresponding to
+            ``L`` above) and must be an array consisting of computed eigenvalues. The
+            array containing the eigenvalues must have shape ``(..., M)``.
+        -   second element has the field name ``eigenvectors`` (corresponding to
+            ``Q`` above) and must be an array where the columns of the innermost
+            matrices contain the computed eigenvectors. These matrices must be
+            orthogonal. The array containing the eigenvectors must have shape
+            ``(..., M, M)``.
+
+        Each returned array must have the same floating-point data type as ``x``.
+
+    .. note::
+       Eigenvalue sort order is left unspecified and is thus implementation-dependent.
+    """
+    return current_backend(x).eig(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> NamedTuple:
