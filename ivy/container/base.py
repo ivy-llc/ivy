@@ -1836,7 +1836,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return sum(
-            self.map(lambda x, kc: ivy.is_array(x, exclusive)).to_iterator_values()
+            self.map(
+                lambda x, kc: ivy.is_array(x, exclusive=exclusive)
+            ).to_iterator_values()
         )
 
     def size_ordered_arrays(self, exclusive=False):
@@ -1853,7 +1855,7 @@ class ContainerBase(dict, abc.ABC):
         array_dict = {
             ivy.Container.flatten_key_chain(kc): v
             for kc, v in self.to_iterator()
-            if ivy.is_array(v, exclusive)
+            if ivy.is_array(v, exclusive=exclusive)
         }
         return ivy.Container(
             dict(

@@ -920,7 +920,7 @@ def test_container_to_raw(device):
 
 def test_container_clip_vector_norm(device):
     container = Container({"a": ivy.array([[0.8, 2.2], [1.5, 0.2]], device=device)})
-    container_clipped = container.clip_vector_norm(2.5, 2.0)
+    container_clipped = container.clip_vector_norm(2.5, p=2.0)
     assert np.allclose(
         ivy.to_numpy(container_clipped["a"]),
         np.array([[0.71749604, 1.9731141], [1.345305, 0.17937401]]),
