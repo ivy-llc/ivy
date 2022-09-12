@@ -571,6 +571,41 @@ def eigvalsh(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def inner(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the inner product of two vectors ``x1`` and ``x2``.
+
+    Parameters
+    ----------
+    x1
+        first one-dimensional input array of size N. Should have a numeric data type.
+        a(N,) array_like
+        First input vector. Input is flattened if not already 1-dimensional.
+    x2
+        second one-dimensional input array of size M. Should have a numeric data type.
+        b(M,) array_like
+        Second input vector. Input is flattened if not already 1-dimensional.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        a two-dimensional array containing the inner product and whose shape is (N, M).
+        The returned array must have a data type determined by Type Promotion Rules.
+    """
+    return current_backend(x1, x2).inner(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def inv(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

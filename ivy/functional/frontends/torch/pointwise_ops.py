@@ -134,3 +134,19 @@ def divide(input, other, *, rounding_mode=None, out=None):
         return ivy.floor_divide(input, other, out=out)
     else:
         raise ValueError(f"{rounding_mode} is not a valid value for rounding_mode")
+
+
+def logical_not(input, *, out=None):
+    return ivy.logical_not(input, out=out)
+
+
+def logical_and(input, other, *, out=None):
+    return ivy.logical_and(input, other, out=out)
+
+
+def logical_or(input, other, *, out=None):
+    return ivy.logical_or(input, other, out=out)
+
+
+def logical_xor(input, other, *, out=None):
+    return ivy.logical_xor(input, other, out=out)

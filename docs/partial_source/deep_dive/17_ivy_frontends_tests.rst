@@ -8,11 +8,10 @@ Ivy Frontend Tests
 .. _`hypothesis`_: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html#id1
 .. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
-.. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`Function_wrapping`: https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html
 
 Introduction
---------------------
+------------
 
 Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder `test_ivy`_.
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!
@@ -50,7 +49,7 @@ Frontend Test Examples
 -----------------------
 
 ivy.tan()
-^^^^^^^^^^
+^^^^^^^^^
 
 **Jax**
 
@@ -540,7 +539,7 @@ This function requires us to create extra functions for generating :code:`shape`
 
 
 Frontend Instance Method Tests
----------------------------------
+------------------------------
 
 The frontend instance method tests are similar to the frontend function test, but instead 
 of testing the function directly we test the instance method of the frontend class.
@@ -556,10 +555,10 @@ which is the frontend class to test. This is the relevant Ivy frontend class and
 
 
 Frontend Instance Method Test Examples
----------------------------------------
+--------------------------------------
 
 ivy.add()
-^^^^^^^^^^^^
+^^^^^^^^^
 
 **Jax**
 
@@ -761,7 +760,7 @@ ivy.add()
 * We specify the :code:`fn_tree` to be :code:`Tensor.add` which is the path to the function in the frontend class.
 
 ivy.reshape()
-^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 **Jax**
 
@@ -990,6 +989,41 @@ ivy.reshape()
         )
 
 * For :code:`torch.reshape()`, we create a helper function to generate correct data to test the function.
+
+Hypothesis Helpers
+------------------
+
+Naturally, many of the functions in the various frontend APIs are very similar to many
+of the functions in the Ivy API. Therefore, the unit tests will follow very similar
+structures with regards to the data generated for testing.
+There are many data generation helper functions defined in the Ivy API test files,
+such as :code:`_arrays_idx_n_dtypes` defined in
+:code:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`.
+This helper generates: a set of concatenation-compatible arrays,
+the index for the concatenation, and the data types of each array.
+Not surprisingly, this helper is used for testing :code:`ivy.concat`, as shown
+`here <https://github.com/unifyai/ivy/blob/86287f4e45bbe581fe54e37d5081c684130cba2b/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L53>`_.
+
+Clearly, this helper would also be very useful for testing the various frontend
+concatenation functions, such as :code:`jax.numpy.concatenate`,
+:code:`numpy.concatenate`, :code:`tensorflow.concat` and :code:`torch.cat`.
+We could simply copy and paste the implementation from
+:code:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`
+into each file
+:code:`ivy/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`,
+but this would result in needless duplication.
+Instead, we should simply import the helper function from the ivy test file into the
+frontend test file, like so
+:code:`from ivy_tests.test_ivy.test_frontends.test_manipulation import _arrays_idx_n_dtypes`.
+
+In cases where a helper function is uniquely useful for a frontend function without
+being useful for an Ivy function, then it should be implemented directly in
+:code:`ivy/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`
+rather than in
+:code:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_<closest_relevant_group>.py`.
+However, as shown above, in many cases the same helper function can be shared between
+the Ivy API tests and the frontend tests,
+and we should strive for as much sharing as possible to minimize the amount of code.
 
 
 **Round Up**

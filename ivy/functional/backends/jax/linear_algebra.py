@@ -78,6 +78,11 @@ def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
+def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return jnp.inner(x1, x2)
+
+
 def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         ret = x
