@@ -22,6 +22,23 @@ def _dtypes(draw):
     )
 
 
+@st.composite
+def _generate_prelu_arrays(draw):
+    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    input = draw(
+        helpers.array_values(dtype=dtype, shape=(arr_size), min_value=0, max_value=10)
+    )
+    weight_dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    weight = draw(
+        helpers.array_values(dtype=weight_dtype, shape=(1,), min_value=0, max_value=1.0)
+    )
+    input_weight = input, weight
+    dtypes = dtype, weight_dtype
+    return dtypes, input_weight
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -505,4 +522,37 @@ def test_torch_selu(
         fn_tree="nn.functional.selu",
         input=np.asarray(input, dtype=input_dtype),
         inplace=False,
+    )
+
+
+# prelu
+@handle_cmd_line_args
+@given(
+    dtype_input_and_weight=_generate_prelu_arrays(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.prelu"
+    ),
+)
+def test_torch_prelu(
+    dtype_input_and_weight,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtypes, inputs = dtype_input_and_weight
+    input, weight = inputs
+    input_dtype, weight_dtype = dtypes
+    assume("float16" not in (input_dtype, weight_dtype))
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, weight_dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.prelu",
+        input=np.asarray(input, dtype=input_dtype),
+        weight=np.asarray(weight, dtype=weight_dtype),
     )
