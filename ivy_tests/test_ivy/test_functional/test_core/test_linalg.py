@@ -29,6 +29,7 @@ def dtype_value1_value2_axis(
     specific_dim_size=3,
     small_value_safety_factor=1.5,
     large_value_safety_factor=10,
+    max_op="divide",
 ):
     # For cross product, a dim with size 3 is required
     shape = draw(
@@ -62,6 +63,7 @@ def dtype_value1_value2_axis(
                     exclude_max=exclude_max,
                     small_value_safety_factor=small_value_safety_factor,
                     large_value_safety_factor=large_value_safety_factor,
+                    max_op=max_op,
                 )
             )
         )
@@ -915,6 +917,9 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_value_safety_factor=20,
+        small_value_safety_factor=2.5,
+        max_op="log",
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
