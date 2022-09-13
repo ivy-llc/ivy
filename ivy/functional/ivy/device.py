@@ -971,7 +971,7 @@ def set_split_factor(
     >>> ivy.set_split_factor(0.4,device)
     {'cpu': 0.2, 'gpu': 0.3, device(type='cuda'): 0.4}
     """
-    assert 0 <= factor
+    ivy.assertions.check_less(0, factor, allow_equal=True)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
@@ -1132,9 +1132,13 @@ def _get_devices(fn, complement=True):
 
     supported = set(VALID_DEVICES)
 
+    if "backend" not in fn.__module__:
+        if complement:
+            supported = set(ALL_DEVICES).difference(supported)
+        return supported
+
     # Their values are formated like either
     # 1. fn.supported_devices = ("cpu",)
-    # 2. fn.supported_devices = {"numpy": ("cpu",)}
     # Could also have the "all" value for the framework
     basic = [
         ("supported_devices", set.intersection, VALID_DEVICES),
@@ -1143,9 +1147,7 @@ def _get_devices(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if isinstance(v, dict):
-                vb = v.get(ivy.current_backend_str(), base)
-                v = merge_fn(set(vb), v.get("all", base))
+            ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
     if complement:
@@ -1237,17 +1239,17 @@ class Profiler(abc.ABC):
     @abc.abstractmethod
     def start(self):
         """Start the profiler. This should be called before the code to be profiled."""
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def stop(self):
         """Stop the profiler. This should be called after the code to be profiled."""
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __enter__(self):
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
