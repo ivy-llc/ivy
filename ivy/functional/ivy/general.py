@@ -245,6 +245,7 @@ def set_array_mode(mode: bool) -> None:
     True
     """
     global array_mode_stack
+    # ivy.assertions.check_isinstance(mode, bool)
     if not isinstance(mode, bool):
         raise Exception("set_array_mode only accepts type bool")
     array_mode_stack.append(mode)
@@ -306,6 +307,7 @@ def set_nestable_mode(mode: bool) -> None:
     True
     """
     global nestable_mode_stack
+    # ivy.assertions.check_isinstance(mode, bool)
     if not isinstance(mode, bool):
         raise Exception("set_nestable_mode only accepts type bool")
     nestable_mode_stack.append(mode)
@@ -352,7 +354,9 @@ def get_nestable_mode() -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 def array_equal(
-    x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray], /,
+    x0: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    /,
 ) -> bool:
     """Determines whether two input arrays are equal across all elements.
 
@@ -1085,7 +1089,7 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
-    
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -2286,6 +2290,7 @@ def set_queue_timeout(timeout: float):
 
     """
     global queue_timeout_stack
+    # ivy.assertions.check_isinstance(timeout, (int, float))
     if not isinstance(timeout, (int, float)):
         raise Exception("set_array_mode only accepts type int or float")
     queue_timeout_stack.append(timeout)
@@ -3063,6 +3068,7 @@ def set_shape_array_mode(mode: bool) -> None:
     True
     """
     global shape_array_mode_stack
+    # ivy.assertions.check_isinstance(mode, bool)
     if not isinstance(mode, bool):
         raise Exception("set_shape_array_mode only accepts type bool")
     shape_array_mode_stack.append(mode)
