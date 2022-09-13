@@ -495,13 +495,6 @@ def test_numpy_rad2deg(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -518,6 +511,6 @@ def test_numpy_rad2deg(
         order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
     )
     
