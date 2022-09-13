@@ -129,3 +129,7 @@ def celu(input, alpha=1.0, inplace=False):
 
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
+
+
+def prelu(input, weight):
+    return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
