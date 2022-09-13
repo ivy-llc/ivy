@@ -1,4 +1,3 @@
-# For Review
 # global
 import numpy
 import numpy as np
@@ -9,9 +8,6 @@ import ivy
 from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
-
-# noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
 
 # Array API Standard #
@@ -125,7 +121,7 @@ def full(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         np.full(shape, fill_value, dtype),
         device=device,
@@ -141,7 +137,7 @@ def full_like(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 
