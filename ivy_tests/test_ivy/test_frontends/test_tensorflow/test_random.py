@@ -46,17 +46,18 @@ def test_tensorflow_shuffle(
 @given(
     dtype_and_low=helpers.dtype_and_values(
         available_dtypes=ivy_tf.valid_float_dtypes,
-        min_value=-1000,
-        max_value=100,
+        min_value=0,
+        max_value=1,
         allow_inf=False,
     ),
     dtype_and_high=helpers.dtype_and_values(
         available_dtypes=ivy_tf.valid_float_dtypes,
-        min_value=101,
-        max_value=1000,
+        min_value=0,
+        max_value=1,
         allow_inf=False,
     ),
     shape=helpers.get_shape(),
+    dtype=st.sampled_from(ivy_tf.valid_float_dtypes),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.uniform"
     ),
@@ -65,6 +66,7 @@ def test_tensorflow_uniform(
     dtype_and_low,
     dtype_and_high,
     shape,
+    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -89,4 +91,5 @@ def test_tensorflow_uniform(
         shape=shape,
         minval=np.asarray(low, dtype=low_dtype),
         maxval=np.asarray(high, dtype=high_dtype),
+        dtype=dtype,
     )
