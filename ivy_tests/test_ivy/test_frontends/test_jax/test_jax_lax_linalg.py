@@ -90,7 +90,7 @@ def test_jax_lax_linalg_triangular_solve(
         fw=fw,
         frontend="jax",
         fn_tree="lax.linalg.triangular_solve",
-        atol=0.1,
+        atol=1e-06,
         a=np.array(a, dtype=dtype),
         b=np.array(b, dtype=dtype),
         left_side=False,
