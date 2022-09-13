@@ -485,7 +485,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     elif device == "cpu":
         return psutil.virtual_memory().total / 1e9
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -531,7 +531,9 @@ def used_mem_on_dev(
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
         if process_specific:
-            raise Exception("process-specific GPU queries are currently not supported")
+            raise ivy.exceptions.IvyException(
+                "process-specific GPU queries are currently not supported"
+            )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.used / 1e9
@@ -541,7 +543,7 @@ def used_mem_on_dev(
         vm = psutil.virtual_memory()
         return (vm.total - vm.available) / 1e9
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -588,7 +590,9 @@ def percent_used_mem_on_dev(
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
         if process_specific:
-            raise Exception("process-specific GPU queries are currently not supported")
+            raise ivy.exceptions.IvyException(
+                "process-specific GPU queries are currently not supported"
+            )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return (info.used / info.total) * 100
@@ -598,7 +602,7 @@ def percent_used_mem_on_dev(
             return (psutil.Process(os.getpid()).memory_info().rss / vm.total) * 100
         return (1 - (vm.available / vm.total)) * 100
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -641,7 +645,7 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         handle = _get_nvml_gpu_handle(device)
         return pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -1176,7 +1180,7 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
         The supported devices of the function
     """
     if not _is_valid_devices_attributes(fn):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "supported_devices and unsupported_devices attributes cannot both \
              exist in a particular backend"
         )
@@ -1208,7 +1212,7 @@ def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
         The unsupported devices of the function
     """
     if not _is_valid_devices_attributes(fn):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "supported_devices and unsupported_devices attributes cannot both \
              exist in a particular backend"
         )
