@@ -492,7 +492,10 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 
 
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, process_specific: bool = False
+    device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+    *,
+    process_specific: bool = False,
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -502,13 +505,27 @@ def used_mem_on_dev(
     device
         The device string to convert to native device handle.
     process_specific
-        Whether the check the memory used by this python process alone. Default is
-        False.
+        Whether to check the memory used by this python process alone. Default is
+        False. Currently is only supported for cpu.
 
     Returns
     -------
     ret
         The used memory on the device in GB.
+
+    Examples
+    --------
+    >>> x = ivy.used_mem_on_dev("cpu", process_specific = False)
+    >>> print(x)
+    6.219563008
+
+    >>> x = ivy.used_mem_on_dev("cpu", process_specific = True)
+    >>> print(x)
+    0.902400346
+
+    >>> y = ivy.used_mem_on_dev("gpu:0", process_specific = False)
+    >>> print(y)
+    0.525205504
 
     """
     ivy.clear_mem_on_dev(device)
@@ -954,7 +971,7 @@ def set_split_factor(
     >>> ivy.set_split_factor(0.4,device)
     {'cpu': 0.2, 'gpu': 0.3, device(type='cuda'): 0.4}
     """
-    assert 0 <= factor
+    ivy.assertions.check_less(0, factor, allow_equal=True)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
@@ -1115,9 +1132,13 @@ def _get_devices(fn, complement=True):
 
     supported = set(VALID_DEVICES)
 
+    if "backend" not in fn.__module__:
+        if complement:
+            supported = set(ALL_DEVICES).difference(supported)
+        return supported
+
     # Their values are formated like either
     # 1. fn.supported_devices = ("cpu",)
-    # 2. fn.supported_devices = {"numpy": ("cpu",)}
     # Could also have the "all" value for the framework
     basic = [
         ("supported_devices", set.intersection, VALID_DEVICES),
@@ -1126,9 +1147,10 @@ def _get_devices(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if isinstance(v, dict):
-                vb = v.get(ivy.current_backend_str(), base)
-                v = merge_fn(set(vb), v.get("all", base))
+            if not isinstance(v, tuple):
+                raise ValueError(
+                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
+                )
             supported = merge_fn(supported, set(v))
 
     if complement:

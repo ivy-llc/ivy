@@ -394,12 +394,6 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-scaled_dot_product_attention.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
-
-
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale,
@@ -497,12 +491,6 @@ def multi_head_attention(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
-
-
-multi_head_attention.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
 
 
 # Convolutions #
@@ -1196,9 +1184,6 @@ def lstm_update(
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
     return ivy.concat(hts_list, axis=-2), ct
-
-
-lstm_update.unsupported_dtypes = {"torch": ("float16",)}
 
 
 # Helpers #

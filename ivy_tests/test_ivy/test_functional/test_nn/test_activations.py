@@ -110,8 +110,8 @@ def test_gelu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="gelu",
-        atol_=1e-4,
-        rtol_=1e-4,
+        atol_=1e-2,
+        rtol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
@@ -145,6 +145,8 @@ def test_sigmoid(
         container_flags=container,
         instance_method=instance_method,
         fn_name="sigmoid",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -218,5 +220,7 @@ def test_softplus(
         container_flags=container,
         instance_method=instance_method,
         fn_name="softplus",
+        rtol_=1e-02,
+        atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
     )

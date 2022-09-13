@@ -23,9 +23,9 @@ def argmax(
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, int]:
+) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -120,9 +120,9 @@ def argmin(
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, int]:
+) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -427,3 +427,31 @@ def where(
 
 # Extra #
 # ------#
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def indices_where(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Returns indices or true elements in an input boolean array.
+
+    Parameters
+    ----------
+    x
+        Boolean array, for which indices are desired.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Indices for where the boolean array is True.
+
+    """
+    return current_backend(x).indices_where(x, out=out)

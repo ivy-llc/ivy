@@ -38,7 +38,7 @@ def expand_dims(
     x: JaxArray,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
@@ -52,7 +52,7 @@ def flip(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.flip(x, axis=axis)
@@ -92,7 +92,7 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -111,11 +111,9 @@ def stack(
     arrays: Union[Tuple[JaxArray], List[JaxArray]],
     /,
     *,
-    axis: Optional[int] = None,
+    axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis is None:
-        axis = 0
     return jnp.stack(arrays, axis=axis)
 
 
@@ -226,6 +224,17 @@ def constant_pad(
 
 
 constant_pad.unsupported_dtypes = ("uint64",)
+
+
+def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
+    if x.shape == ():
+        return [x]
+    dim_size = x.shape[axis]
+    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
+    x_split = jnp.split(x, dim_size, axis)
+    if keepdims:
+        return x_split
+    return [jnp.squeeze(item, axis) for item in x_split]
 
 
 def zero_pad(

@@ -3,9 +3,11 @@ import ivy
 
 
 def _compute_threshold(input, threshold, value, inplace):
+    ret = ivy.where(ivy.greater(input, threshold), input, value)
     if inplace:
-        return ivy.where(ivy.greater(input, threshold), input, value, out=input)
-    return ivy.where(ivy.greater(input, threshold), input, value)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def _compute_elu(input, alpha=1.0, inplace=False):
@@ -13,33 +15,50 @@ def _compute_elu(input, alpha=1.0, inplace=False):
         alpha,
         ivy.subtract(ivy.exp(input), 1),
     )
+    ret = ivy.where(ivy.greater(input, 0), input, prod)
     if inplace:
-        input = ivy.where(ivy.greater(input, 0), input, prod)
+        ivy.inplace_update(input, ret)
         return input
-    return ivy.where(ivy.greater(input, 0), input, prod)
+    return ret
+
+
+def _selu_with_inplace(input, inplace=False):
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    prod = ivy.multiply(
+        alpha,
+        ivy.subtract(
+            ivy.exp(input),
+            1,
+        ),
+    )
+    min_ = ivy.multiply(
+        scale,
+        ivy.minimum(0, prod),
+    )
+    max_ = ivy.multiply(
+        scale,
+        ivy.maximum(0, input),
+    )
+    ret = ivy.add(min_, max_)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def sigmoid(input):
     return ivy.sigmoid(input)
 
 
-sigmoid.unsupported_dtypes = ("float16",)
-
-
 def leaky_relu(input, negative_slope=0.01):
     return ivy.leaky_relu(input, alpha=negative_slope)
-
-
-leaky_relu.unsupported_dtypes = ("float16",)
 
 
 def softmax(input, dim=None, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     return ivy.softmax(input, axis=dim)
-
-
-softmax.unsupported_dtypes = ("float16",)
 
 
 def gelu(
@@ -52,21 +71,12 @@ def gelu(
     return ivy.gelu(input)
 
 
-gelu.unsupported_dtypes = ("float16",)
-
-
 def tanh(input):
     return ivy.tanh(input)
 
 
-tanh.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def logsigmoid(input):
-    return -ivy.softplus(-input)
-
-
-logsigmoid.unsupported_dtypes = ("float16",)
+    return ivy.negative(ivy.softplus(ivy.negative(input)))
 
 
 def softmin(input, dim=None, dtype=None):
@@ -75,44 +85,28 @@ def softmin(input, dim=None, dtype=None):
     return ivy.softmax(-input, axis=dim)
 
 
-softmin.unsupported_dtypes = ("float16",)
-
-
 def threshold(input, threshold, value, inplace=False):
     return _compute_threshold(input, threshold, value, inplace)
-
-
-threshold.unsupported_dtypes = ("float16",)
 
 
 def threshold_(input, threshold, value):
     return _compute_threshold(input, threshold, value, inplace=True)
 
 
-threshold_.unsupported_dtypes = ("float16",)
-
-
 def relu6(input, inplace=False):
+    ret = ivy.minimum(ivy.maximum(input, 0), 6)
     if inplace:
-        return ivy.minimum(ivy.maximum(input, 0), 6, out=input)
-    return ivy.minimum(ivy.maximum(input, 0), 6)
-
-
-relu6.unsupported_dtypes = ("float16",)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def elu(input, alpha=1.0, inplace=False):
     return _compute_elu(input, alpha, inplace=inplace)
 
 
-elu.unsupported_dtypes = ("float16",)
-
-
 def elu_(input, alpha=1.0):
     return _compute_elu(input, alpha, inplace=True)
-
-
-elu_.unsupported_dtypes = ("float16",)
 
 
 def celu(input, alpha=1.0, inplace=False):
@@ -123,18 +117,19 @@ def celu(input, alpha=1.0, inplace=False):
             1,
         ),
     )
-    if inplace:
-        return ivy.add(
-            ivy.maximum(0, input),
-            ivy.minimum(0, prod),
-            out=input,
-        )
-    return ivy.add(
+    ret = ivy.add(
         ivy.maximum(0, input),
         ivy.minimum(0, prod),
     )
-
-def hardsigmoid(input, inplace=False):
     if inplace:
-        return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6,out=input)
-    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+def selu(input, inplace=False):
+    return _selu_with_inplace(input, inplace=inplace)
+
+
+def prelu(input, weight):
+    return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
