@@ -1,4 +1,3 @@
-# For Review
 # global
 from typing import Union, Optional, Tuple, List, Sequence
 
@@ -12,9 +11,6 @@ from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy import default_dtype
-
-# noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
 
 # Array API Standard #
@@ -131,7 +127,7 @@ def full(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         jnp.full(shape, fill_value, dtype),
         device=device,
@@ -147,7 +143,7 @@ def full_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         jnp.full_like(x, fill_value, dtype=dtype),
         device=device,

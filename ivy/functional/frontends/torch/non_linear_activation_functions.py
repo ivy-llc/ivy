@@ -42,7 +42,8 @@ def _selu_with_inplace(input, inplace=False):
     )
     ret = ivy.add(min_, max_)
     if inplace:
-        return ivy.inplace_update(input, ret)
+        ivy.inplace_update(input, ret)
+        return input
     return ret
 
 
@@ -75,7 +76,7 @@ def tanh(input):
 
 
 def logsigmoid(input):
-    return ivy.log(ivy.sigmoid(input))
+    return ivy.negative(ivy.softplus(ivy.negative(input)))
 
 
 def softmin(input, dim=None, dtype=None):
@@ -128,3 +129,7 @@ def celu(input, alpha=1.0, inplace=False):
 
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
+
+
+def prelu(input, weight):
+    return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
