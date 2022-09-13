@@ -109,8 +109,9 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    small_value_safety_factor=1.5,
-                    large_value_safety_factor=10,
+                    small_value_safety_factor=2.5,
+                    large_value_safety_factor=20,
+                    max_op="log",
                 )
             )
         )
@@ -816,10 +817,10 @@ def test_svdvals(
 @given(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=3,
-        max_num_dims=8,
+        min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=15,
+        max_dim_size=10,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="tensordot"),
 )
@@ -856,6 +857,8 @@ def test_tensordot(
         instance_method=instance_method,
         fw=fw,
         fn_name="tensordot",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x1,
         x2=x2,
         axes=axis,
