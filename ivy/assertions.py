@@ -85,7 +85,7 @@ def check_all_or_any_fn(
         if count not in limit:
             raise ivy.exceptions.IvyException(message)
     else:
-        raise ivy.exceptions.IvyException("limit must be all or any")
+        raise ivy.exceptions.IvyException("type must be all or any")
 
 
 # Creation #
