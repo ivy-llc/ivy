@@ -9,8 +9,6 @@ from ivy import (
     as_native_dtype,
     default_dtype,
     as_ivy_dtype,
-    handle_out_argument,
-    handle_nestable,
 )
 
 # noinspection PyProtectedMember
@@ -18,6 +16,7 @@ from ivy.functional.ivy.creation import (
     _assert_fill_value_and_dtype_are_compatible,
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
+    asarray_handle_nestable,
 )
 
 
@@ -70,9 +69,8 @@ arange.unsupported_dtypes = (
 
 
 @asarray_to_native_arrays_and_back
-@handle_out_argument
 @asarray_infer_device
-@handle_nestable
+@asarray_handle_nestable
 def asarray(
     object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
     /,

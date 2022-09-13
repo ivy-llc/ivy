@@ -8,6 +8,7 @@ import numpy as np
 
 # local
 import ivy
+from ivy import to_ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
@@ -16,13 +17,59 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
-    inputs_to_native_arrays,
-    _get_first_array,
 )
 
 
 # Helpers #
 # --------#
+
+
+def asarray_handle_nestable(fn: Callable) -> Callable:
+    fn_name = fn.__name__
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls `fn` with the *nestable* property of the function correctly handled.
+        This means mapping the function to the container leaves if any containers are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the nestable property handled correctly.
+        """
+
+        # if any of the arguments or keyword arguments passed to the function contains
+        # a container, get the container's version of the function and call it using
+        # the passed arguments.
+
+        # For this particular function (this will wrap `backend.asarray` functions)
+        # we can skip a lot of work if the first argument is a list.
+        cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if (
+            not isinstance(args[0], list)
+            and ivy.get_nestable_mode()
+            and (
+                ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
+                or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
+            )
+        ):
+            return cont_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    new_fn.handle_nestable = True
+    return new_fn
 
 
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
@@ -33,11 +80,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         and return arrays are all converted to `ivy.Array` instances. This wrapper is
         specifically for the backend implementations of asarray.
         """
-        if type(args[0]) == list:
-            return outputs_to_ivy_arrays(fn)(*args, dtype=dtype, **kwargs)
-        return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))(
-            *args, dtype=dtype, **kwargs
-        )
+        if isinstance(args[0], list):
+            return ivy.Array(fn(*args, dtype=dtype, **kwargs))
+
+        # args is a tuple and therefore is immutable.
+        new_args = (to_ivy(args[0]),) + args[1:]
+        return ivy.Array(fn(*new_args, dtype=dtype, **kwargs))
 
     return new_fn
 
@@ -65,11 +113,11 @@ def asarray_infer_device(fn: Callable) -> Callable:
         -------
             The return of the function, with `device` passed explicitly.
         """
-        if type(args[0]) == list:
+        if isinstance(args[0], list):
             return fn(*args, device=ivy.default_device(as_native=True), **kwargs)
 
         # find the first array argument, if required
-        arr = None if ivy.exists(device) else _get_first_array(*args, **kwargs)
+        arr = None if ivy.exists(device) else args[0]
         # infer the correct device
         device = ivy.default_device(device, item=arr, as_native=True)
         # call the function with device provided explicitly
@@ -164,7 +212,9 @@ def arange(
     )
 
 
-@asarray_infer_device
+# TODO: CREATE ASARRY_HANDLE_NESTABLE TO REMOVE A CALL TO NESTED ANY
+# @asarray_infer_device
+@handle_out_argument
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,

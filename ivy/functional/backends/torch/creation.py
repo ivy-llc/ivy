@@ -10,8 +10,6 @@ import ivy
 from ivy import (
     as_native_dtype,
     default_dtype,
-    handle_out_argument,
-    handle_nestable,
 )
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
@@ -20,6 +18,7 @@ from ivy.functional.ivy.creation import (
     _assert_fill_value_and_dtype_are_compatible,
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
+    asarray_handle_nestable,
 )
 
 
@@ -78,9 +77,8 @@ arange.unsupported_dtypes = ("float16",)
 
 
 @asarray_to_native_arrays_and_back
-@handle_out_argument
 @asarray_infer_device
-@handle_nestable
+@asarray_handle_nestable
 def asarray(
     object_in: Union[torch.Tensor, np.ndarray, List[float], Tuple[float]],
     /,
