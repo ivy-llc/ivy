@@ -171,7 +171,8 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
 @given(
     dtype_x_indicies=st.one_of(
         helpers.array_and_indices(
-            array_dtypes=helpers.get_dtypes("valid"), indices_dtypes=("int64",)
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
         ),
         helpers.array_and_indices(
             array_dtypes=helpers.get_dtypes("valid"),
@@ -182,12 +183,9 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
 )
 def test_get_item(
     dtype_x_indicies,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
-    instance_method,
     fw,
     device,
 ):

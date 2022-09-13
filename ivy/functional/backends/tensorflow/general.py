@@ -58,9 +58,18 @@ def current_backend_str():
 
 
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
-    if ivy.dtype(query) == "bool":
+    dtype = ivy.dtype(query, as_native=True)
+    if dtype is tf.bool:
         return tf.boolean_mask(x, query)
+    # ToDo tf.int16 is listed as supported, but it fails
+    # temporary fix till issue is fixed by TensorFlow
+    if dtype in [tf.int8, tf.int16]:
+        query = tf.cast(query, tf.int32)
     return tf.gather(x, query)
+
+
+# tensorflow does not support uint indexing
+get_item.unsupported_dtypes = ("uint8", "uint16", "uint32")
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
