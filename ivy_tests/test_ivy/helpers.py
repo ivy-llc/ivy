@@ -2898,6 +2898,13 @@ def array_values(
                 ),
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
+        for i, v in enumerate(values):
+            if max_op == "sqrt" and v != 0:
+                v = v / abs(v) * math.sqrt(abs(v))
+            elif max_op == "log" and v != 0:
+                v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
+            values[i] = int(v / large_value_safety_factor)
+
     elif "int" in dtype:
 
         if min_value is not None and max_value is not None:
@@ -2966,6 +2973,12 @@ def array_values(
                     length=size,
                 )
             )
+            for i, v in enumerate(values):
+                if max_op == "sqrt" and v != 0:
+                    v = v / abs(v) * math.sqrt(abs(v))
+                elif max_op == "log" and v != 0:
+                    v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
+                values[i] = int(v / large_value_safety_factor)
     elif "float" in dtype:
         dtype_info = {
             "float16": {"cast_type": "float16", "round_places": 3, "width": 16},
@@ -3029,9 +3042,9 @@ def array_values(
             )
         )
         for i, v in enumerate(values):
-            if max_op == "sqrt":
+            if max_op == "sqrt" and v != 0:
                 v = v / abs(v) * math.sqrt(abs(v))
-            elif max_op == "log":
+            elif max_op == "log" and v != 0:
                 v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
             values[i] = v / large_value_safety_factor
     elif dtype == "bool":
