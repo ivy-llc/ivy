@@ -58,7 +58,6 @@ Elementwise
    elementwise/not_equal.rst
    elementwise/positive.rst
    elementwise/pow.rst
-   elementwise/reciprocal.rst
    elementwise/remainder.rst
    elementwise/round.rst
    elementwise/sign.rst
@@ -74,6 +73,7 @@ Elementwise
    elementwise/floormod.rst
    elementwise/maximum.rst
    elementwise/minimum.rst
+   elementwise/reciprocal.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`Elementwise discussion`: https://github.com/unifyai/ivy/discussions/2190

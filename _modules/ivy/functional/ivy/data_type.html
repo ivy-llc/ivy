@@ -266,10 +266,7 @@
     <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">merge_fn</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="ow">in</span> <span class="n">basic</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;The </span><span class="si">{}</span><span class="s2"> attribute of </span><span class="si">{}</span><span class="s2"> must be a tuple&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-                <span class="p">)</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
             <span class="n">supported</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">supported</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">complement</span><span class="p">:</span>

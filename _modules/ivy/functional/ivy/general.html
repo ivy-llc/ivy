@@ -2606,7 +2606,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_variables_supported</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_arrays_supported</span><span class="p">()</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input x must be either a variable or an array.&quot;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;Input x must be either a variable or an array.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="assert_supports_inplace"><a class="viewcode-back" href="../../../../functional/ivy/general/assert_supports_inplace/assert_supports_inplace_functional.html#ivy.functional.ivy.general.assert_supports_inplace">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
@@ -3395,18 +3395,14 @@
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">):</span>
         <span class="n">fn_supported_dnd</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">supported_device_and_dtype</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fn_supported_dnd</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;supported_device_and_dtype must be a dict of tuples&quot;</span><span class="p">)</span>
-
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fn_supported_dnd</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">)</span>
         <span class="c1"># dict intersection</span>
         <span class="n">supported</span> <span class="o">=</span> <span class="n">_dnd_dict_intersection</span><span class="p">(</span><span class="n">supported</span><span class="p">,</span> <span class="n">fn_supported_dnd</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">):</span>
         <span class="n">fn_unsupported_dnd</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">unsupported_device_and_dtype</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fn_unsupported_dnd</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unsupported_device_and_dtype must be a dict of tuples&quot;</span><span class="p">)</span>
-
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fn_unsupported_dnd</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">)</span>
         <span class="c1"># dict difference</span>
         <span class="n">supported</span> <span class="o">=</span> <span class="n">_dnd_dict_difference</span><span class="p">(</span><span class="n">supported</span><span class="p">,</span> <span class="n">fn_unsupported_dnd</span><span class="p">)</span>
 
