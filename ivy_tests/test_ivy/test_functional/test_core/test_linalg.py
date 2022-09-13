@@ -870,10 +870,10 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_value_safety_factor=20,
+        small_value_safety_factor=2.5,
+        max_op="log",
         min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=50,
     ),
     offset=helpers.ints(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(fn_name="trace"),
@@ -901,6 +901,8 @@ def test_trace(
         instance_method=instance_method,
         fw=fw,
         fn_name="trace",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=dtype),
         offset=offset,
     )
