@@ -2506,7 +2506,35 @@ def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     query: Union[ivy.Array, ivy.NativeArray],
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    return current_backend(x).get_item(x, query)  # ToDo add docstrings
+    """
+    Gather slices from x according to query array, identical to x[query].
+
+       Parameters
+       ----------
+       x
+           array, the array from which to gather values.
+       query
+           array, index array, integer indices or boolean mask.
+
+       Returns
+       -------
+       ret
+           New array with the values gathered at the specified indices.
+
+       Functional Examples
+       -------------------
+
+       >>> x = ivy.array([0, -1, 20])
+       >>> query = ivy.array([0, 1])
+       >>> print(ivy.get_item(x, query))
+       ivy.array([ 0, -1])
+
+       >>> x = ivy.array([[4, 5], [20, 128], [-2, -10]])
+       >>> query = ivy.array([[True, False], [False, False], [True, True]])
+       >>> print(ivy.get_item(x, query))
+
+    """
+    return current_backend(x).get_item(x, query)
 
 
 @handle_nestable
