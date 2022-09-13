@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -113,6 +114,7 @@ def min(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -221,6 +223,7 @@ def max(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -397,7 +400,7 @@ def mean(
         a: ivy.array([1., 2.]),
         b: ivy.array([3., 4.])
     }
-    
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
@@ -413,6 +416,7 @@ def mean(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -480,6 +484,7 @@ def prod(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -554,6 +559,7 @@ def std(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -674,6 +680,7 @@ def sum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -844,6 +851,7 @@ def var(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -987,6 +995,7 @@ def cumsum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1127,6 +1136,7 @@ def cumprod(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],
