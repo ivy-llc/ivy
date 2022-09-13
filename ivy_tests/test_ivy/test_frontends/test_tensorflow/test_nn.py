@@ -398,7 +398,7 @@ def test_tensorflow_conv1d_transpose(
         fn_name="ivy.functional.frontends.tensorflow.gelu"
     ),
 )
-def test_gelu(
+def test_tensorflow_gelu(
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -435,7 +435,9 @@ def test_gelu(
     ),
     native_array=st.booleans(),
 )
-def test_conv2d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+def test_tensorflow_conv2d(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     input_dtype = [input_dtype] * 2
     as_variable = [as_variable] * 2
@@ -472,7 +474,9 @@ def test_conv2d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
     ),
     native_array=st.booleans(),
 )
-def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+def test_tensorflow_conv2d_transpose(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
     (
         input_dtype,
         x,
@@ -518,7 +522,9 @@ def test_conv2d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
     ),
     native_array=st.booleans(),
 )
-def test_conv3d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+def test_tensorflow_conv3d(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     input_dtype = [input_dtype] * 2
     as_variable = [as_variable] * 2
@@ -557,7 +563,9 @@ def test_conv3d(x_f_d_df, as_variable, num_positional_args, native_array, fw):
     ),
     native_array=st.booleans(),
 )
-def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+def test_tensorflow_conv3d_transpose(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
     (
         input_dtype,
         x,
@@ -607,7 +615,7 @@ def test_conv3d_transpose(x_f_d_df, as_variable, num_positional_args, native_arr
     ),
     native_array=st.booleans(),
 )
-def test_batch_normalization(
+def test_tensorflow_batch_normalization(
     dtype_and_x,
     mean,
     variance,

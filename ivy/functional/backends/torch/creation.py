@@ -1,4 +1,3 @@
-# For Review
 # global
 import numpy as np
 import torch
@@ -15,12 +14,10 @@ from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.creation import (
-    _assert_fill_value_and_dtype_are_compatible,
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
     asarray_handle_nestable,
 )
-
 
 # Array API Standard #
 # -------------------#
@@ -158,7 +155,7 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: torch.dtype,
     device: torch.device,
@@ -228,7 +225,7 @@ def full(
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     if isinstance(shape, int):
         shape = (shape,)
     return torch.full(
@@ -252,7 +249,7 @@ def full_like(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
@@ -381,7 +378,6 @@ def meshgrid(*arrays: torch.Tensor, indexing="xy") -> List[torch.Tensor]:
     return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
-# noinspection PyShadowingNames
 def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -466,6 +462,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return x.clone()
+
+
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],
@@ -484,3 +484,15 @@ def logspace(
 
 logspace.support_native_out = True
 logspace.unsupported_device_and_dtype = {"cpu": ("float16",)}
+
+
+def one_hot(
+    indices: torch.Tensor,
+    depth: int,
+    *,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
+        device, indices.dtype
+    )

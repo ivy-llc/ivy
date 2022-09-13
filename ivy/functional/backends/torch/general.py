@@ -6,15 +6,33 @@ import numpy as np
 import torch
 from operator import mul
 from functools import reduce
-from typing import List, Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable
 from numbers import Number
-import functorch
 
+import functorch
 
 torch_scatter = None
 
 
-def is_native_array(x, exclusive=False):
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    return tuple(
+        pre
+        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+        + list(reversed(post))
+    )
+
+
+def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, torch.Tensor):
         if exclusive and x.requires_grad:
             return False
@@ -22,18 +40,22 @@ def is_native_array(x, exclusive=False):
     return False
 
 
-def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return x.clone()
-
-
-def array_equal(x0: torch.Tensor, x1: torch.Tensor) -> bool:
+def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     dtype = torch.promote_types(x0.dtype, x1.dtype)
     x0 = x0.type(dtype=dtype)
     x1 = x1.type(dtype=dtype)
     return torch.equal(x0, x1)
 
 
-def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
+def container_types():
+    return []
+
+
+def current_backend_str() -> str:
+    return "torch"
+
+
+def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
     if isinstance(x, (float, int, bool)):
         return x
     elif isinstance(x, np.ndarray):
@@ -56,13 +78,13 @@ def to_numpy(x: torch.Tensor, copy: bool = True) -> np.ndarray:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def to_scalar(x: torch.Tensor) -> Number:
+def to_scalar(x: torch.Tensor, /) -> Number:
     if isinstance(x, (float, int)):
         return x
     return x.item()
 
 
-def to_list(x: torch.Tensor) -> list:
+def to_list(x: torch.Tensor, /) -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
@@ -70,43 +92,50 @@ def to_list(x: torch.Tensor) -> list:
     raise ValueError("Expected a pytorch tensor.")
 
 
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
-    if x.shape == ():
-        return [x]
-    ret = list(torch.unbind(x, axis))
-    if keepdims:
-        return [r.unsqueeze(axis) for r in ret]
-    return ret
+def gather(
+    params: torch.Tensor,
+    indices: torch.Tensor,
+    axis: Optional[int] = -1,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.gather(params, axis, indices.type(torch.int64))
 
 
-def container_types():
-    return []
+def gather_nd(
+    params: torch.Tensor, indices: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    indices_shape = indices.shape
+    params_shape = params.shape
+    num_index_dims = indices_shape[-1]
+    result_dim_sizes_list = [
+        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+    ] + [1]
+    result_dim_sizes = torch.tensor(result_dim_sizes_list)
+    implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
+    flat_params = torch.reshape(params, (-1,))
+    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
+    indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
+    indices_for_flat_tiled = torch.reshape(
+        torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
+    ).repeat(*[1, implicit_indices_factor])
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor), 0).repeat(
+        *[indices_for_flat_tiled.shape[0], 1]
+    )
+    indices_for_flat = indices_for_flat_tiled + implicit_indices
+    flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
+    flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
+    res = torch.reshape(
+        flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
+    )
+    return res
 
 
-def inplace_update(
-    x: Union[ivy.Array, torch.Tensor],
-    val: Union[ivy.Array, torch.Tensor],
-    ensure_in_backend: bool = False,
-) -> ivy.Array:
-    if ivy.is_array(x) and ivy.is_array(val):
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
-        if ivy.is_ivy_array(x):
-            x.data = x_native
-        else:
-            x = ivy.to_ivy(x_native)
-        if ensure_in_backend:
-            x._data = val_native
-        return x
-    else:
-        return val
+def get_num_dims(x: torch.Tensor, as_tensor: bool = False) -> Union[torch.Tensor, int]:
+    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
 
 
 def inplace_arrays_supported():
-    return True
-
-
-def inplace_variables_supported():
     return True
 
 
@@ -136,77 +165,37 @@ def inplace_increment(
     return x
 
 
-def _infer_dtype(x_dtype: torch.dtype):
-    default_dtype = ivy.infer_default_dtype(x_dtype, as_native=True)
-    if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
-        dtype = default_dtype
-    else:
-        dtype = x_dtype
-    return dtype
-
-
-def cumsum(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    reverse: Optional[bool] = False,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-            x = torch.transpose(x, axis, -1)
-            x = torch.concat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.transpose(x, axis, -1)
-            res = torch.flip(x, dims=(axis,))
-        elif exclusive:
-            x = torch.transpose(x, axis, -1)
-            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = torch.cumsum(x, -1, dtype=dtype)
-            res = torch.transpose(x, axis, -1)
-        elif reverse:
-            x = torch.cumsum(torch.flip(x, dims=(axis,)), axis=axis, dtype=dtype)
-            res = torch.flip(x, dims=(axis,))
-        return res
-    return torch.cumsum(x, axis, dtype=dtype, out=out)
-
-
-cumsum.support_native_out = True
-cumsum.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
-
-
-def cumprod(
-    x: torch.Tensor,
-    axis: int = 0,
-    exclusive: Optional[bool] = False,
-    *,
-    dtype: Optional[torch.dtype] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        if dtype is torch.bool:
-            dtype = ivy.default_int_dtype(as_native=True)
+def inplace_update(
+    x: Union[ivy.Array, torch.Tensor],
+    val: Union[ivy.Array, torch.Tensor],
+    ensure_in_backend: bool = False,
+) -> ivy.Array:
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native.data = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
         else:
-            dtype = _infer_dtype(x.dtype)
-    if exclusive:
-        x = torch.transpose(x, axis, -1)
-        x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
-        res = torch.cumprod(x, -1, dtype=dtype, out=out)
-        return torch.transpose(res, axis, -1)
-    return torch.cumprod(x, axis, dtype=dtype, out=out)
+            x = ivy.to_ivy(x_native)
+        if ensure_in_backend:
+            x._data = val_native
+        return x
+    else:
+        return val
 
 
-cumprod.support_native_out = True
-cumprod.unsupported_dtypes = ("bfloat16",)  # TODO Fixed in PyTorch 1.12.1
+def inplace_variables_supported():
+    return True
 
 
-# noinspection PyShadowingNames
+def multiprocessing(context=None):
+    import torch.multiprocessing
+
+    if context is None:
+        return torch.multiprocessing
+    return torch.multiprocessing.get_context(context)
+
+
 def scatter_flat(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -260,24 +249,6 @@ def scatter_flat(
     return res
 
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
-
-
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -286,7 +257,6 @@ def scatter_nd(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     # handle numeric updates
     updates = torch.tensor(
         [updates] if isinstance(updates, (float, int, bool)) else updates,
@@ -417,78 +387,6 @@ def scatter_nd(
 scatter_nd.unsupported_dtypes = ("float16",)
 
 
-def gather(
-    params: torch.Tensor,
-    indices: torch.Tensor,
-    axis: Optional[int] = -1,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.gather(params, axis, indices.type(torch.int64))
-
-
-# noinspection PyShadowingNames
-def gather_nd(
-    params: torch.Tensor, indices: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    indices_shape = indices.shape
-    params_shape = params.shape
-    num_index_dims = indices_shape[-1]
-    result_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
-    ] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list)
-    implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
-    flat_params = torch.reshape(params, (-1,))
-    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
-    indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = torch.reshape(
-        torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
-    ).repeat(*[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor), 0).repeat(
-        *[indices_for_flat_tiled.shape[0], 1]
-    )
-    indices_for_flat = indices_for_flat_tiled + implicit_indices
-    flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
-    flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
-    res = torch.reshape(
-        flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
-    )
-    return res
-
-
-def multiprocessing(context=None):
-    import torch.multiprocessing
-
-    if context is None:
-        return torch.multiprocessing
-    return torch.multiprocessing.get_context(context)
-
-
-def indices_where(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    where_x = torch.where(x)
-    res = torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
-    return res
-
-
-indices_where.support_native_out = True
-
-
-# noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(
-    indices: torch.Tensor,
-    depth: int,
-    *,
-    device: torch.device,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
-        device, indices.dtype
-    )
-
-
 def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(x.shape, dtype=ivy.default_int_dtype())
@@ -496,17 +394,11 @@ def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array
         return ivy.Shape(x.shape)
 
 
-def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
-    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
-
-
-def current_backend_str():
-    return "torch"
-
-
-def vmap(func: Callable,
-         in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-         out_axes: Optional[int] = 0) -> Callable:
+def vmap(
+    func: Callable,
+    in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+    out_axes: Optional[int] = 0,
+) -> Callable:
     def _vmap(*args):
         new_fun = lambda *args: ivy.to_native(func(*args))
         new_func = functorch.vmap(new_fun, in_axes, out_axes)

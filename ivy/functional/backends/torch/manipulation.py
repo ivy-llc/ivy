@@ -36,7 +36,7 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
@@ -48,7 +48,7 @@ def flip(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
@@ -107,7 +107,8 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
@@ -145,7 +146,7 @@ def stack(
     arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.stack(arrays, axis, out=out)
@@ -214,6 +215,9 @@ def repeat(
     return torch.repeat_interleave(x, repeats, axis)
 
 
+repeat.unsupported_dtypes = ("int8", "int16", "uint8")
+
+
 def tile(
     x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -280,3 +284,12 @@ def clip(
 
 clip.support_native_out = True
 clip.unsupported_dtypes = ("float16",)
+
+
+def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = list(torch.unbind(x, axis))
+    if keepdims:
+        return [r.unsqueeze(axis) for r in ret]
+    return ret
