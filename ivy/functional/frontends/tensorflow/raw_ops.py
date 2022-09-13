@@ -10,8 +10,12 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-def concat(values, axis, name="concat"):
-    return ivy.concat(values, axis=axis)
+def BroadcastTo(*, input, shape, name="BroadcastTo"):
+    return ivy.broadcast_to(input, shape=shape)
+
+
+def Concat(*, concat_dim, values, name="Concat"):
+    return ivy.concat(values, axis=concat_dim)
 
 
 def ArgMax(*, input, dimension, output_type=None, name=None):
@@ -29,7 +33,7 @@ def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
 
 
-def fill(dims, value, name="full"):
+def Fill(*, dims, value, name="Full"):
     return ivy.full(dims, value)
 
 
@@ -63,6 +67,11 @@ def Tan(*, x, name="Tan"):
 
 def Tanh(*, x, name="Tanh"):
     return ivy.tanh(x)
+
+
+def Transpose(*, x, perm, name="Transpose"):
+    ret = ivy.permute_dims(x, axes=perm)
+    return ret
 
 
 def Sin(*, x, name="Sin"):
@@ -123,3 +132,7 @@ def Reshape(tensor, shape, name="reshape"):
 
 def Sinh(*, x, name="Sinh"):
     return ivy.sinh(x)
+
+
+def ZerosLike(*, x, name="ZerosLike"):
+    return ivy.zeros_like(x)
