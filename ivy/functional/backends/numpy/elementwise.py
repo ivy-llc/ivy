@@ -13,6 +13,19 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
+def _cast_for_binary_op(x1, x2):
+    if isinstance(x1, np.ndarray):
+        if isinstance(x2, np.ndarray):
+            promoted_type = np.promote_types(x1.dtype, x2.dtype)
+            x1 = x1.astype(promoted_type)
+            x2 = x2.astype(promoted_type)
+        else:
+            x2 = np.asarray(x2, dtype=x1.dtype)
+    elif isinstance(x2, np.ndarray):
+        x1 = np.asarray(x1, dtype=x2.dtype)
+    return x1, x2
+
+
 def _clamp_bits(x1, x2):
     x2 = np.clip(
         x2,
@@ -677,6 +690,14 @@ def erf(x, /, *, out: Optional[np.ndarray] = None):
 
 
 erf.support_native_out = True
+
+
+@_handle_0_dim_output
+def floormod(
+    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x, y = ivy.promote_types_of_inputs(x, y)
+    return np.asarray(x % y)
 
 
 @_handle_0_dim_output

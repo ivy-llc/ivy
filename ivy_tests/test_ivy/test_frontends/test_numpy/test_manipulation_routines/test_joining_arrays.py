@@ -4,7 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -31,7 +30,9 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes())
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("valid")))
+    )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
@@ -45,7 +46,7 @@ def _arrays_idx_n_dtypes(draw):
 
 @st.composite
 def _dtype_n_with_out(draw):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes + (None,)))
+    dtype = draw(helpers.get_dtypes("float", none=True))
     if dtype is None:
         return dtype, draw(st.booleans())
     return dtype, False
