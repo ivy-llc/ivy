@@ -420,6 +420,13 @@ def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.scipy.special.erf(x)
 
 
+def floormod(
+    x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    x, y = ivy.promote_types_of_inputs(x, y)
+    return x % y
+
+
 def maximum(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:

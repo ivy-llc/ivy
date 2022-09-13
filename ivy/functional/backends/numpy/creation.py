@@ -92,7 +92,7 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: np.dtype,
     device: str,
@@ -225,6 +225,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return x.copy()
+
+
 def logspace(
     start: Union[np.ndarray, int],
     stop: Union[np.ndarray, int],
@@ -243,3 +247,12 @@ def logspace(
         np.logspace(start, stop, num=num, base=base, dtype=dtype, axis=axis),
         device=device,
     )
+
+
+def one_hot(
+    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    res = np.eye(depth, dtype=indices.dtype)[
+        np.array(indices, dtype="int64").reshape(-1)
+    ]
+    return res.reshape(list(indices.shape) + [depth])

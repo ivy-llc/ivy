@@ -29,7 +29,7 @@ class ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        alpha: Optional[float] = 0.2,
+        alpha: float = 0.2,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -50,7 +50,7 @@ class ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        approximate: Optional[bool] = True,
+        approximate: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
