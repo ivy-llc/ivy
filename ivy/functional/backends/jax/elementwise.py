@@ -335,12 +335,6 @@ def pow(
     return jnp.power(x1, x2)
 
 
-def reciprocal(
-    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.reciprocal(x)
-
-
 def remainder(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -443,3 +437,9 @@ def minimum(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.minimum(x1, x2)
+
+
+def reciprocal(
+    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.reciprocal(x)
