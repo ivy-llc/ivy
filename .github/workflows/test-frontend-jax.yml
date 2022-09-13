@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-nightly-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'JAX Frontend')}}
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'JAX Frontend')}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
