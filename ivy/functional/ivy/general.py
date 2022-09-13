@@ -2476,7 +2476,7 @@ def supports_inplace_updates(
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
-    raise ValueError("Input x must be either a variable or an array.")
+    raise ivy.exceptions.IvyException("Input x must be either a variable or an array.")
 
 
 @inputs_to_native_arrays
@@ -3265,18 +3265,14 @@ def _get_devices_and_dtypes(fn, complement=True):
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
 
-        if not isinstance(list(fn_supported_dnd.values())[0], tuple):
-            raise ValueError("supported_device_and_dtype must be a dict of tuples")
-
+        ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
 
-        if not isinstance(list(fn_unsupported_dnd.values())[0], tuple):
-            raise ValueError("unsupported_device_and_dtype must be a dict of tuples")
-
+        ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
