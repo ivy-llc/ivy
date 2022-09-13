@@ -45,5 +45,5 @@ def test_jax_qr(
         fn_tree="lax.linalg.qr",
         rtol=1e-02,
         x=np.array(x, dtype=dtype),
-        full_matrices=full_matrices
+        full_matrices=full_matrices,
     )
