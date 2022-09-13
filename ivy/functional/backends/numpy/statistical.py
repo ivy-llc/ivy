@@ -23,6 +23,8 @@ def min(
 
 
 min.support_native_out = True
+
+
 def max(
     x: np.ndarray,
     /,
