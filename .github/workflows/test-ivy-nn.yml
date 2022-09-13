@@ -24,6 +24,7 @@ jobs:
            fetch-depth: 2
 
        - name: Check Files Changed
+         if: ${{ github.event.label.name != 'Exhaustive CI' }}
          shell: pwsh
          id: check_file_changed
          run: |
