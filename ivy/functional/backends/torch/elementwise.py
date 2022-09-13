@@ -459,17 +459,6 @@ def pow(
 pow.support_native_out = True
 
 
-def reciprocal(
-    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    x = _cast_for_unary_op(x)
-    return torch.reciprocal(x, out=out)
-
-
-reciprocal.support_native_out = True
-reciprocal.unsupported_dtypes = ("float16",)
-
-
 def round(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
@@ -689,3 +678,14 @@ def maximum(
 
 
 maximum.support_native_out = True
+
+
+def reciprocal(
+    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
+    return torch.reciprocal(x, out=out)
+
+
+reciprocal.support_native_out = True
+reciprocal.unsupported_dtypes = ("float16",)
