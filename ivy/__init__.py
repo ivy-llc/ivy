@@ -14,7 +14,7 @@ import warnings
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
 # local
-from .assertions import check_any, check_elem_in_list
+from .assertions import check_any, check_elem_in_list, check_isinstance
 
 # class placeholders
 
@@ -75,14 +75,18 @@ class Device(str):
                 ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.assertions.check_true(
                     dev_str[4:].isnumeric(),
-                    message="{} is not numeric".format(dev_str[4:]),
+                    message="{} must be numeric".format(dev_str[4:]),
                 )
         return str.__new__(cls, dev_str)
 
 
 class Dtype(str):
     def __new__(cls, dtype_str):
-        check_any([substr in dtype_str for substr in ["int", "float", "bool"]])
+        check_isinstance(dtype_str, str)
+        check_any(
+            [substr in dtype_str for substr in ["int", "float", "bool"]],
+            "dtype must be string and starts with int, float, or bool",
+        )
         return str.__new__(cls, dtype_str)
 
 
@@ -107,18 +111,21 @@ class Shape(tuple):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
+        check_isinstance(dtype_str, str)
         check_elem_in_list("int", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
+        check_isinstance(dtype_str, str)
         check_elem_in_list("float", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
 class UintDtype(IntDtype):
     def __new__(cls, dtype_str):
+        check_isinstance(dtype_str, str)
         check_elem_in_list("uint", dtype_str)
         return str.__new__(cls, dtype_str)
 
