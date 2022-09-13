@@ -194,13 +194,6 @@ def floor_divide(
     return jax.numpy.floor_divide(x1, x2)
 
 
-def floormod(
-    x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None
-) -> JaxArray:
-    x, y = ivy.promote_types_of_inputs(x, y)
-    return x % y
-
-
 def greater(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -425,6 +418,13 @@ def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.scipy.special.erf(x)
+
+
+def floormod(
+    x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    x, y = ivy.promote_types_of_inputs(x, y)
+    return x % y
 
 
 def maximum(
