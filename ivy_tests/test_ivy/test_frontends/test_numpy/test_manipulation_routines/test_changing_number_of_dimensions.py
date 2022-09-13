@@ -1,5 +1,3 @@
-import ivy.functional.backends.numpy as ivy_np
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import numpy as np
@@ -24,7 +22,7 @@ def _squeeze_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
@@ -49,6 +47,44 @@ def test_numpy_squeeze(
         fw=fw,
         frontend="numpy",
         fn_tree="squeeze",
+        a=np.asarray(x, dtype=input_dtype[0]),
+        axis=axis,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+        min_size=1,
+        max_size=1,
+        force_int=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.expand_dims"
+    ),
+)
+def test_numpy_expand_dims(
+    dtype_and_x,
+    axis,
+    num_positional_args,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=False,
+        with_out=False,
+        native_array_flags=False,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="expand_dims",
         a=np.asarray(x, dtype=input_dtype[0]),
         axis=axis,
     )

@@ -36,7 +36,7 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
@@ -48,7 +48,7 @@ def flip(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
@@ -107,7 +107,8 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
@@ -145,7 +146,7 @@ def stack(
     arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.stack(arrays, axis, out=out)
@@ -215,7 +216,7 @@ def repeat(
 
 
 def tile(
-    x: torch.Tensor, /, reps, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()
@@ -266,7 +267,9 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    assert torch.all(torch.less(x_min, x_max)), "Min value must be less than max."
+    assert torch.all(
+        torch.less(torch.tensor(x_min), x_max)
+    ), "Min value must be less than max."
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
@@ -278,3 +281,12 @@ def clip(
 
 clip.support_native_out = True
 clip.unsupported_dtypes = ("float16",)
+
+
+def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = list(torch.unbind(x, axis))
+    if keepdims:
+        return [r.unsqueeze(axis) for r in ret]
+    return ret

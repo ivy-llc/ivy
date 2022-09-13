@@ -23,7 +23,7 @@ def leaky_relu(
     x: torch.Tensor,
     /,
     *,
-    alpha: Optional[float] = 0.2,
+    alpha: float = 0.2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)
@@ -74,4 +74,4 @@ def softplus(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch
     return torch.nn.functional.softplus(x)
 
 
-softplus.unsupported_dtypes = ("float16",)
+softplus.unsupported_dtypes = ("float16", "bfloat16")

@@ -62,11 +62,7 @@ def test_module_training(bs_ic_oc, device, compile_graph):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
@@ -127,11 +123,7 @@ def test_module_w_list_training(bs_ic_oc, device, compile_graph):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.layers.v0.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.v0.w)) > 0
@@ -151,9 +143,6 @@ def test_module_w_partial_v(bs_ic_oc, device, compile_graph):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        pytest.skip()
-    if ivy.current_backend_str() == "mxnet":
-        # MXNet ivy.Container repr currently does not work
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
@@ -288,11 +277,7 @@ def test_module_training_with_duplicate(bs_c, same_layer, device, compile_graph)
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
@@ -351,11 +336,7 @@ def test_module_w_dict_training(bs_ic_oc, device, compile_graph):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.layers.linear0.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.linear0.w)) > 0

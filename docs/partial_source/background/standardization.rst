@@ -6,7 +6,7 @@ Skepticism
 
 With our central goal being to unify all ML frameworks, you would be entirely forgiven for raising an eyebrow 🤨
 
-“You want to try and somehow unify: TensorFlow, PyTorch, JAX, NumPy, MXNet and others, all of which have strong industrial backing, huge user momentum, and significant API differences?”
+“You want to try and somehow unify: TensorFlow, PyTorch, JAX, NumPy and others, all of which have strong industrial backing, huge user momentum, and significant API differences?”
 
 Won’t adding a new “unified” framework just make the problem even worse…
 

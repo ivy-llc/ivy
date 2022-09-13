@@ -7,6 +7,7 @@ Open Tasks
 .. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
 .. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
 .. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
+.. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -17,10 +18,18 @@ tasks, each of which is made up of many individual sub-tasks,
 distributed across task-specific
 `ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
+Please read about
+`ToDo List Issues <https://lets-unify.ai/ivy/contributing/1_the_basics.html#todo-list-issues>`_
+in detail before continuing.
+ALl tasks should be selected and allocated as described in the ToDo List Issues section.
+We make no mention of task selection and allocation in the explanations below, which
+instead focus on the steps to complete only once a sub-task has been allocated to you.
+
 The tasks currently open are:
 
 #. Function Formatting
 #. Frontend APIs
+#. Ivy API Extensions
 
 We try to explain these tasks as clearly as possible, but in cases where things are not
 clear, then please feel free to engage with the `open tasks discussion`_,
@@ -136,11 +145,11 @@ Frontend APIs
 For this task, the goal will be to implement functions for each of the
 frontend functional APIs (see :ref:`Ivy as a Transpiler`),
 with frontend APIs implemented for:
-:code:`JAX`, :code:`MXNet`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
+:code:`JAX`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
 
 Currently, we have many ToDo list issues
 `open <https://github.com/unifyai/ivy/issues?page=1&q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22>`_
-for this task, which is explained below.
+for this task.
 
 The general workflow for this task is:
 
@@ -150,21 +159,34 @@ The general workflow for this task is:
 
 If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing,
 which would make your frontend function much simpler to implement,
-then you have two options:
+then you you should first do the following:
+
+#. create a new issue with the title :code:`ivy.<func_name>`, add the labels
+   :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`
+   to it, and then simply leave this issue open. At some point, a member of our team
+   will assess whether it should be added, and if so, they will add it to another
+   appropriate ToDo list issue (see the open task below).
+   You do not need to wait for this in order to proceed.
+
+After this, you then have two options for how to proceed:
 
 #. try to implement the function as a composition of currently present ivy functions,
    as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_
    guide, and add the :code:`#ToDo` comment in the implementation as explained. Once the
-   PR is merged, your sub-task issue will then be closed as normal. You should then
-   create a new issue with the title :code:`ivy.<func_name>`, add the labels
-   :code:`Extension` and :code:`Next Release` to it, and then simply leave it open.
+   PR is merged, your sub-task issue will then be closed as normal.
 #. alternatively, if you do not want to try and implement the frontend function
-   compositionally, then you can remove the :code:`` label from the sub-task issue,
-   rename the issue to :code:`ivy.<func_name>`, add the :code:`Extension` and
-   :code:`Next Release` labels, and then simply choose another frontend function to work
-   on, leaving this original issue open. This issue will also still show up as open in
-   the original ToDo list, helpfully preventing others from working on this problematic
-   frontend function, which depends on the unimplemented :code:`ivy.<func_name>`.
+   compositionally, or if this is not feasible, then you can simply choose another
+   frontend function to work on. You could also choose to work on another open task
+   entirely at this point if you wanted to. For example, you might decide to wait for a
+   member of our team to review your suggested addition :code:`ivy.<func_name>`, and
+   potentially add this to an Ivy Extension ToDo list issue (see the open task below).
+   In either case, you should add the label "Pending other Issue" to the frontend
+   sub-task issue, and leave it open. This issue will then still show up as open in the
+   original frontend ToDo list, helpfully preventing others from working on this
+   problematic frontend function, which depends on the unimplemented
+   :code:`ivy.<func_name>`. Finally, you should add a comment to the issue with the
+   contents: :code:`pending <issue_link>`, which links to the :code:`ivy.<func_name>`
+   issue, making the "Pending other Issue" label more informative.
 
 There are a few other points to take note of when working on your chosen frontend
 function:
@@ -188,6 +210,40 @@ issue to request for the function to be added to Ivy. Meanwhile, you can select
 another frontend function to work on from the ToDo list! If you're stuck on a
 function which requires complex compositions, you're allowed to reselect a function
 too!
+
+Ivy API Extensions
+------------------
+
+The goal of this task is to add functions to the existing Ivy API which 
+would help with the implementation for many of the functions in the frontend.
+
+Your task is to implement these functions in Ivy, along with their Implementation 
+in the respective backends which are :code:`Jax`, :code:`PyTorch`, :code:`TensorFlow` 
+and :code:`NumPy`. You must also implement tests for these functions.
+
+There is only one central ToDo list
+`issue <https://github.com/unifyai/ivy/issues/3856>`_
+for this task.
+
+A general workflow for these tasks would be:
+
+#. Implement the functions in each of the backend files :code:`ivy/functional/backends/backend_name/extenstion.py`,
+   sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific 
+   helper functions to recreate the behaviour. Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#backend-api>`_
+   on how this can be done.
+#. Implement the functions in :code:`ivy/functional/ivy/extenstion.py` simply defering to 
+   their backend-specific implementation. Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#ivy-api>`_ 
+   to get a clearer picture of how this must be done.
+#. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
+
+A few points to keep in mind while doing this:
+
+#. Make sure all the positional arguments are postional-only and optional arguments are keywork-only.
+#. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function 
+   in the hypothesis library.
+
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
+
 
 **Round Up**
 
