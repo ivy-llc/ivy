@@ -15,12 +15,8 @@ from ivy.functional.backends.jax import JaxArray
 from . import jax_version
 
 
-# @with_unsupported_dtypes({"0.3.14": ("uint32",), "0.1": ("float64",)}, jax_version)
 def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.maximum(x, 0)
-
-
-relu.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def leaky_relu(

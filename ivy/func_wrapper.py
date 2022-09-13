@@ -552,20 +552,9 @@ def _dtype_device_wrapper_creator(attrib):
     return _wrapper_outer
 
 
-# Decorator to set unsupported dtypes
 with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes")
-
-# Decorator to set supported dtypes
 with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes")
-
-# Decorator to set unsupported devices
 with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices")
-
-# Decorator to set supported devices
 with_supported_devices = _dtype_device_wrapper_creator("supported_devices")
-
-# Decorator to set unsupported device and dtypes
 with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator("unsupported_device_and_dtype")
-
-# Decorator to set supported device and dtypes
 with_supported_device_and_dtypes = _dtype_device_wrapper_creator("supported_device_and_dtype")
