@@ -383,7 +383,7 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_02.png?raw=true
    :width: 420
 
-3. Configure the _array_module.py file in the array_api_tests to be set to one of the supported framworks.
+3. Configure the _array_module.py file in the array_api_tests to be set to one of the supported frameworks.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420

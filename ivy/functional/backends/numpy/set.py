@@ -5,7 +5,7 @@ from collections import namedtuple
 from packaging import version
 
 
-def unique_all(x: np.ndarray) -> NamedTuple:
+def unique_all(x: np.ndarray, /) -> NamedTuple:
     UniqueAll = namedtuple(
         typename="unique_all",
         field_names=["values", "indices", "inverse_indices", "counts"],
@@ -38,7 +38,10 @@ def unique_all(x: np.ndarray) -> NamedTuple:
     )
 
 
-def unique_counts(x: np.ndarray) -> NamedTuple:
+def unique_counts(
+    x: np.ndarray,
+    /,
+) -> NamedTuple:
     v, c = np.unique(x, return_counts=True)
     nan_count = np.count_nonzero(np.isnan(x))
     if nan_count > 1:
@@ -50,7 +53,10 @@ def unique_counts(x: np.ndarray) -> NamedTuple:
     return uc(v, c)
 
 
-def unique_inverse(x: np.ndarray) -> NamedTuple:
+def unique_inverse(
+    x: np.ndarray,
+    /,
+) -> NamedTuple:
     out = namedtuple("unique_inverse", ["values", "inverse_indices"])
     values, inverse_indices = np.unique(x, return_inverse=True)
     nan_count = np.count_nonzero(np.isnan(x))
@@ -60,7 +66,7 @@ def unique_inverse(x: np.ndarray) -> NamedTuple:
     return out(values, inverse_indices)
 
 
-def unique_values(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def unique_values(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     nan_count = np.count_nonzero(np.isnan(x))
     if version.parse(np.__version__) >= version.parse("1.21.0") and nan_count > 1:
         unique = np.append(

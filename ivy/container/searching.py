@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -11,10 +11,11 @@ class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmax. This method simply
@@ -49,10 +50,11 @@ class ContainerWithSearching(ContainerBase):
 
     def argmax(
         self: ivy.Container,
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmax. This method simply
@@ -86,10 +88,11 @@ class ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmin(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.argmin. This method simply
@@ -124,10 +127,11 @@ class ContainerWithSearching(ContainerBase):
 
     def argmin(
         self: ivy.Container,
-        axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.argmin. This method simply
@@ -161,7 +165,8 @@ class ContainerWithSearching(ContainerBase):
 
     @staticmethod
     def static_nonzero(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray]
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nonzero. This method simply
@@ -181,7 +186,7 @@ class ContainerWithSearching(ContainerBase):
         """
         return ContainerBase.multi_map_in_static_method("nonzero", x)
 
-    def nonzero(self: ivy.Container) -> ivy.Container:
+    def nonzero(self: ivy.Container, /) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -205,8 +210,9 @@ class ContainerWithSearching(ContainerBase):
         condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.where. This method simply
@@ -240,8 +246,9 @@ class ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
         *,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.where. This method simply
@@ -268,3 +275,96 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_where(self, x1, x2, out=out)
+
+    # Extra #
+    # ----- #
+
+    @staticmethod
+    def static_indices_where(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.indices_where. This method
+        simply wraps the function, and so the docstring for ivy.indices_where
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Boolean array, for which indices are desired.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "indices_where",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def indices_where(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.indices_where. This method
+        simply wraps the function, and so the docstring for ivy.indices_where
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Boolean array, for which indices are desired.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+        """
+        return self.static_indices_where(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

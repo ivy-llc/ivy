@@ -105,7 +105,7 @@ frontend is implemented by wrapping two Ivy methods :code:`ivy.cumprod()`, and :
 
 .. code-block:: python
 
-   # ivy/functional/frontends/tensorflow/math/general.py
+   # ivy/functional/frontends/tensorflow/math.py
    def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
        ret = ivy.cumprod(x, axis, exclusive)
        if reverse:
@@ -120,7 +120,7 @@ Let’s look at the PyTorch backend code for both of these Ivy methods:
     def cumprod(
         x: torch.Tensor,
         axis: int = 0,
-        exclusive: Optional[bool] = False,
+        exclusive: bool = False,
         *,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
@@ -136,7 +136,7 @@ Let’s look at the PyTorch backend code for both of these Ivy methods:
    # ivy/functional/backends/torch/manipulation.py
     def flip(
         x: torch.Tensor,
-        axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:

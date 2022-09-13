@@ -5,21 +5,9 @@ import jax.lax as jlax
 import jax.numpy as jnp
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
-import ivy
-
-
-def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
-    # Get the dilated kernel size
-    kernel_size = kernel_size + (kernel_size - 1) * (dilation - 1)
-
-    if padding == "VALID":
-        dim_size = dim_size * stride_size + max(kernel_size - stride_size, 0)
-    elif padding == "SAME":
-        dim_size = dim_size * stride_size
-
-    return dim_size
 
 
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
@@ -51,12 +39,9 @@ def conv1d(
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
-    res = jlax.conv_general_dilated(
+    return jlax.conv_general_dilated(
         x, filters, strides, padding, None, dilations, (data_format, "WIO", data_format)
     )
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
-    return res
 
 
 def conv1d_transpose(
@@ -73,21 +58,24 @@ def conv1d_transpose(
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
+    filters = jnp.swapaxes(filters, -1, -2)
     if data_format == "NWC":
         x_shape = list(x.shape[1:2])
     else:
         x_shape = list(x.shape[2:])
-    out_w = _deconv_length(
+    out_w = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
 
     if output_shape is None:
-        output_shape = [out_w]
-    diff_w = -(output_shape[0] - out_w)
+        output_shape = [x_shape[0], out_w, filters.shape[-1]]
+    elif len(output_shape) == 1:
+        output_shape = [x_shape[0], output_shape[0], filters.shape[-1]]
+    diff_w = -(output_shape[1] - out_w)
     pad_w_before, pad_w_after = _conv_transpose_padding(
         filters.shape[0], strides[0], padding, dilations[0], diff_w
     )
-    res = jlax.conv_transpose(
+    return jlax.conv_transpose(
         x,
         filters,
         strides,
@@ -96,9 +84,6 @@ def conv1d_transpose(
         (data_format, "WIO", data_format),
         True,
     )
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
-    return res
 
 
 def conv2d(
@@ -114,7 +99,7 @@ def conv2d(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    res = jlax.conv_general_dilated(
+    return jlax.conv_general_dilated(
         x,
         filters,
         strides,
@@ -123,9 +108,6 @@ def conv2d(
         dilations,
         (data_format, "HWIO", data_format),
     )
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
-    return res
 
 
 def depthwise_conv2d(
@@ -146,7 +128,7 @@ def depthwise_conv2d(
     else:
         cn = x.shape[1]
     filters = jnp.expand_dims(filters, -2)
-    res = jlax.conv_general_dilated(
+    return jlax.conv_general_dilated(
         x,
         filters,
         strides,
@@ -156,9 +138,6 @@ def depthwise_conv2d(
         (data_format, "HWIO", data_format),
         feature_group_count=cn,
     )
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
-    return res
 
 
 def conv2d_transpose(
@@ -175,27 +154,30 @@ def conv2d_transpose(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = jnp.swapaxes(filters, -1, -2)
     if data_format == "NHWC":
         x_shape = list(x.shape[1:3])
     else:
         x_shape = list(x.shape[2:])
-    out_h = _deconv_length(
+    out_h = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
-    out_w = _deconv_length(
+    out_w = ivy.deconv_length(
         x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
     )
     if output_shape is None:
-        output_shape = [out_h, out_w]
-    diff_h = -(output_shape[0] - out_h)
-    diff_w = -(output_shape[1] - out_w)
+        output_shape = [x.shape[0], out_h, out_w, filters.shape[-2]]
+    elif len(output_shape) == 2:
+        output_shape = [x.shape[0], output_shape[0], output_shape[1], filters.shape[-2]]
+    diff_h = -(output_shape[1] - out_h)
+    diff_w = -(output_shape[2] - out_w)
     pad_h_before, pad_h_after = _conv_transpose_padding(
         filters.shape[0], strides[0], padding, dilations[0], diff_h
     )
     pad_w_before, pad_w_after = _conv_transpose_padding(
         filters.shape[1], strides[1], padding, dilations[1], diff_w
     )
-    res = jlax.conv_transpose(
+    return jlax.conv_transpose(
         x,
         filters,
         strides,
@@ -204,9 +186,6 @@ def conv2d_transpose(
         (data_format, "HWIO", data_format),
         True,
     )
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
-    return res
 
 
 def conv3d(
@@ -222,7 +201,7 @@ def conv3d(
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
-    res = jlax.conv_general_dilated(
+    return jlax.conv_general_dilated(
         x,
         filters,
         strides,
@@ -231,9 +210,6 @@ def conv3d(
         dilations,
         (data_format, "DHWIO", data_format),
     )
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
-    return res
 
 
 def conv3d_transpose(
@@ -250,24 +226,33 @@ def conv3d_transpose(
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    filters = jnp.swapaxes(filters, -1, -2)
     if data_format == "NDHWC":
         x_shape = list(x.shape[1:4])
     else:
         x_shape = list(x.shape[2:])
-    out_d = _deconv_length(
+    out_d = ivy.deconv_length(
         x_shape[0], strides[0], filters.shape[0], padding, dilations[0]
     )
-    out_h = _deconv_length(
+    out_h = ivy.deconv_length(
         x_shape[1], strides[1], filters.shape[1], padding, dilations[1]
     )
-    out_w = _deconv_length(
+    out_w = ivy.deconv_length(
         x_shape[2], strides[2], filters.shape[2], padding, dilations[2]
     )
     if output_shape is None:
-        output_shape = [out_d, out_h, out_w]
-    diff_d = -(output_shape[0] - out_d)
-    diff_h = -(output_shape[1] - out_h)
-    diff_w = -(output_shape[2] - out_w)
+        output_shape = [x.shape[0], out_d, out_h, out_w, filters.shape[-2]]
+    elif len(output_shape) == 3:
+        output_shape = [
+            x.shape[0],
+            output_shape[0],
+            output_shape[1],
+            output_shape[2],
+            filters.shape[-2],
+        ]
+    diff_d = -(output_shape[1] - out_d)
+    diff_h = -(output_shape[2] - out_h)
+    diff_w = -(output_shape[3] - out_w)
     pad_d_before, pad_d_after = _conv_transpose_padding(
         filters.shape[0], strides[0], padding, dilations[0], diff_d
     )
@@ -277,7 +262,7 @@ def conv3d_transpose(
     pad_w_before, pad_w_after = _conv_transpose_padding(
         filters.shape[2], strides[2], padding, dilations[2], diff_w
     )
-    res = jlax.conv_transpose(
+    return jlax.conv_transpose(
         x,
         filters,
         strides,
@@ -290,6 +275,3 @@ def conv3d_transpose(
         (data_format, "DHWIO", data_format),
         True,
     )
-    if ivy.exists(out):
-        ivy.inplace_update(res, out)
-    return res
