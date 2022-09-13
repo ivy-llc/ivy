@@ -12,21 +12,28 @@ def check_elem_in_list(elem, list):
 
 
 def check_less(x1, x2, allow_equal=False):
-    if allow_equal and ivy.any(ivy.greater(x1, x2)):
+    if allow_equal and ivy.any(x1 > x2):
         raise ivy.exceptions.IvyException(
             "{} is not lesser than or equal to {}".format(x1, x2)
         )
-    elif ivy.any(ivy.greater_equal(x1, x2)):
+    elif ivy.any(x1 >= x2):
         raise ivy.exceptions.IvyException("{} is not lesser than {}".format(x1, x2))
 
 
 def check_greater(x1, x2, allow_equal=False):
-    if allow_equal and ivy.any(ivy.less(x1, x2)):
+    if allow_equal and ivy.any(x1 < x2):
         raise ivy.exceptions.IvyException(
             "{} is not greater than or equal to {}".format(x1, x2)
         )
-    elif ivy.any(ivy.less_equal(x1, x2)):
+    elif ivy.any(x1 <= x2):
         raise ivy.exceptions.IvyException("{} is not greater than {}".format(x1, x2))
+
+
+def check_equal(x1, x2, inverse=False):
+    if inverse and ivy.any(x1 == x2):
+        raise ivy.exceptions.IvyException("{} is equal to {}".format(x1, x2))
+    elif not ivy.all(x1 == x2):
+        raise ivy.exceptions.IvyException("{} is not equal to {}".format(x1, x2))
 
 
 def check_all(results, message="one of the args is None"):
