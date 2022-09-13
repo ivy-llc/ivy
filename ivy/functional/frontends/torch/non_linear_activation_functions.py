@@ -133,3 +133,8 @@ def celu(input, alpha=1.0, inplace=False):
         ivy.maximum(0, input),
         ivy.minimum(0, prod),
     )
+
+def hardsigmoid(input, inplace=False):
+    if inplace:
+        return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6,out=input)
+    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6)
