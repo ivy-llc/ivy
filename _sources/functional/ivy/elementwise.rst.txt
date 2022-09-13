@@ -70,7 +70,6 @@ Elementwise
    elementwise/tanh.rst
    elementwise/trunc.rst
    elementwise/erf.rst
-   elementwise/floormod.rst
    elementwise/maximum.rst
    elementwise/minimum.rst
    elementwise/reciprocal.rst
