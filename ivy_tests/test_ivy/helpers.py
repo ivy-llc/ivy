@@ -2837,6 +2837,13 @@ def array_values(
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = None.
+    max_op
+        The operation to apply element wise to the generated values. Can be
+        "sqrt" or "log". Default value = None.
+
+    In the case of min_value or max_value is not in the valid range
+    the invalid value will be replaced by data type limit, the range
+    of the numbers in that case is not preserved.
 
     Returns
     -------
