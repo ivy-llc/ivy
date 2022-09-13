@@ -957,7 +957,6 @@ def test_torch_sqrt(
     )
 
 
-
 # pow
 @handle_cmd_line_args
 @given(
