@@ -4455,34 +4455,6 @@ def pow(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def reciprocal(
-    x: Union[float, ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Returns a new array with the reciprocal of each element in ``x``.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        A new array with the positive value of each element in ``x``.
-
-    """
-    return ivy.current_backend(x).reciprocal(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 def remainder(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -5441,37 +5413,6 @@ def erf(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def floormod(
-    x: Union[ivy.Array, ivy.NativeArray],
-    y: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns element-wise remainder of division.
-
-    Parameters
-    ----------
-    x
-        array, input to floormod
-    y
-        array, denominator input for floormod.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        An array of the same shape and type as x, with the elements floor modded.
-
-    """
-    return ivy.current_backend(x).floormod(x, y, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -5652,3 +5593,31 @@ def minimum(
     }
     """
     return ivy.current_backend(x1).minimum(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def reciprocal(
+    x: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns a new array with the reciprocal of each element in ``x``.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A new array with the positive value of each element in ``x``.
+
+    """
+    return ivy.current_backend(x).reciprocal(x, out=out)

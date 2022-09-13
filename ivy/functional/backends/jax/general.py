@@ -285,8 +285,6 @@ def scatter_nd(
 
 scatter_nd.support_native_out = True
 
-scatter_nd.support_native_out = True
-
 
 def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
