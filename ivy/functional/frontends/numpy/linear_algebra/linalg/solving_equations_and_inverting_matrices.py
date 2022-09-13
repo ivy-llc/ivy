@@ -1,20 +1,20 @@
-# global
+# local
 import ivy
 
+
+# solve
+def solve(a, b):
+    return ivy.solve(a, b)
+
+
+solve.unsupported_dtypes = ("float16",)
+
+
 # inv
-
-
 def inv(a):
     return ivy.inv(a)
 
 
-inv.unsupported_dtypes = ("float16",)
-
 # pinv
-
-
 def pinv(a, rtol=1e-15, hermitian=False):
     return ivy.pinv(a, rtol)
-
-
-pinv.unsupported_dtypes = ("float16",)

@@ -141,7 +141,7 @@ def sort(
     Examples
     --------
     With：code:`ivy.Array` inputs:
-    
+
     >>> x = ivy.array([7, 8, 6])
     >>> y = ivy.sort(x)
     >>> print(y)
@@ -155,7 +155,7 @@ def sort(
                [[ 6. ,  0.3], [19. ,  0.5]]])
 
     With：code:`ivy.NativeArray` inputs:
-    
+
     >>> x = ivy.native_array([1.5, 3.2, 0.7, 2.5])
     >>> y = ivy.sort(x, axis=-1, descending=True, stable=False)
     >>> print(y)

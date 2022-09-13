@@ -237,7 +237,7 @@ and :code:`ivy.negative`, each of which are themselves *nestable*.
         /,
         *,
         axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
+        epsilon: float =1e-7,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)

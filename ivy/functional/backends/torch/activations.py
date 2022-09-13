@@ -23,7 +23,7 @@ def leaky_relu(
     x: torch.Tensor,
     /,
     *,
-    alpha: Optional[float] = 0.2,
+    alpha: float = 0.2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.leaky_relu(x, alpha)

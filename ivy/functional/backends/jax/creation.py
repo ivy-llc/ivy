@@ -18,7 +18,7 @@ from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compati
 
 
 # Array API Standard #
-# -------------------#
+# ------------------ #
 
 
 def arange(
@@ -100,7 +100,7 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -117,7 +117,6 @@ def eye(
     return _to_device(return_mat, device=device)
 
 
-# noinspection PyShadowingNames
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     capsule = jax.dlpack.to_dlpack(x)
     return jax.dlpack.from_dlpack(capsule)
@@ -289,6 +288,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.array(x)
+
+
 def logspace(
     start: Union[JaxArray, int],
     stop: Union[JaxArray, int],
@@ -306,3 +309,16 @@ def logspace(
     return _to_device(
         jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
     )
+
+
+def one_hot(
+    indices: JaxArray,
+    depth: int,
+    *,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    res = jnp.eye(depth, dtype=indices.dtype)[
+        jnp.array(indices, dtype="int64").reshape(-1)
+    ]
+    return _to_device(res.reshape(list(indices.shape) + [depth]), device)

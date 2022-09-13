@@ -46,7 +46,9 @@ def conv1d(
     return res
 
 
-conv1d.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16"),},torch_version.split('+')[0])
+
+conv1d.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16","bfloat16",),},torch_version.split('+')[0])
+
 
 
 # noinspection PyUnresolvedReferences
@@ -107,7 +109,9 @@ def conv1d_transpose(
     return res
 
 
+
 conv1d_transpose.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16", "bfloat16")},torch_version.split('+')[0])
+
 
 
 # noinspection PyUnresolvedReferences

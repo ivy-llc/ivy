@@ -72,6 +72,13 @@ def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarra
 eigvalsh.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
 
 
+def inner(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return ivy.array(np.inner(x1, x2), dtype=x1.dtype)
+
+
 def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.inv(x)
 
@@ -106,7 +113,9 @@ def matrix_norm(
     return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
 
 
-matrix_norm.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
+
+matrix_norm.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16","bfloat16",)},np_version)
+
 
 
 def matrix_power(

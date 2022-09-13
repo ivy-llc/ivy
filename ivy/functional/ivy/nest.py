@@ -551,6 +551,8 @@ def all_nested_indices(
 
 
 # noinspection PyShadowingBuiltins
+
+
 def map(
     fn: Callable,
     constant: Dict[str, Any] = None,
@@ -576,7 +578,7 @@ def map(
     -------
     ret
         x following the application of fn to each of its iterated items.
-    
+
     Examples
     --------
     With :code:`int` inputs:
