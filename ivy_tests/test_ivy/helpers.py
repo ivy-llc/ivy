@@ -2809,6 +2809,7 @@ def array_values(
     allow_negative=True,
     safety_factor=1,
     scale=None,
+    max_op=None,
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -2932,6 +2933,11 @@ def array_values(
         values = draw(list_of_length(x=st.booleans(), length=size))
 
     array = np.array(values)
+    if max_op == "sqrt":
+        array = (np.sign(array) * np.sqrt(np.abs(array))).astype(dtype)
+    elif max_op == "log":  # ToDo throws exception, but runs
+        array = (np.sign(array) * np.log(np.abs(array))).astype(dtype)
+
     if isinstance(shape, (tuple, list)):
         array = array.reshape(shape)
     return array.tolist()
