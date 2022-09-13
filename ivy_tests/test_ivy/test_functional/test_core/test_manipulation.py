@@ -695,7 +695,7 @@ def _split_helper(draw):
     If noss is a tuple, then the sum of the values in the tuple must equal the size of
     the dimension chosen from the shape of the array generated.
     """
-    noss_dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
+    noss_dtype = draw(st.sampled_from(draw(helpers.get_dtypes("integer"))))
     num_or_size_splits = []
     while sum(num_or_size_splits) < shape[axis]:
         split_value = draw(
