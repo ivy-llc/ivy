@@ -645,13 +645,6 @@ erf.support_native_out = True
 erf.unsupported_dtypes = ("float16",)
 
 
-def floormod(
-    x: torch.Tensor, y: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    x, y = ivy.promote_types_of_inputs(x, y)
-    return x % y
-
-
 def minimum(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
