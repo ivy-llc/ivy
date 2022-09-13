@@ -1,7 +1,6 @@
 """Collection of general Ivy functions."""
 
 # global
-import builtins
 from functools import wraps
 import gc
 import inspect
@@ -352,7 +351,9 @@ def get_nestable_mode() -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 def array_equal(
-    x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray], /,
+    x0: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    /,
 ) -> bool:
     """Determines whether two input arrays are equal across all elements.
 
@@ -1085,7 +1086,7 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
-    
+
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
     ratio = ivy.stable_divide(max_norm, norm)
@@ -1613,12 +1614,14 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
     """
     if isinstance(shape, ivy.NativeShape):
         return shape
-    assert isinstance(shape, (int, list, tuple))
+    ivy.assertions.check_isinstance(shape, (int, list, tuple))
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
-    assert builtins.all([isinstance(v, int) for v in shape])
+    ivy.assertions.check_all(
+        [isinstance(v, int) for v in shape], "shape must take integers only"
+    )
     return ivy.NativeShape(shape)
 
 

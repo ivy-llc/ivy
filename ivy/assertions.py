@@ -1,4 +1,5 @@
 import ivy
+import builtins
 
 
 # General #
@@ -26,6 +27,20 @@ def check_greater(x1, x2, allow_equal=False):
         )
     elif ivy.any(ivy.less_equal(x1, x2)):
         raise ivy.exceptions.IvyException("{} is not greater than {}".format(x1, x2))
+
+
+def check_all(results, message="one of the args is None"):
+    if not builtins.all(results):
+        raise ivy.exceptions.IvyException(message)
+
+
+def check_isinstance(x, allowed_types):
+    if not isinstance(x, allowed_types):
+        raise ivy.exceptions.IvyException(
+            "type of x: {} is not one of the allowed types: {}".format(
+                type(x), allowed_types
+            )
+        )
 
 
 # Creation #
