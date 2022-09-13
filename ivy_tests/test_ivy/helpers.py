@@ -2778,18 +2778,11 @@ def _zeroing_and_casting(x, cast_type):
     return x
 
 
-def _clamp_value(x, dtype):
-    if ivy.is_int_dtype(dtype):
-        d_info = ivy.iinfo(dtype)
-    elif ivy.is_float_dtype(dtype):
-        d_info = ivy.finfo(dtype)
-    else:
-        raise TypeError(
-            f"{dtype} is not a valid data type. "
-            "dtype must be an integer or a float data type"
-        )
-    if x > d_info.max or x < d_info.min:
-        return None  # Calculated later using safety factor
+def _clamp_value(x, dtype_info):
+    if x > dtype_info.max:
+        return dtype_info.max
+    if x < dtype_info.min:
+        return dtype_info.min
     return x
 
 
@@ -2807,8 +2800,9 @@ def array_values(
     exclude_min=True,
     exclude_max=True,
     allow_negative=True,
-    safety_factor=1,
-    scale=None,
+    large_abs_safety_factor=1,
+    small_abs_safety_factor=1,
+    safety_factor_scale=None,
     max_op=None,
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
@@ -2838,9 +2832,9 @@ def array_values(
         if True, exclude the maximum limit.
     allow_negative
         if True, allow negative numbers.
-    safety_factor
+    large_abs_safety_factor
         Factor to divide the values by to ensure that they are not too large.
-    scale
+    safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = None.
 
@@ -2848,7 +2842,8 @@ def array_values(
     -------
         A strategy that draws a list.
     """
-    assert safety_factor >= 1, "large_value_safety_factor must be >= 1"
+    assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
+    assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
 
     size = 1
     if isinstance(shape, int):
@@ -2875,21 +2870,22 @@ def array_values(
         if not allow_negative:
             min_value = 0
         else:
-            min_value = _clamp_value(min_value, dtype) if min_value else dtype_info.min
-        max_value = _clamp_value(max_value, dtype) if max_value else dtype_info.max
+            min_value = (
+                _clamp_value(min_value, dtype_info) if min_value else dtype_info.min
+            )
+        max_value = _clamp_value(max_value, dtype_info) if max_value else dtype_info.max
         assert max_value >= min_value
 
         # Scale the values
-        if scale:
-            if scale == "linear":
-                min_value = min_value / safety_factor
-                max_value = max_value / safety_factor
-            elif scale == "log":
-                min_sign, max_sign = math.copysign(1, min_value), math.copysign(
-                    1, max_value
-                )
-                min_value = abs(min_value) ** (1 / safety_factor) * min_sign
-                max_value = abs(max_value) ** (1 / safety_factor) * max_sign
+        if safety_factor_scale:
+            if safety_factor_scale == "linear":
+                min_value = min_value / small_abs_safety_factor
+                max_value = max_value / large_abs_safety_factor
+            elif safety_factor_scale == "log":
+                min_sign = math.copysign(1, min_value)
+                max_sign = math.copysign(1, max_value)
+                min_value = abs(min_value) ** (1 / small_abs_safety_factor) * min_sign
+                max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
 
         if kind_dtype == "int":
             if exclude_min:
@@ -2933,6 +2929,7 @@ def array_values(
         values = draw(list_of_length(x=st.booleans(), length=size))
 
     array = np.array(values)
+
     if max_op == "sqrt":
         array = (np.sign(array) * np.sqrt(np.abs(array))).astype(dtype)
     elif max_op == "log":  # ToDo throws exception, but runs
