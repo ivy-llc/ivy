@@ -173,6 +173,9 @@ def repeat(
     return np.repeat(x, repeats, axis)
 
 
+repeat.unsupported_dtypes = ("uint64",)
+
+
 def tile(
     x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
