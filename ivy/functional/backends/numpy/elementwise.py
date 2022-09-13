@@ -683,14 +683,6 @@ erf.support_native_out = True
 
 
 @_handle_0_dim_output
-def floormod(
-    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x, y = ivy.promote_types_of_inputs(x, y)
-    return np.asarray(x % y)
-
-
-@_handle_0_dim_output
 def maximum(x1, x2, /, *, out: Optional[np.ndarray] = None):
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.maximum(x1, x2, out=out)

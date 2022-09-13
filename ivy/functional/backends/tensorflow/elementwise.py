@@ -667,17 +667,6 @@ def erf(
     return tf.math.erf(x)
 
 
-def floormod(
-    x: Union[tf.Tensor, tf.Variable],
-    y: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x, y = ivy.promote_types_of_inputs(x, y)
-    return tf.math.floormod(x, y)
-
-
 def maximum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
