@@ -81,7 +81,6 @@ def test_jax_lax_linalg_triangular_solve(
     mask[iu] = 1.0
     a = x * mask
     b = x[0]
-
     helpers.test_frontend_function(
         input_dtypes=[dtype],
         as_variable_flags=as_variable,
