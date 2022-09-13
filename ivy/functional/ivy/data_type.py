@@ -136,10 +136,7 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if not isinstance(v, tuple):
-                raise ValueError(
-                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
-                )
+            ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
     if complement:
