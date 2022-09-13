@@ -78,7 +78,7 @@ jobs:
         run: exit 1
 
   Upload-Artifacts:
-     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
+     if: ${{(github.event_name == 'push') || contains(fromJson('["Exhaustive CI", "Array API"]'), github.event.pull_request.labels.*.name)}}
      runs-on: ubuntu-latest
      needs: run-array-api-tests
      steps:
