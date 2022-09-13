@@ -44,7 +44,7 @@ NativeVariable = Union[
 NativeDevice = Union[jaxlib.xla_extension.Device, str, torch.device]
 
 
-NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype]
+NativeDtype = Union[jnp.dtype, np.dtype, tf.DType, torch.dtype, str]
 
 
 NativeShape = Union[tuple, TensorShape, torch.Size]
@@ -400,7 +400,7 @@ from .backend_handler import (
     try_import_ivy_numpy,
     clear_backend_stack,
 )
-from . import backend_handler, func_wrapper
+from . import assertions, backend_handler, func_wrapper, exceptions
 from . import functional
 from .functional import *
 from . import stateful
