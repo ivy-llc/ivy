@@ -36,16 +36,6 @@ def check_equal(x1, x2, inverse=False):
         raise ivy.exceptions.IvyException("{} must not be equal to {}".format(x1, x2))
 
 
-def check_all(results, message="one of the args is None"):
-    if not builtins.all(results):
-        raise ivy.exceptions.IvyException(message)
-
-
-def check_any(results, message="all of the args are None"):
-    if not builtins.any(results):
-        raise ivy.exceptions.IvyException(message)
-
-
 def check_isinstance(x, allowed_types):
     if not isinstance(x, allowed_types):
         raise ivy.exceptions.IvyException(
@@ -55,6 +45,10 @@ def check_isinstance(x, allowed_types):
         )
 
 
+# General with Custom Message #
+# --------------------------- #
+
+
 def check_true(expression, message="expression must be True"):
     if not expression:
         raise ivy.exceptions.IvyException(message)
@@ -62,6 +56,16 @@ def check_true(expression, message="expression must be True"):
 
 def check_false(expression, message="expression must be False"):
     if expression:
+        raise ivy.exceptions.IvyException(message)
+
+
+def check_all(results, message="one of the args is None"):
+    if not builtins.all(results):
+        raise ivy.exceptions.IvyException(message)
+
+
+def check_any(results, message="all of the args are None"):
+    if not builtins.any(results):
         raise ivy.exceptions.IvyException(message)
 
 
