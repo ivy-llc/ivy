@@ -102,12 +102,18 @@ def inner(
     return torch.inner(x1, x2, out=out)
 
 
-inner.unsupported_dtypes = ("int8",)
+inner.unsupported_dtypes = ("int8", "int16", "int32")
 inner.support_native_out = True
 
 
 def inv(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.inverse(x, out=out)
+    if torch.any(torch.linalg.det(x.to(dtype=torch.float64)) == 0):
+        ret = x
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+    else:
+        ret = torch.inverse(x, out=out)
+    return ret
 
 
 inv.unsupported_dtypes = (

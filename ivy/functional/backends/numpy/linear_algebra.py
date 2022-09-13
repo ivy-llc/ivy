@@ -80,7 +80,11 @@ def inner(
 
 
 def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.linalg.inv(x)
+    if np.any(np.linalg.det(x.astype("float64")) == 0):
+        ret = x
+    else:
+        ret = np.linalg.inv(x)
+    return ret
 
 
 inv.unsupported_dtypes = (

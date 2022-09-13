@@ -349,8 +349,8 @@ def test_matmul(
         instance_method=instance_method,
         fw=fw,
         fn_name="matmul",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=np.asarray(x_1, dtype=input_dtype1),
         x2=np.asarray(y_1, dtype=input_dtype2),
     )
@@ -384,6 +384,8 @@ def test_det(
         instance_method=instance_method,
         fw=fw,
         fn_name="det",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -481,6 +483,7 @@ def test_eigvalsh(
         fw=fw,
         fn_name="eigvalsh",
         rtol_=1e-3,
+        test_values=False,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -537,9 +540,8 @@ def test_inner(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
         small_value_safety_factor=2.5,
+        max_op="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
@@ -566,6 +568,8 @@ def test_inv(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
+        rtol_=1e-3,
+        atol_=1e-3,
         fn_name="inv",
         x=np.asarray(x, dtype=input_dtype),
     )
@@ -655,8 +659,8 @@ def test_outer(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
+        small_value_safety_factor=2.5,
+        max_op="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
@@ -798,6 +802,8 @@ def test_svdvals(
         instance_method=instance_method,
         fw=fw,
         fn_name="svdvals",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
