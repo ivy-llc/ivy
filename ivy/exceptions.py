@@ -19,6 +19,11 @@ class IvyBackendException(IvyException):
         super().__init__(self._delimiter.join(self._default))
 
 
+class IvyNotImplementedException(NotImplementedError):
+    def __init__(self, message=""):
+        super().__init__(message)
+
+
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
