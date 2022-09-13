@@ -5618,8 +5618,8 @@ def reciprocal(
         A new array with the positive value of each element in ``x``.
     """
     return ivy.current_backend(x).reciprocal(x, out=out)
-    
-    
+
+
 @integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
@@ -5641,36 +5641,45 @@ def deg2rad(
     Returns
     -------
     ret
-        an array with each element in ``x`` converted from degrees to radians. 
-    Functional Examples
-    -------------------
+        an array with each element in ``x`` converted from degrees to radians.
+
+    Examples
+    --------
     With :code:`ivy.Array` input:
+
     >>> x=ivy.array([0,90,180,270,360])
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     ivy.array([0.  , 1.57, 3.14, 4.71, 6.28])
+
     >>> x=ivy.array([0,-1.5,-50,ivy.nan])
     >>> y=ivy.zeros(5)
     >>> ivy.deg2rad(x,out=y)
     >>> print(y)
     ivy.array([ 0.    , -0.0262, -0.873 ,     nan])
+
     >>> x = ivy.array([[1.1, 2.2, 3.3], \
                     [-4.4, -5.5, -6.6]])
     >>> ivy.deg2rad(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.96 , -1.37 ,  0.16 ],
-        [-3.1  ,  0.996, -0.328]])
+    ivy.array([[ 0.0192,  0.0384,  0.0576],
+        [-0.0768, -0.096 , -0.115 ]])
+
     With :code:`ivy.NativeArray` input:
+
     >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     ivy.array([ 0.   ,  0.351, -0.881,    nan])
+
     >>> x=ivy.native_array([-0,20.1,ivy.nan])
     >>> y=ivy.zeros(3)
     >>> ivy.deg2rad(x,out=y)
     >>> print(y)
     ivy.array([0.   , 0.351,   nan])
+
     With :code:`ivy.Container` input:
+
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),\
                         b=ivy.array([0,90,180,270,360]))
     >>> y=ivy.deg2rad(x)
@@ -5679,6 +5688,7 @@ def deg2rad(
         a: ivy.array([0., 0.351, -0.881, nan]),
         b: ivy.array([0., 1.57, 3.14, 4.71, 6.28])
     }
+    
     >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
          b=ivy.native_array([0,-1.5,-50,ivy.nan]))
     >>> y=ivy.deg2rad(x)
@@ -5713,35 +5723,41 @@ def rad2deg(
     -------
     ret
         an array with each element in ``x`` converted from radians to degrees. 
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     With :code:`ivy.Array` input:
+
     >>> x=ivy.array([0.,1.57,3.14,4.71,6.28])
     >>> y=ivy.rad2deg(x)
     >>> print(y)
     ivy.array([  0.,  90., 180., 270., 360.])
+
     >>> x=ivy.array([0.,-0.0262,-0.873,ivy.nan])
     >>> y=ivy.zeros(5)
     >>> ivy.rad2deg(x,out=y)
     >>> print(y)
     ivy.array([  0. ,  -1.5, -50. ,   nan])
+
     >>> x = ivy.array([[1.1, 2.2, 3.3], \
                     [-4.4, -5.5, -6.6]])
-                    
     >>> ivy.rad2deg(x, out=x)
     >>> print(x)
     ivy.array([[  63.,  126.,  189.],
         [-252., -315., -378.]])
+
     With :code:`ivy.NativeArray` input:
     >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
     >>> y=ivy.rad2deg(x)
     >>> print(y)
     ivy.array([    0.,  1150., -2890.,    nan])
+
     >>> x=ivy.native_array([-0,20.1,ivy.nan])
     >>> y=ivy.zeros(3)
     >>> ivy.rad2deg(x,out=y)
     >>> print(y)
     ivy.array([   0., 1150.,   nan])
+
     With :code:`ivy.Container` input:
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),\
                         b=ivy.array([0,1,2,3,4]))
@@ -5751,6 +5767,7 @@ def rad2deg(
         a: ivy.array([0., 1150., -2890., nan]),
         b: ivy.array([0., 57.3, 115., 172., 229.])
     }
+
     >>> x=ivy.Container(a=ivy.array([0,10,180,8.5,6]),\
          b=ivy.native_array([0,-1.5,0.5,ivy.nan]))
     >>> y=ivy.rad2deg(x)

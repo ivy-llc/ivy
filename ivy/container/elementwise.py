@@ -7283,7 +7283,7 @@ class ContainerWithElementwise(ContainerBase):
             a container with each element in ``x`` converted from degrees to radians.
 
         Examples
-        ------------------------
+        --------
         >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
             b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=ivy.Container.static_deg2rad(x)
@@ -7342,8 +7342,7 @@ class ContainerWithElementwise(ContainerBase):
             a container with each element in ``x`` converted from degrees to radians.
         
         Examples
-        ------------------------
-
+        --------
         With :code:`ivy.Container` input:
 
         >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
@@ -7405,8 +7404,7 @@ class ContainerWithElementwise(ContainerBase):
             a container with each element in ``x`` converted from radians to degrees.
 
         Examples
-        ------------------------
-
+        --------
         >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
             b=ivy.native_array([0,-1.5,-50,ivy.nan]))
         >>> y=ivy.Container.static_rad2deg(x)
@@ -7465,8 +7463,7 @@ class ContainerWithElementwise(ContainerBase):
             a container with each element in ``x`` converted from radians to degrees.
         
         Examples
-        ------------------------
-
+        --------
         With :code:`ivy.Container` input:
 
         >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\

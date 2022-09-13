@@ -1988,8 +1988,7 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise conversion from degrees to radians.
 
         Examples
-        ------------------------
-
+        --------
         With :code:`ivy.Array` input:
 
         >>> x=ivy.array([90,180,270,360])
@@ -2020,8 +2019,7 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise conversion from radians to degrees.
 
         Examples
-        ------------------------
-
+        --------
         With :code:`ivy.Array` input:
 
         >>> x=ivy.array([1,5,8,10])
