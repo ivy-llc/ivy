@@ -12,6 +12,13 @@ def _cast_for_unary_op(x):
     return x
 
 
+def _cast_for_binary_op(x1, x2):
+    if not isinstance(x1, torch.Tensor) and not isinstance(x2, torch.Tensor):
+        x1 = ivy.array(x1)
+        x2 = ivy.array(x2)
+    return ivy.to_native(x1), ivy.to_native(x2)
+
+
 def add(
     x1: Union[float, torch.Tensor],
     x2: Union[float, torch.Tensor],
@@ -19,7 +26,7 @@ def add(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.add(x1, x2, out=out)
 
 
@@ -33,7 +40,7 @@ def bitwise_xor(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_xor(x1, x2, out=out)
 
 
@@ -73,7 +80,7 @@ def equal(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.eq(x1, x2, out=out)
 
 
@@ -87,7 +94,7 @@ def less_equal(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.less_equal(x1, x2, out=out)
 
 
@@ -101,7 +108,7 @@ def bitwise_and(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_and(x1, x2, out=out)
 
 
@@ -205,7 +212,7 @@ def less(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.lt(x1, x2, out=out)
 
 
@@ -219,7 +226,7 @@ def multiply(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.multiply(x1, x2, out=out)
 
 
@@ -269,7 +276,7 @@ def greater(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.greater(x1, x2, out=out)
 
 
@@ -283,7 +290,7 @@ def greater_equal(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.greater_equal(x1, x2, out=out)
 
 
@@ -358,7 +365,7 @@ def not_equal(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.not_equal(x1, x2, out=out)
 
 
@@ -380,7 +387,7 @@ def floor_divide(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.div(x1, x2, rounding_mode="floor", out=out)
 
 
@@ -394,7 +401,7 @@ def bitwise_or(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.bitwise_or(x1, x2, out=out)
 
 
@@ -430,7 +437,7 @@ def pow(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.pow(x1, x2, out=out)
 
 
@@ -486,7 +493,7 @@ abs.support_native_out = True
 def logaddexp(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.logaddexp(x1, x2, out=out)
 
 
@@ -513,7 +520,7 @@ atan.unsupported_dtypes = ("float16",)
 def atan2(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.atan2(x1, x2, out=out)
 
 
@@ -547,7 +554,7 @@ def subtract(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.subtract(x1, x2, out=out)
 
 
@@ -562,7 +569,7 @@ def remainder(
     modulus: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if not modulus:
         res = x1 / x2
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
@@ -591,7 +598,7 @@ def bitwise_right_shift(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
     return torch.bitwise_right_shift(x1, x2, out=out)
 
@@ -606,7 +613,7 @@ def bitwise_left_shift(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
     return torch.bitwise_left_shift(x1, x2, out=out)
 
@@ -640,7 +647,7 @@ def minimum(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.min(x1, x2, out=out)
 
 
@@ -654,7 +661,7 @@ def maximum(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return torch.max(x1, x2, out=out)
 
 
