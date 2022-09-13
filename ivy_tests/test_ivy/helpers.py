@@ -2676,8 +2676,9 @@ def array_and_indices(
     draw,
     *,
     array_dtypes,
-    indices_dtypes,
+    indices_dtypes=ivy_np.valid_int_dtypes,
     last_dim_same_size=True,
+    boolean_mask=False,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
@@ -2749,16 +2750,23 @@ def array_and_indices(
     if not last_dim_same_size:
         indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
         indices_shape[-1] = indices_dim_size
-    indices_dtype, indices = draw(
-        dtype_and_values(
-            available_dtypes=indices_dtypes,
-            allow_inf=False,
-            min_value=0,
-            max_value=max(indices_shape[-1] - 1, 0),
-            shape=indices_shape,
+    if boolean_mask:
+        indices_dtype, indices = draw(
+            dtype_and_values(
+                dtype=["bool"],
+                shape=indices_shape,
+            )
         )
-    )
-    x = x[0:2]
+    else:
+        indices_dtype, indices = draw(
+            dtype_and_values(
+                available_dtypes=indices_dtypes,
+                allow_inf=False,
+                min_value=0,
+                max_value=max(indices_shape[-1] - 1, 0),
+                shape=indices_shape,
+            )
+        )
     return [x_dtype, indices_dtype], x, indices
 
 
