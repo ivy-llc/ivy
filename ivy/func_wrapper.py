@@ -8,12 +8,29 @@ FW_FN_KEYWORDS = {
     "jax": [],
     "tensorflow": [],
     "torch": [],
-    "mxnet": ["ndarray"],
 }
 
 NATIVE_KEYS_TO_SKIP = {
     "numpy": [],
-    "jax": [],
+    "jax": [
+        "device",
+        "platform",
+        "clone",
+        "block_host_until_ready",
+        "block_until_ready",
+        "copy_to_device",
+        "copy_to_host_async",
+        "copy_to_remote_device",
+        "delete",
+        "is_deleted",
+        "is_known_ready",
+        "is_ready",
+        "on_device_size_in_bytes",
+        "to_py",
+        "unsafe_buffer_pointer",
+        "xla_dynamic_shape",
+        "xla_shape",
+    ],
     "tensorflow": [],
     "torch": [
         "classes",
@@ -27,7 +44,6 @@ NATIVE_KEYS_TO_SKIP = {
         "type",
         "requires_grad_",
     ],
-    "mxnet": [],
 }
 
 # Helpers #

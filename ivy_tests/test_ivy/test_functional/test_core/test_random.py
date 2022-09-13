@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_low=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-1000,
         max_value=100,
         min_num_dims=1,
@@ -23,14 +23,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=2,
     ),
     dtype_and_high=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=101,
         max_value=1000,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=2,
     ),
-    dtype=helpers.get_dtypes("float", none=True),
+    dtype=helpers.get_dtypes("float", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="random_uniform"),
 )
 def test_random_uniform(
@@ -75,7 +75,7 @@ def test_random_uniform(
 @handle_cmd_line_args
 @given(
     dtype_and_mean=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-1000,
         max_value=1000,
         min_num_dims=1,
@@ -83,14 +83,14 @@ def test_random_uniform(
         min_dim_size=2,
     ),
     dtype_and_std=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=1000,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=2,
     ),
-    dtype=helpers.get_dtypes("float", none=True),
+    dtype=helpers.get_dtypes("float", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="random_normal"),
 )
 def test_random_normal(
@@ -133,7 +133,7 @@ def test_random_normal(
 
 @st.composite
 def _pop_size_num_samples_replace_n_probs(draw):
-    prob_dtype = draw(helpers.get_dtypes("float"))
+    prob_dtype = draw(helpers.get_dtypes("float", full=False))
     batch_size = draw(helpers.ints(min_value=1, max_value=5))
     population_size = draw(helpers.ints(min_value=1, max_value=20))
     replace = draw(st.booleans())
@@ -174,7 +174,7 @@ def test_multinomial(
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     # tensorflow does not support multinomial without replacement
     assume(not (fw == "tensorflow" and not replace))
-    ret, ret_gt = helpers.test_function(
+    ret = helpers.test_function(
         input_dtypes=[prob_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -182,10 +182,10 @@ def test_multinomial(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
-        test_values=False,
-        ground_truth_backend="numpy",
         fw=fw,
         fn_name="multinomial",
+        test_values=False,
+        ground_truth_backend="numpy",
         population_size=population_size,
         num_samples=num_samples,
         batch_size=batch_size,
@@ -193,9 +193,12 @@ def test_multinomial(
         replace=replace,
         device=device,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    if not ivy.exists(ret):
+        return
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
 
 
@@ -216,7 +219,7 @@ def test_multinomial(
         min_value=26,
         max_value=100,
     ),
-    dtype=st.sampled_from(("int8", "int16", "int32", "int64", None)),
+    dtype=st.sampled_from(("int8", "int16", "int32", "int64")),
     num_positional_args=helpers.num_positional_args(fn_name="randint"),
 )
 def test_randint(
@@ -272,7 +275,7 @@ def test_seed(seed_val):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         min_num_dims=1,
         min_dim_size=2,
