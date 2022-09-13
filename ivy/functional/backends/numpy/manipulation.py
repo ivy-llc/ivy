@@ -41,7 +41,7 @@ def expand_dims(
     x: np.ndarray,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.expand_dims(x, axis)
@@ -51,7 +51,7 @@ def flip(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     num_dims = len(x.shape)
@@ -99,7 +99,7 @@ def roll(
 def squeeze(
     x: np.ndarray,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -118,7 +118,7 @@ def stack(
     arrays: Union[Tuple[np.ndarray], List[np.ndarray]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.stack(arrays, axis, out=out)
@@ -173,6 +173,9 @@ def repeat(
     return np.repeat(x, repeats, axis)
 
 
+repeat.unsupported_dtypes = ("uint64",)
+
+
 def tile(
     x: np.ndarray, /, reps: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -200,6 +203,15 @@ def swapaxes(
     x: np.ndarray, axis0: int, axis1: int, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.swapaxes(x, axis0, axis1)
+
+
+def unstack(x: np.ndarray, axis: int, keepdims: bool = False) -> List[np.ndarray]:
+    if x.shape == ():
+        return [x]
+    x_split = np.split(x, x.shape[axis], axis)
+    if keepdims:
+        return x_split
+    return [np.squeeze(item, axis) for item in x_split]
 
 
 def clip(

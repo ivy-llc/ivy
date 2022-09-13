@@ -25,9 +25,6 @@ def cos(
     return ret
 
 
-cos.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def sin(
     x,
@@ -46,9 +43,6 @@ def sin(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-sin.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @from_zero_dim_arrays_to_float
@@ -71,9 +65,6 @@ def tan(
     return ret
 
 
-tan.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def arcsin(
     x,
@@ -92,9 +83,6 @@ def arcsin(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-arcsin.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @from_zero_dim_arrays_to_float
@@ -117,9 +105,6 @@ def arccos(
     return ret
 
 
-arcsin.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def arctan(
     x,
@@ -140,9 +125,6 @@ def arctan(
     return ret
 
 
-arctan.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def cosh(
     x,
@@ -161,9 +143,6 @@ def cosh(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
-
-cosh.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @from_zero_dim_arrays_to_float
@@ -210,4 +189,21 @@ def arctan2(
     return ret
 
 
-arctan2.unsupported_dtypes = {"torch": ("float16",)}
+@from_zero_dim_arrays_to_float
+def radians(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.divide(ivy.multiply(x, ivy.pi, out=out), 180)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
