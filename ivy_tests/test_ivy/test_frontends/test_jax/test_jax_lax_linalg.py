@@ -1,7 +1,7 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -23,20 +23,20 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.linalg.cholesky"
     ),
+    symmetrize_input=st.booleans(),
 )
-def test_jax_cholesky(
+def test_jax_lax_cholesky(
     dtype_and_x,
     as_variable,
     native_array,
     num_positional_args,
     fw,
+    symmetrize_input,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
-    x = (
-        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    )  # make symmetric positive-definite
-
+    x = np.array(x, dtype=dtype)
+    # make symmetric positive-definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
         input_dtypes=[dtype],
         as_variable_flags=as_variable,
@@ -45,7 +45,8 @@ def test_jax_cholesky(
         native_array_flags=native_array,
         fw=fw,
         frontend="jax",
-        fn_tree="numpy.linalg.cholesky",
+        fn_tree="lax.linalg.cholesky",
         rtol=1e-02,
-        a=np.array(x, dtype=dtype),
+        x=x,
+        symmetrize_input=symmetrize_input,
     )
