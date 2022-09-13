@@ -590,10 +590,10 @@ def _repeat_helper(draw):
     )
     repeat = draw(
         helpers.dtype_and_values(
-            available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+            available_dtypes=helpers.get_dtypes("integer"),
             shape=repeat_shape,
             min_value=0,
-            max_value=100,
+            max_value=10,
         )
     )
     return repeat
@@ -616,7 +616,7 @@ def _repeat_helper(draw):
         ),
         key="axis",
     ),
-    repeat=st.one_of(st.integers(1, 100), _repeat_helper()),
+    repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
 )
 def test_repeat(
