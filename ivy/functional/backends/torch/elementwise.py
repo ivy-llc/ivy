@@ -666,3 +666,10 @@ def deg2rad(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 
 
 deg2rad.support_native_out = True
+
+
+def rad2deg(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.rad2deg(x, out=out)
+
+
+rad2deg.support_native_out = True

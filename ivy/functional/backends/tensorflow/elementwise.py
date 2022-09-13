@@ -731,3 +731,12 @@ def deg2rad(
 
 
 deg2rad.unsupported_dtypes = ("bfloat16",)
+
+
+def rad2deg(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rad2deg(x)

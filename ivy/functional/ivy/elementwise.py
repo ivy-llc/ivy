@@ -5666,20 +5666,11 @@ def deg2rad(
 ) -> ivy.Array:
     """Converts the input from degrees to radians.
 
-    **Special cases**
-
-    For floating-point operands,
-
-    - If ``x_i`` is ``NaN``, the result is ``NaN``.
-    - If ``x_i`` is ``+0``, the result is ``+0``.
-    - If ``x_i`` is ``-0``, the result is ``+0``.
-    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
 
     Parameters
     ----------
     x
-        input array whose elements are each expressed in degrees. Should have a
-        floating-point data type.
+        input array whose elements are each expressed in degrees.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5687,18 +5678,7 @@ def deg2rad(
     Returns
     -------
     ret
-        an array containing the sine of each element in ``x``. The returned array must
-        have a floating-point data type determined by :ref:`type-promotion`.
-
-    This method conforms to the
-    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.elementwise_functions.sin.html>` _ in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
-    instances in place of any of the arguments.
+        an array with each element in ``x`` converted from degrees to radians. 
 
     Functional Examples
     -------------------
@@ -5757,3 +5737,89 @@ def deg2rad(
 
     """
     return ivy.current_backend(x).deg2rad(x, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def rad2deg(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Converts the input from radians to degrees.
+
+    Parameters
+    ----------
+    x
+        input array whose elements are each expressed in radians.
+
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with each element in ``x`` converted from radians to degrees. 
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+
+    >>> x=ivy.array([0.,1.57,3.14,4.71,6.28])
+    >>> y=ivy.rad2deg(x)
+    >>> print(y)
+    ivy.array([  0.,  90., 180., 270., 360.])
+
+    >>> x=ivy.array([0.,-0.0262,-0.873,ivy.nan])
+    >>> y=ivy.zeros(5)
+    >>> ivy.rad2deg(x,out=y)
+    >>> print(y)
+    ivy.array([  0. ,  -1.5, -50. ,   nan])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3], \
+                    [-4.4, -5.5, -6.6]])
+                    
+    >>> ivy.rad2deg(x, out=x)
+    >>> print(x)
+    ivy.array([[  63.,  126.,  189.],
+        [-252., -315., -378.]])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
+    >>> y=ivy.rad2deg(x)
+    >>> print(y)
+    ivy.array([    0.,  1150., -2890.,    nan])
+
+    >>> x=ivy.native_array([-0,20.1,ivy.nan])
+    >>> y=ivy.zeros(3)
+    >>> ivy.rad2deg(x,out=y)
+    >>> print(y)
+    ivy.array([   0., 1150.,   nan])
+
+    With :code:`ivy.Container` input:
+
+    >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),\
+                        b=ivy.array([0,1,2,3,4]))
+    >>> y=ivy.rad2deg(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1150., -2890., nan]),
+        b: ivy.array([0., 57.3, 115., 172., 229.])
+    }
+
+    >>> x=ivy.Container(a=ivy.array([0,10,180,8.5,6]),\
+         b=ivy.native_array([0,-1.5,0.5,ivy.nan]))
+    >>> y=ivy.rad2deg(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 573., 10300., 487., 344.]),
+        b: ivy.array([0., -85.9, 28.6, nan])
+    }
+
+    """
+    return ivy.current_backend(x).rad2deg(x, out=out)

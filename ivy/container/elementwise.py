@@ -7383,9 +7383,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated result for each element in ``x``.
-            The returned container must have a floating-point data type
-            determined by :ref:`type-promotion`.
+            a container with each element in ``x`` converted from degrees to radians.
 
         Examples
         ------------------------
@@ -7444,9 +7442,7 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the evaluated result for each element in ``self``.
-            The returned container must have a floating-point data type
-            determined by :ref:`type-promotion`.
+            a container with each element in ``x`` converted from degrees to radians.
         
         Examples
         ------------------------
@@ -7464,6 +7460,129 @@ class ContainerWithElementwise(ContainerBase):
 
         """
         return self.static_deg2rad(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_rad2deg(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.rad2deg.
+        This method simply wraps the function, and so the docstring for
+        ivy.rad2deg also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. to be converted from radians to degrees.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with each element in ``x`` converted from radians to degrees.
+
+        Examples
+        ------------------------
+
+        >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),\
+            b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+        >>> y=ivy.Container.static_rad2deg(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 5160., 10300., 15500., 20600.]),
+            b: ivy.array([0., -85.9, -2860., nan])
+        }
+        
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "rad2deg",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def rad2deg(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.rad2deg.
+        This method simply wraps the function, and so the docstring for
+        ivy.rad2deg also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. to be converted from radians to degrees.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with each element in ``x`` converted from radians to degrees.
+        
+        Examples
+        ------------------------
+
+        With :code:`ivy.Container` input:
+
+        >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
+            b=ivy.native_array([0,-1.5,-50,7.2]))
+        >>> y=x.rad2deg()
+        >>> print(y)
+        {
+            a: ivy.array([0., 20.1, -50.5, nan]),
+            b: ivy.array([0., -85.9, -2860., 413.])
+        }
+
+        """
+        return self.static_rad2deg(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

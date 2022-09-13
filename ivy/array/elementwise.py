@@ -2027,3 +2027,35 @@ class ArrayWithElementwise(abc.ABC):
 
         """
         return ivy.deg2rad(self._data, out=out)
+
+    def rad2deg(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.rad2deg.
+        This method simply wraps the function, and so the docstring
+        for ivy.rad2deg also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. to be converted from degrees to radians.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise conversion from radians to degrees.
+
+        Examples
+        ------------------------
+
+        With :code:`ivy.Array` input:
+
+        >>> x=ivy.array([1,5,8,10])
+        >>> y=x.rad2deg()
+        >>> print(y)
+        ivy.array([ 57.3, 286. , 458. , 573. ])
+
+        """
+        return ivy.rad2deg(self._data, out=out)
