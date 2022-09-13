@@ -30,13 +30,11 @@ def _generate_prelu_arrays(draw):
     input = draw(
         helpers.array_values(dtype=dtype, shape=(arr_size), min_value=0, max_value=10)
     )
-    weight_dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     weight = draw(
-        helpers.array_values(dtype=weight_dtype, shape=(1,), min_value=0, max_value=1.0)
+        helpers.array_values(dtype=dtype, shape=(1,), min_value=0, max_value=1.0)
     )
     input_weight = input, weight
-    dtypes = dtype, weight_dtype
-    return dtypes, input_weight
+    return dtype, input_weight
 
 
 @handle_cmd_line_args
@@ -540,12 +538,11 @@ def test_torch_prelu(
     native_array,
     fw,
 ):
-    dtypes, inputs = dtype_input_and_weight
+    dtype, inputs = dtype_input_and_weight
     input, weight = inputs
-    input_dtype, weight_dtype = dtypes
-    assume("float16" not in (input_dtype, weight_dtype))
+    assume("float16" not in dtype)
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, weight_dtype],
+        input_dtypes=[dtype, dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -553,6 +550,6 @@ def test_torch_prelu(
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.prelu",
-        input=np.asarray(input, dtype=input_dtype),
-        weight=np.asarray(weight, dtype=weight_dtype),
+        input=np.asarray(input, dtype=dtype),
+        weight=np.asarray(weight, dtype=dtype),
     )
