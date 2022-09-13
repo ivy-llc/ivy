@@ -18,14 +18,6 @@ def cumsum(input, dim, *, dtype=None, out=None):
     return ivy.cumsum(x=input, axis=dim, out=out)
 
 
-cumsum.unsupported_dtypes = (
-    "float16",
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
 def trace(input):
     if "int" in input.dtype:
         input = input.astype("int64")
