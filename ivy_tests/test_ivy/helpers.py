@@ -2770,10 +2770,11 @@ def array_and_indices(
     return [x_dtype, indices_dtype], x, indices
 
 
-def _zeroing(x):
+def _zeroing_and_casting(x, cast_type):
     # covnert -0.0 to 0.0
     if x == 0.0:
         return 0.0
+    x = float(np.array(x).astype(cast_type)) if x else None
     return x
 
 
@@ -2972,39 +2973,36 @@ def array_values(
             "float32": {"cast_type": "float32", "round_places": 6, "width": 32},
             "float64": {"cast_type": "float16", "round_places": 15, "width": 64},
         }
-        min_value_neg = (
-            float(np.array(min_value).astype(dtype_info[dtype]["cast_type"]))
-            if min_value is not None
-            else None
-        )
+        min_value_neg = min_value
         max_value_neg = round(-1 * limit, dtype_info[dtype]["round_places"])
         min_value_pos = round(limit, dtype_info[dtype]["round_places"])
-        max_value_pos = (
-            float(np.array(max_value).astype(dtype_info[dtype]["cast_type"]))
-            if max_value is not None
-            else None
-        )
-        max_value_neg, min_value_pos = (
-            np.array([max_value_neg, min_value_pos])
-            .astype(dtype_info[dtype]["cast_type"])
-            .tolist()
-        )
+        max_value_pos = max_value
         if min_value_neg is None or max_value is None:
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = max(min_value_pos, min_value_neg)
-                max_value_neg = max(max_value_pos, min_value_neg)
+                max_value_neg = (
+                    max(max_value_pos, min_value_neg)
+                    if max_value_pos is not None
+                    else min_value_neg
+                )
             if max_value_pos is not None and max_value_pos <= min_value_pos:
-                min_value_pos = min(min_value_neg, min_value_pos)
+                min_value_pos = (
+                    min(min_value_neg, min_value_pos)
+                    if min_value_neg is not None
+                    else min_value_pos
+                )
                 max_value_pos = min(max_value_neg, min_value_pos)
         else:
             min_value_neg = min_value
             max_value_neg = max_value
             min_value_pos = min_value
             max_value_pos = max_value
-        min_value_pos = _zeroing(min_value_pos)
-        max_value_pos = _zeroing(max_value_pos)
-        min_value_neg = _zeroing(min_value_neg)
-        max_value_neg = _zeroing(max_value_neg)
+        bounds = [min_value_neg, max_value_neg, min_value_pos, max_value_pos]
+        bounds = [
+            _zeroing_and_casting(x, cast_type=dtype_info[dtype]["cast_type"])
+            for x in bounds
+        ]
+        min_value_neg, max_value_neg, min_value_pos, max_value_pos = bounds
         values = draw(
             list_of_length(
                 x=st.floats(
