@@ -13,14 +13,14 @@ def gelu(
     x: JaxArray,
     /,
     *,
-    approximate: Optional[bool] = True,
+    approximate: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)
 
 
 def leaky_relu(
-    x: JaxArray, /, *, alpha: Optional[float] = 0.2, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.where(x > 0, x, x * alpha)
 

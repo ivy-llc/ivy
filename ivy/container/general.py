@@ -701,11 +701,11 @@ class ContainerWithGeneral(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
@@ -1306,164 +1306,6 @@ class ContainerWithGeneral(ContainerBase):
             self,
             x2,
             equality_matrix=equality_matrix,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    @staticmethod
-    def static_unstack(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: int,
-        /,
-        *,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.unstack. This method
-        simply wraps the function, and so the docstring for ivy.unstack
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            Input array or container to unstack.
-        axis
-            Axis for which to unpack the array.
-        keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            List of arrays, unpacked along specified dimensions, or containers
-            with arrays unpacked at leaves
-
-        Examples
-        --------
-        With one :code:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> y = ivy.Container.static_unstack(x, axis=0)
-        >>> print(y)
-        [{
-            a: ivy.array([[1, 2],
-                         [3, 4]]),
-            b: ivy.array([[9, 10],
-                         [11, 12]])
-        }, {
-            a: ivy.array([[5, 6],
-                         [7, 8]]),
-             b: ivy.array([[13, 14],
-                          [15, 16]])
-        }]
-
-        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> y = ivy.Container.static_unstack(x, axis=1, keepdims=True)
-        >>> print(y)
-        [{
-            a: ivy.array([[[1, 2]],
-                         [[5, 6]]]),
-            b: ivy.array([[[9, 10]],
-                         [[13, 14]]])
-        }, {
-            a: ivy.array([[[3, 4]],
-                         [[7, 8]]]),
-            b: ivy.array([[[11, 12]],
-                         [[15, 16]]])
-        }]
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "unstack",
-            x,
-            axis,
-            keepdims=keepdims,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    def unstack(
-        self: ivy.Container,
-        axis: int,
-        /,
-        *,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.unstack. This method
-        simply wraps the function, and so the docstring for ivy.unstack
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input container to unstack at leaves.
-        axis
-            Axis for which to unpack the array.
-        keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            Containers with arrays unpacked at leaves
-
-        Examples
-        --------
-        With one :code:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> x.unstack(axis=0)
-        [{
-            a: ivy.array([[1, 2],
-                         [3, 4]]),
-            b: ivy.array([[9, 10],
-                          [11, 12]])
-        }, {
-            a: ivy.array([[5, 6],
-                          [7, 8]]),
-            b: ivy.array([[13, 14],
-                          [15, 16]])
-        }]
-        """
-        return self.static_unstack(
-            self,
-            axis,
-            keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2352,16 +2194,17 @@ class ContainerWithGeneral(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-        out
-            optional output container, for writing the result to. It must have a
-            shape that the inputs broadcast to.
+        axes_lengths
+            Any additional specifications for dimensions.
+        **axes_lengths
+
 
         Returns
         -------
@@ -2538,93 +2381,11 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_scalar(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.to_scalar. This method simply wraps
-        the function, and so the docstring for ivy.to_scalar also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            a container of scalars copying the element of the array ``x``.
-
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "to_scalar",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    def to_scalar(
-        self: ivy.Container,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
-        the function, and so the docstring for ivy.to_scalar also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input container.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            a container of scalars copying the element of the array ``self``.
-
-        """
-        return self.static_to_scalar(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
-        )
-
-    @staticmethod
     def static_value_is_nan(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        include_infs: Optional[bool] = True,
+        include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2644,11 +2405,11 @@ class ContainerWithGeneral(ContainerBase):
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
 
@@ -2656,7 +2417,6 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean as to whether the input value is a nan or not.
-
         """
         return ContainerBase.multi_map_in_static_method(
             "value_is_nan",
@@ -2672,7 +2432,7 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        include_infs: Optional[bool] = True,
+        include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2719,6 +2479,7 @@ class ContainerWithGeneral(ContainerBase):
     def static_to_numpy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2784,6 +2545,8 @@ class ContainerWithGeneral(ContainerBase):
 
     def to_numpy(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2847,7 +2610,135 @@ class ContainerWithGeneral(ContainerBase):
 
         """
         return self.static_to_numpy(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_to_scalar(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of scalar values copying all the element of the container
+            ``x``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
+        >>> y = ivy.Container.static_to_scalar(x)
+        >>> print(y)
+        {
+            a: -1,
+            b: 3
+        }
+
+        >>> print(ivy.is_int_dtype(y))
+        {
+            a: true,
+            b: true
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "to_scalar",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def to_scalar(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.to_scalar. This method simply wraps
+        the function, and so the docstring for ivy.to_scalar also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            a container of scalar values copying all the element of the container
+            ``self``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+
+        >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
+                            c=ivy.array([-1]))
+        >>> y = x.to_scalar()
+        >>> print(y)
+        {
+            a: 1,
+            b: 0,
+            c: -1
+        }
+
+        
+        """
+        return self.static_to_scalar(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -2884,6 +2775,17 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` inputs:
+
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = ivy.Container.static_to_list(x)
+        >>> print(y)
+        {a:[0,1,2]}
+
         """
         return ContainerBase.multi_map_in_static_method(
             "to_list",
@@ -2927,13 +2829,24 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             A list representation of the input array ``x``.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` instances:
+
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
+        >>> y = x.to_list()
+        >>> print(y)
+        {a:[0,1,2]}
+
         """
         return self.static_to_list(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -3337,197 +3250,6 @@ class ContainerWithGeneral(ContainerBase):
             **axes_lengths,
         )
 
-    @staticmethod
-    def static_indices_where(
-        x: ivy.Container,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.indices_where. This method
-        simply wraps the function, and so the docstring for ivy.indices_where
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Boolean array, for which indices are desired.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            Indices for where the boolean array is True.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "indices_where",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def indices_where(
-        self: ivy.Container,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ):
-        """
-        ivy.Container instance method variant of ivy.indices_where. This method
-        simply wraps the function, and so the docstring for ivy.indices_where
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Boolean array, for which indices are desired.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            Indices for where the boolean array is True.
-        """
-        return self.static_indices_where(
-            self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    @staticmethod
-    def static_one_hot(
-        indices: ivy.Container,
-        depth: int,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.one_hot. This method
-        simply wraps the function, and so the docstring for ivy.one_hot
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        indices
-            Indices for where the ones should be scattered *[batch_shape, dim]*
-        depth
-            Scalar defining the depth of the one-hot dimension.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            container with tensors of zeros with the same shape and type as the inputs,
-            unless dtype provided which overrides.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "one_hot",
-            indices,
-            depth,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def one_hot(
-        self: ivy.Container,
-        depth: int,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ):
-        """
-        ivy.Container instance method variant of ivy.one_hot. This method
-        simply wraps the function, and so the docstring for ivy.one_hot
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Indices for where the ones should be scattered *[batch_shape, dim]*
-        depth
-            Scalar defining the depth of the one-hot dimension.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            container with tensors of zeros with the same shape and type as the inputs,
-            unless dtype provided which overrides.
-        """
-        return self.static_one_hot(
-            self,
-            depth,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    @staticmethod
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,

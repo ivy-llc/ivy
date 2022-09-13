@@ -9,7 +9,7 @@ from numbers import Number
 from operator import mul
 from functools import reduce
 from jaxlib.xla_extension import Buffer
-from typing import Iterable, Optional, Union, Sequence, List, Callable
+from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
@@ -19,20 +19,57 @@ from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray
 
 
-def array_equal(x0: JaxArray, x1: JaxArray) -> bool:
-    return bool(jnp.array_equal(x0, x1))
-
-
 def container_types():
     return [FlatMapping]
 
 
-def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.array(x)
-
-
 def current_backend_str():
     return "jax"
+
+
+def is_native_array(x, /, *, exclusive=False):
+    if exclusive:
+        return isinstance(
+            x,
+            (
+                jax.interpreters.xla._DeviceArray,
+                jaxlib.xla_extension.DeviceArray,
+                Buffer,
+            ),
+        )
+    return isinstance(
+        x,
+        (
+            jax.interpreters.xla._DeviceArray,
+            jaxlib.xla_extension.DeviceArray,
+            Buffer,
+            jax.interpreters.ad.JVPTracer,
+            jax.core.ShapedArray,
+            jax.interpreters.partial_eval.DynamicJaxprTracer,
+        ),
+    )
+
+
+def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
+    return bool(jnp.array_equal(x0, x1))
+
+
+def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(_to_array(x))
+    else:
+        return np.asarray(_to_array(x))
+
+
+def to_scalar(x: JaxArray, /) -> Number:
+    if isinstance(x, Number):
+        return x
+    else:
+        return _to_array(x).item()
+
+
+def to_list(x: JaxArray, /) -> list:
+    return _to_array(x).tolist()
 
 
 def gather(
@@ -77,11 +114,6 @@ def gather_nd(
 
 def get_num_dims(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, int]:
     return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
-
-
-def indices_where(x: JaxArray) -> JaxArray:
-    where_x = jnp.where(x)
-    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
 
 
 def inplace_arrays_supported():
@@ -132,46 +164,10 @@ def inplace_variables_supported():
     return False
 
 
-def is_native_array(x, exclusive: bool = False) -> bool:
-    if exclusive:
-        return isinstance(
-            x,
-            (
-                jax.interpreters.xla._DeviceArray,
-                jaxlib.xla_extension.DeviceArray,
-                Buffer,
-            ),
-        )
-    return isinstance(
-        x,
-        (
-            jax.interpreters.xla._DeviceArray,
-            jaxlib.xla_extension.DeviceArray,
-            Buffer,
-            jax.interpreters.ad.JVPTracer,
-            jax.core.ShapedArray,
-            jax.interpreters.partial_eval.DynamicJaxprTracer,
-        ),
-    )
-
-
 def multiprocessing(context=None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
-
-
-def one_hot(
-    indices: JaxArray,
-    depth: int,
-    *,
-    device: jaxlib.xla_extension.Device,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    res = jnp.eye(depth, dtype=indices.dtype)[
-        jnp.array(indices, dtype="int64").reshape(-1)
-    ]
-    return _to_device(res.reshape(list(indices.shape) + [depth]), device)
 
 
 def scatter_flat(
@@ -223,6 +219,7 @@ def scatter_nd(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+
     # parse numeric inputs
     if indices not in [Ellipsis, ()] and not (
         isinstance(indices, Iterable) and Ellipsis in indices
@@ -294,35 +291,6 @@ def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
         return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
-
-
-def to_list(x: JaxArray) -> list:
-    return _to_array(x).tolist()
-
-
-def to_numpy(x: JaxArray, copy: bool = True) -> np.ndarray:
-    if copy:
-        return np.array(_to_array(x))
-    else:
-        return np.asarray(_to_array(x))
-
-
-def to_scalar(x: JaxArray) -> Number:
-    if isinstance(x, Number):
-        return x
-    else:
-        return _to_array(x).item()
-
-
-def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
-    if x.shape == ():
-        return [x]
-    dim_size = x.shape[axis]
-    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
-    x_split = jnp.split(x, dim_size, axis)
-    if keepdims:
-        return x_split
-    return [jnp.squeeze(item, axis) for item in x_split]
 
 
 def vmap(

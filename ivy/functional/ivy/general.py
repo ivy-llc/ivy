@@ -1,7 +1,6 @@
 """Collection of general Ivy functions."""
 
 # global
-import builtins
 from functools import wraps
 import gc
 import inspect
@@ -15,7 +14,6 @@ import numpy as np
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
-    infer_device,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
@@ -95,7 +93,7 @@ def get_referrers_recursive(
 
 
 def is_native_array(
-    x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
     """
     Determines whether the input x is a Native Array.
@@ -124,25 +122,27 @@ def is_native_array(
     True
 
     >>> x = ivy.native_array([-1, 2, 7, -3])
-    >>> ivy.is_native_array(x, False)
+    >>> ivy.is_native_array(x, exclusive=False)
     True
 
     >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
-    >>> ivy.is_native_array(x, True)
+    >>> ivy.is_native_array(x, exclusive=True)
     True
 
     >>> x = ivy.array([5, 2, 6, 9])
-    >>> ivy.is_native_array(x, True)
+    >>> ivy.is_native_array(x, exclusive=True)
     False
 
     """
     try:
-        return current_backend(x).is_native_array(x, exclusive)
+        return current_backend(x).is_native_array(x, exclusive=exclusive)
     except ValueError:
         return False
 
 
-def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) -> bool:
+def is_ivy_array(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
+) -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
@@ -170,22 +170,22 @@ def is_ivy_array(x: Union[ivy.Array, ivy.NativeArray], exclusive: bool = False) 
     False
 
     >>> x = ivy.native_array([-1, 2, 7, -3])
-    >>> ivy.is_ivy_array(x, False)
+    >>> ivy.is_ivy_array(x, exclusive=False)
     False
 
     >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
-    >>> ivy.is_ivy_array(x, True)
+    >>> ivy.is_ivy_array(x, exclusive=True)
     False
 
     >>> x = ivy.array([5, 2, 6, 9])
-    >>> ivy.is_ivy_array(x, True)
+    >>> ivy.is_ivy_array(x, exclusive=True)
     True
 
     """
-    return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive)
+    return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
 
 
-def is_array(x: Any, exclusive: bool = False) -> bool:
+def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """Determines whether the input x is either an Ivy Array or a Native Array.
 
     Parameters
@@ -202,10 +202,12 @@ def is_array(x: Any, exclusive: bool = False) -> bool:
         Boolean, whether or not x is an array.
 
     """
-    return ivy.is_ivy_array(x, exclusive) or ivy.is_native_array(x, exclusive)
+    return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
+        x, exclusive=exclusive
+    )
 
 
-def is_ivy_container(x: Any) -> bool:
+def is_ivy_container(x: Any, /) -> bool:
     """Determines whether the input x is an Ivy Container.
 
     Parameters
@@ -346,112 +348,12 @@ def get_nestable_mode() -> bool:
     return nestable_mode_stack[-1]
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def copy_array(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """Copy an array.
-
-    Parameters
-    ----------
-    x
-        array, input array containing elements to copy.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        a copy of the input array ``x``.
-
-    Examples
-    --------
-    With one :code:`ivy.Array` input:
-
-    >>> x = ivy.array([-1, 0, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([-1, 0, 1])
-
-    >>> x = ivy.array([1, 0, 1, 1])
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    ivy.array([1, 0, 1, 1])
-
-    >>> x = ivy.array([1, 0, 1, -1])
-    >>> y = ivy.zeros((1, 4))
-    >>> ivy.copy_array(x, out=y)
-    >>> print(y)
-    ivy.array([1, 0, 1, -1])
-
-    >>> x = ivy.array([1, 0, 1, 1])
-    >>> ivy.copy_array(x, out=x)
-    >>> print(x)
-    ivy.array([1, 0, 1, 1])
-
-    With one :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
-    >>> y = ivy.copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0])
-    }
-
-    With one :code:`ivy.Container` static method:
-
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
-    >>> y = ivy.Container.static_copy_array(x)
-    >>> print(y)
-    {
-        a: ivy.array([-1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1, 1, 0])
-    }
-
-    With one :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1, 0, 1])
-    >>> y = x.copy_array()
-    >>> print(y)
-    ivy.array([-1, 0, 1])
-
-    >>> x = ivy.array([1, 0, 1, 1])
-    >>> y = x.copy_array()
-    >>> print(y)
-    ivy.array([1, 0, 1, 1])
-
-    With :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1]))
-    >>> y = x.copy_array()
-    >>> print(y)
-    {
-        a: ivy.array([1, 0, 1]),
-        b: ivy.array([-1, 0, 1, 1])
-    }
-
-    """
-    return current_backend(x).copy_array(x, out=out)
-
-
 @inputs_to_native_arrays
 @handle_nestable
 def array_equal(
-    x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray]
+    x0: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    /,
 ) -> bool:
     """Determines whether two input arrays are equal across all elements.
 
@@ -509,7 +411,7 @@ def array_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]]) -> bool:
+def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]], /) -> bool:
     """Determines whether input arrays are equal across all elements.
 
     Parameters
@@ -717,7 +619,9 @@ def all_equal(
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndarray:
+def to_numpy(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
+) -> np.ndarray:
     """Converts an array into a numpy array.
 
     Parameters
@@ -846,12 +750,12 @@ def to_numpy(x: Union[ivy.Array, ivy.NativeArray], copy: bool = True) -> np.ndar
     }
 
     """
-    return current_backend(x).to_numpy(x, copy)
+    return current_backend(x).to_numpy(x, copy=copy)
 
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
+def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """Converts an array with a single element into a scalar.
 
     Parameters
@@ -949,57 +853,13 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray]) -> Number:
         c: -1
     }
 
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    -1
-
-    >>> print(ivy.is_int_dtype(y))
-    True
-
-    >>> x = ivy.array([3])
-    >>> y = x.to_scalar()
-    >>> print(y)
-    3
-
-    With a mix of :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
-    >>> y = x.to_scalar()
-    >>> print(y)
-    {
-        a: -1,
-        b: 3
-    }
-
-    >>> print(ivy.is_int_dtype(y))
-    {
-        a: true,
-        b: true
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1]), b=ivy.array([0]),\
-                          c=ivy.array([-1]))
-    >>> y = x.to_scalar()
-    >>> print(y)
-    {
-        a: 1,
-        b: 0,
-        c: -1
-    }
-
     """
     return current_backend(x).to_scalar(x)
 
 
 @inputs_to_native_arrays
 @handle_nestable
-def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
+def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """Creates a (possibly nested) list from input array.
 
     Parameters
@@ -1125,24 +985,6 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray]) -> List:
     {
         a: [[[-1, 0, 1], [1, 0, -1]], [[1, -1, 0], [1, 0, -1]]]
     }
-
-    Instance Method Examples
-    ------------------------
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0, 1, 2])
-    >>> y = x.to_list()
-    >>> print(y)
-    [0, 1, 2]
-
-    With :code:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]))
-    >>> y = x.to_list()
-    >>> print(y)
-    {a:[0,1,2]}
-
     """
     return current_backend(x).to_list(x)
 
@@ -1187,14 +1029,14 @@ def clip_vector_norm(
     ivy.array([0.   , 0.894, 1.79 ])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
-    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> y = ivy.clip_vector_norm(x, 3.0, p=1.0)
     >>> print(y)
     ivy.array([ 0.417, -0.583,  2.   ])
 
     >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]], \
                        [[3., 9.], [4., 12.], [5., 15.]]])
     >>> y = ivy.zeros(((2, 3, 2)))
-    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> ivy.clip_vector_norm(x, 4.0, p=1.0, out=y)
     >>> print(y)
     ivy.array([[[0.    , 0.    ],
                 [0.0667, 0.2   ],
@@ -1205,7 +1047,7 @@ def clip_vector_norm(
 
     >>> x = ivy.array([[1.1, 2.2, 3.3], \
                        [-4.4, -5.5, -6.6]])
-    >>> ivy.clip_vector_norm(x, 1.0, 3.0, out=x)
+    >>> ivy.clip_vector_norm(x, 1.0, p=3.0, out=x)
     >>> print(x)
     ivy.array([[ 0.131,  0.263,  0.394],
                [-0.526, -0.657, -0.788]])
@@ -1218,14 +1060,14 @@ def clip_vector_norm(
     ivy.array([0.   , 0.894, 1.79 ])
 
     >>> x = ivy.native_array([0.5, -0.7, 2.4])
-    >>> y = ivy.clip_vector_norm(x, 3.0, 1.0)
+    >>> y = ivy.clip_vector_norm(x, 3.0, p=1.0)
     >>> print(y)
     ivy.array([ 0.417, -0.583,  2.   ])
 
     >>> x = ivy.native_array([[[0., 0.], [1., 3.], [2., 6.]], \
                               [[3., 9.], [4., 12.], [5., 15.]]])
     >>> y = ivy.zeros(((2, 3, 2)))
-    >>> ivy.clip_vector_norm(x, 4.0, 1.0, out=y)
+    >>> ivy.clip_vector_norm(x, 4.0, p=1.0, out=y)
     >>> print(y)
     ivy.array([[[0.    , 0.    ],
                 [0.0667, 0.2   ],
@@ -1244,13 +1086,6 @@ def clip_vector_norm(
         a: ivy.array([0., 0.894, 1.79]),
         b: ivy.array([0.849, 1.13, 1.41])
     }
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.clip_vector_norm(2.0)
-    >>> print(y)
-    ivy.array([0., 0.894, 1.79])
 
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
@@ -1362,80 +1197,6 @@ def clip_matrix_norm(
     norms = ivy.matrix_norm(x, ord=p, keepdims=True)
     ratios = ivy.minimum(ivy.stable_divide(max_norm, norms), 1.0)
     return ivy.multiply(ratios, x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_nestable
-def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
-
-    Parameters
-    ----------
-    x
-        Input array to unstack.
-    axis
-        Axis for which to unpack the array.
-    keepdims
-        Whether to keep dimension 1 in the unstack dimensions. Default is False.
-
-    Returns
-    -------
-    ret
-        List of arrays, unpacked along specified dimensions.
-
-    Examples
-    --------
-    With :code:`ivy.Array` input:
-
-    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
-    >>> y = ivy.unstack(x, axis=0)
-    >>> print(y)
-    [ivy.array([[1, 2],
-                [3, 4]]), ivy.array([[5, 6],
-                [7, 8]])]
-
-    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
-    >>> y = ivy.unstack(x, axis=1, keepdims=True)
-    >>> print(y)
-    [ivy.array([[[1, 2]],
-                [[5, 6]]]), ivy.array([[[3, 4]],
-                [[7, 8]]])]
-
-    With :code:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> ivy.unstack(x, axis=0)
-    [{
-        a: ivy.array([[1, 2],
-                      [3, 4]]),
-        b: ivy.array([[9, 10],
-                      [11, 12]])
-    }, {
-        a: ivy.array([[5, 6],
-                      [7, 8]]),
-        b: ivy.array([[13, 14],
-                      [15, 16]])
-    }]
-
-    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-    >>> ivy.unstack(x, axis=1, keepdims=True)
-    [{
-        a: ivy.array([[[1, 2]],
-                      [[5, 6]]]),
-        b: ivy.array([[[9, 10]],
-                      [[13, 14]]])
-    }, {
-        a: ivy.array([[[3, 4]],
-                      [[7, 8]]]),
-        b: ivy.array([[[11, 12]],
-                      [[15, 16]]])
-    }]
-    """
-    return current_backend(x).unstack(x, axis, keepdims)
 
 
 @to_native_arrays_and_back
@@ -1851,15 +1612,17 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
         the input in its native framework form
 
     """
-    if isinstance(shape, ivy.NativeShape):
+    if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
-    assert isinstance(shape, (int, list, tuple))
+    ivy.assertions.check_isinstance(shape, (int, list, tuple))
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
-    assert builtins.all([isinstance(v, int) for v in shape])
-    return ivy.NativeShape(shape)
+    ivy.assertions.check_all(
+        [isinstance(v, int) for v in shape], "shape must take integers only"
+    )
+    return ivy.NativeShape(shape) if len(backend_stack) != 0 else ivy.Shape(shape)
 
 
 @handle_nestable
@@ -2209,19 +1972,19 @@ def einops_repeat(
     Examples
     --------
     With :code:`ivy.array` input:
-    >> x = ivy.array([1, 2, 3, 4])
-    >> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
-    >> print(repeated)
+    >>> x = ivy.array([1, 2, 3, 4])
+    >>> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
+    >>> print(repeated)
     ivy.array([[1, 2, 3, 4],
                [1, 2, 3, 4]])
 
     With :code:`ivy.Container` input:
-    >> x = ivy.Container(a=ivy.array([[4,5],
+    >>> x = ivy.Container(a=ivy.array([[4,5],
                                     [1, 3]]),
                         b=ivy.array([[9, 10],
                                     [4, 2]]))
-    >> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
-    >> print(repeated)
+    >>> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
+    >>> print(repeated)
     {
         a: ivy.array([[4, 5, 4, 5],
                       [1, 3, 1, 3]]),
@@ -2513,15 +2276,15 @@ def set_queue_timeout(timeout: float):
 
     Examples
     --------
-    >> x = ivy.get_queue_timeout()
-    >> print(x)
+    >>> x = ivy.get_queue_timeout()
+    >>> print(x)
     15.0
 
     To set the timeout for example 30 seconds
 
-    >> ivy.set_queue_timeout(30)
-    >> y = ivy.get_queue_timeout()
-    >> print(y)
+    >>> ivy.set_queue_timeout(30)
+    >>> y = ivy.get_queue_timeout()
+    >>> print(y)
     30
 
     """
@@ -2713,7 +2476,7 @@ def supports_inplace_updates(
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
-    raise ValueError("Input x must be either a variable or an array.")
+    raise ivy.exceptions.IvyException("Input x must be either a variable or an array.")
 
 
 @inputs_to_native_arrays
@@ -2986,23 +2749,23 @@ def scatter_nd(
     --------
     scatter values into an empty array, With :code:`ivy.Array` input:
 
-    >> indices = ivy.array([[4], [3], [1], [7]])
-    >> updates = ivy.array([9, 10, 11, 12])
-    >> shape = ivy.array([8])
-    >> scatter = ivy.scatter_nd(indices, updates, shape)
-    >> print(scatter)
+    >>> indices = ivy.array([[4], [3], [1], [7]])
+    >>> updates = ivy.array([9, 10, 11, 12])
+    >>> shape = ivy.array([8])
+    >>> scatter = ivy.scatter_nd(indices, updates, shape)
+    >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
     scatter into an empty array, With: `ivy.Container` input:
 
-    >> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
+    >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
                         b=ivy.array([[5],[1],[2]]))
-    >> updates = ivy.Container(a=ivy.array([100, 200, 200]),
+    >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),
                         b=ivy.array([20, 30, 40]))
-    >> shape = ivy.Container(a=ivy.array([10]),
+    >>> shape = ivy.Container(a=ivy.array([10]),
                         b = ivy.array([10]))
-    >> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
-    >> print(z)
+    >>> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
+    >>> print(z)
     {
         a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
@@ -3010,14 +2773,13 @@ def scatter_nd(
 
     scatter into an array, With : `ivy.Container` and `ivy.Array` input:
 
-    >> indices = ivy.array([[4],[3],[1]])
-    >> updates = ivy.Container(a=ivy.array([10, 20, 30]),
+    >>> indices = ivy.array([[4],[3],[1]])
+    >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),
                     b=ivy.array([200, 300, 400]))
-    >> shape = ivy.array([10, 10])
-    >> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
+    >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),
                             b = ivy.array([10, 20, 30, 40, 50]))
-    >> z = ivy.scatter_nd(indices, updates, tensor=arr, reduction='replace')
-    >> print(z)
+    >>> z = ivy.scatter_nd(indices, updates, reduction='replace', out=arr)
+    >>> print(z)
     {
         a: ivy.array([1, 30, 3, 20, 10]),
         b: ivy.array([10, 400, 30, 300, 200])
@@ -3249,71 +3011,6 @@ def multiprocessing(context: str = None):
 
     """
     return current_backend().multiprocessing(context)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-def indices_where(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns indices or true elements in an input boolean array.
-
-    Parameters
-    ----------
-    x
-        Boolean array, for which indices are desired.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Indices for where the boolean array is True.
-
-    """
-    return current_backend(x).indices_where(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@infer_device
-@handle_nestable
-def one_hot(
-    indices: Union[ivy.Array, ivy.NativeArray],
-    depth: int,
-    /,
-    *,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns a one-hot array.
-
-    Parameters
-    ----------
-    indices
-        Indices for where the ones should be scattered *[batch_shape, dim]*
-    depth
-        Scalar defining the depth of the one-hot dimension.
-    device
-        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
-        None.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Tensor of zeros with the same shape and type as a, unless dtype provided which
-        overrides.
-
-    """
-    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
 
 
 @to_native_arrays_and_back
@@ -3568,18 +3265,14 @@ def _get_devices_and_dtypes(fn, complement=True):
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
 
-        if not isinstance(list(fn_supported_dnd.values())[0], tuple):
-            raise ValueError("supported_device_and_dtype must be a dict of tuples")
-
+        ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
 
-        if not isinstance(list(fn_unsupported_dnd.values())[0], tuple):
-            raise ValueError("unsupported_device_and_dtype must be a dict of tuples")
-
+        ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 

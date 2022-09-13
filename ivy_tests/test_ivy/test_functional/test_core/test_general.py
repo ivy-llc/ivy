@@ -115,27 +115,6 @@ def test_get_referrers_recursive(device):
     assert len(some_obj_refs) == 1
 
 
-# copy array
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True)
-    )
-)
-def test_copy_array(dtype_and_x, device, fw):
-    dtype, x = dtype_and_x
-    # smoke test
-    x = ivy.array(x, dtype=dtype, device=device)
-    ret = ivy.copy_array(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
-    assert id(x) != id(ret)
-
-
 # array_equal
 @handle_cmd_line_args
 @given(
@@ -366,49 +345,6 @@ def test_clip_vector_norm(
     )
 
 
-# unstack
-@handle_cmd_line_args
-@given(
-    x_n_dtype_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=5,
-        min_axis=1,
-        max_axis=4,
-    ),
-    keepdims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="unstack"),
-)
-def test_unstack(
-    x_n_dtype_axis,
-    keepdims,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    # smoke test
-    dtype, x, axis = x_n_dtype_axis
-    if axis >= len(np.asarray(x, dtype=dtype).shape):
-        axis = len(np.asarray(x, dtype=dtype).shape) - 1
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="unstack",
-        x=np.asarray(x, dtype=dtype),
-        axis=axis,
-        keepdims=keepdims,
-    )
-
-
 # fourier_encode
 # @given(
 #     x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
@@ -452,90 +388,6 @@ def test_unstack(
 #         max_freq=np.asarray(max_freq,dtype=dtype_max_freq),
 #         num_bands=num_bands
 #     )
-
-
-# indices_where
-@given(
-    x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
-    with_out=st.booleans(),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="indices_where"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
-)
-def test_indices_where(
-    x,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    dtype, x = x
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="indices_where",
-        x=np.asarray(x, dtype=dtype),
-    )
-
-
-@st.composite
-def _dtype_indices_depth(draw):
-    depth = draw(helpers.ints(min_value=2, max_value=100))
-    dtype_and_indices = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            min_value=0,
-            max_value=depth - 1,
-            small_value_safety_factor=2.5,
-        )
-    )
-    return dtype_and_indices, depth
-
-
-# one_hot
-@handle_cmd_line_args
-@given(
-    dtype_indices_depth=_dtype_indices_depth(),
-    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
-)
-def test_one_hot(
-    dtype_indices_depth,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    device,
-    fw,
-):
-    dtype_and_indices, depth = dtype_indices_depth
-    dtype, indices = dtype_and_indices
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="one_hot",
-        indices=np.asarray(indices, dtype=dtype),
-        depth=depth,
-    )
 
 
 # scatter_flat
@@ -609,28 +461,13 @@ def test_scatter_flat(
         lambda n: st.tuples(
             helpers.dtype_and_values(
                 available_dtypes=ivy_np.valid_numeric_dtypes,
-                min_num_dims=n[0],
-                max_num_dims=n[0],
-                min_dim_size=n[1],
-                max_dim_size=n[1],
+                shape=(n[1], n[0]),
             ),
             helpers.dtype_and_values(
                 available_dtypes=["int32", "int64"],
                 min_value=0,
                 max_value=max(n[1] - 1, 0),
-                min_num_dims=1,
-                max_num_dims=1,
-                min_dim_size=n[1],
-                max_dim_size=n[1],
-                shape=st.shared(
-                    helpers.get_shape(
-                        min_num_dims=1,
-                        max_num_dims=1,
-                        min_dim_size=n[1],
-                        max_dim_size=n[1],
-                    ),
-                    key="shape2",
-                ),
+                shape=(n[1],),
             ).filter(lambda l: len(set(l[1])) == len(l[1])),
         )
     ),
