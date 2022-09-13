@@ -530,10 +530,10 @@ def used_mem_on_dev(
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
-        if process_specific:
-            raise ivy.exceptions.IvyException(
-                "process-specific GPU queries are currently not supported"
-            )
+        ivy.assertions.check_false(
+            process_specific,
+            "process-specific GPU queries are currently not supported",
+        )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.used / 1e9
@@ -589,10 +589,10 @@ def percent_used_mem_on_dev(
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
-        if process_specific:
-            raise ivy.exceptions.IvyException(
-                "process-specific GPU queries are currently not supported"
-            )
+        ivy.assertions.check_false(
+            process_specific,
+            "process-specific GPU queries are currently not supported",
+        )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return (info.used / info.total) * 100
@@ -1179,12 +1179,11 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     ret
         The supported devices of the function
     """
-    if not _is_valid_devices_attributes(fn):
-        raise ivy.exceptions.IvyException(
-            "supported_devices and unsupported_devices attributes cannot both \
-             exist in a particular backend"
-        )
-
+    ivy.assertions.check_true(
+        _is_valid_devices_attributes(fn),
+        "supported_devices and unsupported_devices attributes cannot both \
+        exist in a particular backend",
+    )
     supported_devices = set(_get_devices(fn, complement=False))
 
     if recurse:
@@ -1211,12 +1210,11 @@ def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
     ret
         The unsupported devices of the function
     """
-    if not _is_valid_devices_attributes(fn):
-        raise ivy.exceptions.IvyException(
-            "supported_devices and unsupported_devices attributes cannot both \
-             exist in a particular backend"
-        )
-
+    ivy.assertions.check_true(
+        _is_valid_devices_attributes(fn),
+        "supported_devices and unsupported_devices attributes cannot both \
+        exist in a particular backend",
+    )
     unsupported_devices = set(_get_devices(fn, complement=True))
 
     if recurse:
