@@ -58,6 +58,7 @@ FN_DECORATORS = [
     "handle_out_argument",
     "handle_nestable",
     "handle_exceptions",
+    "with_unsupported_dtypes"
 ]
 
 
@@ -473,6 +474,8 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 and linalg_k != "namedtuple"
                 and not linalg_k.startswith("_")
             ):
+                if linalg_k == "with_unsupported_dtypes":
+                    continue
                 to_wrap.__dict__[linalg_k] = _wrap_function(
                     linalg_k, linalg_v, ivy.__dict__[linalg_k]
                 )
@@ -538,39 +541,31 @@ class VersionedAttributes:
         return iter(self.attribute_function())
 
 
-def _dtype_device_wrapper_base(attrib, version_dict, version):
-    def _wrapped(func):
-        setattr(func, attrib, VersionedAttributes(lambda: _dtype_from_version(version_dict, version)))
-        return _dtype_from_version(version_dict, version)
+def _dtype_device_wrapper_creator(attrib):
+    def _wrapper_outer(version_dict, version):
+        def _wrapped(func):
+            setattr(func, attrib, VersionedAttributes(lambda: _dtype_from_version(version_dict, version)))
+            return func
 
-    return _wrapped
+        return _wrapped
+
+    return _wrapper_outer
 
 
 # Decorator to set unsupported dtypes
-def with_unsupported_dtypes(version_dict, version):
-    return _dtype_device_wrapper_base("unsupported_dtypes", version_dict, version)
-
+with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes")
 
 # Decorator to set supported dtypes
-def with_supported_dtypes(version_dict, version):
-    return _dtype_device_wrapper_base("supported_dtypes", version_dict, version)
-
+with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes")
 
 # Decorator to set unsupported devices
-def with_unsupported_devices(version_dict, version):
-    return _dtype_device_wrapper_base("unsupported_devices", version_dict, version)
-
+with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices")
 
 # Decorator to set supported devices
-def with_supported_devices(version_dict, version):
-    return _dtype_device_wrapper_base("supported_devices", version_dict, version)
-
+with_supported_devices = _dtype_device_wrapper_creator("supported_devices")
 
 # Decorator to set unsupported device and dtypes
-def with_unsupported_device_and_dtypes(version_dict, version):
-    return _dtype_device_wrapper_base("unsupported_device_and_dtype", version_dict, version)
-
+with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator("unsupported_device_and_dtype")
 
 # Decorator to set supported device and dtypes
-def with_supported_device_and_dtypes(version_dict, version):
-    return _dtype_device_wrapper_base("supported_device_and_dtype", version_dict, version)
+with_supported_device_and_dtypes = _dtype_device_wrapper_creator("supported_device_and_dtype")
