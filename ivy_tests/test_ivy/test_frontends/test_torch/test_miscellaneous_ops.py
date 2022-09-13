@@ -178,7 +178,6 @@ def dims_and_offset(draw, shape):
     return dim1, dim2, offset
 
 
-
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
@@ -262,7 +261,7 @@ def test_torch_cumprod(
         dtype=input_dtype,
         out=None,
     )
-      
+
 
 # TODO: Widen the bounds on the row, col, and offset data
 #  once ivy.asarray has been optimized.
@@ -282,7 +281,7 @@ def test_torch_tril_indices(
     offset,
     dtype_result,
     as_variable,
-    with_out,    
+    with_out,
     num_positional_args,
     native_array,
     fw,
