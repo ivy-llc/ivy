@@ -41,6 +41,11 @@ def check_all(results, message="one of the args is None"):
         raise ivy.exceptions.IvyException(message)
 
 
+def check_any(results, message="all of the args are None"):
+    if not builtins.any(results):
+        raise ivy.exceptions.IvyException(message)
+
+
 def check_isinstance(x, allowed_types):
     if not isinstance(x, allowed_types):
         raise ivy.exceptions.IvyException(
@@ -48,6 +53,16 @@ def check_isinstance(x, allowed_types):
                 type(x), allowed_types
             )
         )
+
+
+def check_true(expression, message="expression is not True"):
+    if not expression:
+        raise ivy.exceptions.IvyException(message)
+
+
+def check_false(expression, message="expression is not False"):
+    if expression:
+        raise ivy.exceptions.IvyException(message)
 
 
 # Creation #
