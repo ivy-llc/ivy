@@ -481,6 +481,7 @@ def test_eigvalsh(
         fw=fw,
         fn_name="eigvalsh",
         rtol_=1e-3,
+        test_values=False,
         x=np.asarray(x, dtype=input_dtype),
     )
 
