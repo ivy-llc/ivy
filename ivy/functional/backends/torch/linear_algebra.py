@@ -62,7 +62,7 @@ def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 
 det.support_native_out = True
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def diagonal(
@@ -95,8 +95,25 @@ eigvalsh.unsupported_dtypes = ("float16",)
 eigvalsh.support_native_out = True
 
 
+def inner(
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return torch.inner(x1, x2, out=out)
+
+
+inner.unsupported_dtypes = ("uint8", "int8", "int16", "int32")
+inner.support_native_out = True
+
+
 def inv(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.inverse(x, out=out)
+    if torch.any(torch.linalg.det(x.to(dtype=torch.float64)) == 0):
+        ret = x
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+    else:
+        ret = torch.inverse(x, out=out)
+    return ret
 
 
 inv.unsupported_dtypes = (

@@ -5,8 +5,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -189,11 +187,7 @@ def test_tensorflow_divide(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_tf.valid_numeric_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.negative"
@@ -830,7 +824,7 @@ def test_tensorflow_count_nonzero(
         fn_name="ivy.functional.frontends.tensorflow.confusion_matrix"
     ),
 )
-def test_confusion_matrix(
+def test_tensorflow_confusion_matrix(
     labels, predictions, num_classes, as_variable, num_positional_args, native_array, fw
 ):
     helpers.test_frontend_function(
@@ -857,7 +851,9 @@ def test_confusion_matrix(
         fn_name="ivy.functional.frontends.tensorflow.polyval"
     ),
 )
-def test_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array, fw):
+def test_tensorflow_polyval(
+    dtype_and_x, x, as_variable, num_positional_args, native_array, fw
+):
     input_dtype, coeffs = dtype_and_x
     coeffs = [coeffs]
     helpers.test_frontend_function(
@@ -871,4 +867,90 @@ def test_polyval(dtype_and_x, x, as_variable, num_positional_args, native_array,
         fn_tree="math.polyval",
         coeffs=coeffs,
         x=x,
+    )
+
+
+# unsorted_segment_mean
+@handle_cmd_line_args
+@given(
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_mean"
+    ),
+)
+def test_tensorflow_unsorted_segment_mean(
+    data, segment_ids, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.float32, ivy.int32],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.unsorted_segment_mean",
+        data=np.asarray(data, dtype=np.float32),
+        segment_ids=np.asarray(segment_ids, dtype=np.int32),
+        num_segments=np.max(segment_ids) + 1,
+    )
+
+
+# unsorted_segment_sqrt_n
+@handle_cmd_line_args
+@given(
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.unsorted_segment_sqrt_n"
+    ),
+)
+def test_tensorflow_unsorted_segment_sqrt_n(
+    data, segment_ids, as_variable, num_positional_args, native_array, fw
+):
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.float32, ivy.int32],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.unsorted_segment_sqrt_n",
+        data=np.asarray(data, dtype=np.float32),
+        segment_ids=np.asarray(segment_ids, dtype=np.int32),
+        num_segments=np.max(segment_ids) + 1,
+    )
+
+
+# zero_fraction
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.zero_fraction"
+    ),
+)
+def test_tensorflow_zero_fraction(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.zero_fraction",
+        value=np.asarray(x, dtype=input_dtype),
     )
