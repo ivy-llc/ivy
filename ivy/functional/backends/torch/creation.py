@@ -1,20 +1,22 @@
 # For Review
 # global
+from typing import Union, Tuple, List, Optional, Sequence
+
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, Tuple, List, Optional, Sequence
-from . import torch_version, dtype_from_version
+
 # local
 import ivy
 from ivy import (
     as_native_dtype,
     default_dtype,
 )
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
-
 # noinspection PyProtectedMember
 from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+from . import torch_version
 
 
 # Array API Standard #
@@ -36,6 +38,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
@@ -68,7 +71,6 @@ def arange(
 
 
 arange.support_native_out = True
-arange.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
 
 
 def asarray(
@@ -247,6 +249,7 @@ def full_like(
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
+@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, torch_version)
 def linspace(
     start: Union[torch.Tensor, float],
     stop: Union[torch.Tensor, float],
@@ -261,8 +264,8 @@ def linspace(
 ) -> torch.Tensor:
     if not endpoint:
         ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
-            :-1
-        ]
+              :-1
+              ]
     else:
         ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
     if (
@@ -283,7 +286,6 @@ def linspace(
 
 
 linspace.support_native_out = True
-linspace.unsupported_device_and_dtype = dtype_from_version({"1.11.0 and below":{"cpu": ("float16",)}},torch_version.split('+')[0])
 
 
 def linspace_helper(start, stop, num, axis=None, *, device, dtype):
@@ -460,6 +462,7 @@ def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.
     return x.clone()
 
 
+@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, torch_version)
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],
@@ -473,13 +476,10 @@ def logspace(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base**power_seq
+    return base ** power_seq
 
 
 logspace.support_native_out = True
-
-logspace.unsupported_device_and_dtype = dtype_from_version({"1.11.0 and below":{"cpu": ("float16",)}},torch_version.split('+')[0])
-
 
 
 def one_hot(
@@ -492,4 +492,3 @@ def one_hot(
     return torch.nn.functional.one_hot(indices.to(torch.int64), depth).to(
         device, indices.dtype
     )
-

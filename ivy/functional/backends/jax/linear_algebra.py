@@ -1,18 +1,22 @@
 # global
-import jax.numpy as jnp
-from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
 from collections import namedtuple
-from . import jax_version, dtype_from_version
+from typing import Union, Optional, Tuple, Literal, Sequence, NamedTuple
+
+import jax.numpy as jnp
+
 # local
 import ivy
 from ivy import inf
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import jax_version
 
 
 # Array API Standard #
 # -------------------#
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, jax_version)
 def cholesky(
     x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -24,11 +28,6 @@ def cholesky(
     return ret
 
 
-cholesky.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
 
 def cross(
     x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
@@ -36,11 +35,9 @@ def cross(
     return jnp.cross(a=x1, b=x2, axis=axis)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
-
-
-det.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
 
 
 def diagonal(
@@ -64,18 +61,14 @@ def diagonal(
     return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigh(x)
 
 
-eigh.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
-
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
-
-
-eigvalsh.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
 
 
 def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -83,6 +76,7 @@ def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.inner(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16", "float16",)}, jax_version)
 def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         ret = x
@@ -91,18 +85,13 @@ def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
-inv.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "bfloat16",
-    "float16",
-)},jax_version)
-
-
 def matmul(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.matmul(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, jax_version)
 def matrix_norm(
     x: JaxArray,
     /,
@@ -121,16 +110,10 @@ def matrix_norm(
     return ret
 
 
-matrix_norm.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "float16",
-    "bfloat16",
-)},jax_version)
-
-
 def matrix_power(x: JaxArray, n: int, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.matrix_power(x, n)
 
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def matrix_rank(
     x: JaxArray,
     /,
@@ -149,14 +132,9 @@ def matrix_rank(
     return jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
 
 
-matrix_rank.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
-
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "int8")}, jax_version)
 def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.swapaxes(x, -1, -2)
-
-
-matrix_transpose.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16", "int8")},jax_version)
 
 
 def outer(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -164,6 +142,7 @@ def outer(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.outer(x1, x2)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, jax_version)
 def pinv(
     x: JaxArray,
     /,
@@ -178,33 +157,21 @@ def pinv(
     return ret
 
 
-pinv.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "float16",
-    "bfloat16",
-)},jax_version)
-
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)
 
 
-qr.unsupported_dtypes = dtype_from_version({"0.3.14 and below":("float16",)},jax_version)
-
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, jax_version)
 def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "float16",
-    "bfloat16",
-)},jax_version)
-
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -234,11 +201,7 @@ def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.asarray(ret, dtype=x1.dtype)
 
 
-solve.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "float16"
-)},jax_version)
-
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, jax_version)
 def svd(
     x: JaxArray, /, *, full_matrices: bool = True
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
@@ -247,20 +210,9 @@ def svd(
     return results(U, D, VT)
 
 
-svd.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "float16",
-    "bfloat16",
-)},jax_version)
-
-
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, jax_version)
 def svdvals(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.svd(x, compute_uv=False)
-
-
-svdvals.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "float16",
-    "bfloat16",
-)},jax_version)
 
 
 def tensordot(
@@ -274,15 +226,11 @@ def tensordot(
     return jnp.tensordot(x1, x2, axes)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def trace(
     x: JaxArray, /, *, offset: int = 0, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.trace(x, offset=offset, axis1=-2, axis2=-1, dtype=x.dtype)
-
-
-trace.unsupported_dtypes = dtype_from_version({"0.3.14 and below":(
-    "float16",
-)},jax_version)
 
 
 def vecdot(

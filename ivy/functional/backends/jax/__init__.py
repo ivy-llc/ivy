@@ -5,7 +5,7 @@ import jaxlib
 import jax
 import jax.numpy as jnp
 from typing import Union
-from .. import dtype_from_version
+
 # noinspection PyPackageRequirements
 from jaxlib.xla_extension import Buffer
 

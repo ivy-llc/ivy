@@ -5,14 +5,17 @@ signature.
 # global
 from typing import Optional, Union, Sequence, Callable
 
+from ivy.func_wrapper import with_unsupported_dtypes
+
 _round = round
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
 import tensorflow as tf
-from . import tf_version, dtype_from_version
+
 # local
 import ivy
+from . import tf_version
 
 
 def _parse_ellipsis(so, ndims):
@@ -284,14 +287,14 @@ def scatter_nd(
             [
                 tf.reshape(value, (-1,))
                 for value in tf.meshgrid(
-                    *[
-                        tf.range(s)
-                        if idx == slice(None, None, None)
-                        else tf.constant([idx % s])
-                        for s, idx in zip(shape, indices)
-                    ],
-                    indexing="ij",
-                )
+                *[
+                    tf.range(s)
+                    if idx == slice(None, None, None)
+                    else tf.constant([idx % s])
+                    for s, idx in zip(shape, indices)
+                ],
+                indexing="ij",
+            )
             ],
             axis=-1,
         )
@@ -384,7 +387,6 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -405,6 +407,7 @@ def gather_nd(
     return tf.gather_nd(params, indices)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, tf_version)
 def one_hot(
     indices: Union[tf.Tensor, tf.Variable],
     depth: int,
@@ -419,10 +422,6 @@ def one_hot(
         with tf.device(ivy.as_native_dev(device)):
             return tf.one_hot(indices, depth)
     return tf.one_hot(indices, depth)
-
-
-one_hot.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("int8", "int16", "uint16", "uint32", "uint64")},tf_version)
-
 
 
 def current_backend_str():
@@ -447,7 +446,6 @@ def indices_where(
         [tf.expand_dims(item, -1) for item in where_x], -1
     )
     return res
-
 
 
 def shape(

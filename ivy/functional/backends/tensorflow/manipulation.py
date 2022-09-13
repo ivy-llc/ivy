@@ -1,13 +1,17 @@
 # For Review
 # global
-import ivy
 import math
-import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
-from . import tf_version, dtype_from_version
+
+import tensorflow as tf
+
+# local
+import ivy
 # noinspection PyProtectedMember
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import tf_version
 
 
 # Array API Standard #
@@ -209,6 +213,7 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
+@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, tf_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -220,12 +225,10 @@ def repeat(
     return tf.repeat(x, repeats, axis)
 
 
-repeat.supported_dtypes = (
-    "int32",
-    "int64",
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "int8", "int16",)},
+    tf_version
 )
-
-
 def tile(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -240,15 +243,6 @@ def tile(
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
     return tf.tile(x, reps)
-
-
-tile.unsupported_dtypes = dtype_from_version({"2.9.1 and below":(
-    "uint8",
-    "uint16",
-    "uint32",
-    "int8",
-    "int16",
-)},tf_version)
 
 
 def constant_pad(

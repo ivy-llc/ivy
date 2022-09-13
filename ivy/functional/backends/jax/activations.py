@@ -10,35 +10,14 @@ import jax.numpy as jnp
 from typing import Optional
 
 # local
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
-from . import dtype_from_version, jax_version
+from . import jax_version
 
 
-
-class VersionedAttributes:
-    def __init__(self, attribute_function):
-        self.attribute_function = attribute_function
-
-    def __get__(self, obj, objtype=None):
-        return self.attribute_function()
-
-    def __iter__(self):
-        return iter(self.attribute_function())
-
-
-# Decorator to set unsupported dtypes
-def _with_unsupported_dtypes(version_dict, version):
-    def _unsupported_wrapper(func):
-        func.unsupported_dtypes = VersionedAttributes(lambda: dtype_from_version(version_dict, version["version"]))
-        return func
-
-    return _unsupported_wrapper
-
-
-@_with_unsupported_dtypes({"0.3.14": ("uint32",), "0.1": ("float64",)}, jax_version)
+@with_unsupported_dtypes({"0.3.14": ("uint32",), "0.1": ("float64",)}, jax_version)
 def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.maximum(x, 0)
-
 
 
 

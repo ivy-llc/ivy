@@ -1,7 +1,8 @@
-import ivy
 import functools
 from types import FunctionType
 from typing import Callable
+
+import ivy
 
 FW_FN_KEYWORDS = {
     "numpy": [],
@@ -58,6 +59,7 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_exceptions",
 ]
+
 
 # Helpers #
 # --------#
@@ -471,8 +473,6 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 and linalg_k != "namedtuple"
                 and not linalg_k.startswith("_")
             ):
-                if linalg_k=='dtype_from_version':
-                    continue # TODO: fix the issue where the error arises dtype_from_version not found
                 to_wrap.__dict__[linalg_k] = _wrap_function(
                     linalg_k, linalg_v, ivy.__dict__[linalg_k]
                 )
@@ -493,3 +493,84 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
+
+
+# Gets dtype from a version dictionary
+def _dtype_from_version(dic, version):
+    # if version is a dict, extract the version
+    if isinstance(version, dict):
+        version = version["version"]
+
+    # If key is already in the dictionary, return the value
+    if version in dic:
+        return dic[version]
+
+    version_tuple = tuple(map(int, version.split('.')))
+
+    # If key is not in the dictionary, check if it's in any range
+    # three formats are supported:
+    # 1. x.y.z and above
+    # 2. x.y.z and below
+    # 3. x.y.z to x.y.z
+    for key in dic.keys():
+        kl = key.split(" ")
+        k1 = tuple(map(int, kl[0].split('.')))
+
+        if "above" in key and k1 <= version_tuple:
+            return dic[key]
+        if "below" in key and k1 >= version_tuple:
+            return dic[key]
+        if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split('.'))):
+            return dic[key]
+
+    raise ValueError(f"No dtype found for version {version}")
+
+
+# Class to handle versioning of dtypes and or device
+class VersionedAttributes:
+    def __init__(self, attribute_function):
+        self.attribute_function = attribute_function
+
+    def __get__(self, obj, objtype=None):
+        return self.attribute_function()
+
+    def __iter__(self):
+        return iter(self.attribute_function())
+
+
+def _dtype_device_wrapper_base(attrib, version_dict, version):
+    def _wrapped(func):
+        setattr(func, attrib, VersionedAttributes(lambda: _dtype_from_version(version_dict, version)))
+        return _dtype_from_version(version_dict, version)
+
+    return _wrapped
+
+
+# Decorator to set unsupported dtypes
+def with_unsupported_dtypes(version_dict, version):
+    return _dtype_device_wrapper_base("unsupported_dtypes", version_dict, version)
+
+
+# Decorator to set supported dtypes
+def with_supported_dtypes(version_dict, version):
+    return _dtype_device_wrapper_base("supported_dtypes", version_dict, version)
+
+
+# Decorator to set unsupported devices
+def with_unsupported_devices(version_dict, version):
+    return _dtype_device_wrapper_base("unsupported_devices", version_dict, version)
+
+
+# Decorator to set supported devices
+def with_supported_devices(version_dict, version):
+    return _dtype_device_wrapper_base("supported_devices", version_dict, version)
+
+
+# Decorator to set unsupported device and dtypes
+def with_unsupported_device_and_dtypes(version_dict, version):
+    return _dtype_device_wrapper_base("unsupported_device_and_dtype", version_dict, version)
+
+
+# Decorator to set supported device and dtypes
+def with_supported_device_and_dtypes(version_dict, version):
+    return _dtype_device_wrapper_base("supported_device_and_dtype", version_dict, version)

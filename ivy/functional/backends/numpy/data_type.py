@@ -1,11 +1,13 @@
 # global
-import numpy as np
 from typing import Optional, Union, Sequence, List
+
+import numpy as np
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
-from . import np_version,dtype_from_version
+from . import np_version
 
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
@@ -160,6 +162,7 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, np_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
@@ -169,9 +172,6 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
         raise TypeError(
             f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
         )
-
-
-as_native_dtype.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("bfloat16",)},np_version)
 
 
 def dtype(x: np.ndarray, as_native: bool = False) -> ivy.Dtype:

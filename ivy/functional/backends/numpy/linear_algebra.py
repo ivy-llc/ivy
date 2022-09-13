@@ -1,18 +1,22 @@
 # global
-import numpy as np
+from collections import namedtuple
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
-from . import np_version, dtype_from_version
+
+import numpy as np
+
 # local
 import ivy
 from ivy import inf
-from collections import namedtuple
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from . import np_version
 
 
 # Array API Standard #
 # -------------------#
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def cholesky(
     x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -22,9 +26,6 @@ def cholesky(
         axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
         ret = np.transpose(np.linalg.cholesky(np.transpose(x, axes=axes)), axes=axes)
     return ret
-
-
-cholesky.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
 
 
 def cross(
@@ -39,11 +40,9 @@ def cross(
 
 
 @_handle_0_dim_output
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
-
-
-det.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
 
 
 def diagonal(
@@ -58,18 +57,14 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def eigh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.eigh(x)
 
 
-eigh.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
-
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.eigvalsh(x)
-
-
-eigvalsh.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
 
 
 def inner(
@@ -79,14 +74,9 @@ def inner(
     return ivy.array(np.inner(x1, x2), dtype=x1.dtype)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, np_version)
 def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.inv(x)
-
-
-inv.unsupported_dtypes = dtype_from_version({"1.23.0 and below":(
-    "bfloat16",
-    "float16",
-)},np_version)
 
 
 def matmul(
@@ -102,6 +92,7 @@ matmul.support_native_out = True
 
 
 @_handle_0_dim_output
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, np_version)
 def matrix_norm(
     x: np.ndarray,
     /,
@@ -111,11 +102,6 @@ def matrix_norm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
-
-
-
-matrix_norm.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16","bfloat16",)},np_version)
-
 
 
 def matrix_power(
@@ -151,7 +137,7 @@ def outer(
 
 outer.support_native_out = True
 
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def pinv(
     x: np.ndarray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -164,18 +150,14 @@ def pinv(
         return np.linalg.pinv(x, rtol)
 
 
-pinv.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
-
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)
 
 
-qr.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
-
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def slogdet(
     x: np.ndarray,
     *,
@@ -190,9 +172,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
-
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def solve(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -210,9 +190,7 @@ def solve(
     return ret
 
 
-solve.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
-
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def svd(
     x: np.ndarray, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
@@ -221,14 +199,9 @@ def svd(
     return results(U, D, VT)
 
 
-svd.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
-
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
 def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
-
-
-svdvals.unsupported_dtypes = dtype_from_version({"1.23.0 and below":("float16",)},np_version)
 
 
 def tensordot(

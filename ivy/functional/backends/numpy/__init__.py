@@ -1,10 +1,11 @@
 # global
 import sys
 import numpy as np
-np_version=np.__version__
-from .. import dtype_from_version
+
 # local
 import ivy
+
+np_version = {"version": np.__version__}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])

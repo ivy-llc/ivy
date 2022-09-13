@@ -1,9 +1,15 @@
 # global
-import torch
-from typing import NamedTuple, Optional
 from collections import namedtuple
-from . import torch_version,dtype_from_version
+from typing import NamedTuple, Optional
 
+import torch
+
+# local
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import torch_version
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",), }, torch_version)
 def unique_all(
     x: torch.Tensor,
     /,
@@ -47,9 +53,7 @@ def unique_all(
     )
 
 
-unique_all.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16"),},torch_version.split('+')[0])
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",), }, torch_version)
 def unique_counts(x: torch.Tensor, /) -> NamedTuple:
     v, c = torch.unique(torch.reshape(x, [-1]), return_counts=True)
     nan_idx = torch.where(torch.isnan(v))
@@ -58,9 +62,7 @@ def unique_counts(x: torch.Tensor, /) -> NamedTuple:
     return uc(v, c)
 
 
-unique_counts.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16"),},torch_version.split('+')[0])
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",), }, torch_version)
 def unique_inverse(x: torch.Tensor, /) -> NamedTuple:
     out = namedtuple("unique_inverse", ["values", "inverse_indices"])
     values, inverse_indices = torch.unique(x, return_inverse=True)
@@ -71,13 +73,9 @@ def unique_inverse(x: torch.Tensor, /) -> NamedTuple:
     return out(values, inverse_indices)
 
 
-unique_inverse.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16"),},torch_version.split('+')[0])
-
-
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",), }, torch_version)
 def unique_values(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.unique(x)
 
-
-unique_values.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16"),},torch_version.split('+')[0])

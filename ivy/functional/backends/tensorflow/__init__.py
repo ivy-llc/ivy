@@ -1,13 +1,15 @@
 # global
 import sys
+
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 from tensorflow.python.framework.tensor_shape import TensorShape
-tf_version=tf.__version__
-from .. import dtype_from_version
+from tensorflow.python.types.core import Tensor
+
 # local
 import ivy
+
+tf_version = {"version": tf.__version__}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])
@@ -98,7 +100,6 @@ def closest_valid_dtype(type):
 
 
 backend = "tensorflow"
-
 
 # local sub-modules
 from . import activations

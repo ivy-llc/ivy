@@ -2,18 +2,22 @@
 signature.
 """
 
+from typing import Optional, Union, Sequence
+
 # global
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
-from typing import Optional, Union, Sequence
-from . import tf_version,dtype_from_version
+
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
+from . import tf_version
+
 
 # Extra #
 # ------#
@@ -52,6 +56,7 @@ def random_normal(
         return tf.random.normal(shape, mean, std, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -77,12 +82,6 @@ def multinomial(
                 / population_size
             )
         return tf.random.categorical(tf.math.log(probs), num_samples)
-
-
-multinomial.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":(
-    "bfloat16")
-},tf_version)
 
 
 def randint(

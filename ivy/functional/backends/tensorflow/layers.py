@@ -1,14 +1,18 @@
 """Collection of TensorFlow network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-import tensorflow as tf
 from typing import Optional, Tuple, Union, List, Sequence
+
+import tensorflow as tf
 from tensorflow.python.types.core import Tensor
-from . import tf_version, dtype_from_version
+
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_devices
+from . import tf_version
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -28,9 +32,7 @@ def conv1d(
     return res
 
 
-conv1d.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("bfloat16",)},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def conv1d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -71,12 +73,7 @@ def conv1d_transpose(
     return res
 
 
-conv1d_transpose.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":(
-    "bfloat16")
-},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -96,12 +93,7 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":(
-    "bfloat16")
-},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def conv2d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -145,12 +137,7 @@ def conv2d_transpose(
     return res
 
 
-conv2d_transpose.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":(
-    "bfloat16")
-},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -183,12 +170,7 @@ def depthwise_conv2d(
     return res
 
 
-depthwise_conv2d.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":(
-    "bfloat16")
-},tf_version)
-
-
+@with_unsupported_devices({"2.9.1 and below": ("cpu",)}, tf_version)
 # noinspection PyDefaultArgument
 def conv3d(
     x,
@@ -213,9 +195,7 @@ def conv3d(
     return res
 
 
-conv3d.unsupported_devices = dtype_from_version({"2.9.1 and below":("cpu",)},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, tf_version)
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
@@ -267,9 +247,3 @@ def conv3d_transpose(
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
-
-
-conv3d_transpose.unsupported_dtypes = dtype_from_version({
-    "2.9.1 abd below":(
-    "bfloat16")
-},tf_version)

@@ -1,10 +1,13 @@
 # global
-import torch
 from typing import Union, Sequence, List
-from . import torch_version, dtype_from_version
+
+import torch
+
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import torch_version
 
 native_dtype_dict = {
     "int8": torch.int8,
@@ -75,14 +78,11 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return list(torch.broadcast_tensors(*arrays))
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, torch_version)
 def broadcast_to(
     x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> torch.Tensor:
     return torch.broadcast_to(x, shape)
-
-
-
-broadcast_to.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("uint8", "uint16", "uint32", "uint64")},torch_version.split('+')[0])
 
 
 def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
@@ -160,6 +160,7 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, torch_version)
 def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if not isinstance(dtype_in, str):
         return dtype_in
@@ -170,9 +171,6 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
             f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
 
-
-
-as_native_dtype.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("uint16"),},torch_version.split('+')[0])
 
 def dtype(x: torch.tensor, as_native: bool = False) -> ivy.Dtype:
     if as_native:

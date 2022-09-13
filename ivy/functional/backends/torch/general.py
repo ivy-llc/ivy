@@ -1,20 +1,18 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
-
 # global
-import ivy
-import numpy as np
-import torch
-from operator import mul
 from functools import reduce
-from typing import Optional, Union, Sequence, Callable
 from numbers import Number
-
-
-from . import torch_version,dtype_from_version
-
-
+from operator import mul
+from typing import Optional, Union, Sequence, Callable
 
 import functorch
+import numpy as np
+import torch
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import torch_version
 
 torch_scatter = None
 
@@ -114,8 +112,8 @@ def gather_nd(
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
-    ] + [1]
+                                reduce(mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)
+                            ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_params = torch.reshape(params, (-1,))
@@ -170,7 +168,6 @@ def inplace_increment(
     return x
 
 
-
 def _infer_dtype(x_dtype: torch.dtype):
     default_dtype = ivy.infer_default_dtype(x_dtype, as_native=True)
     if ivy.dtype_bits(x_dtype) < ivy.dtype_bits(default_dtype):
@@ -180,6 +177,7 @@ def _infer_dtype(x_dtype: torch.dtype):
     return dtype
 
 
+@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, torch_version)  # TODO Fixed in PyTorch 1.12.1
 def cumsum(
     x: torch.Tensor,
     axis: int = 0,
@@ -212,9 +210,9 @@ def cumsum(
 
 
 cumsum.support_native_out = True
-cumsum.unsupported_dtypes = dtype_from_version({"1.11.0 and below":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
 
 
+@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, torch_version)  # TODO Fixed in PyTorch 1.12.1
 def cumprod(
     x: torch.Tensor,
     axis: int = 0,
@@ -227,6 +225,10 @@ def cumprod(
     if dtype is None:
         if dtype is torch.bool:
             dtype = ivy.default_int_dtype(as_native=True)
+
+
+cumprod.support_native_out = True
+
 
 def inplace_update(
     x: Union[ivy.Array, torch.Tensor],
@@ -248,10 +250,6 @@ def inplace_update(
         return val
 
 
-
-cumprod.support_native_out = True
-cumprod.unsupported_dtypes = dtype_from_version({"1.11.0 and below":"bfloat16",},torch_version.split('+')[0])  # TODO Fixed in PyTorch 1.12.1
-
 def inplace_variables_supported():
     return True
 
@@ -262,7 +260,6 @@ def multiprocessing(context=None):
     if context is None:
         return torch.multiprocessing
     return torch.multiprocessing.get_context(context)
-
 
 
 def scatter_flat(
@@ -318,6 +315,7 @@ def scatter_flat(
     return res
 
 
+@with_unsupported_dtypes({"1.11.0 and below": "float16", }, torch_version)
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -355,14 +353,14 @@ def scatter_nd(
             [
                 torch.reshape(value, (-1,))
                 for value in torch.meshgrid(
-                    *[
-                        torch.range(0, s - 1)
-                        if idx == slice(None, None, None)
-                        else torch.Tensor([idx % s])
-                        for s, idx in zip(shape, indices)
-                    ],
-                    indexing="ij",
-                )
+                *[
+                    torch.range(0, s - 1)
+                    if idx == slice(None, None, None)
+                    else torch.Tensor([idx % s])
+                    for s, idx in zip(shape, indices)
+                ],
+                indexing="ij",
+            )
             ],
             dim=-1,
         )
@@ -391,8 +389,8 @@ def scatter_nd(
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
-    ] + [1]
+                                reduce(mul, shape[i + 1:], 1) for i in range(len(shape) - 1)
+                            ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_result_size = reduce(mul, shape, 1)
@@ -453,11 +451,7 @@ def scatter_nd(
     return res
 
 
-
 scatter_nd.support_native_out = True
-
-scatter_nd.unsupported_dtypes = dtype_from_version({"1.11.0 and below":("float16",)},torch_version.split('+')[0])
-
 
 
 def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:

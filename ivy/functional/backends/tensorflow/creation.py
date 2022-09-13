@@ -1,8 +1,9 @@
 # For Review
 # global
-import tensorflow as tf
 from typing import Union, Tuple, List, Optional, Sequence
-from . import tf_version, dtype_from_version
+
+import tensorflow as tf
+
 # local
 import ivy
 from ivy import (
@@ -10,15 +11,16 @@ from ivy import (
     default_dtype,
     as_ivy_dtype,
 )
-
+from ivy.func_wrapper import with_unsupported_dtypes
 # noinspection PyProtectedMember
 from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+from . import tf_version
 
 
 # Array API Standard #
 # -------------------#
 
-
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16",)}, tf_version)
 def arange(
     start: float,
     /,
@@ -55,12 +57,6 @@ def arange(
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
                 return tf.range(start, stop, delta=step, dtype=dtype)
-
-
-arange.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":("float16",
-    "bfloat16",)
-},tf_version)
 
 
 def asarray(
@@ -144,6 +140,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, tf_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -192,9 +189,6 @@ def eye(
             return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
         else:
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
-
-
-eye.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("uint16",)},tf_version)
 
 
 # noinspection PyShadowingNames
@@ -364,7 +358,7 @@ def logspace(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base**power_seq
+    return base ** power_seq
 
 
 def one_hot(

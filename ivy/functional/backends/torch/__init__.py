@@ -1,10 +1,10 @@
 # global
 import sys
 import torch as torch
-torch_version=torch.__version__
-from .. import dtype_from_version
 # local
 import ivy
+
+torch_version = {"version": torch.__version__.split('+')[0]}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])

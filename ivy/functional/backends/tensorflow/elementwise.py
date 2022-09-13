@@ -1,10 +1,12 @@
 # global
 from typing import Union, Optional
 
-from . import tf_version, dtype_from_version
 import tensorflow as tf
+
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import tf_version
 
 
 def _clamp_bits(x1, x2):
@@ -396,6 +398,7 @@ def log2(
     return tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype))
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, tf_version)
 def logaddexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -405,9 +408,6 @@ def logaddexp(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.logaddexp(x1, x2)
-
-
-logaddexp.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("float16", "bfloat16")},tf_version)
 
 
 def logical_and(
@@ -460,6 +460,7 @@ def multiply(
     return tf.math.multiply(x1, x2)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, tf_version)
 def negative(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -469,9 +470,6 @@ def negative(
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
     return tf.negative(x)
-
-
-negative.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("uint8", "uint16", "uint32", "uint64")},tf_version)
 
 
 def not_equal(
@@ -494,6 +492,7 @@ def positive(
     return tf.experimental.numpy.positive(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")}, tf_version)
 def pow(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -513,9 +512,9 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-pow.unsupported_dtypes = dtype_from_version({"2.9.1 and below":("uint8", "uint16", "uint32", "uint64", "float64")},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 and below":
+                              ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "int32", "int64",)}, tf_version
+)
 def reciprocal(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -525,18 +524,7 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
-reciprocal.unsupported_dtypes = dtype_from_version({"2.9.1 and below":(
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-)},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -555,12 +543,7 @@ def remainder(
     return tf.experimental.numpy.remainder(x1, x2)
 
 
-remainder.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":(
-    "bfloat16")
-},tf_version)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def round(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -571,12 +554,6 @@ def round(
         return x
     else:
         return tf.round(x)
-
-
-round.unsupported_dtypes = dtype_from_version({
-    "2.9.1 and below":(
-    "bfloat16")
-},tf_version)
 
 
 def sign(
