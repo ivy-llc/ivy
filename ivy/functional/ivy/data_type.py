@@ -72,9 +72,9 @@ def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
     for func_name in func_names:
-        if hasattr(ivy, func_name):
+        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name):
+        elif hasattr(module, func_name) and callable(getattr(ivy, func_name)):
             ret.add(getattr(module, func_name))
     return ret
 
@@ -136,10 +136,7 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if not isinstance(v, tuple):
-                raise ValueError(
-                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
-                )
+            ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
     if complement:
@@ -905,7 +902,7 @@ def _check_float64(input) -> bool:
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(tmp[0])).replace("0b", "")
+        mant = bin(int(float(tmp[0]))).replace("0b", "")
         return (
             (input > 3.4028235 * 10**38)
             or (len(mant) > 24 and int(mant[24:]) > 0)
@@ -966,7 +963,6 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-# noinspection PyShadowingNames,PyShadowingBuiltins
 @handle_nestable
 def default_float_dtype(
     *,
@@ -1037,8 +1033,8 @@ def default_float_dtype(
 
 
 def infer_default_dtype(
-    dtype: Union[ivy.Dtype, str], as_native: Optional[bool] = False
-):
+    dtype: Union[ivy.Dtype, ivy.NativeDtype, str], as_native: bool = False
+) -> Union[ivy.Dtype, ivy.NativeDtype]:
     """Summary.
 
     Parameters
@@ -1077,10 +1073,9 @@ def infer_default_dtype(
     return default_dtype
 
 
-# noinspection PyShadowingNames
 def default_dtype(
     *, dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
-) -> Union[ivy.Dtype, str]:
+) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
     """Summary.
 
     Parameters
@@ -1129,12 +1124,11 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-# noinspection PyShadowingNames,PyShadowingBuiltins
 def default_int_dtype(
     *,
     input=None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """Summary.
 

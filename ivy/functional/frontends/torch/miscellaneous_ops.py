@@ -59,3 +59,7 @@ def diag(input, diagonal=0, *, out=None):
 
 
 diag.unsupported_dtypes = ("float16",)
+
+
+def triu(input, diagonal=0, *, out=None):
+    return ivy.triu(input, k=diagonal, out=out)

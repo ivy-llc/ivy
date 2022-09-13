@@ -19,20 +19,15 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         min_dim_size=2,
         max_dim_size=5,
         min_axis=-2,
-        max_axis=1
+        max_axis=1,
     ),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.norm"
-    )
+    ),
 )
 def test_numpy_norm(
-    dtype_values_axis,
-    keepdims,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_values_axis, keepdims, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x, axis = dtype_values_axis
     if len(np.shape(x)) == 1:
@@ -49,8 +44,9 @@ def test_numpy_norm(
         x=np.array(x, dtype=dtype),
         ord=None,
         axis=axis,
-        keepdims=keepdims
+        keepdims=keepdims,
     )
+
 
 # matrix_rank
 
