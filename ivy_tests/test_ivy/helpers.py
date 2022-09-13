@@ -2674,6 +2674,9 @@ def subsets(draw, *, elements):
 @st.composite
 def array_and_indices(
     draw,
+    *,
+    array_dtypes,
+    indices_dtypes,
     last_dim_same_size=True,
     allow_inf=False,
     min_num_dims=1,
@@ -2687,6 +2690,10 @@ def array_and_indices(
 
     Parameters
     ----------
+    array_dtypes
+        list of data type to draw the array dtype from.
+    indices_dtypes
+        list of data type to draw the indices dtype from.
     last_dim_same_size
         True:
             The shape of the indices array is the exact same as the shape of the values
@@ -2728,9 +2735,9 @@ def array_and_indices(
     """
     x_num_dims = draw(ints(min_value=min_num_dims, max_value=max_num_dims))
     x_dim_size = draw(ints(min_value=min_dim_size, max_value=max_dim_size))
-    x = draw(
+    x_dtype, x, indices_shape = draw(
         dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
+            available_dtypes=array_dtypes,
             allow_inf=allow_inf,
             ret_shape=True,
             min_num_dims=x_num_dims,
@@ -2739,21 +2746,20 @@ def array_and_indices(
             max_dim_size=x_dim_size,
         )
     )
-    indices_shape = list(x[2])
     if not last_dim_same_size:
         indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
         indices_shape[-1] = indices_dim_size
-    indices = draw(
+    indices_dtype, indices = draw(
         dtype_and_values(
-            available_dtypes=["int32", "int64"],
+            available_dtypes=indices_dtypes,
             allow_inf=False,
             min_value=0,
-            max_value=max(x[2][-1] - 1, 0),
+            max_value=max(indices_shape[-1] - 1, 0),
             shape=indices_shape,
         )
     )
     x = x[0:2]
-    return (x, indices)
+    return [x_dtype, indices_dtype], x, indices
 
 
 def _zeroing(x):
