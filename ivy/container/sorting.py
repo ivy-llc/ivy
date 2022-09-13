@@ -71,7 +71,7 @@ class ContainerWithSorting(ContainerBase):
         
         Examples
         --------
-        With: code:`ivy.Container` inputs:
+        With: code:`ivy.Container` input:
         
         >>> x = ivy.Container(a=ivy.array([7, 2, 1]),\
                               b=ivy.array([3, 2]))
@@ -91,7 +91,7 @@ class ContainerWithSorting(ContainerBase):
             b: ivy.array([[0, 1]],[0, 1]])
         }
         
-        With: code:`ivy.Container` inputs:
+        With: code:`ivy.Container` input:
         
         >>> x = ivy.Container(a=ivy.array([2, 5, 1]),\
                               b=ivy.array([1, 5], [.2,.1]))
@@ -285,8 +285,6 @@ class ContainerWithSorting(ContainerBase):
 
         Examples
         --------
-        With：code:`ivy.Container` inputs:
-
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
                               b=ivy.array([8, 1]))
         >>> y = x.sort()
@@ -304,7 +302,6 @@ class ContainerWithSorting(ContainerBase):
           b: ivy.array([[1., 8.],[0.8, 5.]])
         }
 
-        With：code:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([8, 0.5, 6]),\
                               b=ivy.array([[9, 0.7], [0.4, 0]]))
