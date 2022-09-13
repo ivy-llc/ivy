@@ -59,14 +59,32 @@ def check_false(expression, message="expression must be False"):
         raise ivy.exceptions.IvyException(message)
 
 
-def check_all(results, message="one of the args is None"):
+def check_all(results, message="one of the args is False"):
     if not builtins.all(results):
         raise ivy.exceptions.IvyException(message)
 
 
-def check_any(results, message="all of the args are None"):
+def check_any(results, message="all of the args are False"):
     if not builtins.any(results):
         raise ivy.exceptions.IvyException(message)
+
+
+def check_all_or_any_exists(
+    *args,
+    type="all",
+    limit=[0],
+    message="args must exist according to type and limit given"
+):
+    if type == "all":
+        check_all([ivy.exists(arg) for arg in args], message)
+    elif type == "any":
+        count = 0
+        for arg in args:
+            count = count + 1 if ivy.exists(arg) else count
+        if count not in limit:
+            raise ivy.exceptions.IvyException(message)
+    else:
+        raise ivy.exceptions.IvyException("limit must be all or any")
 
 
 # Creation #

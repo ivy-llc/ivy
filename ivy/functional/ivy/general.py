@@ -2492,12 +2492,12 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
         True if support, raises exception otherwise
 
     """
-    if not ivy.supports_inplace_updates(x):
-        raise ivy.exceptions.IvyException(
-            "Inplace operations are not supported {} types with {} backend".format(
-                type(x), ivy.current_backend_str()
-            )
-        )
+    ivy.assertions.check_true(
+        ivy.supports_inplace_updates(x),
+        "Inplace operations are not supported {} types with {} backend".format(
+            type(x), ivy.current_backend_str()
+        ),
+    )
     return True
 
 
@@ -3144,12 +3144,13 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
         a `dict` containing the idx, and the `inspect.Parameter` for the argument,
         which itself contains the parameter name, type, and other helpful information.
     """
-    if (not ivy.exists(name) and not ivy.exists(idx)) or (
-        ivy.exists(name) and ivy.exists(idx)
-    ):
-        raise ivy.exceptions.IvyException(
-            "exactly one of the keyword arguments name or idx " "must be provided"
-        )
+    ivy.assertions.check_all_or_any_exists(
+        name,
+        idx,
+        type="any",
+        limit=[1],
+        message="exactly one of the keyword arguments name or idx must be provided",
+    )
     params = inspect.signature(fn).parameters
     if ivy.exists(name):
         return {"idx": list(params).index(name), "param": params[name]}
@@ -3162,11 +3163,11 @@ def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_att
         attr_list = getattr(fn, other_attr_name)
         if isinstance(attr_list, dict):
             attr_list = attr_list.get(backend, ())
-    if dnd_dict and attr_list:
-        raise ivy.exceptions.IvyException(
-            f"Cannot specify both {first_attr_name} and {other_attr_name} "
-            "cannot both be defined for the same function"
-        )
+    ivy.assertions.check_false(
+        dnd_dict and attr_list,
+        f"Cannot specify both {first_attr_name} and {other_attr_name} "
+        "cannot both be defined for the same function",
+    )
 
 
 def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
@@ -3184,11 +3185,11 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
         if isinstance(list(fn_supported_dnd.values())[0], dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
-    if fn_unsupported_dnd and fn_supported_dnd:
-        raise ivy.exceptions.IvyException(
-            "unsupported_device_and_dtype and supported_device_and_dtype "
-            "cannot both be defined for the same function"
-        )
+    ivy.assertions.check_false(
+        fn_unsupported_dnd and fn_supported_dnd,
+        "unsupported_device_and_dtype and supported_device_and_dtype \
+        cannot both be defined for the same function",
+    )
 
     us = "unsupported_device_and_dtype"
     _valid_attrib_combinations(fn, backend, fn_unsupported_dnd, us, "supported_devices")
@@ -3300,12 +3301,11 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     ret
         The unsupported devices of the function
     """
-    if not _is_valid_device_and_dtypes_attributes(fn):
-        raise ivy.exceptions.IvyException(
-            "supported_device_and_dtypes and unsupported_device_and_dtypes \
-             attributes cannot both exist in a particular backend"
-        )
-
+    ivy.assertions.check_true(
+        _is_valid_device_and_dtypes_attributes(fn),
+        "supported_device_and_dtypes and unsupported_device_and_dtypes \
+         attributes cannot both exist in a particular backend",
+    )
     supported_devices_dtype = _get_devices_and_dtypes(fn, complement=False)
 
     if recurse:
@@ -3337,12 +3337,11 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     ret
         The unsupported combination of devices and dtypes of the function
     """
-    if not _is_valid_device_and_dtypes_attributes(fn):
-        raise ivy.exceptions.IvyException(
-            "supported_device_and_dtypes and unsupported_device_and_dtypes \
-             attributes cannot both exist in a particular backend"
-        )
-
+    ivy.assertions.check_true(
+        _is_valid_device_and_dtypes_attributes(fn),
+        "supported_device_and_dtypes and unsupported_device_and_dtypes \
+         attributes cannot both exist in a particular backend",
+    )
     unsupported_devices_dtype = _get_devices_and_dtypes(fn, complement=True)
 
     if recurse:
