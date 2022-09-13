@@ -743,3 +743,8 @@ class Array(
     @_native_wrapper
     def __iter__(self):
         return iter([to_ivy(i) for i in self._data])
+
+    @_native_wrapper
+    def __array_namespace__(self, api_version=None):
+        return ivy
+
