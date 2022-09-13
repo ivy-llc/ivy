@@ -114,7 +114,7 @@ def inv(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.math.reduce_any(tf.linalg.det(x) == 0):
+    if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
         ret = x
     else:
         ret = tf.linalg.inv(x)
