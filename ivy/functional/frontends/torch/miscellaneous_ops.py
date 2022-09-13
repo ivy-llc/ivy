@@ -43,8 +43,8 @@ cumsum.unsupported_dtypes = (
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
     # TODO: Find out how Ivy handles this layout flag
     # As I understand it, we don't have such a thing
-    sample_matrix = ivy.tril(ivy.ones((row, col), dtype=dtype, device=device), k=offset)
-    return ivy.stack(ivy.nonzero(sample_matrix))
+    sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
+    return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
 
 tril_indices.supported_dtypes = (
