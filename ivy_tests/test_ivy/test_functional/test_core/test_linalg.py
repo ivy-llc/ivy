@@ -384,6 +384,8 @@ def test_det(
         instance_method=instance_method,
         fw=fw,
         fn_name="det",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
     )
 
