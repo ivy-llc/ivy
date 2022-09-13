@@ -1147,10 +1147,7 @@ def _get_devices(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if not isinstance(v, tuple):
-                raise ValueError(
-                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
-                )
+            ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
     if complement:
@@ -1242,17 +1239,17 @@ class Profiler(abc.ABC):
     @abc.abstractmethod
     def start(self):
         """Start the profiler. This should be called before the code to be profiled."""
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def stop(self):
         """Stop the profiler. This should be called after the code to be profiled."""
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __enter__(self):
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
