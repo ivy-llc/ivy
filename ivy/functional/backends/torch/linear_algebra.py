@@ -102,7 +102,7 @@ def inner(
     return torch.inner(x1, x2, out=out)
 
 
-inner.unsupported_dtypes = ("int8",)
+inner.unsupported_dtypes = ("int8", "int16", "int32")
 inner.support_native_out = True
 
 
