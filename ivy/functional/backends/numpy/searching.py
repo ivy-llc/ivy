@@ -1,6 +1,11 @@
 from typing import Optional, Tuple
 
+import ivy
 import numpy as np
+
+
+# Array API Standard #
+# ------------------ #
 
 
 def argmax(
@@ -12,8 +17,7 @@ def argmax(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmax.support_native_out = True
@@ -28,8 +32,7 @@ def argmin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmin.support_native_out = True
@@ -50,7 +53,20 @@ def where(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    dtype = np.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.astype(dtype)
-    x2 = x2.astype(dtype)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.where(condition, x1, x2)
+
+
+# Extra #
+# ----- #
+
+
+def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    where_x = np.where(x)
+    if len(where_x) == 1:
+        return np.expand_dims(where_x[0], -1)
+    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
+    return res
+
+
+indices_where.support_native_out = True

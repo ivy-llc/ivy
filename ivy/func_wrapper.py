@@ -8,12 +8,29 @@ FW_FN_KEYWORDS = {
     "jax": [],
     "tensorflow": [],
     "torch": [],
-    "mxnet": ["ndarray"],
 }
 
 NATIVE_KEYS_TO_SKIP = {
     "numpy": [],
-    "jax": [],
+    "jax": [
+        "device",
+        "platform",
+        "clone",
+        "block_host_until_ready",
+        "block_until_ready",
+        "copy_to_device",
+        "copy_to_host_async",
+        "copy_to_remote_device",
+        "delete",
+        "is_deleted",
+        "is_known_ready",
+        "is_ready",
+        "on_device_size_in_bytes",
+        "to_py",
+        "unsafe_buffer_pointer",
+        "xla_dynamic_shape",
+        "xla_shape",
+    ],
     "tensorflow": [],
     "torch": [
         "classes",
@@ -27,8 +44,20 @@ NATIVE_KEYS_TO_SKIP = {
         "type",
         "requires_grad_",
     ],
-    "mxnet": [],
 }
+
+# for wrapping (sequence matters)
+FN_DECORATORS = [
+    "infer_device",
+    "infer_dtype",
+    "integer_arrays_to_float",
+    "outputs_to_ivy_arrays",
+    "inputs_to_native_arrays",
+    "inputs_to_ivy_arrays",
+    "handle_out_argument",
+    "handle_nestable",
+    "handle_exceptions",
+]
 
 # Helpers #
 # --------#
@@ -247,7 +276,7 @@ def infer_dtype(fn: Callable) -> Callable:
     return new_fn
 
 
-def integer_array_to_float(fn: Callable) -> Callable:
+def integer_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -268,31 +297,19 @@ def integer_array_to_float(fn: Callable) -> Callable:
             promoted to default float dtype.
 
         """
-        if args:
 
-            args = list(args)
-            for i in range(len(args)):
-                if ivy.is_array(args[i]):
-                    if ivy.is_int_dtype(args[i].dtype):
-                        is_native = ivy.is_native_array(args[i])
-                        args[i] = ivy.asarray(args[i], dtype=ivy.default_float_dtype())
-                        if is_native:
-                            args[i] = ivy.to_native(args[i])
+        def _to_float_array(x):
+            if not ivy.is_array(x) or not ivy.is_int_dtype(x.dtype):
+                return x
+            if ivy.is_ivy_array(x):
+                return ivy.asarray(x, dtype=ivy.default_float_dtype())
+            return ivy.native_array(x, dtype=ivy.default_float_dtype(as_native=True))
 
-            args = tuple(args)
-        if kwargs:
-            for i in kwargs:
-                if ivy.is_array(kwargs[i]):
-                    if ivy.is_int_dtype(kwargs[i].dtype):
-                        is_native = ivy.is_native_array(kwargs[i])
-                        kwargs[i] = ivy.asarray(
-                            kwargs[i], dtype=ivy.default_float_dtype()
-                        )
-                        if is_native:
-                            kwargs[i] = ivy.to_native(kwargs[i])
+        args = ivy.nested_map(args, _to_float_array, to_mutable=True)
+        kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
         return fn(*args, **kwargs)
 
-    new_fn.integer_array_to_float = True
+    new_fn.integer_arrays_to_float = True
     return new_fn
 
 
@@ -465,17 +482,12 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if attr.startswith("_") or hasattr(ivy, attr) or attr == "handles_out_arg":
                 continue
             setattr(to_wrap, attr, getattr(original, attr))
-        # wrap decorators (sequence matters)
-        for attr in [
-            "infer_device",
-            "infer_dtype",
-            "integer_array_to_float",
-            "outputs_to_ivy_arrays",
-            "inputs_to_native_arrays",
-            "inputs_to_ivy_arrays",
-            "handle_out_argument",
-            "handle_nestable",
-        ]:
+        # Copy docstring
+        docstring_attr = ["__annotations__", "__doc__"]
+        for attr in docstring_attr:
+            setattr(to_wrap, attr, getattr(original, attr))
+        # wrap decorators
+        for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap

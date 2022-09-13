@@ -14,10 +14,6 @@ from ivy.func_wrapper import (
 )
 
 
-# Helpers #
-# --------#
-
-
 def _calculate_out_shape(axis, array_shape):
     if type(axis) not in (tuple, list):
         axis = (axis,)
@@ -87,7 +83,7 @@ def concat(
                [3, 4],
                [5, 6]])
     """
-    return current_backend(xs[0]).concat(xs, axis, out=out)
+    return current_backend(xs[0]).concat(xs, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -97,7 +93,7 @@ def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Union[int, Sequence[int]],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expands the shape of an array by inserting a new axis (dimension) of size one
@@ -209,7 +205,7 @@ def expand_dims(
                       [5.]])
     }
     """
-    return current_backend(x).expand_dims(x, axis, out=out)
+    return current_backend(x).expand_dims(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -219,7 +215,7 @@ def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Reverses the order of elements in an array along the given axis. The shape of the
@@ -323,7 +319,7 @@ def flip(
     }
 
     """
-    return current_backend(x).flip(x, axis, out=out)
+    return current_backend(x).flip(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -355,6 +351,57 @@ def permute_dims(
         an array containing the axes permutation. The returned array must have the same
         data type as x.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+    >>> y = ivy.permute_dims(x, axes=(1, 0))
+    >>> print(y)
+    ivy.array([[1, 4],
+               [2, 5],
+               [3, 6]])
+
+    >>> x = ivy.zeros((2, 3))
+    >>> y = ivy.permute_dims(x, axes=(1, 0))
+    >>> print(y)
+    ivy.array([[0., 0.],
+               [0., 0.],
+               [0., 0.]])
+
+    With one :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1. ,2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.permute_dims(x, axes=(1, 0))
+    >>> print(y)
+    {
+    a: ivy.array([[0.],
+                  [1.],
+                  [2.]]),
+    b: ivy.array([[3.],
+                  [4.],
+                  [5.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b = ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
+    >>> print(y)
+    {
+    a: ivy.array([[0.],
+                  [1.],
+                  [2.]]),
+    b: ivy.array([[3.],
+                  [4.],
+                  [5.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+    >>> y = ivy.permute_dims(x, axes=(1, 0), out=ivy.zeros((2, 3)))
+    >>> print(y)
+    ivy.array([[3.],
+               [4.],
+               [5.]])
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa: E501
@@ -363,7 +410,6 @@ def permute_dims(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
-
     """
     return current_backend(x).permute_dims(x, axes, out=out)
 
@@ -471,7 +517,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy, out=out)
+    return current_backend(x).reshape(x, shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -594,7 +640,7 @@ def roll(
         b: ivy.array([5., 3., 4.])
     }
     """
-    return current_backend(x).roll(x, shift, axis, out=out)
+    return current_backend(x).roll(x, shift, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -603,7 +649,7 @@ def roll(
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -681,11 +727,12 @@ def squeeze(
 @handle_nestable
 def stack(
     arrays: Union[
-        Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
+        Tuple[Union[ivy.Array, ivy.NativeArray], ...],
+        List[Union[ivy.Array, ivy.NativeArray]],
     ],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
@@ -730,7 +777,7 @@ def stack(
     instances in place of any of the arguments.
 
     """
-    return current_backend(arrays).stack(arrays, axis, out=out)
+    return current_backend(arrays).stack(arrays, axis=axis, out=out)
 
 
 # Extra #
@@ -856,11 +903,7 @@ def clip(
     }
 
     """
-    assert ivy.all(ivy.less(x_min, x_max))
-    res = current_backend(x).clip(x, x_min, x_max)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+    return current_backend(x).clip(x, x_min, x_max)
 
 
 @to_native_arrays_and_back
@@ -968,7 +1011,7 @@ def repeat(
         b: ivy.array([0., 0., 1., 1., 2., 2.])
     }
     """
-    return current_backend(x).repeat(x, repeats, axis, out=out)
+    return current_backend(x).repeat(x, repeats, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
@@ -979,8 +1022,8 @@ def split(
     *,
     num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
     axis: Optional[int] = 0,
-    with_remainder: Optional[bool] = False,
-) -> ivy.Array:
+    with_remainder: bool = False,
+) -> List[ivy.Array]:
     """Splits an array into multiple sub-arrays.
 
     Parameters
@@ -1015,12 +1058,12 @@ def split(
     [ivy.array([1]),ivy.array([2]),ivy.array([3])]
 
     >>> x = ivy.array([[3, 2, 1], [4, 5, 6]])
-    >>> y = ivy.split(x, 2, 1, False)
+    >>> y = ivy.split(x, num_or_size_splits=2, axis=1, with_remainder=True)
     >>> print(y)
     [ivy.array([[3,2],[4,5]]),ivy.array([[1],[6]])]
 
     >>> x = ivy.array([4, 6, 5, 3])
-    >>> y = ivy.split(x, [1, 2], 0, True)
+    >>> y = x.split(num_or_size_splits=[1, 3], axis=0, with_remainder=False)
     >>> print(y)
     ivy.array([[4], [6, 5, 3]])
 
@@ -1037,22 +1080,13 @@ def split(
     >>> y = ivy.split(x)
     >>> print(y)
     {a:(list[3],<classivy.array.Array>shape=[1])}
-
-    Instance Method Examples
-    ------------------------
-    >>> x = ivy.array([4, 6, 5, 3])
-    >>> y = x.split()
-    >>> print(y)
-    [ivy.array([4]),ivy.array([6]),ivy.array([5]),ivy.array([3])]
-
-    >>> x = ivy.Container(a=ivy.array([2, 5, 9]))
-    >>> y = x.split()
-    >>> print(y)
-    {
-        a: ivy.array([[2], [5], [9]])
-    }
     """
-    return current_backend(x).split(x, num_or_size_splits, axis, with_remainder)
+    return current_backend(x).split(
+        x,
+        num_or_size_splits=num_or_size_splits,
+        axis=axis,
+        with_remainder=with_remainder,
+    )
 
 
 @to_native_arrays_and_back
@@ -1202,6 +1236,51 @@ def tile(
     -------
     retwaitin
         The tiled output array.
+    
+
+    Functional Examples
+    -------------------
+    With :code:`ivy.Array` input:
+    
+    >>> x = ivy.array([1,2,3,4])
+    >>> y = ivy.tile(x,(3))
+    >>> print(y)
+    ivy.array([1,2,3,4,1,2,3,4,1,2,3,4])
+
+    >>> x = ivy.array([[1,2,3], \
+                       [4,5,6]])
+    >>> y = ivy.tile(x, (2,3))
+    >>> print(y)
+    ivy.array([[1,2,3,1,2,3,1,2,3],
+               [4,5,6,4,5,6,4,5,6],
+               [1,2,3,1,2,3,1,2,3],
+               [4,5,6,4,5,6,4,5,6]])
+
+    With :code:`ivy.NativeArray` input:
+    
+    >>> x = ivy.native_array([[[0], \
+                               [1]]])
+    >>> y = ivy.tile(x,(2,2,3))
+    >>> print(y)
+    ivy.array([[[0,0,0],
+                [1,1,1],
+                [0,0,0],
+                [1,1,1]],
+               [[0,0,0],
+                [1,1,1],
+                [0,0,0],
+                [1,1,1]]])
+
+    With :code:`ivy.Container` input:
+    
+    >>> x = ivy.Container( a = ivy.array([0,1,2]), b = ivy.array([[3],[4]]))
+    >>> y = ivy.tile(x, (1,2))
+    >>> print(y)
+    {
+        a: ivy.array([[0,1,2,0,1,2]]),
+        b: ivy.array([[3,3],
+                      [4,4]])
+    }
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
@@ -1209,6 +1288,80 @@ def tile(
 
     """
     return current_backend(x).tile(x, reps, out=out)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+def unstack(
+    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
+) -> List[ivy.Array]:
+    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
+
+    Parameters
+    ----------
+    x
+        Input array to unstack.
+    axis
+        Axis for which to unpack the array.
+    keepdims
+        Whether to keep dimension 1 in the unstack dimensions. Default is False.
+
+    Returns
+    -------
+    ret
+        List of arrays, unpacked along specified dimensions.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=0)
+    >>> print(y)
+    [ivy.array([[1, 2],
+                [3, 4]]), ivy.array([[5, 6],
+                [7, 8]])]
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=1, keepdims=True)
+    >>> print(y)
+    [ivy.array([[[1, 2]],
+                [[5, 6]]]), ivy.array([[[3, 4]],
+                [[7, 8]]])]
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=0)
+    [{
+        a: ivy.array([[1, 2],
+                      [3, 4]]),
+        b: ivy.array([[9, 10],
+                      [11, 12]])
+    }, {
+        a: ivy.array([[5, 6],
+                      [7, 8]]),
+        b: ivy.array([[13, 14],
+                      [15, 16]])
+    }]
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=1, keepdims=True)
+    [{
+        a: ivy.array([[[1, 2]],
+                      [[5, 6]]]),
+        b: ivy.array([[[9, 10]],
+                      [[13, 14]]])
+    }, {
+        a: ivy.array([[[3, 4]],
+                      [[7, 8]]]),
+        b: ivy.array([[[11, 12]],
+                      [[15, 16]]])
+    }]
+    """
+    return current_backend(x).unstack(x, axis, keepdims)
 
 
 @to_native_arrays_and_back

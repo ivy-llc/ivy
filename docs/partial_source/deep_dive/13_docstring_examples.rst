@@ -239,7 +239,7 @@ Let’s take an imaginary function with the following argument spec:
     def my_func(x: array,
                 mode: Union[std, prod, var],
                 some_flag: bool,
-                another_flag: Optional[bool] = False,
+                another_flag: bool = False,
                 axes: Optional[Union[int, List[int]]]=-1):
 
 In this case, our examples would need to include

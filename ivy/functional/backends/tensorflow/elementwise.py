@@ -1,13 +1,10 @@
 # global
-import tensorflow as tf
 from typing import Union, Optional
+
+import tensorflow as tf
 
 # local
 import ivy
-
-
-def _cast_for_binary_op(x1, x2):
-    return ivy.promote_types_of_inputs(x1, x2)
 
 
 def _clamp_bits(x1, x2):
@@ -56,7 +53,7 @@ def add(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.add(x1, x2)
 
 
@@ -94,7 +91,7 @@ def atan2(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.atan2(x1, x2)
 
 
@@ -114,7 +111,7 @@ def bitwise_and(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_and(x1, x2)
     else:
@@ -140,7 +137,7 @@ def bitwise_left_shift(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.left_shift(x1, x2)
 
@@ -152,7 +149,7 @@ def bitwise_or(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_or(x1, x2)
     else:
@@ -166,7 +163,7 @@ def bitwise_right_shift(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = _clamp_bits(x1, x2)
     return tf.bitwise.right_shift(x1, x2)
 
@@ -178,7 +175,7 @@ def bitwise_xor(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if ("int" not in str(x1.dtype)) & ("int" not in str(x2.dtype)):
         return tf.math.logical_xor(x1, x2)
     else:
@@ -222,7 +219,7 @@ def divide(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = tf.experimental.numpy.divide(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
         ret = tf.cast(ret, dtype=x1.dtype)
@@ -238,7 +235,7 @@ def equal(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.equal(x1, x2)
 
 
@@ -279,9 +276,8 @@ def floor_divide(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
-    ret = tf.experimental.numpy.floor_divide(x1, x2)
-    return ret
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return tf.experimental.numpy.floor_divide(x1, x2)
 
 
 def greater(
@@ -291,7 +287,7 @@ def greater(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.greater(x1, x2)
 
 
@@ -302,7 +298,7 @@ def greater_equal(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.greater_equal(x1, x2)
 
 
@@ -349,7 +345,7 @@ def less(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.less(x1, x2)
 
 
@@ -360,7 +356,7 @@ def less_equal(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.less_equal(x1, x2)
 
 
@@ -407,8 +403,11 @@ def logaddexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.logaddexp(x1, x2)
+
+
+logaddexp.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def logical_and(
@@ -457,7 +456,7 @@ def multiply(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.multiply(x1, x2)
 
 
@@ -482,7 +481,7 @@ def not_equal(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.not_equal(x1, x2)
 
 
@@ -502,7 +501,7 @@ def pow(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if isinstance(x1, tf.Tensor) and isinstance(x2, tf.Tensor):
         if x1.dtype.is_unsigned or x2.dtype.is_unsigned:
             promoted_type = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
@@ -517,15 +516,46 @@ def pow(
 pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
 
 
+def reciprocal(
+    x: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.reciprocal(x)
+
+
+reciprocal.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+)
+
+
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    modulus: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = tf.where(res >= 0, tf.math.floor(res), tf.math.ceil(res))
+        diff = res - res_floored
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return tf.cast(tf.round(diff * x2), x1.dtype)
     return tf.experimental.numpy.remainder(x1, x2)
+
+
+remainder.unsupported_dtypes = ("bfloat16",)
 
 
 def round(
@@ -538,6 +568,9 @@ def round(
         return x
     else:
         return tf.round(x)
+
+
+round.unsupported_dtypes = ("bfloat16",)
 
 
 def sign(
@@ -598,7 +631,7 @@ def subtract(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.subtract(x1, x2)
 
 
@@ -655,6 +688,17 @@ def erf(
     return tf.math.erf(x)
 
 
+def floormod(
+    x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x, y = ivy.promote_types_of_inputs(x, y)
+    return tf.math.floormod(x, y)
+
+
 def maximum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -662,7 +706,7 @@ def maximum(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.maximum(x1, x2)
 
 
@@ -673,5 +717,5 @@ def minimum(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.minimum(x1, x2)

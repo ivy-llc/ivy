@@ -1,8 +1,13 @@
 from typing import Optional, Tuple
 
+import ivy
 import jax.numpy as jnp
 
 from ivy.functional.backends.jax import JaxArray
+
+
+# Array API Standard #
+# ------------------ #
 
 
 def argmax(
@@ -13,10 +18,7 @@ def argmax(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmax(x, axis=axis, out=out, keepdims=keepdims)
-
-
-argmax.support_native_out = True
+    return jnp.argmax(x, axis=axis, keepdims=keepdims)
 
 
 def argmin(
@@ -27,10 +29,7 @@ def argmin(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
-
-
-argmin.support_native_out = True
+    return jnp.argmin(x, axis=axis, keepdims=keepdims)
 
 
 def nonzero(
@@ -48,4 +47,14 @@ def where(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.where(condition, x1, x2)
+
+
+# Extra #
+# ----- #
+
+
+def indices_where(x: JaxArray) -> JaxArray:
+    where_x = jnp.where(x)
+    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
