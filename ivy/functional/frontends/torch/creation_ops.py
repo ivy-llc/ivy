@@ -20,9 +20,6 @@ def full(
     return ret
 
 
-full.unsupported_dtypes = ("float16",)
-
-
 def ones_like_v_0p4p0_and_above(
     input,
     *,
@@ -40,3 +37,17 @@ def ones_like_v_0p4p0_and_above(
 
 def ones_like_v_0p3p0_to_0p3p1(input, out=None):
     return ivy.ones_like(input, out=None)
+
+
+def ones(size, *, out=None, dtype=None, device=None, requires_grad=False):
+    ret = ivy.ones(shape=size, dtype=dtype, device=device, out=out)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
+    ret = ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
