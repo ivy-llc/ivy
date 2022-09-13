@@ -8,32 +8,32 @@ import builtins
 
 def check_elem_in_list(elem, list):
     if elem not in list:
-        raise ivy.exceptions.IvyException("{} is not one of {}".format(elem, list))
+        raise ivy.exceptions.IvyException("{} must be one of {}".format(elem, list))
 
 
 def check_less(x1, x2, allow_equal=False):
     if allow_equal and ivy.any(x1 > x2):
         raise ivy.exceptions.IvyException(
-            "{} is not lesser than or equal to {}".format(x1, x2)
+            "{} must be lesser than or equal to {}".format(x1, x2)
         )
     elif ivy.any(x1 >= x2):
-        raise ivy.exceptions.IvyException("{} is not lesser than {}".format(x1, x2))
+        raise ivy.exceptions.IvyException("{} must be lesser than {}".format(x1, x2))
 
 
 def check_greater(x1, x2, allow_equal=False):
     if allow_equal and ivy.any(x1 < x2):
         raise ivy.exceptions.IvyException(
-            "{} is not greater than or equal to {}".format(x1, x2)
+            "{} must be greater than or equal to {}".format(x1, x2)
         )
     elif ivy.any(x1 <= x2):
-        raise ivy.exceptions.IvyException("{} is not greater than {}".format(x1, x2))
+        raise ivy.exceptions.IvyException("{} must be greater than {}".format(x1, x2))
 
 
 def check_equal(x1, x2, inverse=False):
     if inverse and ivy.any(x1 == x2):
-        raise ivy.exceptions.IvyException("{} is equal to {}".format(x1, x2))
+        raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
     elif not ivy.all(x1 == x2):
-        raise ivy.exceptions.IvyException("{} is not equal to {}".format(x1, x2))
+        raise ivy.exceptions.IvyException("{} must not be equal to {}".format(x1, x2))
 
 
 def check_all(results, message="one of the args is None"):
@@ -49,18 +49,18 @@ def check_any(results, message="all of the args are None"):
 def check_isinstance(x, allowed_types):
     if not isinstance(x, allowed_types):
         raise ivy.exceptions.IvyException(
-            "type of x: {} is not one of the allowed types: {}".format(
+            "type of x: {} must be one of the allowed types: {}".format(
                 type(x), allowed_types
             )
         )
 
 
-def check_true(expression, message="expression is not True"):
+def check_true(expression, message="expression must be True"):
     if not expression:
         raise ivy.exceptions.IvyException(message)
 
 
-def check_false(expression, message="expression is not False"):
+def check_false(expression, message="expression must be False"):
     if expression:
         raise ivy.exceptions.IvyException(message)
 
