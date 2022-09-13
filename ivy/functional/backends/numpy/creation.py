@@ -1,4 +1,3 @@
-# For Review
 # global
 import numpy
 import numpy as np

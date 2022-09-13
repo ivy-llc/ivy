@@ -1,4 +1,3 @@
-# For Review
 # global
 import numpy as np
 import torch
