@@ -46,21 +46,10 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
             The return of the function, with the nestable property handled correctly.
         """
 
-        # if any of the arguments or keyword arguments passed to the function contains
-        # a container, get the container's version of the function and call it using
-        # the passed arguments.
-
-        # For this particular function (this will wrap `backend.asarray` functions)
-        # we can skip a lot of work if the first argument is a list.
+        # This decorator should only be applied to ivy.asarray, so we know where
+        # the container must be if there is one.
         cont_fn = getattr(ivy.Container, "static_" + fn_name)
-        if (
-            not isinstance(args[0], list)
-            and ivy.get_nestable_mode()
-            and (
-                ivy.nested_any(args, ivy.is_ivy_container, check_nests=True)
-                or ivy.nested_any(kwargs, ivy.is_ivy_container, check_nests=True)
-            )
-        ):
+        if isinstance(args[0], ivy.Container):
             return cont_fn(*args, **kwargs)
 
         # if the passed arguments does not contain a container, the function using
