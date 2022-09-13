@@ -1,0 +1,17 @@
+Assertions
+==========
+
+.. automodule:: ivy.assertions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Assertions
+
+   assertions/check_elem_in_list.rst
+

@@ -176,6 +176,19 @@
     <span class="p">],</span>
 <span class="p">}</span>
 
+<span class="c1"># for wrapping (sequence matters)</span>
+<span class="n">FN_DECORATORS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;infer_device&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;infer_dtype&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;integer_arrays_to_float&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;inputs_to_ivy_arrays&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;handle_nestable&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;handle_exceptions&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
 <span class="c1"># Helpers #</span>
 <span class="c1"># --------#</span>
 
@@ -603,17 +616,8 @@
         <span class="n">docstring_attr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__annotations__&quot;</span><span class="p">,</span> <span class="s2">&quot;__doc__&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">docstring_attr</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
-        <span class="c1"># wrap decorators (sequence matters)</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="s2">&quot;infer_device&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;infer_dtype&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;integer_arrays_to_float&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;outputs_to_ivy_arrays&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;inputs_to_ivy_arrays&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;handle_nestable&quot;</span><span class="p">,</span>
-        <span class="p">]:</span>
+        <span class="c1"># wrap decorators</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">FN_DECORATORS</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to_wrap</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
                 <span class="n">to_wrap</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">attr</span><span class="p">)(</span><span class="n">to_wrap</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">to_wrap</span>

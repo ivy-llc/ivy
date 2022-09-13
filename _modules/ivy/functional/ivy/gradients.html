@@ -191,7 +191,7 @@
 <span class="sd">        If with_grads is None, it returns the last element in the with_grads_stack</span>
 <span class="sd">        representing the parent of the current nested code block. If with_grads_stack</span>
 <span class="sd">        is empty, it returns True by default.</span>
-<span class="sd">        If with_grads is neither None nor boolean, it will raise an AssertionError</span>
+<span class="sd">        If with_grads is neither None nor boolean, it will raise an IvyException</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -211,7 +211,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">with_grads</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="n">with_grads</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">with_grads</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">with_grads</span>
     <span class="k">global</span> <span class="n">with_grads_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">with_grads_stack</span><span class="p">:</span>
@@ -240,7 +240,7 @@
 <span class="sd">        If with_grads is None, it returns the last element in the with_grads_stack</span>
 <span class="sd">        representing the parent of the current nested code block. If with_grads_stack</span>
 <span class="sd">        is empty, it returns True by default.</span>
-<span class="sd">        If with_grads is neither None nor boolean, it will raise an AssertionError</span>
+<span class="sd">        If with_grads is neither None nor boolean, it will raise an IvyException</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -259,7 +259,7 @@
 <span class="sd">    False</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">with_grads</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">with_grads</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
     <span class="k">global</span> <span class="n">with_grads_stack</span>
     <span class="n">with_grads_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">with_grads</span><span class="p">)</span></div>
 
@@ -586,11 +586,11 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        the Jacobian function</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` input:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]])</span>
 <span class="sd">    &gt;&gt;&gt; func = lambda x: ivy.mean(ivy.square(x))</span>
 <span class="sd">    &gt;&gt;&gt; jac_fn = ivy.jac(func)</span>
@@ -620,7 +620,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        the grad function</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]])</span>
@@ -747,7 +747,7 @@
 <span class="sd">        a: ivy.array([0., 0.024, 0.096]),</span>
 <span class="sd">        b: ivy.array([0.216, 0.384, 0.6])</span>
 <span class="sd">    })</span>
-<span class="sd">    </span>
+
 <span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
@@ -826,7 +826,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        The new function weights ws_new, following the optimizer updates.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :code:`ivy.Array` inputs:</span>
@@ -845,7 +845,7 @@
 <span class="sd">                                    out=None, stop_gradients=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(ws_new)</span>
 <span class="sd">    ivy.array([1., 2., 3.])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([[1., 2.], [4., 5.]])</span>
 <span class="sd">    &gt;&gt;&gt; out = ivy.zeros_like(w)</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.array([[4., 5.], [7., 8.]])</span>
@@ -863,9 +863,9 @@
 <span class="sd">                                      stop_gradients=False, out=out)</span>
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([0.999, 2.   , 3.   ])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With one :code:`ivy.Container` input:</span>
-<span class="sd">        </span>
+
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.array([0., 0., 0.])</span>
@@ -878,7 +878,7 @@
 <span class="sd">    }</span>
 
 <span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
@@ -890,7 +890,7 @@
 <span class="sd">        a: ivy.array([0., 1., 2.]),</span>
 <span class="sd">        b: ivy.array([3., 4., 5.])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                        b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\</span>
@@ -962,7 +962,7 @@
 <span class="sd">    ivy.array([[ 0.95,  1.98,  2.99],\</span>
 <span class="sd">               [ 3.97,  5.94,  0.96],\</span>
 <span class="sd">               [ 0.96, -0.07,  6.98]])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([0.5, 0.2, 0.1])</span>
 <span class="sd">    &gt;&gt;&gt; lr = ivy.array(0.3)</span>
@@ -970,7 +970,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.gradient_descent_update(w, dcdw, lr, out=out)</span>
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([0.85, 1.94, 2.97])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With one :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
@@ -983,7 +983,7 @@
 <span class="sd">        a: ivy.array([0.85, 1.94, 2.97]),</span>
 <span class="sd">        b: ivy.array([3.33, 5.66, 1.95])</span>
 <span class="sd">    }</span>
-<span class="sd">    </span>
+
 <span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
@@ -1212,7 +1212,7 @@
 <span class="sd">                                      beta2=beta2, epsilon=epsilon,\</span>
 <span class="sd">                                      max_trust_ratio=max_trust_ratio,\</span>
 <span class="sd">                                      decay_lambda=decay_lambda, out=out,\</span>
-<span class="sd">                                      stop_gradients=stop_gradients)  </span>
+<span class="sd">                                      stop_gradients=stop_gradients)</span>
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[ 0.639,  1.64 ,  2.64 ],\</span>
 <span class="sd">               [ 3.64 ,  5.64 ,  0.639],\</span>
@@ -1234,7 +1234,7 @@
 <span class="sd">    }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))</span>
 
 <span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1.,3.,5.]),\</span>
 <span class="sd">                          b=ivy.array([3.,4.,2.]))</span>
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0.2,0.3,0.6]),\</span>
