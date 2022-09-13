@@ -494,8 +494,9 @@ def test_eigvalsh(
     dtype_xy=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        min_value=1,
-        max_value=50,
+        small_value_safety_factor=2.5,
+        large_value_safety_factor=20,
+        max_op="log",
         min_num_dims=1,
         max_num_dims=1,
     ),
@@ -530,6 +531,8 @@ def test_inner(
         instance_method=instance_method,
         fw=fw,
         fn_name="inner",
+        rtol_=1e-1,
+        atol_=1e-2,
         x1=np.asarray(x1, input_dtype[0]),
         x2=np.asarray(x2, input_dtype[1]),
     )
