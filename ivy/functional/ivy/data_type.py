@@ -902,7 +902,7 @@ def _check_float64(input) -> bool:
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(tmp[0])).replace("0b", "")
+        mant = bin(int(float(tmp[0]))).replace("0b", "")
         return (
             (input > 3.4028235 * 10**38)
             or (len(mant) > 24 and int(mant[24:]) > 0)
