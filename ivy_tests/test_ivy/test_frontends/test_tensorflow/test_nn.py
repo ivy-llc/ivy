@@ -643,3 +643,40 @@ def test_tensorflow_batch_normalization(
         scale=np.asarray(scale, dtype=input_dtype),
         variance_epsilon=1e-7,
     )
+
+    
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.comput_average_loss"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_comput_average_loss(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    sample_weight,
+    global_batch_size
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.compute_average_loss",
+        x=np.asarray(x, dtype=input_dtype),
+        sample_weight=sample_weight,
+        global_batch_size=GLOBAL_BATCH_SIZE
+    )
+    
