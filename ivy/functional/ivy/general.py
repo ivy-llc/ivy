@@ -3144,9 +3144,10 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
         a `dict` containing the idx, and the `inspect.Parameter` for the argument,
         which itself contains the parameter name, type, and other helpful information.
     """
-    ivy.assertions.check_all_or_any_exists(
+    ivy.assertions.check_all_or_any_fn(
         name,
         idx,
+        fn=ivy.exists,
         type="any",
         limit=[1],
         message="exactly one of the keyword arguments name or idx must be provided",
