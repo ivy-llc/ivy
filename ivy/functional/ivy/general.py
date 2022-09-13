@@ -1612,7 +1612,7 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
         the input in its native framework form
 
     """
-    if isinstance(shape, ivy.NativeShape):
+    if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
     ivy.assertions.check_isinstance(shape, (int, list, tuple))
     if isinstance(shape, int):
@@ -1622,7 +1622,7 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
     ivy.assertions.check_all(
         [isinstance(v, int) for v in shape], "shape must take integers only"
     )
-    return ivy.NativeShape(shape)
+    return ivy.NativeShape(shape) if len(backend_stack) != 0 else ivy.Shape(shape)
 
 
 @handle_nestable
