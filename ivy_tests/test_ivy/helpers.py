@@ -2871,7 +2871,7 @@ def array_values(
         )
 
     if kind_dtype != "bool":
-        if allow_negative:
+        if not allow_negative:
             min_value = 0
         else:
             min_value = _clamp_value(min_value, dtype) if min_value else dtype_info.min
@@ -2894,7 +2894,7 @@ def array_values(
             if exclude_min:
                 min_value += 1
             if exclude_max:
-                max_value += 1
+                max_value -= 1
             values = draw(
                 list_of_length(
                     x=st.integers(int(min_value), int(max_value)), length=size
