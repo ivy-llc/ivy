@@ -2799,7 +2799,6 @@ def array_values(
     allow_inf=False,
     exclude_min=True,
     exclude_max=True,
-    allow_negative=True,
     large_abs_safety_factor=1,
     small_abs_safety_factor=1,
     safety_factor_scale=None,
@@ -2830,8 +2829,6 @@ def array_values(
         if True, exclude the minimum limit.
     exclude_max
         if True, exclude the maximum limit.
-    allow_negative
-        if True, allow negative numbers.
     large_abs_safety_factor
         Factor to divide the values by to ensure that they are not too large.
     safety_factor_scale
@@ -2874,12 +2871,7 @@ def array_values(
         )
 
     if kind_dtype != "bool":
-        if not allow_negative:
-            min_value = 0
-        else:
-            min_value = (
-                _clamp_value(min_value, dtype_info) if min_value else dtype_info.min
-            )
+        min_value = _clamp_value(min_value, dtype_info) if min_value else dtype_info.min
         max_value = _clamp_value(max_value, dtype_info) if max_value else dtype_info.max
         assert max_value >= min_value
 
