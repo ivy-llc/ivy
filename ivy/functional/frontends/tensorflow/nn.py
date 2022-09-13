@@ -123,3 +123,8 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
     return x * ivy.astype(inv, x.dtype, copy=False) + ivy.astype(
         offset - mean * inv if offset is not None else -mean * inv, x.dtype
     )
+
+
+def compute_average_loss(per_example_loss, sample_weight=None, global_batch_size=None):
+    return ivy.compute_average_loss(per_example_loss, sample_weight=sample_weight, global_batch_size=GLOBAL_BATCH_SIZE)
+    
