@@ -133,3 +133,8 @@ def selu(input, inplace=False):
 
 def prelu(input, weight):
     return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
+
+def hardsigmoid(input, inplace=False):
+    if inplace:
+        return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6,out=input)
+    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6)
