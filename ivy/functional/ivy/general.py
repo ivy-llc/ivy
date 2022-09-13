@@ -244,9 +244,7 @@ def set_array_mode(mode: bool) -> None:
     True
     """
     global array_mode_stack
-    # ivy.assertions.check_isinstance(mode, bool)
-    if not isinstance(mode, bool):
-        raise Exception("set_array_mode only accepts type bool")
+    ivy.assertions.check_isinstance(mode, bool)
     array_mode_stack.append(mode)
 
 
@@ -306,9 +304,7 @@ def set_nestable_mode(mode: bool) -> None:
     True
     """
     global nestable_mode_stack
-    # ivy.assertions.check_isinstance(mode, bool)
-    if not isinstance(mode, bool):
-        raise Exception("set_nestable_mode only accepts type bool")
+    ivy.assertions.check_isinstance(mode, bool)
     nestable_mode_stack.append(mode)
 
 
@@ -2291,9 +2287,7 @@ def set_queue_timeout(timeout: float):
 
     """
     global queue_timeout_stack
-    # ivy.assertions.check_isinstance(timeout, (int, float))
-    if not isinstance(timeout, (int, float)):
-        raise Exception("set_array_mode only accepts type int or float")
+    ivy.assertions.check_isinstance(timeout, (int, float))
     queue_timeout_stack.append(timeout)
 
 
@@ -2499,7 +2493,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
 
     """
     if not ivy.supports_inplace_updates(x):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Inplace operations are not supported {} types with {} backend".format(
                 type(x), ivy.current_backend_str()
             )
@@ -3069,9 +3063,7 @@ def set_shape_array_mode(mode: bool) -> None:
     True
     """
     global shape_array_mode_stack
-    # ivy.assertions.check_isinstance(mode, bool)
-    if not isinstance(mode, bool):
-        raise Exception("set_shape_array_mode only accepts type bool")
+    ivy.assertions.check_isinstance(mode, bool)
     shape_array_mode_stack.append(mode)
 
 
@@ -3155,7 +3147,7 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
     if (not ivy.exists(name) and not ivy.exists(idx)) or (
         ivy.exists(name) and ivy.exists(idx)
     ):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "exactly one of the keyword arguments name or idx " "must be provided"
         )
     params = inspect.signature(fn).parameters
@@ -3171,7 +3163,7 @@ def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_att
         if isinstance(attr_list, dict):
             attr_list = attr_list.get(backend, ())
     if dnd_dict and attr_list:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             f"Cannot specify both {first_attr_name} and {other_attr_name} "
             "cannot both be defined for the same function"
         )
@@ -3193,7 +3185,7 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
     if fn_unsupported_dnd and fn_supported_dnd:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "unsupported_device_and_dtype and supported_device_and_dtype "
             "cannot both be defined for the same function"
         )
@@ -3309,7 +3301,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
         The unsupported devices of the function
     """
     if not _is_valid_device_and_dtypes_attributes(fn):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "supported_device_and_dtypes and unsupported_device_and_dtypes \
              attributes cannot both exist in a particular backend"
         )
@@ -3346,7 +3338,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
         The unsupported combination of devices and dtypes of the function
     """
     if not _is_valid_device_and_dtypes_attributes(fn):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "supported_device_and_dtypes and unsupported_device_and_dtypes \
              attributes cannot both exist in a particular backend"
         )
