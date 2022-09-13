@@ -13,6 +13,8 @@ import warnings
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
+from .assertions import check_any, check_elem_in_list
+
 # class placeholders
 
 
@@ -79,9 +81,7 @@ class Device(str):
 
 class Dtype(str):
     def __new__(cls, dtype_str):
-        assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
-        # ivy.assertions.check_any([substr in dtype_str for substr in \
-        # ["int", "float", "bool"]])
+        check_any([substr in dtype_str for substr in ["int", "float", "bool"]])
         return str.__new__(cls, dtype_str)
 
 
@@ -106,22 +106,19 @@ class Shape(tuple):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "int" in dtype_str
-        # ivy.assertions.check_elem_in_list("int", dtype_str)
+        check_elem_in_list("int", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "float" in dtype_str
-        # ivy.assertions.check_elem_in_list("float", dtype_str)
+        check_elem_in_list("float", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
 class UintDtype(IntDtype):
     def __new__(cls, dtype_str):
-        assert "uint" in dtype_str
-        # ivy.assertions.check_elem_in_list("uint", dtype_str)
+        check_elem_in_list("uint", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
