@@ -101,7 +101,7 @@ class Array(
             self._post_repr = ", dev={})".format(self._dev_str)
         else:
             self._post_repr = ")"
-        self.framework_str = ivy.current_backend_str()
+        self.backend = ivy.current_backend_str()
         self._is_variable = ivy.is_variable(self._data)
 
     # Properties #
@@ -248,9 +248,7 @@ class Array(
         try:
             self._data.__setitem__(query, val)
         except (AttributeError, TypeError):
-            self._data = ivy.scatter_nd(
-                query, val, tensor=self._data, reduction="replace"
-            )._data
+            self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
             self._dtype = ivy.dtype(self._data)
 
     @_native_wrapper
@@ -265,7 +263,7 @@ class Array(
         data_dict["data"] = self.data
 
         # also store the local ivy framework that created this array
-        data_dict["framework_str"] = self.framework_str
+        data_dict["backend"] = self.backend
         data_dict["device_str"] = ivy.as_ivy_dev(self.device)
 
         return data_dict
@@ -276,7 +274,7 @@ class Array(
         # just by re-creating the ivy.Array using the native array
 
         # get the required backend
-        ivy.set_backend(state["framework_str"])
+        ivy.set_backend(state["backend"])
         ivy_array = ivy.array(state["data"])
         ivy.unset_backend()
 

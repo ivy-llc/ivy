@@ -10,6 +10,7 @@ on:
 jobs:
 
   build:
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Build Docker Files')}}
     runs-on: ubuntu-20.04
 
     steps:
