@@ -643,3 +643,54 @@ def test_tensorflow_batch_normalization(
         scale=np.asarray(scale, dtype=input_dtype),
         variance_epsilon=1e-7,
     )
+
+    
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        stride_min=1,
+        stride_max=2,
+        dilation_max=1,
+        type="1d",
+        transpose=True,
+        atrous=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.atrous_conv_transpose"
+    ),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+)
+def test_tensorflow_atrous_conv_transpose(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
+    (
+        input_dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        output_shape,
+    ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.atrous_conv_transpose",
+        value=np.asarray(x, dtype=input_dtype[0]),
+        filters=np.asarray(filters, dtype=input_dtype[1]),
+        output_shape=output_shape,
+        rate=dilations,
+        padding=pad,
+    )
+    
