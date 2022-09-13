@@ -553,3 +553,40 @@ def test_torch_prelu(
         input=np.asarray(input, dtype=dtype),
         weight=np.asarray(weight, dtype=dtype),
     )
+
+
+# hardsigmoid
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.hardsigmoid"
+    ),
+)
+def test_torch_hardsigmoid(
+    dtype_and_input,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.hardsigmoid",
+        input=np.asarray(input, dtype=input_dtype),
+        threshold=0.5,
+        value=20,
+        inplace=False,
+    )
+
