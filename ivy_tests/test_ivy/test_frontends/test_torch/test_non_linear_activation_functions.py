@@ -270,6 +270,7 @@ def test_torch_softmin(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.tanh"
     ),
+    alpha=st.floats(min_value=0, max_value=1),
 )
 def test_torch_hardtanh(
     dtype_and_x,
