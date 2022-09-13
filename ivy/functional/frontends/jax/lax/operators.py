@@ -249,3 +249,15 @@ def tan(x):
 
 def transpose(operand, permutation):
     return ivy.permute_dims(operand, permutation)
+
+
+def square(x):
+    return ivy.square(x)
+
+
+def rem(x, y):
+    return ivy.remainder(ivy.abs(x), ivy.abs(y)) * ivy.sign(x)
+
+
+def sub(x, y):
+    return ivy.subtract(x, y)

@@ -971,7 +971,7 @@ def set_split_factor(
     >>> ivy.set_split_factor(0.4,device)
     {'cpu': 0.2, 'gpu': 0.3, device(type='cuda'): 0.4}
     """
-    assert 0 <= factor
+    ivy.assertions.check_less(0, factor, allow_equal=True)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
