@@ -332,7 +332,6 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = x.trace()
         >>> print(y)
