@@ -540,9 +540,8 @@ def test_inner(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
         small_value_safety_factor=2.5,
+        max_op="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
@@ -569,6 +568,8 @@ def test_inv(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
+        rtol_=1e-3,
+        atol_=1e-3,
         fn_name="inv",
         x=np.asarray(x, dtype=input_dtype),
     )
