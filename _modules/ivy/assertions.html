@@ -129,11 +129,94 @@
              
   <h1>Source code for ivy.assertions</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">builtins</span>
+
+
+<span class="c1"># General #</span>
+<span class="c1"># ------- #</span>
 
 
 <div class="viewcode-block" id="check_elem_in_list"><a class="viewcode-back" href="../../assertions/check_elem_in_list.html#ivy.assertions.check_elem_in_list">[docs]</a><span class="k">def</span> <span class="nf">check_elem_in_list</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">elem</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not one of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be one of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="check_less"><a class="viewcode-back" href="../../assertions/check_less.html#ivy.assertions.check_less">[docs]</a><span class="k">def</span> <span class="nf">check_less</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">allow_equal</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x1</span> <span class="o">&gt;</span> <span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be lesser than or equal to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x1</span> <span class="o">&gt;=</span> <span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be lesser than </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="check_greater"><a class="viewcode-back" href="../../assertions/check_greater.html#ivy.assertions.check_greater">[docs]</a><span class="k">def</span> <span class="nf">check_greater</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">allow_equal</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x1</span> <span class="o">&lt;</span> <span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be greater than or equal to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x1</span> <span class="o">&lt;=</span> <span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be greater than </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="check_equal"><a class="viewcode-back" href="../../assertions/check_equal.html#ivy.assertions.check_equal">[docs]</a><span class="k">def</span> <span class="nf">check_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">inverse</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be equal to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must not be equal to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="check_isinstance"><a class="viewcode-back" href="../../assertions/check_isinstance.html#ivy.assertions.check_isinstance">[docs]</a><span class="k">def</span> <span class="nf">check_isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">allowed_types</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">allowed_types</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;type of x: </span><span class="si">{}</span><span class="s2"> must be one of the allowed types: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">allowed_types</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<span class="c1"># General with Custom Message #</span>
+<span class="c1"># --------------------------- #</span>
+
+
+<div class="viewcode-block" id="check_true"><a class="viewcode-back" href="../../assertions/check_true.html#ivy.assertions.check_true">[docs]</a><span class="k">def</span> <span class="nf">check_true</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;expression must be True&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">expression</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_false"><a class="viewcode-back" href="../../assertions/check_false.html#ivy.assertions.check_false">[docs]</a><span class="k">def</span> <span class="nf">check_false</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;expression must be False&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">expression</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_all"><a class="viewcode-back" href="../../assertions/check_all.html#ivy.assertions.check_all">[docs]</a><span class="k">def</span> <span class="nf">check_all</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;one of the args is None&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">builtins</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_any"><a class="viewcode-back" href="../../assertions/check_any.html#ivy.assertions.check_any">[docs]</a><span class="k">def</span> <span class="nf">check_any</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;all of the args are None&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">builtins</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<span class="c1"># Creation #</span>
+<span class="c1"># -------- #</span>
+
+
+<div class="viewcode-block" id="check_fill_value_and_dtype_are_compatible"><a class="viewcode-back" href="../../assertions/check_fill_value_and_dtype_are_compatible.html#ivy.assertions.check_fill_value_and_dtype_are_compatible">[docs]</a><span class="k">def</span> <span class="nf">check_fill_value_and_dtype_are_compatible</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_int_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_uint_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">is_float_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fill_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;the fill_value: </span><span class="si">{}</span><span class="s2"> and data type: </span><span class="si">{}</span><span class="s2"> are not compatible&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
 </pre></div>
 
            </div>

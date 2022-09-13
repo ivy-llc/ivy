@@ -14,4 +14,13 @@ Assertions
    :caption: Assertions
 
    assertions/check_elem_in_list.rst
+   assertions/check_less.rst
+   assertions/check_greater.rst
+   assertions/check_equal.rst
+   assertions/check_isinstance.rst
+   assertions/check_true.rst
+   assertions/check_false.rst
+   assertions/check_all.rst
+   assertions/check_any.rst
+   assertions/check_fill_value_and_dtype_are_compatible.rst
 
