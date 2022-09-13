@@ -18,7 +18,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     shape = draw(
         helpers.get_shape(
             min_num_dims=1,
-            max_num_dims=5
+            max_num_dims=5,
         )
     )
     axis = draw(
@@ -29,7 +29,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     x = draw(
         helpers.array_values(
             shape=shape,
-            dtype=dtypes[0]
+            dtype=dtypes[0],
         )
     )
     where_shape_length = draw(helpers.ints(min_value=0, max_value=len(shape)))
@@ -37,13 +37,13 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
         where_nb_dims_to_change = draw(
             helpers.ints(
                 min_value=0,
-                max_value=where_shape_length - 1
+                max_value=where_shape_length - 1,
             )
         )
         where_dims_to_change = [draw(
             helpers.ints(
                 min_value=0,
-                max_value=where_shape_length - 1
+                max_value=where_shape_length - 1,
             )) for i in range(where_nb_dims_to_change)
         ]
         where_dims_list = [1] * where_shape_length
@@ -53,7 +53,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
         where = draw(
             helpers.array_values(
                 shape=where_dims_list,
-                dtype="bool"
+                dtype="bool",
             )
         )
     else:
@@ -73,7 +73,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.any"
     ),
-    native_array=st.booleans()
+    native_array=st.booleans(),
 )
 def test_numpy_any(
     x_dtype_axis_keepdims_where,
@@ -81,7 +81,7 @@ def test_numpy_any(
     with_out,
     num_positional_args,
     native_array,
-    fw
+    fw,
 ):
     x, input_dtype, axis, keepdims, where = x_dtype_axis_keepdims_where
     x = np.asarray(x, dtype=input_dtype)
@@ -124,7 +124,9 @@ def test_numpy_any(
         test_values=False,
     )
 
+    if isinstance(ret_gt, tuple):
+        ret_gt = ret_gt[0]
     if len(ret.shape) == 0:
         assert (ret == ret_gt)
     else:
-        assert (ret.shape == ret_gt.shape and np.all(ret) == ret_gt)
+        assert (ret.shape == ret_gt.shape and np.all(ret == ret_gt))
