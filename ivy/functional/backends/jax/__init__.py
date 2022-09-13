@@ -5,7 +5,6 @@ import jaxlib
 import jax
 import jax.numpy as jnp
 from typing import Union
-jax_version=jax.__version__
 from .. import dtype_from_version
 # noinspection PyPackageRequirements
 from jaxlib.xla_extension import Buffer
@@ -16,6 +15,8 @@ from jax.tree_util import tree_flatten, tree_unflatten
 
 # local
 import ivy
+
+jax_version = {"version": jax.__version__}
 
 config.update("jax_enable_x64", True)
 
