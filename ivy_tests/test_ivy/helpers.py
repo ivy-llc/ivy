@@ -2899,7 +2899,7 @@ def array_values(
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
         for i, v in enumerate(values):
-            if max_op == "sqrt":
+            if max_op == "sqrt" and v != 0:
                 v = v / abs(v) * math.sqrt(abs(v))
             elif max_op == "log" and v != 0:
                 v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
@@ -2974,7 +2974,7 @@ def array_values(
                 )
             )
             for i, v in enumerate(values):
-                if max_op == "sqrt":
+                if max_op == "sqrt" and v != 0:
                     v = v / abs(v) * math.sqrt(abs(v))
                 elif max_op == "log" and v != 0:
                     v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
@@ -3042,7 +3042,7 @@ def array_values(
             )
         )
         for i, v in enumerate(values):
-            if max_op == "sqrt":
+            if max_op == "sqrt" and v != 0:
                 v = v / abs(v) * math.sqrt(abs(v))
             elif max_op == "log" and v != 0:
                 v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
