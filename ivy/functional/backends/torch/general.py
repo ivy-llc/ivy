@@ -217,7 +217,7 @@ def scatter_flat(
     elif reduction == "max":
         initial_val = torch.tensor(-1e12).type(dtype)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -335,7 +335,7 @@ def scatter_nd(
     elif reduction == "max":
         initial_val = torch.tensor(-1e12).type(dtype)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
