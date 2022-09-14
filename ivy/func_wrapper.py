@@ -533,12 +533,9 @@ def _versioned_attribute_factory(attribute_function, base):
     class VersionedAttributes(base):
         def __init__(self):
             self.attribute_function = attribute_function
-            self.val = None
 
         def __get__(self, instance=None, owner=None):
-            if self.val is None:
-                self.val = self.attribute_function()
-            return self.val
+            return self.attribute_function()
 
         def __iter__(self):
             return iter(self.__get__())

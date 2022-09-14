@@ -28,7 +28,6 @@ def cholesky(
     return ret
 
 
-
 def cross(
     x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -112,6 +111,7 @@ def matrix_norm(
 
 def matrix_power(x: JaxArray, n: int, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.matrix_power(x, n)
+
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, jax_version)
 def matrix_rank(
