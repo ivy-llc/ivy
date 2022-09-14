@@ -21,7 +21,8 @@ def _cast_for_binary_op(
     promotion and the result's shape will still be correct.
 
     Torch does handle 2 scalar inputs, however we call `ivy.array` on them to ensure
-    that Ivy's default dtypes are used, rather than Torch's."""
+    that Ivy's default dtypes are used, rather than Torch's.
+    """
     if isinstance(x1, torch.Tensor) and isinstance(x2, torch.Tensor):
         if x1.ndim == 0 and x2.ndim != 0:
             x1 = x1[None]
@@ -583,7 +584,7 @@ def remainder(
     modulus: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if not modulus:
         res = x1 / x2
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
@@ -612,7 +613,7 @@ def bitwise_right_shift(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
     return torch.bitwise_right_shift(x1, x2, out=out)
 
@@ -627,7 +628,7 @@ def bitwise_left_shift(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = _cast_for_binary_op(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
     return torch.bitwise_left_shift(x1, x2, out=out)
 
