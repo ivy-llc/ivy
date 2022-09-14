@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     integer_arrays_to_float,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
@@ -16,6 +17,7 @@ from ivy.func_wrapper import (
 
 @inputs_to_ivy_arrays
 @integer_arrays_to_float
+@handle_exceptions
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],

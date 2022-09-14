@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -19,6 +20,7 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -109,6 +111,7 @@ def abs(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -183,6 +186,7 @@ def acos(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -257,6 +261,7 @@ def acosh(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def add(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -393,6 +398,7 @@ def add(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -501,6 +507,7 @@ def asin(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -593,6 +600,7 @@ def asinh(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -670,6 +678,7 @@ def atan(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -847,6 +856,7 @@ def atan2(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -910,6 +920,7 @@ def atanh(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def bitwise_and(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1063,6 +1074,7 @@ def bitwise_and(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def bitwise_invert(
     x: Union[int, bool, ivy.Array, ivy.NativeArray],
     /,
@@ -1099,6 +1111,7 @@ def bitwise_invert(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def bitwise_left_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1135,6 +1148,7 @@ def bitwise_left_shift(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def bitwise_or(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1223,6 +1237,7 @@ def bitwise_or(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def bitwise_right_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1231,7 +1246,7 @@ def bitwise_right_shift(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the 
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the
     right according to the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
@@ -1243,7 +1258,7 @@ def bitwise_right_shift(
     x1
         first input array. Should have an integer data type.
     x2
-        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). 
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have an integer data type. Each element must be greater than or equal
         to ``0``.
     out
@@ -1253,7 +1268,7 @@ def bitwise_right_shift(
     Returns
     -------
     ret
-        an array containing the element-wise results. The returned array must have a 
+        an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
     This function conforms to the `Array API Standard
@@ -1350,6 +1365,7 @@ def bitwise_right_shift(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def bitwise_xor(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1510,6 +1526,7 @@ def bitwise_xor(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1601,6 +1618,7 @@ def ceil(
 @integer_arrays_to_float
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1675,6 +1693,7 @@ def cos(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1767,6 +1786,7 @@ def cosh(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -1847,6 +1867,7 @@ def divide(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def equal(
     x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1929,6 +1950,7 @@ def equal(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1980,6 +2002,7 @@ def exp(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2090,6 +2113,7 @@ def expm1(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2183,6 +2207,7 @@ def floor(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def floor_divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2265,6 +2290,7 @@ def floor_divide(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def greater(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2358,6 +2384,7 @@ def greater(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def greater_equal(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2502,6 +2529,7 @@ def greater_equal(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2576,6 +2604,7 @@ def less_equal(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def multiply(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2646,6 +2675,7 @@ def multiply(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2672,7 +2702,7 @@ def isfinite(
 
     This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the `docstring 
+    This docstring is an extension of the `docstring
     <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isfinite.html>`
     _ in the standard.
 
@@ -2746,6 +2776,7 @@ def isfinite(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2899,6 +2930,7 @@ def isinf(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3057,6 +3089,7 @@ def isnan(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def less(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -3152,6 +3185,7 @@ def less(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3195,6 +3229,7 @@ def log(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3282,6 +3317,7 @@ def log10(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3381,6 +3417,7 @@ def log1p(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3423,6 +3460,7 @@ def log2(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3495,14 +3533,14 @@ def logaddexp(
     >>> z = ivy.logaddexp(x, y)
     >>> print(z)
     {
-    a: ivy.array([[5.39, 4.17, 4.], 
-                  [5.74, 5.07, 5.], 
+    a: ivy.array([[5.39, 4.17, 4.],
+                  [5.74, 5.07, 5.],
                   [6.34, 6.02, 6.]]),
-    b: ivy.array([[5.74, 5.07, 5.], 
-                  [6.34, 6.02, 6.], 
+    b: ivy.array([[5.74, 5.07, 5.],
+                  [6.34, 6.02, 6.],
                   [7.14, 7.01, 7.]])
     }
-    
+
     With multiple :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
@@ -3526,6 +3564,7 @@ def logaddexp(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def logical_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3607,6 +3646,7 @@ def logical_and(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3725,6 +3765,7 @@ def logical_not(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3820,7 +3861,7 @@ def logical_or(
     ivy.array([ True,  True, False])
 
     Using :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
     >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
     >>> z = x.logical_or(y)
@@ -3849,6 +3890,7 @@ def logical_or(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3933,6 +3975,7 @@ def logical_xor(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def negative(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -4035,6 +4078,7 @@ def negative(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def not_equal(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4296,6 +4340,7 @@ def not_equal(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def positive(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -4365,6 +4410,7 @@ def positive(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def pow(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4455,6 +4501,7 @@ def pow(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def remainder(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4577,6 +4624,7 @@ def remainder(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4673,6 +4721,7 @@ def round(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4755,6 +4804,7 @@ def sign(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4845,6 +4895,7 @@ def sin(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4918,6 +4969,7 @@ def sinh(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5025,6 +5077,7 @@ def sqrt(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5134,6 +5187,7 @@ def square(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def subtract(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -5167,6 +5221,7 @@ def subtract(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def tan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5251,6 +5306,7 @@ def tan(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5339,6 +5395,7 @@ def tanh(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5385,6 +5442,7 @@ def trunc(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5413,6 +5471,7 @@ def erf(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -5506,6 +5565,7 @@ def maximum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -5598,6 +5658,7 @@ def minimum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def reciprocal(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
