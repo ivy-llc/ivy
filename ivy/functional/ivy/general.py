@@ -2532,6 +2532,7 @@ def get_item(
        >>> x = ivy.array([[4, 5], [20, 128], [-2, -10]])
        >>> query = ivy.array([[True, False], [False, False], [True, True]])
        >>> print(ivy.get_item(x, query))
+       ivy.array([  4,  -2, -10])
 
     """
     return current_backend(x).get_item(x, query)
