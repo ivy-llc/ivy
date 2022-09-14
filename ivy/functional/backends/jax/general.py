@@ -251,7 +251,8 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+        # assert ivy.Shape(target.shape) == ivy.Shape(shape)
+        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
