@@ -708,3 +708,24 @@ reciprocal.unsupported_dtypes = (
     "int32",
     "int64",
 )
+
+
+def deg2rad(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.deg2rad(x)
+
+
+deg2rad.unsupported_dtypes = ("bfloat16",)
+
+
+def rad2deg(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rad2deg(x)
