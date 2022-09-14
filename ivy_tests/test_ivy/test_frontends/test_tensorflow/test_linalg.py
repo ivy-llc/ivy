@@ -147,7 +147,6 @@ def _solve_get_dtype_and_data(draw):
     return data1, data2
 
 
-#eigh 
 @handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
