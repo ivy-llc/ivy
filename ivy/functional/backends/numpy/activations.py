@@ -59,7 +59,9 @@ softmax.support_native_out = True
 
 @_handle_0_dim_output
 def softplus(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.add(np.log1p(np.exp(-np.abs(x))), np.maximum(x, 0), out=out)
+    return np.add(
+        np.log1p(np.exp(-np.abs(x))), np.maximum(x, 0, dtype=x.dtype), out=out
+    )
 
 
 softplus.support_native_out = True

@@ -1,4 +1,3 @@
-# For Review
 # global
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
@@ -16,23 +15,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
-
-
-# Helpers #
-# --------#
-
-
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (
-        (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-        and isinstance(fill_value, int)
-    ) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value:\n\n{}\n\nand data type:\n\n{}\n\nare not compatible.".format(
-        fill_value, dtype
-    )
 
 
 # Array API Standard #
@@ -645,7 +627,7 @@ def triu(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).triu(x, k, out=out)
+    return current_backend(x).triu(x, k=k, out=out)
 
 
 @outputs_to_ivy_arrays
