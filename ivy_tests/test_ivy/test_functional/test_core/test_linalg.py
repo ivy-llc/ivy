@@ -4,7 +4,7 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -1222,16 +1222,29 @@ def test_matrix_norm(
     )
 
 
+@st.composite
+def _matrix_rank_helper(draw):
+    shape = draw(helpers.get_shape(allow_none=False, min_num_dims=2))
+    shape = shape + (shape[-1],)
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+            large_value_safety_factor=20,
+            small_value_safety_factor=2.5,
+            max_op="log",
+        )
+    )
+    return dtype_x
+
+
 # matrix_rank
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
-        min_num_dims=2,
-        min_value=-1e05,
-        max_value=1e05,
-    ),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x=_matrix_rank_helper(),
+    rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    | st.just(None),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
 )
 def test_matrix_rank(
@@ -1247,6 +1260,9 @@ def test_matrix_rank(
     rtol,
 ):
     dtype, x = dtype_x
+    x_temp = np.asarray(x, dtype="float64")
+    for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
+        assume(round(np.linalg.det(x_i), 1) != 0.0)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
