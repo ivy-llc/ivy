@@ -1882,13 +1882,13 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             kwargs["inplace"] = True
-            input_argument = args[0]
+            input_argument = kwargs["input"]
             ret = frontend_fn(*args, **kwargs)
             assert input_argument.data is ret.data and ret.data is out.data
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
-            input_argument = args[0]
+            input_argument = kwargs["input"]
             assert input_argument is ret
 
     # create NumPy args

@@ -370,14 +370,14 @@ def test_torch_relu6(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.relu6",
         input=np.asarray(input, dtype=input_dtype),
-        inplace=False,
     )
 
 
@@ -406,7 +406,8 @@ def test_torch_elu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -414,7 +415,6 @@ def test_torch_elu(
         fn_tree="nn.functional.elu",
         input=np.asarray(input, dtype=input_dtype),
         alpha=alpha,
-        inplace=False,
     )
 
 
@@ -444,7 +444,8 @@ def test_torch_elu_(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -481,7 +482,8 @@ def test_torch_celu(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -489,7 +491,6 @@ def test_torch_celu(
         fn_tree="nn.functional.celu",
         input=np.asarray(input, dtype=input_dtype),
         alpha=alpha,
-        inplace=False,
     )
 
 
@@ -516,13 +517,13 @@ def test_torch_selu(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.selu",
         input=np.asarray(input, dtype=input_dtype),
-        inplace=False,
     )
 
 
@@ -585,6 +586,7 @@ def test_torch_rrelu(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -593,7 +595,6 @@ def test_torch_rrelu(
         input=np.asarray(input, dtype=input_dtype),
         lower=lower,
         upper=upper,
-        inplace=False,
     )
 
 
