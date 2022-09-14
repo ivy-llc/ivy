@@ -2893,6 +2893,8 @@ def array_values(
                     abs_smallest_val = dtype_info.smallest_normal ** (
                         1 / small_abs_safety_factor
                     )
+        elif kind_dtype == "float":
+            abs_smallest_val = dtype_info.smallest_normal
 
         if kind_dtype == "int":
             if exclude_min:
@@ -2914,16 +2916,12 @@ def array_values(
             neg_float_strat = st.floats(
                 # Using np.array to assert that value
                 # can be represented of compatible width.
-                min_value=float(
-                    np.array(min_value, dtype=floats_info[dtype]["cast_type"]).tolist()[
-                        0
-                    ]
-                ),
-                max_value=float(
-                    np.array(
-                        -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                    ).tolist()[0]
-                ),
+                min_value=np.array(
+                    min_value, dtype=floats_info[dtype]["cast_type"]
+                ).tolist(),
+                max_value=np.array(
+                    -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                ).tolist(),
                 allow_nan=allow_nan,
                 allow_subnormal=allow_subnormal,
                 allow_infinity=allow_inf,
@@ -2934,16 +2932,12 @@ def array_values(
             pos_float_strat = st.floats(
                 # Using np.array to assert that value
                 # can be represented of compatible width.
-                min_value=float(
-                    np.array(
-                        abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                    ).tolist()[0]
-                ),
-                max_value=float(
-                    np.array(max_value, dtype=floats_info[dtype]["cast_type"]).tolist()[
-                        0
-                    ]
-                ),
+                min_value=np.array(
+                    abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                ).tolist(),
+                max_value=np.array(
+                    max_value, dtype=floats_info[dtype]["cast_type"]
+                ).tolist(),
                 allow_nan=allow_nan,
                 allow_subnormal=allow_subnormal,
                 allow_infinity=allow_inf,
