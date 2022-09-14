@@ -878,10 +878,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_matrix_rank(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             rtol=rtol,
             out=out,
         )
@@ -1227,7 +1227,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.trace.
-        This method Returns the sum along the specified diagonals of a matrix (or a 
+        This method Returns the sum along the specified diagonals of a matrix (or a
         stack of matrices).
 
         Parameters
@@ -1236,7 +1236,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             input container having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices. Should have a floating-point data type.
         offset
-            Offset of the diagonal from the main diagonal. Can be both positive and 
+            Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1255,9 +1255,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            a container containing the traces and whose shape is determined by removing 
-            the last two dimensions and storing the traces in the last array dimension. 
-            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, 
+            a container containing the traces and whose shape is determined by removing
+            the last two dimensions and storing the traces in the last array dimension.
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
             then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
 
             ::
@@ -1307,7 +1307,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.trace.
-        This method Returns the sum along the specified diagonals of a matrix (or a 
+        This method Returns the sum along the specified diagonals of a matrix (or a
         stack of matrices).
 
         Parameters
@@ -1316,7 +1316,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             input container having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices. Should have a floating-point data type.
         offset
-            Offset of the diagonal from the main diagonal. Can be both positive and 
+            Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
@@ -1335,9 +1335,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            a container containing the traces and whose shape is determined by removing 
-            the last two dimensions and storing the traces in the last array dimension. 
-            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, 
+            a container containing the traces and whose shape is determined by removing
+            the last two dimensions and storing the traces in the last array dimension.
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
             then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
 
             ::
@@ -1373,7 +1373,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             offset=offset,
             out=out,
         )
-        
+
     @staticmethod
     def static_vecdot(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
