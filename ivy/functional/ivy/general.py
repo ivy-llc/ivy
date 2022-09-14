@@ -1136,7 +1136,7 @@ def clip_matrix_norm(
     ivy.array([[0.   , 0.894, 1.79 ]])
 
     >>> x = ivy.array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
-    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> y = ivy.clip_matrix_norm(x, 3.0, p=1.0)
     >>> print(y)
     ivy.array([[ 0.0353, -0.424 ,  1.31  ],
                [ 0.    ,  2.58  , -0.176 ]])
@@ -1144,7 +1144,7 @@ def clip_matrix_norm(
     >>> x = ivy.array([[[5., 4.], [-2., 6.]], \
                        [[3., 7.], [0., -5.]]])
     >>> y = ivy.empty((2, 2, 2))
-    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)
     >>> print(y)
     ivy.array([[[ 0.339,  0.271],
                 [-0.135,  0.406]],
@@ -1153,7 +1153,7 @@ def clip_matrix_norm(
 
     >>> x = ivy.array([[0., 1.], \
                        [2., 3.]])
-    >>> ivy.clip_matrix_norm(x, 5.0, 1.0, out=x)
+    >>> ivy.clip_matrix_norm(x, 5.0, p=1.0, out=x)
     >>> print(x)
     ivy.array([[0., 1.],
                [2., 3.]])
@@ -1166,7 +1166,7 @@ def clip_matrix_norm(
     ivy.array([[0.   , 0.894, 1.79 ]])
 
     >>> x = ivy.native_array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])
-    >>> y = ivy.clip_matrix_norm(x, 3.0, 1.0)
+    >>> y = ivy.clip_matrix_norm(x, 3.0, p=1.0)
     >>> print(y)
     ivy.array([[ 0.0353, -0.424 ,  1.31  ],
                [ 0.    ,  2.58  , -0.176 ]])
@@ -1174,7 +1174,7 @@ def clip_matrix_norm(
     >>> x = ivy.native_array([[[5., 4.], [-2., 6.]], \
                        [[3., 7.], [0., -5.]]])
     >>> y = ivy.empty((2, 2, 2))
-    >>> ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)
+    >>> ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)
     >>> print(y)
     ivy.array([[[ 0.339,  0.271],
                 [-0.135,  0.406]],
