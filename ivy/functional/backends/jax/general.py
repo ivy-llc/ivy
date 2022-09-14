@@ -112,7 +112,7 @@ def gather_nd(
     return _to_device(ret)
 
 
-def get_num_dims(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, int]:
+def get_num_dims(x: JaxArray, /, *, as_tensor: bool = False) -> Union[JaxArray, int]:
     return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
 
 
@@ -173,9 +173,10 @@ def multiprocessing(context=None):
 def scatter_flat(
     indices: JaxArray,
     updates: JaxArray,
+    /,
+    *,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     target = out
@@ -214,9 +215,10 @@ def scatter_flat(
 def scatter_nd(
     indices: JaxArray,
     updates: JaxArray,
+    /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    reduction="sum",
     *,
+    reduction="sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -286,7 +288,7 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(x: JaxArray, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:
