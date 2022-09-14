@@ -34,6 +34,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
 from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
 from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
 from ivy_tests.test_ivy.test_frontends.test_jax import convjax
+import ivy.func_wrapper
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -1882,13 +1883,13 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             kwargs["inplace"] = True
-            input_argument = kwargs["input"]
+            input_argument = ivy.func_wrapper._get_first_array(args, kwargs)
             ret = frontend_fn(*args, **kwargs)
             assert input_argument.data is ret.data and ret.data is out.data
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
-            input_argument = kwargs["input"]
+            input_argument = ivy.func_wrapper._get_first_array(args, kwargs)
             assert input_argument is ret
 
     # create NumPy args
