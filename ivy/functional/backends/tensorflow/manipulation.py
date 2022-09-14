@@ -131,12 +131,7 @@ def squeeze(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
-        if x.shape[axis] > 1:
-            raise ValueError(
-                "Expected dimension of size 1, but found dimension size {}".format(
-                    x.shape[axis]
-                )
-            )
+        ivy.assertions.check_less(x.shape[axis], 1, allow_equal=True)
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -153,7 +148,7 @@ def squeeze(
         ]
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
-                raise ValueError(
+                raise ivy.exceptions.IvyException(
                     "Expected dimension of size 1, but found dimension size {}".format(
                         x.shape[i]
                     )

@@ -168,7 +168,9 @@ def linspace(
         axis = -1
 
     if num < 0:
-        raise ValueError(f"Number of samples, {num}, must be non-negative.")
+        raise ivy.exceptions.IvyException(
+            f"Number of samples, {num}, must be non-negative."
+        )
 
     if dtype is None:
         dtype = ivy.promote_types(start.dtype, stop.dtype)

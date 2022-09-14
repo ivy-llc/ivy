@@ -98,7 +98,7 @@ def squeeze(
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise ValueError(
+        raise ivy.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     else:

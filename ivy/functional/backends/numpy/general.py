@@ -292,7 +292,7 @@ def vmap(
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 """Inconsistent sizes. All mapped axes should have the same size"""
             )
 

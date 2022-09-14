@@ -74,8 +74,10 @@ def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
                 return x.detach().cpu().numpy().astype("bfloat16")
             return x.detach().cpu().numpy()
         else:
-            raise ValueError("Overwriting the same address is not supported for torch.")
-    raise ValueError("Expected a pytorch tensor.")
+            raise ivy.exceptions.IvyException(
+                "Overwriting the same address is not supported for torch."
+            )
+    raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
 def to_scalar(x: torch.Tensor, /) -> Number:
@@ -89,7 +91,7 @@ def to_list(x: torch.Tensor, /) -> list:
         return x.tolist()
     elif torch.is_tensor(x):
         return x.detach().cpu().tolist()
-    raise ValueError("Expected a pytorch tensor.")
+    raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
 def gather(

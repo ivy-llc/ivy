@@ -112,12 +112,14 @@ def squeeze(
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 "Expected dimension of size [{}, {}], but found "
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         if x.shape[axis] != 1:
-            raise ValueError(f"Expected size of axis to be 1 but was {x.shape[axis]}")
+            raise ivy.exceptions.IvyException(
+                f"Expected size of axis to be 1 but was {x.shape[axis]}"
+            )
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
@@ -132,7 +134,7 @@ def squeeze(
     for i in axis_updated_after_squeeze:
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 "Expected dimension of size [{}, {}], "
                 "but found dimension size {}".format(-dim, dim, shape)
             )
