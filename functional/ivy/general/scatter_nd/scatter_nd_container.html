@@ -247,17 +247,10 @@ that the inputs broadcast to.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <p>scatter into an array
-&gt;&gt; indices = ivy.Container(a=ivy.array([[3],[1],[2]]),</p>
-<blockquote>
-<div><p>b=ivy.array([[4],[1],[3]]))</p>
-</div></blockquote>
-<dl class="simple">
-<dt>&gt;&gt; updates = ivy.Container(a=ivy.array([50, 60, 70]),</dt><dd><p>b=ivy.array([20, 30, 40]))</p>
-</dd>
-<dt>&gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),</dt><dd><p>b=ivy.array([11, 22, 33, 44, 55]))</p>
-</dd>
-</dl>
-<p>&gt;&gt; z = indices.scatter_nd(updates, tensor=arr, reduction=’replace’)
+&gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[3],[1],[2]]),                                b=ivy.array([[4],[1],[3]]))
+&gt;&gt;&gt; updates = ivy.Container(a=ivy.array([50, 60, 70]),                                b=ivy.array([20, 30, 40]))
+&gt;&gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),                            b=ivy.array([11, 22, 33, 44, 55]))
+&gt;&gt;&gt; z = indices.scatter_nd(updates, tensor=arr, reduction=’replace’)
 &gt;&gt; print(z)
 {</p>
 <blockquote>
@@ -266,19 +259,11 @@ b: ivy.array([11, 30, 33, 40, 20])</p>
 </div></blockquote>
 <p>}</p>
 <p>scatter into an empty array
-&gt;&gt; indices = ivy.Container(a=ivy.array([[5],[6],[7]]),</p>
-<blockquote>
-<div><p>b=ivy.array([[2],[3],[4]]))</p>
-</div></blockquote>
-<dl class="simple">
-<dt>&gt;&gt; updates = ivy.Container(a=ivy.array([50, 60, 70]),</dt><dd><p>b=ivy.array([20, 30, 40]))</p>
-</dd>
-<dt>&gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),</dt><dd><p>b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))</p>
-</dd>
-<dt>&gt;&gt; shape = ivy.Container(a=ivy.array([10]),</dt><dd><p>b = ivy.array([10]))</p>
-</dd>
-</dl>
-<p>z = indices.scatter_nd(updates, shape=shape)
+&gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[5],[6],[7]]),                                b=ivy.array([[2],[3],[4]]))
+&gt;&gt;&gt; updates = ivy.Container(a=ivy.array([50, 60, 70]),                                b=ivy.array([20, 30, 40]))
+&gt;&gt;&gt; arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),                            b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+&gt;&gt;&gt; shape = ivy.Container(a=ivy.array([10]),                            b = ivy.array([10]))
+z = indices.scatter_nd(updates, shape=shape)
 &gt;&gt; print(z)
 {</p>
 <blockquote>

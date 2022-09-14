@@ -320,7 +320,7 @@ that the inputs broadcast to.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.default">
-<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catch_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_callable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.default" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_val</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catch_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_callable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.default" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.default. This method simply wraps the
 function, and so the docstring for ivy.default also applies to this method
 with minimal changes.</p>
@@ -346,7 +346,7 @@ Default is False.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.einops_rearrange">
-<span class="sig-name descname"><span class="pre">einops_rearrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">axes_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.einops_rearrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.einops_rearrange" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">einops_rearrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">axes_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.einops_rearrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.einops_rearrange" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.einops_rearrange.
 This method simply wraps the function, and so the docstring
 for ivy.einops_rearrange also applies to this method
@@ -372,7 +372,7 @@ that the inputs broadcast to.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.einops_reduce">
-<span class="sig-name descname"><span class="pre">einops_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">axes_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.einops_reduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.einops_reduce" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">einops_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">axes_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.einops_reduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.einops_reduce" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.einops_reduce. This method simply
 wraps the function, and so the docstring for ivy.einops_reduce also applies
 to this method with minimal changes.</p>
@@ -432,7 +432,7 @@ ivy.array([[[5, 2, 3]],</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.einops_repeat">
-<span class="sig-name descname"><span class="pre">einops_repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">axes_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.einops_repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.einops_repeat" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">einops_repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">axes_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.einops_repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.einops_repeat" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.einops_repeat. This method simply
 wraps the function, and so the docstring for ivy.einops_repeat also applies
 to this method with minimal changes.</p>
@@ -592,7 +592,7 @@ the inputs broadcast to.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.get_num_dims">
-<span class="sig-name descname"><span class="pre">get_num_dims</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">as_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.get_num_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.get_num_dims" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_num_dims</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.get_num_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.get_num_dims" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.shape. This method simply wraps the
 function, and so the docstring for ivy.shape also applies to this method
 with minimal changes.</p>
@@ -826,7 +826,7 @@ variable or traced array.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.scatter_flat">
-<span class="sig-name descname"><span class="pre">scatter_flat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.scatter_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.scatter_flat" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scatter_flat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.scatter_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.scatter_flat" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.scatter_flat. This method simply wraps
 the function, and so the docstring for ivy.scatter_flat also applies to this
 method with minimal changes.</p>
@@ -855,7 +855,7 @@ the inputs broadcast to.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.scatter_nd">
-<span class="sig-name descname"><span class="pre">scatter_nd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.scatter_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.scatter_nd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scatter_nd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.scatter_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.scatter_nd" title="Permalink to this definition"></a></dt>
 <dd><p>Scatter updates into an array according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -879,22 +879,24 @@ or ‘replace’</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <p>scatter values into an array</p>
-<p>&gt;&gt; arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
-&gt;&gt; indices = ivy.array([[4], [3], [1], [7]])
-&gt;&gt; updates = ivy.array([9, 10, 11, 12])
-&gt;&gt; scatter = indices.scatter_nd(updates, tensor=arr, reduction=’replace’)
-&gt;&gt; print(scatter)
-ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">updates</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scatter</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">updates</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">arr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">scatter</span><span class="p">)</span>
+<span class="go">ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])</span>
+</pre></div>
+</div>
 <p>scatter values into an empty array</p>
-<p>&gt;&gt; shape = ivy.array([2, 5])
-&gt;&gt; indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
-&gt;&gt; updates = ivy.array([25, 40, 21, 22])
-&gt;&gt; scatter = indices.scatter_nd(updates, shape=shape)
-&gt;&gt; print(scatter)
-ivy.array([[ 0,  0, 22, 40,  0],</p>
-<blockquote>
-<div><p>[ 0, 21,  0,  0, 25]])</p>
-</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">updates</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">25</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scatter</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">scatter</span><span class="p">)</span>
+<span class="go">ivy.array([[ 0,  0, 22, 40,  0],</span>
+<span class="go">            [ 0, 21,  0,  0, 25]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -919,11 +921,33 @@ method with minimal changes.</p>
 the corresponding element of denominator</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([2., 2.5, 3.])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">min_denominator</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0.8, 1. , 1.2])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">],</span> <span class="p">[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([[4.  , 2.5 , 2.  ],</span>
+<span class="go">        [3.5 , 2.67, 2.25]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.stable_pow">
-<span class="sig-name descname"><span class="pre">stable_pow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exponent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.stable_pow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.stable_pow" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stable_pow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exponent</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.stable_pow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.stable_pow" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
 the function, and so the docstring for ivy.stable_pow also applies to this
 method with minimal changes.</p>
@@ -1055,7 +1079,7 @@ with minimal changes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.value_is_nan">
-<span class="sig-name descname"><span class="pre">value_is_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_infs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.value_is_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.value_is_nan" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">value_is_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_infs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/general.html#ArrayWithGeneral.value_is_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.value_is_nan" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array instance method variant of ivy.value_is_nan. This method simply wraps
 the function, and so the docstring for ivy.value_is_nan also applies to this
 method with minimal changes.</p>
@@ -1073,6 +1097,14 @@ method with minimal changes.</p>
 <dd class="field-odd"><p><em>ret</em> – Boolean as to whether the input value is a nan or not.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">has_nans</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>

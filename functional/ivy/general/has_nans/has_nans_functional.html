@@ -280,35 +280,6 @@ instances in place of any of the arguments.</p>
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>With one <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]),                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
-&gt;&gt;&gt; y = ivy.Container.static_has_nans(x)
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><p>a: false,
-b: false</p>
-</div></blockquote>
-<p>}</p>
-<blockquote>
-<div><p>With one <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:</p>
-</div></blockquote>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">has_nans</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 1]),                          b=ivy.array([-1, 0, 1, 1]))
-&gt;&gt;&gt; y = x.has_nans()
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><p>a: false,
-b: false</p>
-</div></blockquote>
-<p>}</p>
 </dd></dl>
 
 <div class="line-block">
