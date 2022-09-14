@@ -13,12 +13,17 @@ import warnings
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
+# local
+from .assertions import check_any, check_elem_in_list, check_isinstance
+
 # class placeholders
 
 
 class FrameworkStr(str):
     def __new__(cls, fw_str):
-        assert fw_str in ["jax", "tensorflow", "torch", "numpy"]
+        ivy.assertions.check_elem_in_list(
+            fw_str, ["jax", "tensorflow", "torch", "numpy"]
+        )
         return str.__new__(cls, fw_str)
 
 
@@ -65,16 +70,23 @@ class Variable:
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
-            assert dev_str[0:3] in ["gpu", "tpu", "cpu"]
+            ivy.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
             if dev_str != "cpu":
-                assert dev_str[3] == ":"
-                assert dev_str[4:].isnumeric()
+                ivy.assertions.check_equal(dev_str[3], ":")
+                ivy.assertions.check_true(
+                    dev_str[4:].isnumeric(),
+                    message="{} must be numeric".format(dev_str[4:]),
+                )
         return str.__new__(cls, dev_str)
 
 
 class Dtype(str):
     def __new__(cls, dtype_str):
-        assert "int" in dtype_str or "float" in dtype_str or "bool" in dtype_str
+        check_isinstance(dtype_str, str)
+        check_any(
+            [substr in dtype_str for substr in ["int", "float", "bool"]],
+            "dtype must be string and starts with int, float, or bool",
+        )
         return str.__new__(cls, dtype_str)
 
 
@@ -83,13 +95,14 @@ class Shape(tuple):
         valid_types = (int, list, tuple)
         if len(backend_stack) != 0:
             valid_types += (ivy.NativeShape,)
-        assert isinstance(shape_tup, valid_types)
+        ivy.assertions.check_isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
             shape_tup = (shape_tup,)
         elif isinstance(shape_tup, list):
             shape_tup = tuple(shape_tup)
-        assert builtins.all(
-            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup]
+        ivy.assertions.check_all(
+            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup],
+            "shape must take integers only",
         )
         if ivy.shape_array_mode():
             return ivy.array(shape_tup)
@@ -98,19 +111,22 @@ class Shape(tuple):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "int" in dtype_str
+        check_isinstance(dtype_str, str)
+        check_elem_in_list("int", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
-        assert "float" in dtype_str
+        check_isinstance(dtype_str, str)
+        check_elem_in_list("float", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
 class UintDtype(IntDtype):
     def __new__(cls, dtype_str):
-        assert "uint" in dtype_str
+        check_isinstance(dtype_str, str)
+        check_elem_in_list("uint", dtype_str)
         return str.__new__(cls, dtype_str)
 
 
@@ -523,8 +539,8 @@ if "IVY_BACKEND" in os.environ:
 
 
 def _assert_array_significant_figures_formatting(sig_figs):
-    assert isinstance(sig_figs, int)
-    assert sig_figs > 0
+    ivy.assertions.check_isinstance(sig_figs, int)
+    ivy.assertions.check_greater(sig_figs, 0)
 
 
 def _sf(x, sig_fig=3):
@@ -596,8 +612,8 @@ def unset_array_significant_figures():
 
 
 def _assert_array_decimal_values_formatting(dec_vals):
-    assert isinstance(dec_vals, int)
-    assert dec_vals >= 0
+    ivy.assertions.check_isinstance(dec_vals, int)
+    ivy.assertions.check_greater(dec_vals, 0, allow_equal=True)
 
 
 def array_decimal_values(dec_vals=None):

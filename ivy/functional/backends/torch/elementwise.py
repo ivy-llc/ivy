@@ -45,6 +45,7 @@ bitwise_xor.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.expm1(x, out=out)
 
 
@@ -62,10 +63,12 @@ bitwise_invert.support_native_out = True
 
 
 def isfinite(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.isfinite(x)
 
 
 def isinf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.isinf(x)
 
 
@@ -113,6 +116,7 @@ bitwise_and.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def ceil(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
@@ -125,6 +129,7 @@ ceil.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def floor(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
@@ -137,6 +142,7 @@ floor.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def asin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.asin(x, out=out)
 
 
@@ -145,6 +151,7 @@ asin.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def asinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.asinh(x, out=out)
 
 
@@ -153,6 +160,7 @@ asinh.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def sign(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.sign(x, out=out)
 
 
@@ -161,6 +169,7 @@ sign.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def sqrt(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.sqrt(x, out=out)
 
 
@@ -169,6 +178,7 @@ sqrt.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def cosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.cosh(x, out=out)
 
 
@@ -177,6 +187,7 @@ cosh.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def log10(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.log10(x, out=out)
 
 
@@ -185,11 +196,13 @@ log10.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def log2(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.log2(x, out=out)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def log1p(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.log1p(x, out=out)
 
 
@@ -197,6 +210,7 @@ log1p.support_native_out = True
 
 
 def isnan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.isnan(x)
 
 
@@ -230,6 +244,7 @@ multiply.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def cos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.cos(x, out=out)
 
 
@@ -239,6 +254,7 @@ cos.support_native_out = True
 def logical_not(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.logical_not(x.type(torch.bool), out=out)
 
 
@@ -294,6 +310,7 @@ greater_equal.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def acos(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.acos(x, out=out)
 
 
@@ -329,6 +346,7 @@ logical_or.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def acosh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.acosh(x, out=out)
 
 
@@ -337,6 +355,7 @@ acosh.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def sin(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.sin(x, out=out)
 
 
@@ -369,6 +388,7 @@ not_equal.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def tanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.tanh(x, out=out)
 
 
@@ -405,6 +425,7 @@ bitwise_or.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def sinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.sinh(x, out=out)
 
 
@@ -419,6 +440,7 @@ def positive(
 
 
 def square(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.square(x, out=out)
 
 
@@ -440,17 +462,6 @@ pow.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
-def reciprocal(
-    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    x = _cast_for_unary_op(x)
-    return torch.reciprocal(x, out=out)
-
-
-reciprocal.support_native_out = True
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def round(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
@@ -464,6 +475,7 @@ round.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def trunc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     if "int" not in str(x.dtype):
         return torch.trunc(x, out=out)
     ret = x
@@ -498,6 +510,7 @@ logaddexp.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.tan(x, out=out)
 
 
@@ -506,6 +519,7 @@ tan.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def atan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.atan(x, out=out)
 
 
@@ -525,6 +539,7 @@ atan2.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def log(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.log(x, out=out)
 
 
@@ -533,6 +548,7 @@ log.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def exp(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.exp(x, out=out)
 
 
@@ -577,6 +593,7 @@ remainder.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def atanh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.atanh(x, out=out)
 
 
@@ -619,17 +636,11 @@ bitwise_left_shift.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
 def erf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
     return torch.erf(x, out=out)
 
 
 erf.support_native_out = True
-
-def floormod(
-    x: torch.Tensor, y: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    x, y = ivy.promote_types_of_inputs(x, y)
-    return x % y
-
 
 def minimum(
     x1: Union[float, torch.Tensor],
@@ -657,3 +668,28 @@ def maximum(
 
 
 maximum.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
+def reciprocal(
+    x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x = _cast_for_unary_op(x)
+    return torch.reciprocal(x, out=out)
+
+
+reciprocal.support_native_out = True
+
+
+def deg2rad(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.deg2rad(x, out=out)
+
+
+deg2rad.support_native_out = True
+
+
+def rad2deg(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.rad2deg(x, out=out)
+
+
+rad2deg.support_native_out = True

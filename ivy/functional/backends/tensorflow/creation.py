@@ -1,4 +1,3 @@
-# For Review
 # global
 from typing import Union, Tuple, List, Optional, Sequence
 
@@ -11,9 +10,8 @@ from ivy import (
     default_dtype,
     as_ivy_dtype,
 )
+
 from ivy.func_wrapper import with_unsupported_dtypes
-# noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 from . import tf_version
 
 
@@ -211,7 +209,7 @@ def full(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     with tf.device(device):
         return tf.fill(
             shape,
@@ -228,7 +226,7 @@ def full_like(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 

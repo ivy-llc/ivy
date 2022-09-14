@@ -512,18 +512,6 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below":
-                              ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "int32", "int64",)}, tf_version
-)
-def reciprocal(
-    x: Union[float, tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.reciprocal(x)
-
-
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
@@ -671,17 +659,6 @@ def erf(
     return tf.math.erf(x)
 
 
-def floormod(
-    x: Union[tf.Tensor, tf.Variable],
-    y: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x, y = ivy.promote_types_of_inputs(x, y)
-    return tf.math.floormod(x, y)
-
-
 def maximum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -702,3 +679,37 @@ def minimum(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.minimum(x1, x2)
+
+
+@with_unsupported_dtypes({"2.9.1 and below":
+                              ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "int32", "int64",)}, tf_version
+)
+def reciprocal(
+    x: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.reciprocal(x)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
+def deg2rad(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.deg2rad(x)
+
+
+deg2rad.unsupported_dtypes = ("bfloat16",)
+
+
+def rad2deg(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rad2deg(x)

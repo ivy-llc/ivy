@@ -106,7 +106,13 @@ inner.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, torch_version)
 def inv(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.inverse(x, out=out)
+    if torch.any(torch.linalg.det(x.to(dtype=torch.float64)) == 0):
+        ret = x
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+    else:
+        ret = torch.inverse(x, out=out)
+    return ret
 
 
 inv.support_native_out = True
