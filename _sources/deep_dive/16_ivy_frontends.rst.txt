@@ -36,24 +36,35 @@ frontend functions.
 
 **Jax**
 
+In general, all functions in the :code:`jax.numpy` namespace are themselves implemented
+as a composition of the lower-level functions in the :code:`jax.lax` namespace,
+which maps very closely to the API for the Accelerated Linear Algebra (XLA) compiler
+which is used under the hood to run high performance JAX code.
+
+When transpiling between frameworks, the first step is to compile the computation graph
+into the lowest level python functions for the source framework using Ivy's graph
+compiler, before then replacing these nodes with the associated functions in Ivy's
+frontend API. Given that almost all jax code can be decomposed into :code:`jax.lax`
+functions, these are the most important functions to implement in Ivy's frontend API.
+Thus, a :code:`lax` module is created in the frontend API, and most functions are placed
+there. We start with the function :code:`add` as an example.
+
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
     def add(x, y):
         return ivy.add(x, y)
 
-In the original Jax library, :code:`add` is under `jax.lax.add`_. Thus, an
-identical module of :code:`lax` is created and the function is placed there. It
-is then categorised under :code:`operators` as shown in the `jax.lax`_ package directory.
-This is to ensure that :code:`jax.lax.add` is available directly without further
-major changes when using :code:`ivy`. It is valid by simply importing
-:code:`ivy.functional.frontends.jax`.
+:code:`add` is categorised under :code:`operators` as shown in the `jax.lax`_ package
+directory. We organize the functions using the same categorizations as the original
+framework, and also mimick the importing behaviour regarding modules and namespaces etc.
 
-For the function arguments, it has to be identical to the original function in
-Jax to ensure identical behaviour. In this case, `jax.lax.add`_ has two arguments,
-where we will also have the same two arguments in our Jax frontend :code:`add`.
-Then, this function will return :code:`ivy.add`, which links to the :code:`add`
-function according to the framework set in the backend.
+For the function arguments, these must be identical to the original function in
+Jax. In this case, `jax.lax.add`_ has two arguments,
+and so we will also have the same two arguments in our Jax frontend :code:`add`.
+In this case, the function will then simply return :code:`ivy.add`,
+which in turn will link to the backend-specific implementation :code:`add`
+according to the framework set in the backend.
 
 .. code-block:: python
 
@@ -61,10 +72,11 @@ function according to the framework set in the backend.
     def tan(x):
         return ivy.tan(x)
 
-Looking at a second example, :code:`tan`, it is placed under :code:`operators`
-according to the `jax.lax`_ directory. By referring to the `jax.lax.tan`_ documentation,
-it has only one argument, and just as our :code:`add` function, we link its return to
-:code:`ivy.tan` so that the computation operation depends on the backend framework.
+Using :code:`tan` as a second example, we can see that this is placed under
+:code:`operators`, again in the `jax.lax`_ directory.
+By referring to the `jax.lax.tan`_ documentation, we can see that it has only one
+argument. In the same manner as our :code:`add` function, we simply link its return to
+:code:`ivy.tan`, and again the computation then depends on the backend framework.
 
 **NumPy**
 
@@ -93,16 +105,37 @@ it has only one argument, and just as our :code:`add` function, we link its retu
 
 In NumPy, :code:`add` is categorised under :code:`mathematical_functions` with a
 sub-category of :code:`arithmetic_operations` as shown in the
-`numpy mathematical functions`_ directory. This ensures direct access to
-:code:`numpy.add` in :code:`ivy` by simply importing
-:code:`ivy.functional.frontends.numpy`.
+`numpy mathematical functions`_ directory.
 
 The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
 according to the `numpy.add`_ documentation. For example, if :code:`dtype` is specified,
-the arguments to be added will be casted to the desired type through
-:code:`ivy.astype`. The returned result is then obtained through :code:`ivy.add`
-just like the other examples.
+the arguments will be cast to the desired type through :code:`ivy.astype`.
+The returned result is then obtained through :code:`ivy.add` just like the other
+examples.
+
+However, the arguments :code:`casting`, :code:`order` and :code:`subok` are completely
+unhandled here. This is for two reasons.
+
+In the case of :code:`casting`, support will be added for this via the inclusion of a
+decorator at some point in future, and so this is simply being deferred for the time
+being.
+
+In the case of :code:`order` and :code:`subok`, this is because the aspects which these
+arguments seek to control are simply not controllable when using Ivy.
+:code:`order` controls the low-level memory layout of the stored array.
+Ivy abstracts the backend framework, and therefore also abstracts everything below Ivy's
+functional API, including the backend array class, the low-level language compiled to,
+the device etc. Most ML frameworks do not offer per-array control of the memory layout,
+and so we cannot offer this control at the Ivy API level, nor the frontend API level
+either. This is not a problem, as the memory layout has no bearing at all on the
+input-output behaviour of the function. Similarly, :code:`subok` controls whether or not
+subclasses of the :code:`numpy.ndarray` should be permitted as inputs to the function.
+Again, this is a very framework-specific argument. All ivy functions by default do
+enable subclasses of the :code:`ivy.Array` to be passed, and the frontend function will
+be operating with :code:`ivy.Array` instances rather than :code:`numpy.ndarray`
+instances, and so we omit this argument. Again, it has no bearing on input-output
+behaviour and so this is not a problem when transpiling between frameworks.
 
 .. code-block:: python
 
@@ -125,10 +158,12 @@ just like the other examples.
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
 
-With :code:`tan` as the second example, it has a sub-category of
+For the second example, :code:`tan` has a sub-category of
 :code:`trigonometric_functions` according to the `numpy mathematical functions`_
-directory. By referring to the `numpy.tan`_ documentation, it has additional
-arguments just like its :code:`add` function, thus needing additional handling code.
+directory. By referring to the `numpy.tan`_ documentation, we can see it has the same
+additional arguments as the :code:`add` function. In the same manner as :code:`add`,
+we handle the argument :code:`out`, :code:`where` and :code:`dtype`,
+but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
 
 **TensorFlow**
 
