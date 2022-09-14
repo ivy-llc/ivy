@@ -2871,8 +2871,16 @@ def array_values(
         )
 
     if kind_dtype != "bool":
-        min_value = _clamp_value(min_value, dtype_info) if min_value else dtype_info.min
-        max_value = _clamp_value(max_value, dtype_info) if max_value else dtype_info.max
+        min_value = (
+            _clamp_value(min_value, dtype_info)
+            if min_value is not None
+            else dtype_info.min
+        )
+        max_value = (
+            _clamp_value(max_value, dtype_info)
+            if max_value is not None
+            else dtype_info.max
+        )
         assert max_value >= min_value
 
         # Scale the values
@@ -2913,41 +2921,58 @@ def array_values(
                 "float32": {"cast_type": "float32", "width": 32},
                 "float64": {"cast_type": "float64", "width": 64},
             }
-            neg_float_strat = st.floats(
-                # Using np.array to assert that value
-                # can be represented of compatible width.
-                min_value=np.array(
-                    min_value, dtype=floats_info[dtype]["cast_type"]
-                ).tolist(),
-                max_value=np.array(
-                    -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                ).tolist(),
-                allow_nan=allow_nan,
-                allow_subnormal=allow_subnormal,
-                allow_infinity=allow_inf,
-                width=floats_info[dtype]["width"],
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
-            )
-            pos_float_strat = st.floats(
-                # Using np.array to assert that value
-                # can be represented of compatible width.
-                min_value=np.array(
-                    abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
-                ).tolist(),
-                max_value=np.array(
-                    max_value, dtype=floats_info[dtype]["cast_type"]
-                ).tolist(),
-                allow_nan=allow_nan,
-                allow_subnormal=allow_subnormal,
-                allow_infinity=allow_inf,
-                width=floats_info[dtype]["width"],
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
-            )
+            # The smallest possible value is determined by one of the arguments
+            if min_value > -abs_smallest_val or max_value < abs_smallest_val:
+                float_strategy = st.floats(
+                    # Using np.array to assert that value
+                    # can be represented of compatible width.
+                    min_value=np.array(
+                        min_value, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist(),
+                    max_value=np.array(
+                        max_value, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist(),
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=floats_info[dtype]["width"],
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            else:
+                float_strategy = st.one_of(
+                    st.floats(
+                        min_value=np.array(
+                            min_value, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        max_value=np.array(
+                            -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=floats_info[dtype]["width"],
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    st.floats(
+                        min_value=np.array(
+                            abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        max_value=np.array(
+                            max_value, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=floats_info[dtype]["width"],
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                )
             values = draw(
                 list_of_length(
-                    x=(neg_float_strat | pos_float_strat),
+                    x=float_strategy,
                     length=size,
                 )
             )
