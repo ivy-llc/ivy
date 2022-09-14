@@ -67,6 +67,12 @@ jobs:
           ./run_tests_CLI/test_array_api.sh ${{matrix.backends}} ${{matrix.submodules}}
         continue-on-error: true
 
+      - name: Zip Hypothesis Examples
+        run: |
+            cd ivy/.hypothesis
+            zip -r examples.zip examples
+        continue-on-error: true
+
       - name: Check on failures
         if: steps.tests.outcome != 'success'
         run: exit 1
@@ -75,12 +81,6 @@ jobs:
     needs: run-array-api-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Zip Hypothesis Examples
-        run: |
-          cd ivy/.hypothesis
-          zip -r examples.zip examples
-        continue-on-error: true
-
       - name: Upload hypothesis
         uses: actions/upload-artifact@v3
         with:
