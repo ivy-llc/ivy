@@ -197,7 +197,7 @@ def scatter_flat(
                 np.where(target == -1e12, 0.0, target), dtype=updates.dtype
             )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -245,7 +245,7 @@ def scatter_nd(
             target = np.where(target == -1e12, 0.0, target)
             target = np.asarray(target, dtype=updates.dtype)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
