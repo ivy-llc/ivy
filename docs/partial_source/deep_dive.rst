@@ -24,7 +24,7 @@ We're excited for you to get involved!  🦾
 | Primary, compositional, mixed and nestable functions  🧮
 |
 | (c) :ref:`Superset Behaviour`
-| Ivy goes for the superset when unifyin the backend functions ⭕
+| Ivy goes for the superset when unifying the backend functions ⭕
 |
 | (d) :ref:`Backend Setting`
 | How the backend is set, and what this means for each function type ⚙️

@@ -215,6 +215,9 @@ def repeat(
     return torch.repeat_interleave(x, repeats, axis)
 
 
+repeat.unsupported_dtypes = ("int8", "int16", "uint8")
+
+
 def tile(
     x: torch.Tensor, /, reps: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
