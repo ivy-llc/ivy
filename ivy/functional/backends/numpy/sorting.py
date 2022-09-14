@@ -44,8 +44,8 @@ def searchsorted(
     *,
     side="left",
     sorter=None,
+    ret_dtype=np.int64,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     v = list(v)
-    res = np.asarray(np.searchsorted(x, v, side=side))
-    return res
+    return np.searchsorted(x, v, side=side, sorter=sorter).astype(ret_dtype)
