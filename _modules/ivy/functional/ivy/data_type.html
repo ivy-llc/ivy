@@ -1520,16 +1520,15 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;torch&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.function_supported_dtypes(ivy.acosh))</span>
-<span class="sd">    ()</span>
+<span class="sd">    (&#39;bool&#39;, &#39;float64&#39;, &#39;int64&#39;, &#39;uint8&#39;, &#39;int8&#39;, &#39;float32&#39;, &#39;int32&#39;, &#39;int16&#39;, \</span>
+<span class="sd">    &#39;bfloat16&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_dtypes and unsupported_dtypes attributes cannot both </span><span class="se">\</span>
-<span class="s2">             exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">_is_valid_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
+        <span class="s2">&quot;supported_dtypes and unsupported_dtypes attributes cannot both exist </span><span class="se">\</span>
+<span class="s2">        in a particular backend&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">supported_dtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
         <span class="n">supported_dtypes</span> <span class="o">=</span> <span class="n">_nested_get</span><span class="p">(</span>
@@ -1562,12 +1561,11 @@
 <span class="sd">    (&#39;float16&#39;,&#39;uint16&#39;,&#39;uint32&#39;,&#39;uint64&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_dtypes and unsupported_dtypes attributes cannot both </span><span class="se">\</span>
-<span class="s2">             exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">_is_valid_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
+        <span class="s2">&quot;supported_dtypes and unsupported_dtypes attributes cannot both exist </span><span class="se">\</span>
+<span class="s2">        in a particular backend&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
         <span class="n">unsupported_dtypes</span> <span class="o">=</span> <span class="n">_nested_get</span><span class="p">(</span>
@@ -1743,7 +1741,7 @@
 <span class="sd">    With :code:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
-<span class="sd">    &gt;&gt;&gt; print(x.dtype)</span>
+<span class="sd">    &gt;&gt;&gt; x.dtype</span>
 <span class="sd">    float32</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(x))</span>
@@ -1753,7 +1751,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \</span>
 <span class="sd">        dtype = ivy.int16)</span>
-<span class="sd">    &gt;&gt;&gt; print(x.dtype)</span>
+<span class="sd">    &gt;&gt;&gt; x.dtype</span>
 <span class="sd">    torch.int16</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(x))</span>
@@ -1769,8 +1767,10 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">        b=ivy.array([3, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; print(x.a.dtype, x.b.dtype)</span>
-<span class="sd">    float32 int32</span>
+<span class="sd">    &gt;&gt;&gt; x.a.dtype</span>
+<span class="sd">    float32</span>
+<span class="sd">    &gt;&gt;&gt; x.b.dtype</span>
+<span class="sd">    int32</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.is_int_dtype(x))</span>
 <span class="sd">    {</span>
@@ -1948,7 +1948,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promotion_table</span><span class="p">[(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type1</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">type2</span><span class="p">))]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;these dtypes are not type promotable&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="s2">&quot;these dtypes are not type promotable&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
 

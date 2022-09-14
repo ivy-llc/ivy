@@ -615,7 +615,7 @@
     <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span> <span class="o">/</span> <span class="mf">1e9</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
             <span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
             <span class="s2">&quot;but found </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="p">)</span></div>
@@ -660,8 +660,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;gpu&quot;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;process-specific GPU queries are currently not supported&quot;</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
+            <span class="n">process_specific</span><span class="p">,</span>
+            <span class="s2">&quot;process-specific GPU queries are currently not supported&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">used</span> <span class="o">/</span> <span class="mf">1e9</span>
@@ -671,7 +673,7 @@
         <span class="n">vm</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span> <span class="o">-</span> <span class="n">vm</span><span class="o">.</span><span class="n">available</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e9</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
             <span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
             <span class="s2">&quot;but found </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="p">)</span></div>
@@ -717,8 +719,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;gpu&quot;</span> <span class="ow">in</span> <span class="n">device</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;process-specific GPU queries are currently not supported&quot;</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
+            <span class="n">process_specific</span><span class="p">,</span>
+            <span class="s2">&quot;process-specific GPU queries are currently not supported&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">used</span> <span class="o">/</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
@@ -728,7 +732,7 @@
             <span class="k">return</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">available</span> <span class="o">/</span> <span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
             <span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
             <span class="s2">&quot;but found </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="p">)</span></div>
@@ -771,7 +775,7 @@
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pynvml</span><span class="o">.</span><span class="n">nvmlDeviceGetUtilizationRates</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">gpu</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
             <span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
             <span class="s2">&quot;but found </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="p">)</span></div>
@@ -1302,12 +1306,11 @@
 <span class="sd">    ret</span>
 <span class="sd">        The supported devices of the function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_devices and unsupported_devices attributes cannot both </span><span class="se">\</span>
-<span class="s2">             exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
+        <span class="s2">&quot;supported_devices and unsupported_devices attributes cannot both </span><span class="se">\</span>
+<span class="s2">        exist in a particular backend&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">supported_devices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
@@ -1334,12 +1337,11 @@
 <span class="sd">    ret</span>
 <span class="sd">        The unsupported devices of the function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_devices and unsupported_devices attributes cannot both </span><span class="se">\</span>
-<span class="s2">             exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
+        <span class="s2">&quot;supported_devices and unsupported_devices attributes cannot both </span><span class="se">\</span>
+<span class="s2">        exist in a particular backend&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">unsupported_devices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>

@@ -374,8 +374,7 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">array_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_array_mode only accepts type bool&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
     <span class="n">array_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
 
 
@@ -435,8 +434,7 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">nestable_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_nestable_mode only accepts type bool&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
     <span class="n">nestable_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
 
 
@@ -1268,7 +1266,7 @@
 <span class="sd">    ivy.array([[0.   , 0.894, 1.79 ]])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 3.0, 1.0)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 3.0, p=1.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 0.0353, -0.424 ,  1.31  ],</span>
 <span class="sd">               [ 0.    ,  2.58  , -0.176 ]])</span>
@@ -1276,7 +1274,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[5., 4.], [-2., 6.]], \</span>
 <span class="sd">                       [[3., 7.], [0., -5.]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.empty((2, 2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[[ 0.339,  0.271],</span>
 <span class="sd">                [-0.135,  0.406]],</span>
@@ -1285,7 +1283,7 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1.], \</span>
 <span class="sd">                       [2., 3.]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 5.0, 1.0, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 5.0, p=1.0, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0., 1.],</span>
 <span class="sd">               [2., 3.]])</span>
@@ -1298,7 +1296,7 @@
 <span class="sd">    ivy.array([[0.   , 0.894, 1.79 ]])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0.1, -1.2, 3.7], [0., 7.3, -0.5]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 3.0, 1.0)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.clip_matrix_norm(x, 3.0, p=1.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 0.0353, -0.424 ,  1.31  ],</span>
 <span class="sd">               [ 0.    ,  2.58  , -0.176 ]])</span>
@@ -1306,7 +1304,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[5., 4.], [-2., 6.]], \</span>
 <span class="sd">                       [[3., 7.], [0., -5.]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.empty((2, 2, 2))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, 2.0, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.clip_matrix_norm(x, 0.5, p=2.0, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[[ 0.339,  0.271],</span>
 <span class="sd">                [-0.135,  0.406]],</span>
@@ -2419,8 +2417,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">queue_timeout_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_array_mode only accepts type int or float&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
     <span class="n">queue_timeout_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span></div>
 
 
@@ -2625,12 +2622,12 @@
 <span class="sd">        True if support, raises exception otherwise</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;Inplace operations are not supported </span><span class="si">{}</span><span class="s2"> types with </span><span class="si">{}</span><span class="s2"> backend&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+        <span class="s2">&quot;Inplace operations are not supported </span><span class="si">{}</span><span class="s2"> types with </span><span class="si">{}</span><span class="s2"> backend&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
@@ -3196,8 +3193,7 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">shape_array_mode_stack</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;set_shape_array_mode only accepts type bool&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
     <span class="n">shape_array_mode_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span></div>
 
 
@@ -3278,12 +3274,14 @@
 <span class="sd">        a `dict` containing the idx, and the `inspect.Parameter` for the argument,</span>
 <span class="sd">        which itself contains the parameter name, type, and other helpful information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-    <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;exactly one of the keyword arguments name or idx &quot;</span> <span class="s2">&quot;must be provided&quot;</span>
-        <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">idx</span><span class="p">,</span>
+        <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;exactly one of the keyword arguments name or idx must be provided&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;idx&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="s2">&quot;param&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">[</span><span class="n">name</span><span class="p">]}</span>
@@ -3296,11 +3294,11 @@
         <span class="n">attr_list</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">other_attr_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">attr_list</span> <span class="o">=</span> <span class="n">attr_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="p">())</span>
-    <span class="k">if</span> <span class="n">dnd_dict</span> <span class="ow">and</span> <span class="n">attr_list</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Cannot specify both </span><span class="si">{</span><span class="n">first_attr_name</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">other_attr_name</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="s2">&quot;cannot both be defined for the same function&quot;</span>
-        <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
+        <span class="n">dnd_dict</span> <span class="ow">and</span> <span class="n">attr_list</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;Cannot specify both </span><span class="si">{</span><span class="n">first_attr_name</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">other_attr_name</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="s2">&quot;cannot both be defined for the same function&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_is_valid_device_and_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -3318,11 +3316,11 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fn_supported_dnd</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">fn_supported_dnd</span> <span class="o">=</span> <span class="n">fn_supported_dnd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="p">{})</span>
 
-    <span class="k">if</span> <span class="n">fn_unsupported_dnd</span> <span class="ow">and</span> <span class="n">fn_supported_dnd</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;unsupported_device_and_dtype and supported_device_and_dtype &quot;</span>
-            <span class="s2">&quot;cannot both be defined for the same function&quot;</span>
-        <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_false</span><span class="p">(</span>
+        <span class="n">fn_unsupported_dnd</span> <span class="ow">and</span> <span class="n">fn_supported_dnd</span><span class="p">,</span>
+        <span class="s2">&quot;unsupported_device_and_dtype and supported_device_and_dtype </span><span class="se">\</span>
+<span class="s2">        cannot both be defined for the same function&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">us</span> <span class="o">=</span> <span class="s2">&quot;unsupported_device_and_dtype&quot;</span>
     <span class="n">_valid_attrib_combinations</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">fn_unsupported_dnd</span><span class="p">,</span> <span class="n">us</span><span class="p">,</span> <span class="s2">&quot;supported_devices&quot;</span><span class="p">)</span>
@@ -3430,12 +3428,11 @@
 <span class="sd">    ret</span>
 <span class="sd">        The unsupported devices of the function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_device_and_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_device_and_dtypes and unsupported_device_and_dtypes </span><span class="se">\</span>
-<span class="s2">             attributes cannot both exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">_is_valid_device_and_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
+        <span class="s2">&quot;supported_device_and_dtypes and unsupported_device_and_dtypes </span><span class="se">\</span>
+<span class="s2">         attributes cannot both exist in a particular backend&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">supported_devices_dtype</span> <span class="o">=</span> <span class="n">_get_devices_and_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
@@ -3467,12 +3464,11 @@
 <span class="sd">    ret</span>
 <span class="sd">        The unsupported combination of devices and dtypes of the function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_valid_device_and_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;supported_device_and_dtypes and unsupported_device_and_dtypes </span><span class="se">\</span>
-<span class="s2">             attributes cannot both exist in a particular backend&quot;</span>
-        <span class="p">)</span>
-
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+        <span class="n">_is_valid_device_and_dtypes_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
+        <span class="s2">&quot;supported_device_and_dtypes and unsupported_device_and_dtypes </span><span class="se">\</span>
+<span class="s2">         attributes cannot both exist in a particular backend&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">unsupported_devices_dtype</span> <span class="o">=</span> <span class="n">_get_devices_and_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>

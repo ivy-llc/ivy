@@ -1008,10 +1008,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_matrix_rank</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">key_chains</span><span class="p">,</span>
-            <span class="n">to_apply</span><span class="p">,</span>
-            <span class="n">prune_unapplied</span><span class="p">,</span>
-            <span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
@@ -1357,7 +1357,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container static method variant of ivy.trace.</span>
-<span class="sd">        This method Returns the sum along the specified diagonals of a matrix (or a </span>
+<span class="sd">        This method Returns the sum along the specified diagonals of a matrix (or a</span>
 <span class="sd">        stack of matrices).</span>
 
 <span class="sd">        Parameters</span>
@@ -1366,7 +1366,7 @@
 <span class="sd">            input container having shape ``(..., M, N)`` and whose innermost two</span>
 <span class="sd">            dimensions form ``MxN`` matrices. Should have a floating-point data type.</span>
 <span class="sd">        offset</span>
-<span class="sd">            Offset of the diagonal from the main diagonal. Can be both positive and </span>
+<span class="sd">            Offset of the diagonal from the main diagonal. Can be both positive and</span>
 <span class="sd">            negative. Defaults to 0.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
@@ -1385,9 +1385,9 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container containing the traces and whose shape is determined by removing </span>
-<span class="sd">            the last two dimensions and storing the traces in the last array dimension. </span>
-<span class="sd">            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, </span>
+<span class="sd">            a container containing the traces and whose shape is determined by removing</span>
+<span class="sd">            the last two dimensions and storing the traces in the last array dimension.</span>
+<span class="sd">            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,</span>
 <span class="sd">            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where</span>
 
 <span class="sd">            ::</span>
@@ -1437,7 +1437,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container instance method variant of ivy.trace.</span>
-<span class="sd">        This method Returns the sum along the specified diagonals of a matrix (or a </span>
+<span class="sd">        This method Returns the sum along the specified diagonals of a matrix (or a</span>
 <span class="sd">        stack of matrices).</span>
 
 <span class="sd">        Parameters</span>
@@ -1446,7 +1446,7 @@
 <span class="sd">            input container having shape ``(..., M, N)`` and whose innermost two</span>
 <span class="sd">            dimensions form ``MxN`` matrices. Should have a floating-point data type.</span>
 <span class="sd">        offset</span>
-<span class="sd">            Offset of the diagonal from the main diagonal. Can be both positive and </span>
+<span class="sd">            Offset of the diagonal from the main diagonal. Can be both positive and</span>
 <span class="sd">            negative. Defaults to 0.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
@@ -1465,9 +1465,9 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            a container containing the traces and whose shape is determined by removing </span>
-<span class="sd">            the last two dimensions and storing the traces in the last array dimension. </span>
-<span class="sd">            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, </span>
+<span class="sd">            a container containing the traces and whose shape is determined by removing</span>
+<span class="sd">            the last two dimensions and storing the traces in the last array dimension.</span>
+<span class="sd">            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,</span>
 <span class="sd">            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where</span>
 
 <span class="sd">            ::</span>
@@ -1503,7 +1503,7 @@
             <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
-        
+
 <div class="viewcode-block" id="ContainerWithLinearAlgebra.static_vecdot"><a class="viewcode-back" href="../../../data_classes/container/linear_algebra/ContainerWithLinearAlgebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra.static_vecdot">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_vecdot</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
