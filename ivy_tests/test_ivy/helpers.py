@@ -2878,12 +2878,12 @@ def array_values(
         # Scale the values
         if safety_factor_scale:
             if safety_factor_scale == "linear":
-                min_value = min_value / small_abs_safety_factor
+                min_value = min_value / large_abs_safety_factor
                 max_value = max_value / large_abs_safety_factor
             elif safety_factor_scale == "log":
                 min_sign = math.copysign(1, min_value)
                 max_sign = math.copysign(1, max_value)
-                min_value = abs(min_value) ** (1 / small_abs_safety_factor) * min_sign
+                min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
                 max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
 
         if kind_dtype == "int":
