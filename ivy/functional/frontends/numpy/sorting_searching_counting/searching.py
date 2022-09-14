@@ -31,3 +31,11 @@ def argmax(a,
            keepdims=False,
            ):
     return ivy.argmax(a, axis=axis, out=out, keepdims=keepdims)
+
+
+def flatnonzero(a):
+    return ivy.nonzero(a.flatten())
+
+
+def searchsorted(a, v, side='left', sorter=None):
+    return ivy.searchsorted(a, v, side=side, sorter=sorter)
