@@ -87,7 +87,9 @@ class Array(
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
-            assert ivy.is_native_array(data)
+            ivy.assertions.check_true(
+                ivy.is_native_array(data), "data must be native array"
+            )
             self._data = data
         self._shape = self._data.shape
         self._size = (
@@ -110,7 +112,7 @@ class Array(
     # noinspection PyPep8Naming
     @property
     def mT(self):
-        assert len(self._data.shape) >= 2
+        ivy.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -144,7 +146,7 @@ class Array(
     # noinspection PyPep8Naming
     @property
     def T(self):
-        assert len(self._data.shape) == 2
+        ivy.assertions.check_equal(len(self._data.shape), 2)
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -184,7 +186,9 @@ class Array(
 
     @data.setter
     def data(self, data):
-        assert ivy.is_native_array(data)
+        ivy.assertions.check_true(
+            ivy.is_native_array(data), "data must be native array"
+        )
         self._init(data)
 
     # Built-ins #
@@ -673,7 +677,7 @@ class Array(
 # noinspection PyRedeclaration
 class Variable(Array):
     def __init__(self, data):
-        assert ivy.is_variable(data)
+        ivy.assertions.check_true(ivy.is_variable(data), "data must be a variable")
         super().__init__(data)
 
     def __repr__(self):

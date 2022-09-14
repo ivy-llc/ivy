@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -18,6 +19,7 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -115,6 +117,7 @@ def argmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -219,6 +222,7 @@ def argmin(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -319,6 +323,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -432,6 +437,7 @@ def where(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def indices_where(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
