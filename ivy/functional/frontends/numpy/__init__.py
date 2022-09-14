@@ -26,5 +26,3 @@ from . import matrix
 from . import ndarray
 from . import random
 from . import ufunc
-from . import utility_routines 
-from .utility_routines import *
