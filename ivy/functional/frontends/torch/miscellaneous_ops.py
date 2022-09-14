@@ -27,9 +27,9 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
 
 
 def diagflat(input, offset=0):
-    input_flat = input.flatten()
+    input_flat = ivy.reshape(input, shape=(input.size,))
 
-    output_size = len(input_flat) + abs(offset)
+    output_size = input_flat.size + abs(offset)
 
     if offset == 0 and input.shape == (1,):
         return input
@@ -37,7 +37,7 @@ def diagflat(input, offset=0):
     ret = [[0 for i in range(output_size)] for j in range(output_size)]
 
     index = 0
-    for i in range(0, len(input_flat)):
+    for i in range(0, input_flat.size):
         if offset >= 0:
             ret[i][i + offset] = input_flat[index]
         else:
