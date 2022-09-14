@@ -714,3 +714,19 @@ def reciprocal(
 
 
 reciprocal.support_native_out = True
+
+
+@_handle_0_dim_output
+def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.deg2rad(x, out=out)
+
+
+deg2rad.support_native_out = True
+
+
+@_handle_0_dim_output
+def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.rad2deg(x, out=out)
+
+
+rad2deg.support_native_out = True
