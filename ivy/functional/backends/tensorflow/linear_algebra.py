@@ -276,20 +276,13 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if rtol is None:
-        ret = tf.linalg.matrix_rank(x)
-    elif tf.size(x) == 0:
-        ret = 0
-    elif tf.size(x) == 1:
-        ret = tf.math.count_nonzero(x)
+    singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    max_value = tf.math.reduce_max(singular_values)
+    if rtol:
+        num = tf.experimental.numpy.sum(singular_values > max_value * rtol)
     else:
-        rtol = tf.convert_to_tensor([rtol], dtype=tf.float32)
-        rtol = tf.reshape(rtol, [-1])
-        if len(rtol) > 1:
-            rtol = rtol[0]
-        x, rtol = ivy.promote_types_of_inputs(x, rtol)
-        ret = tf.linalg.matrix_rank(x, rtol)
-    return tf.cast(ret, ivy.default_int_dtype(as_native=True))
+        num = tf.size(singular_values)
+    return tf.cast(num, ivy.default_int_dtype(as_native=True))
 
 
 matrix_rank.unsupported_dtypes = (
