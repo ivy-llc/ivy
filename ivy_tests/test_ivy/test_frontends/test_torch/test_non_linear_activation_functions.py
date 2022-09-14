@@ -466,9 +466,11 @@ def test_torch_elu_(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.celu"
     ),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
 )
 def test_torch_celu(
     dtype_and_input,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -487,6 +489,7 @@ def test_torch_celu(
         frontend="torch",
         fn_tree="nn.functional.celu",
         input=np.asarray(input, dtype=input_dtype),
+        alpha=alpha,
         inplace=False,
     )
 
@@ -553,4 +556,83 @@ def test_torch_prelu(
         fn_tree="nn.functional.prelu",
         input=np.asarray(input, dtype=dtype),
         weight=np.asarray(weight, dtype=dtype),
+    )
+
+
+# rrelu
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.rrelu"
+    ),
+    lower=helpers.floats(min_value=0, max_value=0.5, exclude_min=True),
+    upper=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
+)
+def test_torch_rrelu(
+    dtype_and_input,
+    lower,
+    upper,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.rrelu",
+        input=np.asarray(input, dtype=input_dtype),
+        lower=lower,
+        upper=upper,
+        inplace=False,
+    )
+
+
+# ToDo test for values once inplace test implemented
+# rrelu_
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.rrelu_"
+    ),
+    lower=helpers.floats(min_value=0, max_value=0.5, exclude_min=True),
+    upper=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
+)
+def test_torch_rrelu_(
+    dtype_and_input,
+    lower,
+    upper,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.rrelu_",
+        input=np.asarray(input, dtype=input_dtype),
+        lower=lower,
+        upper=upper,
+        test_values=False,
     )

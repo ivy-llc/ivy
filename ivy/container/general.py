@@ -546,7 +546,7 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
-        >>> y = x.clip_vector_norm(2.0, 1.0)
+        >>> y = x.clip_vector_norm(2.0, p=1.0)
         >>> print(y)
         {
             a: ivy.array([0., 0.667, 1.33]),
@@ -2086,7 +2086,13 @@ class ContainerWithGeneral(ContainerBase):
         }
         """
         return self.static_gather_nd(
-            self, indices, key_chains, to_apply, prune_unapplied, map_sequences, out=out
+            self,
+            indices,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     @staticmethod
@@ -2731,7 +2737,7 @@ class ContainerWithGeneral(ContainerBase):
             c: -1
         }
 
-        
+
         """
         return self.static_to_scalar(
             self,
@@ -3250,6 +3256,7 @@ class ContainerWithGeneral(ContainerBase):
             **axes_lengths,
         )
 
+    @staticmethod
     def static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
@@ -3370,7 +3377,7 @@ class ContainerWithGeneral(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), \
                               b=ivy.array([[3., 4., 5.]]))
-        >>> y = x.clip_matrix_norm(2.0, 1.0)
+        >>> y = x.clip_matrix_norm(2.0, p=1.0)
         >>> print(y)
         {
             a: ivy.array([[0., 1., 2.]]),

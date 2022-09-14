@@ -668,7 +668,10 @@ def test_outer(
         small_value_safety_factor=2.5,
         max_op="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda dtype_and_x: np.linalg.det(np.asarray(dtype_and_x[1])) != 0),
+    ).filter(
+        lambda dtype_and_x: round(float(np.linalg.det(np.asarray(dtype_and_x[1]))), 3)
+        != 0.0
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
 )
 def test_slogdet(
@@ -770,7 +773,7 @@ def test_solve(
         instance_method=instance_method,
         fw=fw,
         fn_name="solve",
-        rtol_=1e-2,
+        rtol_=1e-1,
         atol_=1e-2,
         x1=np.asarray(x1, dtype=input_dtype1),
         x2=np.asarray(x2, dtype=input_dtype2),
