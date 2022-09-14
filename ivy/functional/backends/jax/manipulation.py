@@ -1,4 +1,3 @@
-# For Review
 # global
 import math
 import jax.numpy as jnp
@@ -178,7 +177,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max)
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")

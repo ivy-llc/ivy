@@ -1,4 +1,3 @@
-# For Review
 # global
 import ivy
 import math
@@ -288,7 +287,7 @@ def clip(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    assert tf.reduce_all(tf.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max)
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
