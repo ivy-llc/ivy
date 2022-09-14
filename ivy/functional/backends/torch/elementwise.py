@@ -422,8 +422,7 @@ bitwise_or.support_native_out = True
 
 
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    x = ivy.promote_types_of_inputs(x)
-    return torch.sinc(x, out=out).to(x.dtype)
+    return torch.sinc(x, out=out)
 
 
 sinc.support_native_out = True

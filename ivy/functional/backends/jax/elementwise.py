@@ -369,7 +369,6 @@ def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x = ivy.promote_types_of_inputs(x)
     return jnp.sinc(x)
 
 
