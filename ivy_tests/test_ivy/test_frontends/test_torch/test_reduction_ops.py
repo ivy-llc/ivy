@@ -1,10 +1,7 @@
-import sys
-import numpy as np
-from hypothesis import given, strategies as st
-import pytest
 # global
 import numpy as np
 from hypothesis import given, strategies as st
+import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -33,7 +30,7 @@ def is_broadcastable(shp1, shp2):
         fn_name="ivy.functional.frontends.torch.dist"
     ),
     native_array=helpers.array_bools(num_arrays=2),
-    p = st.integers(),
+    p=st.integers(),
 )
 def test_torch_dist(
     dtype_and_x,
