@@ -31,9 +31,9 @@ def check_greater(x1, x2, allow_equal=False):
 
 def check_equal(x1, x2, inverse=False):
     if inverse and ivy.any(x1 == x2):
-        raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
-    elif not inverse and not ivy.all(x1 == x2):
         raise ivy.exceptions.IvyException("{} must not be equal to {}".format(x1, x2))
+    elif not inverse and ivy.any(x1 != x2):
+        raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
 
 
 def check_isinstance(x, allowed_types):
