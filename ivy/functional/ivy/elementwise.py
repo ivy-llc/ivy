@@ -1231,7 +1231,7 @@ def bitwise_right_shift(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the 
+    Shifts the bits of each element ``x1_i`` of the input array ``x1`` to the
     right according to the respective element ``x2_i`` of the input array ``x2``.
 
     .. note::
@@ -1243,7 +1243,7 @@ def bitwise_right_shift(
     x1
         first input array. Should have an integer data type.
     x2
-        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`). 
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have an integer data type. Each element must be greater than or equal
         to ``0``.
     out
@@ -1253,7 +1253,7 @@ def bitwise_right_shift(
     Returns
     -------
     ret
-        an array containing the element-wise results. The returned array must have a 
+        an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
     This function conforms to the `Array API Standard
@@ -2304,7 +2304,7 @@ def greater(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater(x, y, out=x)
     >>> print(x)
-    ivy.array([[[0.],[1.],[0.]]])
+    ivy.array([[[False],[True],[False]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -2407,7 +2407,7 @@ def greater_equal(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater_equal(x, y, out=x)
     >>> print(x)
-    ivy.array([[[0.],[1.],[0.]]])
+    ivy.array([[[False],[True],[False]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -2554,7 +2554,7 @@ def less_equal(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.less_equal(x, y, out=x)
     >>> print(x)
-    ivy.array([[[1.],[0.],[1.]]])
+    ivy.array([[[True],[False],[True]]])
 
     With :code:`ivy.Container` input:
 
@@ -2672,7 +2672,7 @@ def isfinite(
 
     This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the `docstring 
+    This docstring is an extension of the `docstring
     <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isfinite.html>`
     _ in the standard.
 
@@ -3097,7 +3097,7 @@ def less(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.less(x, y, out=x)
     >>> print(x)
-    ivy.array([[[1.],[0.],[1.]]])
+    ivy.array([[[True],[False],[True]]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -3495,14 +3495,14 @@ def logaddexp(
     >>> z = ivy.logaddexp(x, y)
     >>> print(z)
     {
-    a: ivy.array([[5.39, 4.17, 4.], 
-                  [5.74, 5.07, 5.], 
+    a: ivy.array([[5.39, 4.17, 4.],
+                  [5.74, 5.07, 5.],
                   [6.34, 6.02, 6.]]),
-    b: ivy.array([[5.74, 5.07, 5.], 
-                  [6.34, 6.02, 6.], 
+    b: ivy.array([[5.74, 5.07, 5.],
+                  [6.34, 6.02, 6.],
                   [7.14, 7.01, 7.]])
     }
-    
+
     With multiple :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
@@ -3788,7 +3788,7 @@ def logical_or(
     >>> y = ivy.array([2, True, False])
     >>> ivy.logical_or(x, y, out=x)
     >>> print(x)
-    ivy.array([ 1,  1, 0])
+    ivy.array([ True,  True, False])
 
     With :code:`ivy.NativeArray` input:
 
@@ -3820,7 +3820,7 @@ def logical_or(
     ivy.array([ True,  True, False])
 
     Using :code:`ivy.Container` instance method:
-    
+
     >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
     >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
     >>> z = x.logical_or(y)
@@ -4093,13 +4093,13 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([1., 0., 0., 1.])
+    ivy.array([True, False, False, True])
 
     >>> x1 = ivy.array([1, -1, 1, -1])
     >>> x2 = ivy.array([0, -1, 1, 0])
     >>> y = ivy.not_equal(x1, x2, out=x1)
     >>> print(y)
-    ivy.array([1, 0, 0, 1])
+    ivy.array([True, False, False, True])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
@@ -4120,14 +4120,14 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([1., 0., 0., 1.])
+    ivy.array([True, False, False, True])
 
     >>> x1 = ivy.native_array([1, 2, 3, 4])
     >>> x2 = ivy.native_array([0, 2, 3, 4])
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([1., 0., 0., 0.])
+    ivy.array([True, False, False, False])
 
     With :code:`ivy.Container` input:
 
@@ -4192,13 +4192,13 @@ def not_equal(
     >>> x2 = ivy.array([1, 0, 0, -1])
     >>> y = x1.not_equal(x2, out=x2)
     >>> print(y)
-    ivy.array([0, 0, 1, 1])
+    ivy.array([False, False, True, True])
 
     >>> x1 = ivy.array([1, 0, 1, 0])
     >>> x2 = ivy.array([0, 1, 0, 1])
     >>> y = x1.not_equal(x2, out=x2)
     >>> print(y)
-    ivy.array([1, 1, 1, 1])
+    ivy.array([True, True, True, True])
 
     Using :code:`ivy.Container` instance method:
 
