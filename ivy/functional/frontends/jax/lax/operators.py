@@ -122,7 +122,10 @@ def cumsum(operand, axis=0, reverse=False):
 
 def cummin(operand, axis=0, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cummin(ivy.flip(operand, axis=axis), axis, dtype=operand.dtype))
+        return ivy.flip(
+            ivy.cummin(ivy.flip(operand, axis=axis), axis, dtype=operand.dtype),
+            axis=axis,
+        )
     return ivy.cummin(operand, axis, dtype=operand.dtype)
 
 
