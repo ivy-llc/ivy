@@ -51,7 +51,7 @@ def expand_dims(
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except tf.errors.InvalidArgumentError as error:
-        raise IndexError(error)
+        raise ivy.exceptions.IvyException(repr(error))
 
 
 def flip(
