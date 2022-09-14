@@ -149,12 +149,16 @@ def inplace_update(
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         if ensure_in_backend:
-            raise Exception("JAX does not natively support inplace updates")
+            raise ivy.exceptions.IvyException(
+                "JAX does not natively support inplace updates"
+            )
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            raise Exception("JAX does not natively support inplace updates")
+            raise ivy.exceptions.IvyException(
+                "JAX does not natively support inplace updates"
+            )
         return x
     else:
         return val
@@ -204,7 +208,7 @@ def scatter_flat(
         if not target_given:
             target = jnp.where(target == -1e12, 0.0, target)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -274,7 +278,7 @@ def scatter_nd(
         if not target_given:
             target = jnp.where(target == -1e12, 0.0, target)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
