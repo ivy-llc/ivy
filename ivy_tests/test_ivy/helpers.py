@@ -15,6 +15,8 @@ from typing import Union, List
 from hypothesis import given, assume, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
+from functools import reduce
+from operator import mul
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -2770,10 +2772,11 @@ def array_and_indices(
     return [x_dtype, indices_dtype], x, indices
 
 
-def _zeroing(x):
+def _zeroing_and_casting(x, cast_type):
     # covnert -0.0 to 0.0
     if x == 0.0:
         return 0.0
+    x = float(np.array(x).astype(cast_type)) if x else None
     return x
 
 
@@ -2897,6 +2900,13 @@ def array_values(
                 ),
             )
         values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
+        for i, v in enumerate(values):
+            if max_op == "sqrt" and v != 0:
+                v = v / abs(v) * math.sqrt(abs(v))
+            elif max_op == "log" and v != 0:
+                v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
+            values[i] = int(v / large_value_safety_factor)
+
     elif "int" in dtype:
 
         if min_value is not None and max_value is not None:
@@ -2965,6 +2975,12 @@ def array_values(
                     length=size,
                 )
             )
+            for i, v in enumerate(values):
+                if max_op == "sqrt" and v != 0:
+                    v = v / abs(v) * math.sqrt(abs(v))
+                elif max_op == "log" and v != 0:
+                    v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
+                values[i] = int(v / large_value_safety_factor)
     elif "float" in dtype:
         dtype_info = {
             "float16": {"cast_type": "float16", "round_places": 3, "width": 16},
@@ -2972,39 +2988,36 @@ def array_values(
             "float32": {"cast_type": "float32", "round_places": 6, "width": 32},
             "float64": {"cast_type": "float16", "round_places": 15, "width": 64},
         }
-        min_value_neg = (
-            float(np.array(min_value).astype(dtype_info[dtype]["cast_type"]))
-            if min_value is not None
-            else None
-        )
+        min_value_neg = min_value
         max_value_neg = round(-1 * limit, dtype_info[dtype]["round_places"])
         min_value_pos = round(limit, dtype_info[dtype]["round_places"])
-        max_value_pos = (
-            float(np.array(max_value).astype(dtype_info[dtype]["cast_type"]))
-            if max_value is not None
-            else None
-        )
-        max_value_neg, min_value_pos = (
-            np.array([max_value_neg, min_value_pos])
-            .astype(dtype_info[dtype]["cast_type"])
-            .tolist()
-        )
+        max_value_pos = max_value
         if min_value_neg is None or max_value is None:
             if min_value_neg is not None and min_value_neg >= max_value_neg:
                 min_value_neg = max(min_value_pos, min_value_neg)
-                max_value_neg = max(max_value_pos, min_value_neg)
+                max_value_neg = (
+                    max(max_value_pos, min_value_neg)
+                    if max_value_pos is not None
+                    else min_value_neg
+                )
             if max_value_pos is not None and max_value_pos <= min_value_pos:
-                min_value_pos = min(min_value_neg, min_value_pos)
+                min_value_pos = (
+                    min(min_value_neg, min_value_pos)
+                    if min_value_neg is not None
+                    else min_value_pos
+                )
                 max_value_pos = min(max_value_neg, min_value_pos)
         else:
             min_value_neg = min_value
             max_value_neg = max_value
             min_value_pos = min_value
             max_value_pos = max_value
-        min_value_pos = _zeroing(min_value_pos)
-        max_value_pos = _zeroing(max_value_pos)
-        min_value_neg = _zeroing(min_value_neg)
-        max_value_neg = _zeroing(max_value_neg)
+        bounds = [min_value_neg, max_value_neg, min_value_pos, max_value_pos]
+        bounds = [
+            _zeroing_and_casting(x, cast_type=dtype_info[dtype]["cast_type"])
+            for x in bounds
+        ]
+        min_value_neg, max_value_neg, min_value_pos, max_value_pos = bounds
         values = draw(
             list_of_length(
                 x=st.floats(
@@ -3031,9 +3044,9 @@ def array_values(
             )
         )
         for i, v in enumerate(values):
-            if max_op == "sqrt":
+            if max_op == "sqrt" and v != 0:
                 v = v / abs(v) * math.sqrt(abs(v))
-            elif max_op == "log":
+            elif max_op == "log" and v != 0:
                 v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
             values[i] = v / large_value_safety_factor
     elif dtype == "bool":
@@ -3725,3 +3738,99 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             output_shape,
         )
     return dtype, vals, filters, dilations, data_format, strides, padding
+
+
+#      From array-api repo     #
+# ---------------------------- #
+
+
+def _broadcast_shapes(shape1, shape2):
+    """Broadcasts `shape1` and `shape2`"""
+    N1 = len(shape1)
+    N2 = len(shape2)
+    N = max(N1, N2)
+    shape = [None for _ in range(N)]
+    i = N - 1
+    while i >= 0:
+        n1 = N1 - N + i
+        if N1 - N + i >= 0:
+            d1 = shape1[n1]
+        else:
+            d1 = 1
+        n2 = N2 - N + i
+        if N2 - N + i >= 0:
+            d2 = shape2[n2]
+        else:
+            d2 = 1
+
+        if d1 == 1:
+            shape[i] = d2
+        elif d2 == 1:
+            shape[i] = d1
+        elif d1 == d2:
+            shape[i] = d1
+        else:
+            raise Exception("Broadcast error")
+
+        i = i - 1
+
+    return tuple(shape)
+
+
+# from array-api repo
+def broadcast_shapes(*shapes):
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shapes(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shapes(result, shapes[i])
+    return result
+
+
+# np.prod and others have overflow and math.prod is Python 3.8+ only
+def prod(seq):
+    return reduce(mul, seq, 1)
+
+
+# from array-api repo
+def mutually_broadcastable_shapes(
+    num_shapes: int,
+    *,
+    base_shape=(),
+    min_dims: int = 1,
+    max_dims: int = 4,
+    min_side: int = 1,
+    max_side: int = 4,
+):
+    if max_dims is None:
+        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
+    if max_side is None:
+        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
+    return (
+        nph.mutually_broadcastable_shapes(
+            num_shapes=num_shapes,
+            base_shape=base_shape,
+            min_dims=min_dims,
+            max_dims=max_dims,
+            min_side=min_side,
+            max_side=max_side,
+        )
+        .map(lambda BS: BS.input_shapes)
+        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
+    )
+
+
+@st.composite
+def array_and_broadcastable_shape(draw, dtype):
+    """Returns an array and a shape that the array can be broadcast to"""
+    in_shape = draw(nph.array_shapes(min_dims=1, max_dims=4))
+    x = draw(nph.arrays(shape=in_shape, dtype=dtype))
+    to_shape = draw(
+        mutually_broadcastable_shapes(1, base_shape=in_shape)
+        .map(lambda S: S[0])
+        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
+        label="shape",
+    )
+    return (x, to_shape)

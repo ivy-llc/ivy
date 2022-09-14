@@ -12,7 +12,7 @@ def all(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = x.type(torch.bool)
+    x = ivy.asarray(x).type(torch.bool)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
