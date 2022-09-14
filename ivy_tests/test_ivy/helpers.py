@@ -1876,7 +1876,7 @@ def test_frontend_function(
     elif with_inplace:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
-        if hasattr(frontend_fn, "inplace"):
+        if "inplace" in inspect.getfullargspec(frontend_fn).kwonlyargs:
             # the function provides optional inplace update
             # set inplace update to be True and check
             # if returned reference is inputted reference
