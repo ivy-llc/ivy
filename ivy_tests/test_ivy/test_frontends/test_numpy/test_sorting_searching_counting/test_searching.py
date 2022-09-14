@@ -4,6 +4,9 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    statistical_dtype_values,
+)
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -123,4 +126,38 @@ def test_numpy_argmin(
         axis=axis,
         keepdims=keep_dims,
         out=None,
+    )
+
+
+# argmax
+@handle_cmd_line_args
+@given(
+    dtype_and_x=statistical_dtype_values(function="argmax"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.argmax"
+    ),
+)
+def test_numpy_argmax(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, a, axis = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="argmax",
+        a=np.asarray(a, dtype=input_dtype),
+        axis=axis,
+        out=None,
+        keepdims=st.booleans(),
     )

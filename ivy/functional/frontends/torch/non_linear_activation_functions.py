@@ -42,7 +42,24 @@ def _selu_with_inplace(input, inplace=False):
     )
     ret = ivy.add(min_, max_)
     if inplace:
-        return ivy.inplace_update(input, ret)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
+    if training:
+        # alpha = ivy.random_uniform(low=lower, high=upper)
+        # ToDo implement alpha correctly after fixing ivy.random_uniform
+        pass
+    else:
+        alpha = (lower + upper) / 2
+    ret = ivy.subtract(
+        ivy.relu(input), ivy.multiply(alpha, ivy.relu(ivy.negative(input)))
+    )
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
     return ret
 
 
@@ -75,7 +92,7 @@ def tanh(input):
 
 
 def logsigmoid(input):
-    return ivy.log(ivy.sigmoid(input))
+    return ivy.negative(ivy.softplus(ivy.negative(input)))
 
 
 def softmin(input, dim=None, dtype=None):
@@ -128,3 +145,15 @@ def celu(input, alpha=1.0, inplace=False):
 
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
+
+
+def prelu(input, weight):
+    return ivy.add(ivy.maximum(0, input), ivy.multiply(weight, ivy.minimum(0, input)))
+
+
+def rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
+    return _rrelu(input, lower, upper, training, inplace)
+
+
+def rrelu_(input, lower=1.0 / 8, upper=1.0 / 3, training=False):
+    return _rrelu(input, lower, upper, training, inplace=True)

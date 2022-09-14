@@ -73,6 +73,7 @@ def searchsorted(
     *,
     side="left",
     sorter=None,
+    ret_dtype=tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.searchsorted(x1, v, side=side)
+    return tf.searchsorted(x1, v, side=side, out_type=ret_dtype)
