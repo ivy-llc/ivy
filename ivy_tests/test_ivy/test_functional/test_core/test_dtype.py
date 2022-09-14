@@ -1,6 +1,5 @@
 """Collection of tests for unified dtype functions."""
 
-
 # global
 import numpy as np
 import pytest
@@ -851,11 +850,10 @@ def test_function_unsupported_dtypes(func, expected):
 
 def test_function_dtype_versioning():
     print(ivy.functional.backends.jax.jax_version)
-    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.relu))
+    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.cholesky))
     ivy.functional.backends.jax.jax_version["version"] = "0.1"
     print(ivy.functional.backends.jax.jax_version)
-    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.relu))
-
+    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.cholesky))
 
 
 # invalid_dtype
