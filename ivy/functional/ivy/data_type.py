@@ -136,10 +136,7 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
-            if not isinstance(v, tuple):
-                raise ValueError(
-                    "The {} attribute of {} must be a tuple".format(key, fn.__name__)
-                )
+            ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
     if complement:
@@ -905,7 +902,7 @@ def _check_float64(input) -> bool:
     if math.isfinite(input):
         tmp = str(input).replace("-", "").split(".")
         exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(tmp[0])).replace("0b", "")
+        mant = bin(int(float(tmp[0]))).replace("0b", "")
         return (
             (input > 3.4028235 * 10**38)
             or (len(mant) > 24 and int(mant[24:]) > 0)
@@ -1397,12 +1394,11 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     >>> print(ivy.function_supported_dtypes(ivy.acosh))
     ()
     """
-    if not _is_valid_dtypes_attributes(fn):
-        raise Exception(
-            "supported_dtypes and unsupported_dtypes attributes cannot both \
-             exist in a particular backend"
-        )
-
+    ivy.assertions.check_true(
+        _is_valid_dtypes_attributes(fn),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist \
+        in a particular backend",
+    )
     supported_dtypes = set(_get_dtypes(fn, complement=False))
     if recurse:
         supported_dtypes = _nested_get(
@@ -1435,12 +1431,11 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     ('float16','uint16','uint32','uint64')
 
     """
-    if not _is_valid_dtypes_attributes(fn):
-        raise Exception(
-            "supported_dtypes and unsupported_dtypes attributes cannot both \
-             exist in a particular backend"
-        )
-
+    ivy.assertions.check_true(
+        _is_valid_dtypes_attributes(fn),
+        "supported_dtypes and unsupported_dtypes attributes cannot both exist \
+        in a particular backend",
+    )
     unsupported_dtypes = set(_get_dtypes(fn, complement=True))
     if recurse:
         unsupported_dtypes = _nested_get(
@@ -1821,7 +1816,7 @@ def promote_types(
     try:
         ret = ivy.promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
     except KeyError:
-        raise Exception("these dtypes are not type promotable")
+        raise ivy.exceptions.IvyException("these dtypes are not type promotable")
     return ret
 
 

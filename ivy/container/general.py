@@ -2655,9 +2655,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         With one :code:`ivy.Container` inputs:
-
 
         >>> x = ivy.Container(a=ivy.array([-1]), b=ivy.array([3]))
         >>> y = ivy.Container.static_to_scalar(x)

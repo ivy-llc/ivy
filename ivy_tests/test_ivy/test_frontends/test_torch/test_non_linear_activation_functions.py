@@ -22,6 +22,21 @@ def _dtypes(draw):
     )
 
 
+@st.composite
+def _generate_prelu_arrays(draw):
+    arr_size = draw(helpers.ints(min_value=2, max_value=5))
+
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    input = draw(
+        helpers.array_values(dtype=dtype, shape=(arr_size), min_value=0, max_value=10)
+    )
+    weight = draw(
+        helpers.array_values(dtype=dtype, shape=(1,), min_value=0, max_value=1.0)
+    )
+    input_weight = input, weight
+    return dtype, input_weight
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -450,9 +465,11 @@ def test_torch_elu_(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.celu"
     ),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
 )
 def test_torch_celu(
     dtype_and_input,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -471,5 +488,71 @@ def test_torch_celu(
         frontend="torch",
         fn_tree="nn.functional.celu",
         input=np.asarray(input, dtype=input_dtype),
+        alpha=alpha,
         inplace=False,
+    )
+
+
+# selu
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.selu"
+    ),
+)
+def test_torch_selu(
+    dtype_and_input,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.selu",
+        input=np.asarray(input, dtype=input_dtype),
+        inplace=False,
+    )
+
+
+# prelu
+@handle_cmd_line_args
+@given(
+    dtype_input_and_weight=_generate_prelu_arrays(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.prelu"
+    ),
+)
+def test_torch_prelu(
+    dtype_input_and_weight,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, inputs = dtype_input_and_weight
+    input, weight = inputs
+    assume("float16" not in dtype)
+    helpers.test_frontend_function(
+        input_dtypes=[dtype, dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.prelu",
+        input=np.asarray(input, dtype=dtype),
+        weight=np.asarray(weight, dtype=dtype),
     )
