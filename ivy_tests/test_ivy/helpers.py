@@ -637,7 +637,7 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
 
 @st.composite
 def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
-    """Draws an arbitrarily sized list of integers or floats with a safety factor
+    """Draws integers or floats with a safety factor
     applied to values.
 
     Parameters
