@@ -6,11 +6,6 @@ import builtins
 # ------- #
 
 
-def check_elem_in_list(elem, list):
-    if elem not in list:
-        raise ivy.exceptions.IvyException("{} must be one of {}".format(elem, list))
-
-
 def check_less(x1, x2, allow_equal=False):
     if allow_equal and ivy.any(x1 > x2):
         raise ivy.exceptions.IvyException(
@@ -47,6 +42,23 @@ def check_isinstance(x, allowed_types):
 
 # General with Custom Message #
 # --------------------------- #
+
+
+def check_exists(x, inverse=False, message=""):
+    if inverse and ivy.exists(x):
+        raise ivy.exceptions.IvyException(
+            "arg must be None" if message == "" else message
+        )
+    elif not inverse and not ivy.exists(x):
+        raise ivy.exceptions.IvyException(
+            "arg must not be None" if message == "" else message
+        )
+
+
+def check_elem_in_list(elem, list, message=""):
+    message = message if message != "" else "{} must be one of {}".format(elem, list)
+    if elem not in list:
+        raise ivy.exceptions.IvyException(message)
 
 
 def check_true(expression, message="expression must be True"):
