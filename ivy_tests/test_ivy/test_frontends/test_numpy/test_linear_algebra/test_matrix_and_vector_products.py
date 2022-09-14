@@ -2,8 +2,12 @@
 
 import numpy as np
 from hypothesis import given, strategies as st
+import ivy.functional.frontends.numpy
 
 # local
+import ivy
+from ivy.container import Container
+from ivy.func_wrapper import _get_first_array
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
