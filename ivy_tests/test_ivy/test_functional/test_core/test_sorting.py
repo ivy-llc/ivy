@@ -103,3 +103,65 @@ def test_sort(
         descending=descending,
         stable=stable,
     )
+
+
+@st.composite
+def _get_v_and_x(draw):
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            dtype=["int64"],  # ToDo, fix to accept all integers
+            shape=draw(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=1,
+                )
+            ),  # ToDo, should accept N-D inputs
+        )
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            dtype=["int64"],
+            shape=draw(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=1,
+                )
+            ),
+        )
+    )
+    return [dtype_x, dtype_v], [x, v]
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=_get_v_and_x(),
+    num_positional_args=helpers.num_positional_args(fn_name="searchsorted"),
+    side=st.sampled_from(["left", "right"]),
+)
+def test_searchsorted(
+    *,
+    dtypes_and_xs,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    side,
+):
+    dtypes, xs = dtypes_and_xs
+    helpers.test_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="searchsorted",
+        x=np.asarray(xs[0], dtype=dtypes[0]),
+        v=np.asarray(xs[1], dtype=dtypes[1]),
+        side=side,
+    )
