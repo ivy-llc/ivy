@@ -25,6 +25,12 @@ def ArgMax(*, input, dimension, output_type=None, name=None):
         return ivy.astype(ivy.argmax(input, axis=dimension), "int64")
 
 
+def ArgMin(*, input, dimension, output_type=None, name=None):
+    if output_type in ["int32", "int64"]:
+        return ivy.astype(ivy.argmin(input, axis=dimension), output_type)
+    return ivy.astype(ivy.argmin(input, axis=dimension), "int64")
+
+
 def Cos(*, x, name="Cos"):
     return ivy.cos(x)
 
