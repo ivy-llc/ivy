@@ -103,8 +103,8 @@ def gather_nd(
     return tf.gather_nd(params, indices)
 
 
-def get_num_dims(x, as_tensor=False):
-    return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))
+def get_num_dims(x, /, *, as_array=False):
+    return tf.shape(tf.shape(x))[0] if as_array else int(tf.shape(tf.shape(x)))
 
 
 def inplace_arrays_supported():
@@ -188,9 +188,10 @@ def multiprocessing(context=None):
 def scatter_flat(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if indices.dtype != tf.int32 or indices.dtype != tf.int64:
@@ -240,9 +241,10 @@ def scatter_flat(
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
+    /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    reduction: str = "sum",
     *,
+    reduction: str = "sum",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.exists(out) and not isinstance(updates, Number):
@@ -386,6 +388,8 @@ scatter_nd.support_native_out = True
 
 def shape(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     as_array: bool = False,
 ) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:

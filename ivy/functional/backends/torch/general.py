@@ -131,8 +131,10 @@ def gather_nd(
     return res
 
 
-def get_num_dims(x: torch.Tensor, as_tensor: bool = False) -> Union[torch.Tensor, int]:
-    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
+def get_num_dims(
+    x: torch.Tensor, /, *, as_array: bool = False
+) -> Union[torch.Tensor, int]:
+    return torch.tensor(len(x.shape)) if as_array else len(x.shape)
 
 
 def inplace_arrays_supported():
@@ -199,9 +201,10 @@ def multiprocessing(context=None):
 def scatter_flat(
     indices: torch.Tensor,
     updates: torch.Tensor,
+    /,
+    *,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *,
     out: Optional[torch.Tensor] = None,
 ):
     target = out
@@ -252,9 +255,10 @@ def scatter_flat(
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
+    /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    reduction: str = "sum",
     *,
+    reduction: str = "sum",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # handle numeric updates
@@ -387,7 +391,7 @@ def scatter_nd(
 scatter_nd.unsupported_dtypes = ("float16",)
 
 
-def shape(x: torch.Tensor, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:
