@@ -15,6 +15,8 @@ from typing import Union, List
 from hypothesis import given, assume, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
+from functools import reduce
+from operator import mul
 
 # local
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
@@ -3736,3 +3738,99 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             output_shape,
         )
     return dtype, vals, filters, dilations, data_format, strides, padding
+
+
+#      From array-api repo     #
+# ---------------------------- #
+
+
+def _broadcast_shapes(shape1, shape2):
+    """Broadcasts `shape1` and `shape2`"""
+    N1 = len(shape1)
+    N2 = len(shape2)
+    N = max(N1, N2)
+    shape = [None for _ in range(N)]
+    i = N - 1
+    while i >= 0:
+        n1 = N1 - N + i
+        if N1 - N + i >= 0:
+            d1 = shape1[n1]
+        else:
+            d1 = 1
+        n2 = N2 - N + i
+        if N2 - N + i >= 0:
+            d2 = shape2[n2]
+        else:
+            d2 = 1
+
+        if d1 == 1:
+            shape[i] = d2
+        elif d2 == 1:
+            shape[i] = d1
+        elif d1 == d2:
+            shape[i] = d1
+        else:
+            raise Exception("Broadcast error")
+
+        i = i - 1
+
+    return tuple(shape)
+
+
+# from array-api repo
+def broadcast_shapes(*shapes):
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
+        return shapes[0]
+    result = _broadcast_shapes(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shapes(result, shapes[i])
+    return result
+
+
+# np.prod and others have overflow and math.prod is Python 3.8+ only
+def prod(seq):
+    return reduce(mul, seq, 1)
+
+
+# from array-api repo
+def mutually_broadcastable_shapes(
+    num_shapes: int,
+    *,
+    base_shape=(),
+    min_dims: int = 1,
+    max_dims: int = 4,
+    min_side: int = 1,
+    max_side: int = 4,
+):
+    if max_dims is None:
+        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
+    if max_side is None:
+        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
+    return (
+        nph.mutually_broadcastable_shapes(
+            num_shapes=num_shapes,
+            base_shape=base_shape,
+            min_dims=min_dims,
+            max_dims=max_dims,
+            min_side=min_side,
+            max_side=max_side,
+        )
+        .map(lambda BS: BS.input_shapes)
+        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
+    )
+
+
+@st.composite
+def array_and_broadcastable_shape(draw, dtype):
+    """Returns an array and a shape that the array can be broadcast to"""
+    in_shape = draw(nph.array_shapes(min_dims=1, max_dims=4))
+    x = draw(nph.arrays(shape=in_shape, dtype=dtype))
+    to_shape = draw(
+        mutually_broadcastable_shapes(1, base_shape=in_shape)
+        .map(lambda S: S[0])
+        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
+        label="shape",
+    )
+    return (x, to_shape)

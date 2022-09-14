@@ -156,6 +156,10 @@ ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_setitem_mask
 # ValueError: mask cannot be scalar
 ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_getitem_masking
 
+############################# Ivy only skips - numpy ####################################
+# tolerance issue when asserting isequal()
+ivy_tests/test_array_api/array_api_tests/test_linalg.py::test_matrix_norm
+
 ############################# Ivy only skips - values error #############################
 
 # Issues with backend implementation. Straightforward floordiv implementation deviates from standard,
