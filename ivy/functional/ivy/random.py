@@ -21,19 +21,22 @@ from ivy.backend_handler import backend_stack
 
 def _check_bounds_and_get_shape(low, high, shape):
     if shape is not None:
-        if not isinstance(low, (int, float)) or not isinstance(high, (int, float)):
-            raise Exception(
-                "`shape` argument can only be specified when `low` \
-                              and `high` arguments are numerics (not arrays)"
-            )
+        ivy.assertions.check_all_or_any_fn(
+            low,
+            high,
+            fn=lambda x: isinstance(x, (int, float)),
+            type="all",
+            message="low and high bounds must be numerics when shape is specified",
+        )
         return shape
-    valid_types = (ivy.Array, ivy.NativeArray)
+    valid_types = (ivy.Array,)
     if len(backend_stack) == 0:
         valid_types += (ivy.current_backend().NativeArray,)
+    else:
+        valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
-            if ivy.shape(low) != ivy.shape(high):
-                raise Exception("shape of bounds have to be the same")
+            ivy.assertions.check_equal(ivy.shape(low), ivy.shape(high))
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
@@ -41,19 +44,29 @@ def _check_bounds_and_get_shape(low, high, shape):
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
-    if ivy.is_float_dtype(dtype) or ivy.is_uint_dtype(dtype):
-        raise Exception("randint cannot take `float` dtype")
-    if ivy.is_uint_dtype(low) or ivy.is_uint_dtype(high):
-        raise Exception("`low` and `high` cannot take `uint` dtype")
-    if ivy.is_float_dtype(low) or ivy.is_float_dtype(high):
-        raise Exception("`low` and `high` cannot take `float` dtype")
-    if ivy.any(ivy.greater_equal(low, high)):
-        raise Exception("`low` must be smaller than `high`")
+    ivy.assertions.check_all_or_any_fn(
+        low,
+        high,
+        dtype,
+        fn=ivy.is_uint_dtype,
+        type="any",
+        limit=[0],
+        message="randint cannot take arguments of type uint",
+    )
+    ivy.assertions.check_all_or_any_fn(
+        low,
+        high,
+        dtype,
+        fn=ivy.is_float_dtype,
+        type="any",
+        limit=[0],
+        message="randint cannot take arguments of type float",
+    )
+    ivy.assertions.check_less(low, high)
 
 
 def _check_valid_scale(std):
-    if (isinstance(std, (int, float)) and std < 0) or ivy.any(ivy.less(std, 0)):
-        raise Exception("`std` must be non-negative")
+    ivy.assertions.check_greater(std, 0, allow_equal=True)
 
 
 # Extra #
