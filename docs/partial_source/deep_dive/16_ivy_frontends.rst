@@ -28,8 +28,8 @@ transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
-Basic
------
+The Basics
+----------
 
 **NOTE:** Type hints, docstrings and examples are not required when working on
 frontend functions.
@@ -124,18 +124,15 @@ being.
 In the case of :code:`order` and :code:`subok`, this is because the aspects which these
 arguments seek to control are simply not controllable when using Ivy.
 :code:`order` controls the low-level memory layout of the stored array.
-Ivy abstracts the backend framework, and therefore also abstracts everything below Ivy's
-functional API, including the backend array class, the low-level language compiled to,
-the device etc. Most ML frameworks do not offer per-array control of the memory layout,
-and so we cannot offer this control at the Ivy API level, nor the frontend API level
-either. This is not a problem, as the memory layout has no bearing at all on the
-input-output behaviour of the function. Similarly, :code:`subok` controls whether or not
-subclasses of the :code:`numpy.ndarray` should be permitted as inputs to the function.
+Similarly, :code:`subok` controls whether or not subclasses of the :code:`numpy.ndarray`
+should be permitted as inputs to the function.
 Again, this is a very framework-specific argument. All ivy functions by default do
 enable subclasses of the :code:`ivy.Array` to be passed, and the frontend function will
 be operating with :code:`ivy.Array` instances rather than :code:`numpy.ndarray`
 instances, and so we omit this argument. Again, it has no bearing on input-output
 behaviour and so this is not a problem when transpiling between frameworks.
+
+See the section "Unused Arguments" below for more details.
 
 .. code-block:: python
 
@@ -227,6 +224,50 @@ into :code:`ivy.add`.
 framework. Looking at the `torch.tan`_ documentation, we can mimick the same arguments,
 and again simply wrap :code:`ivy.tan`,
 also making use of the :code:`out` argument in this case.
+
+Unused Arguments
+----------------
+
+As can be seen from the examples above, there are often cases where we do not add
+support for particular arguments in the frontend function. Generally, we can omit
+support for a particular argument only if: the argument **does not** fundamentally
+affect the input-output behaviour of the function in a mathematical sense. The only
+two exceptions to this rule are arguments related to either the data type or the device
+on which the returned array(s) should reside. Examples of arguments which can be
+omitted, on account that they do not change the mathematics of the function are
+arguments which relate to:
+
+* the layout of the array in memory, such as :code:`order` in
+  `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
+
+* the algorithm or approximations used under the hood, such as :code:`precision` and
+  :code:`preferred_element_type` in
+  `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
+
+* the specific array class in the original framework, such as :code:`subok` in
+  `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
+
+* the labelling of functions for organizational purposes, such as :code:`name` in
+  `tf.math.add <https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004>`_.
+
+There are likely to be many other examples of arguments which do not fundamentally
+affect the input-output behaviour of the function in a mathematical sense, and so can
+also be omitted from Ivy's frontend implementation.
+
+The reason we omit these arguments in Ivy is because Ivy is not designed to provide
+low-level control to functions that extend beyond the pure mathematics of the function.
+This is a requirement because Ivy abstracts the backend framework,
+and therefore also abstracts everything below the backend framework's functional API,
+including the backend array class, the low-level language compiled to, the device etc.
+Most ML frameworks do not offer per-array control of the memory layout, and control for
+the finer details of the algorithmic approximations under the hood, and so we cannot
+in general offer this level of control at the Ivy API level, nor the frontend API level
+as a direct result. As explained above, this is not a problem, as the memory layout has
+no bearing at all on the input-output behaviour of the function. In contrast, the
+algorithmic approximation may have a marginal bearing on the final results in some
+cases, but Ivy is only designed to unify to within a reasonable numeric approximation
+in any case, and so omitting these arguments also very much fits within Ivy's design.
+
 
 Compositions
 ------------
