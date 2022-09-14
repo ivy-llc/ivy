@@ -872,17 +872,20 @@ class ContainerBase(dict, abc.ABC):
             Default is False.
 
         """
-        assert ivy.Container.identical(
-            containers,
-            check_types,
-            check_shapes,
-            same_arrays,
-            arrays_equal,
-            key_chains,
-            to_apply,
-            partial,
-        ), "Containers were not identical:\n\n{}".format(
-            ivy.Container.diff(*containers)
+        ivy.assertions.check_true(
+            ivy.Container.identical(
+                containers,
+                check_types,
+                check_shapes,
+                same_arrays,
+                arrays_equal,
+                key_chains,
+                to_apply,
+                partial,
+            ),
+            "Containers were not identical:\n\n{}".format(
+                ivy.Container.diff(*containers)
+            ),
         )
 
     @staticmethod
@@ -968,10 +971,13 @@ class ContainerBase(dict, abc.ABC):
             Default is False.
 
         """
-        assert ivy.Container.identical_structure(
-            containers, check_types, check_shapes, key_chains, to_apply, partial
-        ), "Containers did not have identical structure:\n\n{}".format(
-            ivy.Container.structural_diff(*containers)
+        ivy.assertions.check_true(
+            ivy.Container.identical_structure(
+                containers, check_types, check_shapes, key_chains, to_apply, partial
+            ),
+            "Containers did not have identical structure:\n\n{}".format(
+                ivy.Container.structural_diff(*containers)
+            ),
         )
 
     @staticmethod
@@ -985,7 +991,7 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
 
         """
-        assert len(containers) > 1
+        ivy.assertions.check_greater(len(containers), 1)
         configs = [cont.config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
@@ -1721,7 +1727,7 @@ class ContainerBase(dict, abc.ABC):
 
         def _ret_bool(x):
             if assert_is_bool:
-                assert isinstance(x, bool)
+                ivy.assertions.check_isinstance(x, bool)
                 return x
             return bool(x)
 
@@ -3304,8 +3310,8 @@ class ContainerBase(dict, abc.ABC):
     def _slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
-            assert len(key_slice) == 3 and key_slice[1] == ":"
-            assert self._alphabetical_keys
+            ivy.assertions.check_true(len(key_slice) == 3 and key_slice[1] == ":")
+            ivy.assertions.check_true(self._alphabetical_keys)
             start_char = key_slice[0]
             end_char = key_slice[2]
             start_idx = min([i for i, k in enumerate(keys) if k[0] == start_char])
