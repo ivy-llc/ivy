@@ -6158,6 +6158,47 @@ class ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
+    def static_sinc(
+            x: ivy.Container,
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        # TODO: add docstring
+        return ContainerBase.multi_map_in_static_method(
+            "sinc",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def sinc(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        # TODO: add docstring
+        return self.static_sinc(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_sinh(
         x,
         /,

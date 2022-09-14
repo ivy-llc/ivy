@@ -1749,6 +1749,10 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.sin(self._data, out=out)
 
+    def sinc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        # TODO: add docstring
+        return ivy.sinc(self._data, out=out)
+
     def sinh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinh. This method simply wraps the
