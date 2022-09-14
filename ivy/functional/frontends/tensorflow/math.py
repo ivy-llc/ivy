@@ -184,7 +184,7 @@ def confusion_matrix(
     shape = ivy.stack([num_classes, num_classes])
     indices = ivy.stack([labels, predictions], axis=1)
     values = ivy.ones_like(predictions, dtype=dtype) if weights is None else weights
-    return ivy.scatter_nd(indices=indices, updates=values, shape=shape)
+    return ivy.scatter_nd(indices, values, shape=shape)
 
 
 def polyval(coeffs, x, name=None):
