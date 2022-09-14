@@ -472,10 +472,9 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
             if (
                 isinstance(linalg_v, FunctionType)
                 and linalg_k != "namedtuple"
+                and linalg_k != "with_unsupported_dtypes"
                 and not linalg_k.startswith("_")
             ):
-                if linalg_k == "with_unsupported_dtypes":
-                    continue
                 to_wrap.__dict__[linalg_k] = _wrap_function(
                     linalg_k, linalg_v, ivy.__dict__[linalg_k]
                 )
@@ -531,10 +530,15 @@ def _dtype_from_version(dic, version):
 
 def _versioned_attribute_factory(attribute_function, base):
     class VersionedAttributes(base):
+        """
+        A class that allows for versioned attributes
+        """
+
         def __init__(self):
             self.attribute_function = attribute_function
 
         def __get__(self, instance=None, owner=None):
+            # version dtypes recalculated everytime it's accessed
             return self.attribute_function()
 
         def __iter__(self):
@@ -558,6 +562,7 @@ def _dtype_device_wrapper_creator(attrib, t):
     return _wrapper_outer
 
 
+# Decorators to allow for versioned attributes
 with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tuple)
 with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
 with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
