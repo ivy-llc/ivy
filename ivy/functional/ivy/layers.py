@@ -576,7 +576,7 @@ def conv1d(
     }
     """
     return current_backend(x).conv1d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x, filters, strides, padding, data_format=data_format, dilations=dilations, out=out
     )
 
 
@@ -626,7 +626,7 @@ def conv1d_transpose(
 
     """
     return current_backend(x).conv1d_transpose(
-        x, filters, strides, padding, output_shape, data_format, dilations, out=out
+        x, filters, strides, padding, output_shape=output_shape, data_format=data_format, dilations=dilations, out=out
     )
 
 
@@ -724,7 +724,7 @@ def conv2d(
 
     """
     return current_backend(x).conv2d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x, filters, strides, padding, data_format=data_format, dilations=dilations, out=out
     )
 
 
@@ -774,7 +774,7 @@ def conv2d_transpose(
 
     """
     return current_backend(x).conv2d_transpose(
-        x, filters, strides, padding, output_shape, data_format, dilations, out=out
+        x, filters, strides, padding, output_shape=output_shape, data_format=data_format, dilations=dilations, out=out
     )
 
 
@@ -901,7 +901,7 @@ def depthwise_conv2d(
 
     """
     return current_backend(x).depthwise_conv2d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x, filters, strides, padding, data_format=data_format, dilations=dilations, out=out
     )
 
 
@@ -965,7 +965,7 @@ def conv3d(
 
     """
     return current_backend(x).conv3d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x, filters, strides, padding, data_format=data_format, dilations=dilations, out=out
     )
 
 
@@ -1099,7 +1099,7 @@ def conv3d_transpose(
     (1, 6, 56, 56, 3)
     """
     return current_backend(x).conv3d_transpose(
-        x, filters, strides, padding, output_shape, data_format, dilations, out=out
+        x, filters, strides, padding, output_shape=output_shape, data_format=data_format, dilations=dilations, out=out
     )
 
 
