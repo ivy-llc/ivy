@@ -1234,7 +1234,7 @@ class ContainerBase(dict, abc.ABC):
             try:
                 return reduction(containers)
             except Exception as e:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     str(e)
                     + "\nContainer reduce operation only valid for containers of arrays"
                 )
@@ -2248,15 +2248,15 @@ class ContainerBase(dict, abc.ABC):
 
         """
         try:
-            assert self.contains_sub_container(sub_cont, partial)
-        except AssertionError:
+            ivy.assertions.check_true(self.contains_sub_container(sub_cont, partial))
+        except ivy.exceptions.IvyException:
             key_chain = self.find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise AssertionError(
+            raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure and values:\n\n{}".format(
                     ivy.Container.diff(self[key_chain], sub_cont)
                 )
@@ -2343,15 +2343,17 @@ class ContainerBase(dict, abc.ABC):
 
         """
         try:
-            assert self.contains_sub_structure(sub_cont, check_shapes, partial)
-        except AssertionError:
+            ivy.assertions.check_true(
+                self.contains_sub_structure(sub_cont, check_shapes, partial)
+            )
+        except ivy.exceptions.IvyException:
             key_chain = self.find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise AssertionError(
+            raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure:\n\n{}".format(
                     ivy.Container.structural_diff(
                         self[key_chain],
@@ -2455,7 +2457,7 @@ class ContainerBase(dict, abc.ABC):
             except KeyError as e:
                 if ignore_key_errors:
                     return
-                raise e
+                raise ivy.exceptions.IvyException(repr(e))
         return ret
 
     def at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
