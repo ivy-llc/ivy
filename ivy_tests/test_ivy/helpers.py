@@ -2802,7 +2802,7 @@ def array_values(
     large_abs_safety_factor=1,
     small_abs_safety_factor=1,
     safety_factor_scale=None,
-    max_op=None,
+    scale_op=None,
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -2830,12 +2830,30 @@ def array_values(
     exclude_max
         if True, exclude the maximum limit.
     large_abs_safety_factor
-        Factor to divide the values by to ensure that they are not too large.
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.01, a safety factor of 3 transforms the minimum to  0.1.
+
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = None.
-    max_op
-        The operation to apply element wise to the generated values. Can be
+    scale_op
+        Operation to apply element wise to the generated values. Can be
         "sqrt" or "log". Default value = None.
 
     In the case of min_value or max_value is not in the valid range
@@ -2981,9 +2999,9 @@ def array_values(
 
     array = np.array(values)
 
-    if max_op == "sqrt":
+    if scale_op == "sqrt":
         array = (np.sign(array) * np.sqrt(np.abs(array))).astype(dtype)
-    elif max_op == "log":  # ToDo throws exception, but runs
+    elif scale_op == "log":  # ToDo throws exception, but runs
         array = (np.sign(array) * np.log(np.abs(array))).astype(dtype)
 
     if isinstance(shape, (tuple, list)):
