@@ -360,38 +360,43 @@ as this is a limitation of the entire framework, and this limitation is already
 `globally flagged <>`_.
 
 Instance Methods
-----------------------
+----------------
 
-To allow for the Frontend API to be used with Instance Methods, we have created frontend 
-framework specific classes which behave similiar to the Ivy Array class. These framework 
-specific classes wrap any existing Ivy Array or Native Array and allow for them to be used
-with framework specific instance methods. The example below highlights the difference between 
-the functional method and its relevant instance method.
+Most frameworks include instance methods on their array class for common array
+processing functions, such as :code:`reshape`, :code:`expand_dims` etc.
+This simple design choice comes with many advantages,
+some of which are explained in our :ref:`Ivy Array` section.
 
-**Examples**
+In order to implement Ivy's frontend APIs to the extent that is required for arbitrary
+code transpilations, it's necessary for us to also implement these instance methods of
+the framework-specific array classes (:code:`tf.Tensor`, :code:`torch.Tensor`,
+:code:`numpy.ndarray`, :code:`jax.numpy.ndarray` etc).
 
-**tensorflow.add**
-
-.. code-block:: python
-
-    # ivy/functional/frontends/tensorflow/math.py
-    def add(x, y, name=None):
-    return ivy.add(x, y)
-
-
-**tensorflow.add Instance Method**
+For an example of how these are implemented, we first show the instance method for
+:code:`np.ndarray.reshape`, which is implemented in the frontend
+`ndarray class <https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
 
 .. code-block:: python
 
-    # ivy/functional/frontends/tensorflow/tensor.py
-    def add(self, y, name="add"):
-        return tf_frontend.add(self.data, y, name)
+    # ivy/functional/frontends/numpy/ndarray/ndarray.py
+    def reshape(self, newshape, copy=None):
+        return np_frontend.reshape(self.data, newshape, copy=copy)
 
-* As you can see, the instance method is very similar to the functional method, but it 
-  takes the first argument as self. This is because the instance method is called 
-  on an instance of the framework specific class, which wraps the Ivy Array or Native Array.
-* We then return the relevant frontend function, passing in the wrapped Ivy Array or Native Array 
-  as :code:`self.data`
+Under the hood, this simply calls the frontend :code:`np_frontend.reshape` function,
+which itself is implemented as follows:
+
+.. code-block:: python
+
+    # ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py
+    def reshape(x, /, shape, *, copy=None):
+        return ivy.reshape(x, shape, copy=copy)
+
+We need to create these frontend array classes and all of their instance methods such
+that we are able to transpile code which makes use of instance methods.
+As explained in :ref:`Ivy as a Transpiler`, when transpiling code we first extract the
+computation graph in the source framework. In the case of instance methods, we then
+replace each of the original instance methods in the extracted computation graph with
+these new instance methods defined in the Ivy frontend class.
 
 
 Framework-Specific Classes
