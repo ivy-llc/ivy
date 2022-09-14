@@ -2909,7 +2909,7 @@ def array_values(
         elif kind_dtype == "float":
             floats_info = {
                 "float16": {"cast_type": "float16", "width": 16},
-                "bfloat16": {"cast_type": "float32", "width": 16},
+                "bfloat16": {"cast_type": "float32", "width": 32},
                 "float32": {"cast_type": "float32", "width": 32},
                 "float64": {"cast_type": "float64", "width": 64},
             }
