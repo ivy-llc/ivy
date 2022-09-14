@@ -68,13 +68,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#basic">Basic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#missing-ivy-functions">Missing Ivy Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#instance-methods">Instance Methods</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#framework-specific-classes">Framework-Specific Classes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ivy-sum">ivy.sum()</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#framework-specific-classes">Framework-Specific Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -386,8 +384,8 @@ result of <code class="code docutils literal notranslate"><span class="pre">ivy.
 <p>Through compositions, we can easily meet the required input-output behaviour for the
 TensorFlow frontend function.</p>
 </section>
-<section id="temporary-compositions">
-<h2>Temporary Compositions<a class="headerlink" href="#temporary-compositions" title="Permalink to this heading"></a></h2>
+<section id="missing-ivy-functions">
+<h2>Missing Ivy Functions<a class="headerlink" href="#missing-ivy-functions" title="Permalink to this heading"></a></h2>
 <p>Sometimes, there is a clear omission of an Ivy function, which would make the frontend
 implementation much simpler. For example, at the time of writing,
 implementing <code class="code docutils literal notranslate"><span class="pre">median</span></code> for the NumPy frontend would require a very manual and
@@ -406,6 +404,9 @@ to be timely and sensible, then we will add this function to the
 At this point in time, you can reserve the function for yourself and get it implemented
 in a unique PR. Once merged, you can then resume working on the frontned function,
 which will now be a much easier task with the new addition to Ivy.</p>
+</section>
+<section id="temporary-compositions">
+<h2>Temporary Compositions<a class="headerlink" href="#temporary-compositions" title="Permalink to this heading"></a></h2>
 <p>Alternatively, if after creating the new issue you would rather not wait around for a
 member of our team to review and possibly add to the “Extend Ivy Functional API”
 <a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>,
@@ -455,85 +456,100 @@ as this is a limitation of the entire framework, and this limitation is already
 </section>
 <section id="instance-methods">
 <h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this heading"></a></h2>
-<p>To allow for the Frontend API to be used with Instance Methods, we have created frontend
-framework specific classes which behave similiar to the Ivy Array class. These framework
-specific classes wrap any existing Ivy Array or Native Array and allow for them to be used
-with framework specific instance methods. The example below highlights the difference between
-the functional method and its relevant instance method.</p>
-<p><strong>Examples</strong></p>
-<p><strong>tensorflow.add</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<p>Most frameworks include instance methods on their array class for common array
+processing functions, such as <code class="code docutils literal notranslate"><span class="pre">reshape</span></code>, <code class="code docutils literal notranslate"><span class="pre">expand_dims</span></code> etc.
+This simple design choice comes with many advantages,
+some of which are explained in our <a class="reference internal" href="../design/ivy_as_a_framework/ivy_array.html#ivy-array"><span class="std std-ref">Ivy Array</span></a> section.</p>
+<p>In order to implement Ivy’s frontend APIs to the extent that is required for arbitrary
+code transpilations, it’s necessary for us to also implement these instance methods of
+the framework-specific array classes (<code class="code docutils literal notranslate"><span class="pre">tf.Tensor</span></code>, <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="code docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
+<p>For an example of how these are implemented, we first show the instance method for
+<code class="code docutils literal notranslate"><span class="pre">np.ndarray.reshape</span></code>, which is implemented in the frontend
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/2e3ffc0f589791c7afc9d0384ce77fad4e0658ff/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8">ndarray class</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/ndarray/ndarray.py</span>
+<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np_frontend</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>tensorflow.add Instance Method</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/tensor.py</span>
-<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<p>Under the hood, this simply calls the frontend <code class="code docutils literal notranslate"><span class="pre">np_frontend.reshape</span></code> function,
+which itself is implemented as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/manipulation_routines/changing_array_shape.py</span>
+<span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>As you can see, the instance method is very similar to the functional method, but it
-takes the first argument as self. This is because the instance method is called
-on an instance of the framework specific class, which wraps the Ivy Array or Native Array.</p></li>
-<li><p>We then return the relevant frontend function, passing in the wrapped Ivy Array or Native Array
-as <code class="code docutils literal notranslate"><span class="pre">self.data</span></code></p></li>
-</ul>
+<p>We need to create these frontend array classes and all of their instance methods such
+that we are able to transpile code which makes use of instance methods.
+As explained in <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>, when transpiling code we first extract the
+computation graph in the source framework. In the case of instance methods, we then
+replace each of the original instance methods in the extracted computation graph with
+these new instance methods defined in the Ivy frontend class.</p>
 </section>
 <section id="framework-specific-classes">
 <h2>Framework-Specific Classes<a class="headerlink" href="#framework-specific-classes" title="Permalink to this heading"></a></h2>
-<p>Some of the frontend functions that we need to implement for our frontend functional API
-include framework-specific classes, which do not have a counterpart in other frameworks
-or Ivy, as the types for their arguments or as the default values for the arguments.
+<p>Some of the frontend functions that we need to implement include framework-specific
+classes as the default values for some of the arguments,
+which do not have a counterpart in other frameworks.
 When re-implementing these functions in Ivy’s frontend, we would like to still include
-those arguments without directly using those special classes as they do not exist in Ivy.
-In this section of the deep dive we are going to introduce how to deal with
-Framework-Specific Classes.</p>
-<p>For each backend framework, there is a dictionary named <cite>&lt;backend&gt;_classes_to_ivy_classes</cite>
-in <cite>ivy/ivy_tests/test_ivy/test_frontends/test_&lt;backend&gt;/__init__.py</cite>,
-which will hold pairs of framework-specific classes and corresponding Ivy or
-native Python classes. For example, in <cite>ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py</cite>, we have:</p>
+those arguments without directly using these special classes, which do not exist in Ivy.</p>
+<p>A good example is the special class <code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code>, which is sometimes used
+instead of <code class="code docutils literal notranslate"><span class="pre">None</span></code> as the default value for arguments in numpy. For example,
+the <code class="code docutils literal notranslate"><span class="pre">keepdims</span></code>, <code class="code docutils literal notranslate"><span class="pre">initial</span></code> and <code class="code docutils literal notranslate"><span class="pre">where</span></code> arguments of <code class="code docutils literal notranslate"><span class="pre">numpy.sum</span></code>
+use <code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code> as the default value, while <code class="code docutils literal notranslate"><span class="pre">axis</span></code>, <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">out</span></code> use <code class="code docutils literal notranslate"><span class="pre">None</span></code>, as can be seen in the
+<a class="reference external" href="https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299">source code</a>.</p>
+<p>We now introduce how to deal with such framework-specific classes. For each backend
+framework, there is a dictionary named <cite>&lt;backend&gt;_classes_to_ivy_classes</cite> in
+<cite>ivy/ivy_tests/test_ivy/test_frontends/test_&lt;backend&gt;/__init__.py</cite>.
+This holds pairs of framework-specific classes and the corresponding Ivy or
+native Python classes to map to.
+For example, in <cite>ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py</cite>, we have:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numpy_classes_to_ivy_classes</span> <span class="o">=</span> <span class="p">{</span><span class="n">np</span><span class="o">.</span><span class="n">_NoValue</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 </pre></div>
 </div>
-<p>Where np._NoValue is a reference to _NoValueType class defined in numpy/numpy/_globals.py,
-which represents a special keyword value and the instance of this class may be used as the
-default value assigned to a keyword if no other obvious default (e.g., <code class="code docutils literal notranslate"><span class="pre">None</span></code>) is suitable.</p>
-<p>When you found that the frontend function of a certain framework that you try to implement
-in our frontend API introduce a new datatype that, like the <code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code> example before,
-can not be directly replaced, you may pick an existing Ivy or pure python datatype
-and use them instead in the ivy frontend implementation to mimic the same effect and record
-the pair of framework-specific class’s reference and your replacement class’s reference
-in the corresponding dictionary.</p>
-<p>As our frontend test will try to pass all the generated inputs in both our own implementation
-and the original function, then you cannot directly pass either the framework-specific class
-or your chosen counterpart in our test function. Instead, you should pass a <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code>
-object in. The <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> is defined in ‘ivy/ivy_tests/test_ivy/test_frontends/__init__.py’ as a placeholder class to represent a
-pair of framework specific class and its counterpart. It has only one attribute, which is
-<code class="code docutils literal notranslate"><span class="pre">_native_class</span></code>, that holds the reference to the special class being used by the
-targeted framework.</p>
-<p>When writing a test for a frontend function where its original counterpart accepts a
-framework-specific class, you should import the <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> and initialize an instance
-of it with <code class="code docutils literal notranslate"><span class="pre">_native_class</span></code> set as the reference to the special class, which you have
-added in the <cite>&lt;backend&gt;_classes_to_ivy_classes</cite> dictionary before. Then just pass the
-<code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> instance in the arguments like other generated input and the
-<code class="code docutils literal notranslate"><span class="pre">helpers.test_frontend_function</span></code> will replace it with the actual classes accordingly
-in the background.</p>
-<p>Here is an example of <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> being put to use in test.</p>
-<section id="ivy-sum">
-<h3>ivy.sum()<a class="headerlink" href="#ivy-sum" title="Permalink to this heading"></a></h3>
-<ul class="simple">
-<li><p>NumPy.sum has three optional arguments: <code class="code docutils literal notranslate"><span class="pre">where</span></code>, <code class="code docutils literal notranslate"><span class="pre">keep_dims</span></code>, <code class="code docutils literal notranslate"><span class="pre">initial</span></code>, which all have the default value of numpy._NoValue. So we define a NativeClass object Novalue to help recreate the effect of not passing any value to those arguments by using Novalue instead where None used to be generated for the those arguments.</p></li>
-</ul>
+<p>Where <code class="code docutils literal notranslate"><span class="pre">np._NoValue</span></code> is a reference to the <code class="code docutils literal notranslate"><span class="pre">_NoValueType</span></code> class defined in
+<code class="code docutils literal notranslate"><span class="pre">numpy/numpy/_globals.py</span></code>.</p>
+<p>Any time a new framework-specific data type is discovered, such as the
+<code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code> example given, then this should be added as a key to the
+dictionary, and the most appropriate pure-python or Ivy class or instance should be
+added as the value.</p>
+<p>During frontend testing, the helper <code class="code docutils literal notranslate"><span class="pre">test_frontend_function</span></code> by default passes
+all the generated inputs into both Ivy’s frontend implementation and also the original
+function. For the framework-specific classes discussed, this is a problem.
+Handling the framework-specific class in the Ivy frontend would add a dependency to the
+frontend framework being mimicked. This breaks Ivy’s design philosophy,
+whereby only the specific backend framework being used should be a dependency.
+Our solution is to pass the value from the <code class="code docutils literal notranslate"><span class="pre">&lt;framework&gt;_classes_to_ivy_classes</span></code>
+dict to the Ivy frontend function and the key from the
+<code class="code docutils literal notranslate"><span class="pre">&lt;framework&gt;_classes_to_ivy_classes</span></code> dict to the original function during testing
+in <code class="code docutils literal notranslate"><span class="pre">test_frontend_function</span></code>.</p>
+<p>The way we do this is to wrap all framework-specific classes inside a
+<code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> during frontend testing. The <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> is defined in
+<code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/__init__.py</span></code>, and this acts as a
+placeholder class to represent the framework-specific class and its counterpart.
+It has only one attribute, <code class="code docutils literal notranslate"><span class="pre">_native_class</span></code>, which holds the reference to the
+special class being used by the targeted framework.
+Then, in order to pass the key and value to the orignal and frontend functions
+respectively, <code class="code docutils literal notranslate"><span class="pre">test_frontend_function</span></code> detects all <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> instances
+in the arguments, makes use of <code class="code docutils literal notranslate"><span class="pre">&lt;framework&gt;_classes_to_ivy_classes</span></code> internally
+to find the corresponding value to the key wrapped inside the <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code>
+instance, and then passes the key and value as inputs to the corresponding functions
+correctly.</p>
+<p>As an example, we show how <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> is used in the frontend test for the
+<code class="code docutils literal notranslate"><span class="pre">sum</span></code> function in the NumPy frontend:</p>
+<p>The function has three optional arguments which have the default value of
+<code class="code docutils literal notranslate"><span class="pre">numpy._NoValue</span></code>, being: <code class="code docutils literal notranslate"><span class="pre">where</span></code>, <code class="code docutils literal notranslate"><span class="pre">keep_dims</span></code> and <code class="code docutils literal notranslate"><span class="pre">initial</span></code>.
+We therefore define a <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> object <code class="code docutils literal notranslate"><span class="pre">Novalue</span></code>, and pass this as input
+to each of these arguments when calling <code class="code docutils literal notranslate"><span class="pre">test_frontend_function</span></code>.</p>
 <p><strong>Round Up</strong></p>
-<p>This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
-after going through the contents! We have a <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this
+<p>This should hopefully have given you a better grasp on the what the Ivy Frontend APIs
+are for, how they should be implemented, and the things to watch out for!
+We also have a short <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this
 as well if you prefer a video explanation!</p>
 <p>If you’re ever unsure of how best to proceed,
 please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/2051">ivy frontends discussion</a>,
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a>!</p>
-</section>
 </section>
 </section>
 
