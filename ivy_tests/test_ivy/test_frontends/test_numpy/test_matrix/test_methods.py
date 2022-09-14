@@ -181,6 +181,6 @@ def test_numpy_any(
     if isinstance(ret_gt, tuple):
         ret_gt = ret_gt[0]
     if len(ret.shape) == 0:
-        assert (ret == True and ret_gt == True or ret == False and ret_gt == False)
+        assert (ret is True and ret_gt is True or ret is False and ret_gt is False)
     else:
         assert (ret.shape == ret_gt.shape and np.all(ret == ret_gt))
