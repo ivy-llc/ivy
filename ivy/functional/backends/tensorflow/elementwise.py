@@ -579,7 +579,7 @@ def sinc(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
-    return tf.experimental.numpy.sinc(x)
+    return tf.convert_to_tensor(tf.experimental.numpy.sinc(x), dtype=x.dtype)
 
 
 def sinh(
