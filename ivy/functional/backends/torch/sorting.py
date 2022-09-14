@@ -42,7 +42,17 @@ def searchsorted(
     *,
     side="left",
     sorter=None,
+    ret_dtype=torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    return torch.searchsorted(
+        x,
+        v,
+        sorter=sorter,
+        side=side,
+        out_int32=False if ret_dtype is torch.int64 else True,
+        out=out,
+    )
 
-    return torch.searchsorted(x, v, side=side)
+
+searchsorted.support_native_out = True
