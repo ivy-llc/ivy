@@ -6,13 +6,13 @@ import gc
 import abc
 import math
 import psutil
-import nvidia_smi
+import pynvml
 from typing import Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
-    nvidia_smi.nvmlInit()
-except (nvidia_smi.NVMLError_LibraryNotFound, nvidia_smi.NVMLError_DriverNotLoaded):
+    pynvml.nvmlInit()
+except pynvml.NVMLError:
     pass
 from typing import Union, Callable, Iterable, Any
 
@@ -23,6 +23,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 default_device_stack = list()
 dev_handles = dict()
@@ -41,6 +42,7 @@ class DefaultDevice:
     def __init__(
         self,
         device: Union[ivy.Device, ivy.NativeDevice],
+        /,
     ) -> None:
         """Initialises the DefaultDevice class
 
@@ -109,12 +111,12 @@ class DefaultDevice:
 # Helpers #
 
 # noinspection PyShadowingNames
-def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
+def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     global dev_handles
     if device in dev_handles:
         return dev_handles[device]
     gpu_idx = int(device.split(":")[-1])
-    handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
+    handle = pynvml.nvmlDeviceGetHandleByIndex(gpu_idx)
     dev_handles[device] = handle
     return handle
 
@@ -124,8 +126,10 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
 # Array Printing
 
 
+@handle_exceptions
 def get_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice]
+    device: Union[ivy.Device, ivy.NativeDevice],
+    /,
 ) -> ivy.Container:
     """Gets all ivy arrays which are currently alive on the specified device.
 
@@ -159,7 +163,8 @@ def get_all_ivy_arrays_on_dev(
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
-def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
+@handle_exceptions
+def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
     Parameters
@@ -292,8 +297,9 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> int:
 
 
 @handle_nestable
+@handle_exceptions
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], attr_only: bool = True
+    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -317,8 +323,10 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
+@handle_nestable
+@handle_exceptions
 def dev(
-    x: Union[ivy.Array, ivy.NativeArray], as_native: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """
     Get the native device handle for input array x.
@@ -336,20 +344,73 @@ def dev(
     ret
           Device handle for the array, in native framework format.
 
-    Examples
-    --------
-    >>> x = ivy.array([1,0,2])
+    Functional Examples
+    --------------------
+
+    With :code:'ivy.Array' input:
+
+    >>> x = ivy.array([3, 1, 4, 5])
     >>> y = ivy.dev(x)
     >>> print(y)
     cpu
+
+    With :code:'ivy.NativeArray' input:
+
+    >>> x = ivy.native_array([[2, 5, 4], [3, 1, 5]])
+    >>> y = ivy.dev(x, as_native=True)
+    >>> print(y)
+    cpu
+
+    Array Instance Method Examples
+    ------------------------------
+
+    With :code:'ivy.Array' input:
+
+    >>> x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])
+    >>> y = x.dev(as_native=True)
+    >>> print(y)
+    cpu
+
+    Container Static Method Examples
+    ---------------------------------
+
+    With :code:'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),\
+                          b=ivy.native_array([1, 2, 4, 5, 7]))
+    >>> as_native = ivy.Container(a=True, b=False)
+    >>> y = ivy.Container.static_dev(x, as_native=as_native)
+    >>> print(y)
+    {
+        a: device(type=cpu),
+        b: cpu
+    }
+
+    Container Instance Method Examples
+    ----------------------------
+
+    With :code:'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),\
+                          b=ivy.native_array([[1, 2], [4, 5]]))
+    >>> as_native = ivy.Container(a=False, b=True)
+    >>> y = x.dev(as_native=as_native)
+    >>> print(y)
+    {
+        a: cpu,
+        b: device(type=cpu)
+    }
+
+
     """
-    return ivy.current_backend(x).dev(x, as_native)
+    return ivy.current_backend(x).dev(x, as_native=as_native)
 
 
 # Conversions
 
 
-def as_ivy_dev(device: Union[ivy.Device, str]) -> ivy.Device:
+@handle_exceptions
+def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     """Convert native data type to string representation.
 
     Parameters
@@ -366,7 +427,8 @@ def as_ivy_dev(device: Union[ivy.Device, str]) -> ivy.Device:
     return ivy.current_backend().as_ivy_dev(device)
 
 
-def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevice:
+@handle_exceptions
+def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeDevice:
     """Convert device string representation to native device type.
 
     Parameters
@@ -386,7 +448,8 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> ivy.NativeDevi
 # Memory
 
 
-def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
+@handle_exceptions
+def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """Clear memory cache on target device.
 
     Parameters
@@ -398,7 +461,8 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     ivy.current_backend(None).clear_mem_on_dev(device)
 
 
-def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
+@handle_exceptions
+def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
 
@@ -425,19 +489,23 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
     """
     if "gpu" in device:
         handle = _get_nvml_gpu_handle(device)
-        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.total / 1e9
     elif device == "cpu":
         return psutil.virtual_memory().total / 1e9
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
 
 
+@handle_exceptions
 def used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], process_specific: bool = False
+    device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+    *,
+    process_specific: bool = False,
 ) -> float:
     """Get the used memory (in GB) for a given device string. In case of CPU, the used
     RAM is returned.
@@ -447,21 +515,37 @@ def used_mem_on_dev(
     device
         The device string to convert to native device handle.
     process_specific
-        Whether the check the memory used by this python process alone. Default is
-        False.
+        Whether to check the memory used by this python process alone. Default is
+        False. Currently is only supported for cpu.
 
     Returns
     -------
     ret
         The used memory on the device in GB.
 
+    Examples
+    --------
+    >>> x = ivy.used_mem_on_dev("cpu", process_specific = False)
+    >>> print(x)
+    6.219563008
+
+    >>> x = ivy.used_mem_on_dev("cpu", process_specific = True)
+    >>> print(x)
+    0.902400346
+
+    >>> y = ivy.used_mem_on_dev("gpu:0", process_specific = False)
+    >>> print(y)
+    0.525205504
+
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
-        if process_specific:
-            raise Exception("process-specific GPU queries are currently not supported")
+        ivy.assertions.check_false(
+            process_specific,
+            "process-specific GPU queries are currently not supported",
+        )
         handle = _get_nvml_gpu_handle(device)
-        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.used / 1e9
     elif device == "cpu":
         if process_specific:
@@ -469,14 +553,17 @@ def used_mem_on_dev(
         vm = psutil.virtual_memory()
         return (vm.total - vm.available) / 1e9
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
 
 
+@handle_exceptions
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+    *,
     process_specific: bool = False,
 ) -> float:
     """Get the percentage used memory for a given device string. In case of CPU, the
@@ -497,26 +584,28 @@ def percent_used_mem_on_dev(
 
     Examples
     --------
-    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = False)
+    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = False)
     >>> print(x)
     94.036902561555
 
-    >>> x = ivy.percent_used_mem_on_dev(device = "cpu", process_specific = True)
+    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = True)
     >>> print(x)
     0.7024003467681645
 
     >>> x = ivy.as_native_dev("gpu:0")
-    >>> y = ivy.percent_used_mem_on_dev(device = x, process_specific = False)
+    >>> y = ivy.percent_used_mem_on_dev(x, process_specific = False)
     >>> print(y)
     0.7095597456708771
 
     """
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
-        if process_specific:
-            raise Exception("process-specific GPU queries are currently not supported")
+        ivy.assertions.check_false(
+            process_specific,
+            "process-specific GPU queries are currently not supported",
+        )
         handle = _get_nvml_gpu_handle(device)
-        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return (info.used / info.total) * 100
     elif device == "cpu":
         vm = psutil.virtual_memory()
@@ -524,7 +613,7 @@ def percent_used_mem_on_dev(
             return (psutil.Process(os.getpid()).memory_info().rss / vm.total) * 100
         return (1 - (vm.available / vm.total)) * 100
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -533,7 +622,8 @@ def percent_used_mem_on_dev(
 # Utilization
 
 
-def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
+@handle_exceptions
+def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """Get the current utilization (%) for a given device.
 
     Parameters
@@ -565,9 +655,9 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
         return psutil.cpu_percent()
     elif "gpu" in device:
         handle = _get_nvml_gpu_handle(device)
-        return nvidia_smi.nvmlDeviceGetUtilizationRates(handle).gpu
+        return pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", '
             "but found {}".format(device)
         )
@@ -576,6 +666,7 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice]) -> float:
 # Availability
 
 
+@handle_exceptions
 def gpu_is_available() -> bool:
     """Determine whether a GPU is available to use, with the backend framework.
 
@@ -592,7 +683,8 @@ def gpu_is_available() -> bool:
     return ivy.current_backend().gpu_is_available()
 
 
-def num_cpu_cores(logical: bool = True) -> int:
+@handle_exceptions
+def num_cpu_cores(*, logical: bool = True) -> int:
     """Determine the number of cores available in the cpu.
 
     Parameters
@@ -607,7 +699,7 @@ def num_cpu_cores(logical: bool = True) -> int:
 
     Examples
     --------
-    >>> print(ivy.num_cpu_cores(False))
+    >>> print(ivy.num_cpu_cores(logical=False))
     2
 
     """
@@ -617,6 +709,7 @@ def num_cpu_cores(logical: bool = True) -> int:
         return psutil.cpu_count(logical=False)
 
 
+@handle_exceptions
 def num_gpus() -> int:
     """Determine the number of available GPUs, with the backend framework.
 
@@ -634,6 +727,7 @@ def num_gpus() -> int:
     return ivy.current_backend().num_gpus()
 
 
+@handle_exceptions
 def tpu_is_available() -> bool:
     """Determine whether a TPU is available to use, with the backend framework.
 
@@ -653,8 +747,11 @@ def tpu_is_available() -> bool:
 # Default Device #
 
 # noinspection PyShadowingNames
+@handle_exceptions
 def default_device(
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+    /,
+    *,
     item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -720,7 +817,8 @@ def default_device(
     return ivy.as_ivy_dev(ret)
 
 
-def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
+@handle_exceptions
+def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """Set the default device to given device instance
 
     Parameters
@@ -751,6 +849,7 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice]) -> None:
     default_device_stack.append(device)
 
 
+@handle_exceptions
 def unset_default_device() -> None:
     """Resets the default device to "cpu".
 
@@ -775,12 +874,14 @@ def unset_default_device() -> None:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
+    /,
     *,
     stream: Optional[Union[int, Any]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -816,7 +917,8 @@ def to_device(
 # Function Splitting #
 
 
-def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
+@handle_exceptions
+def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float:
     """
     Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
@@ -852,8 +954,11 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None) -> float:
     return split_factors.setdefault(device, 0.0)
 
 
+@handle_exceptions
 def set_split_factor(
-    factor: float, device: Union[ivy.Device, ivy.NativeDevice] = None
+    factor: float,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    /,
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -892,16 +997,19 @@ def set_split_factor(
     >>> ivy.set_split_factor(0.4,device)
     {'cpu': 0.2, 'gpu': 0.3, device(type='cuda'): 0.4}
     """
-    assert 0 <= factor
+    ivy.assertions.check_less(0, factor, allow_equal=True)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
 
 
+@handle_exceptions
 def split_func_call(
     func: Callable,
     inputs: Union[ivy.Array, ivy.NativeArray],
     mode: str,
+    /,
+    *,
     max_chunk_size: int = None,
     chunk_size: int = None,
     input_axes: Union[int, Iterable[int]] = 0,
@@ -974,9 +1082,13 @@ def split_func_call(
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [
-        ivy.split(inp, chunk_sizes, input_axes[i], True)
+        ivy.split(
+            inp, num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        )
         if ivy.is_array(inp)
-        else inp.split(chunk_sizes, input_axes[i], True)
+        else inp.split(
+            num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        )
         for i, inp in enumerate(inputs)
     ]
     is_mean = mode == "mean"
@@ -1011,7 +1123,10 @@ def split_func_call(
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    ret = [ivy.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
+    ret = [
+        ivy.concat([r[i] for r in rets], axis=output_axes[i])
+        for i in range(num_outputs)
+    ]
     return ret[0] if len(ret) == 1 else ret
 
 
@@ -1033,70 +1148,103 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
     return True
 
 
+def _get_devices(fn, complement=True):
+    # TODO: Not hardcode this
+    VALID_DEVICES = ("cpu",)
+    INVALID_DEVICES = (
+        "gpu",
+        "tpu",
+    )
+    ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
+
+    supported = set(VALID_DEVICES)
+
+    if "backend" not in fn.__module__:
+        if complement:
+            supported = set(ALL_DEVICES).difference(supported)
+        return supported
+
+    # Their values are formated like either
+    # 1. fn.supported_devices = ("cpu",)
+    # Could also have the "all" value for the framework
+    basic = [
+        ("supported_devices", set.intersection, VALID_DEVICES),
+        ("unsupported_devices", set.difference, INVALID_DEVICES),
+    ]
+    for (key, merge_fn, base) in basic:
+        if hasattr(fn, key):
+            v = getattr(fn, key)
+            ivy.assertions.check_isinstance(v, tuple)
+            supported = merge_fn(supported, set(v))
+
+    if complement:
+        supported = set(ALL_DEVICES).difference(supported)
+
+    return tuple(supported)
+
+
 @handle_nestable
-def function_unsupported_devices(fn: Callable) -> Tuple:
-    """Returns the unsupported devices of the current backend's function.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the unsupported device attribute
-
-    Returns
-    -------
-    ret
-        The unsupported devices of the function
-    """
-    if not _is_valid_devices_attributes(fn):
-        raise Exception(
-            "supported_devices and unsupported_devices attributes cannot both \
-             exist in a particular backend"
-        )
-    unsupported_devices = ()
-    if hasattr(fn, "unsupported_devices"):
-        fn_unsupported_devices = fn.unsupported_devices
-        if isinstance(fn_unsupported_devices, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_unsupported_devices:
-                unsupported_devices += fn_unsupported_devices[backend_str]
-            if "all" in fn_unsupported_devices:
-                unsupported_devices += fn_unsupported_devices["all"]
-        else:
-            unsupported_devices += fn_unsupported_devices
-    return tuple(set(unsupported_devices))
-
-
-@handle_nestable
-def function_supported_devices(fn: Callable) -> Tuple:
+@handle_exceptions
+def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     """Returns the supported devices of the current backend's function.
 
     Parameters
     ----------
     fn
         The function to check for the supported device attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
 
     Returns
     -------
     ret
         The supported devices of the function
     """
-    if not _is_valid_devices_attributes(fn):
-        raise Exception(
-            "supported_devices and unsupported_devices attributes cannot both \
-             exist in a particular backend"
+    ivy.assertions.check_true(
+        _is_valid_devices_attributes(fn),
+        "supported_devices and unsupported_devices attributes cannot both \
+        exist in a particular backend",
+    )
+    supported_devices = set(_get_devices(fn, complement=False))
+
+    if recurse:
+        supported_devices = ivy.functional.data_type._nested_get(
+            fn, supported_devices, set.intersection, function_supported_devices
         )
-    supported_devices = tuple()
-    if hasattr(fn, "supported_devices"):
-        fn_supported_devices = fn.supported_devices
-        if isinstance(fn_supported_devices, dict):
-            backend_str = ivy.current_backend_str()
-            if backend_str in fn_supported_devices:
-                supported_devices += fn_supported_devices[backend_str]
-            if "all" in fn_supported_devices:
-                supported_devices += fn_supported_devices["all"]
-        else:
-            supported_devices += fn_supported_devices
-    return tuple(set(supported_devices))
+
+    return tuple(supported_devices)
+
+
+@handle_nestable
+@handle_exceptions
+def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
+    """Returns the unsupported devices of the current backend's function.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported device attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is True.
+
+    Returns
+    -------
+    ret
+        The unsupported devices of the function
+    """
+    ivy.assertions.check_true(
+        _is_valid_devices_attributes(fn),
+        "supported_devices and unsupported_devices attributes cannot both \
+        exist in a particular backend",
+    )
+    unsupported_devices = set(_get_devices(fn, complement=True))
+
+    if recurse:
+        unsupported_devices = ivy.functional.data_type._nested_get(
+            fn, unsupported_devices, set.union, function_unsupported_devices
+        )
+
+    return tuple(unsupported_devices)
 
 
 # Profiler #
@@ -1118,17 +1266,17 @@ class Profiler(abc.ABC):
     @abc.abstractmethod
     def start(self):
         """Start the profiler. This should be called before the code to be profiled."""
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def stop(self):
         """Stop the profiler. This should be called after the code to be profiled."""
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __enter__(self):
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     @abc.abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException

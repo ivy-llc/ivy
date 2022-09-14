@@ -6,27 +6,27 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+@handle_cmd_line_args
 @given(
     dtype_x_normidxs=helpers.dtype_values_axis(
-        available_dtypes=ivy_np.valid_float_dtypes,
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        min_axis=1,
-        ret_shape=True,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
     scale=st.floats(min_value=0.0),
     offset=st.floats(min_value=0.0),
     epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
     new_std=st.floats(min_value=0.0, exclude_min=True),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_layer_norm(
     *,
     dtype_x_normidxs,

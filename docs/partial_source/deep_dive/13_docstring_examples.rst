@@ -239,7 +239,7 @@ Let’s take an imaginary function with the following argument spec:
     def my_func(x: array,
                 mode: Union[std, prod, var],
                 some_flag: bool,
-                another_flag: Optional[bool] = False,
+                another_flag: bool = False,
                 axes: Optional[Union[int, List[int]]]=-1):
 
 In this case, our examples would need to include
@@ -283,6 +283,7 @@ The signature for :code:`ivy.tan` is as follows:
 
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
@@ -433,9 +434,10 @@ The signature for :code:`ivy.roll` is as follows:
 
     def roll(
         x: Union[ivy.Array, ivy.NativeArray],
+        /,
         shift: Union[int, Sequence[int]],
-        axis: Optional[Union[int, Sequence[int]]] = None,
         *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
 
@@ -634,6 +636,7 @@ The signature for :code:`ivy.add` is as follows:
     def add(
         x1: Union[ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

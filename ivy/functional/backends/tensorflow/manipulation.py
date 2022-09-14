@@ -1,3 +1,4 @@
+# For Review
 # global
 import ivy
 import math
@@ -15,8 +16,9 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 def concat(
     xs: List[tf.Tensor],
-    axis: int = 0,
+    /,
     *,
+    axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
@@ -35,13 +37,15 @@ def concat(
         axis = 0
         if is_tuple:
             xs = tuple(xs)
-    ret = tf.concat(xs, axis)
-    return ret
+    return tf.concat(xs, axis)
 
 
 def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    /,
+    *,
+    axis: Union[int, Sequence[int]] = 0,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
@@ -53,8 +57,9 @@ def expand_dims(
 
 def flip(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    /,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
@@ -76,19 +81,21 @@ def flip(
 
 def permute_dims(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     axes: Tuple[int, ...],
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.transpose(x, perm=axes)
-    return ret
+    return tf.transpose(x, perm=axes)
 
 
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)
@@ -98,9 +105,10 @@ def reshape(
 
 def roll(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     shift: Union[int, Sequence[int]],
-    axis: Optional[Union[int, Sequence[int]]] = None,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if axis is None:
@@ -118,7 +126,8 @@ def roll(
 
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    /,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -157,13 +166,13 @@ def squeeze(
 
 
 def stack(
-    x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
-    axis: Optional[int] = 0,
+    arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+    /,
     *,
+    axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.stack(x, axis)
-    return ret
+    return tf.experimental.numpy.stack(arrays, axis)
 
 
 # Extra #
@@ -172,11 +181,11 @@ def stack(
 
 def split(
     x,
+    /,
+    *,
     num_or_size_splits=None,
     axis=0,
     with_remainder=False,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -202,13 +211,13 @@ def split(
 
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     repeats: Union[int, List[int]],
-    axis: int = None,
     *,
+    axis: int = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.repeat(x, repeats, axis)
-    return ret
+    return tf.repeat(x, repeats, axis)
 
 
 repeat.supported_dtypes = (
@@ -217,15 +226,20 @@ repeat.supported_dtypes = (
 )
 
 
-def tile(x, reps, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def tile(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    reps: Sequence[int],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     if x.shape == ():
         x = tf.reshape(x, (-1,))
     if isinstance(reps, Number):
         reps = [reps]
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
-    ret = tf.tile(x, reps)
-    return ret
+    return tf.tile(x, reps)
 
 
 tile.unsupported_dtypes = (
@@ -238,22 +252,22 @@ tile.unsupported_dtypes = (
 
 
 def constant_pad(
-    x, pad_width, value=0, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    x, /, pad_width, *, value=0, out: Optional[Union[tf.Tensor, tf.Variable]] = None
 ):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
-    ret = tf.pad(x, pad_width, constant_values=value)
-    return ret
+    return tf.pad(x, pad_width, constant_values=value)
 
 
-def zero_pad(x, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
     if x.shape == ():
         x = tf.reshape(x, (-1,))
-    ret = tf.pad(x, pad_width)
-    return ret
+    return tf.pad(x, pad_width)
 
 
-def swapaxes(x, axis0, axis1, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+def swapaxes(
+    x, axis0, axis1, /, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None
+):
     x_shape = x.shape
     num_dims = len(x_shape)
     axis0 %= num_dims
@@ -263,17 +277,18 @@ def swapaxes(x, axis0, axis1, *, out: Optional[Union[tf.Tensor, tf.Variable]] = 
     config.insert(axis0, axis1)
     config.pop(axis1)
     config.insert(axis1, axis0)
-    ret = tf.transpose(x, config)
-    return ret
+    return tf.transpose(x, config)
 
 
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     x_min: Union[Number, tf.Tensor, tf.Variable],
     x_max: Union[Number, tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    assert tf.reduce_all(tf.less(x_min, x_max)), "Min value must be less than max."
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
@@ -287,4 +302,15 @@ def clip(
         ret = tf.cast(ret, x.dtype)
     else:
         ret = tf.clip_by_value(x, x_min, x_max)
+    return ret
+
+
+def unstack(
+    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+) -> List[tf.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = tf.unstack(x, axis=axis)
+    if keepdims:
+        return [tf.expand_dims(r, axis) for r in ret]
     return ret

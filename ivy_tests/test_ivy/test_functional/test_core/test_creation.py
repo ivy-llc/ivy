@@ -1,9 +1,6 @@
-# For Review
 """Collection of tests for creation functions."""
 
 # global
-
-import hypothesis.extra.numpy as hnp
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -14,25 +11,12 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-# Helper #
-##########
-
-# Calculate tolerance for linear interpolation.
-def _linear_tolerance(x, atol, rtol):
-    forward_diff = x[0] - np.nextafter(x[0], x[-1])
-    backward_diff = x[-1] - np.nextafter(x[-1], x[0])
-    return (
-        max(abs(forward_diff), abs(backward_diff))
-        + atol
-        + rtol * max(abs(x[0]), abs(x[-1]))
-    )
-
-
 # native_array
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
-        dtype=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        dtype=ivy.valid_numeric_dtypes,
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
@@ -41,9 +25,7 @@ def _linear_tolerance(x, atol, rtol):
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="native_array"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_native_array(
     *,
     dtype_and_x,
@@ -72,9 +54,10 @@ def test_native_array(
 
 
 # linspace
+@handle_cmd_line_args
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=None,
         max_value=None,
@@ -82,15 +65,15 @@ def test_native_array(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        allow_inf=False,
         shared_dtype=True,
-        large_value_safety_factor=2,
+        small_value_safety_factor=1.5,
+        large_value_safety_factor=20,
     ),
-    num=st.integers(1, 5),
+    num=helpers.ints(min_value=1, max_value=5),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="linspace"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_linspace(
     *,
     dtype_and_start_stop,
@@ -101,8 +84,7 @@ def test_linspace(
     fw,
 ):
     dtype, start_stop = dtype_and_start_stop
-    ret = helpers.test_function(
-        test_values=False,
+    helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
         with_out=False,
@@ -112,6 +94,8 @@ def test_linspace(
         instance_method=False,
         fw=fw,
         fn_name="linspace",
+        rtol_=1e-2,
+        atol_=1e-2,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
         stop=np.asarray(start_stop[1], dtype=dtype[1]),
         num=num,
@@ -120,27 +104,12 @@ def test_linspace(
         dtype=dtype[0],
     )
 
-    # Make sure something is returned
-    if not ret:
-        return
-
-    ret_base, ret_gt = ret
-
-    axis = -1 if axis is None else axis
-    ret_base, ret_gt = np.asarray(ret_base)[0], np.asarray(ret_gt)[0]
-
-    # Custom dynamic tolerance just for linspace
-    tol = np.apply_along_axis(
-        lambda x: _linear_tolerance(x, atol=1e-3, rtol=1e-3), axis, ret_base
-    )
-    tol = np.expand_dims(tol, axis)
-    assert np.all(np.abs(ret_base - ret_gt) <= tol)
-
 
 # logspace
+@handle_cmd_line_args
 @given(
     dtype_and_start_stop=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=None,
         max_value=None,
@@ -149,15 +118,14 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        large_value_safety_factor=2,
+        small_value_safety_factor=2.5,
+        large_value_safety_factor=50,
     ),
-    num=st.integers(1, 5),
-    base=st.floats(min_value=0.1, max_value=10.0),
+    num=helpers.ints(min_value=1, max_value=5),
+    base=helpers.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
     num_positional_args=helpers.num_positional_args(fn_name="logspace"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_logspace(
     *,
     dtype_and_start_stop,
@@ -165,6 +133,7 @@ def test_logspace(
     base,
     axis,
     device,
+    with_out,
     num_positional_args,
     fw,
 ):
@@ -172,7 +141,7 @@ def test_logspace(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=False,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=False,
         container_flags=False,
@@ -192,15 +161,16 @@ def test_logspace(
 
 
 # arange
-@given(
-    start=st.integers(0, 50),
-    stop=st.integers(0, 50) | st.none(),
-    step=st.integers(-50, 50).filter(lambda x: True if x != 0 else False),
-    dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="arange"),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    start=helpers.ints(min_value=0, max_value=50),
+    stop=helpers.ints(min_value=0, max_value=50) | st.none(),
+    step=helpers.ints(min_value=-50, max_value=50).filter(
+        lambda x: True if x != 0 else False
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
+    num_positional_args=helpers.num_positional_args(fn_name="arange"),
+)
 def test_arange(
     *,
     start,
@@ -231,9 +201,10 @@ def test_arange(
 
 
 # asarray
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=0,
         max_num_dims=5,
@@ -241,9 +212,7 @@ def test_arange(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="asarray"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_asarray(
     *,
     dtype_and_x,
@@ -272,6 +241,7 @@ def test_asarray(
 
 
 # empty
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -280,11 +250,9 @@ def test_asarray(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="empty"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_empty(
     *,
     shape,
@@ -318,9 +286,10 @@ def test_empty(
 
 
 # empty_like
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
@@ -328,9 +297,7 @@ def test_empty(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="empty_like"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_empty_like(
     *,
     dtype_and_x,
@@ -368,18 +335,17 @@ def test_empty_like(
 
 
 # eye
-@given(
-    n_rows=st.integers(min_value=0, max_value=10),
-    n_cols=st.none() | st.integers(min_value=0, max_value=10),
-    k=st.integers(min_value=-10, max_value=10),
-    batch_shape=st.lists(
-        st.integers(min_value=1, max_value=10), min_size=1, max_size=2
-    ),
-    dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    num_positional_args=helpers.num_positional_args(fn_name="eye"),
-    data=st.data(),
-)
 @handle_cmd_line_args
+@given(
+    n_rows=helpers.ints(min_value=0, max_value=10),
+    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
+    k=helpers.ints(min_value=-10, max_value=10),
+    batch_shape=st.lists(
+        helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
+    ),
+    dtype=helpers.get_dtypes("integer", full=False),
+    num_positional_args=helpers.num_positional_args(fn_name="eye"),
+)
 def test_eye(
     *,
     n_rows,
@@ -413,9 +379,10 @@ def test_eye(
 
 
 # from_dlpack
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
@@ -423,9 +390,7 @@ def test_eye(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="from_dlpack"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_from_dlpack(
     *,
     dtype_and_x,
@@ -456,7 +421,7 @@ def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_length(
-                x=st.sampled_from(ivy_np.valid_numeric_dtypes), length=1
+                x=helpers.get_dtypes("numeric", full=False), length=1
             ),
             key="dtype",
         )
@@ -467,13 +432,14 @@ def _dtypes(draw):
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(st.integers(0, 5))
+        return draw(helpers.ints(min_value=0, max_value=5))
     if ivy.is_int_dtype(dtype):
-        return draw(st.integers(-5, 5))
-    return draw(st.floats(-5, 5))
+        return draw(helpers.ints(min_value=-5, max_value=5))
+    return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 # full
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -485,9 +451,7 @@ def _fill_value(draw):
     fill_value=_fill_value(),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="full"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_full(
     *,
     shape,
@@ -519,7 +483,7 @@ def test_full(
 def _dtype_and_values(draw):
     return draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
+            available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=1,
             min_num_dims=1,
             max_num_dims=5,
@@ -531,13 +495,12 @@ def _dtype_and_values(draw):
 
 
 # full_like
+@handle_cmd_line_args
 @given(
     dtype_and_x=_dtype_and_values(),
     fill_value=_fill_value(),
     num_positional_args=helpers.num_positional_args(fn_name="full_like"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_full_like(
     *,
     dtype_and_x,
@@ -569,42 +532,34 @@ def test_full_like(
 
 
 # meshgrid
-
-
-# ToDo: create arrays which are not only 1-d
-array_shape = st.shared(
-    st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=1),
-    key="array_shape",
-)
-dtype_shared = st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="dtype")
-
-
+@handle_cmd_line_args
 @given(
-    arrays=st.lists(
-        hnp.arrays(dtype=dtype_shared, shape=array_shape), min_size=1, max_size=5
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
     ),
     indexing=st.sampled_from(["xy", "ij"]),
-    dtype=dtype_shared,
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_meshgrid(
     *,
-    arrays,
+    dtype_and_arrays,
     indexing,
-    dtype,
     fw,
 ):
+    dtype, arrays = dtype_and_arrays
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype)
+        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype[i])
         i += 1
 
     num_positional_args = len(arrays)
 
     helpers.test_function(
-        input_dtypes=[dtype for _ in range(num_positional_args)],
+        input_dtypes=dtype,
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -619,6 +574,7 @@ def test_meshgrid(
 
 
 # ones
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -627,11 +583,9 @@ def test_meshgrid(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=st.sampled_from(ivy_np.valid_numeric_dtypes),
+    dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="ones"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_ones(
     *,
     shape,
@@ -658,19 +612,18 @@ def test_ones(
 
 
 # ones_like
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=st.integers(0, 1),
-    data=st.data(),
+    num_positional_args=helpers.num_positional_args(fn_name="ones_like"),
 )
-@handle_cmd_line_args
 def test_ones_like(
     *,
     dtype_and_x,
@@ -700,20 +653,19 @@ def test_ones_like(
 
 
 # tril
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
-    k=st.integers(-10, 10),
+    k=helpers.ints(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(fn_name="tril"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_tril(
     *,
     dtype_and_x,
@@ -743,20 +695,19 @@ def test_tril(
 
 
 # triu
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
-    k=st.integers(-10, 10),
+    k=helpers.ints(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(fn_name="triu"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_triu(
     *,
     dtype_and_x,
@@ -786,6 +737,7 @@ def test_triu(
 
 
 # zeros
+@handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
         allow_none=False,
@@ -794,11 +746,9 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=st.sampled_from(ivy_np.valid_int_dtypes),
+    dtype=helpers.get_dtypes("integer", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="zeros"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_zeros(
     *,
     shape,
@@ -825,9 +775,10 @@ def test_zeros(
 
 
 # zeros_like
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=5,
@@ -835,9 +786,7 @@ def test_zeros(
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="zeros_like"),
-    data=st.data(),
 )
-@handle_cmd_line_args
 def test_zeros_like(
     *,
     dtype_and_x,
@@ -863,4 +812,73 @@ def test_zeros_like(
         x=np.asarray(x, dtype=dtype),
         dtype=dtype,
         device=device,
+    )
+
+
+# copy array
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    )
+)
+def test_copy_array(dtype_and_x, device, fw):
+    dtype, x = dtype_and_x
+    # smoke test
+    x = ivy.array(x, dtype=dtype, device=device)
+    ret = ivy.copy_array(x)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
+    assert id(x) != id(ret)
+
+
+@st.composite
+def _dtype_indices_depth(draw):
+    depth = draw(helpers.ints(min_value=2, max_value=100))
+    dtype_and_indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_value=0,
+            max_value=depth - 1,
+            small_value_safety_factor=2.5,
+        )
+    )
+    return dtype_and_indices, depth
+
+
+# one_hot
+@handle_cmd_line_args
+@given(
+    dtype_indices_depth=_dtype_indices_depth(),
+    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
+)
+def test_one_hot(
+    dtype_indices_depth,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype_and_indices, depth = dtype_indices_depth
+    dtype, indices = dtype_and_indices
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="one_hot",
+        indices=np.asarray(indices, dtype=dtype),
+        depth=depth,
     )

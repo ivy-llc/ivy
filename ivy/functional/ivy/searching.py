@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -18,13 +19,15 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    /,
     *,
+    axis: Optional[int] = None,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, int]:
+) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -108,19 +111,21 @@ def argmax(
     ivy.array(2)
 
     """
-    return current_backend(x).argmax(x, axis, keepdims, out=out)
+    return current_backend(x).argmax(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    /,
     *,
+    axis: Optional[int] = None,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, int]:
+) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -217,7 +222,8 @@ def argmin(
 
 @to_native_arrays_and_back
 @handle_nestable
-def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
+@handle_exceptions
+def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
@@ -317,10 +323,12 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray]) -> Tuple[ivy.Array]:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -424,3 +432,32 @@ def where(
 
 # Extra #
 # ------#
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def indices_where(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Returns indices or true elements in an input boolean array.
+
+    Parameters
+    ----------
+    x
+        Boolean array, for which indices are desired.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Indices for where the boolean array is True.
+
+    """
+    return current_backend(x).indices_where(x, out=out)

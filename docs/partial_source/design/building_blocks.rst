@@ -33,7 +33,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
    # ivy/functional/backends/numpy/manipulation.py:
     def stack(
         x: Union[Tuple[np.ndarray], List[np.ndarray]],
-        axis: Optional[int] = 0,
+        axis: int =0,
         *,
         out: Optional[np.ndarray] = None,
     ) -> np.ndarray:
@@ -44,7 +44,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
    # ivy/functional/backends/tensorflow/manipulation.py:
     def stack(
         x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
-        axis: Optional[int] = 0,
+        axis: int =0,
     ) -> Union[tf.Tensor, tf.Variable]:
         ret = tf.experimental.numpy.stack(x, axis)
         return ret
@@ -54,7 +54,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
    # ivy/functional/backends/torch/manipulation.py:
     def stack(
         x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-        axis: Optional[int] = 0,
+        axis: int =0,
         *,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
@@ -251,7 +251,7 @@ The functions implemented by the backend-specific backend such as :code:`ivy.fun
         recurrent_kernel: Union[ivy.Array, ivy.NativeArray],
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Tuple[Any, Union[ivy.Array, ivy.NativeArray, Any]]:
+    ) -> Tuple[ivy.Array, ivy.Array]:
         """Perform long-short term memory update by unrolling time dimension of input array.
         Parameters
         ----------
