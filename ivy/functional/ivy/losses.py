@@ -4,12 +4,14 @@
 import ivy
 from typing import Optional, Union
 from ivy.func_wrapper import handle_nestable
+from ivy.exceptions import handle_exceptions
 
 # Extra #
 # ------#
 
 
 @handle_nestable
+@handle_exceptions
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -59,10 +61,8 @@ def cross_entropy(
     return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
 
 
-cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @handle_nestable
+@handle_exceptions
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -162,10 +162,8 @@ def binary_cross_entropy(
     )
 
 
-binary_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @handle_nestable
+@handle_exceptions
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -272,7 +270,3 @@ def sparse_cross_entropy(
     """
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(true, pred, axis=axis, epsilon=epsilon, out=out)
-
-
-sparse_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
-sparse_cross_entropy.supported_dtypes = {"tensorflow": ("uint8", "int32", "int64")}

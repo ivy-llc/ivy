@@ -1,6 +1,7 @@
 # global
-import tensorflow as tf
 from typing import Union, Optional
+
+import tensorflow as tf
 
 # local
 import ivy
@@ -406,6 +407,9 @@ def logaddexp(
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
+logaddexp.unsupported_dtypes = ("float16", "bfloat16")
+
+
 def logical_and(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -510,27 +514,6 @@ def pow(
 
 
 pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
-
-
-def reciprocal(
-    x: Union[float, tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.reciprocal(x)
-
-
-reciprocal.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-)
 
 
 def remainder(
@@ -704,3 +687,45 @@ def minimum(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.minimum(x1, x2)
+
+
+def reciprocal(
+    x: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.reciprocal(x)
+
+
+reciprocal.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+)
+
+
+def deg2rad(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.deg2rad(x)
+
+
+deg2rad.unsupported_dtypes = ("bfloat16",)
+
+
+def rad2deg(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rad2deg(x)

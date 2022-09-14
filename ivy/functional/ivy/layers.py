@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
@@ -20,6 +21,7 @@ from ivy.func_wrapper import (
 # Linear #
 
 
+@handle_exceptions
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -91,6 +93,7 @@ def linear(
 # Dropout #
 
 
+@handle_exceptions
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -137,6 +140,7 @@ def dropout(
 # Attention #
 
 
+@handle_exceptions
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -394,12 +398,7 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-scaled_dot_product_attention.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
-
-
+@handle_exceptions
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale,
@@ -499,18 +498,13 @@ def multi_head_attention(
     return ret
 
 
-multi_head_attention.unsupported_dtypes = {
-    "torch": ("float16",),
-    "tensorflow": ("float16",),
-}
-
-
 # Convolutions #
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -589,6 +583,7 @@ def conv1d(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -638,6 +633,7 @@ def conv1d_transpose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -735,6 +731,7 @@ def conv2d(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -784,6 +781,7 @@ def conv2d_transpose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -910,6 +908,7 @@ def depthwise_conv2d(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -973,6 +972,7 @@ def conv3d(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1107,6 +1107,7 @@ def conv3d_transpose(
 
 
 @to_native_arrays_and_back
+@handle_exceptions
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
@@ -1196,9 +1197,6 @@ def lstm_update(
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
     return ivy.concat(hts_list, axis=-2), ct
-
-
-lstm_update.unsupported_dtypes = {"torch": ("float16",)}
 
 
 # Helpers #

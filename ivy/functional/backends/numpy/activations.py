@@ -22,13 +22,13 @@ relu.support_native_out = True
 
 
 def leaky_relu(
-    x: np.ndarray, /, *, alpha: Optional[float] = 0.2, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, alpha: float = 0.2, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.asarray(np.where(x > 0, x, x * alpha), x.dtype)
 
 
 def gelu(
-    x, /, *, approximate: Optional[bool] = True, out: Optional[np.ndarray] = None
+    x, /, *, approximate: bool = True, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if erf is None:
         raise Exception(
@@ -59,7 +59,9 @@ softmax.support_native_out = True
 
 @_handle_0_dim_output
 def softplus(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.add(np.log1p(np.exp(-np.abs(x))), np.maximum(x, 0), out=out)
+    return np.add(
+        np.log1p(np.exp(-np.abs(x))), np.maximum(x, 0, dtype=x.dtype), out=out
+    )
 
 
 softplus.support_native_out = True
