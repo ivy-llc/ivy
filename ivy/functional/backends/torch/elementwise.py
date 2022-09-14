@@ -422,7 +422,7 @@ bitwise_or.support_native_out = True
 
 
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.sinc(x, out=out)
+    return torch.sinc(x, out=out).to(x.dtype)
 
 
 sinc.support_native_out = True
