@@ -280,8 +280,8 @@ result of :code:`ivy.cumprod()`.
 Through compositions, we can easily meet the required input-output behaviour for the
 TensorFlow frontend function.
 
-Temporary Compositions
-----------------------
+Missing Ivy Functions
+---------------------
 
 Sometimes, there is a clear omission of an Ivy function, which would make the frontend
 implementation much simpler. For example, at the time of writing,
@@ -302,6 +302,9 @@ to be timely and sensible, then we will add this function to the
 At this point in time, you can reserve the function for yourself and get it implemented
 in a unique PR. Once merged, you can then resume working on the frontned function,
 which will now be a much easier task with the new addition to Ivy.
+
+Temporary Compositions
+----------------------
 
 Alternatively, if after creating the new issue you would rather not wait around for a
 member of our team to review and possibly add to the "Extend Ivy Functional API"
