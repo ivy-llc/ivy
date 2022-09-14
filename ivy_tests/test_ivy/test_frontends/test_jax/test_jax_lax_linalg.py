@@ -76,10 +76,12 @@ def test_jax_lax_linalg_triangular_solve(
 ):
     dtype, x = dtype_and_x
     num_positional_args = 2
+    # make a triangular matrix
     mask = np.asarray(x, dtype=dtype) * 0.0
     iu = np.tril_indices(mask.shape[0])
     mask[iu] = 1.0
     a = x * mask
+    # make a right-hand side matrix in a x = b
     b = x[0]
     helpers.test_frontend_function(
         input_dtypes=[dtype],
