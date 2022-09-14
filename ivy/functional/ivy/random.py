@@ -66,7 +66,7 @@ def _randint_check_dtype_and_bound(low, high, dtype):
 
 
 def _check_valid_scale(std):
-    ivy.assertions.check_greater(std, 0)
+    ivy.assertions.check_greater(std, 0, allow_equal=True)
 
 
 # Extra #

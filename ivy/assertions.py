@@ -16,7 +16,7 @@ def check_less(x1, x2, allow_equal=False):
         raise ivy.exceptions.IvyException(
             "{} must be lesser than or equal to {}".format(x1, x2)
         )
-    elif ivy.any(x1 >= x2):
+    elif not allow_equal and ivy.any(x1 >= x2):
         raise ivy.exceptions.IvyException("{} must be lesser than {}".format(x1, x2))
 
 
@@ -25,14 +25,14 @@ def check_greater(x1, x2, allow_equal=False):
         raise ivy.exceptions.IvyException(
             "{} must be greater than or equal to {}".format(x1, x2)
         )
-    elif ivy.any(x1 <= x2):
+    elif not allow_equal and ivy.any(x1 <= x2):
         raise ivy.exceptions.IvyException("{} must be greater than {}".format(x1, x2))
 
 
 def check_equal(x1, x2, inverse=False):
     if inverse and ivy.any(x1 == x2):
         raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
-    elif not ivy.all(x1 == x2):
+    elif not inverse and not ivy.all(x1 == x2):
         raise ivy.exceptions.IvyException("{} must not be equal to {}".format(x1, x2))
 
 
