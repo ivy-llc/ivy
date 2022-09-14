@@ -369,6 +369,13 @@ def test_torch_diag(
 
     values = np.asarray(values, dtype=dtype)
 
+    # In the case that this is false,
+    # Torch will crash with a memory
+    # allocation error, this is not a
+    # bug in the Ivy version, it can
+    # be reproduced in pure Torch.
+    assume(abs(offset) <= values.shape[0])
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
