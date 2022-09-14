@@ -290,7 +290,6 @@ def test_torch_softmin(
 def test_torch_threshold(
     dtype_and_input,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -300,7 +299,8 @@ def test_torch_threshold(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -309,7 +309,6 @@ def test_torch_threshold(
         input=np.asarray(input, dtype=input_dtype),
         threshold=0.5,
         value=20,
-        inplace=False,
     )
 
 
