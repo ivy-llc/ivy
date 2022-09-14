@@ -7,7 +7,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy import to_ivy
+from ivy import to_ivy, to_native
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
@@ -69,11 +69,11 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         specifically for the backend implementations of asarray.
         """
         if isinstance(args[0], list):
-            return ivy.Array(fn(*args, dtype=dtype, **kwargs))
+            return to_ivy(fn(*args, dtype=dtype, **kwargs))
 
         # args is a tuple and therefore is immutable.
-        new_args = (to_ivy(args[0]),) + args[1:]
-        return ivy.Array(fn(*new_args, dtype=dtype, **kwargs))
+        new_args = (to_native(args[0]),) + args[1:]
+        return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
     return new_fn
 
