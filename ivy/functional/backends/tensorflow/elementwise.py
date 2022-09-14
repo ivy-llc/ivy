@@ -698,6 +698,18 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
+reciprocal.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+)
+
+
 def deg2rad(
     x: Union[tf.Tensor, tf.Variable],
     /,
