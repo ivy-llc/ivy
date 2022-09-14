@@ -341,6 +341,14 @@ sin.support_native_out = True
 sin.unsupported_dtypes = ("float16",)
 
 
+def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.sinc(x, out=out)
+
+
+sinc.support_native_out = True
+sinc.unsupported_dtypes = ("float16",)
+
+
 def negative(
     x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

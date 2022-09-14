@@ -4873,6 +4873,20 @@ def sin(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def sinc(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    # TODO: Add sinc documentation
+    return ivy.current_backend(x).sinc(x, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
