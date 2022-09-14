@@ -1339,9 +1339,6 @@ def test_conv3d_transpose_layer(
     if ivy.current_backend_str() in ("numpy", "jax"):
         # numpy and jax do not yet support conv1d
         return
-    if ivy.current_backend_str() == "mxnet" and "cpu" in device:
-        # mxnet only supports 3d transpose convolutions with CUDNN
-        return
     if ivy.current_backend_str() == "torch" and (dtype == "float16"):
         # we are skipping for float16 as it torch.nn.functional.conv2d
         # doesn't seem to be able to handle it

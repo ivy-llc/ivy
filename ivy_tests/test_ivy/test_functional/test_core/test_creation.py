@@ -124,6 +124,7 @@ def test_linspace(
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=10.0),
     axis=st.none(),
+    num_positional_args=helpers.num_positional_args(fn_name="logspace"),
 )
 def test_logspace(
     *,
@@ -133,6 +134,7 @@ def test_logspace(
     axis,
     device,
     with_out,
+    num_positional_args,
     fw,
 ):
     dtype, start_stop = dtype_and_start_stop
@@ -140,7 +142,7 @@ def test_logspace(
         input_dtypes=dtype,
         as_variable_flags=False,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=False,
         container_flags=False,
         instance_method=False,
@@ -810,4 +812,73 @@ def test_zeros_like(
         x=np.asarray(x, dtype=dtype),
         dtype=dtype,
         device=device,
+    )
+
+
+# copy array
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True)
+    )
+)
+def test_copy_array(dtype_and_x, device, fw):
+    dtype, x = dtype_and_x
+    # smoke test
+    x = ivy.array(x, dtype=dtype, device=device)
+    ret = ivy.copy_array(x)
+    # type test
+    assert ivy.is_ivy_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
+    assert id(x) != id(ret)
+
+
+@st.composite
+def _dtype_indices_depth(draw):
+    depth = draw(helpers.ints(min_value=2, max_value=100))
+    dtype_and_indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_value=0,
+            max_value=depth - 1,
+            small_value_safety_factor=2.5,
+        )
+    )
+    return dtype_and_indices, depth
+
+
+# one_hot
+@handle_cmd_line_args
+@given(
+    dtype_indices_depth=_dtype_indices_depth(),
+    num_positional_args=helpers.num_positional_args(fn_name="one_hot"),
+)
+def test_one_hot(
+    dtype_indices_depth,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype_and_indices, depth = dtype_indices_depth
+    dtype, indices = dtype_and_indices
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="one_hot",
+        indices=np.asarray(indices, dtype=dtype),
+        depth=depth,
     )
