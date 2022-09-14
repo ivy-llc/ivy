@@ -160,9 +160,9 @@ def softmax(x, /, *, axis=-1):
     return ret.astype(dtype)
 
 
-def softplus(x, /, *, beta=1):
+def softplus(x):
     x = _type_conversion(x)
-    return ivy.softplus(x, beta=beta).astype(x.dtype)
+    return ivy.softplus(x).astype(x.dtype)
 
 
 def log_sigmoid(x):
