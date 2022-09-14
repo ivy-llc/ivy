@@ -5,6 +5,9 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    statistical_dtype_values,
+)
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -419,7 +422,7 @@ def test_tensorflow_reduce_logsumexp(
 # argmax
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.statistical_dtype_values(function="argmax"),
+    dtype_and_x=statistical_dtype_values(function="argmax"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.argmax"
     ),
