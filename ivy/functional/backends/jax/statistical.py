@@ -186,6 +186,27 @@ def cumsum(
     return jnp.cumsum(x, axis, dtype=dtype)
 
 
+def cummin(
+    x: JaxArray,
+    axis: int = 0,
+    reverse: bool = False,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        if dtype is jnp.bool_:
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if reverse:
+        x = jnp.cummin(jnp.flip(x, axis=(axis,)), axis=axis, dtype=dtype)
+        res = jnp.flip(x, axis=axis)
+        return res
+    return jnp.cummin(x, axis, dtype=dtype)
+
+
 def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:

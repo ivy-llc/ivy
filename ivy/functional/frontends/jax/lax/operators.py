@@ -120,6 +120,12 @@ def cumsum(operand, axis=0, reverse=False):
     return ivy.cumsum(operand, axis, dtype=operand.dtype)
 
 
+def cummin(operand, axis=0, reverse=False):
+    if reverse:
+        return ivy.flip(ivy.cummin(ivy.flip(operand, axis=axis), axis, dtype=operand.dtype))
+    return ivy.cummin(operand, axis, dtype=operand.dtype)
+
+
 def div(x, y):
     return ivy.astype(ivy.divide(x, y), x.dtype)
 
@@ -151,15 +157,6 @@ def full_like(x, fill_value, dtype=None, shape=None):
     if shape is None:
         return ivy.full_like(x, fill_value, dtype=dtype)
     return ivy.full(shape, fill_value, dtype=dtype)
-
-
-def cummin(operand, axis=0, reverse=False):
-    if reverse:
-        return ivy.flip(ivy.cummin(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cummin(operand, axis, dtype=operand.dtype)
-
-
-cummin.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
 
 
 def ge(x, y):

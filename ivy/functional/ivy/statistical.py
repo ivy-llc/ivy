@@ -1086,6 +1086,20 @@ def cumprod(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def cummin(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: int = 0,
+    reverse: bool = False,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    return current_backend(x).cummin(x, axis, reverse, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],
