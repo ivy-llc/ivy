@@ -16,7 +16,7 @@ def check_less(x1, x2, allow_equal=False):
         raise ivy.exceptions.IvyException(
             "{} must be lesser than or equal to {}".format(x1, x2)
         )
-    elif ivy.any(x1 >= x2):
+    elif not allow_equal and ivy.any(x1 >= x2):
         raise ivy.exceptions.IvyException("{} must be lesser than {}".format(x1, x2))
 
 
@@ -25,15 +25,15 @@ def check_greater(x1, x2, allow_equal=False):
         raise ivy.exceptions.IvyException(
             "{} must be greater than or equal to {}".format(x1, x2)
         )
-    elif ivy.any(x1 <= x2):
+    elif not allow_equal and ivy.any(x1 <= x2):
         raise ivy.exceptions.IvyException("{} must be greater than {}".format(x1, x2))
 
 
 def check_equal(x1, x2, inverse=False):
     if inverse and ivy.any(x1 == x2):
-        raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
-    elif not ivy.all(x1 == x2):
         raise ivy.exceptions.IvyException("{} must not be equal to {}".format(x1, x2))
+    elif not inverse and ivy.any(x1 != x2):
+        raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
 
 
 def check_isinstance(x, allowed_types):
@@ -59,14 +59,33 @@ def check_false(expression, message="expression must be False"):
         raise ivy.exceptions.IvyException(message)
 
 
-def check_all(results, message="one of the args is None"):
+def check_all(results, message="one of the args is False"):
     if not builtins.all(results):
         raise ivy.exceptions.IvyException(message)
 
 
-def check_any(results, message="all of the args are None"):
+def check_any(results, message="all of the args are False"):
     if not builtins.any(results):
         raise ivy.exceptions.IvyException(message)
+
+
+def check_all_or_any_fn(
+    *args,
+    fn,
+    type="all",
+    limit=[0],
+    message="args must exist according to type and limit given"
+):
+    if type == "all":
+        check_all([fn(arg) for arg in args], message)
+    elif type == "any":
+        count = 0
+        for arg in args:
+            count = count + 1 if fn(arg) else count
+        if count not in limit:
+            raise ivy.exceptions.IvyException(message)
+    else:
+        raise ivy.exceptions.IvyException("type must be all or any")
 
 
 # Creation #
