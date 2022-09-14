@@ -578,6 +578,7 @@ def sinc(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x = ivy.promote_types_of_inputs(x)
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
