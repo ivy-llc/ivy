@@ -49,7 +49,7 @@ def searchsorted(
     *,
     side="left",
     sorter=None,
+    ret_dtype=jnp.int64,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    res = jnp.asarray(jnp.searchsorted(x, v, side=side))
-    return res
+    return jnp.searchsorted(x, v, side=side).astype(ret_dtype)

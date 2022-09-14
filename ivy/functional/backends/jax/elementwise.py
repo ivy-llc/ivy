@@ -436,3 +436,11 @@ def reciprocal(
     x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.reciprocal(x)
+
+
+def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.deg2rad(x)
+
+
+def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.rad2deg(x)
