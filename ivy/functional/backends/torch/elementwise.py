@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 
 # local
 import ivy
@@ -12,11 +12,23 @@ def _cast_for_unary_op(x):
     return x
 
 
-def _cast_for_binary_op(x1, x2):
-    if not isinstance(x1, torch.Tensor) and not isinstance(x2, torch.Tensor):
-        x1 = ivy.array(x1)
-        x2 = ivy.array(x2)
-    return ivy.to_native(x1), ivy.to_native(x2)
+def _cast_for_binary_op(x1: Union[float, torch.Tensor], x2: Union[float, torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor]:
+    """Torch's type promotion behaves as Ivy's does, except in the case where
+    one input is a 0D tensor and one is a non 0D tensor. An easy fix for this edge
+    case is to just add an extra dimension to the 0D tensor, which fixes the type
+    promotion and the result's shape will still be correct.
+
+    Torch does handle 2 scalar inputs, however we call `ivy.array` on them to ensure
+    that Ivy's default dtypes are used, rather than Torch's."""
+    if isinstance(x1, torch.Tensor) and isinstance(x2, torch.Tensor):
+        if x1.ndim == 0 and x2.ndim != 0:
+            x1 = x1[None]
+        elif x2.ndim == 0 and x1.ndim != 0:
+            x2 = x2[None]
+    elif not isinstance(x1, torch.Tensor) and not isinstance(x2, torch.Tensor):
+        x1 = ivy.to_native(ivy.array(x1))
+        x2 = ivy.to_native(ivy.array(x2))
+    return x1, x2
 
 
 def add(
