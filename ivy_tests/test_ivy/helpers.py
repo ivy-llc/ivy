@@ -2911,24 +2911,49 @@ def array_values(
                 "float32": {"cast_type": "float32", "width": 32},
                 "float64": {"cast_type": "float64", "width": 64},
             }
+            neg_float_strat = st.floats(
+                # Using np.array to assert that value
+                # can be represented of compatible width.
+                min_value=float(
+                    np.array(min_value, dtype=floats_info[dtype]["cast_type"]).tolist()[
+                        0
+                    ]
+                ),
+                max_value=float(
+                    np.array(
+                        -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist()[0]
+                ),
+                allow_nan=allow_nan,
+                allow_subnormal=allow_subnormal,
+                allow_infinity=allow_inf,
+                width=floats_info[dtype]["width"],
+                exclude_min=exclude_min,
+                exclude_max=exclude_max,
+            )
+            pos_float_strat = st.floats(
+                # Using np.array to assert that value
+                # can be represented of compatible width.
+                min_value=float(
+                    np.array(
+                        abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist()[0]
+                ),
+                max_value=float(
+                    np.array(max_value, dtype=floats_info[dtype]["cast_type"]).tolist()[
+                        0
+                    ]
+                ),
+                allow_nan=allow_nan,
+                allow_subnormal=allow_subnormal,
+                allow_infinity=allow_inf,
+                width=floats_info[dtype]["width"],
+                exclude_min=exclude_min,
+                exclude_max=exclude_max,
+            )
             values = draw(
                 list_of_length(
-                    x=st.floats(
-                        # Using np.array to assert that value
-                        # can be represented of compatible width.
-                        min_value=np.array(
-                            min_value, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
-                        max_value=np.array(
-                            max_value, dtype=floats_info[dtype]["cast_type"]
-                        ).tolist(),
-                        allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
-                        allow_infinity=allow_inf,
-                        width=floats_info[dtype]["width"],
-                        exclude_min=exclude_min,
-                        exclude_max=exclude_max,
-                    ),
+                    x=(neg_float_strat | pos_float_strat),
                     length=size,
                 )
             )
