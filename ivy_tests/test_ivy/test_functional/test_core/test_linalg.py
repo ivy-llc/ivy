@@ -774,7 +774,7 @@ def test_solve(
         fw=fw,
         fn_name="solve",
         rtol_=1e-1,
-        atol_=1e-2,
+        atol_=1e-1,
         x1=np.asarray(x1, dtype=input_dtype1),
         x2=np.asarray(x2, dtype=input_dtype2),
     )
@@ -1339,6 +1339,7 @@ def test_cholesky(
         max_dim_size=3,
         small_value_safety_factor=2.5,
         large_value_safety_factor=20,
+        max_op="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cross"),
 )
