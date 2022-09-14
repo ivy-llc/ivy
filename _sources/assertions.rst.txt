@@ -13,11 +13,12 @@ Assertions
    :maxdepth: -1
    :caption: Assertions
 
-   assertions/check_elem_in_list.rst
    assertions/check_less.rst
    assertions/check_greater.rst
    assertions/check_equal.rst
    assertions/check_isinstance.rst
+   assertions/check_exists.rst
+   assertions/check_elem_in_list.rst
    assertions/check_true.rst
    assertions/check_false.rst
    assertions/check_all.rst

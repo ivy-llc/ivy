@@ -153,6 +153,7 @@
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 <span class="n">default_device_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">dev_handles</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -255,7 +256,8 @@
 <span class="c1"># Array Printing</span>
 
 
-<div class="viewcode-block" id="get_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/get_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.get_all_ivy_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">get_all_ivy_arrays_on_dev</span><span class="p">(</span>
+<div class="viewcode-block" id="get_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/get_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.get_all_ivy_arrays_on_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">get_all_ivy_arrays_on_dev</span><span class="p">(</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
@@ -291,7 +293,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">all_arrays</span><span class="p">],</span> <span class="n">all_arrays</span><span class="p">)))</span></div>
 
 
-<div class="viewcode-block" id="num_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/num_ivy_arrays_on_dev.html#ivy.functional.ivy.device.num_ivy_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">num_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="num_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/num_ivy_arrays_on_dev.html#ivy.functional.ivy.device.num_ivy_arrays_on_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">num_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the number of arrays which are currently alive on the specified device.</span>
 
 <span class="sd">    Parameters</span>
@@ -424,6 +427,7 @@
 
 
 <div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">attr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -450,6 +454,7 @@
 
 
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../../functional/ivy/device/dev/dev_functional.html#ivy.functional.ivy.device.dev">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">dev</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]:</span>
@@ -534,7 +539,8 @@
 <span class="c1"># Conversions</span>
 
 
-<div class="viewcode-block" id="as_ivy_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/as_ivy_dev.html#ivy.functional.ivy.device.as_ivy_dev">[docs]</a><span class="k">def</span> <span class="nf">as_ivy_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
+<div class="viewcode-block" id="as_ivy_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/as_ivy_dev.html#ivy.functional.ivy.device.as_ivy_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">as_ivy_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert native data type to string representation.</span>
 
 <span class="sd">    Parameters</span>
@@ -551,7 +557,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="as_native_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/as_native_dev.html#ivy.functional.ivy.device.as_native_dev">[docs]</a><span class="k">def</span> <span class="nf">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">:</span>
+<div class="viewcode-block" id="as_native_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/as_native_dev.html#ivy.functional.ivy.device.as_native_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Convert device string representation to native device type.</span>
 
 <span class="sd">    Parameters</span>
@@ -571,7 +578,8 @@
 <span class="c1"># Memory</span>
 
 
-<div class="viewcode-block" id="clear_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/clear_mem_on_dev.html#ivy.functional.ivy.device.clear_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="clear_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/clear_mem_on_dev.html#ivy.functional.ivy.device.clear_mem_on_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Clear memory cache on target device.</span>
 
 <span class="sd">    Parameters</span>
@@ -583,7 +591,8 @@
     <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">clear_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/total_mem_on_dev.html#ivy.functional.ivy.device.total_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/total_mem_on_dev.html#ivy.functional.ivy.device.total_mem_on_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the total amount of memory (in GB) for a given device string. In case of CPU,</span>
 <span class="sd">    the total RAM is returned.</span>
 
@@ -621,7 +630,8 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/used_mem_on_dev.html#ivy.functional.ivy.device.used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">used_mem_on_dev</span><span class="p">(</span>
+<div class="viewcode-block" id="used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/used_mem_on_dev.html#ivy.functional.ivy.device.used_mem_on_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">used_mem_on_dev</span><span class="p">(</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -679,7 +689,8 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="percent_used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/percent_used_mem_on_dev.html#ivy.functional.ivy.device.percent_used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">percent_used_mem_on_dev</span><span class="p">(</span>
+<div class="viewcode-block" id="percent_used_mem_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/percent_used_mem_on_dev.html#ivy.functional.ivy.device.percent_used_mem_on_dev">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">percent_used_mem_on_dev</span><span class="p">(</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -741,7 +752,8 @@
 <span class="c1"># Utilization</span>
 
 
-<div class="viewcode-block" id="dev_util"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_util.html#ivy.functional.ivy.device.dev_util">[docs]</a><span class="k">def</span> <span class="nf">dev_util</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="dev_util"><a class="viewcode-back" href="../../../../functional/ivy/device/dev_util.html#ivy.functional.ivy.device.dev_util">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">dev_util</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the current utilization (%) for a given device.</span>
 
 <span class="sd">    Parameters</span>
@@ -784,7 +796,8 @@
 <span class="c1"># Availability</span>
 
 
-<div class="viewcode-block" id="gpu_is_available"><a class="viewcode-back" href="../../../../functional/ivy/device/gpu_is_available.html#ivy.functional.ivy.device.gpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">gpu_is_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="gpu_is_available"><a class="viewcode-back" href="../../../../functional/ivy/device/gpu_is_available.html#ivy.functional.ivy.device.gpu_is_available">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">gpu_is_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine whether a GPU is available to use, with the backend framework.</span>
 
 <span class="sd">    Returns</span>
@@ -800,7 +813,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="num_cpu_cores"><a class="viewcode-back" href="../../../../functional/ivy/device/num_cpu_cores.html#ivy.functional.ivy.device.num_cpu_cores">[docs]</a><span class="k">def</span> <span class="nf">num_cpu_cores</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">logical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="num_cpu_cores"><a class="viewcode-back" href="../../../../functional/ivy/device/num_cpu_cores.html#ivy.functional.ivy.device.num_cpu_cores">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">num_cpu_cores</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">logical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine the number of cores available in the cpu.</span>
 
 <span class="sd">    Parameters</span>
@@ -825,7 +839,8 @@
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="num_gpus"><a class="viewcode-back" href="../../../../functional/ivy/device/num_gpus.html#ivy.functional.ivy.device.num_gpus">[docs]</a><span class="k">def</span> <span class="nf">num_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="num_gpus"><a class="viewcode-back" href="../../../../functional/ivy/device/num_gpus.html#ivy.functional.ivy.device.num_gpus">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">num_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine the number of available GPUs, with the backend framework.</span>
 
 <span class="sd">    Returns</span>
@@ -842,7 +857,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">num_gpus</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="tpu_is_available"><a class="viewcode-back" href="../../../../functional/ivy/device/tpu_is_available.html#ivy.functional.ivy.device.tpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">tpu_is_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="tpu_is_available"><a class="viewcode-back" href="../../../../functional/ivy/device/tpu_is_available.html#ivy.functional.ivy.device.tpu_is_available">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">tpu_is_available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine whether a TPU is available to use, with the backend framework.</span>
 
 <span class="sd">    Returns</span>
@@ -861,7 +877,8 @@
 <span class="c1"># Default Device #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/default_device.html#ivy.functional.ivy.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span>
+<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/default_device.html#ivy.functional.ivy.device.default_device">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -930,7 +947,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/set_default_device.html#ivy.functional.ivy.device.set_default_device">[docs]</a><span class="k">def</span> <span class="nf">set_default_device</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="set_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/set_default_device.html#ivy.functional.ivy.device.set_default_device">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">set_default_device</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Set the default device to given device instance</span>
 
 <span class="sd">    Parameters</span>
@@ -961,7 +979,8 @@
     <span class="n">default_device_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unset_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/unset_default_device.html#ivy.functional.ivy.device.unset_default_device">[docs]</a><span class="k">def</span> <span class="nf">unset_default_device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="unset_default_device"><a class="viewcode-back" href="../../../../functional/ivy/device/unset_default_device.html#ivy.functional.ivy.device.unset_default_device">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">unset_default_device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Resets the default device to &quot;cpu&quot;.</span>
 
 <span class="sd">    Examples</span>
@@ -985,6 +1004,7 @@
 <div class="viewcode-block" id="to_device"><a class="viewcode-back" href="../../../../functional/ivy/device/to_device/to_device_functional.html#ivy.functional.ivy.device.to_device">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span>
@@ -1027,7 +1047,8 @@
 <span class="c1"># Function Splitting #</span>
 
 
-<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/split_factor.html#ivy.functional.ivy.device.split_factor">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">split_factor</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a device&#39;s global split factor, which can be used to scale the device&#39;s</span>
 <span class="sd">    batch splitting chunk sizes across the codebase.</span>
@@ -1063,7 +1084,8 @@
     <span class="k">return</span> <span class="n">split_factors</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span>
+<div class="viewcode-block" id="set_split_factor"><a class="viewcode-back" href="../../../../functional/ivy/device/set_split_factor.html#ivy.functional.ivy.device.set_split_factor">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span>
     <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
@@ -1111,7 +1133,8 @@
     <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span></div>
 
 
-<div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../../functional/ivy/device/split_func_call.html#ivy.functional.ivy.device.split_func_call">[docs]</a><span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span>
+<div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../../functional/ivy/device/split_func_call.html#ivy.functional.ivy.device.split_func_call">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span>
     <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1291,6 +1314,7 @@
 
 
 <div class="viewcode-block" id="function_supported_devices"><a class="viewcode-back" href="../../../../functional/ivy/device/function_supported_devices.html#ivy.functional.ivy.device.function_supported_devices">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">function_supported_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the supported devices of the current backend&#39;s function.</span>
 
@@ -1322,6 +1346,7 @@
 
 
 <div class="viewcode-block" id="function_unsupported_devices"><a class="viewcode-back" href="../../../../functional/ivy/device/function_unsupported_devices.html#ivy.functional.ivy.device.function_unsupported_devices">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">function_unsupported_devices</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the unsupported devices of the current backend&#39;s function.</span>
 
