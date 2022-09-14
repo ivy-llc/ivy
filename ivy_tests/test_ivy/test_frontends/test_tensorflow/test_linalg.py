@@ -400,12 +400,16 @@ def test_tensorflow_eye(
 @handle_cmd_line_args
 @given(
     dtype_and_input=_get_dtype_and_matrix(),
+    n_lower=helpers.ints(min_value=-1e05, max_value=1e05),
+    n_upper=helpers.ints(min_value=-1e05, max_value=1e05),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.band_part"
     )
 )
 def test_tensorflow_band_part(
     dtype_and_input,
+    n_lower,
+    n_upper,
     as_variable,
     num_positional_args,
     native_array,
@@ -422,5 +426,7 @@ def test_tensorflow_band_part(
         frontend="tensorflow",
         fn_tree="linalg.band_part",
         input=np.asarray(x, dtype=input_dtype)
+        num_lower=n_lower,
+        num_upper=n_upper
     )
   
