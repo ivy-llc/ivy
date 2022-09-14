@@ -32,7 +32,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY optional.txt /
 RUN pip3 install --no-cache-dir -r optional.txt
 
-COPY test_dependencies.py /
+COPY run_tests_CLI/test_dependencies.py /
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf requirements.txt && \
     rm -rf optional.txt

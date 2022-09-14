@@ -21,3 +21,13 @@ def argmin(x, /, *, axis=None, keepdims=False, out=None):
     return ivy.native_array(
         ivy.argmin(x, axis=axis, out=out, keepdims=keepdims), dtype=x.dtype
     )
+
+
+def argmax(a,
+           /,
+           *,
+           axis=None,
+           out=None,
+           keepdims=False,
+           ):
+    return ivy.argmax(a, axis=axis, out=out, keepdims=keepdims)
