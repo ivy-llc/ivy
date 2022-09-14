@@ -12,7 +12,9 @@ def _cast_for_unary_op(x):
     return x
 
 
-def _cast_for_binary_op(x1: Union[float, torch.Tensor], x2: Union[float, torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor]:
+def _cast_for_binary_op(
+    x1: Union[float, torch.Tensor], x2: Union[float, torch.Tensor]
+) -> Tuple[torch.Tensor, torch.Tensor]:
     """Torch's type promotion behaves as Ivy's does, except in the case where
     one input is a 0D tensor and one is a non 0D tensor. An easy fix for this edge
     case is to just add an extra dimension to the 0D tensor, which fixes the type
