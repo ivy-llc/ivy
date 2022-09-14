@@ -4,6 +4,10 @@ import ivy
 import numpy as np
 
 
+# Array API Standard #
+# ------------------ #
+
+
 def argmax(
     x: np.ndarray,
     /,
@@ -51,3 +55,18 @@ def where(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.where(condition, x1, x2)
+
+
+# Extra #
+# ----- #
+
+
+def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+    where_x = np.where(x)
+    if len(where_x) == 1:
+        return np.expand_dims(where_x[0], -1)
+    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
+    return res
+
+
+indices_where.support_native_out = True

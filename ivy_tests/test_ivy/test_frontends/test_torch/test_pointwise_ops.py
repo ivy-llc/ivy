@@ -760,12 +760,9 @@ def test_torch_square(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.atan2"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_atan2(
     dtype_and_x,
@@ -834,11 +831,9 @@ def test_torch_negative(
         max_value=1e04,
         allow_inf=False,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_and"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_bitwise_and(
     dtype_and_x,
@@ -934,9 +929,7 @@ def test_torch_trunc(
 # sqrt
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.sqrt"
     ),

@@ -1,7 +1,7 @@
 """Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-from typing import Optional, Union, Sequence, List, Callable
+from typing import Optional, Union, Sequence, Callable
 import numpy as np
 from operator import mul
 from functools import reduce
@@ -13,7 +13,7 @@ import ivy
 from ivy.functional.backends.numpy.device import _to_device
 
 
-def array_equal(x0: np.ndarray, x1: np.ndarray) -> bool:
+def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
     return np.array_equal(x0, x1)
 
 
@@ -21,12 +21,23 @@ def container_types():
     return []
 
 
-def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return x.copy()
-
-
 def current_backend_str():
     return "numpy"
+
+
+def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
+    if copy:
+        return x.copy()
+    else:
+        return x
+
+
+def to_scalar(x: np.ndarray, /) -> Number:
+    return x.item()
+
+
+def to_list(x: np.ndarray, /) -> list:
+    return x.tolist()
 
 
 def gather(
@@ -72,17 +83,6 @@ def gather_nd(
 
 def get_num_dims(x, as_tensor=False):
     return np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
-
-
-def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    where_x = np.where(x)
-    if len(where_x) == 1:
-        return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
-    return res
-
-
-indices_where.support_native_out = True
 
 
 def inplace_arrays_supported():
@@ -146,7 +146,7 @@ def inplace_variables_supported():
     return True
 
 
-def is_native_array(x, exclusive=False):
+def is_native_array(x, /, *, exclusive=False):
     if isinstance(x, np.ndarray):
         return True
     return False
@@ -156,15 +156,6 @@ def multiprocessing(context=None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
-
-
-def one_hot(
-    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    res = np.eye(depth, dtype=indices.dtype)[
-        np.array(indices, dtype="int64").reshape(-1)
-    ]
-    return res.reshape(list(indices.shape) + [depth])
 
 
 def scatter_flat(
@@ -272,30 +263,6 @@ def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
         return ivy.array(np.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
-
-
-def to_list(x: np.ndarray) -> list:
-    return x.tolist()
-
-
-def to_numpy(x: np.ndarray, copy: bool = True) -> np.ndarray:
-    if copy:
-        return x.copy()
-    else:
-        return x
-
-
-def to_scalar(x: np.ndarray) -> Number:
-    return x.item()
-
-
-def unstack(x: np.ndarray, axis: int, keepdims: bool = False) -> List[np.ndarray]:
-    if x.shape == ():
-        return [x]
-    x_split = np.split(x, x.shape[axis], axis)
-    if keepdims:
-        return x_split
-    return [np.squeeze(item, axis) for item in x_split]
 
 
 def vmap(
