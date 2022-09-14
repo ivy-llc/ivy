@@ -197,10 +197,12 @@ def test_softmax(
         available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
+    beta = st.sampled_from([1, 10]),
 )
 def test_softplus(
     *,
     dtype_and_x,
+    beta,
     as_variable,
     with_out,
     num_positional_args,
@@ -223,4 +225,5 @@ def test_softplus(
         rtol_=1e-02,
         atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
+        beta=beta,
     )

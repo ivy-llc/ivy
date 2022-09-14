@@ -312,7 +312,11 @@ def softmax(
 @handle_out_argument
 @handle_nestable
 def softplus(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    beta: Optional[Union[int, float]] = 1,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the softplus function element-wise.
 
@@ -320,6 +324,8 @@ def softplus(
     ----------
     x
         input array.
+    beta
+        The beta value for the softplus formation. The default is 1.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -359,4 +365,4 @@ def softplus(
     ivy.array([0.535,0.42])
 
     """
-    return current_backend(x).softplus(x, out=out)
+    return current_backend(x).softplus(x, beta=beta, out=out)

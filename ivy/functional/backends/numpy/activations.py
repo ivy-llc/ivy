@@ -1,6 +1,6 @@
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional
+from typing import Optional, Union
 
 # global
 import numpy as np
@@ -58,10 +58,17 @@ softmax.support_native_out = True
 
 
 @_handle_0_dim_output
-def softplus(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.add(
-        np.log1p(np.exp(-np.abs(x))), np.maximum(x, 0, dtype=x.dtype), out=out
-    )
+def softplus(x: np.ndarray,
+             /,
+             *,
+             beta: Optional[Union[int, float]] = 1,
+             out: Optional[np.ndarray] = None
+             ) -> np.ndarray:
+    return (np.add(
+        np.log1p(np.exp(-np.abs(x * beta))),
+        np.maximum(x * beta, 0, dtype=x.dtype),
+        out=out
+    )) / beta
 
 
 softplus.support_native_out = True

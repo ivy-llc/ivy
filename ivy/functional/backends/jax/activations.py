@@ -3,7 +3,7 @@
 # global
 import jax
 import jax.numpy as jnp
-from typing import Optional
+from typing import Optional, Union
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -41,5 +41,9 @@ def softmax(
     return jax.nn.softmax(x, axis)
 
 
-def softplus(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.log1p(jnp.exp(-jnp.abs(x))) + jnp.maximum(x, 0)
+def softplus(x: JaxArray,
+             /,
+             *,
+             beta: Optional[Union[int, float]] = 1,
+             out: Optional[JaxArray] = None) -> JaxArray:
+    return (jnp.log1p(jnp.exp(-jnp.abs(x * beta))) + jnp.maximum(x * beta, 0)) / beta
