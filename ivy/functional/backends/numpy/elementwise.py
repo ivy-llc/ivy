@@ -596,7 +596,7 @@ sin.support_native_out = True
 
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return ivy.astype(np.sinc(x), x.dtype)
+    return np.sinc(x).astype(x.dtype)
 
 
 @_handle_0_dim_output
