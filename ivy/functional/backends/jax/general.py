@@ -37,8 +37,9 @@ def current_backend_str():
 def gather(
     params: JaxArray,
     indices: JaxArray,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return _to_device(jnp.take(params, indices, axis))

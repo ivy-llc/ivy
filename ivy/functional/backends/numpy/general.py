@@ -32,9 +32,10 @@ def current_backend_str():
 def gather(
     params: np.ndarray,
     indices: np.ndarray,
-    axis: Optional[int] = -1,
+    /,
     *,
-    out: Optional[np.ndarray] = None
+    axis: Optional[int] = -1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.take(params, indices, axis))
 
@@ -172,7 +173,7 @@ def scatter_flat(
     size: Optional[int] = None,
     reduction: str = "sum",
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
     target_given = ivy.exists(target)
@@ -219,7 +220,7 @@ def scatter_nd(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     reduction: str = "sum",
     *,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
     target_given = ivy.exists(target)

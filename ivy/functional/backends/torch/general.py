@@ -54,8 +54,9 @@ def current_backend_str() -> str:
 def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     sl = [slice(None)] * params.ndim

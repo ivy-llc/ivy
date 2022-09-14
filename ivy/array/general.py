@@ -193,8 +193,9 @@ class ArrayWithGeneral(abc.ABC):
     def gather(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
-        axis: int = -1,
+        /,
         *,
+        axis: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -229,7 +230,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([0., 1.])
 
         """
-        return ivy.gather(self._data, indices, axis, out=out)
+        return ivy.gather(self._data, indices, axis=axis, out=out)
 
     def scatter_nd(
         self: ivy.Array,

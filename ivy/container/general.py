@@ -1603,9 +1603,9 @@ class ContainerWithGeneral(ContainerBase):
     def static_gather(
         params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: int = -1,
         /,
         *,
+        axis: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

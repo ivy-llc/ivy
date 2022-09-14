@@ -60,8 +60,9 @@ def current_backend_str():
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)

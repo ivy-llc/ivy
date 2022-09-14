@@ -3037,8 +3037,9 @@ def scatter_nd(
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
@@ -3095,20 +3096,6 @@ def gather(
            [ 2.,  3.]],
           [[ 8.,  9.],
            [10., 11.]]]])
-
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.native_array([0, 1])
-    >>> print(ivy.gather(x, y))
-    ivy.array([0., 1.])
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.array([0, 1])
-    >>> print(ivy.gather(x, y))
-    ivy.array([0., 1.])
 
     With :code:`ivy.Container` input:
 
