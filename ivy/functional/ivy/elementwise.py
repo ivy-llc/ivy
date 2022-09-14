@@ -5608,7 +5608,6 @@ def reciprocal(
 
     Parameters
     ----------
-
     x
         Input array.
     out
@@ -5637,7 +5636,6 @@ def deg2rad(
 
     Parameters
     ----------
-
     x
         input array whose elements are each expressed in degrees.
     out
@@ -5721,7 +5719,6 @@ def rad2deg(
 
     Parameters
     ----------
-    
     x
         input array whose elements are each expressed in radians.
     out
