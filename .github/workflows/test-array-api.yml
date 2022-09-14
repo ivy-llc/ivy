@@ -7,6 +7,7 @@ on:
 
 jobs:
   Download-artifacts:
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
@@ -27,8 +28,8 @@ jobs:
           if_no_artifact_found: ignore
 
   run-array-api-tests:
+    if: ${{ always() }}
     needs: Download-artifacts
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
     strategy:
       matrix:
         backends: [numpy, torch, jax, tensorflow]
