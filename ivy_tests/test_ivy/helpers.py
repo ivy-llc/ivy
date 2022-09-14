@@ -672,7 +672,6 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
         ))
 
 
-
 def assert_all_close(
     ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
