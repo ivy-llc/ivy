@@ -679,6 +679,7 @@ def reciprocal(
     x = _cast_for_unary_op(x)
     return torch.reciprocal(x, out=out)
 
+
 reciprocal.support_native_out = True
 reciprocal.unsupported_dtypes = ("float16",)
 

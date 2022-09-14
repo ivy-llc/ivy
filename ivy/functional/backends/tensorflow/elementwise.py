@@ -689,7 +689,6 @@ def minimum(
     return tf.minimum(x1, x2)
 
 
-
 def reciprocal(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -706,7 +705,8 @@ def deg2rad(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.deg2rad(x)
-    
+
+
 deg2rad.unsupported_dtypes = ("bfloat16",)
 
 

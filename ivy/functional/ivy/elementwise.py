@@ -5605,13 +5605,16 @@ def reciprocal(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a new array with the reciprocal of each element in ``x``.
+
     Parameters
     ----------
+
     x
         Input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
@@ -5631,13 +5634,16 @@ def deg2rad(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts the input from degrees to radians.
+
     Parameters
     ----------
+
     x
         input array whose elements are each expressed in degrees.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
@@ -5712,13 +5718,16 @@ def rad2deg(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts the input from radians to degrees.
+
     Parameters
     ----------
+    
     x
         input array whose elements are each expressed in radians.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret

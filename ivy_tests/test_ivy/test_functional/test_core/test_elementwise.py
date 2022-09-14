@@ -2214,7 +2214,8 @@ def test_reciprocal(
         fn_name="reciprocal",
         x=np.asarray(x, dtype=input_dtype),
     )
- 
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
