@@ -27,7 +27,10 @@ def cholesky(
     return ret
 
 
-cholesky.unsupported_dtypes = ("float16",)
+cholesky.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def cross(
@@ -84,13 +87,34 @@ def eigvalsh(
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
+# noinspection PyUnusedLocal,PyShadowingBuiltins
+def inner(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return tf.experimental.numpy.inner(x1, x2)
+
+
+inner.unsupported_dtypes = (
+    "int8",
+    "uint8",
+    "int16",
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+
 def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.math.reduce_any(tf.linalg.det(x) == 0):
+    if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
         ret = x
     else:
         ret = tf.linalg.inv(x)
@@ -204,7 +228,10 @@ def matrix_norm(
     return ret
 
 
-matrix_norm.unsupported_dtypes = ("float16",)
+matrix_norm.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_power(
@@ -249,20 +276,19 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if rtol is None:
-        ret = tf.linalg.matrix_rank(x)
-    elif tf.size(x) == 0:
-        ret = 0
-    elif tf.size(x) == 1:
-        ret = tf.math.count_nonzero(x)
+    singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    max_value = tf.math.reduce_max(singular_values)
+    if rtol:
+        num = tf.experimental.numpy.sum(singular_values > max_value * rtol)
     else:
-        rtol = tf.convert_to_tensor([rtol], dtype=tf.float32)
-        rtol = tf.reshape(rtol, [-1])
-        if len(rtol) > 1:
-            rtol = rtol[0]
-        x, rtol = ivy.promote_types_of_inputs(x, rtol)
-        ret = tf.linalg.matrix_rank(x, rtol)
-    return tf.cast(ret, ivy.default_int_dtype(as_native=True))
+        num = tf.size(singular_values)
+    return tf.cast(num, ivy.default_int_dtype(as_native=True))
+
+
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_transpose(
@@ -310,7 +336,10 @@ def pinv(
     return ret
 
 
-pinv.unsupported_dtypes = ("float16",)
+pinv.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
@@ -342,7 +371,10 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-slogdet.unsupported_dtypes = ("float16",)
+slogdet.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def solve(
@@ -412,7 +444,10 @@ def svdvals(
     return ret
 
 
-svdvals.unsupported_dtypes = ("float16",)
+svdvals.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def tensordot(

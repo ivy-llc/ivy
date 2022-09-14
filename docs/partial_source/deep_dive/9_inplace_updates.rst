@@ -66,27 +66,6 @@ JAX **does not** natively support inplace updates,
 and so there is no way of actually inplace updating the :code:`JaxArray` instance :code:`x_native`.
 Therefore, an inplace update is only performed on :code:`ivy.Array` instances provided in the input.
 
-**MXNet**:
-
-.. code-block:: python
-
-    def inplace_update(
-        x: Union[ivy.Array, mx.nd.NDArray],
-        val: Union[ivy.Array, mx.nd.NDArray],
-        ensure_in_backend: bool = False,
-    ) -> ivy.Array:
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native[:] = val_native
-        if ivy.is_ivy_array(x):
-            x.data = x_native
-        else:
-            x = ivy.Array(x_native)
-        return x
-
-MXNet **does** natively support inplace updates,
-and so :code:`x_native` is updated inplace with :code:`val_native`.
-Following this, an inplace update is then also performed on the :code:`ivy.Array` instance, if provided in the input.
-
 **NumPy**:
 
 .. code-block:: python
@@ -213,13 +192,6 @@ The implementations of :code:`ivy.tan` for each backend are as follows.
     def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
         return jnp.tan(x)
 
-**MXNet** (no :code:`support_native_out` attribute):
-
-.. code-block:: python
-
-    def tan(x: mx.nd.NDArray, /, *, out: Optional[mx.nd.NDArray] = None) -> mx.nd.NDArray:
-        return mx.nd.tan(x)
-
 **NumPy** (includes :code:`support_native_out` attribute):
 
 .. code-block:: python
@@ -264,6 +236,38 @@ The inplace update of this :code:`ivy.Array` is always `handled by the wrapper`_
 Alternatively, if :code:`out` is an :code:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
 the container wrapping module.
 
+**Special Case**
+
+Take a function which has multiple possible "paths" through the code:
+
+.. code-block:: python
+
+    def cholesky(
+        x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
+    ) -> torch.Tensor:
+        if not upper:
+            return torch.linalg.cholesky(x, out=out)
+        else:
+            ret = torch.transpose(
+                torch.linalg.cholesky(
+                    torch.transpose(x, dim0=len(x.shape) - 1, dim1=len(x.shape) - 2)
+                ),
+                dim0=len(x.shape) - 1,
+                dim1=len(x.shape) - 2,
+            )
+            if ivy.exists(out):
+                return ivy.inplace_update(out, ret)
+            return ret
+
+
+    cholesky.support_native_out = True
+
+Here we still have the :code:`support_native_out` attribute since we want to take advantage of the native inplace update
+enabled by :code:`torch.linalg.cholesky` in the first condition. However, in the :code:`else` statement, the last
+operation is :code:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update
+can't be performed by torch here. This is why we need to call :code:`ivy.inplace_update` explicitly here, to ensure the
+native inplace update is performed, as well as the :code:`ivy.Array` inplace update.
+
 **Compositional Functions**
 
 For *compositional* functions, the :code:`out` argument should **always** be handled in the compositional implementation,
@@ -290,7 +294,7 @@ We'll use :code:`ivy.cross_entropy` as an example:
         /,
         *,
         axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
+        epsilon: float =1e-7,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
@@ -379,7 +383,8 @@ As with the :code:`out` argument, the :code:`copy` argument is also handled `by 
 
 **Round Up**
 
-This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
+This should have hopefully given you a good feel for inplace updates,
+and how these are handled in Ivy.
 
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `inplace updates discussion`_,
