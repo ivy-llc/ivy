@@ -80,7 +80,7 @@ def gather_nd(
     return _to_device(res)
 
 
-def get_num_dims(x, as_tensor=False):
+def get_num_dims(x, /, *, as_tensor=False):
     return np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
 
 
@@ -160,9 +160,10 @@ def multiprocessing(context=None):
 def scatter_flat(
     indices: np.ndarray,
     updates: np.ndarray,
+    /,
+    *,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
@@ -207,9 +208,10 @@ def scatter_flat(
 def scatter_nd(
     indices: np.ndarray,
     updates: np.ndarray,
+    /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    reduction: str = "sum",
     *,
+    reduction: str = "sum",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     target = out
@@ -257,7 +259,7 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def shape(x: np.ndarray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(x: np.ndarray, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(np.shape(x), dtype=ivy.default_int_dtype())
     else:
