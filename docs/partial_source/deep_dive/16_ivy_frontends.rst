@@ -173,15 +173,19 @@ but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
     def add(x, y, name=None):
         return ivy.add(x, y)
 
-In the original TensorFlow library (`tf`_ directory), :code:`add` does not have
-a specific category. Therefore, it is categorised under :code:`functions` in Ivy.
-This ensures that :code:`tf.add` is available directly without further major
-changes when using :code:`ivy`. It is valid by simply importing
-:code:`ivy.functional.frontends.tensorflow`.
+The :code:`add` function is categorised under the :code:`math` folder in the TensorFlow
+frontend. There are three arguments according to the `tf.add`_ documentation, which are
+written accordingly as shown above. Just like the previous examples, the implementation
+wraps :code:`ivy.add`, which itself defers to backend-specific functions depending on
+which framework is set in Ivy's backend.
 
-There are three arguments according to the `tf.add`_ documentation, where we
-have written accordingly as shown above. Just like the previous examples, it will
-also return :code:`ivy.add` for the linking of backend framework.
+The arguments :code:`x` and :code:`y` are both used in the implementation,
+but the argument :code:`name` is not used. Similar to the omitted arguments in the NumPy
+example above, the :code:`name` argument does not change the input-output behaviour of
+the function. Rather, this argument is added purely for the purpose of operation logging
+and retrieval, and also graph visualization in TensorFlow. Ivy does not support the
+unique naming of individual operations, and so we omit support for this particular
+argument.
 
 .. code-block:: python
 
@@ -189,10 +193,10 @@ also return :code:`ivy.add` for the linking of backend framework.
     def tan(x, name=None):
         return ivy.tan(x)
 
-Let's look at another example, :code:`tan`, it is placed under :code:`functions` just
-like :code:`add`. By referring to the `tf.tan`_ documentation, we code the arguments
-accordingly, then link its return to :code:`ivy.tan` so that the computation
-operation is decided according to the backend framework.
+Likewise, :code:`tan` is also placed under :code:`math`.
+By referring to the `tf.tan`_ documentation, we add the same arguments,
+and simply wrap :code:`ivy.tan` in this case.
+Again, we do not support the :code:`name` argument for the reasons outlined above.
 
 **PyTorch**
 
@@ -202,19 +206,16 @@ operation is decided according to the backend framework.
     def add(input, other, *, alpha=1, out=None):
         return ivy.add(input, other * alpha, out=out)
 
-For PyTorch, :code:`add` is categorised under :code:`pointwise_ops` as shown in
-the `torch`_ directory. This ensures direct access to :code:`torch.add` in :code:`ivy`
-without further major changes. It is valid by simply importing
-:code:`ivy.functional.frontends.torch`.
+For PyTorch, :code:`add` is categorised under :code:`pointwise_ops` as is the case in
+the `torch`_ framework.
 
-For the function arguments, it has to be identical to the original function in
-PyTorch to ensure identical behaviour. In this case, the native `torch.add`_ has
-both positional and keyword arguments, where we will use the same for our PyTorch
-frontend :code:`add`. As for its return, we will link it to :code:`ivy.add` as usual.
-However, the arguments work slightly different in this example. From understanding
-the PyTorch `torch.add`_ documentation, you will notice that :code:`alpha`
-acts as a scale for the :code:`other` argument. Thus, we will recover the original
-behaviour by passing :code:`other * alpha` into :code:`ivy.add`.
+In this case, the native `torch.add`_ has both positional and keyword arguments,
+and we therefore use the same for our PyTorch frontend :code:`add`.
+We wrap :code:`ivy.add` as usual, but the arguments work slightly different in this
+example. Looking at the PyTorch `torch.add`_ documentation,
+we can see that :code:`alpha` acts as a scale for the :code:`other` argument.
+Thus, we can mimick the original behaviour by simply passing :code:`other * alpha`
+into :code:`ivy.add`.
 
 .. code-block:: python
 
@@ -222,10 +223,10 @@ behaviour by passing :code:`other * alpha` into :code:`ivy.add`.
     def tan(input, *, out=None):
         return ivy.tan(input, out=out)
 
-Using :code:`tan` as a second example, it is placed under :code:`pointwise_ops`
-according to the `torch`_ directory. By referring to the `torch.tan`_ documentation,
-we code its positional and keyword arguments accordingly, then return with
-:code:`ivy.tan` to link the operation to the backend framework.
+:code:`tan` is also placed under :code:`pointwise_ops` as is the case in the `torch`_
+framework. Looking at the `torch.tan`_ documentation, we can mimick the same arguments,
+and again simply wrap :code:`ivy.tan`,
+also making use of the :code:`out` argument in this case.
 
 Compositions
 ------------
