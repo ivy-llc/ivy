@@ -57,21 +57,43 @@ def dtypes_shared(draw, num_dtypes):
 # --------------------------------- #
 
 
+@st.composite
+def _astype_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            small_value_safety_factor=2.5,
+            large_value_safety_factor=20,
+        )
+    )
+
+    def cast_filter(d):
+        if ivy.is_int_dtype(d):
+            max_val = ivy.iinfo(d).max
+        elif ivy.is_float_dtype(d):
+            max_val = ivy.finfo(d).max
+        else:
+            max_val = 1
+        max_x = np.max(np.abs(np.asarray(x)))
+        return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
+
+    cast_dtype = draw(
+        st.sampled_from(draw(helpers.get_dtypes("valid"))).filter(cast_filter)
+    )
+    if "uint" in cast_dtype:
+        x = np.abs(np.asarray(x)).tolist()
+    return dtype, x, cast_dtype
+
+
 # astype
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-        num_arrays=1,
-        small_value_safety_factor=1.5,
-        large_value_safety_factor=10,
-    ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype_and_x_and_cast_dtype=_astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
 )
 def test_astype(
-    dtype_and_x,
-    dtype,
+    dtype_and_x_and_cast_dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -80,7 +102,7 @@ def test_astype(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, cast_dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -91,8 +113,10 @@ def test_astype(
         instance_method=instance_method,
         fw=fw,
         fn_name="astype",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
-        dtype=dtype,
+        dtype=cast_dtype,
     )
 
 
