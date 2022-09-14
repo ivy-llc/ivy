@@ -676,7 +676,7 @@ def conv2d(
     instances in place of any of the arguments.
 
 
-    Functional Examples
+    Examples
     -------------------
 
     With :code:`ivy.Array` input:
@@ -697,16 +697,27 @@ def conv2d(
               [[2.],[4.],[6.]]
               ]])
 
-    With :code:`ivy.NativeArray` input:
+    With one :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.)
+    >>> filters = ivy.
+    >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
+    >>> print(result)
+    {
+        a:ivy.array([])
+    }
 
-    >>> x = ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[1, 32, 32, 3]))
-    >>> filters = ivy.native_array(ivy.random_normal(mean=0, std=1, \
-                                   shape=[3, 5, 3, 5])) #HWIO
-    >>> result = ivy.conv2d(x, filters, [2, 1], 'VALID') \
-        #non-square filter with unequal stride and valid padding
-    >>> print(result.shape)
-    (1, 15, 28, 5)
-
+    With multiple :code:`ivy.Container` inputs:
+    >>> x = ivy.Container(a = ivy.,  \
+                          b = ivy., \
+                          c = ivy.)
+    >>> filters = ivy.array().float()
+    >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
+    >>> print(result)
+    {
+        a:ivy.array([])
+        b:ivy.array([])
+        c:ivy.array([])
+    }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
