@@ -368,6 +368,10 @@ def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sin(x)
 
 
+def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.sinc(x)
+
+
 def sinh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinh(x)
 
