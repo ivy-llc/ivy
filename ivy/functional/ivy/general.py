@@ -33,7 +33,6 @@ shape_array_mode_stack = list()
 nestable_mode_stack = list()
 
 
-@handle_exceptions
 def get_referrers_recursive(
     item, depth=0, max_depth=None, seen_set=None, local_set=None
 ):
