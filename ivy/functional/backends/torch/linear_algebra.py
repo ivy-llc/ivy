@@ -95,8 +95,25 @@ eigvalsh.unsupported_dtypes = ("float16",)
 eigvalsh.support_native_out = True
 
 
+def inner(
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return torch.inner(x1, x2, out=out)
+
+
+inner.unsupported_dtypes = ("uint8", "int8", "int16", "int32")
+inner.support_native_out = True
+
+
 def inv(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.inverse(x, out=out)
+    if torch.any(torch.linalg.det(x.to(dtype=torch.float64)) == 0):
+        ret = x
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+    else:
+        ret = torch.inverse(x, out=out)
+    return ret
 
 
 inv.unsupported_dtypes = (
@@ -153,11 +170,14 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, atol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
     return torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
 
 
-matrix_rank.unsupported_dtypes = ("float16",)
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 matrix_rank.support_native_out = True
 
 

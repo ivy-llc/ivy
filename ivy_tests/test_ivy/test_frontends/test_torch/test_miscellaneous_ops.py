@@ -10,9 +10,6 @@ from ivy_tests.test_array_api.array_api_tests.test_operators_and_elementwise_fun
 )
 
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy_tests.test_ivy.test_functional.test_core.test_dtype import (
-    array_and_broadcastable_shape,
-)
 
 
 # flip
@@ -233,7 +230,7 @@ def test_torch_diagonal(
 # broadcast_to
 @handle_cmd_line_args
 @given(
-    array_and_shape=array_and_broadcastable_shape(
+    array_and_shape=helpers.array_and_broadcastable_shape(
         dtype=helpers.get_dtypes("valid", full=False),
     ),
     input_dtype=helpers.get_dtypes("valid", full=False),
@@ -263,6 +260,42 @@ def test_torch_broadcast_to(
         frontend="torch",
         input=array,
         size=shape,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,  # Torch requires this.
+    ),
+    diagonal=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.triu"
+    ),
+)
+def test_torch_triu(
+    dtype_and_values,
+    diagonal,
+    fw,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+):
+    dtype, values = dtype_and_values
+    values = np.asarray(values, dtype=dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="triu",
+        input=values,
+        diagonal=diagonal,
     )
 
 

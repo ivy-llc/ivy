@@ -120,3 +120,19 @@ def sign(input, *, out=None):
 
 def absolute(input, *, out=None):
     return ivy.abs(input, out=out)
+
+
+def logical_not(input, *, out=None):
+    return ivy.logical_not(input, out=out)
+
+
+def logical_and(input, other, *, out=None):
+    return ivy.logical_and(input, other, out=out)
+
+
+def logical_or(input, other, *, out=None):
+    return ivy.logical_or(input, other, out=out)
+
+
+def logical_xor(input, other, *, out=None):
+    return ivy.logical_xor(input, other, out=out)
