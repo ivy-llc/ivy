@@ -402,54 +402,65 @@ these new instance methods defined in the Ivy frontend class.
 Framework-Specific Classes
 --------------------------
 
-Some of the frontend functions that we need to implement for our frontend functional API 
-include framework-specific classes, which do not have a counterpart in other frameworks 
-or Ivy, as the types for their arguments or as the default values for the arguments. 
+Some of the frontend functions that we need to implement include framework-specific
+classes as the default values for some of the arguments,
+which do not have a counterpart in other frameworks.
 When re-implementing these functions in Ivy's frontend, we would like to still include
-those arguments without directly using those special classes as they do not exist in Ivy.
-In this section of the deep dive we are going to introduce how to deal with 
-Framework-Specific Classes.
+those arguments without directly using these special classes, which do not exist in Ivy.
 
-For each backend framework, there is a dictionary named `<backend>_classes_to_ivy_classes`
-in `ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`, 
-which will hold pairs of framework-specific classes and corresponding Ivy or 
-native Python classes. For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have: 
+A good example is the special class :code:`numpy._NoValue`, which is sometimes used
+instead of :code:`None` as the default value for arguments in numpy. For example,
+the :code:`keepdims`, :code:`initial` and :code:`where` arguments of :code:`numpy.sum`
+use :code:`numpy._NoValue` as the default value, while :code:`axis`, :code:`dtype` and
+:code:`out` use :code:`None`, as can be seen in the
+`source code <https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299>`_.
+
+We now introduce how to deal with such framework-specific classes. For each backend
+framework, there is a dictionary named `<backend>_classes_to_ivy_classes` in
+`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
+This holds pairs of framework-specific classes and the corresponding Ivy or
+native Python classes to map to.
+For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
 
 .. code-block:: python
     
     numpy_classes_to_ivy_classes = {np._NoValue: None}
 
-Where np._NoValue is a reference to _NoValueType class defined in numpy/numpy/_globals.py, 
-which represents a special keyword value and the instance of this class may be used as the
-default value assigned to a keyword if no other obvious default (e.g., :code:`None`) is suitable.
+Where :code:`np._NoValue` is a reference to the :code:`_NoValueType` class defined in
+:code:`numpy/numpy/_globals.py`.
 
-When you found that the frontend function of a certain framework that you try to implement 
-in our frontend API introduce a new datatype that, like the :code:`numpy._NoValue` example before, 
-can not be directly replaced, you may pick an existing Ivy or pure python datatype 
-and use them instead in the ivy frontend implementation to mimic the same effect and record 
-the pair of framework-specific class’s reference and your replacement class’s reference 
-in the corresponding dictionary.
+Any time a new framework-specific data type is discovered, such as the
+:code:`numpy._NoValue` example given, then this should be added as a key to the
+dictionary, and the most appropriate pure-python or Ivy class or instance should be
+added as the value.
 
-As our frontend test will try to pass all the generated inputs in both our own implementation
-and the original function, then you cannot directly pass either the framework-specific class
-or your chosen counterpart in our test function. Instead, you should pass a :code:`NativeClass` 
-object in. The :code:`NativeClass` is defined in ‘ivy/ivy_tests/test_ivy/test_frontends/__init__.py’ as a placeholder class to represent a 
-pair of framework specific class and its counterpart. It has only one attribute, which is 
-:code:`_native_class`, that holds the reference to the special class being used by the 
-targeted framework.
+During frontend testing, the helper :code:`test_frontend_function` by default passes
+all the generated inputs into both Ivy's frontend implementation and also the original
+function. For the framework-specific classes discussed, this is a problem.
+Handling the framework-specific class in the Ivy frontend would add a dependency to the
+frontend framework being mimicked. This breaks Ivy's design philosophy,
+whereby only the specific backend framework being used should be a dependency.
+Our solution is to pass the value from the :code:`<framework>_classes_to_ivy_classes`
+dict to the Ivy frontend function and the key from the
+:code:`<framework>_classes_to_ivy_classes` dict to the original function during testing
+in :code:`test_frontend_function`.
 
-When writing a test for a frontend function where its original counterpart accepts a 
-framework-specific class, you should import the :code:`NativeClass` and initialize an instance
-of it with :code:`_native_class` set as the reference to the special class, which you have 
-added in the `<backend>_classes_to_ivy_classes` dictionary before. Then just pass the 
-:code:`NativeClass` instance in the arguments like other generated input and the 
-:code:`helpers.test_frontend_function` will replace it with the actual classes accordingly 
-in the background.
+The way we do this is to wrap all framework-specific classes inside a
+:code:`NativeClass` during frontend testing. The :code:`NativeClass` is defined in
+:code:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
+placeholder class to represent the framework-specific class and its counterpart.
+It has only one attribute, :code:`_native_class`, which holds the reference to the
+special class being used by the targeted framework.
+Then, in order to pass the key and value to the orignal and frontend functions
+respectively, :code:`test_frontend_function` detects all :code:`NativeClass` instances
+in the arguments, makes use of :code:`<framework>_classes_to_ivy_classes` internally
+to find the corresponding value to the key wrapped inside the :code:`NativeClass`
+instance, and then passes the key and value as inputs to the corresponding functions
+correctly.
 
-Here is an example of :code:`NativeClass` being put to use in test.
 
-ivy.sum()
-^^^^^^^^^^
+As an example, we show how :code:`NativeClass` is used in the frontend test for the
+:code:`sum` function in the NumPy frontend:
 
 .. code-block:: python
     # sum
@@ -497,13 +508,16 @@ ivy.sum()
             where=where,
         )
 
-* NumPy.sum has three optional arguments: :code:`where`, :code:`keep_dims`, :code:`initial`, which all have the default value of numpy._NoValue. So we define a NativeClass object Novalue to help recreate the effect of not passing any value to those arguments by using Novalue instead where None used to be generated for the those arguments. 
-
+The function has three optional arguments which have the default value of
+:code:`numpy._NoValue`, being: :code:`where`, :code:`keep_dims` and :code:`initial`.
+We therefore define a :code:`NativeClass` object :code:`Novalue`, and pass this as input
+to each of these arguments when calling :code:`test_frontend_function`.
 
 **Round Up**
 
-This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
-after going through the contents! We have a `YouTube tutorial series`_ on this
+This should hopefully have given you a better grasp on the what the Ivy Frontend APIs
+are for, how they should be implemented, and the things to watch out for!
+We also have a short `YouTube tutorial series`_ on this
 as well if you prefer a video explanation!
 
 If you're ever unsure of how best to proceed,
