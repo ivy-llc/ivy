@@ -223,7 +223,7 @@ def rad2deg(
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
-    ret = ivy.divide(ivy.multiply(180, x, out=out), ivy.pi)
+    ret = ivy.multiply(180, ivy.divide(x, ivy.pi, out=out), out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
