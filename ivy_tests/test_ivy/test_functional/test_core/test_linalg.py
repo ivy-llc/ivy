@@ -773,7 +773,7 @@ def test_solve(
         instance_method=instance_method,
         fw=fw,
         fn_name="solve",
-        rtol_=1e-2,
+        rtol_=1e-1,
         atol_=1e-2,
         x1=np.asarray(x1, dtype=input_dtype1),
         x2=np.asarray(x2, dtype=input_dtype2),
