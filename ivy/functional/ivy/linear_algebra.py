@@ -1149,7 +1149,7 @@ def slogdet(
             The natural log of the absolute value of the determinant.
 
     """
-    return current_backend(x).slodget(x, out=out)
+    return current_backend(x).slogdet(x, out=out)
 
 
 @to_native_arrays_and_back
