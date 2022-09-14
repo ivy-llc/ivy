@@ -161,13 +161,13 @@ def inplace_update(
             else:
                 x = ivy.Array(x_native)
         elif ensure_in_backend:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         return x
@@ -230,7 +230,7 @@ def scatter_flat(
                 updates,
             )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -372,7 +372,7 @@ def scatter_nd(
                 tf.zeros(shape, dtype=dtype), indices, updates
             )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
