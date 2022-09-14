@@ -1091,6 +1091,76 @@ def conv3d_transpose(
     )
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def convolution(
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
+    strides: int,
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    dilations: int = 1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a convolution given same type as input x and filters arrays.
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,w,d_in]*.
+    filters
+        Convolution filters *[fw,d_in,d_out]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    Returns
+    -------
+    ret
+        The result of the convolution operation.
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+    >>> x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC
+    >>> filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO
+    >>> result = ivy.convolution(x, filters, (1,), 'SAME', data_format='NWC',dilations= (1,))
+    >>> print(result)
+    ivy.array([[[0.], [3.], [0.]]])
+    With :code:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([[[1., 3.], [2., 4.], [5., 7]]])
+    >>> filters = ivy.native_array([[[0., 1.], [1., 0.]]])
+    >>> result = ivy.conv1d(x, filters, (2,),'VALID')
+    >>> print(result)
+    ivy.array([[[3., 1.], \
+                [7., 5.]]])
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    >>> x = ivy.Container(a= ivy.array([[[1.2, 3.1, 4.8], [5.9, 2.2, 3.3],\
+                                       [10.8, 7.6, 4.9], [6.1, 2.2, 9.5]]]), \
+                          b= ivy.array([[[8.8, 7.7, 6.6], [1.1, 2.2, 3.5]]]))
+    >>> filters = ivy.array([[[1., 0., 1.], [0., 1., 0.], [1., 1., 0.]]])
+    >>> result  = ivy.convolution(x, filters, 3, 'VALID')
+    >>> print(result)
+    {
+            a: ivy.array([[[6., 7.9, 1.2], \
+                         [15.6, 11.7, 6.1]]]), \
+            b: ivy.array([[[15.4, 14.3, 8.8]]])
+    }
+    """
+    return current_backend(x).convolution(
+        x, filters, strides, padding, data_format, dilations, out=out
+    )
+
 # LSTM #
 
 
