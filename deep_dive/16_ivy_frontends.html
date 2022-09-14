@@ -297,50 +297,51 @@ but we omit support for <code class="code docutils literal notranslate"><span cl
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In the original TensorFlow library (<a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf">tf</a> directory), <code class="code docutils literal notranslate"><span class="pre">add</span></code> does not have
-a specific category. Therefore, it is categorised under <code class="code docutils literal notranslate"><span class="pre">functions</span></code> in Ivy.
-This ensures that <code class="code docutils literal notranslate"><span class="pre">tf.add</span></code> is available directly without further major
-changes when using <code class="code docutils literal notranslate"><span class="pre">ivy</span></code>. It is valid by simply importing
-<code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow</span></code>.</p>
-<p>There are three arguments according to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/add">tf.add</a> documentation, where we
-have written accordingly as shown above. Just like the previous examples, it will
-also return <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> for the linking of backend framework.</p>
+<p>The <code class="code docutils literal notranslate"><span class="pre">add</span></code> function is categorised under the <code class="code docutils literal notranslate"><span class="pre">math</span></code> folder in the TensorFlow
+frontend. There are three arguments according to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/add">tf.add</a> documentation, which are
+written accordingly as shown above. Just like the previous examples, the implementation
+wraps <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, which itself defers to backend-specific functions depending on
+which framework is set in Ivy’s backend.</p>
+<p>The arguments <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> are both used in the implementation,
+but the argument <code class="code docutils literal notranslate"><span class="pre">name</span></code> is not used. Similar to the omitted arguments in the NumPy
+example above, the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument does not change the input-output behaviour of
+the function. Rather, this argument is added purely for the purpose of operation logging
+and retrieval, and also graph visualization in TensorFlow. Ivy does not support the
+unique naming of individual operations, and so we omit support for this particular
+argument.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Let’s look at another example, <code class="code docutils literal notranslate"><span class="pre">tan</span></code>, it is placed under <code class="code docutils literal notranslate"><span class="pre">functions</span></code> just
-like <code class="code docutils literal notranslate"><span class="pre">add</span></code>. By referring to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">tf.tan</a> documentation, we code the arguments
-accordingly, then link its return to <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> so that the computation
-operation is decided according to the backend framework.</p>
+<p>Likewise, <code class="code docutils literal notranslate"><span class="pre">tan</span></code> is also placed under <code class="code docutils literal notranslate"><span class="pre">math</span></code>.
+By referring to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">tf.tan</a> documentation, we add the same arguments,
+and simply wrap <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> in this case.
+Again, we do not support the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument for the reasons outlined above.</p>
 <p><strong>PyTorch</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For PyTorch, <code class="code docutils literal notranslate"><span class="pre">add</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as shown in
-the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> directory. This ensures direct access to <code class="code docutils literal notranslate"><span class="pre">torch.add</span></code> in <code class="code docutils literal notranslate"><span class="pre">ivy</span></code>
-without further major changes. It is valid by simply importing
-<code class="code docutils literal notranslate"><span class="pre">ivy.functional.frontends.torch</span></code>.</p>
-<p>For the function arguments, it has to be identical to the original function in
-PyTorch to ensure identical behaviour. In this case, the native <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> has
-both positional and keyword arguments, where we will use the same for our PyTorch
-frontend <code class="code docutils literal notranslate"><span class="pre">add</span></code>. As for its return, we will link it to <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> as usual.
-However, the arguments work slightly different in this example. From understanding
-the PyTorch <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> documentation, you will notice that <code class="code docutils literal notranslate"><span class="pre">alpha</span></code>
-acts as a scale for the <code class="code docutils literal notranslate"><span class="pre">other</span></code> argument. Thus, we will recover the original
-behaviour by passing <code class="code docutils literal notranslate"><span class="pre">other</span> <span class="pre">*</span> <span class="pre">alpha</span></code> into <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>.</p>
+<p>For PyTorch, <code class="code docutils literal notranslate"><span class="pre">add</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in
+the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> framework.</p>
+<p>In this case, the native <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> has both positional and keyword arguments,
+and we therefore use the same for our PyTorch frontend <code class="code docutils literal notranslate"><span class="pre">add</span></code>.
+We wrap <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> as usual, but the arguments work slightly different in this
+example. Looking at the PyTorch <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> documentation,
+we can see that <code class="code docutils literal notranslate"><span class="pre">alpha</span></code> acts as a scale for the <code class="code docutils literal notranslate"><span class="pre">other</span></code> argument.
+Thus, we can mimick the original behaviour by simply passing <code class="code docutils literal notranslate"><span class="pre">other</span> <span class="pre">*</span> <span class="pre">alpha</span></code>
+into <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Using <code class="code docutils literal notranslate"><span class="pre">tan</span></code> as a second example, it is placed under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code>
-according to the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> directory. By referring to the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation,
-we code its positional and keyword arguments accordingly, then return with
-<code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> to link the operation to the backend framework.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">tan</span></code> is also placed under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a>
+framework. Looking at the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation, we can mimick the same arguments,
+and again simply wrap <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>,
+also making use of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in this case.</p>
 </section>
 <section id="compositions">
 <h2>Compositions<a class="headerlink" href="#compositions" title="Permalink to this heading"></a></h2>
