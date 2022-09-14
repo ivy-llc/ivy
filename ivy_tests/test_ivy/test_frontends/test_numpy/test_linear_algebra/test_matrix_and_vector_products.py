@@ -2,7 +2,7 @@
 
 import numpy as np
 from hypothesis import given, strategies as st
-import ivy.functional.frontends.numpy
+import ivy.functional.frontends.numpy as ivy_np
 
 # local
 import ivy
