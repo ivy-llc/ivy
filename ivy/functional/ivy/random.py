@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 from ivy.backend_handler import backend_stack
+from ivy.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -78,6 +79,7 @@ def _check_valid_scale(std):
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -187,6 +189,7 @@ def random_uniform(
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -292,6 +295,7 @@ def random_normal(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -395,6 +399,7 @@ def multinomial(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -464,6 +469,7 @@ def randint(
 
 
 @handle_nestable
+@handle_exceptions
 def seed(*, seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
@@ -484,6 +490,7 @@ def seed(*, seed_value: int = 0) -> None:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
