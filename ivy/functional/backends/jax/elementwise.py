@@ -9,6 +9,13 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
+def _cast_for_binary_op(x1, x2):
+    if not isinstance(x1, JaxArray) and not isinstance(x2, JaxArray):
+        x1 = ivy.to_native(ivy.array(x1))
+        x2 = ivy.to_native(ivy.array(x2))
+    return x1, x2
+
+
 def _cast_for_bitwise_op(x1, x2, clamp=False):
     if not isinstance(x1, int):
         if isinstance(x2, int):
@@ -41,6 +48,7 @@ def add(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.add(x1, x2)
 
 
@@ -57,7 +65,7 @@ def atan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def atan2(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.arctan2(x1, x2)
 
 
@@ -148,7 +156,6 @@ def divide(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = jax.numpy.divide(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
         ret = jnp.asarray(ret, dtype=x1.dtype)
@@ -164,7 +171,6 @@ def equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.equal(x1, x2)
 
 
@@ -190,7 +196,7 @@ def floor_divide(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jax.numpy.floor_divide(x1, x2)
 
 
@@ -297,7 +303,7 @@ def multiply(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.multiply(x1, x2)
 
 
@@ -314,7 +320,6 @@ def not_equal(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.not_equal(x1, x2)
 
 
@@ -349,7 +354,7 @@ def remainder(
     modulus: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     if not modulus:
         res = x1 / x2
         res_floored = jnp.where(res >= 0, jnp.floor(res), jnp.ceil(res))
@@ -393,7 +398,7 @@ def subtract(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.subtract(x1, x2)
 
 
@@ -430,7 +435,7 @@ def floormod(
 def maximum(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.maximum(x1, x2)
 
 
@@ -441,5 +446,5 @@ def minimum(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = _cast_for_binary_op(x1, x2)
     return jnp.minimum(x1, x2)
