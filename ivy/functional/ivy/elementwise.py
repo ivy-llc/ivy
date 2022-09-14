@@ -4903,8 +4903,8 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     # TODO: add docstring
-    y = ivy.pi * where(x == 0, 1.0e-20, x)
-    return ivy.current_backend(x).sin(y, out=out)/y
+    y = ivy.pi * ivy.where(x == 0, 1.0e-20, x)
+    return ivy.current_backend(x).sin(y, out=out) / y
 
 
 @integer_arrays_to_float
