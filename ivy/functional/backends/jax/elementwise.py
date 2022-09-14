@@ -10,7 +10,7 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def _cast_for_binary_op(x1, x2):
-    if not isinstance(x1, JaxArray) and not isinstance(x2, JaxArray):
+    if not isinstance(x1, ivy.NativeArray) and not isinstance(x2, ivy.NativeArray):
         x1 = ivy.to_native(ivy.array(x1))
         x2 = ivy.to_native(ivy.array(x2))
     return x1, x2
