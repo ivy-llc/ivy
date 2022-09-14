@@ -1498,7 +1498,7 @@ class ContainerBase(dict, abc.ABC):
             att_name = "_" + k
             if k in self._config_in:
                 if k == "types_to_iteratively_nest":
-                    v = ivy.default(lambda: tuple(v), (), True)
+                    v = ivy.default(lambda: tuple(v), (), catch_exceptions=True)
                 elif k == "keyword_color_dict":
                     v = ivy.default(v, {})
                 elif k == "ivyh":
