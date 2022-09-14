@@ -3570,57 +3570,6 @@ def gradient_incompatible_function(*, fn):
 
 
 @st.composite
-def statistical_dtype_values(draw, *, function):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-
-    size = draw(st.integers(1, 10))
-
-    if dtype == "float16":
-        max_value = 2048
-    elif dtype == "float32":
-        max_value = 16777216
-    elif dtype == "float64":
-        max_value = 9.0071993e15
-    elif dtype == "bfloat16":
-        max_value = 9.0071993e15
-
-    if function == "prod":
-        abs_value_limit = 0.99 * max_value ** (1 / size)
-    elif function in ["var", "std"]:
-        abs_value_limit = 0.99 * (max_value / size) ** 0.5
-    else:
-        abs_value_limit = 0.99 * max_value / size
-
-    values = draw(
-        list_of_length(
-            x=st.floats(
-                -abs_value_limit,
-                abs_value_limit,
-                allow_subnormal=False,
-                allow_infinity=False,
-            ),
-            length=size,
-        )
-    )
-
-    shape = np.asarray(values, dtype=dtype).shape
-    size = np.asarray(values, dtype=dtype).size
-    axis = draw(get_axis(shape=shape, allow_none=True))
-    if function == "var" or function == "std":
-        if isinstance(axis, int):
-            correction = draw(
-                st.integers(-shape[axis], shape[axis] - 1)
-                | st.floats(-shape[axis], shape[axis] - 1)
-            )
-            return dtype, values, axis, correction
-
-        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
-        return dtype, values, axis, correction
-
-    return dtype, values, axis
-
-
-@st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
 
