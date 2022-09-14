@@ -31,7 +31,10 @@ def diagflat(input, offset=0):
 
     output_size = len(input_flat) + abs(offset)
 
-    ret = ivy.zeros((output_size, output_size), dtype=input.dtype, device=input.device)
+    if offset == 0 and input.shape == (1,):
+        return input
+
+    ret = [[0 for i in range(output_size)] for j in range(output_size)]
 
     index = 0
     for i in range(0, len(input_flat)):
@@ -41,7 +44,7 @@ def diagflat(input, offset=0):
             ret[i - offset][i] = input_flat[index]
         index += 1
 
-    return ret
+    return ivy.asarray(ret, dtype=input.dtype, device=input.device)
 
 
 diagflat.unsupported_dtypes = ("float16",)
