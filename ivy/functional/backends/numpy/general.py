@@ -309,7 +309,9 @@ def vmap(
                 ax is None for ax in in_axes
             ), "At least one of the axes should be specified (not None)"
         else:
-            assert not (in_axes is None), "single value in_axes should not be None"
+            ivy.assertions.check_exists(
+                in_axes, message="single value in_axes should not be None"
+            )
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
