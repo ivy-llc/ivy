@@ -244,8 +244,7 @@ In such cases, compositions are required to replicate the function behaviour.
 
 In the native TensorFlow function :code:`tf.cumprod()`, it supports an extra
 argument - :code:`reverse`, which returns a flipped result if :code:`True`. However,
-the backend :code:`ivy.cumprod()` does not come with this argument, and thus does not
-support this behaviour by default.
+the backend :code:`ivy.cumprod()` does not support this argument or behaviour.
 
 **Ivy**
 
@@ -262,9 +261,10 @@ support this behaviour by default.
     ) -> Union[ivy.Array, ivy.NativeArray]:
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
-To enable this behaviour, we will need to incorporate functions that resemble the
-required behaviour. For example, we can reverse the result by calling
-:code:`ivy.flip()` after running :code:`ivy.cumprod()`.
+To enable this behaviour, we need to incorporate other Ivy functions which are
+compositionally able to mimick the required behaviour.
+For example, we can simply reverse the result by calling :code:`ivy.flip()` on the
+result of :code:`ivy.cumprod()`.
 
 **TensorFlow Frontend**
 
@@ -277,25 +277,45 @@ required behaviour. For example, we can reverse the result by calling
             return ivy.flip(ret, axis)
         return ret
 
-Through compositions, we can easily meet the required input-output behaviour.
+Through compositions, we can easily meet the required input-output behaviour for the
+TensorFlow frontend function.
 
 Temporary Compositions
 ----------------------
 
 Sometimes, there is a clear omission of an Ivy function, which would make the frontend
-implementation much simpler. For example, implementing :code:`median` for the NumPy
-frontend would currently require a very manual and heavily compositional implementation.
+implementation much simpler. For example, at the time of writing,
+implementing :code:`median` for the NumPy frontend would require a very manual and
+heavily compositional implementation.
 However, if the function :code:`ivy.median` was added to Ivy's functional API, then this
 frontend implementation would become very simple, with some light wrapping around
 :code:`ivy.median`.
 
 Adding :code:`ivy.median` would be a sensible decision, as many frameworks support this
-function. However, functions are added to Ivy in an iterative and deliberate manner,
-which doesn't always align with the timelines for the frontend implementations.
-Sometimes Ivy's API is not ready to have a new function added. In such cases, the
-frontend function should be added as a heavy composition, but a :code:`#ToDo` comment
-should be added, explaining that this frontend implementation will be updated if/when
-:code:`ivy.<func_name>` is implemented.
+function. When you come across such a function which is missing from Ivy, you should
+create a new issue on the Ivy repo, with the title :code:`ivy.<func_name>` and with the
+labels :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`.
+A member of our team will then review this issue, and if the proposed addition is deemed
+to be timely and sensible, then we will add this function to the
+"Extend Ivy Functional API"
+`ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
+At this point in time, you can reserve the function for yourself and get it implemented
+in a unique PR. Once merged, you can then resume working on the frontned function,
+which will now be a much easier task with the new addition to Ivy.
+
+Alternatively, if after creating the new issue you would rather not wait around for a
+member of our team to review and possibly add to the "Extend Ivy Functional API"
+`ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_,
+you can instead go straight ahead add the frontend function as a heavy composition of
+the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this
+frontend implementation will be simplified if/when :code:`ivy.<func_name>` is add to
+Ivy.
+
+The entire workflow for extending the Ivy Frontends as an external contributor is
+explained in more detail in the
+`Open Tasks <https://lets-unify.ai/ivy/contributing/4_open_tasks.html#frontend-apis>`_
+section.
+
 
 Supported Data Types and Devices
 --------------------------------
@@ -322,8 +342,8 @@ function as the ground truth, and so we can only test
 
 
 For these reasons, all frontend functions which correspond to functions with limited
-data type support in the native framework (which go beyond the data type limitations of
-the framework itself) should be flagged
+data type support in the native framework (in other words, which have even more
+restrictions than the data type limitations of the framework itself) should be flagged
 `as such <https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88>`_
 in a manner like the following:
 
@@ -332,8 +352,12 @@ in a manner like the following:
    logical_and.supported_dtypes = ("bool",)
 
 The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
-more devices, we should still flag the frontend function devices to be the same as those
-supported by the function in the native framework.
+more devices, we should still flag the frontend function supported devices to be the
+same as those supported by the function in the native framework. Again, this is only
+needed if the limitations go beyond those of the framework itself. For example, it is
+not necessary to uniquely flag every single NumPy function as supporting only CPU,
+as this is a limitation of the entire framework, and this limitation is already
+`globally flagged <>`_.
 
 Instance Methods
 ----------------------
