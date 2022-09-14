@@ -283,7 +283,9 @@ def test_shape(
 def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(not (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn))
-    ret = ivy.get_num_dims(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
+    ret = ivy.get_num_dims(
+        tensor_fn(object_in, dtype=dtype, device=device), as_array=as_tensor
+    )
     # type test
     if as_tensor:
         assert ivy.is_ivy_array(ret)
@@ -1305,7 +1307,7 @@ def test_clip_matrix_norm(
 )
 def test_value_is_nan(x_n_include_inf_n_value):
     x, include_inf, value = x_n_include_inf_n_value
-    ret = ivy.value_is_nan(x, include_inf)
+    ret = ivy.value_is_nan(x, include_inf=include_inf)
     assert ret == value
 
 
