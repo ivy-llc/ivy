@@ -1390,9 +1390,9 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
 
     Examples
     --------
-    >>> ivy.set_backend('torch')
     >>> print(ivy.function_supported_dtypes(ivy.acosh))
-    ()
+    ('bool', 'float64', 'int64', 'uint8', 'int8', 'float32', 'int32', 'int16', \
+    'bfloat16')
     """
     ivy.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
@@ -1611,7 +1611,7 @@ def is_int_dtype(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1., 2., 3.])
-    >>> print(x.dtype)
+    >>> x.dtype
     float32
 
     >>> print(ivy.is_int_dtype(x))
@@ -1621,7 +1621,7 @@ def is_int_dtype(
 
     >>> x = ivy.native_array([[-1, -1, -1], [1, 1, 1]], \
         dtype = ivy.int16)
-    >>> print(x.dtype)
+    >>> x.dtype
     torch.int16
 
     >>> print(ivy.is_int_dtype(x))
@@ -1637,8 +1637,10 @@ def is_int_dtype(
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
         b=ivy.array([3, 4, 5]))
-    >>> print(x.a.dtype, x.b.dtype)
-    float32 int32
+    >>> x.a.dtype
+    float32
+    >>> x.b.dtype
+    int32
 
     >>> print(ivy.is_int_dtype(x))
     {
