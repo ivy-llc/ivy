@@ -4903,7 +4903,6 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     # TODO: add docstring
-    print(x, out)
     return ivy.current_backend(x).sinc(x, out=out)
 
 
