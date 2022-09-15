@@ -578,7 +578,9 @@ def sinc(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return ivy.asarray(tf.experimental.numpy.sinc(x))
+    print(tf.experimental.numpy.sinc(x))
+    print(type(tf.experimental.numpy.sinc(x)))
+    return tf.experimental.numpy.sinc(x)
 
 
 def sinh(
