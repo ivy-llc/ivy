@@ -200,3 +200,15 @@ def mean_squared_logarithmic_error(y_true, y_pred):
     first_log = ivy.log(ivy.maximum(y_pred, 1e-7) + 1.0)
     second_log = ivy.log(ivy.maximum(y_true, 1e-7) + 1.0)
     return ivy.mean(ivy.square(ivy.subtract(first_log, second_log)), axis=-1)
+
+
+def cosine_similarity(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
+
+    if len(y_true.shape)== len(y_pred.shape) and len(y_true.shape)==2:
+        cosine = ivy.sum(y_true*y_pred, axis= 1)/(ivy.matrix_norm(y_true)*ivy.matrix_norm(y_pred))
+    else:
+        cosine = (y_true @ y_pred)/(ivy.matrix_norm(y_true)*ivy.matrix_norm(y_pred))
+    
+    return ivy.array(cosine)
