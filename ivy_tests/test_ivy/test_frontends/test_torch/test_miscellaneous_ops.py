@@ -340,41 +340,57 @@ def test_torch_diagflat(
     )
 
 
+@st.composite
+def _dtype_and_value_and_diagonal_offset(
+    draw,
+    *,
+    available_dtypes,
+    min_dim_size,
+    max_dim_size,
+    min_num_dims,
+    max_num_dims,
+):
+    dim_size = draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+    offset = draw(st.integers(min_value=-dim_size, max_value=dim_size))
+    dtype_and_values = helpers.dtype_and_values(
+        available_dtypes=available_dtypes,
+        max_dim_size=dim_size,
+        min_dim_size=dim_size,
+        min_num_dims=min_num_dims,
+        max_num_dims=max_num_dims,
+    )
+
+    dtype, values = draw(dtype_and_values)
+
+    return dtype, values, offset
+
+
 @handle_cmd_line_args
 @given(
-    dtype_and_values=helpers.dtype_and_values(
+    dtype_and_values_and_offset=_dtype_and_value_and_diagonal_offset(
         available_dtypes=helpers.get_dtypes("valid"),
-        max_dim_size=4,  # TODO: Increase these after ivy.asarray has been optimized.
         min_dim_size=1,
-        max_num_dims=2,
+        max_dim_size=4,
         min_num_dims=1,
+        max_num_dims=2,
     ),
-    offset=st.integers(max_value=4, min_value=-4),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.diag"
     ),
 )
 def test_torch_diag(
-    dtype_and_values,
-    offset,
+    dtype_and_values_and_offset,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    dtype, values = dtype_and_values
+    dtype, values, offset = dtype_and_values_and_offset
 
     assume("float16" not in dtype)
 
     values = np.asarray(values, dtype=dtype)
-
-    # In the case that this is false,
-    # Torch will crash with a memory
-    # allocation error, this is not a
-    # bug in the Ivy version, it can
-    # be reproduced in pure Torch.
-    assume(abs(offset) <= values.shape[0])
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
