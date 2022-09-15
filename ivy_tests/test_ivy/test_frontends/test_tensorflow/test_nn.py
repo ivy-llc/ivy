@@ -659,11 +659,11 @@ def test_tensorflow_batch_normalization(
         atrous=True,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.atrous_conv_transpose"
+        fn_name="ivy.functional.frontends.tensorflow.conv_transpose"
     ),
     native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
-def test_tensorflow_atrous_conv_transpose(
+def test_tensorflow_conv_transpose(
     x_f_d_df, as_variable, num_positional_args, native_array, fw
 ):
     (
@@ -686,7 +686,7 @@ def test_tensorflow_atrous_conv_transpose(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="nn.atrous_conv_transpose",
+        fn_tree="nn.conv_transpose",
         value=np.asarray(x, dtype=input_dtype[0]),
         filters=np.asarray(filters, dtype=input_dtype[1]),
         output_shape=output_shape,
