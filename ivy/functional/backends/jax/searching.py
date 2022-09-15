@@ -57,4 +57,3 @@ def where(
 
 def argwhere(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.argwhere(x)
-
