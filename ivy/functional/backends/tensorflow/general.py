@@ -69,7 +69,7 @@ def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
 
 
 # tensorflow does not support uint indexing
-get_item.unsupported_dtypes = ("uint8", "uint16", "uint32")
+get_item.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
