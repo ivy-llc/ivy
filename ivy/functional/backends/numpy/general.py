@@ -80,8 +80,8 @@ def gather_nd(
     return _to_device(res)
 
 
-def get_num_dims(x, /, *, as_tensor=False):
-    return np.asarray(len(np.shape(x))) if as_tensor else len(x.shape)
+def get_num_dims(x, /, *, as_array=False):
+    return np.asarray(len(np.shape(x))) if as_array else len(x.shape)
 
 
 def inplace_arrays_supported():
