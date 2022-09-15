@@ -6,152 +6,12 @@ def add(x, y, name=None):
     return ivy.add(x, y)
 
 
-def tan(x, name=None):
-    return ivy.tan(x)
-
-
-def multiply(x, y, name=None):
-    return ivy.multiply(x, y)
-
-
-def subtract(x, y, name=None):
-    return ivy.subtract(x, y)
-
-
-def logical_xor(x, y, name="LogicalXor"):
-    return ivy.logical_xor(x, y)
-
-
-def divide(x, y, name=None):
-    return ivy.divide(x, y)
-
-
-def negative(x, name=None):
-    return ivy.negative(x)
-
-
-def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
-    return ivy.where(
-        input_tensor == 0,
-        ivy.array(0.0, dtype=input_tensor.dtype),
-        ivy.ones_like(input_tensor, dtype=input_tensor.dtype) / input_tensor,
-    )
-
-
-def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
-    return ivy.all(input_tensor, axis=axis, keepdims=keepdims)
-
-
-def reduce_any(input_tensor, axis=None, keepdims=False, name="reduce_any"):
-    return ivy.any(input_tensor, axis=axis, keepdims=keepdims)
-
-
-def reduce_euclidean_norm(
-    input_tensor, axis=None, keepdims=False, name="reduce_euclidean_norm"
-):
-    return ivy.vector_norm(
-        input_tensor, axis=axis, keepdims=keepdims, ord=2
-    )  # ord = '2' is the euclidean norm
-
-
-def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
-    return ivy.exp(input_tensor).sum(axis=axis, keepdims=keepdims).log()
-
-
-def logical_and(x, y, name="LogicalAnd"):
-    return ivy.logical_and(x, y)
-
-
 def argmax(input, axis, output_type, name=None):
     return ivy.argmax(input, axis=axis)
 
 
-def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
-    return ivy.max(input_tensor, axis=axis, keepdims=keepdims)
-
-
-def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
-    return ivy.min(input_tensor, axis=axis, keepdims=keepdims)
-
-
-def reduce_prod(input_tensor, axis=None, keepdims=False, name="reduce_prod"):
-    return ivy.prod(input_tensor, axis=axis, keepdims=keepdims)
-
-
-def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
-    return ivy.std(input_tensor, axis=axis, keepdims=keepdims)
-
-
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
-
-
-def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
-    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
-
-
-def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
-    return ivy.var(input_tensor, axis=axis, keepdims=keepdims)
-
-
-def scalar_mul(scalar, x, name="scalar_mul"):
-    return ivy.multiply(x, ivy.array([scalar]))
-
-
-def log_sigmoid(x, name=None):
-    return -ivy.softplus(-x)
-
-
-def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
-    ret = ivy.cumprod(x, axis, exclusive)
-    if reverse:
-        return ivy.flip(ret, axis)
-    return ret
-
-
-def divide_no_nan(x, y, name="divide_no_nan"):
-    return ivy.where(
-        y == 0,
-        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
-        x / y,
-    )
-
-
-def erfcinv(x, name="erfcinv"):
-    return 1 / (1 - ivy.erf(x))
-
-
-def is_non_decreasing(x, name="is_non_decreasing"):
-    if ivy.array(x).size < 2:
-        return ivy.array(True)
-    if ivy.array(x).size == 2:
-        return ivy.array(x[0] <= x[1])
-    return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
-
-
-def is_strictly_increasing(x, name="is_strictly_increasing"):
-    if ivy.array(x).size < 2:
-        return ivy.array(True)
-    if ivy.array(x).size == 2:
-        return ivy.array(x[0] < x[1])
-    return ivy.all(ivy.less(x, ivy.roll(x, -1)))
-
-
-def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
-    x = ivy.array(input)
-    if keepdims is None:
-        keepdims = False
-
-    zero = ivy.zeros(ivy.shape(x), dtype=x.dtype)
-    return ivy.astype(
-        ivy.sum(
-            ivy.astype(ivy.not_equal(x, zero), ivy.int64),
-            axis=axis,
-            keepdims=keepdims,
-        ),
-        dtype,
-        copy=False,
-    )
 
 
 def confusion_matrix(
@@ -187,6 +47,81 @@ def confusion_matrix(
     return ivy.scatter_nd(indices, values, shape=shape)
 
 
+def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
+    x = ivy.array(input)
+    if keepdims is None:
+        keepdims = False
+    zero = ivy.zeros(ivy.shape(x), dtype=x.dtype)
+    return ivy.astype(
+        ivy.sum(
+            ivy.astype(ivy.not_equal(x, zero), ivy.int64),
+            axis=axis,
+            keepdims=keepdims,
+        ),
+        dtype,
+        copy=False,
+    )
+
+
+def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
+    ret = ivy.cumprod(x, axis, exclusive)
+    if reverse:
+        return ivy.flip(ret, axis)
+    return ret
+
+
+def divide(x, y, name=None):
+    return ivy.divide(x, y)
+
+
+def divide_no_nan(x, y, name="divide_no_nan"):
+    return ivy.where(
+        y == 0,
+        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
+        x / y,
+    )
+
+
+def erfcinv(x, name="erfcinv"):
+    return 1 / (1 - ivy.erf(x))
+
+
+def is_non_decreasing(x, name="is_non_decreasing"):
+    if ivy.array(x).size < 2:
+        return ivy.array(True)
+    if ivy.array(x).size == 2:
+        return ivy.array(x[0] <= x[1])
+    return ivy.all(ivy.less_equal(x, ivy.roll(x, -1)))
+
+
+def is_strictly_increasing(x, name="is_strictly_increasing"):
+    if ivy.array(x).size < 2:
+        return ivy.array(True)
+    if ivy.array(x).size == 2:
+        return ivy.array(x[0] < x[1])
+    return ivy.all(ivy.less(x, ivy.roll(x, -1)))
+
+
+def log_sigmoid(x, name=None):
+    return -ivy.softplus(-x)
+
+
+def logical_and(x, y, name="LogicalAnd"):
+    return ivy.logical_and(x, y)
+
+
+def logical_xor(x, y, name="LogicalXor"):
+    return ivy.logical_xor(x, y)
+
+
+def multiply(x, y, name=None):
+    return ivy.multiply(x, y)
+
+
+def negative(x, name=None):
+    return ivy.negative(x)
+
+
 def polyval(coeffs, x, name=None):
     assert isinstance(
         coeffs, list
@@ -199,6 +134,70 @@ def polyval(coeffs, x, name=None):
     for c in coeffs[1:]:
         p = c + p * x
     return p
+
+
+def reciprocal_no_nan(input_tensor, name="reciprocal_no_nan"):
+    return ivy.where(
+        input_tensor == 0,
+        ivy.array(0.0, dtype=input_tensor.dtype),
+        ivy.ones_like(input_tensor, dtype=input_tensor.dtype) / input_tensor,
+    )
+
+
+def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
+    return ivy.all(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_any(input_tensor, axis=None, keepdims=False, name="reduce_any"):
+    return ivy.any(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_euclidean_norm(
+    input_tensor, axis=None, keepdims=False, name="reduce_euclidean_norm"
+):
+    return ivy.vector_norm(
+        input_tensor, axis=axis, keepdims=keepdims, ord=2
+    )  # ord = '2' is the euclidean norm
+
+
+def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
+    return ivy.exp(input_tensor).sum(axis=axis, keepdims=keepdims).log()
+
+
+def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
+    return ivy.max(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
+    return ivy.min(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_prod(input_tensor, axis=None, keepdims=False, name="reduce_prod"):
+    return ivy.prod(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
+    return ivy.std(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
+    return ivy.var(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def scalar_mul(scalar, x, name="scalar_mul"):
+    return ivy.multiply(x, ivy.array([scalar]))
+
+
+def subtract(x, y, name=None):
+    return ivy.subtract(x, y)
+
+
+def tan(x, name=None):
+    return ivy.tan(x)
 
 
 def unsorted_segment_mean(
