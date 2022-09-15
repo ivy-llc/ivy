@@ -1013,7 +1013,7 @@ def default_float_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(input, lambda x: _check_float64(x)):
+            if ivy.nested_argwhere(input, lambda x: _check_float64(x)):
                 ret = ivy.float64
             else:
                 def_dtype = default_dtype()
@@ -1176,13 +1176,11 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 input, lambda x: x > 9223372036854775807 and x != ivy.inf
             ):
                 ret = ivy.uint64
-            elif ivy.nested_indices_where(
-                input, lambda x: x > 2147483647 and x != ivy.inf
-            ):
+            elif ivy.nested_argwhere(input, lambda x: x > 2147483647 and x != ivy.inf):
                 ret = ivy.int64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1271,9 +1269,7 @@ def default_uint_dtype(
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(
-                input, lambda x: x > 4294967295 and x != ivy.inf
-            ):
+            if ivy.nested_argwhere(input, lambda x: x > 4294967295 and x != ivy.inf):
                 ret = ivy.uint64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1576,7 +1572,7 @@ def is_bool_dtype(
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
             True
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (bool, np.bool)) and not type(x) == int,
             )
@@ -1685,7 +1681,7 @@ def is_int_dtype(
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
             True
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
             )
@@ -1770,7 +1766,7 @@ def is_float_dtype(
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
             True
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 dtype_in, lambda x: isinstance(x, (float, np.floating))
             )
             else False
@@ -1815,7 +1811,7 @@ def is_uint_dtype(
     elif isinstance(dtype_in, Number):
         return isinstance(dtype_in, np.unsignedinteger)
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return ivy.nested_indices_where(
+        return ivy.nested_argwhere(
             dtype_in, lambda x: isinstance(x, np.unsignedinteger)
         )
     return "uint" in as_ivy_dtype(dtype_in)
