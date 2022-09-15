@@ -70,7 +70,7 @@ def softplus(x: np.ndarray,
         np.maximum(x * beta, 0, dtype=x.dtype),
         out=out
     )) / beta
-    return np.where(res < threshold, res, float(threshold))
+    return np.where(x*beta > threshold, x*beta, res)
 
 
 softplus.support_native_out = True
