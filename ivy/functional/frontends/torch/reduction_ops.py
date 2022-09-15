@@ -38,6 +38,3 @@ def nansum(input, dim=None, keepdim=False, *, out=None):
     fill_values = ivy.zeros_like(input)
     input = ivy.where(ivy.isnan(input), fill_values, input)
     return ivy.sum(input, axis=dim, dtype=input_dtype, keepdims=keepdim, out=out)
-
-
-nansum.support_native_out = True

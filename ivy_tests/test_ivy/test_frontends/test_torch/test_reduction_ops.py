@@ -260,7 +260,6 @@ def test_torch_nansum(
     dtype_input_axis,
     as_variable,
     num_positional_args,
-    with_out,
     native_array,
     keepdims,
     fw,
@@ -269,7 +268,7 @@ def test_torch_nansum(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
