@@ -274,7 +274,7 @@ def scatter_nd(
         if not target_given:
             target = jnp.asarray(
                 jnp.where(target == 1e12, 0.0, target), dtype=updates.dtype
-                )
+            )
     elif reduction == "max":
         if not target_given:
             target = jnp.ones(shape, dtype=updates.dtype) * -1e12
@@ -282,7 +282,7 @@ def scatter_nd(
         if not target_given:
             target = jnp.asarray(
                 jnp.where(target == -1e12, 0.0, target), dtype=updates.dtype
-                )
+            )
     else:
         raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
