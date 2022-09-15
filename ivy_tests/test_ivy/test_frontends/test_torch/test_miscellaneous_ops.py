@@ -3,6 +3,7 @@ import numpy as np
 from hypothesis import assume, given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -302,4 +303,41 @@ def test_torch_cumprod(
         dim=axis,
         dtype=dtype,
         out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    row=st.integers(min_value=0, max_value=10),
+    col=st.integers(min_value=0, max_value=10),
+    offset=st.integers(),
+    dtype_result=helpers.get_dtypes("valid"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tril_indices"
+    ),
+)
+def test_torch_tril_indices(
+    row,
+    col,
+    offset,
+    dtype_result,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int32],
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="tril_indices",
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype_result,
     )
