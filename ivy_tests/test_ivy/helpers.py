@@ -658,18 +658,15 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     ret
         integer or float.
     """
-    if draw(st.booleans()):
-        return draw(ints(
-            min_value=int(min_value),
-            max_value=int(max_value),
-            safety_factor=safety_factor,
-        ))
-    else:
-        return draw(floats(
-            min_value=min_value,
-            max_value=max_value,
-            safety_factor=safety_factor,
-        ))
+
+    return draw(
+        ints(min_value=int(min_value),
+             max_value=int(max_value),
+             safety_factor=safety_factor)
+        | floats(min_value=min_value,
+                 max_value=max_value,
+                 safety_factor=safety_factor)
+    )
 
 
 def assert_all_close(
