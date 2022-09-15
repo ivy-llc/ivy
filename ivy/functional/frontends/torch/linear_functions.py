@@ -3,16 +3,16 @@ import ivy
 
 def bilinear(input1, input2, weight, bias=None):
     input1_shape = ivy.shape(input1)
-    if input1_shape:
+    if len(input1_shape) < 2:
         raise RuntimeError("Input1 dimensions must be of format (N,*,Hin1)")
     input2_shape = ivy.shape(input2)
-    if input2_shape:
+    if len(input2_shape) < 2:
         raise RuntimeError("Input2 dimensions must be of format (N,*,Hin2)")
     if input1_shape[1:-1] != input2.shape[1:-1]:
         raise RuntimeError("All dimension of input1 and input2 \
             should match except for last dimension")
     weight_shape = ivy.shape(weight)
-    if weight_shape:
+    if len(input1_shape) < 3:
         raise RuntimeError("Weight dimensions must be of format (Hout,Hin1,Hin2)")
     if weight_shape[-2] != input1_shape[-1]:
         raise RuntimeError("Weight 2nd last dimension \
