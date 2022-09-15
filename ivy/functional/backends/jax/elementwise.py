@@ -41,6 +41,7 @@ def add(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.add(x1, x2)
 
 

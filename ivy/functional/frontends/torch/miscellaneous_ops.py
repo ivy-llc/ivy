@@ -15,11 +15,16 @@ def roll(input, shifts, dims=None):
 
 
 def cumsum(input, dim, *, dtype=None, out=None):
-    return ivy.cumsum(x=input, axis=dim, out=out)
+    return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
+
+def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
+    sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
+    return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
+  
 
 def cumprod(input, dim, *, dtype=None, out=None):
-    return ivy.cumprod(x=input, axis=dim, out=out)
+    return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
 def diagonal(input, offset=0, dim1=0, dim2=1):

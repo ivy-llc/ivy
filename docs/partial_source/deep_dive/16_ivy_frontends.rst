@@ -18,6 +18,7 @@ Ivy Frontends
 .. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
 
 Introduction
 ------------
@@ -28,26 +29,41 @@ transpilations, as explained `here`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
-Basic
------
+The Basics
+----------
 
 **NOTE:** Type hints, docstrings and examples are not required when working on
 frontend functions.
 
+There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open_task`_.
+
 **Jax**
 
-In general, all functions in the :code:`jax.numpy` namespace are themselves implemented
-as a composition of the lower-level functions in the :code:`jax.lax` namespace,
-which maps very closely to the API for the Accelerated Linear Algebra (XLA) compiler
-which is used under the hood to run high performance JAX code.
+JAX has two distinct groups of functions, those in the :code:`jax.lax` namespace and
+those in the :code:`jax.numpy` namespace. The former set of functions map very closely
+to the API for the Accelerated Linear Algebra (`XLA <https://www.tensorflow.org/xla>`_)
+compiler, which is used under the hood to run high performance JAX code. The latter set
+of functions map very closely to NumPy's well known API. In general, all functions in
+the :code:`jax.numpy` namespace are themselves implemented as a composition of the
+lower-level functions in the :code:`jax.lax` namespace.
 
 When transpiling between frameworks, the first step is to compile the computation graph
-into the lowest level python functions for the source framework using Ivy's graph
+into low level python functions for the source framework using Ivy's graph
 compiler, before then replacing these nodes with the associated functions in Ivy's
-frontend API. Given that almost all jax code can be decomposed into :code:`jax.lax`
-functions, these are the most important functions to implement in Ivy's frontend API.
-Thus, a :code:`lax` module is created in the frontend API, and most functions are placed
-there. We start with the function :code:`add` as an example.
+frontend API. Given that all jax code can be decomposed into :code:`jax.lax`
+function calls, when transpiling :code:`jax` code it should always be possible to
+express the computation graph as a composition of only :code:`jax.lax` functions.
+Therefore, arguably these are the *only* functions we should need to implement in the
+JAX frontend. However, in general we wish to be able to compile a graph in the backend
+framework with varying levels of dynamicism. A graph of only :code:`jax.lax` functions
+chained together in general is more *static* and less *dynamic* than a graph which
+chains :code:`jax.numpy` functions together. We wish to enable varying extents of
+dynamicism when compiling a graph with our graph compiler, and therefore we also
+implement the functions in the :code:`jax.numpy` namespace in our frontend API for JAX.
+
+Thus, both :code:`lax` and :code:`numpy` modules are created in the JAX frontend API.
+We start with the function :code:`lax.add` as an example.
 
 .. code-block:: python
 
@@ -55,15 +71,16 @@ there. We start with the function :code:`add` as an example.
     def add(x, y):
         return ivy.add(x, y)
 
-:code:`add` is categorised under :code:`operators` as shown in the `jax.lax`_ package
-directory. We organize the functions using the same categorizations as the original
-framework, and also mimick the importing behaviour regarding modules and namespaces etc.
+:code:`lax.add` is categorised under :code:`operators` as shown in the `jax.lax`_
+package directory. We organize the functions using the same categorizations as the
+original framework, and also mimick the importing behaviour regarding modules and
+namespaces etc.
 
 For the function arguments, these must be identical to the original function in
 Jax. In this case, `jax.lax.add`_ has two arguments,
-and so we will also have the same two arguments in our Jax frontend :code:`add`.
+and so we will also have the same two arguments in our Jax frontend :code:`lax.add`.
 In this case, the function will then simply return :code:`ivy.add`,
-which in turn will link to the backend-specific implementation :code:`add`
+which in turn will link to the backend-specific implementation :code:`ivy.add`
 according to the framework set in the backend.
 
 .. code-block:: python
@@ -72,11 +89,11 @@ according to the framework set in the backend.
     def tan(x):
         return ivy.tan(x)
 
-Using :code:`tan` as a second example, we can see that this is placed under
+Using :code:`lax.tan` as a second example, we can see that this is placed under
 :code:`operators`, again in the `jax.lax`_ directory.
 By referring to the `jax.lax.tan`_ documentation, we can see that it has only one
-argument. In the same manner as our :code:`add` function, we simply link its return to
-:code:`ivy.tan`, and again the computation then depends on the backend framework.
+argument. In the same manner as our :code:`add` function, we simply link its return
+to :code:`ivy.tan`, and again the computation then depends on the backend framework.
 
 **NumPy**
 
@@ -124,18 +141,15 @@ being.
 In the case of :code:`order` and :code:`subok`, this is because the aspects which these
 arguments seek to control are simply not controllable when using Ivy.
 :code:`order` controls the low-level memory layout of the stored array.
-Ivy abstracts the backend framework, and therefore also abstracts everything below Ivy's
-functional API, including the backend array class, the low-level language compiled to,
-the device etc. Most ML frameworks do not offer per-array control of the memory layout,
-and so we cannot offer this control at the Ivy API level, nor the frontend API level
-either. This is not a problem, as the memory layout has no bearing at all on the
-input-output behaviour of the function. Similarly, :code:`subok` controls whether or not
-subclasses of the :code:`numpy.ndarray` should be permitted as inputs to the function.
+Similarly, :code:`subok` controls whether or not subclasses of the :code:`numpy.ndarray`
+should be permitted as inputs to the function.
 Again, this is a very framework-specific argument. All ivy functions by default do
 enable subclasses of the :code:`ivy.Array` to be passed, and the frontend function will
 be operating with :code:`ivy.Array` instances rather than :code:`numpy.ndarray`
 instances, and so we omit this argument. Again, it has no bearing on input-output
 behaviour and so this is not a problem when transpiling between frameworks.
+
+See the section "Unused Arguments" below for more details.
 
 .. code-block:: python
 
@@ -228,6 +242,50 @@ framework. Looking at the `torch.tan`_ documentation, we can mimick the same arg
 and again simply wrap :code:`ivy.tan`,
 also making use of the :code:`out` argument in this case.
 
+Unused Arguments
+----------------
+
+As can be seen from the examples above, there are often cases where we do not add
+support for particular arguments in the frontend function. Generally, we can omit
+support for a particular argument only if: the argument **does not** fundamentally
+affect the input-output behaviour of the function in a mathematical sense. The only
+two exceptions to this rule are arguments related to either the data type or the device
+on which the returned array(s) should reside. Examples of arguments which can be
+omitted, on account that they do not change the mathematics of the function are
+arguments which relate to:
+
+* the layout of the array in memory, such as :code:`order` in
+  `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
+
+* the algorithm or approximations used under the hood, such as :code:`precision` and
+  :code:`preferred_element_type` in
+  `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
+
+* the specific array class in the original framework, such as :code:`subok` in
+  `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
+
+* the labelling of functions for organizational purposes, such as :code:`name` in
+  `tf.math.add <https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004>`_.
+
+There are likely to be many other examples of arguments which do not fundamentally
+affect the input-output behaviour of the function in a mathematical sense, and so can
+also be omitted from Ivy's frontend implementation.
+
+The reason we omit these arguments in Ivy is because Ivy is not designed to provide
+low-level control to functions that extend beyond the pure mathematics of the function.
+This is a requirement because Ivy abstracts the backend framework,
+and therefore also abstracts everything below the backend framework's functional API,
+including the backend array class, the low-level language compiled to, the device etc.
+Most ML frameworks do not offer per-array control of the memory layout, and control for
+the finer details of the algorithmic approximations under the hood, and so we cannot
+in general offer this level of control at the Ivy API level, nor the frontend API level
+as a direct result. As explained above, this is not a problem, as the memory layout has
+no bearing at all on the input-output behaviour of the function. In contrast, the
+algorithmic approximation may have a marginal bearing on the final results in some
+cases, but Ivy is only designed to unify to within a reasonable numeric approximation
+in any case, and so omitting these arguments also very much fits within Ivy's design.
+
+
 Compositions
 ------------
 
@@ -257,7 +315,7 @@ the backend :code:`ivy.cumprod()` does not support this argument or behaviour.
         axis: int = 0,
         *,
         exclusive: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
@@ -280,8 +338,8 @@ result of :code:`ivy.cumprod()`.
 Through compositions, we can easily meet the required input-output behaviour for the
 TensorFlow frontend function.
 
-Temporary Compositions
-----------------------
+Missing Ivy Functions
+---------------------
 
 Sometimes, there is a clear omission of an Ivy function, which would make the frontend
 implementation much simpler. For example, at the time of writing,
@@ -302,6 +360,9 @@ to be timely and sensible, then we will add this function to the
 At this point in time, you can reserve the function for yourself and get it implemented
 in a unique PR. Once merged, you can then resume working on the frontned function,
 which will now be a much easier task with the new addition to Ivy.
+
+Temporary Compositions
+----------------------
 
 Alternatively, if after creating the new issue you would rather not wait around for a
 member of our team to review and possibly add to the "Extend Ivy Functional API"
@@ -402,54 +463,65 @@ these new instance methods defined in the Ivy frontend class.
 Framework-Specific Classes
 --------------------------
 
-Some of the frontend functions that we need to implement for our frontend functional API 
-include framework-specific classes, which do not have a counterpart in other frameworks 
-or Ivy, as the types for their arguments or as the default values for the arguments. 
+Some of the frontend functions that we need to implement include framework-specific
+classes as the default values for some of the arguments,
+which do not have a counterpart in other frameworks.
 When re-implementing these functions in Ivy's frontend, we would like to still include
-those arguments without directly using those special classes as they do not exist in Ivy.
-In this section of the deep dive we are going to introduce how to deal with 
-Framework-Specific Classes.
+those arguments without directly using these special classes, which do not exist in Ivy.
 
-For each backend framework, there is a dictionary named `<backend>_classes_to_ivy_classes`
-in `ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`, 
-which will hold pairs of framework-specific classes and corresponding Ivy or 
-native Python classes. For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have: 
+A good example is the special class :code:`numpy._NoValue`, which is sometimes used
+instead of :code:`None` as the default value for arguments in numpy. For example,
+the :code:`keepdims`, :code:`initial` and :code:`where` arguments of :code:`numpy.sum`
+use :code:`numpy._NoValue` as the default value, while :code:`axis`, :code:`dtype` and
+:code:`out` use :code:`None`, as can be seen in the
+`source code <https://github.com/numpy/numpy/blob/v1.23.0/numpy/core/fromnumeric.py#L2162-L2299>`_.
+
+We now introduce how to deal with such framework-specific classes. For each backend
+framework, there is a dictionary named `<backend>_classes_to_ivy_classes` in
+`ivy/ivy_tests/test_ivy/test_frontends/test_<backend>/__init__.py`.
+This holds pairs of framework-specific classes and the corresponding Ivy or
+native Python classes to map to.
+For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
 
 .. code-block:: python
     
     numpy_classes_to_ivy_classes = {np._NoValue: None}
 
-Where np._NoValue is a reference to _NoValueType class defined in numpy/numpy/_globals.py, 
-which represents a special keyword value and the instance of this class may be used as the
-default value assigned to a keyword if no other obvious default (e.g., :code:`None`) is suitable.
+Where :code:`np._NoValue` is a reference to the :code:`_NoValueType` class defined in
+:code:`numpy/numpy/_globals.py`.
 
-When you found that the frontend function of a certain framework that you try to implement 
-in our frontend API introduce a new datatype that, like the :code:`numpy._NoValue` example before, 
-can not be directly replaced, you may pick an existing Ivy or pure python datatype 
-and use them instead in the ivy frontend implementation to mimic the same effect and record 
-the pair of framework-specific class’s reference and your replacement class’s reference 
-in the corresponding dictionary.
+Any time a new framework-specific data type is discovered, such as the
+:code:`numpy._NoValue` example given, then this should be added as a key to the
+dictionary, and the most appropriate pure-python or Ivy class or instance should be
+added as the value.
 
-As our frontend test will try to pass all the generated inputs in both our own implementation
-and the original function, then you cannot directly pass either the framework-specific class
-or your chosen counterpart in our test function. Instead, you should pass a :code:`NativeClass` 
-object in. The :code:`NativeClass` is defined in ‘ivy/ivy_tests/test_ivy/test_frontends/__init__.py’ as a placeholder class to represent a 
-pair of framework specific class and its counterpart. It has only one attribute, which is 
-:code:`_native_class`, that holds the reference to the special class being used by the 
-targeted framework.
+During frontend testing, the helper :code:`test_frontend_function` by default passes
+all the generated inputs into both Ivy's frontend implementation and also the original
+function. For the framework-specific classes discussed, this is a problem.
+Handling the framework-specific class in the Ivy frontend would add a dependency to the
+frontend framework being mimicked. This breaks Ivy's design philosophy,
+whereby only the specific backend framework being used should be a dependency.
+Our solution is to pass the value from the :code:`<framework>_classes_to_ivy_classes`
+dict to the Ivy frontend function and the key from the
+:code:`<framework>_classes_to_ivy_classes` dict to the original function during testing
+in :code:`test_frontend_function`.
 
-When writing a test for a frontend function where its original counterpart accepts a 
-framework-specific class, you should import the :code:`NativeClass` and initialize an instance
-of it with :code:`_native_class` set as the reference to the special class, which you have 
-added in the `<backend>_classes_to_ivy_classes` dictionary before. Then just pass the 
-:code:`NativeClass` instance in the arguments like other generated input and the 
-:code:`helpers.test_frontend_function` will replace it with the actual classes accordingly 
-in the background.
+The way we do this is to wrap all framework-specific classes inside a
+:code:`NativeClass` during frontend testing. The :code:`NativeClass` is defined in
+:code:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
+placeholder class to represent the framework-specific class and its counterpart.
+It has only one attribute, :code:`_native_class`, which holds the reference to the
+special class being used by the targeted framework.
+Then, in order to pass the key and value to the orignal and frontend functions
+respectively, :code:`test_frontend_function` detects all :code:`NativeClass` instances
+in the arguments, makes use of :code:`<framework>_classes_to_ivy_classes` internally
+to find the corresponding value to the key wrapped inside the :code:`NativeClass`
+instance, and then passes the key and value as inputs to the corresponding functions
+correctly.
 
-Here is an example of :code:`NativeClass` being put to use in test.
 
-ivy.sum()
-^^^^^^^^^^
+As an example, we show how :code:`NativeClass` is used in the frontend test for the
+:code:`sum` function in the NumPy frontend:
 
 .. code-block:: python
     # sum
@@ -497,13 +569,16 @@ ivy.sum()
             where=where,
         )
 
-* NumPy.sum has three optional arguments: :code:`where`, :code:`keep_dims`, :code:`initial`, which all have the default value of numpy._NoValue. So we define a NativeClass object Novalue to help recreate the effect of not passing any value to those arguments by using Novalue instead where None used to be generated for the those arguments. 
-
+The function has three optional arguments which have the default value of
+:code:`numpy._NoValue`, being: :code:`where`, :code:`keep_dims` and :code:`initial`.
+We therefore define a :code:`NativeClass` object :code:`Novalue`, and pass this as input
+to each of these arguments when calling :code:`test_frontend_function`.
 
 **Round Up**
 
-This should hopefully allow you to have a better grasp on the Ivy Frontend APIs
-after going through the contents! We have a `YouTube tutorial series`_ on this
+This should hopefully have given you a better grasp on the what the Ivy Frontend APIs
+are for, how they should be implemented, and the things to watch out for!
+We also have a short `YouTube tutorial series`_ on this
 as well if you prefer a video explanation!
 
 If you're ever unsure of how best to proceed,

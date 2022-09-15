@@ -166,7 +166,7 @@ def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
     if dtype_in in native_dtype_dict.values():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise TypeError(
+        raise ivy.exceptions.IvyException(
             f"Cannot convert to numpy dtype. {dtype_in} is not supported by NumPy."
         )
 

@@ -2133,7 +2133,8 @@ def stable_divide(
     denominator
         The denominator of the division.
     min_denominator
-        The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
+        The minimum denominator to use, use global ivy._MIN_DENOMINATOR (1e-12)
+        by default.
 
     Returns
     -------
@@ -2520,6 +2521,43 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     return True
 
 
+@to_native_arrays_and_back
+def get_item(
+    x: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray],
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from x according to query array, identical to x[query].
+
+       Parameters
+       ----------
+       x
+           array, the array from which to gather values.
+       query
+           array, index array, integer indices or boolean mask.
+
+       Returns
+       -------
+       ret
+           New array with the values gathered at the specified indices.
+
+       Functional Examples
+       -------------------
+
+       >>> x = ivy.array([0, -1, 20])
+       >>> query = ivy.array([0, 1])
+       >>> print(ivy.get_item(x, query))
+       ivy.array([ 0, -1])
+
+       >>> x = ivy.array([[4, 5], [20, 128], [-2, -10]])
+       >>> query = ivy.array([[True, False], [False, False], [True, True]])
+       >>> print(ivy.get_item(x, query))
+       ivy.array([  4,  -2, -10])
+
+    """
+    return current_backend(x).get_item(x, query)
+
+
 @handle_nestable
 @handle_exceptions
 def inplace_update(
@@ -2822,7 +2860,7 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Gather slices from params at axis according to indices.
 
@@ -3071,7 +3109,7 @@ def shape(
     ivy.array([2, 3])
 
     """
-    return current_backend(x).shape(x, as_array)
+    return current_backend(x).shape(x, as_array=as_array)
 
 
 @handle_exceptions
