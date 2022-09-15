@@ -335,7 +335,7 @@ class Module(abc.ABC):
         Forward pass of the layer,
         called after handling the optional input variables.
         """
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     def _forward_with_tracking(self, *args, **kwargs):
         """Forward pass while optionally tracking submodule returns and call order"""
