@@ -31,3 +31,13 @@ def any(input, dim=None, keepdim=False, *, out=None):
     if ivy.is_uint_dtype(input_dtype):
         ret = ivy.astype(ret, input_dtype, out=out)
     return ret
+
+
+def nansum(input, dim=None, keepdim=False, *, out=None):
+    input_dtype = ivy.as_ivy_dtype(input.dtype)
+    fill_values = ivy.zeros_like(input)
+    input = ivy.where(ivy.isnan(input), fill_values, input)
+    return ivy.sum(input, axis=dim, dtype=input_dtype, keepdims=keepdim, out=out)
+
+
+nansum.support_native_out = True

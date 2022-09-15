@@ -239,3 +239,43 @@ def test_torch_any(
         keepdim=keepdims,
         out=None,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        min_num_dims=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nansum"
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_nansum(
+    dtype_input_axis,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    keepdims,
+    fw,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nansum",
+        input=np.asarray(x, dtype=input_dtype),
+        dim=axis,
+        keepdim=keepdims,
+    )
