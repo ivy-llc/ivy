@@ -116,8 +116,8 @@ def test_acos(
         instance_method=instance_method,
         fw=fw,
         fn_name="acos",
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -848,8 +848,8 @@ def test_floor(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        allow_inf=False,
-        large_value_safety_factor=1.1,
+        large_value_safety_factor=40,
+        small_value_safety_factor=4.5,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
