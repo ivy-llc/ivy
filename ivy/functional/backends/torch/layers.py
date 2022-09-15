@@ -36,7 +36,7 @@ def conv1d(
     pad_w = ivy.handle_padding(x_shape, strides, f_w_after_dilation, padding)
     x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0)
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -88,7 +88,7 @@ def conv1d_transpose(
         pad_w = pad_w // 2
         padding_list = [pad_w]
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -155,7 +155,7 @@ def conv2d(
         x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
     )
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -218,7 +218,7 @@ def conv2d_transpose(
         padding_list = [pad_h, pad_w]
 
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -284,7 +284,7 @@ def depthwise_conv2d(
     )
 
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -344,7 +344,7 @@ def conv3d(
         value=0,
     )
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -422,7 +422,7 @@ def conv3d_transpose(
         padding_list = [pad_d, pad_h, pad_w]
 
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )

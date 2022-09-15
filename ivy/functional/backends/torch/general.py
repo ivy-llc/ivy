@@ -74,8 +74,10 @@ def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
                 return x.detach().cpu().numpy().astype("bfloat16")
             return x.detach().cpu().numpy()
         else:
-            raise ValueError("Overwriting the same address is not supported for torch.")
-    raise ValueError("Expected a pytorch tensor.")
+            raise ivy.exceptions.IvyException(
+                "Overwriting the same address is not supported for torch."
+            )
+    raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
 def to_scalar(x: torch.Tensor, /) -> Number:
@@ -89,7 +91,7 @@ def to_list(x: torch.Tensor, /) -> list:
         return x.tolist()
     elif torch.is_tensor(x):
         return x.detach().cpu().tolist()
-    raise ValueError("Expected a pytorch tensor.")
+    raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
 def gather(
@@ -210,7 +212,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        assert len(target.shape) == 1 and target.shape[0] == size
+        ivy.assertions.check_equal(len(target.shape), 1)
+        ivy.assertions.check_equal(target.shape[0], size)
     dtype = updates.dtype
     if reduction in ["sum", "replace"]:
         initial_val = torch.tensor(0).type(dtype)
@@ -219,7 +222,7 @@ def scatter_flat(
     elif reduction == "max":
         initial_val = torch.tensor(-1e12).type(dtype)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -233,7 +236,7 @@ def scatter_flat(
         try:
             import torch_scatter as torch_scatter
         except ImportError:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Unable to import torch_scatter, verify this is correctly installed."
             )
     if reduction == "replace":
@@ -320,7 +323,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
@@ -338,7 +341,7 @@ def scatter_nd(
     elif reduction == "max":
         initial_val = torch.tensor(-1e12).type(dtype)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -363,7 +366,7 @@ def scatter_nd(
         try:
             import torch_scatter as torch_scatter
         except ImportError:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Unable to import torch_scatter, verify this is correctly installed."
             )
     if reduction == "replace":

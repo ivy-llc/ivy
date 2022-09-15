@@ -669,10 +669,11 @@ trunc.support_native_out = True
 
 @_handle_0_dim_output
 def erf(x, /, *, out: Optional[np.ndarray] = None):
-    if _erf is None:
-        raise Exception(
-            "scipy must be installed in order to call ivy.erf with a numpy backend."
-        )
+    ivy.assertions.check_exists(
+        _erf,
+        message="scipy must be installed in order to call ivy.erf with a \
+        numpy backend.",
+    )
     ret = _erf(x, out=out)
     if hasattr(x, "dtype"):
         ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
