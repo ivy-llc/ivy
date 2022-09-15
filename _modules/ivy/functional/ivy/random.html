@@ -197,7 +197,9 @@
 
 
 <span class="k">def</span> <span class="nf">_check_valid_scale</span><span class="p">(</span><span class="n">std</span><span class="p">):</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span>
+        <span class="n">std</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;std must be non-negative&quot;</span>
+    <span class="p">)</span>
 
 
 <span class="c1"># Extra #</span>

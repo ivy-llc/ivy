@@ -203,11 +203,7 @@
 <span class="sd">            &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. (Default value = None)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">valid_build_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;on_init&quot;</span><span class="p">,</span> <span class="s2">&quot;explicit&quot;</span><span class="p">,</span> <span class="s2">&quot;on_call&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">build_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_build_modes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;build_mode must be one of </span><span class="si">{}</span><span class="s2"> of type str, but found &quot;</span>
-                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_build_modes</span><span class="p">,</span> <span class="n">build_mode</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">build_mode</span><span class="p">))</span>
-            <span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">build_mode</span><span class="p">,</span> <span class="n">valid_build_modes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span>
             <span class="n">device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">devices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
         <span class="p">)</span>
@@ -469,7 +465,7 @@
 <span class="sd">        Forward pass of the layer,</span>
 <span class="sd">        called after handling the optional input variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyNotImplementedException</span>
 
     <span class="k">def</span> <span class="nf">_forward_with_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call order&quot;&quot;&quot;</span>
@@ -693,10 +689,11 @@
                 <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;atol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atol</span>
             <span class="k">if</span> <span class="n">rtol</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;rtol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rtol</span>
-            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
-                <span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-            <span class="p">),</span> <span class="s2">&quot;ret</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">and expected_ret</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">were not close enough&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
+                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;ret: </span><span class="si">{}</span><span class="s2"> and expected_ret: </span><span class="si">{}</span><span class="s2"> were not close enough&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span>
+                <span class="p">),</span>
             <span class="p">)</span>
 
     <span class="c1"># noinspection PyProtectedMember</span>
