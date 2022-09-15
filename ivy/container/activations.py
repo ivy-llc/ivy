@@ -671,7 +671,7 @@ class ContainerWithActivations(ContainerBase):
         >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
         >>> print(y)
         {
-            a: ivy.array([0.948, 2., 2.])
+            a: ivy.array([0.948, 2.63, 4.25])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -741,7 +741,7 @@ class ContainerWithActivations(ContainerBase):
         >>> y = x.softplus(beta=0.5, threshold=2)
         >>> print(y)
         {
-            a: ivy.array([0.948, 2., 2.])
+            a: ivy.array([0.948, 2.63, 4.25])
         }
         """
         return self.static_softplus(

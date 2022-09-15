@@ -356,7 +356,7 @@ def softplus(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.softplus(x, threshold=2)
     >>> print(y)
-    ivy.array([1.31, 2.  , 2.  ])
+    ivy.array([1.31, 2.13, 3.  ])
 
     With :code: `ivy.NativeArray` input:
 
