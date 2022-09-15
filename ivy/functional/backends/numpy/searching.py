@@ -61,7 +61,7 @@ def where(
 # ----- #
 
 
-def indices_where(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
+def indices_where(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     where_x = np.where(x)
     if len(where_x) == 1:
         return np.expand_dims(where_x[0], -1)
