@@ -2373,9 +2373,9 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
-    large_abs_safety_factor=1,
-    small_abs_safety_factor=1,
-    safety_factor_scale=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
@@ -2427,7 +2427,7 @@ def dtype_and_values(
 
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "linear" or "log". Default value = None.
+        "linear" or "log". Default value = "linear".
     allow_inf
         if True, allow inf in the arrays.
     allow_nan
@@ -2522,9 +2522,9 @@ def dtype_values_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    large_abs_safety_factor=1,
-    small_abs_safety_factor=1,
-    safety_factor_scale=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
@@ -2581,7 +2581,7 @@ def dtype_values_axis(
 
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "linear" or "log". Default value = None.
+        "linear" or "log". Default value = "linear".
     allow_inf
         if True, allow inf in the array.
     allow_nan
@@ -2842,9 +2842,9 @@ def array_values(
     allow_inf=False,
     exclude_min=True,
     exclude_max=True,
-    large_abs_safety_factor=1,
-    small_abs_safety_factor=1,
-    safety_factor_scale=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -2894,7 +2894,7 @@ def array_values(
 
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "linear" or "log". Default value = None.
+        "linear" or "log". Default value = "linear".
 
     In the case of min_value or max_value is not in the valid range
     the invalid value will be replaced by data type limit, the range
@@ -2942,24 +2942,24 @@ def array_values(
         assert max_value >= min_value
 
         # Scale the values
-        if safety_factor_scale:
-            if safety_factor_scale == "linear":
-                min_value = min_value / large_abs_safety_factor
-                max_value = max_value / large_abs_safety_factor
-                if kind_dtype == "float":
-                    abs_smallest_val = (
-                        dtype_info.smallest_normal * small_abs_safety_factor
-                    )
-            elif safety_factor_scale == "log":
-                min_sign = math.copysign(1, min_value)
-                max_sign = math.copysign(1, max_value)
-                min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
-                max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
-                if kind_dtype == "float":
-                    m, e = math.frexp(dtype_info.smallest_normal)
-                    abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
-        elif kind_dtype == "float":
-            abs_smallest_val = dtype_info.smallest_normal
+        if safety_factor_scale == "linear":
+            min_value = min_value / large_abs_safety_factor
+            max_value = max_value / large_abs_safety_factor
+            if kind_dtype == "float":
+                abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
+        elif safety_factor_scale == "log":
+            min_sign = math.copysign(1, min_value)
+            max_sign = math.copysign(1, max_value)
+            min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+            max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+            if kind_dtype == "float":
+                m, e = math.frexp(dtype_info.smallest_normal)
+                abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
+        else:
+            raise ValueError(
+                f"{safety_factor_scale} is not a valid safety factor scale."
+                f" use 'log' or 'linear'."
+            )
 
         if kind_dtype == "int":
             if exclude_min:
