@@ -758,6 +758,7 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     """
     print(*args)
     ret = fn(*args, **kwargs)
+    print(ret)
     return ret, flatten_and_to_np(ret=ret)
 
 
