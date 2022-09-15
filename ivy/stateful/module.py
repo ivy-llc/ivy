@@ -73,11 +73,7 @@ class Module(abc.ABC):
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
-        if build_mode not in valid_build_modes:
-            raise Exception(
-                "build_mode must be one of {} of type str, but found "
-                "{} of type {}".format(valid_build_modes, build_mode, type(build_mode))
-            )
+        ivy.assertions.check_elem_in_list(build_mode, valid_build_modes)
         self._dev = ivy.default(
             device, ivy.default(lambda: devices[0], ivy.default_device(), True)
         )
