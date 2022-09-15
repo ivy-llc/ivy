@@ -371,8 +371,9 @@ def test_bitwise_and(
         available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
 )
@@ -485,8 +486,9 @@ def test_bitwise_or(
         available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
 )
@@ -563,7 +565,8 @@ def test_bitwise_xor(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_value_safety_factor=2,
+        small_abs_safety_factor=3,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
 )
@@ -843,7 +846,8 @@ def test_floor(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
-        large_value_safety_factor=1.1,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
@@ -892,7 +896,8 @@ def test_floor_divide(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=1,
-        large_value_safety_factor=20,
+        large_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floormod"),
 )

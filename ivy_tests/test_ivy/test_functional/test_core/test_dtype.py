@@ -148,8 +148,9 @@ def dtypes_shared(draw, num_dtypes):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         num_arrays=1,
-        small_value_safety_factor=1.5,
-        large_value_safety_factor=10,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
     dtype=helpers.get_dtypes("valid", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),

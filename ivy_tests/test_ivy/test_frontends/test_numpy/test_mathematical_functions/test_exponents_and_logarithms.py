@@ -166,7 +166,8 @@ def test_numpy_log10(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_value_safety_factor=1.2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
@@ -220,7 +221,8 @@ def test_numpy_log(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_value_safety_factor=1.2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
