@@ -68,9 +68,9 @@ def _astype_helper(draw):
         )
     )
 
-    cast_dtype = draw(helpers.get_castable_dtype(helpers.get_dtypes("valid"), dtype, x))
-    if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x)).tolist()
+    cast_dtype = draw(
+        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype, x)
+    )
     return dtype, x, cast_dtype
 
 
