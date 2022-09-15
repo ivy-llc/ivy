@@ -756,6 +756,7 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     Runs func with args and kwargs, and returns the result along with its flattened
     version.
     """
+    print(*args)
     ret = fn(*args, **kwargs)
     return ret, flatten_and_to_np(ret=ret)
 
