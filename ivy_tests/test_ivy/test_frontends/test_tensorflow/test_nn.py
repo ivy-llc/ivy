@@ -643,3 +643,39 @@ def test_tensorflow_batch_normalization(
         scale=np.asarray(scale, dtype=input_dtype),
         variance_epsilon=1e-7,
     )
+
+    
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        shape=(3, 5),
+    ),
+    labels=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.ctc_unique_labels"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_ctc_unique_labels(
+    dtype_and_x,
+    labels,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.ctc_unique_labels",
+        labels=np.asarray(labels, dtype=input_dtype)
+    )
