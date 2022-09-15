@@ -9,14 +9,16 @@ def bilinear(input1, input2, weight, bias=None):
     if input2_shape:
         raise RuntimeError("Input2 dimensions must be of format (N,*,Hin2)")
     if input1_shape[1:-1] != input2.shape[1:-1]:
-        raise RuntimeError("Hin1 should match Hin2")
+        raise RuntimeError("All dimension of input1 and input2 \
+            should match except for last dimension")
     weight_shape = ivy.shape(weight)
     if weight_shape:
         raise RuntimeError("Weight dimensions must be of format (Hout,Hin1,Hin2)")
     if weight_shape[-2] != input1_shape[-1]:
-        raise RuntimeError("Weight second last dimension should match input1's last dimension")
+        raise RuntimeError("Weight 2nd last dimension \
+            should match input1 last dimension")
     if weight_shape[-1] != input2_shape[-1]:
-        raise RuntimeError("Weight last dimension should match input2's last dimension")
+        raise RuntimeError("Weight last dimension should match input2 last dimension")
     if ivy.shape(bias) != weight_shape[:-2]:
         raise RuntimeError("Bias dimension should match weight first dimension")
 
@@ -25,10 +27,10 @@ def bilinear(input1, input2, weight, bias=None):
     # Reshape to (*, Hin2)
     input2_flattened = ivy.reshape(input2, (-1, input2_shape[-1]))
     # Reshape to (Hout, Hin1, Hin2)
-    weight_flattened = ivy.reshape(weight, (-1, weight_shape[-2], weight_shape[-1]))\
+    weight_flattened = ivy.reshape(weight, (-1, weight_shape[-2], weight_shape[-1]))
 
     # Create empty output array with shape (*, Hout)
-    output = ivy.zeros_like([[0.0 for _ in range(ivy.shape(weight_flattened)[0])] \
+    output = ivy.zeros_like([[0.0 for _ in range(ivy.shape(weight_flattened)[0])] 
     for _ in range(ivy.shape(input1_flattened)[0])])
 
     for i in range(ivy.shape(weight_flattened)[0]):
@@ -39,7 +41,7 @@ def bilinear(input1, input2, weight, bias=None):
         for j in range(ivy.shape(output)[0]):
             output[j][i] = buff[j]
 
-    if bias != None:
+    if bias is not None:
         ivy.add(output, bias, out=output)
     # Reshape output to original shape (N,*,Hout)
     ivy.reshape(output, input1_shape[1:-1] + weight_shape[:-2])
