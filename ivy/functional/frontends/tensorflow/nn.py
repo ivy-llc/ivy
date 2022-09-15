@@ -123,3 +123,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
     return x * ivy.astype(inv, x.dtype, copy=False) + ivy.astype(
         offset - mean * inv if offset is not None else -mean * inv, x.dtype
     )
+
+
+def depthwise_conv2d(input, filter, strides, padding="SAME", data_format="NHWC", dilations=None, name=None):
+    return (input, filters, strides, padding, data_format=data_format, dilations=dilations)
