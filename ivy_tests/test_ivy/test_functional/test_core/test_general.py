@@ -1307,7 +1307,7 @@ def test_clip_matrix_norm(
 )
 def test_value_is_nan(x_n_include_inf_n_value):
     x, include_inf, value = x_n_include_inf_n_value
-    ret = ivy.value_is_nan(x, include_inf=include_inf)
+    ret = ivy.value_is_nan(x, include_infs=include_inf)
     assert ret == value
 
 
