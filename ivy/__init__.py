@@ -92,9 +92,9 @@ class Dtype(str):
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
-        valid_types = (int, list, tuple)
+        valid_types = (int, list, tuple, ivy.Array)
         if len(backend_stack) != 0:
-            valid_types += (ivy.NativeShape,)
+            valid_types += (ivy.NativeShape, ivy.NativeArray)
         ivy.assertions.check_isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, int):
             shape_tup = (shape_tup,)
