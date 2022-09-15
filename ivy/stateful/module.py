@@ -563,10 +563,11 @@ class Module(abc.ABC):
                 kwargs["atol"] = atol
             if rtol:
                 kwargs["rtol"] = rtol
-            assert np.allclose(
-                ret, expected_ret, **kwargs
-            ), "ret\n\n{}\n\nand expected_ret\n\n{}\n\nwere not close enough".format(
-                ret, expected_ret
+            ivy.assertions.check_true(
+                np.allclose(ret, expected_ret, **kwargs),
+                message="ret: {} and expected_ret: {} were not close enough".format(
+                    ret, expected_ret
+                ),
             )
 
     # noinspection PyProtectedMember
