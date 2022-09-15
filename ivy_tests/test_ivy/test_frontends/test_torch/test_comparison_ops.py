@@ -584,26 +584,41 @@ def test_torch_not_equal(
     )
 
 
-#isin 
+# isin
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
-        num_arrays=2,
-        shared_dtype=True,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    num_arrays=2,
+    shared_dtype=True,
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isin"
     ),
 )
 def test_torch_isin(
-=======
+    dtype_and_inputs,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, inputs = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="isin",
+        elements=np.asarray(inputs[0], dtype=input_dtype[0]),
+        test_elements=np.asarray(inputs[1], dtype=input_dtype[1]),
+    )
 
-# minimum
+
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
@@ -706,15 +721,9 @@ def test_torch_fmin(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-        fn_tree="isin",
+        fn_tree="fmin",
         elements=np.asarray(inputs[0], dtype=input_dtype[0]),
         test_elements=np.asarray(inputs[1], dtype=input_dtype[1]),
-    )
-  
-        fn_tree="fmin",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
-        out=None,
     )
 
 
