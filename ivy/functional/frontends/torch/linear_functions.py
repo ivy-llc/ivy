@@ -12,7 +12,7 @@ def bilinear(input1, input2, weight, bias=None):
         raise RuntimeError("All dimension of input1 and input2 \
             should match except for last dimension")
     weight_shape = ivy.shape(weight)
-    if len(input1_shape) < 3:
+    if len(weight_shape) < 3:
         raise RuntimeError("Weight dimensions must be of format (Hout,Hin1,Hin2)")
     if weight_shape[-2] != input1_shape[-1]:
         raise RuntimeError("Weight 2nd last dimension \
