@@ -596,6 +596,9 @@ sin.support_native_out = True
 
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    # check if x is an ndarray
+    if not isinstance(x, np.ndarray):
+        x = np.asarray(x)
     return np.sinc(x).astype(x.dtype)
 
 
