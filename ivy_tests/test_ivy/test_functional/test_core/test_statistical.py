@@ -11,17 +11,21 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def statistical_dtype_values(draw, *, function):
-    max_op = "divide"
+    max_op = "linear"
+    large_abs_safety_factor = 4
+    small_abs_safety_factor = 2
     if function in ["prod", "sum", "mean"]:
         max_op = "log"
     elif function in ["var", "std"]:
-        max_op = "sqrt"
+        max_op = "log"
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("float"),
             large_value_safety_factor=20,
             small_value_safety_factor=2.5,
-            max_op=max_op,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=max_op,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=2,
