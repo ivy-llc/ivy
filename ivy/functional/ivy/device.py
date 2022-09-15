@@ -23,6 +23,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 default_device_stack = list()
 dev_handles = dict()
@@ -125,6 +126,7 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
 # Array Printing
 
 
+@handle_exceptions
 def get_all_ivy_arrays_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
@@ -161,6 +163,7 @@ def get_all_ivy_arrays_on_dev(
     return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
+@handle_exceptions
 def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     """Returns the number of arrays which are currently alive on the specified device.
 
@@ -294,8 +297,12 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
 
 @handle_nestable
+@handle_exceptions
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
+    device: Union[ivy.Device, ivy.NativeDevice], 
+    /, 
+    *, 
+    attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -305,8 +312,24 @@ def print_all_ivy_arrays_on_dev(
     ----------
     device
         The device on which to print the arrays
+    
     attr_only
         Whether or not to only print the `shape` and `dtype` attributes of the array
+    
+    Examples
+    --------
+    >>> x = ivy.array([[1,0,2], [3,2,1]])
+    >>> y = ivy.dev(x)
+    >>> ivy.print_all_ivy_arrays_on_dev(y)
+    ((3,), 'int32')
+    ((3,), 'int32')
+    
+        
+    >>> x = ivy.array([[1,0,2], [3,2,1]])
+    >>> y = ivy.dev(x)
+    >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
+    [1,0,2]
+    [3,2,1]
 
     """
     arrs = ivy.get_all_ivy_arrays_on_dev(device).values()
@@ -320,6 +343,7 @@ def print_all_ivy_arrays_on_dev(
 
 
 @handle_nestable
+@handle_exceptions
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -404,6 +428,7 @@ def dev(
 # Conversions
 
 
+@handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     """Convert native data type to string representation.
 
@@ -421,6 +446,7 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
     return ivy.current_backend().as_ivy_dev(device)
 
 
+@handle_exceptions
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeDevice:
     """Convert device string representation to native device type.
 
@@ -441,6 +467,7 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
 # Memory
 
 
+@handle_exceptions
 def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """Clear memory cache on target device.
 
@@ -453,6 +480,7 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     ivy.current_backend(None).clear_mem_on_dev(device)
 
 
+@handle_exceptions
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """Get the total amount of memory (in GB) for a given device string. In case of CPU,
     the total RAM is returned.
@@ -491,6 +519,7 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
         )
 
 
+@handle_exceptions
 def used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
@@ -549,6 +578,7 @@ def used_mem_on_dev(
         )
 
 
+@handle_exceptions
 def percent_used_mem_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
@@ -611,6 +641,7 @@ def percent_used_mem_on_dev(
 # Utilization
 
 
+@handle_exceptions
 def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """Get the current utilization (%) for a given device.
 
@@ -654,6 +685,7 @@ def dev_util(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
 # Availability
 
 
+@handle_exceptions
 def gpu_is_available() -> bool:
     """Determine whether a GPU is available to use, with the backend framework.
 
@@ -670,6 +702,7 @@ def gpu_is_available() -> bool:
     return ivy.current_backend().gpu_is_available()
 
 
+@handle_exceptions
 def num_cpu_cores(*, logical: bool = True) -> int:
     """Determine the number of cores available in the cpu.
 
@@ -695,6 +728,7 @@ def num_cpu_cores(*, logical: bool = True) -> int:
         return psutil.cpu_count(logical=False)
 
 
+@handle_exceptions
 def num_gpus() -> int:
     """Determine the number of available GPUs, with the backend framework.
 
@@ -712,6 +746,7 @@ def num_gpus() -> int:
     return ivy.current_backend().num_gpus()
 
 
+@handle_exceptions
 def tpu_is_available() -> bool:
     """Determine whether a TPU is available to use, with the backend framework.
 
@@ -731,6 +766,7 @@ def tpu_is_available() -> bool:
 # Default Device #
 
 # noinspection PyShadowingNames
+@handle_exceptions
 def default_device(
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     /,
@@ -800,6 +836,7 @@ def default_device(
     return ivy.as_ivy_dev(ret)
 
 
+@handle_exceptions
 def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """Set the default device to given device instance
 
@@ -831,6 +868,7 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     default_device_stack.append(device)
 
 
+@handle_exceptions
 def unset_default_device() -> None:
     """Resets the default device to "cpu".
 
@@ -855,6 +893,7 @@ def unset_default_device() -> None:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -897,6 +936,7 @@ def to_device(
 # Function Splitting #
 
 
+@handle_exceptions
 def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float:
     """
     Get a device's global split factor, which can be used to scale the device's
@@ -933,6 +973,7 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
     return split_factors.setdefault(device, 0.0)
 
 
+@handle_exceptions
 def set_split_factor(
     factor: float,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
@@ -981,6 +1022,7 @@ def set_split_factor(
     split_factors[device] = factor
 
 
+@handle_exceptions
 def split_func_call(
     func: Callable,
     inputs: Union[ivy.Array, ivy.NativeArray],
@@ -1161,6 +1203,7 @@ def _get_devices(fn, complement=True):
 
 
 @handle_nestable
+@handle_exceptions
 def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     """Returns the supported devices of the current backend's function.
 
@@ -1192,6 +1235,7 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
 
 
 @handle_nestable
+@handle_exceptions
 def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
     """Returns the unsupported devices of the current backend's function.
 

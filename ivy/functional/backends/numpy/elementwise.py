@@ -669,10 +669,11 @@ trunc.support_native_out = True
 
 @_handle_0_dim_output
 def erf(x, /, *, out: Optional[np.ndarray] = None):
-    if _erf is None:
-        raise Exception(
-            "scipy must be installed in order to call ivy.erf with a numpy backend."
-        )
+    ivy.assertions.check_exists(
+        _erf,
+        message="scipy must be installed in order to call ivy.erf with a \
+        numpy backend.",
+    )
     ret = _erf(x, out=out)
     if hasattr(x, "dtype"):
         ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
@@ -714,3 +715,19 @@ def reciprocal(
 
 
 reciprocal.support_native_out = True
+
+
+@_handle_0_dim_output
+def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.deg2rad(x, out=out)
+
+
+deg2rad.support_native_out = True
+
+
+@_handle_0_dim_output
+def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.rad2deg(x, out=out)
+
+
+rad2deg.support_native_out = True
