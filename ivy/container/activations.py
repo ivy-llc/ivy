@@ -621,6 +621,7 @@ class ContainerWithActivations(ContainerBase):
         /,
         *,
         beta: Optional[Union[int, float]] = 1,
+        threshold: Optional[Union[int, float]] = 20,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -666,11 +667,18 @@ class ContainerWithActivations(ContainerBase):
             a: ivy.array([0.535, 0.42])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2., 2.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "softplus",
             x,
             beta=beta,
+            threshold=threshold,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -683,6 +691,7 @@ class ContainerWithActivations(ContainerBase):
         /,
         *,
         beta: Optional[Union[int, float]] = 1,
+        threshold: Optional[Union[int, float]] = 20,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -728,10 +737,17 @@ class ContainerWithActivations(ContainerBase):
             a: ivy.array([0.535, 0.42])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2., 2.])
+        }
         """
         return self.static_softplus(
             self,
             beta=beta,
+            threshold=threshold,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

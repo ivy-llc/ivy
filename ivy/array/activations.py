@@ -107,6 +107,7 @@ class ArrayWithActivations(abc.ABC):
                  /,
                  *,
                  beta: Optional[Union[int, float]] = 1,
+                 threshold: Optional[Union[int, float]] = 20,
                  out: Optional[ivy.Array] = None
                  ) -> ivy.Array:
         """
@@ -120,5 +121,16 @@ class ArrayWithActivations(abc.ABC):
         >>> y = x.softplus()
         >>> print(y)
         ivy.array([0.535, 0.42 ])
+
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> x.softplus(beta=0.5)
+        >>> print(y)
+        ivy.array([1.22, 1.09])
+
+        >>> ivy.array([1.31, 2.  , 2.  ])
+        >>> x.softplus(threshold=2)
+        >>> print(y)
+        ivy.array([1.31, 2.  , 2.  ])
+
         """
-        return ivy.softplus(self._data, beta=beta, out=out)
+        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)

@@ -62,13 +62,15 @@ def softplus(x: np.ndarray,
              /,
              *,
              beta: Optional[Union[int, float]] = 1,
+             threshold: Optional[Union[int, float]] = 20,
              out: Optional[np.ndarray] = None
              ) -> np.ndarray:
-    return (np.add(
+    res = (np.add(
         np.log1p(np.exp(-np.abs(x * beta))),
         np.maximum(x * beta, 0, dtype=x.dtype),
         out=out
     )) / beta
+    return np.where(res < threshold, res, float(threshold))
 
 
 softplus.support_native_out = True

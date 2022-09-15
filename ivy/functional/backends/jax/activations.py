@@ -45,5 +45,7 @@ def softplus(x: JaxArray,
              /,
              *,
              beta: Optional[Union[int, float]] = 1,
+             threshold: Optional[Union[int, float]] = 20,
              out: Optional[JaxArray] = None) -> JaxArray:
-    return (jnp.log1p(jnp.exp(-jnp.abs(x * beta))) + jnp.maximum(x * beta, 0)) / beta
+    res = (jnp.log1p(jnp.exp(-jnp.abs(x * beta))) + jnp.maximum(x * beta, 0)) / beta
+    return jnp.where(res < threshold, res, float(threshold))

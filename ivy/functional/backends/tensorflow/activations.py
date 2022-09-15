@@ -44,5 +44,7 @@ def softplus(x: Tensor,
              /,
              *,
              beta: Optional[Union[int, float]] = 1,
+             threshold: Optional[Union[int, float]] = 20,
              out: Optional[Tensor] = None) -> Tensor:
-    return (tf.nn.softplus(x * beta)) / beta
+    res = (tf.nn.softplus(x * beta)) / beta
+    return tf.where(res < threshold, res, float(threshold))

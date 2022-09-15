@@ -660,8 +660,8 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     """
     if draw(st.booleans()):
         return draw(ints(
-            min_value=min_value,
-            max_value=max_value,
+            min_value=int(min_value),
+            max_value=int(max_value),
             safety_factor=safety_factor,
         ))
     else:
