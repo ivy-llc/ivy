@@ -179,7 +179,7 @@ def log_softmax(x, axis=-1):
 
 def glu(x, axis=-1):
     size = x.shape[axis]
-    assert size % 2 == 0, "axis size must be divisible by 2"
+    ivy.assertions.check_equal(size % 2, 0, message="axis size must be divisible by 2")
     x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
     return ivy.multiply(x1, ivy.sigmoid(x2))
 
