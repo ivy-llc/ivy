@@ -110,7 +110,7 @@ def sort(
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
 

@@ -139,9 +139,7 @@ class ArrayWithSearching(abc.ABC):
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)
 
-    def argwhere(
-        self: ivy.Array, *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-    ) -> ivy.Array:
+    def argwhere(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.argwhere. This method simply
         wraps the function, and so the docstring for ivy.argwhere also applies
