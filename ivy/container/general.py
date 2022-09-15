@@ -1773,27 +1773,24 @@ class ContainerWithGeneral(ContainerBase):
                                     b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
                                     b=ivy.array([20, 30, 40]))
-        >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
-                                b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
         >>> shape = ivy.Container(a=ivy.array([10]),\
                                 b = ivy.array([10]))
-        z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
+        >>> z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
         >>> print(z)
         {
             a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
             b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
         }
 
-        scatter into an array
+        scatter into a container
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                   b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
                         b=ivy.array([20, 30, 40]))
-        >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
+        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-
-        z = ivy.Container.static_scatter_nd(indices, updates,\
-                                            tensor=arr, reduction='replace')
+        >>> ivy.Container.static_scatter_nd(indices, updates,\
+                                            reduction='replace', out = z)
         >>> print(z)
         {
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
@@ -1866,34 +1863,32 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        scatter into an array
-        >>> indices = ivy.Container(a=ivy.array([[3],[1],[2]]),\
-                                    b=ivy.array([[4],[1],[3]]))
-        >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
-                                    b=ivy.array([20, 30, 40]))
-        >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),\
-                                b=ivy.array([11, 22, 33, 44, 55]))
-        >>> z = indices.scatter_nd(updates, tensor=arr, reduction='replace')
-        >> print(z)
+        scatter into an empty container
+        >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\
+                        b=ivy.array([[5],[1],[2]]))
+        >>> updates = ivy.Container(a=ivy.array([100, 200, 200]),\
+                        b=ivy.array([20, 30, 40]))
+        >>> shape = ivy.Container(a=ivy.array([10]),\
+                        b = ivy.array([10]))
+        >>> z = indices.scatter_nd(updates, shape=shape)
+        >>> print(z)
         {
-            a: ivy.array([1, 60, 70, 50, 5]),
-            b: ivy.array([11, 30, 33, 40, 20])
+            a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
+            b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
         }
 
-        scatter into an empty array
+        scatter into a container.
         >>> indices = ivy.Container(a=ivy.array([[5],[6],[7]]),\
                                     b=ivy.array([[2],[3],[4]]))
         >>> updates = ivy.Container(a=ivy.array([50, 60, 70]),\
                                     b=ivy.array([20, 30, 40]))
-        >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
+        >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
-        >>> shape = ivy.Container(a=ivy.array([10]),\
-                                b = ivy.array([10]))
-        z = indices.scatter_nd(updates, shape=shape)
+        >>> indices.scatter_nd(updates,reduction='replace', out = z)
         >>> print(z)
         {
-            a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
-            b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
+            a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
+            b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
         """
         return self.static_scatter_nd(

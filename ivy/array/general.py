@@ -206,34 +206,33 @@ class ArrayWithGeneral(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-                Scatter updates into an array according to indices.
+        Scatter updates into an array according to indices.
 
-                Parameters
-                ----------
-                self
-                    The tensor in which to scatter the results
-                indices
-                    Tensor of indices
-                updates
-                    values to update input tensor with
-                shape
-                    The shape of the result. Default is None, in which case tensor
-                    argument must be provided.
-                reduction
-                    The reduction method for the scatter, one of 'sum', 'min', 'max'
-                    or 'replace'
-                out
-                    optional output array, for writing the result to.
+        Parameters
+        ----------
+        self
+            The tensor in which to scatter the results
+        indices
+            Tensor of indices
+        updates
+            values to update input tensor with
+        shape
+            The shape of the result. Default is None, in which case tensor
+            argument must be provided.
+        reduction
+            The reduction method for the scatter, one of 'sum', 'min', 'max'
+            or 'replace'
+        out
+            optional output array, for writing the result to.
 
-                Returns
-                -------
-                ret
-                    New array of given shape, with the values scattered at the indices.
+        Returns
+        -------
+        ret
+            New array of given shape, with the values scattered at the indices.
 
-                Examples
-                --------
-                scatter values into an array
-
+        Examples
+        --------
+        scatter values into an array
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
@@ -241,15 +240,14 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(scatter)
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
-                scatter values into an empty array
-
-                >>> shape = ivy.array([2, 5])
-                >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
-                >>> updates = ivy.array([25, 40, 21, 22])
-                >>> scatter = indices.scatter_nd(updates, shape=shape)
-                >>> print(scatter)
-                ivy.array([[ 0,  0, 22, 40,  0],
-                            [ 0, 21,  0,  0, 25]])
+        scatter values into an empty array
+        >>> shape = ivy.array([2, 5])
+        >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
+        >>> updates = ivy.array([25, 40, 21, 22])
+        >>> scatter = indices.scatter_nd(updates, shape=shape)
+        >>> print(scatter)
+        ivy.array([[ 0,  0, 22, 40,  0],
+                    [ 0, 21,  0,  0, 25]])
         """
         return ivy.scatter_nd(self, updates, shape, reduction=reduction, out=out)
 
