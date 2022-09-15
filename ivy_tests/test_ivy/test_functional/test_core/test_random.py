@@ -147,7 +147,8 @@ def _pop_size_num_samples_replace_n_probs(draw):
             min_value=1.0013580322265625e-05,
             max_value=1.0,
             exclude_min=True,
-            large_value_safety_factor=1.25,
+            large_abs_safety_factor=2,
+            safety_factor_scale="linear",
         )
     )
     return prob_dtype, batch_size, population_size, num_samples, replace, probs
