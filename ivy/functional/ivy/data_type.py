@@ -911,15 +911,8 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
 # noinspection PyShadowingBuiltins
 def _check_float64(input) -> bool:
     if math.isfinite(input):
-        tmp = str(input).replace("-", "").split(".")
-        exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(float(tmp[0]))).replace("0b", "")
-        return (
-            (input > 3.4028235 * 10**38)
-            or (len(mant) > 24 and int(mant[24:]) > 0)
-            or (exponent < -126)
-            or (exponent > 127)
-        )
+        m, e = math.frexp(input)
+        return (abs(input) > 3.4028235e38) or (e < -126) or (e > 128)
     return False
 
 
