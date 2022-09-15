@@ -14,6 +14,8 @@ NativeDevice = torch.device
 NativeDtype = torch.dtype
 NativeShape = torch.Size
 
+NativeSparseArray = torch.Tensor
+
 # native data types
 native_int8 = torch.int8
 native_int16 = torch.int16
@@ -96,6 +98,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import extensions
+from .extensions import *
 from . import general
 from .general import *
 from . import gradients

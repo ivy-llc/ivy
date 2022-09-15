@@ -4,7 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -12,10 +11,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # expm1
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -65,10 +62,8 @@ def test_numpy_expm1(
 # exp2
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -118,10 +113,8 @@ def test_numpy_exp2(
 # log10
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -172,10 +165,11 @@ def test_numpy_log10(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
-        small_value_safety_factor=1.2,
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -226,10 +220,11 @@ def test_numpy_log(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
-        small_value_safety_factor=1.2,
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -279,10 +274,8 @@ def test_numpy_log2(
 # log1p
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -333,9 +326,9 @@ def test_numpy_log1p(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=2),
     with_out=st.booleans(),

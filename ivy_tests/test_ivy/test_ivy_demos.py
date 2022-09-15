@@ -54,9 +54,6 @@ def test_array(device):
     import numpy as np
 
     assert ivy.concat((np.ones((1,)), np.ones((1,))), -1).shape == (2,)
-    import mxnet as mx
-
-    assert ivy.concat((mx.nd.ones((1,)), mx.nd.ones((1,))), -1).shape == (2,)
     import torch
 
     assert ivy.concat((torch.ones((1,)), torch.ones((1,))), -1).shape == (2,)

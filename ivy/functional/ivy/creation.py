@@ -1,12 +1,13 @@
-# For Review
 # global
+import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Tuple, Optional, List, Sequence, Callable
 
 import numpy as np
 
 # local
 import ivy
+from ivy import to_ivy, to_native
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
     infer_device,
@@ -20,6 +21,98 @@ from ivy.func_wrapper import (
 
 # Helpers #
 # --------#
+
+
+def asarray_handle_nestable(fn: Callable) -> Callable:
+    fn_name = fn.__name__
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Calls `fn` with the *nestable* property of the function correctly handled.
+        This means mapping the function to the container leaves if any containers are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the nestable property handled correctly.
+        """
+
+        # This decorator should only be applied to ivy.asarray, so we know where
+        # the container must be if there is one.
+        cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if isinstance(args[0], ivy.Container):
+            return cont_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    new_fn.handle_nestable = True
+    return new_fn
+
+
+def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        """
+        Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
+        and return arrays are all converted to `ivy.Array` instances. This wrapper is
+        specifically for the backend implementations of asarray.
+        """
+        if isinstance(args[0], list):
+            return to_ivy(fn(*args, dtype=dtype, **kwargs))
+
+        # args is a tuple and therefore is immutable.
+        new_args = (to_native(args[0]),) + args[1:]
+        return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
+
+    return new_fn
+
+
+def asarray_infer_device(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, device=None, **kwargs):
+        """
+        Determines the correct `device`, and then calls the function with the `device`
+        passed explicitly. This wrapper is specifically for the backend implementations
+        of asarray.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        device
+            The device for the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with `device` passed explicitly.
+        """
+        if isinstance(args[0], list):
+            return fn(*args, device=ivy.default_device(as_native=True), **kwargs)
+
+        # find the first array argument, if required
+        arr = None if ivy.exists(device) else args[0]
+        # infer the correct device
+        device = ivy.default_device(device, item=arr, as_native=True)
+        # call the function with device provided explicitly
+        return fn(*args, device=device, **kwargs)
+
+    new_fn.infer_device = True
+    return new_fn
 
 
 def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
@@ -51,8 +144,8 @@ def arange(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns evenly spaced values within a given interval, with the spacing being
     specified.
 
@@ -107,10 +200,7 @@ def arange(
     )
 
 
-@to_native_arrays_and_back
 @handle_out_argument
-@infer_device
-@handle_nestable
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -152,6 +242,7 @@ def asarray(
     instances in place of any of the arguments.
 
     """
+
     return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
@@ -600,7 +691,7 @@ def tril(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).tril(x, k, out=out)
+    return current_backend(x).tril(x, k=k, out=out)
 
 
 @to_native_arrays_and_back
@@ -645,7 +736,7 @@ def triu(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).triu(x, k, out=out)
+    return current_backend(x).triu(x, k=k, out=out)
 
 
 @outputs_to_ivy_arrays
@@ -750,7 +841,7 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -866,7 +957,7 @@ def linspace(
 @to_native_arrays_and_back
 @handle_nestable
 def meshgrid(
-    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: Optional[str] = "xy"
+    *arrays: Union[ivy.Array, ivy.NativeArray], indexing: str = "xy"
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -1113,6 +1204,108 @@ def from_dlpack(
 array = asarray
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def copy_array(
+    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Copy an array.
+
+    Parameters
+    ----------
+    x
+        array, input array containing elements to copy.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        a copy of the input array ``x``.
+
+    Examples
+    --------
+    With one :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    >>> x = ivy.array([1, 0, 1, -1])
+    >>> y = ivy.zeros((1, 4))
+    >>> ivy.copy_array(x, out=y)
+    >>> print(y)
+    ivy.array([1, 0, 1, -1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> ivy.copy_array(x, out=x)
+    >>> print(x)
+    ivy.array([1, 0, 1, 1])
+
+    With one :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    With one :code:`ivy.Container` static method:
+
+    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
+    >>> y = ivy.Container.static_copy_array(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1, 1, 0])
+    }
+
+    With one :code:`ivy.Array` instance method:
+
+    >>> x = ivy.array([-1, 0, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([-1, 0, 1])
+
+    >>> x = ivy.array([1, 0, 1, 1])
+    >>> y = x.copy_array()
+    >>> print(y)
+    ivy.array([1, 0, 1, 1])
+
+    With :code:`ivy.Container` instance method:
+
+    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                          b=ivy.array([-1, 0, 1, 1]))
+    >>> y = x.copy_array()
+    >>> print(y)
+    {
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([-1, 0, 1, 1])
+    }
+
+    """
+    return current_backend(x).copy_array(x, out=out)
+
+
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -1143,6 +1336,43 @@ def native_array(
     # converting back to native with ivy.to_native
 
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@infer_device
+@handle_nestable
+def one_hot(
+    indices: Union[ivy.Array, ivy.NativeArray],
+    depth: int,
+    /,
+    *,
+    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    out: Optional[ivy.Array] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Returns a one-hot array.
+
+    Parameters
+    ----------
+    indices
+        Indices for where the ones should be scattered *[batch_shape, dim]*
+    depth
+        Scalar defining the depth of the one-hot dimension.
+    device
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Tensor of zeros with the same shape and type as a, unless dtype provided which
+        overrides.
+
+    """
+    return current_backend(indices).one_hot(indices, depth, device=device, out=out)
 
 
 @to_native_arrays_and_back

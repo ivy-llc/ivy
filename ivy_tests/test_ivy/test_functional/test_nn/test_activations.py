@@ -12,9 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # relu
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="relu"),
 )
 def test_relu(
@@ -46,9 +44,7 @@ def test_relu(
 # leaky_relu
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
     alpha=st.floats(width=16),
 )
@@ -85,8 +81,9 @@ def test_leaky_relu(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
-        large_value_safety_factor=2.0,
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
@@ -114,8 +111,8 @@ def test_gelu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="gelu",
-        atol_=1e-4,
-        rtol_=1e-4,
+        atol_=1e-2,
+        rtol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
@@ -124,9 +121,7 @@ def test_gelu(
 # sigmoid
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
 )
 def test_sigmoid(
@@ -151,6 +146,8 @@ def test_sigmoid(
         container_flags=container,
         instance_method=instance_method,
         fn_name="sigmoid",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -159,7 +156,7 @@ def test_sigmoid(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
@@ -187,6 +184,8 @@ def test_softmax(
         container_flags=container,
         instance_method=instance_method,
         fn_name="softmax",
+        rtol_=1e-02,
+        atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
         axis=axis,
     )
@@ -196,7 +195,7 @@ def test_softmax(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
 )
@@ -222,5 +221,7 @@ def test_softplus(
         container_flags=container,
         instance_method=instance_method,
         fn_name="softplus",
+        rtol_=1e-02,
+        atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
     )
