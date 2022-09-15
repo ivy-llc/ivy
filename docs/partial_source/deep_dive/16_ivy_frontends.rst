@@ -18,6 +18,7 @@ Ivy Frontends
 .. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
 
 Introduction
 ------------
@@ -33,6 +34,9 @@ The Basics
 
 **NOTE:** Type hints, docstrings and examples are not required when working on
 frontend functions.
+
+There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open_task`_.
 
 **Jax**
 
@@ -50,7 +54,7 @@ compiler, before then replacing these nodes with the associated functions in Ivy
 frontend API. Given that all jax code can be decomposed into :code:`jax.lax`
 function calls, when transpiling :code:`jax` code it should always be possible to
 express the computation graph as a composition of only :code:`jax.lax` functions.
-Therefore, argubaly these are the *only* functions we should need to implement in the
+Therefore, arguably these are the *only* functions we should need to implement in the
 JAX frontend. However, in general we wish to be able to compile a graph in the backend
 framework with varying levels of dynamicism. A graph of only :code:`jax.lax` functions
 chained together in general is more *static* and less *dynamic* than a graph which
