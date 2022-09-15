@@ -2999,6 +2999,7 @@ def array_values(
 
     array = np.array(values)
 
+    # ToDo, a lot of iterations, this could be optimized
     if scale_op == "sqrt":
         array = (np.sign(array) * np.sqrt(np.abs(array))).astype(dtype)
     elif scale_op == "log":  # ToDo throws exception, but runs
