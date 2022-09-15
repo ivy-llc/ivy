@@ -2133,7 +2133,8 @@ def stable_divide(
     denominator
         The denominator of the division.
     min_denominator
-        The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
+        The minimum denominator to use, use global ivy._MIN_DENOMINATOR (1e-12)
+        by default.
 
     Returns
     -------
