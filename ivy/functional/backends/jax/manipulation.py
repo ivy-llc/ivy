@@ -1,4 +1,3 @@
-# For Review
 # global
 import math
 import jax.numpy as jnp
@@ -45,7 +44,7 @@ def expand_dims(
         ret = jnp.expand_dims(x, axis)
         return ret
     except ValueError as error:
-        raise IndexError(error)
+        raise ivy.exceptions.IvyException(repr(error))
 
 
 def flip(
@@ -99,7 +98,7 @@ def squeeze(
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise ValueError(
+        raise ivy.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     else:
@@ -131,7 +130,7 @@ def split(
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -178,7 +177,7 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    assert jnp.all(jnp.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
