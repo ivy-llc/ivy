@@ -46,6 +46,7 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x1 = x1.type(dtype=dtype)
     return torch.equal(x0, x1)
 
+
 array_equal.unsupported_dtypes = ("bfloat16",)
 
 
