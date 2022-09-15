@@ -1,6 +1,7 @@
 """Collection of tests for elementwise functions."""
 
 # global
+import math
 import numpy as np
 from hypothesis import given, assume, strategies as st
 
@@ -87,7 +88,11 @@ def test_acosh(
 # acos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_value_safety_factor=20,
+        small_value_safety_factor=2.5,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
 def test_acos(
@@ -112,6 +117,8 @@ def test_acos(
         instance_method=instance_method,
         fw=fw,
         fn_name="acos",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -371,8 +378,9 @@ def test_bitwise_and(
         available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
 )
@@ -485,8 +493,9 @@ def test_bitwise_or(
         available_dtypes=ivy.all_int_dtypes,
         num_arrays=2,
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
 )
@@ -563,7 +572,8 @@ def test_bitwise_xor(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_value_safety_factor=2,
+        small_abs_safety_factor=3,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
 )
@@ -843,7 +853,8 @@ def test_floor(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
-        large_value_safety_factor=1.1,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
@@ -1622,13 +1633,45 @@ def test_positive(
 
 @st.composite
 def _pow_helper(draw):
-    dtype, x = draw(
+    dtype1, x1 = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_value_safety_factor=2.5,
+            large_value_safety_factor=40,
         )
     )
-    dtype1, dtype2 = dtype
-    x1, x2 = x
+
+    def cast_filter(dtype1_x1_dtype2):
+        dtype1, _, dtype2 = dtype1_x1_dtype2
+        if (ivy.as_ivy_dtype(dtype1), ivy.as_ivy_dtype(dtype2)) in ivy.promotion_table:
+            return True
+        return False
+
+    dtype1, x1, dtype2 = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("numeric")), dtype1, x1
+        ).filter(cast_filter)
+    )
+    if ivy.is_int_dtype(dtype2):
+        max_val = ivy.iinfo(dtype2).max
+    else:
+        max_val = ivy.finfo(dtype2).max
+    max_x1 = np.max(np.abs(np.asarray(x1))) if isinstance(x1, list) else abs(x1)
+    if max_x1 in [0, 1]:
+        max_value = None
+    else:
+        max_value = int(math.log(max_val) / math.log(max_x1))
+        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
+            max_value = None
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            small_value_safety_factor=2.5,
+            large_value_safety_factor=40,
+            max_op="log",
+            max_value=max_value,
+            dtype=[dtype2],
+        )
+    )
     if "int" in dtype2:
         x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
     return [dtype1, dtype2], [x1, x2]
@@ -2212,5 +2255,71 @@ def test_reciprocal(
         instance_method=instance_method,
         fw=fw,
         fn_name="reciprocal",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="deg2rad"),
+)
+def test_deg2rad(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="deg2rad",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="rad2deg"),
+)
+def test_rad2deg(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="rad2deg",
         x=np.asarray(x, dtype=input_dtype),
     )

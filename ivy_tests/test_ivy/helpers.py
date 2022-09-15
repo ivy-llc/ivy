@@ -11,7 +11,7 @@ import pytest
 import numpy as np
 import math
 import gc
-from typing import Union, List
+from typing import Optional, Union, List
 from hypothesis import given, assume, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
@@ -403,7 +403,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
 
 
 @st.composite
-def get_castable_dtype(draw, dtype, full=False):
+def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = None):
     """
     Draws castable dtypes for the given dtype based on the current backend.
 
@@ -412,25 +412,38 @@ def get_castable_dtype(draw, dtype, full=False):
     draw
         Special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
+    available_dtypes
+        Castable data types are drawn from this list randomly.
     dtype
-        Data type from which to cast
-    full
-        Returns the complete list of castable types
+        Data type from which to cast.
+    x
+        Optional list of values to cast.
 
     Returns
     -------
     ret
-        List of castable dtypes
+        A tuple of inputs and castable dtype.
     """
-    if ivy.is_int_dtype(dtype):
-        valid_dtypes = [d for d in ivy.valid_int_dtypes if ivy.can_cast(dtype, d)]
-    elif ivy.is_float_dtype(dtype):
-        valid_dtypes = [d for d in ivy.valid_float_dtypes if ivy.can_cast(dtype, d)]
-    elif ivy.is_bool_dtype(dtype):
-        valid_dtypes = [dtype]
-    if full:
-        return valid_dtypes
-    return [draw(st.sampled_from(valid_dtypes))]
+
+    def cast_filter(d):
+        if ivy.is_int_dtype(d):
+            max_val = ivy.iinfo(d).max
+        elif ivy.is_float_dtype(d):
+            max_val = ivy.finfo(d).max
+        else:
+            max_val = 1
+        if x is None:
+            max_x = -1
+        else:
+            max_x = np.max(np.abs(np.asarray(x)))
+        return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
+
+    cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
+    if x is None:
+        return dtype, cast_dtype
+    if "uint" in cast_dtype:
+        x = np.abs(np.asarray(x)).tolist()
+    return dtype, x, cast_dtype
 
 
 @st.composite
@@ -715,19 +728,19 @@ def flatten_fw(*, ret, fw):
     if not isinstance(ret, tuple):
         ret = (ret,)
     if fw == "jax":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_jax_native_array(x)
         )
     elif fw == "numpy":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_numpy_native_array(x)
         )
     elif fw == "tensorflow":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_tensorflow_native_array(x)
         )
     else:
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x)
         )
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
@@ -741,7 +754,7 @@ def flatten(*, ret):
     """Returns a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
     return ivy.multi_index_nest(ret, ret_idxs)
 
 
@@ -1050,11 +1063,9 @@ def create_args_kwargs(
     keyword-arguments.
     """
     # extract all arrays from the arguments and keyword arguments
-    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
+    args_idxs = ivy.nested_argwhere(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
-    kwargs_idxs = ivy.nested_indices_where(
-        kwargs_np, lambda x: isinstance(x, np.ndarray)
-    )
+    kwargs_idxs = ivy.nested_argwhere(kwargs_np, lambda x: isinstance(x, np.ndarray))
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
 
     # assert that the number of arrays aligns with the dtypes and as_variable_flags
@@ -1940,9 +1951,7 @@ def test_frontend_function(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(
-                frontend_ret, ivy.is_native_array
-            )
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -2228,7 +2237,7 @@ def test_frontend_array_instance_method(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_array)
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -2373,9 +2382,9 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    max_op="divide",
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
@@ -2404,13 +2413,30 @@ def dtype_and_values(
         minimum value of elements in each array.
     max_value
         maximum value of elements in each array.
-    large_value_safety_factor
-        Factor to divide the values by to ensure that they are not too large.
-    small_value_safety_factor
-        Factor to multiply the values by to ensure that they are not too small.
-    max_op
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
+
+    safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "divide", "sqrt" or "log". Default value = "divide".
+        "linear" or "log". Default value = "linear".
     allow_inf
         if True, allow inf in the arrays.
     allow_nan
@@ -2484,14 +2510,14 @@ def dtype_and_values(
                     allow_nan=allow_nan,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    large_value_safety_factor=large_value_safety_factor,
-                    small_value_safety_factor=small_value_safety_factor,
-                    max_op=max_op,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
                 )
             )
         )
     if num_arrays == 1:
-        dtype = dtype[0]
+        dtype = dtype[0] if isinstance(dtype, list) else dtype
         values = values[0]
     if ret_shape:
         return dtype, values, shape
@@ -2505,9 +2531,9 @@ def dtype_values_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    max_op="divide",
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
@@ -2541,6 +2567,30 @@ def dtype_values_axis(
         minimum value of elements in the array.
     max_value
         maximum value of elements in the array.
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
+
+    safety_factor_scale
+        The operation to use when calculating the maximum value of the list. Can be
+        "linear" or "log". Default value = "linear".
     allow_inf
         if True, allow inf in the array.
     allow_nan
@@ -2587,9 +2637,9 @@ def dtype_values_axis(
             available_dtypes=available_dtypes,
             min_value=min_value,
             max_value=max_value,
-            large_value_safety_factor=large_value_safety_factor,
-            small_value_safety_factor=small_value_safety_factor,
-            max_op=max_op,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
             allow_inf=allow_inf,
             allow_nan=allow_nan,
             exclude_min=exclude_min,
@@ -2780,18 +2830,11 @@ def _zeroing_and_casting(x, cast_type):
     return x
 
 
-def _clamp_value(x, dtype):
-    if ivy.is_int_dtype(dtype):
-        d_info = ivy.iinfo(dtype)
-    elif ivy.is_float_dtype(dtype):
-        d_info = ivy.finfo(dtype)
-    else:
-        raise TypeError(
-            f"{dtype} is not a valid data type. "
-            "dtype must be an integer or a float data type"
-        )
-    if x > d_info.max or x < d_info.min:
-        return None  # Calculated later using safety factor
+def _clamp_value(x, dtype_info):
+    if x > dtype_info.max:
+        return dtype_info.max
+    if x < dtype_info.min:
+        return dtype_info.min
     return x
 
 
@@ -2808,10 +2851,9 @@ def array_values(
     allow_inf=False,
     exclude_min=True,
     exclude_max=True,
-    allow_negative=True,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    max_op="divide",
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -2838,222 +2880,172 @@ def array_values(
         if True, exclude the minimum limit.
     exclude_max
         if True, exclude the maximum limit.
-    allow_negative
-        if True, allow negative numbers.
-    large_value_safety_factor
-        Factor to divide the values by to ensure that they are not too large.
-    small_value_safety_factor
-        Factor to multiply the values by to ensure that they are not too small.
-    max_op
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
+
+    safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "divide", "sqrt" or "log". Default value = "divide".
+        "linear" or "log". Default value = "linear".
+
+    In the case of min_value or max_value is not in the valid range
+    the invalid value will be replaced by data type limit, the range
+    of the numbers in that case is not preserved.
 
     Returns
     -------
         A strategy that draws a list.
     """
-    assert large_value_safety_factor >= 1, "large_value_safety_factor must be >= 1"
-    exclude_min = exclude_min if ivy.exists(min_value) else False
-    exclude_max = exclude_max if ivy.exists(max_value) else False
+    assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
+    assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
+
     size = 1
     if isinstance(shape, int):
         size = shape
     else:
         for dim in shape:
             size *= dim
-    values = None
-    limit = math.log(small_value_safety_factor)
-    min_value = _clamp_value(min_value, dtype) if ivy.exists(min_value) else None
-    max_value = _clamp_value(max_value, dtype) if ivy.exists(max_value) else None
-    if "uint" in dtype:
-        if dtype == "uint8":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value, min(255, round(255 / large_value_safety_factor))
-            )
-        elif dtype == "uint16":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value, min(65535, round(65535 / large_value_safety_factor))
-            )
-        elif dtype == "uint32":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value,
-                min(4294967295, round(4294967295 / large_value_safety_factor)),
-            )
-        elif dtype == "uint64":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value,
-                min(
-                    18446744073709551615,
-                    round(18446744073709551615 / large_value_safety_factor),
-                ),
-            )
-        values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
-        for i, v in enumerate(values):
-            if max_op == "sqrt" and v != 0:
-                v = v / abs(v) * math.sqrt(abs(v))
-            elif max_op == "log" and v != 0:
-                v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
-            values[i] = int(v / large_value_safety_factor)
 
+    if "float" in dtype:
+        kind_dtype = "float"
+        dtype_info = ivy.finfo(dtype)
     elif "int" in dtype:
-
-        if min_value is not None and max_value is not None:
-            values = draw(
-                list_of_length(
-                    x=st.integers(min_value, max_value),
-                    length=size,
-                )
-            )
-        else:
-            if dtype == "int8":
-                min_value = ivy.default(
-                    min_value, max(-128, round(-128 / large_value_safety_factor))
-                )
-                max_value = ivy.default(
-                    max_value, min(127, round(127 / large_value_safety_factor))
-                )
-
-            elif dtype == "int16":
-                min_value = ivy.default(
-                    min_value, max(-32768, round(-32768 / large_value_safety_factor))
-                )
-                max_value = ivy.default(
-                    max_value, min(32767, round(32767 / large_value_safety_factor))
-                )
-
-            elif dtype == "int32":
-                min_value = ivy.default(
-                    min_value,
-                    max(-2147483648, round(-2147483648 / large_value_safety_factor)),
-                )
-                max_value = ivy.default(
-                    max_value,
-                    min(2147483647, round(2147483647 / large_value_safety_factor)),
-                )
-
-            elif dtype == "int64":
-                min_value = ivy.default(
-                    min_value,
-                    max(
-                        -9223372036854775808,
-                        round(-9223372036854775808 / large_value_safety_factor),
-                    ),
-                )
-                max_value = ivy.default(
-                    max_value,
-                    min(
-                        9223372036854775807,
-                        round(9223372036854775807 / large_value_safety_factor),
-                    ),
-                )
-            max_neg_value = -1 if small_value_safety_factor > 1 else 0
-            min_pos_value = 1 if small_value_safety_factor > 1 else 0
-
-            if min_value >= max_neg_value:
-                min_value = min_pos_value
-                max_neg_value = max_value
-            elif max_value <= min_pos_value:
-                min_pos_value = min_value
-                max_value = max_neg_value
-
-            values = draw(
-                list_of_length(
-                    x=st.integers(min_value, max_neg_value)
-                    | st.integers(min_pos_value, max_value),
-                    length=size,
-                )
-            )
-            for i, v in enumerate(values):
-                if max_op == "sqrt" and v != 0:
-                    v = v / abs(v) * math.sqrt(abs(v))
-                elif max_op == "log" and v != 0:
-                    v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
-                values[i] = int(v / large_value_safety_factor)
-    elif "float" in dtype:
-        dtype_info = {
-            "float16": {"cast_type": "float16", "round_places": 3, "width": 16},
-            "bfloat16": {"cast_type": "float16", "round_places": 3, "width": 16},
-            "float32": {"cast_type": "float32", "round_places": 6, "width": 32},
-            "float64": {"cast_type": "float16", "round_places": 15, "width": 64},
-        }
-        min_value_neg = min_value
-        max_value_neg = round(-1 * limit, dtype_info[dtype]["round_places"])
-        min_value_pos = round(limit, dtype_info[dtype]["round_places"])
-        max_value_pos = max_value
-        if min_value_neg is None or max_value is None:
-            if min_value_neg is not None and min_value_neg >= max_value_neg:
-                min_value_neg = max(min_value_pos, min_value_neg)
-                max_value_neg = (
-                    max(max_value_pos, min_value_neg)
-                    if max_value_pos is not None
-                    else min_value_neg
-                )
-            if max_value_pos is not None and max_value_pos <= min_value_pos:
-                min_value_pos = (
-                    min(min_value_neg, min_value_pos)
-                    if min_value_neg is not None
-                    else min_value_pos
-                )
-                max_value_pos = min(max_value_neg, min_value_pos)
-        else:
-            min_value_neg = min_value
-            max_value_neg = max_value
-            min_value_pos = min_value
-            max_value_pos = max_value
-        bounds = [min_value_neg, max_value_neg, min_value_pos, max_value_pos]
-        bounds = [
-            _zeroing_and_casting(x, cast_type=dtype_info[dtype]["cast_type"])
-            for x in bounds
-        ]
-        min_value_neg, max_value_neg, min_value_pos, max_value_pos = bounds
-        values = draw(
-            list_of_length(
-                x=st.floats(
-                    min_value=min_value_neg,
-                    max_value=max_value_neg,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=dtype_info[dtype]["width"],
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                )
-                | st.floats(
-                    min_value=min_value_pos,
-                    max_value=max_value_pos,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=dtype_info[dtype]["width"],
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
+        kind_dtype = "int"
+        dtype_info = ivy.iinfo(dtype)
+    elif "bool" in dtype:
+        kind_dtype = "bool"
+    else:
+        raise TypeError(
+            f"{dtype} is not a valid data type that can be generated,"
+            f" only integers, floats and booleans are allowed."
         )
-        for i, v in enumerate(values):
-            if max_op == "sqrt" and v != 0:
-                v = v / abs(v) * math.sqrt(abs(v))
-            elif max_op == "log" and v != 0:
-                v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
-            values[i] = v / large_value_safety_factor
-    elif dtype == "bool":
+
+    if kind_dtype != "bool":
+        min_value = (
+            _clamp_value(min_value, dtype_info)
+            if min_value is not None
+            else dtype_info.min
+        )
+        max_value = (
+            _clamp_value(max_value, dtype_info)
+            if max_value is not None
+            else dtype_info.max
+        )
+        assert max_value >= min_value
+
+        # Scale the values
+        if safety_factor_scale == "linear":
+            min_value = min_value / large_abs_safety_factor
+            max_value = max_value / large_abs_safety_factor
+            if kind_dtype == "float":
+                abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
+        elif safety_factor_scale == "log":
+            min_sign = math.copysign(1, min_value)
+            max_sign = math.copysign(1, max_value)
+            min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+            max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+            if kind_dtype == "float":
+                m, e = math.frexp(dtype_info.smallest_normal)
+                abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
+        else:
+            raise ValueError(
+                f"{safety_factor_scale} is not a valid safety factor scale."
+                f" use 'log' or 'linear'."
+            )
+
+        if kind_dtype == "int":
+            if exclude_min:
+                min_value += 1
+            if exclude_max:
+                max_value -= 1
+            values = draw(
+                list_of_length(
+                    x=st.integers(int(min_value), int(max_value)), length=size
+                )
+            )
+        elif kind_dtype == "float":
+            floats_info = {
+                "float16": {"cast_type": "float16", "width": 16},
+                "bfloat16": {"cast_type": "float32", "width": 32},
+                "float32": {"cast_type": "float32", "width": 32},
+                "float64": {"cast_type": "float64", "width": 64},
+            }
+            # The smallest possible value is determined by one of the arguments
+            if min_value > -abs_smallest_val or max_value < abs_smallest_val:
+                float_strategy = st.floats(
+                    # Using np.array to assert that value
+                    # can be represented of compatible width.
+                    min_value=np.array(
+                        min_value, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist(),
+                    max_value=np.array(
+                        max_value, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist(),
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=floats_info[dtype]["width"],
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            else:
+                float_strategy = st.one_of(
+                    st.floats(
+                        min_value=np.array(
+                            min_value, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        max_value=np.array(
+                            -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=floats_info[dtype]["width"],
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    st.floats(
+                        min_value=np.array(
+                            abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        max_value=np.array(
+                            max_value, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=floats_info[dtype]["width"],
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                )
+            values = draw(
+                list_of_length(
+                    x=float_strategy,
+                    length=size,
+                )
+            )
+    else:
         values = draw(list_of_length(x=st.booleans(), length=size))
+
     array = np.array(values)
-    if dtype != "bool" and not allow_negative:
-        array = np.abs(array)
     if isinstance(shape, (tuple, list)):
         array = array.reshape(shape)
     return array.tolist()
@@ -3570,57 +3562,6 @@ def gradient_incompatible_function(*, fn):
 
 
 @st.composite
-def statistical_dtype_values(draw, *, function):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-
-    size = draw(st.integers(1, 10))
-
-    if dtype == "float16":
-        max_value = 2048
-    elif dtype == "float32":
-        max_value = 16777216
-    elif dtype == "float64":
-        max_value = 9.0071993e15
-    elif dtype == "bfloat16":
-        max_value = 9.0071993e15
-
-    if function == "prod":
-        abs_value_limit = 0.99 * max_value ** (1 / size)
-    elif function in ["var", "std"]:
-        abs_value_limit = 0.99 * (max_value / size) ** 0.5
-    else:
-        abs_value_limit = 0.99 * max_value / size
-
-    values = draw(
-        list_of_length(
-            x=st.floats(
-                -abs_value_limit,
-                abs_value_limit,
-                allow_subnormal=False,
-                allow_infinity=False,
-            ),
-            length=size,
-        )
-    )
-
-    shape = np.asarray(values, dtype=dtype).shape
-    size = np.asarray(values, dtype=dtype).size
-    axis = draw(get_axis(shape=shape, allow_none=True))
-    if function == "var" or function == "std":
-        if isinstance(axis, int):
-            correction = draw(
-                st.integers(-shape[axis], shape[axis] - 1)
-                | st.floats(-shape[axis], shape[axis] - 1)
-            )
-            return dtype, values, axis, correction
-
-        correction = draw(st.integers(-size, size - 1) | st.floats(-size, size - 1))
-        return dtype, values, axis, correction
-
-    return dtype, values, axis
-
-
-@st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
 
@@ -3714,16 +3655,18 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         array_values(
             dtype=dtype,
             shape=x_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     filters = draw(
         array_values(
             dtype=dtype,
             shape=filter_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     if transpose:
