@@ -756,10 +756,10 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     Runs func with args and kwargs, and returns the result along with its flattened
     version.
     """
-    # print(*args)
+    print(*args, **kwargs)
     ret = fn(*args, **kwargs)
-    print('ret', ret)
-    print('fla', flatten_and_to_np(ret=ret))
+    # print('ret', ret)
+    # print('fla', flatten_and_to_np(ret=ret))
     return ret, flatten_and_to_np(ret=ret)
 
 
