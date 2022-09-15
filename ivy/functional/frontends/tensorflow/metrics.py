@@ -199,8 +199,10 @@ def cosine_similarity(y_true, y_pred):
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
 
     if len(y_true.shape) == len(y_pred.shape) and len(y_true.shape) == 2:
-        cosine = ivy.sum(y_true * y_pred, axis= 1)/(ivy.matrix_norm(y_true)*ivy.matrix_norm(y_pred))
+        numerator = ivy.sum(y_true * y_pred, axis= 1)
+        denominator = (ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred))
+        cosine = numerator / denominator
     else:
-        cosine = (y_true @ y_pred)/(ivy.matrix_norm(y_true)*ivy.matrix_norm(y_pred))
+        cosine = (y_true @ y_pred) / (ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred))
     
     return ivy.array(cosine)
