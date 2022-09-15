@@ -1103,6 +1103,37 @@ def conv3d_transpose(
     )
 
 
+# Labels #
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def ctc_unique_labels(
+    labels: Union[str, List[int]],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Get unique labels and indices for batched labels.
+
+    Parameters
+    ----------
+    labels
+          tensor of shape [batch_size, max_label_length] padded with 0.
+
+    Returns
+    -------
+    ret
+        The result of the unique labels, tensor of shape [batch_size, max_label_length]
+
+    """
+    return current_backend(x).ctc_unique_labels(
+        labels
+    )
+
+
 # LSTM #
 
 
