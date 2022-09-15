@@ -129,7 +129,8 @@ def max_pool1d( input, ksize, strides, padding, data_format='NWC', name=None):
     return ivy.max_pool1d(
         input, 
         ksize= ksize,
-        strides, 
-        padding, 
-        data_format=data_format
+        strides = strides, 
+        padding = padding, 
+        data_format=data_format,
+        name= None
     )
