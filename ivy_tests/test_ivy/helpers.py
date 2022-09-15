@@ -438,9 +438,11 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
             max_x = np.max(np.abs(np.asarray(x)))
         return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
 
-    cast_dtype = draw(st.sampled_from(draw(available_dtypes)).filter(cast_filter))
+    cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
     if x is None:
         return dtype, cast_dtype
+    if "uint" in cast_dtype:
+        x = np.abs(np.asarray(x)).tolist()
     return dtype, x, cast_dtype
 
 
@@ -2498,7 +2500,7 @@ def dtype_and_values(
             )
         )
     if num_arrays == 1:
-        dtype = dtype[0]
+        dtype = dtype[0] if isinstance(dtype, list) else dtype
         values = values[0]
     if ret_shape:
         return dtype, values, shape
