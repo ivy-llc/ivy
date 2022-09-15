@@ -11,7 +11,7 @@ import pytest
 import numpy as np
 import math
 import gc
-from typing import Union, List
+from typing import Optional, Union, List
 from hypothesis import given, assume, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
@@ -403,7 +403,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
 
 
 @st.composite
-def get_castable_dtype(draw, dtype, full=False):
+def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = None):
     """
     Draws castable dtypes for the given dtype based on the current backend.
 
@@ -412,25 +412,36 @@ def get_castable_dtype(draw, dtype, full=False):
     draw
         Special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
+    available_dtypes
+        Castable data types are drawn from this list randomly.
     dtype
-        Data type from which to cast
-    full
-        Returns the complete list of castable types
+        Data type from which to cast.
+    x
+        Optional list of values to cast.
 
     Returns
     -------
     ret
-        List of castable dtypes
+        A tuple of inputs and castable dtype.
     """
-    if ivy.is_int_dtype(dtype):
-        valid_dtypes = [d for d in ivy.valid_int_dtypes if ivy.can_cast(dtype, d)]
-    elif ivy.is_float_dtype(dtype):
-        valid_dtypes = [d for d in ivy.valid_float_dtypes if ivy.can_cast(dtype, d)]
-    elif ivy.is_bool_dtype(dtype):
-        valid_dtypes = [dtype]
-    if full:
-        return valid_dtypes
-    return [draw(st.sampled_from(valid_dtypes))]
+
+    def cast_filter(d):
+        if ivy.is_int_dtype(d):
+            max_val = ivy.iinfo(d).max
+        elif ivy.is_float_dtype(d):
+            max_val = ivy.finfo(d).max
+        else:
+            max_val = 1
+        if x is None:
+            max_x = -1
+        else:
+            max_x = np.max(np.abs(np.asarray(x)))
+        return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
+
+    cast_dtype = draw(st.sampled_from(draw(available_dtypes)).filter(cast_filter))
+    if x is None:
+        return dtype, cast_dtype
+    return dtype, x, cast_dtype
 
 
 @st.composite
