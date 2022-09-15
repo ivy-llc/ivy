@@ -186,7 +186,7 @@ class ContainerBase(dict, abc.ABC):
             conts = arg_conts + kwarg_conts + [out]
         else:
             conts = arg_conts + kwarg_conts
-        ivy.assertions.check_exists(conts)
+        ivy.assertions.check_exists(conts, message="no containers found in arguments")
         cont0 = conts[0]
         # Get the function with the name fn_name, enabling containers to specify
         # their backends irrespective of global ivy's backend
@@ -655,7 +655,10 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(cont, ivy.Container):
                 container0 = cont
                 break
-        ivy.assertions.check_exists(container0)
+        ivy.assertions.check_exists(
+            container0,
+            message="No containers found in the inputs to ivy.Container.multi_map",
+        )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
