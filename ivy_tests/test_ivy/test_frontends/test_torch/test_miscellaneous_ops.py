@@ -227,19 +227,31 @@ def test_torch_diagonal(
     )
 
 
+@st.composite
+def _generate_cartesian_prod_dtype_and_tensors(draw):
+    num_arrays = draw(st.integers(min_value=1, max_value=5))
+    # We must avoid a case where a single value is generated
+    # As this is an invalid input for the Torch function.
+    min_dim_size = 1 if num_arrays != 1 else 2
+    shape = draw(
+        helpers.get_shape(
+            max_num_dims=1, min_num_dims=1, min_dim_size=min_dim_size, max_dim_size=10
+        )
+    )
+
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            num_arrays=num_arrays,
+            shared_dtype=True,
+        )
+    )
+
+
 # Generating more than 2 input arrays results in hard to debug issues.
 @handle_cmd_line_args
-@given(
-    dtype_and_tensors=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(
-            helpers.get_shape(max_num_dims=1, min_num_dims=1, min_dim_size=1),
-            key="shape",
-        ),
-        num_arrays=st.integers(min_value=1),
-        shared_dtype=True,
-    ),
-)
+@given(dtype_and_tensors=_generate_cartesian_prod_dtype_and_tensors())
 def test_torch_cartesian_prod(
     dtype_and_tensors,
     as_variable,
@@ -249,10 +261,14 @@ def test_torch_cartesian_prod(
 ):
     dtypes, tensors = dtype_and_tensors
 
-    # inputs = [np.array(i) for i in tensors]
-    args = {
-        f"x{i}": np.array(tensor, dtype=dtypes[i]) for i, tensor in enumerate(tensors)
-    }
+    if isinstance(dtypes, list):  # If more than one value was generated
+        args = {
+            f"x{i}": np.array(tensor, dtype=dtypes[i])
+            for i, tensor in enumerate(tensors)
+        }
+
+    else:  # If exactly one value was generated
+        args = {"x0": np.array(tensors, dtype=dtypes)}
 
     num_positional_args = len(tensors)
 
@@ -265,8 +281,6 @@ def test_torch_cartesian_prod(
         fw=fw,
         frontend="torch",
         fn_tree="cartesian_prod",
-        # Workaround for python placing these arguments into a tuple
-        # We need to split them up such that they re-join correctly.
         **args,
     )
 

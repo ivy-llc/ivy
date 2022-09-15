@@ -1,5 +1,3 @@
-import itertools
-
 import ivy
 
 
@@ -23,7 +21,7 @@ def cumsum(input, dim, *, dtype=None, out=None):
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
-  
+
 
 def cumprod(input, dim, *, dtype=None, out=None):
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
@@ -34,7 +32,14 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
 
 
 def cartesian_prod(*tensors):
-    return ivy.asarray([i for i in list(itertools.product(tensors))])
+    if len(tensors) == 1:
+        return tensors
+
+    c = ivy.meshgrid(*tensors, indexing="ij")
+    c = ivy.stack(c, axis=-1)
+    c = ivy.reshape(c, shape=(-1, len(tensors)))
+
+    return c
 
 
 def triu(input, diagonal=0, *, out=None):
