@@ -161,13 +161,13 @@ def inplace_update(
             else:
                 x = ivy.Array(x_native)
         elif ensure_in_backend:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         return x
@@ -202,7 +202,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        assert len(target.shape) == 1 and target.shape[0] == size
+        ivy.assertions.check_equal(len(target.shape), 1)
+        ivy.assertions.check_equal(target.shape[0], size)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
@@ -230,7 +231,7 @@ def scatter_flat(
                 updates,
             )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -313,7 +314,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -373,7 +374,7 @@ def scatter_nd(
                 tf.zeros(shape, dtype=dtype), indices, updates
             )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -411,14 +412,13 @@ def vmap(
 
         # if in_axis is a non-integer, its length should be equal to pos args.
         if isinstance(in_axes, (list, tuple)):
-            try:
-                assert (len(args)) == len(in_axes)
-            except AssertionError:
-                raise Exception(
-                    """The in_axes should have length equivalent to the 
-                number of positional arguments to the function being vectorized
-                or it should be an integer."""
-                )
+            ivy.assertions.check_equal(
+                len(args),
+                len(in_axes),
+                message="""in_axes should have a length equivalent to the number
+                of positional arguments to the function being vectorized or it
+                should be an integer""",
+            )
 
         # checking axis_size consistency
         axis_size = set()
@@ -432,17 +432,20 @@ def vmap(
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 """Inconsistent sizes. All mapped axes should have the same size"""
             )
 
         # Making sure not all in_axes are None
         if isinstance(in_axes, (list, tuple)):
-            assert not all(
-                ax is None for ax in in_axes
-            ), "At least one of the axes should be specified (not None)."
+            ivy.assertions.check_any(
+                [ivy.exists(ax) for ax in in_axes],
+                message="At least one of the axes should be specified (not None)",
+            )
         else:
-            assert not (in_axes is None), "single value in_axes should not be None."
+            ivy.assertions.check_exists(
+                in_axes, message="single value in_axes should not be None"
+            )
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
