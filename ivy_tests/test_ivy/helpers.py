@@ -344,7 +344,7 @@ def floats(
         )
 
     else:
-        if ivy.exists(min_value):
+        if min_value is not None:
             if min_value > -lim_float16 * safety_factor and (
                 width == 16 or not ivy.exists(width)
             ):
@@ -358,7 +358,7 @@ def floats(
         else:
             dtype_min = draw(st.sampled_from(ivy_np.valid_float_dtypes))
 
-        if ivy.exists(max_value):
+        if max_value is not None:
             if max_value < lim_float16 * safety_factor and (
                 width == 16 or not ivy.exists(width)
             ):
@@ -596,7 +596,7 @@ def value_test(
     ret_np_flat
         A list (flattened) containing Numpy arrays. Return from the
         framework to test.
-    ret_from_np_flat
+    ret_np_from_gt_flat
         A list (flattened) containing Numpy arrays. Return from the ground
         truth framework.
     rtol
@@ -3266,7 +3266,7 @@ def num_positional_args_from_fn(draw, *, fn):
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    fn_name
+    fn
         name of the function.
 
     Returns
@@ -3583,4 +3583,4 @@ def array_and_broadcastable_shape(draw, dtype):
         .filter(lambda s: broadcast_shapes(in_shape, s) == s),
         label="shape",
     )
-    return (x, to_shape)
+    return x, to_shape
