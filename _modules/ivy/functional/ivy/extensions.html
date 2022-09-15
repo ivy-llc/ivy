@@ -134,52 +134,80 @@
 
 <span class="c1"># helpers</span>
 <span class="k">def</span> <span class="nf">_verify_coo_components</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
-    <span class="p">),</span> <span class="s2">&quot;indices, values and dense_shape must all be specified&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+        <span class="n">indices</span><span class="p">,</span>
+        <span class="n">values</span><span class="p">,</span>
+        <span class="n">dense_shape</span><span class="p">,</span>
+        <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;indices, values and dense_shape must all be specified&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="c1"># coordinates style (COO), must be shaped (x, y)</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;indices must be 2D&quot;</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;values must be 1D&quot;</span>
-    <span class="k">assert</span> <span class="p">(</span>
-        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">))</span> <span class="o">==</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="p">),</span> <span class="s2">&quot;shape and indices shape do not match&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;indices must be 2D&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)),</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;shape and indices shape do not match&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="c1"># number of values must match number of coordinates</span>
-    <span class="k">assert</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="p">),</span> <span class="s2">&quot;values and indices do not match&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values and indices do not match&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)[</span><span class="n">i</span><span class="p">])</span>
-        <span class="p">),</span> <span class="s2">&quot;indices is larger than shape&quot;</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+            <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_shape</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;indices is larger than shape&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_verify_csr_components</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span> <span class="n">crow_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-    <span class="k">assert</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
-    <span class="p">),</span> <span class="s2">&quot;crow_indices, col_indices, values and dense_shape must all be specified&quot;</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;crow_indices must be 1D&quot;</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;col_indices must be 1D&quot;</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;values must be 1D&quot;</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;only 2D arrays can be converted to CSR sparse arrays&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+        <span class="n">crow_indices</span><span class="p">,</span>
+        <span class="n">col_indices</span><span class="p">,</span>
+        <span class="n">values</span><span class="p">,</span>
+        <span class="n">dense_shape</span><span class="p">,</span>
+        <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;crow_indices, col_indices, values and dense_shape must all </span><span class="se">\</span>
+<span class="s2">        be specified&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;crow_indices must be 1D&quot;</span>
+    <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;col_indices must be 1D&quot;</span>
+    <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values must be 1D&quot;</span><span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">),</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;only 2D arrays can be converted to CSR sparse arrays&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="c1"># number of intervals must be equal to x in shape (x, y)</span>
-    <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="c1"># index in col_indices must not exceed y in shape (x, y)</span>
-    <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">col_indices</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="p">),</span> <span class="s2">&quot;index in col_indices does not match shape&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+        <span class="n">col_indices</span><span class="p">,</span> <span class="n">dense_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;index in col_indices does not match shape&quot;</span>
+    <span class="p">)</span>
     <span class="c1"># number of values must match number of coordinates</span>
-    <span class="k">assert</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="p">),</span> <span class="s2">&quot;values and col_indices do not match&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values and col_indices do not match&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="c1"># index in crow_indices must not exceed length of col_indices</span>
-    <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">crow_indices</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="p">),</span> <span class="s2">&quot;index in crow_indices does not match the number of col_indices&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span>
+        <span class="n">crow_indices</span><span class="p">,</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">col_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;index in crow_indices does not match the number of col_indices&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_is_data_not_indices_values_and_shape</span><span class="p">(</span>
@@ -191,18 +219,19 @@
     <span class="n">dense_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">coo_indices</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csr_crow_indices</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csr_col_indices</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dense_shape</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;only specify either data, all coo components (coo_indices, values </span><span class="se">\</span>
-<span class="s2">                and dense_shape), or all csr components (csr_crow_indices, </span><span class="se">\</span>
-<span class="s2">                csr_col_indices, values and dense_shape)&quot;</span>
-            <span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_all_or_any_fn</span><span class="p">(</span>
+            <span class="n">coo_indices</span><span class="p">,</span>
+            <span class="n">csr_crow_indices</span><span class="p">,</span>
+            <span class="n">csr_col_indices</span><span class="p">,</span>
+            <span class="n">values</span><span class="p">,</span>
+            <span class="n">dense_shape</span><span class="p">,</span>
+            <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;only specify either data, all coo components (coo_indices, values </span><span class="se">\</span>
+<span class="s2">            and dense_shape), or all csr components (csr_crow_indices, </span><span class="se">\</span>
+<span class="s2">            csr_col_indices, values and dense_shape)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span>
 
@@ -231,7 +260,7 @@
     <span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
             <span class="s2">&quot;specify either all coo components (coo_indices, values </span><span class="se">\</span>
 <span class="s2">            and dense_shape), or all csr components (csr_crow_indices, </span><span class="se">\</span>
 <span class="s2">            csr_col_indices, values and dense_shape)&quot;</span>
@@ -271,7 +300,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dense_shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dense_shape</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_sparse_array</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;not a native sparse array&quot;</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_sparse_array</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;not a native sparse array&quot;</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_native_sparse_array_to_indices_values_and_shape</span><span class="p">()</span>
 
