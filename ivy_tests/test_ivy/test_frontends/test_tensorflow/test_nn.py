@@ -643,3 +643,43 @@ def test_tensorflow_batch_normalization(
         scale=np.asarray(scale, dtype=input_dtype),
         variance_epsilon=1e-7,
     )
+
+    
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.depthwise_conv2d_backprop_filter"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_depthwise_conv2d_backprop_filter(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x, filter_sizes, dilation, data_format, out_backprop, stride, padding = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.depthwise_conv2d_backprop_filter",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        filters=np.asarray(filter_sizes, dtype=input_dtype[1]),
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+        out_backprop=out_backprop
+    )
+    
