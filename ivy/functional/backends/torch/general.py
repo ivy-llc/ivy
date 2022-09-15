@@ -109,11 +109,14 @@ def to_list(x: torch.Tensor, /) -> list:
 def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.gather(params, axis, indices.type(torch.int64))
+    sl = [slice(None)] * params.ndim
+    sl[axis] = indices.type(torch.int64)
+    return params[tuple(sl)]
 
 
 def gather_nd(
