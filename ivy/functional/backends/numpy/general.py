@@ -25,6 +25,10 @@ def current_backend_str():
     return "numpy"
 
 
+def get_item(x: np.ndarray, query: np.ndarray) -> np.ndarray:
+    return x.__getitem__(query)
+
+
 def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return x.copy()
