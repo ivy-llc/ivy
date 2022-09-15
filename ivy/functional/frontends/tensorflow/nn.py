@@ -123,5 +123,13 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
     return x * ivy.astype(inv, x.dtype, copy=False) + ivy.astype(
         offset - mean * inv if offset is not None else -mean * inv, x.dtype
     )
-def max_pool1d( input, ksize, strides, padding, data_format='NWC', name=None ):
-    return ivy.max_pool1d(input, ksize= ksize,strides, padding, data_format=data_format)
+
+
+def max_pool1d( input, ksize, strides, padding, data_format='NWC', name=None):
+    return ivy.max_pool1d(
+        input, 
+        ksize= ksize,
+        strides, 
+        padding, 
+        data_format=data_format
+    )
