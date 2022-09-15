@@ -994,7 +994,7 @@ def test_torch_pow(
         frontend="torch",
         fn_tree="pow",
         input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        exponent=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
     )
 
