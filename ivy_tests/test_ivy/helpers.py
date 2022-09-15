@@ -2904,19 +2904,20 @@ def array_values(
 
         # Scale the values
         if safety_factor_scale:
-            small_norm = dtype_info.smallest_normal
             if safety_factor_scale == "linear":
                 min_value = min_value / large_abs_safety_factor
                 max_value = max_value / large_abs_safety_factor
                 if kind_dtype == "float":
-                    abs_smallest_val = small_norm * small_abs_safety_factor
+                    abs_smallest_val = (
+                        dtype_info.smallest_normal * small_abs_safety_factor
+                    )
             elif safety_factor_scale == "log":
                 min_sign = math.copysign(1, min_value)
                 max_sign = math.copysign(1, max_value)
                 min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
                 max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
                 if kind_dtype == "float":
-                    m, e = math.frexp(small_norm)
+                    m, e = math.frexp(dtype_info.smallest_normal)
                     abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
         elif kind_dtype == "float":
             abs_smallest_val = dtype_info.smallest_normal
