@@ -509,6 +509,9 @@ def test_scatter_nd(
 @handle_cmd_line_args
 @given(
     params_n_indices_n_axis=helpers.array_n_indices_n_axis(
+        array_dtypes=ivy_np.valid_numeric_dtypes,
+        indices_dtypes=["int32", "int64"],
+        boolean_mask=False,
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=5,
@@ -532,9 +535,7 @@ def test_gather(
     instance_method,
     fw,
 ):
-    params, indices, axis = params_n_indices_n_axis
-    params_dtype, params = params
-    indices_dtype, indices = indices
+    [params_dtype, indices_dtype], params, indices, axis = params_n_indices_n_axis
     helpers.test_function(
         input_dtypes=[params_dtype, indices_dtype],
         as_variable_flags=as_variable,

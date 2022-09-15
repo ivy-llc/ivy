@@ -2723,7 +2723,7 @@ def array_n_indices_n_axis(
             )
     )
     """
-    x_dtype, x, indices_shape = draw(
+    x_dtype, x, x_shape = draw(
         dtype_and_values(
             available_dtypes=array_dtypes,
             allow_inf=allow_inf,
@@ -2736,15 +2736,18 @@ def array_n_indices_n_axis(
     )
     axis = draw(
         ints(
-            min_value=-1 * (len(np.array(x[1]).shape)),
-            max_value=len(np.array(x[1]).shape) - 1,
+            min_value=-1 * len(x_shape),
+            max_value=len(x_shape) - 1,
         )
     )
     if boolean_mask:
         indices_dtype, indices = draw(
             dtype_and_values(
                 dtype=["bool"],
-                shape=indices_shape,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
     else:
@@ -2753,7 +2756,7 @@ def array_n_indices_n_axis(
                 available_dtypes=indices_dtypes,
                 allow_inf=False,
                 min_value=0,
-                max_value=max(indices_shape[axis] - 1, 0),
+                max_value=max(x_shape[axis] - 1, 0),
                 min_num_dims=min_num_dims,
                 max_num_dims=max_num_dims,
                 min_dim_size=min_dim_size,
