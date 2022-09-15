@@ -2371,9 +2371,9 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    max_op="divide",
+    large_abs_safety_factor=1,
+    small_abs_safety_factor=1,
+    safety_factor_scale=None,
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
@@ -2482,9 +2482,9 @@ def dtype_and_values(
                     allow_nan=allow_nan,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    large_value_safety_factor=large_value_safety_factor,
-                    small_value_safety_factor=small_value_safety_factor,
-                    max_op=max_op,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
                 )
             )
         )
@@ -2802,7 +2802,6 @@ def array_values(
     large_abs_safety_factor=1,
     small_abs_safety_factor=1,
     safety_factor_scale=None,
-    scale_op=None,
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -3655,16 +3654,18 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         array_values(
             dtype=dtype,
             shape=x_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     filters = draw(
         array_values(
             dtype=dtype,
             shape=filter_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     if transpose:
