@@ -1,6 +1,7 @@
 """Collection of tests for elementwise functions."""
 
 # global
+import math
 import numpy as np
 from hypothesis import given, assume, strategies as st
 
@@ -1628,13 +1629,45 @@ def test_positive(
 
 @st.composite
 def _pow_helper(draw):
-    dtype, x = draw(
+    dtype1, x1 = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_value_safety_factor=2.5,
+            large_value_safety_factor=40,
         )
     )
-    dtype1, dtype2 = dtype
-    x1, x2 = x
+
+    def cast_filter(dtype1_x1_dtype2):
+        dtype1, _, dtype2 = dtype1_x1_dtype2
+        if (ivy.as_ivy_dtype(dtype1), ivy.as_ivy_dtype(dtype2)) in ivy.promotion_table:
+            return True
+        return False
+
+    dtype1, x1, dtype2 = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("numeric")), dtype1, x1
+        ).filter(cast_filter)
+    )
+    if ivy.is_int_dtype(dtype2):
+        max_val = ivy.iinfo(dtype2).max
+    else:
+        max_val = ivy.finfo(dtype2).max
+    max_x1 = np.max(np.abs(np.asarray(x1))) if isinstance(x1, list) else abs(x1)
+    if max_x1 in [0, 1]:
+        max_value = None
+    else:
+        max_value = int(math.log(max_val) / math.log(max_x1))
+        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
+            max_value = None
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            small_value_safety_factor=2.5,
+            large_value_safety_factor=40,
+            max_op="log",
+            max_value=max_value,
+            dtype=[dtype2],
+        )
+    )
     if "int" in dtype2:
         x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
     return [dtype1, dtype2], [x1, x2]
