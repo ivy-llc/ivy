@@ -726,19 +726,19 @@ def flatten_fw(*, ret, fw):
     if not isinstance(ret, tuple):
         ret = (ret,)
     if fw == "jax":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_jax_native_array(x)
         )
     elif fw == "numpy":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_numpy_native_array(x)
         )
     elif fw == "tensorflow":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_tensorflow_native_array(x)
         )
     else:
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x)
         )
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
@@ -752,7 +752,7 @@ def flatten(*, ret):
     """Returns a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
     return ivy.multi_index_nest(ret, ret_idxs)
 
 
@@ -1061,11 +1061,9 @@ def create_args_kwargs(
     keyword-arguments.
     """
     # extract all arrays from the arguments and keyword arguments
-    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
+    args_idxs = ivy.nested_argwhere(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
-    kwargs_idxs = ivy.nested_indices_where(
-        kwargs_np, lambda x: isinstance(x, np.ndarray)
-    )
+    kwargs_idxs = ivy.nested_argwhere(kwargs_np, lambda x: isinstance(x, np.ndarray))
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
 
     # assert that the number of arrays aligns with the dtypes and as_variable_flags
@@ -1951,9 +1949,7 @@ def test_frontend_function(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(
-                frontend_ret, ivy.is_native_array
-            )
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -2239,7 +2235,7 @@ def test_frontend_array_instance_method(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_array)
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
