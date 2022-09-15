@@ -2402,13 +2402,30 @@ def dtype_and_values(
         minimum value of elements in each array.
     max_value
         maximum value of elements in each array.
-    large_value_safety_factor
-        Factor to divide the values by to ensure that they are not too large.
-    small_value_safety_factor
-        Factor to multiply the values by to ensure that they are not too small.
-    max_op
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
+
+    safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "divide", "sqrt" or "log". Default value = "divide".
+        "linear" or "log". Default value = None.
     allow_inf
         if True, allow inf in the arrays.
     allow_nan
@@ -2539,6 +2556,30 @@ def dtype_values_axis(
         minimum value of elements in the array.
     max_value
         maximum value of elements in the array.
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
+
+    safety_factor_scale
+        The operation to use when calculating the maximum value of the list. Can be
+        "linear" or "log". Default value = None.
     allow_inf
         if True, allow inf in the array.
     allow_nan
