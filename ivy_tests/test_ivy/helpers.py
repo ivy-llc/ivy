@@ -2840,14 +2840,15 @@ def array_values(
         value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
     small_abs_safety_factor
         A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
 
         when a "linear" safety factor scaler is used, a data type with minimum
         representable number of 0.0001 and a safety factor of 2 transforms the
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
-        when a "linear" safety factor scaler is used, a data type with minimum
-        representable number of 0.0001 and a safety factor of 2 transforms the
-        minimum to 0.01, a safety factor of 3 transforms the minimum to  0.1.
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
 
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
@@ -2903,22 +2904,20 @@ def array_values(
 
         # Scale the values
         if safety_factor_scale:
+            small_norm = dtype_info.smallest_normal
             if safety_factor_scale == "linear":
                 min_value = min_value / large_abs_safety_factor
                 max_value = max_value / large_abs_safety_factor
                 if kind_dtype == "float":
-                    abs_smallest_val = (
-                        dtype_info.smallest_normal * small_abs_safety_factor
-                    )
+                    abs_smallest_val = small_norm * small_abs_safety_factor
             elif safety_factor_scale == "log":
                 min_sign = math.copysign(1, min_value)
                 max_sign = math.copysign(1, max_value)
                 min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
                 max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
                 if kind_dtype == "float":
-                    abs_smallest_val = dtype_info.smallest_normal ** (
-                        1 / small_abs_safety_factor
-                    )
+                    m, e = math.frexp(small_norm)
+                    abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
         elif kind_dtype == "float":
             abs_smallest_val = dtype_info.smallest_normal
 
