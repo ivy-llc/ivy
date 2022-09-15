@@ -31,7 +31,7 @@ def bilinear(input1, input2, weight, bias=None):
 
     # Create empty output array with shape (*, Hout)
     output = ivy.zeros_like([[0.0 for _ in range(ivy.shape(weight_flattened)[0])] 
-    for _ in range(ivy.shape(input1_flattened)[0])])
+                            for _ in range(ivy.shape(input1_flattened)[0])])
 
     for i in range(ivy.shape(weight_flattened)[0]):
         buff = ivy.matmul(input1_flattened, weight_flattened[i])
