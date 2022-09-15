@@ -87,7 +87,11 @@ def test_acosh(
 # acos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_value_safety_factor=20,
+        small_value_safety_factor=2.5,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
 def test_acos(
@@ -112,6 +116,8 @@ def test_acos(
         instance_method=instance_method,
         fw=fw,
         fn_name="acos",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
     )
 
