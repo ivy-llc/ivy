@@ -153,7 +153,7 @@ def leaky_relu(
     ivy.array([-0.1,  1. , -0.5])
 
     """
-    return current_backend(x).leaky_relu(x, alpha, out=out)
+    return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
 @integer_arrays_to_float
