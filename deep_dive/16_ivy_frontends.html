@@ -66,7 +66,8 @@
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Ivy Frontends</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#basic">Basic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-basics">The Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unused-arguments">Unused Arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#missing-ivy-functions">Missing Ivy Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
@@ -171,8 +172,8 @@ framework-specific frontend functional APIs, which play an important role in cod
 transpilations, as explained <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">here</a>.</p>
 <p>Let’s start with some examples to have a better idea on Ivy Frontends!</p>
 </section>
-<section id="basic">
-<h2>Basic<a class="headerlink" href="#basic" title="Permalink to this heading"></a></h2>
+<section id="the-basics">
+<h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this heading"></a></h2>
 <p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
 frontend functions.</p>
 <p><strong>Jax</strong></p>
@@ -239,7 +240,7 @@ sub-category of <code class="code docutils literal notranslate"><span class="pre
 <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.</p>
 <p>The function arguments for this function are slightly more complex due to the extra
 optional arguments. Additional handling code is added to recover the behaviour
-according to the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.add.html">numpy.add</a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
+according to the <a href="#id4"><span class="problematic" id="id5">`numpy.add`_</span></a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
 the arguments will be cast to the desired type through <code class="code docutils literal notranslate"><span class="pre">ivy.astype</span></code>.
 The returned result is then obtained through <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> just like the other
 examples.</p>
@@ -251,18 +252,14 @@ being.</p>
 <p>In the case of <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code>, this is because the aspects which these
 arguments seek to control are simply not controllable when using Ivy.
 <code class="code docutils literal notranslate"><span class="pre">order</span></code> controls the low-level memory layout of the stored array.
-Ivy abstracts the backend framework, and therefore also abstracts everything below Ivy’s
-functional API, including the backend array class, the low-level language compiled to,
-the device etc. Most ML frameworks do not offer per-array control of the memory layout,
-and so we cannot offer this control at the Ivy API level, nor the frontend API level
-either. This is not a problem, as the memory layout has no bearing at all on the
-input-output behaviour of the function. Similarly, <code class="code docutils literal notranslate"><span class="pre">subok</span></code> controls whether or not
-subclasses of the <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> should be permitted as inputs to the function.
+Similarly, <code class="code docutils literal notranslate"><span class="pre">subok</span></code> controls whether or not subclasses of the <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
+should be permitted as inputs to the function.
 Again, this is a very framework-specific argument. All ivy functions by default do
 enable subclasses of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> to be passed, and the frontend function will
 be operating with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances rather than <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
 instances, and so we omit this argument. Again, it has no bearing on input-output
 behaviour and so this is not a problem when transpiling between frameworks.</p>
+<p>See the section “Unused Arguments” below for more details.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">,</span>
@@ -340,6 +337,44 @@ into <code class="code docutils literal notranslate"><span class="pre">ivy.add</
 framework. Looking at the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation, we can mimick the same arguments,
 and again simply wrap <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>,
 also making use of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in this case.</p>
+</section>
+<section id="unused-arguments">
+<h2>Unused Arguments<a class="headerlink" href="#unused-arguments" title="Permalink to this heading"></a></h2>
+<p>As can be seen from the examples above, there are often cases where we do not add
+support for particular arguments in the frontend function. Generally, we can omit
+support for a particular argument only if: the argument <strong>does not</strong> fundamentally
+affect the input-output behaviour of the function in a mathematical sense. The only
+two exceptions to this rule are arguments related to either the data type or the device
+on which the returned array(s) should reside. Examples of arguments which can be
+omitted, on account that they do not change the mathematics of the function are
+arguments which relate to:</p>
+<ul class="simple">
+<li><p>the layout of the array in memory, such as <code class="code docutils literal notranslate"><span class="pre">order</span></code> in
+<a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a>.</p></li>
+<li><p>the algorithm or approximations used under the hood, such as <code class="code docutils literal notranslate"><span class="pre">precision</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">preferred_element_type</span></code> in
+<a class="reference external" href="https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57">jax.lax.conv_general_dilated</a>.</p></li>
+<li><p>the specific array class in the original framework, such as <code class="code docutils literal notranslate"><span class="pre">subok</span></code> in
+<a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a>.</p></li>
+<li><p>the labelling of functions for organizational purposes, such as <code class="code docutils literal notranslate"><span class="pre">name</span></code> in
+<a class="reference external" href="https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004">tf.math.add</a>.</p></li>
+</ul>
+<p>There are likely to be many other examples of arguments which do not fundamentally
+affect the input-output behaviour of the function in a mathematical sense, and so can
+also be omitted from Ivy’s frontend implementation.</p>
+<p>The reason we omit these arguments in Ivy is because Ivy is not designed to provide
+low-level control to functions that extend beyond the pure mathematics of the function.
+This is a requirement because Ivy abstracts the backend framework,
+and therefore also abstracts everything below the backend framework’s functional API,
+including the backend array class, the low-level language compiled to, the device etc.
+Most ML frameworks do not offer per-array control of the memory layout, and control for
+the finer details of the algorithmic approximations under the hood, and so we cannot
+in general offer this level of control at the Ivy API level, nor the frontend API level
+as a direct result. As explained above, this is not a problem, as the memory layout has
+no bearing at all on the input-output behaviour of the function. In contrast, the
+algorithmic approximation may have a marginal bearing on the final results in some
+cases, but Ivy is only designed to unify to within a reasonable numeric approximation
+in any case, and so omitting these arguments also very much fits within Ivy’s design.</p>
 </section>
 <section id="compositions">
 <h2>Compositions<a class="headerlink" href="#compositions" title="Permalink to this heading"></a></h2>
@@ -452,7 +487,7 @@ same as those supported by the function in the native framework. Again, this is 
 needed if the limitations go beyond those of the framework itself. For example, it is
 not necessary to uniquely flag every single NumPy function as supporting only CPU,
 as this is a limitation of the entire framework, and this limitation is already
-<a href="#id2"><span class="problematic" id="id3">`globally flagged &lt;&gt;`_</span></a>.</p>
+<a href="#id6"><span class="problematic" id="id7">`globally flagged &lt;&gt;`_</span></a>.</p>
 </section>
 <section id="instance-methods">
 <h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this heading"></a></h2>
