@@ -35,11 +35,11 @@ def cartesian_prod(*tensors):
     if len(tensors) == 1:
         return tensors
 
-    c = ivy.meshgrid(*tensors, indexing="ij")
-    c = ivy.stack(c, axis=-1)
-    c = ivy.reshape(c, shape=(-1, len(tensors)))
+    ret = ivy.meshgrid(*tensors, indexing="ij")
+    ret = ivy.stack(ret, axis=-1)
+    ret = ivy.reshape(ret, shape=(-1, len(tensors)))
 
-    return c
+    return ret
 
 
 def triu(input, diagonal=0, *, out=None):
