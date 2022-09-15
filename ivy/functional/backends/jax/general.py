@@ -112,8 +112,8 @@ def gather_nd(
     return _to_device(ret)
 
 
-def get_num_dims(x: JaxArray, /, *, as_tensor: bool = False) -> Union[JaxArray, int]:
-    return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
+def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, int]:
+    return jnp.asarray(len(jnp.shape(x))) if as_array else len(x.shape)
 
 
 def inplace_arrays_supported():
