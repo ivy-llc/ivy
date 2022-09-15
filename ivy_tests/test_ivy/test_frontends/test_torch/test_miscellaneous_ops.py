@@ -129,38 +129,42 @@ def test_torch_fliplr(
 # cumsum
 @handle_cmd_line_args
 @given(
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.cumsum"
     ),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_torch_cumsum(
-    dtype_and_values,
-    axis,
+    dtype_x_axis,
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
+    dtype,
     fw,
 ):
-    input_dtype, value = dtype_and_values
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=True,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="cumsum",
-        input=np.asarray(value, dtype=input_dtype),
+        input=np.asarray(x, dtype=input_dtype),
         dim=axis,
-        dtype=input_dtype,
+        dtype=dtype,
         out=None,
     )
 
@@ -261,37 +265,41 @@ def test_torch_triu(
 # cumprod
 @handle_cmd_line_args
 @given(
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.cumprod"
     ),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_torch_cumprod(
-    dtype_and_values,
-    axis,
+    dtype_x_axis,
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
+    dtype,
     fw,
 ):
-    input_dtype, value = dtype_and_values
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=True,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="cumprod",
-        input=np.asarray(value, dtype=input_dtype),
+        input=np.asarray(x, dtype=input_dtype),
         dim=axis,
-        dtype=input_dtype,
+        dtype=dtype,
         out=None,
     )
