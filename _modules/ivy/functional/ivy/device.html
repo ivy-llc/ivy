@@ -429,7 +429,10 @@
 <div class="viewcode-block" id="print_all_ivy_arrays_on_dev"><a class="viewcode-back" href="../../../../functional/ivy/device/print_all_ivy_arrays_on_dev.html#ivy.functional.ivy.device.print_all_ivy_arrays_on_dev">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">print_all_ivy_arrays_on_dev</span><span class="p">(</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">attr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">],</span> 
+    <span class="o">/</span><span class="p">,</span> 
+    <span class="o">*</span><span class="p">,</span> 
+    <span class="n">attr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints the shape and dtype for all ivy arrays which are currently alive on the</span>
@@ -439,8 +442,24 @@
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
 <span class="sd">        The device on which to print the arrays</span>
+<span class="sd">    </span>
 <span class="sd">    attr_only</span>
 <span class="sd">        Whether or not to only print the `shape` and `dtype` attributes of the array</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,0,2], [3,2,1]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.dev(x)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.print_all_ivy_arrays_on_dev(y)</span>
+<span class="sd">    ((3,), &#39;int32&#39;)</span>
+<span class="sd">    ((3,), &#39;int32&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">        </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,0,2], [3,2,1]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.dev(x)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)</span>
+<span class="sd">    [1,0,2]</span>
+<span class="sd">    [3,2,1]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">arrs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_all_ivy_arrays_on_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
