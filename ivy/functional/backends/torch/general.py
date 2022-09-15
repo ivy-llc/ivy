@@ -46,6 +46,8 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x1 = x1.type(dtype=dtype)
     return torch.equal(x0, x1)
 
+array_equal.unsupported_dtypes = ("bfloat16",)
+
 
 def container_types():
     return []
@@ -337,9 +339,15 @@ def scatter_nd(
     if reduction in ["sum", "replace"]:
         initial_val = torch.tensor(0).type(dtype)
     elif reduction == "min":
-        initial_val = torch.tensor(1e12).type(dtype)
+        if dtype.is_floating_point:
+            initial_val = min(torch.finfo(dtype).max, 1e12) 
+        else:
+            initial_val = min(torch.iinfo(dtype).max, 1e12)
     elif reduction == "max":
-        initial_val = torch.tensor(-1e12).type(dtype)
+        if dtype.is_floating_point:
+            initial_val = max(torch.finfo(dtype).min, 1e-12) 
+        else:
+            initial_val = max(torch.iinfo(dtype).min, 1e-12)
     else:
         raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
