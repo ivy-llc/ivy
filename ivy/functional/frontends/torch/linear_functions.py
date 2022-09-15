@@ -36,7 +36,7 @@ def bilinear(input1, input2, weight, bias=None):
     for i in range(ivy.shape(weight_flattened)[0]):
         buff = ivy.matmul(input1_flattened, weight_flattened[i])
         ivy.multiply(buff, input2_flattened, out=buff)
-        ivy.sum(buff, -1, out=buff)
+        ivy.sum(buff, axis=-1, out=buff)
         # Should be replaced by ivy.narrow
         for j in range(ivy.shape(output)[0]):
             output[j][i] = buff[j]
