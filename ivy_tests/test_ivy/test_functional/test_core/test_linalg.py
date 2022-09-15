@@ -497,9 +497,9 @@ def test_eigvalsh(
     dtype_xy=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        small_value_safety_factor=2.5,
-        large_value_safety_factor=20,
-        max_op="log",
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=1,
     ),
@@ -665,8 +665,8 @@ def test_outer(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_value_safety_factor=2.5,
-        max_op="log",
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(
         lambda dtype_and_x: round(float(np.linalg.det(np.asarray(dtype_and_x[1]))), 3)
@@ -877,9 +877,9 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
-        max_op="log",
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         min_num_dims=2,
     ),
     offset=helpers.ints(min_value=-10, max_value=10),
@@ -920,9 +920,9 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
-        max_op="log",
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -1339,7 +1339,7 @@ def test_cholesky(
         min_dim_size=3,
         max_dim_size=3,
         large_abs_safety_factor=6,
-        small_abs_safety_factor=1.5
+        small_abs_safety_factor=1.5,
         safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cross"),

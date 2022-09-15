@@ -43,8 +43,9 @@ def test_jax_nn_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.relu6"
@@ -75,8 +76,9 @@ def test_jax_nn_relu6(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.soft_sign"
@@ -108,8 +110,9 @@ def test_jax_nn_soft_sign(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.silu"
@@ -141,8 +144,9 @@ def test_jax_nn_silu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.leaky_relu"
@@ -177,8 +181,9 @@ def test_jax_nn_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(
@@ -213,8 +218,9 @@ def test_jax_nn_gelu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.sigmoid"
@@ -246,8 +252,9 @@ def test_jax_nn_sigmoid(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         min_value=1,
         max_value=3,
     ),
@@ -284,8 +291,9 @@ def test_jax_nn_one_hot(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         min_value=-2,
         min_num_dims=1,
     ),
@@ -322,8 +330,9 @@ def test_jax_nn_softmax(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.softplus"
@@ -355,8 +364,9 @@ def test_jax_nn_softplus(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.log_sigmoid"
@@ -387,8 +397,9 @@ def test_jax_nn_log_sigmoid(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         min_value=-2,
         min_num_dims=1,
     ),
@@ -426,8 +437,9 @@ def test_jax_nn_log_softmax(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         min_value=-2,
         min_num_dims=1,
         min_dim_size=4,
@@ -467,8 +479,9 @@ def test_jax_nn_glu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         num_arrays=3,
         shared_dtype=True,
     ),
@@ -516,8 +529,9 @@ def test_jax_nn_normalize(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.hard_tanh"
@@ -548,8 +562,9 @@ def test_jax_nn_hard_tanh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -583,8 +598,9 @@ def test_jax_nn_celu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -618,8 +634,9 @@ def test_jax_nn_elu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -662,8 +679,9 @@ def test_jax_nn_logsumexp(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.swish"
@@ -694,8 +712,9 @@ def test_jax_nn_swish(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=1,
-        small_value_safety_factor=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.nn.hard_swish"
