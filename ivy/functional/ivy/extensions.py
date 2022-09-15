@@ -130,7 +130,7 @@ def _is_coo_not_csr(
     ):
         return False
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "specify either all coo components (coo_indices, values \
             and dense_shape), or all csr components (csr_crow_indices, \
             csr_col_indices, values and dense_shape)"
