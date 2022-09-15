@@ -282,7 +282,7 @@ def clip(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ivy.assertions.check_less(x_min, x_max)
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if hasattr(x_min, "dtype") and hasattr(x_max, "dtype"):
         promoted_type = tf.experimental.numpy.promote_types(x.dtype, x_min.dtype)
         promoted_type = tf.experimental.numpy.promote_types(promoted_type, x_max.dtype)
