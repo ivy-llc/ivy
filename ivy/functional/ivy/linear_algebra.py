@@ -1126,7 +1126,10 @@ def qr(
 @handle_nestable
 @handle_exceptions
 def slogdet(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Computes the sign and natural logarithm of the determinant of an array.
 
@@ -1148,8 +1151,70 @@ def slogdet(
             logdet:
             The natural log of the absolute value of the determinant.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[1.0, 2.0], \
+                       [3.0, 4.0]])
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.69314718))
+
+    With :code:`ivy.Container` input:
+
+    >>> a = ivy.array([[[1.0, 2.0],  \
+                        [3.0, 4.0]], \
+                       [[1.0, 2.0],  \
+                        [2.0, 1.0]], \
+                       [[1.0, 3.0],  \
+                        [3.0, 1.0]]])
+    >>> x = ivy.Container(a=a)
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    {
+        a: (list[2], <class ivy.array.array.Array> shape=[3])
+    }
+
+    With :code:`ivy.Container` static method:
+
+    >>> a = ivy.array([[[1.0, 2.0],  \
+                    [3.0, 4.0]], \
+                   [[1.0, 2.0],  \
+                    [2.0, 1.0]], \
+                   [[1.0, 3.0],  \
+                    [3.0, 1.0]]])
+    >>> x = ivy.Container(a=a)
+    >>> y = ivy.Container.static_slogdet(x)
+    >>> print(y)
+    {
+        a: (list[2], <class ivy.array.array.Array> shape=[3])
+    }
+
+    With :code:`ivy.Array` instance methods:
+
+    >>> x = ivy.array([[1.0, 2.0], \
+                   [3.0, 4.0]])
+    >>> y = x.slogdet()
+    >>> print(y)
+    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.69314718))
+
+    With :code:`ivy.Container` instance methods:
+
+    >>> x = ivy.Container(a=ivy.array([[1.0, 2.0], \
+                                       [3.0, 4.0]])
+    >>> y = x.slogdet()
+    >>> print(y)
+    {
+        a: (list[2], <class ivy.array.array.Array> shape=[3])
+    }
+
     """
-    return current_backend(x).slodget(x, out=out)
+    return current_backend(x).slogdet(x, out=out)
 
 
 @to_native_arrays_and_back
