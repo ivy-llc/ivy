@@ -223,6 +223,7 @@ def test_torch_diagonal(
 
 
 # Generating more than 2 input arrays results in hard to debug issues.
+@handle_cmd_line_args
 @given(
     dtype_and_tensors=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -230,35 +231,38 @@ def test_torch_diagonal(
             helpers.get_shape(max_num_dims=1, min_num_dims=1, min_dim_size=1),
             key="shape",
         ),
-        num_arrays=2,
+        num_arrays=st.integers(min_value=1),
         shared_dtype=True,
     ),
-    as_variable=st.booleans(),
-    native_array=st.booleans(),
 )
 def test_torch_cartesian_prod(
     dtype_and_tensors,
     as_variable,
     native_array,
+    with_out,
     fw,
 ):
-    dtype, tensors = dtype_and_tensors
+    dtypes, tensors = dtype_and_tensors
 
-    inputs = [np.array(i) for i in tensors]
+    # inputs = [np.array(i) for i in tensors]
+    args = {
+        f"x{i}": np.array(tensor, dtype=dtypes[i]) for i, tensor in enumerate(tensors)
+    }
+
+    num_positional_args = len(tensors)
 
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
-        as_variable_flags=[as_variable, as_variable],
-        with_out=False,
-        num_positional_args=2,
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="cartesian_prod",
         # Workaround for python placing these arguments into a tuple
         # We need to split them up such that they re-join correctly.
-        tensor1=inputs[0],
-        tensor2=inputs[1],
+        **args,
     )
 
 
