@@ -2531,12 +2531,12 @@ def subsets(draw, *, elements):
 
 
 @st.composite
-def array_and_indices(
+def array_n_indices_n_axis(
     draw,
     *,
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
-    last_dim_same_size=True,
+    disable_random_axis=False,
     boolean_mask=False,
     allow_inf=False,
     min_num_dims=1,
@@ -2554,16 +2554,10 @@ def array_and_indices(
         list of data type to draw the array dtype from.
     indices_dtypes
         list of data type to draw the indices dtype from.
-    last_dim_same_size
-        True:
-            The shape of the indices array is the exact same as the shape of the values
-            array.
-        False:
-            The last dimension of the second array is generated from a range of
-            (0 -> dimension size of first array). This results in output shapes such as
-            x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+    disable_random_axis
+        axis is set to -1 when True. Randomly generated with hypothesis if False.
     allow_inf
-        True: inf values are allowed to be generated in the values array
+        inf values are allowed to be generated in the values array when True.
     min_num_dims
         The minimum number of dimensions the arrays can have.
     max_num_dims
@@ -2581,39 +2575,45 @@ def array_and_indices(
     Examples
     --------
     @given(
-        array_and_indices=array_and_indices(
-            last_dim_same_size= False
+        array_n_indices_n_axis=array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+            boolean_mask=False,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=10
             )
     )
-    @given(
-        array_and_indices=array_and_indices( last_dim_same_size= True)
-    )
     """
-    x_num_dims = draw(ints(min_value=min_num_dims, max_value=max_num_dims))
-    x_dim_size = draw(ints(min_value=min_dim_size, max_value=max_dim_size))
-    x_dtype, x, indices_shape = draw(
+    x_dtype, x, x_shape = draw(
         dtype_and_values(
             available_dtypes=array_dtypes,
             allow_inf=allow_inf,
             ret_shape=True,
-            min_num_dims=x_num_dims,
-            max_num_dims=x_num_dims,
-            min_dim_size=x_dim_size,
-            max_dim_size=x_dim_size,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
         )
     )
-    if not last_dim_same_size:
-        indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
-        indices_shape[-1] = indices_dim_size
+    if disable_random_axis:
+        axis = -1
+    else:
+        axis = draw(
+            ints(
+                min_value=-1 * len(x_shape),
+                max_value=len(x_shape) - 1,
+            )
+        )
     if boolean_mask:
         indices_dtype, indices = draw(
             dtype_and_values(
                 dtype=["bool"],
-                shape=indices_shape,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
     else:
@@ -2622,11 +2622,14 @@ def array_and_indices(
                 available_dtypes=indices_dtypes,
                 allow_inf=False,
                 min_value=0,
-                max_value=max(indices_shape[-1] - 1, 0),
-                shape=indices_shape,
+                max_value=max(x_shape[axis] - 1, 0),
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
-    return [x_dtype, indices_dtype], x, indices
+    return [x_dtype, indices_dtype], x, indices, axis
 
 
 def _zeroing_and_casting(x, cast_type):
