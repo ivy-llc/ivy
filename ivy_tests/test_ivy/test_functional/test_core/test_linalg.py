@@ -27,9 +27,9 @@ def dtype_value1_value2_axis(
     min_dim_size=1,
     max_dim_size=10,
     specific_dim_size=3,
-    small_value_safety_factor=1.5,
-    large_value_safety_factor=10,
-    max_op="divide",
+    large_abs_safety_factor=10,
+    small_abs_safety_factor=2,
+    safety_factor_scale="linear",
 ):
     # For cross product, a dim with size 3 is required
     shape = draw(
@@ -61,9 +61,9 @@ def dtype_value1_value2_axis(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    small_value_safety_factor=small_value_safety_factor,
-                    large_value_safety_factor=large_value_safety_factor,
-                    max_op=max_op,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
                 )
             )
         )
@@ -111,9 +111,9 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    small_value_safety_factor=2.5,
-                    large_value_safety_factor=20,
-                    max_op="log",
+                    large_abs_safety_factor=10,
+                    small_abs_safety_factor=2,
+                    safety_factor_scale="linear",
                 )
             )
         )
@@ -497,9 +497,9 @@ def test_eigvalsh(
     dtype_xy=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        small_value_safety_factor=2.5,
-        large_value_safety_factor=20,
-        max_op="log",
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=1,
     ),
@@ -546,8 +546,8 @@ def test_inner(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_value_safety_factor=2.5,
-        max_op="log",
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
@@ -665,8 +665,8 @@ def test_outer(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_value_safety_factor=2.5,
-        max_op="log",
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(
         lambda dtype_and_x: round(float(np.linalg.det(np.asarray(dtype_and_x[1]))), 3)
@@ -877,9 +877,9 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
-        max_op="log",
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         min_num_dims=2,
     ),
     offset=helpers.ints(min_value=-10, max_value=10),
@@ -920,9 +920,9 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
-        max_op="log",
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -1020,8 +1020,9 @@ def test_vector_norm(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
-        large_value_safety_factor=10,
-        small_value_safety_factor=1.5,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
     rtol=st.floats(1e-5, 1e-3),
     num_positional_args=helpers.num_positional_args(fn_name="pinv"),
@@ -1337,9 +1338,9 @@ def test_cholesky(
         max_num_dims=10,
         min_dim_size=3,
         max_dim_size=3,
-        small_value_safety_factor=2.5,
-        large_value_safety_factor=20,
-        max_op="log",
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cross"),
 )

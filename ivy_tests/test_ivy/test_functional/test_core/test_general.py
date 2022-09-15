@@ -167,6 +167,44 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
     assert res == true_res
 
 
+@handle_cmd_line_args
+@given(
+    dtype_x_indicies=st.one_of(
+        helpers.array_and_indices(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+        ),
+        helpers.array_and_indices(
+            array_dtypes=helpers.get_dtypes("valid"),
+            boolean_mask=True,
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="get_item"),
+)
+def test_get_item(
+    dtype_x_indicies,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    device,
+):
+    dtypes, x, indicies = dtype_x_indicies
+    helpers.test_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="get_item",
+        x=np.asarray(x, dtype=dtypes[0]),
+        query=np.asarray(indicies, dtype=dtypes[1]),
+    )
+
+
 # to_numpy
 @handle_cmd_line_args
 @given(
@@ -305,8 +343,9 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 @given(
     x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     max_norm=st.floats(),
     p=st.floats(),

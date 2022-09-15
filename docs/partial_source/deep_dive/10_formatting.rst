@@ -75,7 +75,7 @@ single line of code like so:
 .. code-block:: python
 
     def argwhere(
-        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
 When a commit is attempted, `pre-commit` would detect this error by running the lint
@@ -104,7 +104,7 @@ and committed accordingly.
     def argwhere(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
 
