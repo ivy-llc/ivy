@@ -4893,7 +4893,6 @@ def sin(
 
 @integer_arrays_to_float
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def sinc(
