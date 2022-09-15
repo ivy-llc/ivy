@@ -2,9 +2,8 @@
 import numpy as np
 from hypothesis import assume, given, strategies as st
 
-import ivy
-
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -299,8 +298,6 @@ def test_torch_cumprod(
     )
 
 
-# TODO: Widen the bounds on the row, col, and offset data
-#  once ivy.asarray has been optimized.
 @handle_cmd_line_args
 @given(
     row=st.integers(min_value=0, max_value=10),
