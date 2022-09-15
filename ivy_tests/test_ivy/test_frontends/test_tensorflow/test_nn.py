@@ -644,6 +644,7 @@ def test_tensorflow_batch_normalization(
         variance_epsilon=1e-7,
     )
     
+    
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
