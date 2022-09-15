@@ -24,6 +24,8 @@ def sort(
     stable: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if out is not None:
+        out = tuple([out, torch.zeros(out.shape, dtype=torch.long)])
     sorted_tensor, _ = torch.sort(
         x, dim=axis, descending=descending, stable=stable, out=out
     )
@@ -40,7 +42,17 @@ def searchsorted(
     *,
     side="left",
     sorter=None,
+    ret_dtype=torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    return torch.searchsorted(
+        x,
+        v,
+        sorter=sorter,
+        side=side,
+        out_int32=False if ret_dtype is torch.int64 else True,
+        out=out,
+    )
 
-    return torch.searchsorted(x, v, side=side)
+
+searchsorted.support_native_out = True

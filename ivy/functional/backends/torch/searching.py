@@ -62,7 +62,7 @@ def where(
 
 
 def indices_where(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     where_x = torch.where(x)
     return torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
