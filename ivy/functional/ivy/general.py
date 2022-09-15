@@ -1223,6 +1223,8 @@ def clip_matrix_norm(
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
     num_bands: int = 4,
     linear: bool = False,
     concat: bool = True,
@@ -1296,7 +1298,10 @@ def fourier_encode(
 @handle_nestable
 @handle_exceptions
 def value_is_nan(
-    x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: Optional[bool] = True
+    x: Union[ivy.Array, ivy.NativeArray, Number],
+    /,
+    *,
+    include_infs: Optional[bool] = True,
 ) -> bool:
     """Determine whether the single valued array or scalar is of nan type.
 
@@ -1333,7 +1338,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     x
         Input array.
     include_infs
-        Whether to include ``+infinity`` and ``-infinity`` in the check. 
+        Whether to include ``+infinity`` and ``-infinity`` in the check.
         Default is True.
 
     Returns
@@ -1393,34 +1398,8 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
         b: false
     }
 
-    With one :code:`ivy.Container` static method:
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1, 1, 0]))
-    >>> y = ivy.Container.static_has_nans(x)
-    >>> print(y)
-    {
-        a: false,
-        b: false
-    }
-
-     With one :code:`ivy.Array` instance method:
-    >>> x = ivy.array([-1, 0, 1])
-    >>> y = x.has_nans()
-    >>> print(y)
-    False
-
-    With :code:`ivy.Container` instance method:
-    >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
-                          b=ivy.array([-1, 0, 1, 1]))
-    >>> y = x.has_nans()
-    >>> print(y)
-    {
-        a: false,
-        b: false
-    }
-
     """
-    return ivy.value_is_nan(ivy.sum(x), include_infs)
+    return ivy.value_is_nan(ivy.sum(x), include_infs=include_infs)
 
 
 @handle_exceptions
@@ -1510,7 +1489,9 @@ def exists(x: Any) -> bool:
 @handle_exceptions
 def default(
     x: Any,
+    /,
     default_val: Any,
+    *,
     catch_exceptions: bool = False,
     rev: bool = False,
     with_callable: bool = False,
@@ -1884,6 +1865,7 @@ def current_backend_str() -> Union[str, None]:
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
+    /,
     *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
@@ -1922,6 +1904,7 @@ def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
     reduction: Union[str, Callable],
+    /,
     *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
@@ -1981,6 +1964,7 @@ def einops_reduce(
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
+    /,
     *,
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
@@ -2138,6 +2122,8 @@ def set_min_base(val: float) -> None:
 def stable_divide(
     numerator: Union[Number, ivy.Array, ivy.NativeArray],
     denominator: Union[Number, ivy.Array, ivy.NativeArray],
+    /,
+    *,
     min_denominator: Union[Number, ivy.Array, ivy.NativeArray] = None,
 ) -> Union[Number, ivy.Array]:
     """Divide the numerator by the denominator, with min denominator added to the
@@ -2150,7 +2136,8 @@ def stable_divide(
     denominator
         The denominator of the division.
     min_denominator
-        The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
+        The minimum denominator to use, use global ivy._MIN_DENOMINATOR (1e-12)
+        by default.
 
     Returns
     -------
@@ -2218,26 +2205,6 @@ def stable_divide(
         a: ivy.array([2., 0.8]),
         b: ivy.array([0.857, 10.])
     }
-
-    With :code:`ivy.Array` instance method:
-
-    >>> x = ivy.asarray([4., 5., 6.])
-    >>> y = x.stable_divide(2)
-    >>> print(y)
-    ivy.array([2., 2.5, 3.])
-
-    >>> x = ivy.asarray([4, 5, 6])
-    >>> y = x.stable_divide(4, min_denominator=1)
-    >>> print(y)
-    ivy.array([0.8, 1. , 1.2])
-
-    >>> x = ivy.asarray([[4., 5., 6.], [7., 8., 9.]])
-    >>> y = ivy.asarray([[1., 2., 3.], [2., 3., 4.]])
-    >>> z = x.stable_divide(y)
-    >>> print(z)
-    ivy.array([[4.  , 2.5 , 2.  ],
-            [3.5 , 2.67, 2.25]])
-
     """
     # noinspection PyProtectedMember
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
@@ -2557,6 +2524,43 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
     return True
 
 
+@to_native_arrays_and_back
+def get_item(
+    x: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray],
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Gather slices from x according to query array, identical to x[query].
+
+       Parameters
+       ----------
+       x
+           array, the array from which to gather values.
+       query
+           array, index array, integer indices or boolean mask.
+
+       Returns
+       -------
+       ret
+           New array with the values gathered at the specified indices.
+
+       Functional Examples
+       -------------------
+
+       >>> x = ivy.array([0, -1, 20])
+       >>> query = ivy.array([0, 1])
+       >>> print(ivy.get_item(x, query))
+       ivy.array([ 0, -1])
+
+       >>> x = ivy.array([[4, 5], [20, 128], [-2, -10]])
+       >>> query = ivy.array([[True, False], [False, False], [True, True]])
+       >>> print(ivy.get_item(x, query))
+       ivy.array([  4,  -2, -10])
+
+    """
+    return current_backend(x).get_item(x, query)
+
+
 @handle_nestable
 @handle_exceptions
 def inplace_update(
@@ -2739,9 +2743,10 @@ def inplace_increment(
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Scatter flat updates into a new flat array according to flat indices.
@@ -2767,7 +2772,7 @@ def scatter_flat(
 
     """
     return current_backend(indices).scatter_flat(
-        indices, updates, size, reduction, out=out
+        indices, updates, size=size, reduction=reduction, out=out
     )
 
 
@@ -2777,9 +2782,10 @@ def scatter_flat(
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
+    /,
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    reduction: str = "sum",
     *,
+    reduction: str = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Scatter updates into a new array according to indices.
@@ -2845,7 +2851,7 @@ def scatter_nd(
     }
     """
     return current_backend(indices).scatter_nd(
-        indices, updates, shape, reduction, out=out
+        indices, updates, shape=shape, reduction=reduction, out=out
     )
 
 
@@ -3046,7 +3052,7 @@ def multiprocessing(context: str = None):
 @handle_nestable
 @handle_exceptions
 def shape(
-    x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.NativeShape]:
     """Returns the shape of the array ``x``.
 
@@ -3074,7 +3080,7 @@ def shape(
     ivy.array([2, 3])
 
     """
-    return current_backend(x).shape(x, as_array)
+    return current_backend(x).shape(x, as_array=as_array)
 
 
 @handle_exceptions
@@ -3141,8 +3147,9 @@ def shape_array_mode() -> bool:
 
 @to_native_arrays_and_back
 @handle_nestable
-@handle_exceptions
-def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -> int:
+def get_num_dims(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
+) -> int:
     """Returns the number of dimensions of the array x.
 
     Parameters
@@ -3158,7 +3165,7 @@ def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False) -
         Shape of the array
 
     """
-    return current_backend(x).get_num_dims(x, as_array)
+    return current_backend(x).get_num_dims(x, as_array=as_array)
 
 
 @handle_exceptions

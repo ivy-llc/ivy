@@ -15,9 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
         min_axis=-1,
         max_axis=0,
     ),
@@ -63,9 +61,7 @@ def test_argsort(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
         min_axis=-1,
         max_axis=0,
     ),

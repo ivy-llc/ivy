@@ -1792,7 +1792,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
 
-        z = ivy.Container.static_scatter_nd(indices, updates,
+        z = ivy.Container.static_scatter_nd(indices, updates,\
                                             tensor=arr, reduction='replace')
         >>> print(z)
         {
@@ -1874,7 +1874,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> arr = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),\
                                 b=ivy.array([11, 22, 33, 44, 55]))
         >>> z = indices.scatter_nd(updates, tensor=arr, reduction='replace')
-        >>> print(z)
+        >> print(z)
         {
             a: ivy.array([1, 60, 70, 50, 5]),
             b: ivy.array([11, 30, 33, 40, 20])
@@ -2366,11 +2366,12 @@ class ContainerWithGeneral(ContainerBase):
     def einops_repeat(
         self: ivy.Container,
         pattern: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ) -> ivy.Container:
@@ -2586,6 +2587,19 @@ class ContainerWithGeneral(ContainerBase):
             b: array([1, 1, -1, 0], dtype=int32)
         }
 
+        Examples
+        --------
+        With one :code:`ivy.Container` static method:
+        
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
+                            b=ivy.array([-1, 0, 1, 1, 1, 0]))
+        >>> y = ivy.Container.static_has_nans(x)
+        >>> print(y)
+        {
+            a: false,
+            b: false
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "to_numpy",
@@ -2659,6 +2673,19 @@ class ContainerWithGeneral(ContainerBase):
             b: array([[-1, 0, 0],
                       [1, 0, 1],
                       [1, 1, 1]], dtype=int32)
+        }
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
+                            b=ivy.array([-1, 0, 1, 1]))
+        >>> y = x.has_nans()
+        >>> print(y)
+        {
+            a: false,
+            b: false
         }
 
         """
@@ -3257,11 +3284,12 @@ class ContainerWithGeneral(ContainerBase):
     def einops_rearrange(
         self: ivy.Container,
         pattern: str,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
         **axes_lengths: Dict[str, int],
     ):

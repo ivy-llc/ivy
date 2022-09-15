@@ -153,7 +153,7 @@ def leaky_relu(
     ivy.array([-0.1,  1. , -0.5])
 
     """
-    return current_backend(x).leaky_relu(x, alpha, out=out)
+    return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
 @integer_arrays_to_float
@@ -305,7 +305,7 @@ def softmax(
     ivy.array([0.422, 0.155, 0.422])
 
     """
-    return current_backend(x).softmax(x, axis, out=out)
+    return current_backend(x).softmax(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
