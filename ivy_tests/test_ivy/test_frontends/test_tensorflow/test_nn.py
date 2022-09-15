@@ -651,10 +651,6 @@ def test_tensorflow_batch_normalization(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
-        ksize_min=1,
-        ksize_max=3,
-        stride_min=1,
-        stride_max=4,
         type="1d",
     ),
     num_positional_args=helpers.num_positional_args(
