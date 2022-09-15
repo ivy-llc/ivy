@@ -408,7 +408,13 @@ def vmap(
 
         # if in_axis is a non-integer, its length should be equal to pos args.
         if isinstance(in_axes, (list, tuple)):
-            ivy.assertions.check_equal(len(args), len(in_axes))
+            ivy.assertions.check_equal(
+                len(args),
+                len(in_axes),
+                message="""in_axes should have a length equivalent to the number
+                of positional arguments to the function being vectorized or it
+                should be an integer""",
+            )
 
         # checking axis_size consistency
         axis_size = set()
