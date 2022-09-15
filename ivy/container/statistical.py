@@ -790,6 +790,7 @@ class ContainerWithStatistical(ContainerBase):
         *,
         axis: int = 0,
         exclusive: bool = False,
+        reverse: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -810,6 +811,9 @@ class ContainerWithStatistical(ContainerBase):
             Axis to cumprod along. Default is 0.
         exclusive
             Whether to exclude the first element of the input array. Default is False.
+        reverse
+            Whether to perform the cumprod from last to first element in the selected
+            axis. Default is False (from first to last element)
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -861,6 +865,7 @@ class ContainerWithStatistical(ContainerBase):
             x,
             axis=axis,
             exclusive=exclusive,
+            reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -875,6 +880,7 @@ class ContainerWithStatistical(ContainerBase):
         *,
         axis: int = 0,
         exclusive: bool = False,
+        reverse: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -944,6 +950,7 @@ class ContainerWithStatistical(ContainerBase):
             self,
             axis=axis,
             exclusive=exclusive,
+            reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

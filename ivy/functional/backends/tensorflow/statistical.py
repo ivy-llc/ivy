@@ -143,16 +143,20 @@ def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
     exclusive: bool = False,
+    reverse: bool = False,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        if dtype is tf.bool:
+            dtype = ivy.default_int_dtype()
+        else:
+            dtype = _infer_dtype(x.dtype)
     if dtype != x.dtype:
         x = tf.cast(x, dtype)
-    return tf.math.cumprod(x, axis, exclusive)
+    return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
 def cumsum(

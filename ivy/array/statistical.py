@@ -320,6 +320,7 @@ class ArrayWithStatistical(abc.ABC):
         *,
         axis: int = 0,
         exclusive: bool = False,
+        reverse: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -336,6 +337,9 @@ class ArrayWithStatistical(abc.ABC):
         exclusive
             optional bool, whether to exclude the first value of the input array.
             Default is False.
+        reverse
+            Whether to perform the cumprod from last to first element in the selected
+            axis. Default is False (from first to last element)
         out
             optional output array, for writing the result to.
 
@@ -359,7 +363,7 @@ class ArrayWithStatistical(abc.ABC):
                    [1, 5],
                    [1, 11]])
         """
-        return ivy.cumprod(self._data, axis, exclusive, out=out)
+        return ivy.cumprod(self._data, axis=axis, exclusive=exclusive, reverse=reverse, out=out)
 
     def einsum(
         self: ivy.Array,
