@@ -19,7 +19,6 @@ def cumsum(input, dim, *, dtype=None, out=None):
 
 
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
-    #TODO: Once Ivy can handle the layout flag, fill it in here.
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
   
