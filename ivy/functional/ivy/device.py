@@ -568,7 +568,7 @@ def used_mem_on_dev(
         return info.used / 1e9
     elif device == "cpu":
         if process_specific:
-            return psutil.Process(os.getpid()).memory_info().rss
+            return psutil.Process(os.getpid()).memory_info().rss / 1e9
         vm = psutil.virtual_memory()
         return (vm.total - vm.available) / 1e9
     else:
