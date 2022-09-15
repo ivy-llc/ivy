@@ -1890,7 +1890,7 @@ def test_frontend_function(
             # the function provides inplace update by default
             # check if returned reference is inputted reference
             input_argument = ivy.func_wrapper._get_first_array(args, kwargs)
-            assert input_argument is ret
+            assert input_argument.data is ret.data
 
     # create NumPy args
     args_np = ivy.nested_map(
