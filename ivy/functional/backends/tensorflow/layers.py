@@ -258,3 +258,21 @@ def conv3d_transpose(
 
 
 conv3d_transpose.unsupported_dtypes = ("bfloat16",)
+
+
+def max_pool1d(
+    x: Union[tf.Tensor, tf.Variable],
+    ksize: Union[tf.Tensor, tf.Variable],
+    strides: int,
+    padding: str,
+    data_format: str = "NWC",
+    dilations: int = 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = x[None][:,:,None]
+    if data_format == "NCW":
+        x = tf.transpose(x, (0, 2, 1))
+    res = tf.nn.max_pool1d(x, ksize, strides, padding, "NWC", dilations)
+    if data_format == "NCW":
+        res = tf.transpose(res, (0, 2, 1))
+    return res
