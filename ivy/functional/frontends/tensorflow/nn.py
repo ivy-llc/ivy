@@ -126,4 +126,4 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
 
 
 def depthwise_conv2d(input, filter, strides, padding="SAME", data_format="NHWC", dilations=None, name=None):
-    return (input, filters, strides, padding, data_format=data_format, dilations=dilations)
+    return ivy.depthwise_conv2d(input, filters, strides, padding, data_format=data_format, dilations=dilations)
