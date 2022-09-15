@@ -122,7 +122,7 @@ def _get_dtypes(fn, complement=True):
     # We only care about getting dtype info from the base function
     # if we do need to at some point use dtype information from the parent function
     # we can comment out the following condition
-    if "backend" not in fn.__module__:
+    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported

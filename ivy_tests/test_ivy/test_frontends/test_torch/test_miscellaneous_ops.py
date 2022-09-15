@@ -341,3 +341,46 @@ def test_torch_tril_indices(
         offset=offset,
         dtype=dtype_result,
     )
+
+
+# THIS SHOULD NOT BE COMMITTED AS PART OF THE FRONTEND_TEST_TYPE_DETECTION BRANCH
+# ITS JUST HERE TO TEST THE FIXES IN THAT BRANCH
+# IT SHOULD BE COMMITTED FROM THE TRACE BRANCH
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.trace"
+    ),
+)
+def test_torch_trace(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    fw,
+):
+    dtype, value = dtype_and_values
+
+    if "float16" in dtype:
+        print("float16 was drawn")
+
+    # assume("float16" not in dtype)
+
+    value = np.asarray(value, dtype=dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="trace",
+        input=value,
+    )
