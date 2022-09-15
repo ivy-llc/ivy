@@ -12,33 +12,12 @@ def argsort(
     stable: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.convert_to_tensor(x).dtype.is_bool:
-        if descending:
-            ret = tf.argsort(
-                tf.cast(x, dtype=tf.int32),
-                axis=axis,
-                direction="DESCENDING",
-                stable=stable,
-            )
-        else:
-            ret = tf.argsort(
-                tf.cast(x, dtype=tf.int32),
-                axis=axis,
-                direction="ASCENDING",
-                stable=stable,
-            )
-    else:
-        if descending:
-            ret = tf.argsort(
-                tf.convert_to_tensor(x),
-                axis=axis,
-                direction="DESCENDING",
-                stable=stable,
-            )
-        else:
-            ret = tf.argsort(
-                tf.convert_to_tensor(x), axis=axis, direction="ASCENDING", stable=stable
-            )
+    direction = "DESCENDING" if descending else "ASCENDING"
+    x = tf.convert_to_tensor(x)
+    is_bool = x.dtype.is_bool
+    if is_bool:
+        x = tf.cast(x, tf.int32)
+    ret = tf.argsort(x, axis=axis, direction=direction, stable=stable)
     return tf.cast(ret, dtype=tf.int64)
 
 
@@ -51,18 +30,15 @@ def sort(
     stable: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.convert_to_tensor(x).dtype.is_bool:
-        if descending:
-            res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction="DESCENDING")
-            ret = tf.cast(res, tf.bool)
-        else:
-            res = tf.sort(tf.cast(x, dtype=tf.int32), axis=axis, direction="ASCENDING")
-            ret = tf.cast(res, tf.bool)
-    else:
-        if descending:
-            ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="DESCENDING")
-        else:
-            ret = tf.sort(tf.convert_to_tensor(x), axis=axis, direction="ASCENDING")
+    # TODO: introduce stable sort when it's supported in tensorflow
+    direction = "DESCENDING" if descending else "ASCENDING"
+    x = tf.convert_to_tensor(x)
+    is_bool = x.dtype.is_bool
+    if is_bool:
+        x = tf.cast(x, tf.int32)
+    ret = tf.sort(x, axis=axis, direction=direction)
+    if is_bool:
+        ret = tf.cast(ret, dtype=tf.bool)
     return ret
 
 
