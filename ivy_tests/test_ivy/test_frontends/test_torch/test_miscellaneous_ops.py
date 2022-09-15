@@ -249,7 +249,6 @@ def _generate_cartesian_prod_dtype_and_tensors(draw):
     )
 
 
-# Generating more than 2 input arrays results in hard to debug issues.
 @handle_cmd_line_args
 @given(dtype_and_tensors=_generate_cartesian_prod_dtype_and_tensors())
 def test_torch_cartesian_prod(
