@@ -2853,9 +2853,6 @@ def array_values(
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = None.
-    scale_op
-        Operation to apply element wise to the generated values. Can be
-        "sqrt" or "log". Default value = None.
 
     In the case of min_value or max_value is not in the valid range
     the invalid value will be replaced by data type limit, the range
@@ -2998,13 +2995,6 @@ def array_values(
         values = draw(list_of_length(x=st.booleans(), length=size))
 
     array = np.array(values)
-
-    # ToDo, a lot of iterations, this could be optimized
-    if scale_op == "sqrt":
-        array = (np.sign(array) * np.sqrt(np.abs(array))).astype(dtype)
-    elif scale_op == "log":  # ToDo throws exception, but runs
-        array = (np.sign(array) * np.log(np.abs(array))).astype(dtype)
-
     if isinstance(shape, (tuple, list)):
         array = array.reshape(shape)
     return array.tolist()
