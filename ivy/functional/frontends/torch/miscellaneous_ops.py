@@ -15,11 +15,11 @@ def roll(input, shifts, dims=None):
 
 
 def cumsum(input, dim, *, dtype=None, out=None):
-    return ivy.cumsum(x=input, axis=dim, out=out)
+    return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
 def cumprod(input, dim, *, dtype=None, out=None):
-    return ivy.cumprod(x=input, axis=dim, out=out)
+    return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
 def diagonal(input, offset=0, dim1=0, dim2=1):
