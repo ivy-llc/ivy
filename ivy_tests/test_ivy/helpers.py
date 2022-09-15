@@ -11,7 +11,7 @@ import pytest
 import numpy as np
 import math
 import gc
-from typing import Union, List
+from typing import Optional, Union, List
 from hypothesis import given, assume, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
@@ -403,7 +403,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
 
 
 @st.composite
-def get_castable_dtype(draw, dtype, full=False):
+def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = None):
     """
     Draws castable dtypes for the given dtype based on the current backend.
 
@@ -412,25 +412,38 @@ def get_castable_dtype(draw, dtype, full=False):
     draw
         Special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
+    available_dtypes
+        Castable data types are drawn from this list randomly.
     dtype
-        Data type from which to cast
-    full
-        Returns the complete list of castable types
+        Data type from which to cast.
+    x
+        Optional list of values to cast.
 
     Returns
     -------
     ret
-        List of castable dtypes
+        A tuple of inputs and castable dtype.
     """
-    if ivy.is_int_dtype(dtype):
-        valid_dtypes = [d for d in ivy.valid_int_dtypes if ivy.can_cast(dtype, d)]
-    elif ivy.is_float_dtype(dtype):
-        valid_dtypes = [d for d in ivy.valid_float_dtypes if ivy.can_cast(dtype, d)]
-    elif ivy.is_bool_dtype(dtype):
-        valid_dtypes = [dtype]
-    if full:
-        return valid_dtypes
-    return [draw(st.sampled_from(valid_dtypes))]
+
+    def cast_filter(d):
+        if ivy.is_int_dtype(d):
+            max_val = ivy.iinfo(d).max
+        elif ivy.is_float_dtype(d):
+            max_val = ivy.finfo(d).max
+        else:
+            max_val = 1
+        if x is None:
+            max_x = -1
+        else:
+            max_x = np.max(np.abs(np.asarray(x)))
+        return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
+
+    cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
+    if x is None:
+        return dtype, cast_dtype
+    if "uint" in cast_dtype:
+        x = np.abs(np.asarray(x)).tolist()
+    return dtype, x, cast_dtype
 
 
 @st.composite
@@ -715,19 +728,19 @@ def flatten_fw(*, ret, fw):
     if not isinstance(ret, tuple):
         ret = (ret,)
     if fw == "jax":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_jax_native_array(x)
         )
     elif fw == "numpy":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_numpy_native_array(x)
         )
     elif fw == "tensorflow":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_tensorflow_native_array(x)
         )
     else:
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x)
         )
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
@@ -741,7 +754,7 @@ def flatten(*, ret):
     """Returns a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
     return ivy.multi_index_nest(ret, ret_idxs)
 
 
@@ -1050,11 +1063,9 @@ def create_args_kwargs(
     keyword-arguments.
     """
     # extract all arrays from the arguments and keyword arguments
-    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
+    args_idxs = ivy.nested_argwhere(args_np, lambda x: isinstance(x, np.ndarray))
     arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
-    kwargs_idxs = ivy.nested_indices_where(
-        kwargs_np, lambda x: isinstance(x, np.ndarray)
-    )
+    kwargs_idxs = ivy.nested_argwhere(kwargs_np, lambda x: isinstance(x, np.ndarray))
     kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
 
     # assert that the number of arrays aligns with the dtypes and as_variable_flags
@@ -1940,9 +1951,7 @@ def test_frontend_function(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(
-                frontend_ret, ivy.is_native_array
-            )
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -2228,7 +2237,7 @@ def test_frontend_array_instance_method(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_array)
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -2491,7 +2500,7 @@ def dtype_and_values(
             )
         )
     if num_arrays == 1:
-        dtype = dtype[0]
+        dtype = dtype[0] if isinstance(dtype, list) else dtype
         values = values[0]
     if ret_shape:
         return dtype, values, shape

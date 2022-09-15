@@ -74,7 +74,7 @@ single line of code like so:
 
 .. code-block:: python
 
-    def indices_where(
+    def argwhere(
         x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
@@ -101,7 +101,7 @@ and committed accordingly.
 
 .. code-block:: python
 
-    def indices_where(
+    def argwhere(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
         out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,

@@ -341,12 +341,12 @@ def scatter_nd(
         initial_val = torch.tensor(0).type(dtype)
     elif reduction == "min":
         if dtype.is_floating_point:
-            initial_val = min(torch.finfo(dtype).max, 1e12) 
+            initial_val = min(torch.finfo(dtype).max, 1e12)
         else:
             initial_val = min(torch.iinfo(dtype).max, 1e12)
     elif reduction == "max":
         if dtype.is_floating_point:
-            initial_val = max(torch.finfo(dtype).min, 1e-12) 
+            initial_val = max(torch.finfo(dtype).min, 1e-12)
         else:
             initial_val = max(torch.iinfo(dtype).min, 1e-12)
     else:
