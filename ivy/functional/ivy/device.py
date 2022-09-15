@@ -314,7 +314,6 @@ def print_all_ivy_arrays_on_dev(
     
     Examples
     --------
-
     >>> x = ivy.array([[1,0,2], [3,2,1]])
     >>> y = ivy.dev(x)
     >>> ivy.print_all_ivy_arrays_on_dev(y)
