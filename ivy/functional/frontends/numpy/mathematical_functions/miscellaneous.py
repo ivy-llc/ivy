@@ -264,3 +264,27 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret[0]), "float64")
     else:
         return ivy.astype(ivy.array(ret), "float64")
+
+
+@from_zero_dim_arrays_to_float
+def signbit(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+        if x >= 0:
+            ret = False
+        else:
+            ret = True
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
