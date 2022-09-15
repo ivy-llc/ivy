@@ -691,7 +691,7 @@ def tril(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).tril(x, k, out=out)
+    return current_backend(x).tril(x, k=k, out=out)
 
 
 @to_native_arrays_and_back
