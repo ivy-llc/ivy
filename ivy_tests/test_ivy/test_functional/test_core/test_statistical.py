@@ -220,6 +220,7 @@ def test_var(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
     keep_dims=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_prod(
     *,
@@ -232,6 +233,7 @@ def test_prod(
     instance_method,
     fw,
     keep_dims,
+    dtype,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
@@ -247,7 +249,7 @@ def test_prod(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
-        dtype=input_dtype,
+        dtype=dtype,
     )
 
 
@@ -265,6 +267,7 @@ def test_prod(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
     keep_dims=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_sum(
     *,
@@ -277,6 +280,7 @@ def test_sum(
     instance_method,
     fw,
     keep_dims,
+    dtype,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
@@ -294,7 +298,7 @@ def test_sum(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
-        dtype=input_dtype,
+        dtype=dtype,
     )
 
 
@@ -349,6 +353,9 @@ def test_std(
         force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cumsum"),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_cumsum(
     dtype_x_axis,
@@ -358,12 +365,14 @@ def test_cumsum(
     native_array,
     container,
     instance_method,
-    device,
     fw,
+    exclusive,
+    reverse,
+    dtype,
 ):
-    dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -372,8 +381,11 @@ def test_cumsum(
         instance_method=instance_method,
         fw=fw,
         fn_name="cumsum",
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
         axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        dtype=dtype,
     )
 
 
@@ -390,6 +402,8 @@ def test_cumsum(
         force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
+    exclusive=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_cumprod(
     dtype_x_axis,
@@ -399,12 +413,13 @@ def test_cumprod(
     native_array,
     container,
     instance_method,
-    device,
     fw,
+    exclusive,
+    dtype,
 ):
-    dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -413,8 +428,10 @@ def test_cumprod(
         instance_method=instance_method,
         fw=fw,
         fn_name="cumprod",
-        x=np.asarray(x, dtype=dtype),
+        x=np.asarray(x, dtype=input_dtype),
         axis=axis,
+        exclusive=exclusive,
+        dtype=dtype,
     )
 
 
