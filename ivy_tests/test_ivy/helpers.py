@@ -2536,6 +2536,7 @@ def array_n_indices_n_axis(
     *,
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
+    disable_random_axis=False,
     boolean_mask=False,
     allow_inf=False,
     min_num_dims=1,
@@ -2553,8 +2554,10 @@ def array_n_indices_n_axis(
         list of data type to draw the array dtype from.
     indices_dtypes
         list of data type to draw the indices dtype from.
+    disable_random_axis
+        axis is set to -1 when True. Randomly generated with hypothesis if False.
     allow_inf
-        True: inf values are allowed to be generated in the values array
+        inf values are allowed to be generated in the values array when True.
     min_num_dims
         The minimum number of dimensions the arrays can have.
     max_num_dims
@@ -2573,6 +2576,9 @@ def array_n_indices_n_axis(
     --------
     @given(
         array_n_indices_n_axis=array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+            boolean_mask=False,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
@@ -2591,12 +2597,15 @@ def array_n_indices_n_axis(
             max_dim_size=max_dim_size,
         )
     )
-    axis = draw(
-        ints(
-            min_value=-1 * len(x_shape),
-            max_value=len(x_shape) - 1,
+    if disable_random_axis:
+        axis = -1
+    else:
+        axis = draw(
+            ints(
+                min_value=-1 * len(x_shape),
+                max_value=len(x_shape) - 1,
+            )
         )
-    )
     if boolean_mask:
         indices_dtype, indices = draw(
             dtype_and_values(

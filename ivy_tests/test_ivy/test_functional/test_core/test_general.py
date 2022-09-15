@@ -169,27 +169,29 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
 
 @handle_cmd_line_args
 @given(
-    dtype_x_indicies=st.one_of(
-        helpers.array_and_indices(
+    dtype_x_indices_axis=st.one_of(
+        helpers.array_n_indices_n_axis(
             array_dtypes=helpers.get_dtypes("valid"),
             indices_dtypes=helpers.get_dtypes("integer"),
+            disable_random_axis=True,
         ),
-        helpers.array_and_indices(
+        helpers.array_n_indices_n_axis(
             array_dtypes=helpers.get_dtypes("valid"),
             boolean_mask=True,
+            disable_random_axis=True,
         ),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="get_item"),
 )
 def test_get_item(
-    dtype_x_indicies,
+    dtype_x_indices_axis,
     as_variable,
     num_positional_args,
     native_array,
     fw,
     device,
 ):
-    dtypes, x, indicies = dtype_x_indicies
+    dtypes, x, indices, _ = dtype_x_indices_axis
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -201,7 +203,7 @@ def test_get_item(
         fw=fw,
         fn_name="get_item",
         x=np.asarray(x, dtype=dtypes[0]),
-        query=np.asarray(indicies, dtype=dtypes[1]),
+        query=np.asarray(indices, dtype=dtypes[1]),
     )
 
 
@@ -550,8 +552,9 @@ def test_scatter_nd(
 @handle_cmd_line_args
 @given(
     params_n_indices_n_axis=helpers.array_n_indices_n_axis(
-        array_dtypes=ivy_np.valid_numeric_dtypes,
+        array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
+        disable_random_axis=False,
         boolean_mask=False,
         allow_inf=False,
         min_num_dims=1,
