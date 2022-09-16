@@ -165,7 +165,10 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = ("float16",)
+conv2d.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences
@@ -297,7 +300,10 @@ def depthwise_conv2d(
     return res
 
 
-depthwise_conv2d.unsupported_dtypes = ("float16",)
+depthwise_conv2d.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences

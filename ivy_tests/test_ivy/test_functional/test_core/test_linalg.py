@@ -1225,16 +1225,14 @@ def test_matrix_norm(
 
 @st.composite
 def _matrix_rank_helper(draw):
-    shape = draw(helpers.get_shape(allow_none=False, min_num_dims=2))
-    shape = shape + (shape[-1],)
     dtype_x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
             shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-            large_value_safety_factor=20,
-            small_value_safety_factor=2.5,
-            max_op="log",
+            large_abs_safety_factor=8,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     return dtype_x
