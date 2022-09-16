@@ -1,5 +1,6 @@
 import ivy
 from ivy.func_wrapper import inputs_to_native_arrays
+from ivy.exceptions import handle_exceptions
 
 
 # helpers
@@ -341,11 +342,13 @@ def is_ivy_sparse_array(x):
 
 
 @inputs_to_native_arrays
+@handle_exceptions
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
 
 
 @inputs_to_native_arrays
+@handle_exceptions
 def native_sparse_array(
     data=None,
     *,
@@ -365,5 +368,6 @@ def native_sparse_array(
     )
 
 
+@handle_exceptions
 def native_sparse_array_to_indices_values_and_shape(x):
     return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)
