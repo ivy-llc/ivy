@@ -90,8 +90,9 @@ def test_acosh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
