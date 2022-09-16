@@ -36,15 +36,6 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
 
 
-
-cumsum.unsupported_dtypes = (
-    "float16",
-    "uint16",
-    "uint32",
-    "uint64",
-)
-
-
 def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     #TODO: Handle layout flag when possible.
     sample_matrix = ivy.triu(ivy.ones((row, col), device=device), k=offset)
