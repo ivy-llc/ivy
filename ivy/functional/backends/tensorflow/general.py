@@ -15,7 +15,7 @@ import tensorflow as tf
 
 # local
 import ivy
-from . import tf_version
+from . import version
 
 
 def _parse_ellipsis(so, ndims):
@@ -407,7 +407,7 @@ def gather_nd(
     return tf.gather_nd(params, indices)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, version)
 def one_hot(
     indices: Union[tf.Tensor, tf.Variable],
     depth: int,

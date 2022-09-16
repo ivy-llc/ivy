@@ -12,13 +12,13 @@ from ivy import (
 )
 
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import tf_version
+from . import version
 
 
 # Array API Standard #
 # -------------------#
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16",)}, version)
 def arange(
     start: float,
     /,
@@ -138,7 +138,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,

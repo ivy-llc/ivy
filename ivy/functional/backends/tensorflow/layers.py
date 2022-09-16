@@ -9,10 +9,10 @@ from tensorflow.python.types.core import Tensor
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_devices
-from . import tf_version
+from . import version
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
 def conv1d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -32,7 +32,7 @@ def conv1d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
 def conv1d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -73,7 +73,7 @@ def conv1d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
 def conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -93,7 +93,7 @@ def conv2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
 def conv2d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -137,7 +137,7 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
 def depthwise_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -170,7 +170,7 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_devices({"2.9.1 and below": ("cpu",)}, tf_version)
+@with_unsupported_devices({"2.9.1 and below": ("cpu",)}, version)
 # noinspection PyDefaultArgument
 def conv3d(
     x,
@@ -195,7 +195,7 @@ def conv3d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, version)
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,

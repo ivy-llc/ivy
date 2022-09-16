@@ -9,7 +9,7 @@ import numpy as np
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import np_version
+from . import version
 
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
@@ -166,7 +166,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("uint64",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("uint64",)}, version)
 def repeat(
     x: np.ndarray,
     /,

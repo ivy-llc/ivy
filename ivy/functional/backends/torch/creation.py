@@ -13,7 +13,7 @@ from ivy import (
 )
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
-from . import torch_version
+from . import version
 
 
 # Array API Standard #
@@ -35,7 +35,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, torch_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
@@ -246,7 +246,7 @@ def full_like(
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
-@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, torch_version)
+@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, version)
 def linspace(
     start: Union[torch.Tensor, float],
     stop: Union[torch.Tensor, float],
@@ -459,7 +459,7 @@ def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.
     return x.clone()
 
 
-@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, torch_version)
+@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, version)
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],

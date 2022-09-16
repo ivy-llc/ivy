@@ -16,7 +16,7 @@ from ivy.functional.ivy.random import (
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
-from . import tf_version
+from . import version
 
 
 # Extra #
@@ -56,7 +56,7 @@ def random_normal(
         return tf.random.normal(shape, mean, std, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, tf_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, version)
 def multinomial(
     population_size: int,
     num_samples: int,

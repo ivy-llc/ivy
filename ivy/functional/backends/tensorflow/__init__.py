@@ -9,7 +9,7 @@ from tensorflow.python.types.core import Tensor
 # local
 import ivy
 
-tf_version = {"version": tf.__version__}
+version = {"version": tf.__version__}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])

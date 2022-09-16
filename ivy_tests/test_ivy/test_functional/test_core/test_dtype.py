@@ -847,14 +847,28 @@ def test_function_unsupported_dtypes(func, expected):
 
     assert sorted(tuple(exp)) == sorted(res)
 
+@pytest.mark.parametrize(
+    "func_and_version",[{"torch":{"cumsum":{"1.11.0":{"bfloat16","uint8"},"1.12.1":{""}}}},
+    ]
+)
+def test_function_dtype_versioning(func_and_version,fw):
 
-def test_function_dtype_versioning():
-    print(ivy.functional.backends.jax.jax_version)
-    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.cholesky))
-    ivy.functional.backends.jax.jax_version["version"] = "0.1"
-    print(ivy.functional.backends.jax.jax_version)
-    print(ivy.function_unsupported_dtypes(ivy.functional.backends.jax.cholesky))
+    for key in func_and_version:
+        if key!=fw:
+            continue
+        var=ivy.get_backend().version
 
+        for key1 in func_and_version[key]:
+            for key2 in func_and_version[key][key1]:
+                var['version']=key2
+                fn=getattr(ivy.get_backend(),key1)
+                expected=func_and_version[key][key1][key2]
+                res=fn.unsupported_dtypes
+                if set(res)==expected:
+                    return True
+                else:
+                    print(res,expected)
+                    raise Exception
 
 # invalid_dtype
 @handle_cmd_line_args

@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy
 
-np_version = {"version": np.__version__}
+version = {"version": np.__version__}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])

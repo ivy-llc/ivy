@@ -12,7 +12,7 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import torch_version
+from . import version
 
 torch_scatter = None
 
@@ -177,7 +177,7 @@ def _infer_dtype(x_dtype: torch.dtype):
     return dtype
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, torch_version)  # TODO Fixed in PyTorch 1.12.1
+@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version)  # TODO Fixed in PyTorch 1.12.1
 def cumsum(
     x: torch.Tensor,
     axis: int = 0,
@@ -212,7 +212,7 @@ def cumsum(
 cumsum.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, torch_version)  # TODO Fixed in PyTorch 1.12.1
+@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version)  # TODO Fixed in PyTorch 1.12.1
 def cumprod(
     x: torch.Tensor,
     axis: int = 0,
@@ -315,7 +315,7 @@ def scatter_flat(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "float16", }, torch_version)
+@with_unsupported_dtypes({"1.11.0 and below": "float16", }, version)
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,

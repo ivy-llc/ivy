@@ -9,14 +9,14 @@ import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
-from . import np_version
+from . import version
 
 
 # Array API Standard #
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def cholesky(
     x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -40,7 +40,7 @@ def cross(
 
 
 @_handle_0_dim_output
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
 
@@ -57,12 +57,12 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def eigh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.eigh(x)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
@@ -75,7 +75,7 @@ def inner(
     return np.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, version)
 def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if np.any(np.linalg.det(x.astype("float64")) == 0):
         ret = x
@@ -97,7 +97,7 @@ matmul.support_native_out = True
 
 
 @_handle_0_dim_output
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, version)
 def matrix_norm(
     x: np.ndarray,
     /,
@@ -142,7 +142,7 @@ def outer(
 
 outer.support_native_out = True
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def pinv(
     x: np.ndarray,
     rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -155,14 +155,14 @@ def pinv(
         return np.linalg.pinv(x, rtol)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def slogdet(
     x: np.ndarray,
     *,
@@ -177,7 +177,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def solve(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -195,7 +195,7 @@ def solve(
     return ret
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def svd(
     x: np.ndarray, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
@@ -204,7 +204,7 @@ def svd(
     return results(U, D, VT)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, np_version)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.svd(x, compute_uv=False)
 
