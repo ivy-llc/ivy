@@ -6,7 +6,7 @@ tests = {}
 
 # Run Coverage For A Particular Test
 test_names = [
-    "ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py" "::test_abs"
+    "ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py::test_abs"
 ]
 directories = [
     "ivy",
