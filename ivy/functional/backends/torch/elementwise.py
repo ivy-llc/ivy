@@ -264,10 +264,11 @@ def divide(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    rounding_mode: Optional[Union[str, None]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = torch.div(x1, x2)
+    ret = torch.div(x1, x2, rounding_mode=rounding_mode)
     if ivy.is_float_dtype(x1.dtype):
         ret = ret.to(x1.dtype)
     else:

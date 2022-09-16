@@ -1792,6 +1792,7 @@ def divide(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    rounding_mode: Optional[Union[str, None]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the division for each element x1_i of the input array x1 with the
@@ -1804,6 +1805,11 @@ def divide(
     x2
         divisor input array. Must be compatible with x1 (see Broadcasting). Should have
         a numeric data type.
+    rounding_mode
+        optional string/NoneType specifying the division mode. If None, true division is used.
+        If 'floor', the floor division mode is used rounding results down.
+        If 'trunc', C-style integer division is used rounding results towards zero.
+        division mode is used.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1861,7 +1867,7 @@ def divide(
         b: ivy.array([0.698, 0.333, 0.18])
     }
     """
-    return ivy.current_backend(x1, x2).divide(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).divide(x1, x2, rounding_mode=rounding_mode, out=out)
 
 
 @to_native_arrays_and_back

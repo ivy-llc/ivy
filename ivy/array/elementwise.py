@@ -621,6 +621,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        rounding_mode: Optional[Union[str, None]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -636,6 +637,12 @@ class ArrayWithElementwise(abc.ABC):
             divisor input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        rounding_mode
+            optional string/NoneType specifying the rounding mode. If None, true division is used.
+            If 'floor', the floor division mode is used rounding results down.
+            If 'trunc', C-style integer division is used rounding results towards zero.
+            division mode is used.
+
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -665,7 +672,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([1., 3.5, 4.5])
         """
-        return ivy.divide(self._data, x2, out=out)
+        return ivy.divide(self._data, x2, rounding_mode=rounding_mode, out=out)
 
     def equal(
         self: ivy.Array,

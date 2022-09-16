@@ -247,6 +247,7 @@ def divide(
     x2: Union[float, np.ndarray],
     /,
     *,
+    rounding_mode: Optional[Union[str, None]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -255,7 +256,13 @@ def divide(
         ret = np.asarray(ret, dtype=x1.dtype)
     else:
         ret = np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
-    return ret
+    if rounding_mode is None:
+        return ret
+    if rounding_mode == "floor":
+        return np.floor(ret)
+    if rounding_mode == "trunc":
+        return np.trunc(ret)
+
 
 
 divide.support_native_out = True

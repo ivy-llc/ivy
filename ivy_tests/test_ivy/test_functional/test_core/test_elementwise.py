@@ -90,8 +90,9 @@ def test_acosh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
@@ -674,10 +675,12 @@ def test_cosh(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="divide"),
+    rounding_mode=st.sampled_from([None, "floor", "trunc"]),
 )
 def test_divide(
     *,
     dtype_and_x,
+    rounding_mode,
     as_variable,
     with_out,
     num_positional_args,
@@ -706,6 +709,7 @@ def test_divide(
         fn_name="divide",
         x1=x1,
         x2=x2,
+        rounding_mode=rounding_mode,
     )
 
 

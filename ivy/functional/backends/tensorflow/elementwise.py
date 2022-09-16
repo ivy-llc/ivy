@@ -217,6 +217,7 @@ def divide(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    rounding_mode: Optional[Union[str, None]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -225,7 +226,13 @@ def divide(
         ret = tf.cast(ret, dtype=x1.dtype)
     else:
         ret = tf.cast(ret, dtype=ivy.default_float_dtype(as_native=True))
-    return ret
+    if rounding_mode is None:
+        return ret
+    elif rounding_mode == 'floor':
+        return tf.math.floor(ret)
+    elif rounding_mode == 'trunc':
+        return tf.where(ret > 0, tf.math.floor(ret), tf.math.ceil(ret))
+
 
 
 def equal(

@@ -147,6 +147,7 @@ def divide(
     x2: Union[float, JaxArray],
     /,
     *,
+    rounding_mode: Optional[Union[str, None]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -155,7 +156,12 @@ def divide(
         ret = jnp.asarray(ret, dtype=x1.dtype)
     else:
         ret = jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
-    return ret
+    if rounding_mode is None:
+        return ret
+    elif rounding_mode == 'floor':
+        return jnp.floor(ret)
+    elif rounding_mode == 'trunc':
+        return jnp.trunc(ret)
 
 
 def equal(
