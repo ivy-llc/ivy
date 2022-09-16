@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args, given
     input_dtypes=helpers.get_dtypes('integer', full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.random"
-        ),
+    ),
     size=helpers.get_shape(allow_none=True),
 )
 def test_numpy_random(
