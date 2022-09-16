@@ -597,45 +597,46 @@ def test_gather(
 
 
 # gather_nd
-# @given(
-#     params_n_ndindices=helpers.array_and_ndindices(
-#         allow_inf=False, min_num_dims=1, max_num_dims=5, min_dim_size=1,
-#  max_dim_size=10
-#     ),
-#     ndindices_dtype=st.sampled_from(["int32", "int64"]),
-#     as_variable=helpers.list_of_length(st.booleans(), 2),
-#     with_out=st.booleans(),
-#     num_positional_args=helpers.num_positional_args(fn_name="gather_nd"),
-#     native_array=helpers.list_of_length(st.booleans(), 2),
-#     container=helpers.list_of_length(st.booleans(), 2),
-#     instance_method=st.booleans(),
-# )
-# def test_gather_nd(
-#     params_n_ndindices,
-#     ndindices_dtype,
-#     as_variable,
-#     with_out,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     params, ndindices = params_n_ndindices
-#     params_dtype, params = params
-#     helpers.test_function(
-#         input_dtypes=[params_dtype, ndindices_dtype],
-#         as_variable_flags=as_variable,
-#         with_out=with_out,
-#         num_positional_args=num_positional_args,
-#         native_array_flags=native_array,
-#         container_flags=container,
-#         instance_method=instance_method,
-#         fw=fw,
-#         fn_name="gather_nd",
-#         params=np.asarray(params, dtype=params_dtype),
-#         indices=np.asarray(ndindices, dtype=ndindices_dtype),
-#     )
+@handle_cmd_line_args
+@given(
+    params_n_ndindices=helpers.array_and_ndindices(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_ndindices=1,
+        max_num_ndindices=10,
+        allow_inf=False,
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="gather_nd"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
+)
+def test_gather_nd(
+    params_n_ndindices,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    [params_dtype, ndindices_dtype], params, ndindices = params_n_ndindices
+    helpers.test_function(
+        input_dtypes=[params_dtype, ndindices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gather_nd",
+        params=np.asarray(params, dtype=params_dtype),
+        indices=np.asarray(ndindices, dtype=ndindices_dtype),
+    )
 
 
 # exists
