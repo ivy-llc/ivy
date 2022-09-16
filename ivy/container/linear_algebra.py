@@ -569,8 +569,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         self
-            Ivy container having shape ``(..., M, M)`` and whose innermost two dimensions form
-            square matrices. Should have a floating-point data type.
+            Ivy container having shape ``(..., M, M)`` and whose
+            innermost two dimensions form square matrices.
+            Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -580,16 +581,18 @@ class ContainerWithLinearAlgebra(ContainerBase):
             Whether to prune key_chains for which the function was not applied.
             Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
         out
-            optional output container, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an container containing the multiplicative inverses. The returned array must have a
-            floating-point data type determined by :ref:`type-promotion` and must have the
+            an container containing the multiplicative inverses.
+            The returned array must have a floating-point data type
+            determined by :ref:`type-promotion` and must have the
             same shape as ``x``.
 
         """
@@ -639,10 +642,11 @@ class ContainerWithLinearAlgebra(ContainerBase):
             Whether to prune key_chains for which the function was not applied.
             Default is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
         out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
