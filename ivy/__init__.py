@@ -150,6 +150,14 @@ _MIN_BASE = 1e-5
 import threading
 
 
+# devices
+all_devices = ("cpu", "gpu", "tpu")
+
+valid_devices = all_devices
+
+invalid_devices = ()
+
+
 # data types
 int8 = IntDtype("int8")
 int16 = IntDtype("int16")
