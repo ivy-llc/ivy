@@ -49,3 +49,25 @@ def native_sparse_array_to_indices_values_and_shape(x):
         indices, values and shape."
     )
     return None, None, None
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def conv_transpose(
+    x: JaxArray,
+    filters: Union[int, float],
+    strides: Union[int, float],
+    padding: Union[int, float],
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NCDHW",
+    dilations: int = 1,
+    /,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return _to_device(
+        jnp.conv_transpose(x, filters, strides, padding, output_shape, data_format, dilations, dtype=dtype
+    ), device=device)
