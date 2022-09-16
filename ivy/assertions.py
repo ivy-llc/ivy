@@ -1,5 +1,4 @@
 import ivy
-import builtins
 
 
 # General with Custom Message #
@@ -90,12 +89,12 @@ def check_false(expression, message="expression must be False"):
 
 
 def check_all(results, message="one of the args is False"):
-    if not builtins.all(results):
+    if not ivy.all(results):
         raise ivy.exceptions.IvyException(message)
 
 
 def check_any(results, message="all of the args are False"):
-    if not builtins.any(results):
+    if not ivy.any(results):
         raise ivy.exceptions.IvyException(message)
 
 
