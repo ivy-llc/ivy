@@ -1,5 +1,4 @@
 # global
-from pickletools import int4
 import numpy as np
 from hypothesis import given, strategies as st
 
