@@ -264,8 +264,8 @@ def test_torch_prod(
     as_variable,
     num_positional_args,
     native_array,
-    keepdims,
     with_out,
+    keepdims,
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
