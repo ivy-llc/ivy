@@ -420,8 +420,8 @@ not necessary to uniquely flag every single NumPy function as supporting only CP
 as this is a limitation of the entire framework, and this limitation is already
 `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
-Instance Methods
-----------------
+Classes and Instance Methods
+----------------------------
 
 Most frameworks include instance methods on their array class for common array
 processing functions, such as :code:`reshape`, :code:`expand_dims` etc.
@@ -460,8 +460,8 @@ replace each of the original instance methods in the extracted computation graph
 these new instance methods defined in the Ivy frontend class.
 
 
-Framework-Specific Classes
---------------------------
+Framework-Specific Argument Types
+---------------------------------
 
 Some of the frontend functions that we need to implement include framework-specific
 classes as the default values for some of the arguments,
