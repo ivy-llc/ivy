@@ -409,7 +409,7 @@ restrictions than the data type limitations of the framework itself) should be f
 in a manner like the following:
 
 .. code-block:: python
-    
+
    logical_and.supported_dtypes = ("bool",)
 
 The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
@@ -418,7 +418,7 @@ same as those supported by the function in the native framework. Again, this is 
 needed if the limitations go beyond those of the framework itself. For example, it is
 not necessary to uniquely flag every single NumPy function as supporting only CPU,
 as this is a limitation of the entire framework, and this limitation is already
-`globally flagged <>`_.
+`globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
 Instance Methods
 ----------------
@@ -484,7 +484,7 @@ native Python classes to map to.
 For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
 
 .. code-block:: python
-    
+
     numpy_classes_to_ivy_classes = {np._NoValue: None}
 
 Where :code:`np._NoValue` is a reference to the :code:`_NoValueType` class defined in
