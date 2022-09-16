@@ -104,6 +104,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        alpha: Optional[Union[int, float]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -118,6 +119,8 @@ class ArrayWithElementwise(abc.ABC):
         x2
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
+        alpha
+            optional scalar multiplier for ``x2``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -136,7 +139,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> print(z)
         ivy.array([5, 7, 9])
         """
-        return ivy.add(self._data, x2, out=out)
+        return ivy.add(self._data, x2, alpha=alpha, out=out)
 
     def asin(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
@@ -1835,6 +1838,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        alpha: Optional[Union[int, float]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -1851,6 +1855,8 @@ class ArrayWithElementwise(abc.ABC):
             second input array. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
+        alpha
+            optional scalar multiplier for ``x2``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1861,7 +1867,7 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise differences. The returned array
             must have a data type determined by :ref:`type-promotion`.
         """
-        return ivy.subtract(self._data, x2, out=out)
+        return ivy.subtract(self._data, x2, alpha=alpha, out=out)
 
     def tan(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

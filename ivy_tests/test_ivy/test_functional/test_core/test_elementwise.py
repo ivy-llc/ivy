@@ -90,8 +90,8 @@ def test_acosh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
+        large_abs_safety_factor=20,
+        small_abs_safety_factor=2.5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
@@ -130,10 +130,12 @@ def test_acos(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
+    alpha=st.floats(min_value=-1e3, max_value=1e3),
 )
 def test_add(
     *,
     dtype_and_x,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -156,6 +158,7 @@ def test_add(
         fn_name="add",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
+        alpha=alpha,
     )
 
 
