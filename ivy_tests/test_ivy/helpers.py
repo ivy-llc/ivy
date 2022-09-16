@@ -2633,66 +2633,6 @@ def array_n_indices_n_axis(
     return [x_dtype, indices_dtype], x, indices, axis
 
 
-@st.composite
-def array_and_ndindices(
-    draw,
-    *,
-    array_dtypes,
-    indices_dtypes=ivy_np.valid_int_dtypes,
-    min_num_ndindices=1,
-    max_num_ndindices=10,
-    allow_inf=False,
-    min_num_dims=1,
-    max_num_dims=5,
-    min_dim_size=1,
-    max_dim_size=10,
-):
-    x_dtype, x, x_shape = draw(
-        dtype_and_values(
-            available_dtypes=array_dtypes,
-            allow_inf=allow_inf,
-            ret_shape=True,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-        )
-    )
-
-    # num_ndindices defines the number of elements to generate.
-    num_ndindices = draw(
-        ints(
-            min_value=min_num_ndindices,
-            max_value=max_num_ndindices,
-        )
-    )
-    # indices_dims defines how far into the array to index.
-    indices_dims = draw(
-        ints(
-            min_value=1,
-            max_value=len(x_shape),
-        )
-    )
-    indices = []
-    indices_dtype = draw(st.sampled_from(indices_dtypes))
-    # for a 3x5x2 array, num_ndindices = 5 , indices_dims = 2
-    # I want to generate indices that are like... [[4,1],[0,2],[0,0],[1,1],[3,2]]
-    # this array is 5x2
-    for _ in range(num_ndindices):
-        nd_index = []
-        for j in range(indices_dims):
-            axis_index = draw(
-                ints(
-                    min_value=0,
-                    max_value=max(0, x_shape[j] - 1),
-                )
-            )
-            nd_index.append(axis_index)
-        indices.append(nd_index)
-    x = x[0:2]
-    return [x_dtype, indices_dtype], x, indices
-
-
 def _zeroing_and_casting(x, cast_type):
     # covnert -0.0 to 0.0
     if x == 0.0:
