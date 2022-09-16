@@ -338,32 +338,10 @@ Ivy source code, check <code class="code docutils literal notranslate"><span cla
 category in the backend reference API.</p>
 <p>Taking <code class="code docutils literal notranslate"><span class="pre">numpy.inner</span></code> as an example, we can see that there are a few <code class="code docutils literal notranslate"><span class="pre">ivy/functional/frontends/numpy</span></code>
 sub-directories to choose from:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<p>creation_routines
-fft
-indexing_routines
-linear_algebra
-logic
-ma
-manipulation_routines
-mathematical_functions
-matrix
-ndarray
-random
-sorting_searching_counting
-statistics
-ufunc</p>
 <p>There is a <code class="code docutils literal notranslate"><span class="pre">linear_algebra</span></code> sub-directory, so we choose this. There is then a linalg sub-directory. From the numpy
 API, we can see that certain functions listed under ‘Linear Algebra (<code class="code docutils literal notranslate"><span class="pre">numpy.linalg</span></code>)’ actually do _not_ require the
 linalg namespace. <cite>inner</cite> is one such function, hence it will not be placed in this directory. We then need to choose
 from the files at this hierarchy (ignoring <code class="code docutils literal notranslate"><span class="pre">__init__.py</span></code> files):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<p>matrix_and_vector_products.py
-norms_and_other_numbers.py</p>
 <p>This may require a bit of reasoning. <code class="code docutils literal notranslate"><span class="pre">inner</span></code> calculates the inner product of two arrays, so
 <code class="code docutils literal notranslate"><span class="pre">matrix_and_vector_products.py</span></code> seems like the most appropriate option. The location of
 <code class="code docutils literal notranslate"><span class="pre">test_numpy_inner</span></code> should mirror the location of its corresponding function, this time in
