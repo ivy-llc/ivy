@@ -30,5 +30,9 @@ def broadcast_to(input, size):
     return ivy.broadcast_to(input, shape=size)
 
 
+# Fix for `No strategy inference for bfloat16` error.
+broadcast_to.unsupported_dtypes = ("bfloat16",)
+
+
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
