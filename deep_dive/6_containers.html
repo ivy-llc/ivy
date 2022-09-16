@@ -371,7 +371,7 @@ Containers have <em>shared</em> nested structures if all unique leaves in any of
 are children of a nested structure which is shared by all other containers.</p>
 <p>Take the example below, the nested structures of containers <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code>
 are shared but not identical.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">})</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -387,12 +387,12 @@ deepest container.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="n">a</span><span class="p">:</span> <span class="p">{</span>
-      <span class="n">b</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="n">c</span><span class="p">:</span> <span class="mi">2</span>
+      <span class="n">b</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+      <span class="n">c</span><span class="p">:</span> <span class="mf">2.0</span>
     <span class="p">},</span>
     <span class="n">d</span><span class="p">:</span> <span class="p">{</span>
-      <span class="n">e</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-      <span class="n">f</span><span class="p">:</span> <span class="mf">2.67</span>
+      <span class="n">e</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+      <span class="n">f</span><span class="p">:</span> <span class="mf">3.0</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
