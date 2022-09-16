@@ -41,26 +41,7 @@ cumsum.unsupported_dtypes = (
 
 
 def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
-    if row == 0 or col == 0:
-        return ivy.array([], dtype=dtype)
-
-    lowest_included_diagonal = [
-        [i - offset, i] for i in range(-abs(offset), max(row, col) + abs(offset))
-    ]
-
-    all_indices = [
-        (i, index[1])
-        for i in range(
-            0, lowest_included_diagonal[-1][1] + 1
-        )  # The largest possible value is in the last item, and we wish to include it.
-        for index in lowest_included_diagonal
-        if 0 <= i < row and 0 <= index[1] < col and i <= index[0]
-    ]
-
-    if len(all_indices) == 0:
-        return ivy.array([], dtype=dtype)
-
-    print(f"Row: {row}, Col: {col}, Offset: {offset}")
-
-    data = ivy.asarray(all_indices, copy=False, dtype=dtype)
-    return data.matrix_transpose()
+    # TODO: Find out how Ivy handles this layout flag
+    # As I understand it, we don't have such a thing
+    sample_matrix = ivy.triu(ivy.ones((row, col), device=device), k=offset)
+    return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
