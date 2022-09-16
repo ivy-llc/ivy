@@ -90,9 +90,8 @@ def test_acosh(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=4,
-        safety_factor_scale="log",
+        large_abs_safety_factor=20,
+        small_abs_safety_factor=2.5,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
@@ -340,7 +339,8 @@ def test_atanh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
 )
@@ -376,12 +376,11 @@ def test_bitwise_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes,
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
-        safety_factor_scale="linear",
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
 )
@@ -398,9 +397,7 @@ def test_bitwise_left_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    # make sure x2 is not negative
-    if "int" in input_dtype[0] and "int" in input_dtype[1]:
-        x[1] = np.abs(x[1])
+    x[1] = np.abs(x[1])
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -421,7 +418,7 @@ def test_bitwise_left_shift(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",)
+        available_dtypes=helpers.get_dtypes("integer")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
 )
@@ -455,7 +452,8 @@ def test_bitwise_invert(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
 )
@@ -491,12 +489,11 @@ def test_bitwise_or(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes,
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
-        safety_factor_scale="linear",
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
 )
@@ -513,9 +510,7 @@ def test_bitwise_right_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    # make sure x2 is not negative
-    if "int" in input_dtype[0] and "int" in input_dtype[1]:
-        x[1] = np.abs(x[1])
+    x[1] = np.abs(x[1])
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -536,7 +531,8 @@ def test_bitwise_right_shift(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
 )
