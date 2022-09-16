@@ -36,7 +36,7 @@ def conv1d(
     pad_w = ivy.handle_padding(x_shape, strides, f_w_after_dilation, padding)
     x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0)
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -46,7 +46,10 @@ def conv1d(
     return res
 
 
-conv1d.unsupported_dtypes = ("float16",)
+conv1d.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences
@@ -63,16 +66,16 @@ def conv1d_transpose(
     out: Optional[torch.Tensor] = None,
 ):
     filter_shape = list(filters.shape[0:1])
-    filters = filters.permute(2, 1, 0)
+    filters = filters.permute(1, 2, 0)
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     if output_shape is None:
         new_w = ivy.deconv_length(
             x.shape[2], strides, filter_shape[0], padding, dilations
         )
-        output_shape = [x.shape[0], new_w, x.shape[1]]
+        output_shape = [x.shape[0], new_w, filters.shape[-2]]
     elif len(output_shape) == 1:
-        output_shape = [x.shape[0], output_shape[0], x.shape[1]]
+        output_shape = [x.shape[0], output_shape[0], filters.shape[-2]]
     not_valid_h = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
     pad_w = ivy.handle_padding(output_shape[1], strides, filter_shape[0], padding)
@@ -85,7 +88,7 @@ def conv1d_transpose(
         pad_w = pad_w // 2
         padding_list = [pad_w]
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -107,7 +110,10 @@ def conv1d_transpose(
     return res
 
 
-conv1d_transpose.unsupported_dtypes = ("float16",)
+conv1d_transpose.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences
@@ -149,7 +155,7 @@ def conv2d(
         x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
     )
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -159,7 +165,10 @@ def conv2d(
     return res
 
 
-conv2d.unsupported_dtypes = ("float16",)
+conv2d.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences
@@ -178,7 +187,7 @@ def conv2d_transpose(
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filter_shape = list(filters.shape[0:2])
-    filters = filters.permute(3, 2, 0, 1)
+    filters = filters.permute(2, 3, 0, 1)
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     if output_shape is None:
@@ -188,9 +197,9 @@ def conv2d_transpose(
         new_w = ivy.deconv_length(
             x.shape[3], strides[1], filter_shape[1], padding, dilations[1]
         )
-        output_shape = [x.shape[0], new_h, new_w, x.shape[1]]
+        output_shape = [x.shape[0], new_h, new_w, filters.shape[1]]
     elif len(output_shape) == 2:
-        output_shape = [x.shape[0]] + output_shape + [x.shape[1]]
+        output_shape = [x.shape[0]] + output_shape + [filters.shape[1]]
     not_valid_h = False
     not_valid_w = False
     filter_shape[0] = filter_shape[0] + (filter_shape[0] - 1) * (dilations[0] - 1)
@@ -212,7 +221,7 @@ def conv2d_transpose(
         padding_list = [pad_h, pad_w]
 
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -240,7 +249,7 @@ def conv2d_transpose(
     return res
 
 
-conv2d_transpose.unsupported_dtypes = ("float16",)
+conv2d_transpose.unsupported_dtypes = ("float16", "bfloat16")
 
 
 # noinspection PyUnresolvedReferences
@@ -278,7 +287,7 @@ def depthwise_conv2d(
     )
 
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -291,7 +300,10 @@ def depthwise_conv2d(
     return res
 
 
-depthwise_conv2d.unsupported_dtypes = ("float16",)
+depthwise_conv2d.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnresolvedReferences
@@ -338,7 +350,7 @@ def conv3d(
         value=0,
     )
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -380,14 +392,14 @@ def conv3d_transpose(
         new_w = ivy.deconv_length(
             x.shape[4], strides[2], filter_shape[2], padding, dilations[2]
         )
-        output_shape = [x.shape[0], new_d, new_h, new_w, x.shape[1]]
+        output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[1]]
     elif len(output_shape) == 3:
         output_shape = [
             x.shape[0],
             output_shape[0],
             output_shape[1],
             output_shape[2],
-            x.shape[1],
+            filters.shape[1],
         ]
     not_valid_h = False
     not_valid_d = False
@@ -416,7 +428,7 @@ def conv3d_transpose(
         padding_list = [pad_d, pad_h, pad_w]
 
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -448,4 +460,4 @@ def conv3d_transpose(
     return res
 
 
-conv3d_transpose.unsupported_dtypes = ("float16",)
+conv3d_transpose.unsupported_dtypes = ("float16", "bfloat16")

@@ -13,11 +13,13 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_x_normidxs=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        min_axis=1,
-        ret_shape=True,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
     scale=st.floats(min_value=0.0),
