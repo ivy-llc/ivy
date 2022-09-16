@@ -73,11 +73,7 @@ class Module(abc.ABC):
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
-        if build_mode not in valid_build_modes:
-            raise Exception(
-                "build_mode must be one of {} of type str, but found "
-                "{} of type {}".format(valid_build_modes, build_mode, type(build_mode))
-            )
+        ivy.assertions.check_elem_in_list(build_mode, valid_build_modes)
         self._dev = ivy.default(
             device, ivy.default(lambda: devices[0], ivy.default_device(), True)
         )
@@ -93,7 +89,7 @@ class Module(abc.ABC):
         self._compiled = False
         self._compiled_fn = None
         self._compile_on_next_step = compile_on_next_step
-        self._v_in = v if (isinstance(v, Container) or v is None) else Container(v)
+        self._v_in = v if isinstance(v, Container) or v is None else Container(v)
         self.v = v
         self.top_v = None
         self.top_mod = None
@@ -339,7 +335,7 @@ class Module(abc.ABC):
         Forward pass of the layer,
         called after handling the optional input variables.
         """
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     def _forward_with_tracking(self, *args, **kwargs):
         """Forward pass while optionally tracking submodule returns and call order"""
@@ -563,10 +559,11 @@ class Module(abc.ABC):
                 kwargs["atol"] = atol
             if rtol:
                 kwargs["rtol"] = rtol
-            assert np.allclose(
-                ret, expected_ret, **kwargs
-            ), "ret\n\n{}\n\nand expected_ret\n\n{}\n\nwere not close enough".format(
-                ret, expected_ret
+            ivy.assertions.check_true(
+                np.allclose(ret, expected_ret, **kwargs),
+                message="ret: {} and expected_ret: {} were not close enough".format(
+                    ret, expected_ret
+                ),
             )
 
     # noinspection PyProtectedMember
