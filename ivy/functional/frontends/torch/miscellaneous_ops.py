@@ -6,7 +6,12 @@ def flip(input, dims):
 
 
 def fliplr(input):
-    assert len(input.shape) >= 2, "Requires the tensor to be at least 2-D"
+    ivy.assertions.check_greater(
+        len(input.shape),
+        2,
+        allow_equal=True,
+        message="requires tensor to be at least 2D",
+    )
     return ivy.flip(input, axis=(-1,))
 
 
