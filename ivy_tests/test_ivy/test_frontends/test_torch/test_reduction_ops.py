@@ -299,8 +299,6 @@ def test_torch_var(
     keepdims,
 ):
     input_dtype, x, axis, correction = dtype_and_x
-    if isinstance(axis, int):
-        axis = (axis,)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -312,7 +310,7 @@ def test_torch_var(
         fn_tree="var",
         input=np.asarray(x, dtype=input_dtype),
         dim=axis,
-        correction=correction,
+        correction=int(correction),
         keepdim=keepdims,
         out=None,
     )

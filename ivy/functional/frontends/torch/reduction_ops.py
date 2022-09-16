@@ -33,5 +33,5 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
-def var(input, dim, correction=0, keepdim=False, *, out=None):
+def var(input, dim, *, correction=0, keepdim=False, out=None):
     return ivy.var(input, axis=dim, correction=correction, keepdims=keepdim, out=out)
