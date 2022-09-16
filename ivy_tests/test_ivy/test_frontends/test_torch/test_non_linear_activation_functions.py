@@ -810,3 +810,43 @@ def test_torch_glu(
         input=np.asarray(input, dtype=input_dtype),
         dim=dim,
     )
+
+
+# log_softmax
+@handle_cmd_line_args
+@given(
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    dtypes=_dtypes(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.log_softmax"
+    ),
+)
+def test_torch_log_softmax(
+    dtype_x_and_axis,
+    as_variable,
+    with_out,
+    dtypes,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.log_softmax",
+        input=np.asarray(x, dtype=input_dtype),
+        dim=axis,
+        dtype=dtypes[0],
+    )
