@@ -47,5 +47,4 @@ def triu(input, diagonal=0, *, out=None):
 
 
 def tril(input, diagonal=0, *, out=None):
-    # return ivy.array([1.2])
     return ivy.tril(input, k=diagonal, out=out)
