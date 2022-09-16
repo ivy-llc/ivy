@@ -2059,6 +2059,7 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             Container object with all sub-array dimensions gathered.
+        
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),\
@@ -2070,6 +2071,7 @@ class ContainerWithGeneral(ContainerBase):
             a: ivy.array(30.),
             b: ivy.array([0., 100., 200.])
         }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "gather_nd",
