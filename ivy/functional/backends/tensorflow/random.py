@@ -63,8 +63,9 @@ def multinomial(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not replace:
-        raise Exception("TensorFlow does not support multinomial without replacement")
+    ivy.assertions.check_true(
+        replace, message="TensorFlow does not support multinomial without replacement"
+    )
     with tf.device(device):
         if probs is None:
             probs = (
@@ -77,6 +78,9 @@ def multinomial(
                 / population_size
             )
         return tf.random.categorical(tf.math.log(probs), num_samples)
+
+
+multinomial.unsupported_dtypes = ("bfloat16",)
 
 
 def randint(
