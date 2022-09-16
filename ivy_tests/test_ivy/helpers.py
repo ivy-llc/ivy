@@ -156,7 +156,7 @@ def get_current_frontend():
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=True, none=False):
+def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     """
     Draws a valid dtypes for the test function. For frontend tests,
     it draws the data types from the intersection between backend
@@ -206,7 +206,10 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes += (None,)
     if full:
         return valid_dtypes[index:]
-    return draw(st.sampled_from(valid_dtypes[index:]))
+    if key is None:
+        return draw(st.sampled_from(valid_dtypes[index:]))
+    ret = draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))
+    return [ret]
 
 
 @st.composite
@@ -2729,6 +2732,10 @@ def array_values(
     else:
         for dim in shape:
             size *= dim
+
+    if isinstance(dtype, st._internal.SearchStrategy):
+        dtype = draw(dtype)
+        dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
 
     if "float" in dtype:
         kind_dtype = "float"
