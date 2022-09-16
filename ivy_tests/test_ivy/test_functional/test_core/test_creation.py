@@ -67,8 +67,9 @@ def test_native_array(
         max_dim_size=5,
         allow_inf=False,
         shared_dtype=True,
-        small_value_safety_factor=1.5,
-        large_value_safety_factor=20,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
     num=helpers.ints(min_value=1, max_value=5),
     axis=st.none(),
@@ -118,8 +119,9 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        small_value_safety_factor=2.5,
-        large_value_safety_factor=50,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=3,
+        safety_factor_scale="log",
     ),
     num=helpers.ints(min_value=1, max_value=5),
     base=helpers.floats(min_value=0.1, max_value=10.0),
@@ -844,7 +846,8 @@ def _dtype_indices_depth(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
             min_value=0,
             max_value=depth - 1,
-            small_value_safety_factor=2.5,
+            small_abs_safety_factor=4,
+            safety_factor_scale="linear",
         )
     )
     return dtype_and_indices, depth
