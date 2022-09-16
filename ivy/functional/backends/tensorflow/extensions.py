@@ -57,9 +57,6 @@ def native_sparse_array_to_indices_values_and_shape(x):
     raise ivy.exceptions.IvyException("not a SparseTensor")
 
     
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 def conv_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[int, float],
@@ -74,6 +71,6 @@ def conv_transpose(
     device: str,
     out: [Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.conv_transpose(
+    return tf.nn.conv_transpose(
         x, filters, strides, padding, output_shape, data_format, dilations, dtype=dtype
     )
