@@ -114,7 +114,7 @@ def inv(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.math.reduce_any(tf.linalg.det(x) == 0):
+    if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
         ret = x
     else:
         ret = tf.linalg.inv(x)
@@ -154,7 +154,7 @@ def matmul(
         or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
         or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
     ):
-        raise Exception("Error,shapes not compatible")
+        raise ivy.exceptions.IvyException("Error,shapes not compatible")
 
     x1_padded = False
     x1_padded_2 = False
@@ -276,20 +276,13 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if rtol is None:
-        ret = tf.linalg.matrix_rank(x)
-    elif tf.size(x) == 0:
-        ret = 0
-    elif tf.size(x) == 1:
-        ret = tf.math.count_nonzero(x)
+    singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    max_value = tf.math.reduce_max(singular_values)
+    if rtol:
+        num = tf.experimental.numpy.sum(singular_values > max_value * rtol)
     else:
-        rtol = tf.convert_to_tensor([rtol], dtype=tf.float32)
-        rtol = tf.reshape(rtol, [-1])
-        if len(rtol) > 1:
-            rtol = rtol[0]
-        x, rtol = ivy.promote_types_of_inputs(x, rtol)
-        ret = tf.linalg.matrix_rank(x, rtol)
-    return tf.cast(ret, ivy.default_int_dtype(as_native=True))
+        num = tf.size(singular_values)
+    return tf.cast(num, ivy.default_int_dtype(as_native=True))
 
 
 matrix_rank.unsupported_dtypes = (
@@ -358,7 +351,7 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
         q, r = tf.linalg.qr(x, full_matrices=True)
         ret = res(q, r)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed "
             "for the tensorflow backend."
         )

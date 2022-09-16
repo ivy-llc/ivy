@@ -94,7 +94,8 @@ setup(
     },
     packages=setuptools.find_packages(),
     install_requires=[
-        _strip(line) for line in open("requirements.txt", "r", encoding="utf-8")
+        _strip(line)
+        for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
     classifiers=["License :: OSI Approved :: Apache Software License"],
     license="Apache 2.0",
