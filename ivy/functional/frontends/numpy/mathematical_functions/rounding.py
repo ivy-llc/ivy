@@ -1,7 +1,11 @@
 # global
 import ivy
 
+# local
+from ivy.func_wrapper import from_zero_dim_arrays_to_float
 
+
+@from_zero_dim_arrays_to_float
 def ceil(
     x,
     /,
@@ -21,4 +25,10 @@ def ceil(
     return ret
 
 
-ceil.unsupported_dtypes = {"torch": ("float16",)}
+def fix(
+    x,
+    /,
+    out=None,
+):
+    where = ivy.greater_equal(x, 0)
+    return ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)

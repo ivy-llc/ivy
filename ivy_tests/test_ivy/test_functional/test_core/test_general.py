@@ -2,12 +2,10 @@
 
 # global
 import time
-import einops
 import jax.numpy as jnp
 import pytest
 from hypothesis import given, assume, strategies as st
 import numpy as np
-from numbers import Number
 from collections.abc import Sequence
 import torch.multiprocessing as multiprocessing
 
@@ -17,7 +15,6 @@ import ivy
 import ivy.functional.backends.jax
 import ivy.functional.backends.tensorflow
 import ivy.functional.backends.torch
-import ivy.functional.backends.mxnet
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -46,15 +43,15 @@ def _get_shape_of_list(lst, shape=()):
 
 # set_framework
 @handle_cmd_line_args
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "mxnet"]))
-def test_set_framework(*, fw_str, device):
+@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
+def test_set_framework(fw_str, device):
     ivy.set_backend(fw_str)
     ivy.unset_backend()
 
 
 # use_framework
 @handle_cmd_line_args
-def test_use_within_use_framework(*, device):
+def test_use_within_use_framework(device):
     with ivy.functional.backends.numpy.use:
         pass
     with ivy.functional.backends.jax.use:
@@ -63,13 +60,11 @@ def test_use_within_use_framework(*, device):
         pass
     with ivy.functional.backends.torch.use:
         pass
-    with ivy.functional.backends.mxnet.use:
-        pass
 
 
 @handle_cmd_line_args
 @given(allow_duplicates=st.booleans())
-def test_match_kwargs(*, allow_duplicates):
+def test_match_kwargs(allow_duplicates):
     def func_a(a, b, c=2):
         pass
 
@@ -95,7 +90,7 @@ def test_match_kwargs(*, allow_duplicates):
 
 
 @handle_cmd_line_args
-def test_get_referrers_recursive(*, device):
+def test_get_referrers_recursive(device):
     class SomeClass:
         def __init__(self):
             self.x = [1, 2]
@@ -120,32 +115,6 @@ def test_get_referrers_recursive(*, device):
     assert len(some_obj_refs) == 1
 
 
-# copy array
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True)
-    )
-)
-def test_copy_array(*, dtype_and_x, device, fw):
-    dtype, x = dtype_and_x
-    assume(not (fw == "torch" and dtype in ["uint16", "uint32", "uint64"]))
-
-    # mxnet does not support int16
-    assume(not (fw == "mxnet" and dtype == "int16"))
-
-    # smoke test
-    x = ivy.array(x, dtype=dtype, device=device)
-    ret = ivy.copy_array(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
-    assert id(x) != id(ret)
-
-
 # array_equal
 @handle_cmd_line_args
 @given(
@@ -153,32 +122,9 @@ def test_copy_array(*, dtype_and_x, device, fw):
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
     )
 )
-def test_array_equal(*, x0_n_x1_n_res, device, fw):
+def test_array_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in (dtype0, dtype1)))
-    # torch does not support those dtypes
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype0 in ["uint16", "uint32", "uint64"]
-                or dtype1 in ["uint16", "uint32", "uint64"]
-            )
-        )
-    )
-
-    # mxnet does not support int16, and does not support
-    # bool for broadcast_equal method used
-    assume(
-        not (
-            fw == "mxnet"
-            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
-        )
-    )
-
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -198,29 +144,10 @@ def test_array_equal(*, x0_n_x1_n_res, device, fw):
         available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=3
     )
 )
-def test_arrays_equal(*, x0_n_x1_n_res, device, fw):
+def test_arrays_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
     dtype2, x2 = x0_n_x1_n_res[0][2], x0_n_x1_n_res[1][2]
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype0 in ["uint16", "uint32", "uint64"]
-                or dtype1 in ["uint16", "uint32", "uint64"]
-                or dtype2 in ["uint16", "uint32", "uint64"]
-            )
-        )
-    )
-    # torch does not support those dtypes
-    assume(
-        not (
-            fw == "mxnet"
-            and (dtype0 in ["int16", "bool"] or dtype1 in ["int16", "bool"])
-        )
-    )
-    # mxnet does not support int16, and does not support bool
-    # for broadcast_equal method used
     # smoke test
     x0 = ivy.array(x0, dtype=dtype0, device=device)
     x1 = ivy.array(x1, dtype=dtype1, device=device)
@@ -240,6 +167,46 @@ def test_arrays_equal(*, x0_n_x1_n_res, device, fw):
     assert res == true_res
 
 
+@handle_cmd_line_args
+@given(
+    dtype_x_indices_axis=st.one_of(
+        helpers.array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+            disable_random_axis=True,
+        ),
+        helpers.array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            boolean_mask=True,
+            disable_random_axis=True,
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="get_item"),
+)
+def test_get_item(
+    dtype_x_indices_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    device,
+):
+    dtypes, x, indices, _ = dtype_x_indices_axis
+    helpers.test_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="get_item",
+        x=np.asarray(x, dtype=dtypes[0]),
+        query=np.asarray(indices, dtype=dtypes[1]),
+    )
+
+
 # to_numpy
 @handle_cmd_line_args
 @given(
@@ -247,14 +214,10 @@ def test_arrays_equal(*, x0_n_x1_n_res, device, fw):
         available_dtypes=helpers.get_dtypes("valid", full=True)
     )
 )
-def test_to_numpy(*, x0_n_x1_n_res, device, fw):
+def test_to_numpy(x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in dtype))
-    assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
-    # torch does not support those dtypes
-    assume(not (fw == "mxnet" and dtype == "int16"))
-    # mxnet does not support int16
     # smoke test
     ret = ivy.to_numpy(ivy.array(object_in, dtype=dtype, device=device))
     # type test
@@ -269,15 +232,11 @@ def test_to_numpy(*, x0_n_x1_n_res, device, fw):
 @handle_cmd_line_args
 @given(
     object_in=st.sampled_from([[0.0], [[[1]]], [True], [[1.0]]]),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_to_scalar(*, object_in, dtype, device, fw):
-    # bfloat16 is not supported by numpy
+def test_to_scalar(object_in, dtype, device, fw):
     assume(not ("bfloat16" in dtype))
-    assume(not (fw == "torch" and (dtype in ["uint16", "uint32", "uint64"])))
-    # torch does not support those dtypes
-    assume(not (fw == "mxnet" and dtype == "int16"))
-    # mxnet does not support int16
+    # bfloat16 is not supported by numpy
     # smoke test
     ret = ivy.to_scalar(ivy.array(object_in, dtype=dtype, device=device))
     true_val = ivy.to_numpy(ivy.array(object_in, dtype=dtype)).item()
@@ -294,11 +253,10 @@ def test_to_scalar(*, object_in, dtype, device, fw):
         available_dtypes=helpers.get_dtypes("valid", full=True)
     )
 )
-def test_to_list(*, x0_n_x1_n_res, device, fw):
+def test_to_list(x0_n_x1_n_res, device, fw):
     dtype, object_in = x0_n_x1_n_res
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in dtype))
-    assume(dtype in ivy.valid_dtypes)
     # smoke test
     arr = ivy.array(object_in, dtype=dtype, device=device)
     ret = ivy.to_list(arr)
@@ -324,37 +282,32 @@ def test_to_list(*, x0_n_x1_n_res, device, fw):
     x0_n_x1_n_res=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True)
     ),
-    as_tensor=st.booleans(),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+    as_array=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="shape"),
 )
-def test_shape(*, x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
-    dtype, object_in = x0_n_x1_n_res
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype in ["uint16", "uint32", "uint64"]
-                or (
-                    dtype not in ivy_np.valid_float_dtypes
-                    and tensor_fn == helpers.var_fn
-                )
-            )
-        )
-    )
-    # torch does not support those dtypes
-    ret = ivy.shape(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
-    # type test
-    if as_tensor:
-        assert ivy.is_ivy_array(ret)
-    else:
-        assert isinstance(ret, tuple)
-
-        ret = ivy.array(ret)
-    # cardinality test
-    assert ret.shape[0] == len(np.asarray(object_in).shape)
-    # value test
-    assert np.array_equal(
-        ivy.to_numpy(ret), np.asarray(np.asarray(object_in).shape, np.int32)
+def test_shape(
+    x0_n_x1_n_res,
+    as_array,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    device,
+    fw,
+):
+    dtype, x = x0_n_x1_n_res
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="shape",
+        x=np.asarray(x, dtype=dtype),
+        as_array=as_array,
     )
 
 
@@ -367,22 +320,12 @@ def test_shape(*, x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     as_tensor=st.booleans(),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_get_num_dims(*, x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
+def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     dtype, object_in = x0_n_x1_n_res
-    assume(
-        not (
-            fw == "torch"
-            and (
-                dtype in ["uint16", "uint32", "uint64"]
-                or (
-                    dtype not in ivy_np.valid_float_dtypes
-                    and tensor_fn == helpers.var_fn
-                )
-            )
-        )
+    assume(not (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn))
+    ret = ivy.get_num_dims(
+        tensor_fn(object_in, dtype=dtype, device=device), as_array=as_tensor
     )
-    # torch does not support those dtypes
-    ret = ivy.get_num_dims(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
     # type test
     if as_tensor:
         assert ivy.is_ivy_array(ret)
@@ -398,662 +341,434 @@ def test_get_num_dims(*, x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 
 
 # clip_vector_norm
-@pytest.mark.parametrize(
-    "x_max_norm_n_p_val_clipped",
-    [
-        (-0.5, 0.4, 2.0, -0.4),
-        ([1.7], 1.5, 3.0, [1.5]),
-        (
-            [[0.8, 2.2], [1.5, 0.2]],
-            4.0,
-            1.0,
-            [[0.6808511, 1.8723406], [1.2765958, 0.17021278]],
-        ),
-        (
-            [[0.8, 2.2], [1.5, 0.2]],
-            2.5,
-            2.0,
-            [[0.71749604, 1.9731141], [1.345305, 0.17937401]],
-        ),
-    ],
+@handle_cmd_line_args
+@given(
+    x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    max_norm=st.floats(),
+    p=st.floats(),
+    num_positional_args=helpers.num_positional_args(fn_name="clip_vector_norm"),
+    as_variable=st.booleans(),
+    with_out=st.booleans(),
+    native_array=st.booleans(),
+    container=st.booleans(),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_clip_vector_norm(
-    *, x_max_norm_n_p_val_clipped, dtype, with_out, tensor_fn, device
+    x,
+    max_norm,
+    p,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
 ):
-    # smoke test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x_max_norm_n_p_val_clipped[0], dtype=dtype, device=device)
-    max_norm = x_max_norm_n_p_val_clipped[1]
-    p_val = x_max_norm_n_p_val_clipped[2]
-    clipped = x_max_norm_n_p_val_clipped[3]
-    if with_out:
-        out = ivy.zeros(x.shape if len(x.shape) else (1,))
-        ret = ivy.clip_vector_norm(x, max_norm, p_val, out=out)
-    else:
-        ret = ivy.clip_vector_norm(x, max_norm, p_val)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == (x.shape if len(x.shape) else (1,))
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.clip_vector_norm(x, max_norm, p_val)), np.array(clipped)
+    dtype, x = x[0], x[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="clip_vector_norm",
+        x=np.asarray(x, dtype=dtype),
+        max_norm=max_norm,
+        p=p,
     )
-    if with_out:
-        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            assert ret is out
-            assert ret.data is out.data
-    # compilation test
-    if ivy.current_backend_str() == "torch":
-        # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
-        return
 
 
-# floormod
+# fourier_encode
 # @given(
-#     xy=helpers.dtype_and_values(
-#       available_dtypes = ivy_np.valid_numeric_dtypes,
-#       n_arrays=2
-#     ),
+#     x=helpers.dtype_and_values(ivy_np.valid_float_dtypes, min_num_dims=1),
+#     max_freq=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+#     num_bands=st.integers(min_value=1,max_value=100000),
 #     as_variable=st.booleans(),
-#     with_out=st.booleans(),
-#     num_positional_args=helpers.ints(min_value=1, max_value=2),
+#     num_positional_args=st.integers(0, 3),
 #     native_array=st.booleans(),
 #     container=st.booleans(),
 #     instance_method=st.booleans(),
 # )
-# @handle_cmd_line_args
-#
-# def test_floormod(
-#     xy,
+# def test_fourier_encode(
+#     x,
+#     max_freq,
+#     num_bands,
 #     as_variable,
-#     with_out,
 #     num_positional_args,
 #     native_array,
 #     container,
 #     instance_method,
 #     device,
 #     call,
-#     fw,
+#     fw
 # ):
 #     # smoke test
-#     dtype = xy[0]
-#     x = xy[1][0]
-#     divisor = np.abs(xy[1][1])
-#     if 0 in divisor:
+#     dtype_x, x = x
+#     dtype_max_freq, max_freq = max_freq
+#     if fw == "torch" and dtype_x in ["uint16", "uint32", "uint64"]:
 #         return
-#     if fw == "torch" and any(d in ["uint16", "uint32", "uint64"] for d in dtype):
-#         return
-#     helpers.test_array_function(
-#         dtype,
+#     helpers.test_function(
+#         dtype_x,
 #         as_variable,
-#         with_out,
+#         False,
 #         num_positional_args,
 #         native_array,
 #         container,
 #         instance_method,
 #         fw,
-#         "floormod",
-#         x=np.asarray(x, dtype=dtype[0]),
-#         y=np.asarray(divisor, dtype=dtype[1]),
+#         "fourier_encode",
+#         x=np.asarray(x, dtype=dtype_x),
+#         max_freq=np.asarray(max_freq,dtype=dtype_max_freq),
+#         num_bands=num_bands
 #     )
 
 
-# unstack
-@pytest.mark.parametrize(
-    "x_n_axis", [(1, -1), ([[0.0, 1.0, 2.0]], 0), ([[0.0, 1.0, 2.0]], 1)]
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_unstack(*, x_n_axis, dtype, tensor_fn, device):
-    # smoke test
-    x, axis = x_n_axis
-    if (
-        isinstance(x, Number)
-        and tensor_fn == helpers.var_fn
-        and ivy.current_backend_str() == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.unstack(x, axis)
-    # type test
-    assert isinstance(ret, list)
-    # cardinality test
-    axis_val = (
-        axis % len(x.shape)
-        if (axis is not None and len(x.shape) != 0)
-        else len(x.shape) - 1
-    )
-    if x.shape == ():
-        expected_shape = ()
-    else:
-        expected_shape = list(x.shape)
-        expected_shape.pop(axis_val)
-    assert ret[0].shape == tuple(expected_shape)
-    ret = ivy.unstack(x, axis)
-    ret_from_np = ivy.functional.backends.numpy.unstack(ivy.to_numpy(x), axis)
-    # value test
-    for ret_i, ret_from_np_i in zip(ret, ret_from_np):
-        assert np.allclose(ivy.to_numpy(ret_i), ret_from_np_i)
-
-
-# fourier_encode
-@pytest.mark.parametrize(
-    "x_n_mf_n_nb_n_gt",
-    [
-        (
-            [2.0],
-            4.0,
-            4,
-            [
-                [
-                    2.0000000e00,
-                    1.7484555e-07,
-                    9.9805772e-01,
-                    -5.2196848e-01,
-                    3.4969111e-07,
-                    1.0000000e00,
-                    -6.2295943e-02,
-                    -8.5296476e-01,
-                    1.0000000e00,
-                ]
-            ],
-        ),
-        (
-            [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]],
-            [2.0, 4.0],
-            4,
-            [
-                [
-                    [
-                        1.0000000e00,
-                        -8.7422777e-08,
-                        -8.7422777e-08,
-                        -8.7422777e-08,
-                        -8.7422777e-08,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                    ],
-                    [
-                        2.0000000e00,
-                        1.7484555e-07,
-                        9.9805772e-01,
-                        -5.2196848e-01,
-                        -6.0398321e-07,
-                        1.0000000e00,
-                        -6.2295943e-02,
-                        -8.5296476e-01,
-                        1.0000000e00,
-                    ],
-                ],
-                [
-                    [
-                        3.0000000e00,
-                        -2.3849761e-08,
-                        -2.3849761e-08,
-                        -2.3849761e-08,
-                        -2.3849761e-08,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                    ],
-                    [
-                        4.0000000e00,
-                        3.4969111e-07,
-                        -1.2434989e-01,
-                        8.9044148e-01,
-                        -1.2079664e-06,
-                        1.0000000e00,
-                        -9.9223840e-01,
-                        4.5509776e-01,
-                        1.0000000e00,
-                    ],
-                ],
-                [
-                    [
-                        5.0000000e00,
-                        -6.7553248e-07,
-                        -6.7553248e-07,
-                        -6.7553248e-07,
-                        -6.7553248e-07,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                        -1.0000000e00,
-                    ],
-                    [
-                        6.0000000e00,
-                        4.7699523e-08,
-                        -9.8256493e-01,
-                        -9.9706185e-01,
-                        -3.7192983e-06,
-                        1.0000000e00,
-                        1.8591987e-01,
-                        7.6601014e-02,
-                        1.0000000e00,
-                    ],
-                ],
-            ],
-        ),
-    ],
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_fourier_encode(*, x_n_mf_n_nb_n_gt, dtype, tensor_fn, device):
-    # smoke test
-    x, max_freq, num_bands, ground_truth = x_n_mf_n_nb_n_gt
-    if (
-        isinstance(x, Number)
-        and tensor_fn == helpers.var_fn
-        and ivy.current_backend_str() == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype=dtype, device=device)
-    if isinstance(max_freq, list):
-        max_freq = tensor_fn(max_freq, dtype=dtype, device=device)
-    ret = ivy.fourier_encode(x, max_freq, num_bands)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    x_shape = [1] if x.shape == () else list(x.shape)
-    expected_shape = x_shape + [1 + 2 * num_bands]
-    assert list(ret.shape) == expected_shape
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.fourier_encode(x, max_freq, num_bands)),
-        np.array(ground_truth),
-        atol=1e-5,
-    )
-
-
-# indices_where
-@pytest.mark.parametrize("x", [[True], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_indices_where(*, x, dtype, tensor_fn, device):
-    # smoke test
-    if (
-        isinstance(x, Number)
-        and tensor_fn == helpers.var_fn
-        and ivy.current_backend_str() == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.indices_where(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert len(ret.shape) == 2
-    assert ret.shape[-1] == len(x.shape)
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.indices_where(x)),
-        np.asarray(ivy.functional.backends.numpy.indices_where(ivy.to_numpy(x))),
-    )
-
-
-# one_hot
-@pytest.mark.parametrize(
-    "ind_n_depth", [([0], 1), ([0, 1, 2], 3), ([[1, 3], [0, 0], [8, 4], [7, 9]], 10)]
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_one_hot(*, ind_n_depth, dtype, tensor_fn, device):
-    # smoke test
-    ind, depth = ind_n_depth
-    if (
-        isinstance(ind, Number)
-        and tensor_fn == helpers.var_fn
-        and ivy.current_backend_str() == "mxnet"
-    ):
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-    ind = ivy.array(ind, dtype="int32", device=device)
-    ret = ivy.one_hot(ind, depth, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == ind.shape + (depth,)
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.one_hot(ind, depth, device=device)),
-        np.asarray(
-            ivy.functional.backends.numpy.one_hot(
-                ivy.to_numpy(ind), depth, device=device
-            )
-        ),
-    )
-
-
-# cumsum
-@pytest.mark.parametrize(
-    "x_n_axis",
-    [
-        ([[0.0, 1.0, 2.0]], -1),
-        ([[0.0, 1.0, 2.0], [2.0, 1.0, 0.0]], 0),
-        ([[0.0, 1.0, 2.0], [2.0, 1.0, 0.0]], 1),
-    ],
-)
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_cumsum(*, x_n_axis, dtype, with_out, tensor_fn, device):
-    # smoke test
-    x, axis = x_n_axis
-    x = ivy.array(x, dtype=dtype, device=device)
-    if with_out:
-        if ivy.exists(axis):
-            out = ivy.zeros(x.shape)
-            ret = ivy.cumsum(x, axis, out=out)
-        else:
-            out = ivy.zeros(ivy.reshape(x, (-1,)).shape)
-            ret = ivy.cumsum(x, axis, out=out)
-    else:
-        ret = ivy.cumsum(x, axis)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    x_np = ivy.to_numpy(x)
-    with ivy.functional.backends.numpy.use:
-        true_np = ivy.cumsum(x_np, axis).data
-    assert np.allclose(ivy.to_numpy(ivy.cumsum(x, axis)), true_np)
-    # out test
-    if with_out:
-        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            assert ret is out
-            assert ret.data is out.data
-
-
-# cumprod
-@pytest.mark.parametrize(
-    "x_n_axis",
-    [
-        ([[0.0, 1.0, 2.0]], -1),
-        ([[0.0, 1.0, 2.0], [2.0, 1.0, 0.0]], 0),
-        ([[0.0, 1.0, 2.0], [2.0, 1.0, 0.0]], 1),
-    ],
-)
-@pytest.mark.parametrize("exclusive", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_cumprod(*, x_n_axis, exclusive, dtype, with_out, tensor_fn, device):
-    # smoke test
-    x, axis = x_n_axis
-    x = ivy.array(x, dtype=dtype, device=device)
-    if with_out:
-        if ivy.exists(axis):
-            out = ivy.zeros(x.shape)
-            ret = ivy.cumprod(x, axis, exclusive=exclusive, out=out)
-        else:
-            out = ivy.zeros(ivy.reshape(x, (-1,)).shape)
-            ret = ivy.cumprod(x, axis, exclusive=exclusive, out=out)
-    else:
-        ret = ivy.cumprod(x, axis, exclusive)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    x_np = ivy.to_numpy(x)
-    with ivy.functional.backends.numpy.use:
-        true_np = ivy.cumprod(x_np, axis, exclusive).data
-    assert np.allclose(ivy.to_numpy(ivy.cumprod(x, axis, exclusive)), true_np)
-    # out test
-    if with_out:
-        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            assert ret is out
-            assert ret.data is out.data
-
-
 # scatter_flat
-@pytest.mark.parametrize(
-    "inds_n_upd_n_size_n_tnsr_n_wdup",
-    [
-        ([0, 4, 1, 2], [1, 2, 3, 4], 8, None, False),
-        ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8, None, True),
-        ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], None, [11, 10, 9, 8, 7, 6], True),
-    ],
-)
-@pytest.mark.parametrize("red", ["sum", "min", "max", "replace"])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_flat(*, inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn):
-    # smoke test
-    if red in ("sum", "min", "max") and ivy.current_backend_str() == "mxnet":
-        # mxnet does not support sum, min or max reduction for scattering
-        pytest.skip()
-    inds, upd, size, tensor, with_duplicates = inds_n_upd_n_size_n_tnsr_n_wdup
-    if ivy.exists(tensor) and ivy.current_backend_str() == "mxnet":
-        # mxnet does not support scattering into pre-existing tensors
-        pytest.skip()
-    inds = ivy.array(inds, dtype="int32")
-    upd = tensor_fn(upd, dtype=dtype)
-    if tensor:
-        # pytorch variables do not support in-place updates
-        tensor = (
-            ivy.array(tensor, dtype=dtype)
-            if ivy.current_backend_str() == "torch"
-            else tensor_fn(tensor, dtype=dtype)
+@handle_cmd_line_args
+@given(
+    x=st.integers(min_value=1, max_value=10).flatmap(
+        lambda n: st.tuples(
+            helpers.dtype_and_values(
+                available_dtypes=ivy_np.valid_float_dtypes,
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=n,
+                max_dim_size=n,
+            ),
+            helpers.dtype_and_values(
+                available_dtypes=ivy_np.valid_int_dtypes,
+                min_value=0,
+                max_value=max(n - 1, 0),
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=n,
+                max_dim_size=n,
+            ).filter(lambda l: len(set(l[1])) == len(l[1])),
+            st.integers(min_value=n, max_value=n),
         )
-    ret = ivy.scatter_flat(inds, upd, size, tensor, red)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if size:
-        assert ret.shape == (size,)
-    else:
-        assert ret.shape == tensor.shape
-    # value test
-    if red == "replace" and with_duplicates:
-        # replace with duplicates give non-deterministic outputs
+    ),
+    reduction=st.sampled_from(["sum", "min", "max", "replace"]),
+    num_positional_args=helpers.num_positional_args(fn_name="scatter_flat"),
+)
+def test_scatter_flat(
+    x,
+    reduction,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    (val_dtype, vals), (ind_dtype, ind), size = x
+    if fw == "torch" and (
+        val_dtype in ["uint16", "uint32", "uint64"]
+        or ind_dtype in ["uint16", "uint32", "uint64"]
+    ):
         return
-    inds_np = ivy.to_numpy(inds)
-    upd_np = ivy.to_numpy(upd)
-    tensor_np = ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor
-    with ivy.functional.backends.numpy.use:
-        true_np = ivy.scatter_flat(inds_np, upd_np, size, tensor_np, red).data
-    assert np.allclose(
-        ivy.to_numpy(ivy.scatter_flat(inds, upd, size, tensor, red)),
-        true_np,
+    helpers.test_function(
+        input_dtypes=[ind_dtype, val_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="scatter_flat",
+        indices=np.asarray(ind, dtype=ind_dtype),
+        updates=np.asarray(vals, dtype=val_dtype),
+        size=size,
+        reduction=reduction,
     )
 
 
 # scatter_nd
-@pytest.mark.parametrize(
-    "inds_n_upd_n_shape_tnsr_n_wdup",
-    [
-        ([[4], [3], [1], [7]], [9, 10, 11, 12], [8], None, False),
-        ([[0, 1, 2]], [1], [3, 3, 3], None, False),
-        (
-            [[0], [2]],
-            [
-                [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
-                [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
-            ],
-            [4, 4, 4],
-            None,
-            False,
-        ),
-        (
-            [[0, 1, 2]],
-            [1],
-            None,
-            [
-                [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
-                [[4, 5, 6], [7, 8, 9], [1, 2, 3]],
-                [[7, 8, 9], [1, 2, 3], [4, 5, 6]],
-            ],
-            False,
-        ),
-    ],
-)
-@pytest.mark.parametrize("red", ["sum", "min", "max", "replace"])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_nd(*, inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn):
-    # smoke test
-    if red in ("sum", "min", "max") and ivy.current_backend_str() == "mxnet":
-        # mxnet does not support sum, min or max reduction for scattering
-        pytest.skip()
-    inds, upd, shape, tensor, with_duplicates = inds_n_upd_n_shape_tnsr_n_wdup
-    if ivy.exists(tensor) and ivy.current_backend_str() == "mxnet":
-        # mxnet does not support scattering into pre-existing tensors
-        pytest.skip()
-    inds = ivy.array(inds, dtype="int32")
-    upd = tensor_fn(upd, dtype=dtype)
-    if tensor:
-        # pytorch variables do not support in-place updates
-        tensor = (
-            ivy.array(tensor, dtype=dtype)
-            if ivy.current_backend_str() == "torch"
-            else tensor_fn(tensor, dtype=dtype)
+@handle_cmd_line_args
+@given(
+    x=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=10)
+    ).flatmap(
+        lambda n: st.tuples(
+            helpers.dtype_and_values(
+                available_dtypes=ivy_np.valid_numeric_dtypes,
+                shape=(n[1], n[0]),
+            ),
+            helpers.dtype_and_values(
+                available_dtypes=["int32", "int64"],
+                min_value=0,
+                max_value=max(n[1] - 1, 0),
+                shape=(n[1],),
+            ).filter(lambda l: len(set(l[1])) == len(l[1])),
         )
-    inds_np = ivy.to_numpy(inds)
-    upd_np = ivy.to_numpy(upd)
-    tensor_np = ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor
-    ret = ivy.scatter_nd(inds, upd, shape, tensor, red)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape:
-        assert tuple(ret.shape) == tuple(shape)
-    else:
-        assert tuple(ret.shape) == tuple(tensor.shape)
-    # value test
-    if red == "replace" and with_duplicates:
-        # replace with duplicates give non-deterministic outputs
-        return
-    with ivy.functional.backends.numpy.use:
-        true_np = ivy.scatter_nd(inds_np, upd_np, shape, tensor_np, red).data
-    assert np.allclose(ret, true_np)
+    ),
+    reduction=st.sampled_from(["sum", "min", "max", "replace"]),
+    num_positional_args=helpers.num_positional_args(fn_name="scatter_nd"),
+)
+def test_scatter_nd(
+    x,
+    reduction,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    (val_dtype, vals), (ind_dtype, ind) = x
+    shape = np.array(vals, dtype=val_dtype).shape
+    helpers.test_function(
+        input_dtypes=[ind_dtype, val_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="scatter_nd",
+        indices=np.asarray(ind, dtype=ind_dtype).reshape([len(vals), 1]),
+        updates=np.asarray(vals, dtype=val_dtype),
+        shape=shape,
+        reduction=reduction,
+    )
 
 
 # gather
-@pytest.mark.parametrize(
-    "prms_n_inds_n_axis",
-    [
-        ([9, 8, 7, 6, 5, 4, 3, 2, 1, 0], [0, 4, 7], 0),
-        ([[1, 2], [3, 4]], [[0, 0], [1, 0]], 1),
-    ],
+@handle_cmd_line_args
+@given(
+    params_n_indices_n_axis=helpers.array_n_indices_n_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        disable_random_axis=False,
+        boolean_mask=False,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="gather"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("with_out", [True, False])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather(*, prms_n_inds_n_axis, dtype, with_out, tensor_fn):
-    # smoke test
-    prms, inds, axis = prms_n_inds_n_axis
-    prms = tensor_fn(prms, dtype=dtype)
-    inds = ivy.array(inds, dtype="int32")
-    if with_out:
-        out = ivy.zeros(inds.shape)
-        ret = ivy.gather(prms, inds, axis, out=out)
-    else:
-        ret = ivy.gather(prms, inds, axis)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == inds.shape
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.gather(prms, inds, axis)),
-        np.asarray(
-            ivy.functional.backends.numpy.gather(
-                ivy.to_numpy(prms), ivy.to_numpy(inds), axis
-            )
-        ),
+def test_gather(
+    params_n_indices_n_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    [params_dtype, indices_dtype], params, indices, axis = params_n_indices_n_axis
+    helpers.test_function(
+        input_dtypes=[params_dtype, indices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gather",
+        params=np.asarray(params, dtype=params_dtype),
+        indices=np.asarray(indices, dtype=indices_dtype),
+        axis=axis,
     )
-    # out test
-    if with_out:
-        if not ivy.current_backend_str() in ["tensorflow", "jax"]:
-            # these backends do not support native inplace updates
-            assert ret is out
-            assert ret.data is out.data
+
+
+@st.composite
+def array_and_ndindices(
+    draw,
+    *,
+    array_dtypes,
+    indices_dtypes=ivy_np.valid_int_dtypes,
+    min_num_ndindices=1,
+    max_num_ndindices=10,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    x_dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=array_dtypes,
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+
+    # num_ndindices defines the number of elements to generate.
+    num_ndindices = draw(
+        helpers.ints(
+            min_value=min_num_ndindices,
+            max_value=max_num_ndindices,
+        )
+    )
+    # indices_dims defines how far into the array to index.
+    indices_dims = draw(
+        helpers.ints(
+            min_value=1,
+            max_value=len(x_shape),
+        )
+    )
+    indices = []
+    indices_dtype = draw(st.sampled_from(indices_dtypes))
+    if num_ndindices == 1:
+        index = draw(
+            helpers.ints(
+                min_value=0,
+                max_value=max(0, x_shape[0] - 1),
+            )
+        )
+        indices.append(index)
+    else:
+        for _ in range(num_ndindices):
+            nd_index = []
+            for j in range(indices_dims):
+                axis_index = draw(
+                    helpers.ints(
+                        min_value=0,
+                        max_value=max(0, x_shape[j] - 1),
+                    )
+                )
+                nd_index.append(axis_index)
+            indices.append(nd_index)
+    return [x_dtype, indices_dtype], x, indices
 
 
 # gather_nd
-@pytest.mark.parametrize(
-    "prms_n_inds",
-    [
-        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),
-        ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[[0, 1]], [[1, 0]]]),
-        (
-            [[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]],
-            [[[0, 1, 0]], [[1, 0, 1]]],
-        ),
-    ],
+@handle_cmd_line_args
+@given(
+    params_n_ndindices=array_and_ndindices(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_ndindices=1,
+        max_num_ndindices=10,
+        allow_inf=False,
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="gather_nd"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather_nd(*, prms_n_inds, dtype, tensor_fn):
-    # smoke test
-    prms, inds = prms_n_inds
-    prms = tensor_fn(prms, dtype=dtype)
-    inds = ivy.array(inds, dtype="int32")
-    ret = ivy.gather_nd(prms, inds)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1] :]
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.gather_nd(prms, inds)),
-        np.asarray(
-            ivy.functional.backends.numpy.gather_nd(
-                ivy.to_numpy(prms), ivy.to_numpy(inds)
-            )
-        ),
+def test_gather_nd(
+    params_n_ndindices,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    [params_dtype, ndindices_dtype], params, ndindices = params_n_ndindices
+    helpers.test_function(
+        input_dtypes=[params_dtype, ndindices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gather_nd",
+        params=np.asarray(params, dtype=params_dtype),
+        indices=np.asarray(ndindices, dtype=ndindices_dtype),
     )
 
 
 # exists
-@pytest.mark.parametrize("x", [[1.0], None, [[10.0, 9.0, 8.0]]])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_exists(*, x, dtype, tensor_fn, device):
-    # smoke test
-    x = tensor_fn(x, dtype=dtype, device=device) if x is not None else None
+@handle_cmd_line_args
+@given(
+    x=st.one_of(
+        st.none(),
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_numeric_dtypes,
+            allow_inf=False,
+            min_num_dims=0,
+            min_dim_size=1,
+        ),
+        st.sampled_from([ivy.array]),
+    )
+)
+def test_exists(x):
+    if x is not None:
+        if not hasattr(x, "__call__"):
+            dtype, x = x
     ret = ivy.exists(x)
-    # type test
     assert isinstance(ret, bool)
-    # value test
     y_true = x is not None
     assert ret == y_true
 
 
 # default
-@pytest.mark.parametrize(
-    "x_n_dv", [([1.0], [2.0]), (None, [2.0]), ([[10.0, 9.0, 8.0]], [2.0])]
+@handle_cmd_line_args
+@given(
+    x=st.one_of(
+        st.none(),
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_numeric_dtypes,
+            allow_inf=False,
+            min_num_dims=0,
+            min_dim_size=2,
+        ),
+        st.sampled_from([ivy.array]),
+    ),
+    default_val=st.one_of(
+        helpers.dtype_and_values(
+            available_dtypes=ivy_np.valid_numeric_dtypes,
+            allow_inf=False,
+            min_num_dims=0,
+            min_dim_size=2,
+        ),
+        st.sampled_from([ivy.array]),
+    ),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_default(*, x_n_dv, dtype, tensor_fn, device):
-    x, dv = x_n_dv
-    # smoke test
-    x = tensor_fn(x, dtype=dtype, device=device) if x is not None else None
-    dv = tensor_fn(dv, dtype=dtype, device=device)
-    ret = ivy.default(x, dv)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # value test
-    y_true = ivy.to_numpy(x if x is not None else dv)
-    assert np.allclose(ivy.to_numpy(ivy.default(x, dv)), y_true)
+def test_default(x, default_val):
+    with_callable = False
+    if x is not None:
+        if hasattr(x, "__call__"):
+            with_callable = True
+        else:
+            x_dtype, x = x
+    else:
+        if hasattr(default_val, "__call__"):
+            with_callable = True
+        else:
+            dv_dtype, default_val = default_val
+
+    truth_val = ivy.to_native(x if x is not None else default_val)
+    if with_callable:
+        assert ivy.default(x, default_val) == truth_val
+    else:
+        assert np.allclose(ivy.default(x, default_val), truth_val)
 
 
 @handle_cmd_line_args
@@ -1147,7 +862,6 @@ def test_framework_setting_with_threading(device):
 
 @handle_cmd_line_args
 def test_framework_setting_with_multiprocessing(device):
-
     if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
@@ -1185,7 +899,6 @@ def test_framework_setting_with_multiprocessing(device):
 
 @handle_cmd_line_args
 def test_explicit_ivy_framework_handles(device):
-
     if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
@@ -1254,77 +967,174 @@ def test_explicit_ivy_framework_handles(device):
 
 
 # einops_rearrange
-@pytest.mark.parametrize(
-    "x_n_pattern_n_newx",
-    [([[0.0, 1.0, 2.0, 3.0]], "b n -> n b", [[0.0], [1.0], [2.0], [3.0]])],
+@handle_cmd_line_args
+@given(
+    x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=2,
+    ).filter(
+        lambda x: (ivy.array([x[1]], dtype="float32").shape[2] % 2 == 0)
+        and (ivy.array([x[1]], dtype="float32").shape[3] % 2 == 0)
+    ),
+    pattern_and_axes_lengths=st.sampled_from(
+        [
+            ("b h w c -> b h w c", {}),
+            ("b h w c -> (b h) w c", {}),
+            ("b h w c -> b c h w", {}),
+            ("b h w c -> h (b w) c", {}),
+            ("b h w c -> b (c h w)", {}),
+            ("b (h1 h) (w1 w) c -> (b h1 w1) h w c", {"h1": 2, "w1": 2}),
+            ("b (h h1) (w w1) c -> b h w (c h1 w1)", {"h1": 2, "w1": 2}),
+        ]
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="einops_rearrange"),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_einops_rearrange(*, x_n_pattern_n_newx, dtype, tensor_fn, device):
-    # smoke test
-    x, pattern, new_x = x_n_pattern_n_newx
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.einops_rearrange(x, pattern)
-    true_ret = einops.rearrange(ivy.to_native(x), pattern)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(true_ret.shape)
-    # value test
-    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+def test_einops_rearrange(
+    x,
+    pattern_and_axes_lengths,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    pattern, axes_lengths = pattern_and_axes_lengths
+    dtype, x = x
+    x = [x]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="einops_rearrange",
+        x=np.asarray(x, dtype=dtype),
+        pattern=pattern,
+        **axes_lengths,
+    )
 
 
-# einops_reduce
-@pytest.mark.parametrize(
-    "x_n_pattern_n_red_n_newx", [([[0.0, 1.0, 2.0, 3.0]], "b n -> b", "mean", [1.5])]
+@handle_cmd_line_args
+@given(
+    x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=2,
+    ).filter(
+        lambda x: ivy.array([x[1]], dtype="float32").shape[2] % 2 == 0
+        and ivy.array([x[1]], dtype="float32").shape[3] % 2 == 0
+    ),
+    pattern_and_axes_lengths=st.sampled_from(
+        [
+            # ('t b  -> b', {}),
+            ("b c (h1 h2) (w1 w2) -> b c h1 w1", {"h2": 2, "w2": 2}),
+        ]
+    ),
+    reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
+    num_positional_args=helpers.num_positional_args(fn_name="einops_reduce"),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_einops_reduce(*, x_n_pattern_n_red_n_newx, dtype, tensor_fn, device):
-    # smoke test
-    x, pattern, reduction, new_x = x_n_pattern_n_red_n_newx
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.einops_reduce(x, pattern, reduction)
-    true_ret = einops.reduce(ivy.to_native(x), pattern, reduction)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(true_ret.shape)
-    # value test
-    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+def test_einops_reduce(
+    x,
+    pattern_and_axes_lengths,
+    reduction,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    pattern, axes_lengths = pattern_and_axes_lengths
+    dtype, x = x
+    x = [x]
+    if (reduction in ["mean", "prod"]) and (dtype not in ivy_np.valid_float_dtypes):
+        dtype = "float32"
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="einops_reduce",
+        x=np.asarray(x, dtype=dtype),
+        pattern=pattern,
+        reduction=reduction,
+        **axes_lengths,
+    )
 
 
 # einops_repeat
-@pytest.mark.parametrize(
-    "x_n_pattern_n_al_n_newx",
-    [
-        (
-            [[0.0, 1.0, 2.0, 3.0]],
-            "b n -> b n c",
-            {"c": 2},
-            [[[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]],
-        )
-    ],
+@handle_cmd_line_args
+@given(
+    x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    pattern_and_axes_lengths=st.sampled_from(
+        [
+            ("h w -> h w repeat", {"repeat": 2}),
+            ("h w -> (repeat h) w", {"repeat": 2}),
+            ("h w -> h (repeat w)", {"repeat": 2}),
+            ("h w -> (h h2) (w w2)", {"h2": 2, "w2": 2}),
+            ("h w  -> w h", {}),
+        ]
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="einops_repeat"),
 )
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_einops_repeat(*, x_n_pattern_n_al_n_newx, dtype, tensor_fn, device):
-    # smoke test
-    x, pattern, axes_lengths, new_x = x_n_pattern_n_al_n_newx
-    x = tensor_fn(x, dtype=dtype, device=device)
-    ret = ivy.einops_repeat(x, pattern, **axes_lengths)
-    true_ret = einops.repeat(ivy.to_native(x), pattern, **axes_lengths)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert list(ret.shape) == list(true_ret.shape)
-    # value test
-    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+def test_einops_repeat(
+    x,
+    pattern_and_axes_lengths,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    pattern, axes_lengths = pattern_and_axes_lengths
+    dtype, x = x
+    x = [x]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="einops_repeat",
+        x=np.asarray(x, dtype=dtype),
+        pattern=pattern,
+        **axes_lengths,
+    )
 
 
 # container types
 @handle_cmd_line_args
-def test_container_types(*, device):
+def test_container_types(device):
     cont_types = ivy.container_types()
     assert isinstance(cont_types, list)
     for cont_type in cont_types:
@@ -1334,9 +1144,9 @@ def test_container_types(*, device):
 
 
 @handle_cmd_line_args
-def test_inplace_arrays_supported(*, device):
+def test_inplace_arrays_supported(device):
     cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "mxnet", "torch"]:
+    if cur_fw in ["numpy", "torch"]:
         assert ivy.inplace_arrays_supported()
     elif cur_fw in ["jax", "tensorflow"]:
         assert not ivy.inplace_arrays_supported()
@@ -1345,9 +1155,9 @@ def test_inplace_arrays_supported(*, device):
 
 
 @handle_cmd_line_args
-def test_inplace_variables_supported(*, device):
+def test_inplace_variables_supported(device):
     cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "mxnet", "torch", "tensorflow"]:
+    if cur_fw in ["numpy", "torch", "tensorflow"]:
         assert ivy.inplace_variables_supported()
     elif cur_fw in ["jax"]:
         assert not ivy.inplace_variables_supported()
@@ -1355,111 +1165,689 @@ def test_inplace_variables_supported(*, device):
         raise Exception("Unrecognized framework")
 
 
-@pytest.mark.parametrize("x_n_new", [([0.0, 1.0, 2.0], [2.0, 1.0, 0.0]), (0.0, 1.0)])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_update(*, x_n_new, tensor_fn, device):
-    x_orig, new_val = x_n_new
-    if ivy.current_backend_str() == "mxnet" and isinstance(x_orig, Number):
-        # MxNet supports neither 0-dim variables nor 0-dim inplace updates
-        pytest.skip()
-    x_orig = tensor_fn(x_orig, dtype="float32", device=device)
-    new_val = tensor_fn(new_val, dtype="float32", device=device)
-    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
-        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
-    ):
-        x = ivy.inplace_update(x_orig, new_val)
-        assert id(x) == id(x_orig)
-        assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(new_val))
-        return
-    pytest.skip()
-
-
-@pytest.mark.parametrize("x_n_dec", [([0.0, 1.0, 2.0], [2.0, 1.0, 0.0]), (0.0, 1.0)])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_decrement(*, x_n_dec, tensor_fn, device):
-    x_orig, dec = x_n_dec
-    if ivy.current_backend_str() == "mxnet" and isinstance(x_orig, Number):
-        # MxNet supports neither 0-dim variables nor 0-dim inplace updates
-        pytest.skip()
-    x_orig = tensor_fn(x_orig, dtype="float32", device=device)
-    dec = tensor_fn(dec, dtype="float32", device=device)
-    new_val = x_orig - dec
-    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
-        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
-    ):
-        x = ivy.inplace_decrement(x_orig, dec)
-        assert id(x) == id(x_orig)
-        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
-        return
-    pytest.skip()
-
-
-@pytest.mark.parametrize("x_n_inc", [([0.0, 1.0, 2.0], [2.0, 1.0, 0.0]), (0.0, 1.0)])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_increment(*, x_n_inc, tensor_fn, device):
-    x_orig, inc = x_n_inc
-    if ivy.current_backend_str() == "mxnet" and isinstance(x_orig, Number):
-        # MxNet supports neither 0-dim variables nor 0-dim inplace updates
-        pytest.skip()
-    x_orig = tensor_fn(x_orig, dtype="float32", device=device)
-    inc = tensor_fn(inc, dtype="float32", device=device)
-    new_val = x_orig + inc
-    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
-        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
-    ):
-        x = ivy.inplace_increment(x_orig, inc)
-        assert id(x) == id(x_orig)
-        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
-        return
-    pytest.skip()
-
-
-@pytest.mark.parametrize(
-    "backend_str", [None, "numpy", "mxnet", "torch", "tensorflow", "jax"]
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_current_backend_str(backend_str):
-    ivy.unset_backend()
-    if backend_str:
-        ivy.set_backend(backend_str)
-        cur_fw = ivy.current_backend_str()
-        assert cur_fw in ["numpy", "mxnet", "torch", "tensorflow", "jax"]
-        assert cur_fw == backend_str
+def test_inplace_update(x_val_and_dtypes, tensor_fn, device):
+    # ToDo: Ask Daniel about tensor_fn, we use it here since
+    #  we don't use helpers.test_function
+    x, val = x_val_and_dtypes[1]
+    x = tensor_fn(x, dtype="float32", device=device)
+    val = tensor_fn(val, dtype="float32", device=device)
+    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
+        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
+    ):
+        x_inplace = ivy.inplace_update(x, val)
+        assert id(x_inplace) == id(x)
+        assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(val))
+        return
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+)
+def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
+    x, val = x_val_and_dtypes[1]
+    x = tensor_fn(x, dtype="float32", device=device)
+    val = tensor_fn(val, dtype="float32", device=device)
+    new_val = x - val
+    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
+        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
+    ):
+        x_inplace = ivy.inplace_decrement(x, val)
+        assert id(x_inplace) == id(x)
+        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
+        return
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
+)
+def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
+    x, val = x_val_and_dtypes[1]
+    x = tensor_fn(x, dtype="float32", device=device)
+    val = tensor_fn(val, dtype="float32", device=device)
+    new_val = x + val
+    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
+        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
+    ):
+        x_inplace = ivy.inplace_increment(x, val)
+        assert id(x_inplace) == id(x)
+        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x_inplace))
+        return
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    exclusive=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="is_ivy_array"),
+)
+def test_is_ivy_array(
+    x_val_and_dtypes,
+    exclusive,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="is_ivy_array",
+        x=np.asarray(x, dtype=dtype),
+        exclusive=exclusive,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    exclusive=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="is_array"),
+)
+def test_is_array(
+    x_val_and_dtypes,
+    exclusive,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="is_array",
+        x=np.asarray(x, dtype=dtype),
+        exclusive=exclusive,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="is_ivy_container"),
+)
+def test_is_ivy_container(
+    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="is_ivy_container",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtypes_and_xs=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_dtypes, num_arrays=2, min_num_dims=1
+    ),
+    equality_matrix=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="all_equal"),
+)
+def test_all_equal(
+    dtypes_and_xs,
+    equality_matrix,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtypes_and_xs
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=1,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="all_equal",
+        xs=[np.asarray(x[0], dtype=dtype[0]), np.asarray(x[1], dtype=dtype[1])],
+        equality_matrix=equality_matrix,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_value=-10,
+        max_value=10,
+    ),
+    max_norm=st.floats(min_value=0.137, max_value=1e05),
+    p=st.sampled_from([1, 2, float("inf"), "fro", "nuc"]),
+    num_positional_args=helpers.num_positional_args(fn_name="clip_matrix_norm"),
+)
+def test_clip_matrix_norm(
+    x,
+    max_norm,
+    p,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    dtype, x = x[0], x[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="clip_matrix_norm",
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=np.asarray(x, dtype=dtype),
+        max_norm=max_norm,
+        p=p,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_n_include_inf_n_value=st.sampled_from(
+        [
+            [ivy.array([1]), True, False],
+            [ivy.array(ivy.nan), False, True],
+            [ivy.native_array(ivy.inf), True, True],
+            [ivy.array(ivy.inf), False, False],
+        ]
+    )
+)
+def test_value_is_nan(x_n_include_inf_n_value):
+    x, include_inf, value = x_n_include_inf_n_value
+    ret = ivy.value_is_nan(x, include_infs=include_inf)
+    assert ret == value
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    include_infs=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="has_nans"),
+)
+def test_has_nans(
+    x_val_and_dtypes,
+    include_infs,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
+):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name="has_nans",
+        x=np.asarray(x, dtype=dtype),
+        include_infs=include_infs,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x=st.booleans(),
+)
+def test_try_else_none(x):
+    if x:
+        fn = ivy.try_else_none(lambda: True)
+        assert fn() is True
     else:
-        inital_fw = ivy.current_backend_str()
-        assert inital_fw == ""
+        fn = ivy.try_else_none(lambda x: x)
+        assert fn is None
+
+
+@handle_cmd_line_args
+@given(
+    x_n_value=st.sampled_from(
+        [
+            [ivy.value_is_nan, ["x", "include_infs"]],
+            [ivy.clip_matrix_norm, ["x", "max_norm", "p", "out"]],
+        ]
+    )
+)
+def test_arg_names(x_n_value):
+    x, value = x_n_value
+    ret = ivy.arg_names(x)
+    assert ret == value
+
+
+def _composition_1():
+    return ivy.relu().argmax()
+
+
+def _composition_2():
+    return ivy.ceil() or ivy.linspace()
+
+
+# function_supported_devices_and_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (
+            _composition_1,
+            {
+                "cpu": (
+                    "bool",
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "bfloat16",
+                    "float16",
+                    "float32",
+                    "float64",
+                )
+            },
+        ),
+        (
+            _composition_2,
+            {
+                "cpu": (
+                    "bool",
+                    "uint8",
+                    "uint16",
+                    "uint32",
+                    "uint64",
+                    "int8",
+                    "int16",
+                    "int32",
+                    "int64",
+                    "bfloat16",
+                    "float16",
+                    "float32",
+                    "float64",
+                )
+            },
+        ),
+    ],
+)
+def test_function_supported_device_and_dtype(func, expected):
+    res = ivy.function_supported_devices_and_dtypes(func)
+    exp = {}
+    for dev in expected:
+        exp[dev] = tuple((set(ivy.valid_dtypes).intersection(expected[dev])))
+        if ivy.current_backend_str() == "torch":
+            exp[dev] = tuple((set(exp[dev]).difference({"float16"})))
+
+    all_key = set(res.keys()).union(set(exp.keys()))
+    for key in all_key:
+        assert key in res
+        assert key in exp
+        assert sorted(res[key]) == sorted(exp[key])
+
+
+# function_unsupported_devices_and_dtypes
+@pytest.mark.parametrize(
+    "func, expected",
+    [
+        (_composition_1, {"gpu": ivy.all_dtypes, "tpu": ivy.all_dtypes}),
+        # (_composition_2, {'gpu': ivy.all_dtypes, 'tpu': ivy.all_dtypes})
+    ],
+)
+def test_function_unsupported_devices(func, expected):
+    res = ivy.function_unsupported_devices_and_dtypes(func)
+
+    exp = expected.copy()
+
+    if ivy.invalid_dtypes:
+        exp["cpu"] = ivy.invalid_dtypes
+    if ivy.current_backend_str() == "torch":
+        exp["cpu"] = tuple((set(exp["cpu"]).union({"float16"})))
+
+    all_key = set(res.keys()).union(set(exp.keys()))
+    for key in all_key:
+        assert key in res
+        assert key in exp
+        assert sorted(res[key]) == sorted(exp[key])
 
 
 # Still to Add #
 # ---------------#
 
-# is_ivy_array
-# is_array
-# is_ivy_container
-# all_equal
-# to_numpy
-# clip_matrix_norm
-# unstack
-# value_is_nan
-# has_nans
-# exists
-# shape_to_tuple
-# try_else_none
-# arg_names
-# cache_fn
-# current_framework_str
-# get_min_denominator
-# set_min_denominator
-# get_min_base
-# set_min_base
-# stable_divide
-# stable_pow
-# get_all_arrays_in_memory
-# num_arrays_in_memory
-# print_all_arrays_in_memory
-# set_queue_timeout
-# queue_timeout
-# tmp_dir
-# set_tmp_dir
-# supports_inplace
-# assert_supports_inplace
-# arg_info
+
+@handle_cmd_line_args
+def test_current_backend_str(fw):
+    assert ivy.current_backend_str() == fw
+
+
+@handle_cmd_line_args
+def test_get_min_denominator():
+    assert ivy.get_min_denominator() == 1e-12
+
+
+@handle_cmd_line_args
+@given(x=st.floats(allow_nan=False, allow_infinity=False))
+def test_set_min_denominator(x):
+    ivy.set_min_denominator(x)
+    assert ivy.get_min_denominator() == x
+
+
+@handle_cmd_line_args
+def test_get_min_base():
+    assert ivy.get_min_base() == 1e-5
+
+
+@handle_cmd_line_args
+@given(x=st.floats(allow_nan=False, allow_infinity=False))
+def test_set_min_base(x):
+    ivy.set_min_base(x)
+    assert ivy.get_min_base() == x
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="stable_divide"),
+)
+def test_stable_divide(
+    dtype_and_x, as_variable, num_positional_args, native_array, container, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="stable_divide",
+        numerator=np.asarray(x[0], dtype=input_dtype[0]),
+        denominator=np.asarray(x[1], dtype=input_dtype[1]),
+        min_denominator=np.asarray(x[2], dtype=input_dtype[2]),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=ivy_np.valid_numeric_dtypes,
+        num_arrays=3,
+        min_value=0,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="stable_pow"),
+)
+def test_stable_pow(
+    dtype_and_x, as_variable, num_positional_args, native_array, container, fw
+):
+    input_dtype, x = dtype_and_x
+    for i in range(len(input_dtype)):
+        if input_dtype[i] in ["uint8", "uint16", "uint32", "uint64"]:
+            return
+    # assume(not (input_dtype[i] in ["uint8"] for i in range(len(input_dtype))))
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=False,
+        fw=fw,
+        fn_name="stable_pow",
+        base=np.asarray(x[0], dtype=input_dtype[0]),
+        exponent=np.asarray(x[1], dtype=input_dtype[1]),
+        min_base=np.asarray(x[2], dtype=input_dtype[2]),
+    )
+
+
+@handle_cmd_line_args
+def test_get_all_arrays_in_memory():
+    return
+
+
+@handle_cmd_line_args
+def test_num_arrays_in_memory():
+    return
+
+
+@handle_cmd_line_args
+def test_print_all_arrays_in_memory():
+    return
+
+
+@handle_cmd_line_args
+@given(
+    x=st.floats(allow_nan=False, allow_infinity=False),
+)
+def test_set_queue_timeout(x):
+    ivy.set_queue_timeout(x)
+    ret = ivy.get_queue_timeout()
+    assert ret == x
+
+
+@handle_cmd_line_args
+@given(
+    x=st.floats(allow_nan=False, allow_infinity=False),
+)
+def test_get_queue_timeout(x):
+    ivy.set_queue_timeout(x)
+    ret = ivy.get_queue_timeout()
+    assert ret == x
+
+
+@handle_cmd_line_args
+def test_get_tmp_dir():
+    ret = ivy.get_tmp_dir()
+    assert ret == "/tmp"
+
+
+@handle_cmd_line_args
+def test_set_tmp_dir():
+    ivy.set_tmp_dir("/new_dir")
+    ret = ivy.get_tmp_dir()
+    assert ret == "/new_dir"
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="supports_inplace_updates"),
+)
+def test_supports_inplace_updates(
+    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name="supports_inplace_updates",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    num_positional_args=helpers.num_positional_args(fn_name="assert_supports_inplace"),
+)
+def test_assert_supports_inplace(
+    x_val_and_dtypes, as_variable, num_positional_args, native_array, container, fw
+):
+    dtype = x_val_and_dtypes[0]
+    x = x_val_and_dtypes[1]
+    if fw == "tensorflow" or fw == "jax":
+        return
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=True,
+        fw=fw,
+        fn_name="assert_supports_inplace",
+        ground_truth_backend="numpy",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+@handle_cmd_line_args
+def test_arg_info():
+    return
+
+
+def _fn1(x, y):
+    return ivy.matmul(x, y)
+
+
+def _fn2(x, y):
+    return ivy.vecdot(x, y)
+
+
+def _fn3(x, y):
+    ivy.add(x, y)
+
+
+@given(
+    func=st.sampled_from([_fn1, _fn2, _fn3]),
+    arrays_and_axes=helpers.arrays_and_axes(
+        allow_none=False,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        num=2,
+    ),
+    in_axes_as_cont=st.booleans(),
+)
+def test_vmap(func, arrays_and_axes, in_axes_as_cont):
+
+    generated_arrays, in_axes = arrays_and_axes
+    arrays = [ivy.native_array(array) for array in generated_arrays]
+
+    if in_axes_as_cont:
+        vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
+    else:
+        vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+
+    assert callable(vmapped_func)
+
+    try:
+        fw_res = vmapped_func(*arrays)
+    except Exception:
+        fw_res = None
+
+    ivy.set_backend("jax")
+    arrays = [ivy.native_array(array) for array in generated_arrays]
+    if in_axes_as_cont:
+        jax_vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
+    else:
+        jax_vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+
+    assert callable(jax_vmapped_func)
+
+    try:
+        jax_res = jax_vmapped_func(*arrays)
+    except Exception:
+        jax_res = None
+
+    ivy.unset_backend()
+
+    if fw_res is not None and jax_res is not None:
+        assert np.allclose(
+            fw_res, jax_res
+        ), f"Results from {ivy.current_backend_str()} and jax are not equal"
+
+    elif fw_res is None and jax_res is None:
+        pass
+    else:
+        assert False, "One of the results is None while other isn't"
