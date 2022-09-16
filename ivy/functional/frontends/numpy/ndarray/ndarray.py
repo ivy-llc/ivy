@@ -14,6 +14,9 @@ class ndarray:
     # Instance Methoods #
     # -------------------#
 
+    def tolist():
+        return np_frontend.tolist()
+
     def reshape(self, newshape, copy=None):
         return np_frontend.reshape(self.data, newshape, copy=copy)
 
