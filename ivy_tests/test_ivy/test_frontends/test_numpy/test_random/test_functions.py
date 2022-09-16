@@ -3,8 +3,7 @@
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args, given
 
-
-#random
+# random
 @handle_cmd_line_args
 @given(
     input_dtypes=helpers.get_dtypes('integer', full=False),
