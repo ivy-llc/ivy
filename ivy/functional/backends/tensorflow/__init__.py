@@ -19,6 +19,15 @@ NativeShape = TensorShape
 
 NativeSparseArray = tf.SparseTensor
 
+
+# devices
+all_devices = ("cpu", "gpu", "tpu")
+
+valid_devices = all_devices
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = tf.int8
 native_int16 = tf.int16
