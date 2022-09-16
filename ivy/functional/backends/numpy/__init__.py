@@ -18,9 +18,7 @@ NativeSparseArray = None
 
 
 # devices
-all_devices = ("cpu",)
-
-valid_devices = all_devices
+valid_devices = ("cpu",)
 
 invalid_devices = ("gpu", "tpu")
 
