@@ -1028,6 +1028,22 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
     return False
 
 
+def _get_nested_np_arrays(nest):
+    """
+    A helper function to search for a NumPy arrays in a nest
+    Parameters
+    ----------
+    nest
+        nest to search in.
+    Returns
+    -------
+         Items found, indices, and total number of arrays found
+    """
+    indices = ivy.nested_indices_where(nest, lambda x: isinstance(x, np.ndarray))
+    ret = ivy.multi_index_nest(nest, indices)
+    return ret, indices, len(ret)
+
+
 def create_args_kwargs(
     *,
     args_np,
@@ -1061,15 +1077,11 @@ def create_args_kwargs(
     keyword-arguments.
     """
     # extract all arrays from the arguments and keyword arguments
-    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
-    arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
-    kwargs_idxs = ivy.nested_indices_where(
-        kwargs_np, lambda x: isinstance(x, np.ndarray)
-    )
-    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
 
     # assert that the number of arrays aligns with the dtypes and as_variable_flags
-    num_arrays = len(arg_np_vals) + len(kwarg_np_vals)
+    num_arrays = c_arg_vals + c_kwarg_vals
     if num_arrays > 0:
         assert num_arrays == len(input_dtypes), (
             "Found {} arrays in the input arguments, but {} dtypes and "
