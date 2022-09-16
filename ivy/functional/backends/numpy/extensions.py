@@ -50,3 +50,22 @@ def native_sparse_array_to_indices_values_and_shape(x):
         indices, values and shape."
     )
     return None, None, None
+
+
+def conv_transpose(
+    x: np.ndarray,
+    filters: Union[int, float],
+    strides: Union[int, float],
+    padding: Union[int, float],
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NCDHW",
+    dilations: int = 1,
+    /,
+    *,
+    dtype: np.dtype,
+    device: str,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return _to_device(
+        np.nn.conv_transpose(x, filters, strides, padding, output_shape, data_format, dilations, dtype=dtype
+    ), device=device)
