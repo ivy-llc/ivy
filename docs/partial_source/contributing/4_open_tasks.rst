@@ -226,30 +226,30 @@ category in the backend reference API.
 Taking :code:`numpy.inner` as an example, we can see that there are a few :code:`ivy/functional/frontends/numpy`
 sub-directories to choose from:
 
-.. code-block:: bash
-creation_routines
-fft
-indexing_routines
-linear_algebra
-logic
-ma
-manipulation_routines
-mathematical_functions
-matrix
-ndarray
-random
-sorting_searching_counting
-statistics
-ufunc
+.. code-block:: none
+    creation_routines
+    fft
+    indexing_routines
+    linear_algebra
+    logic
+    ma
+    manipulation_routines
+    mathematical_functions
+    matrix
+    ndarray
+    random
+    sorting_searching_counting
+    statistics
+    ufunc
 
 There is a :code:`linear_algebra` sub-directory, so we choose this. There is then a linalg sub-directory. From the numpy
 API, we can see that certain functions listed under 'Linear Algebra (:code:`numpy.linalg`)' actually do _not_ require the
 linalg namespace. `inner` is one such function, hence it will not be placed in this directory. We then need to choose
 from the files at this hierarchy (ignoring :code:`__init__.py` files):
 
-.. code-block:: bash
-matrix_and_vector_products.py
-norms_and_other_numbers.py
+.. code-block:: none
+    matrix_and_vector_products.py
+    norms_and_other_numbers.py
 
 This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
 :code:`matrix_and_vector_products.py` seems like the most appropriate option. The location of
