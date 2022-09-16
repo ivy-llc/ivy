@@ -9,6 +9,13 @@ from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+)
+
 
 # Array API Standard #
 # -------------------#
@@ -35,6 +42,9 @@ def arange(
     return res
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
     object_in: Union[np.ndarray, List[float], Tuple[float]],
     /,
@@ -52,13 +62,10 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_device(
-                np.copy(np.asarray(object_in, dtype=dtype)), device=device
-            )
+            return _to_device(np.copy(np.asarray(object_in), device=device))
         else:
-            return _to_device(np.asarray(object_in, dtype=dtype), device=device)
+            return _to_device(np.asarray(object_in), device=device)
     else:
         dtype = default_dtype(dtype=dtype, item=object_in)
     if copy is True:
