@@ -1,55 +1,84 @@
 import ivy
 from ivy.func_wrapper import inputs_to_native_arrays
+from ivy.exceptions import handle_exceptions
 
 
 # helpers
 def _verify_coo_components(*, indices=None, values=None, dense_shape=None):
-    assert (
-        ivy.exists(indices) and ivy.exists(values) and ivy.exists(dense_shape)
-    ), "indices, values and dense_shape must all be specified"
+    ivy.assertions.check_all_or_any_fn(
+        indices,
+        values,
+        dense_shape,
+        fn=ivy.exists,
+        type="all",
+        message="indices, values and dense_shape must all be specified",
+    )
     # coordinates style (COO), must be shaped (x, y)
-    assert len(ivy.shape(indices)) == 2, "indices must be 2D"
-    assert len(ivy.shape(values)) == 1, "values must be 1D"
-    assert (
-        len(ivy.to_ivy_shape(dense_shape)) == ivy.shape(indices)[0]
-    ), "shape and indices shape do not match"
+    ivy.assertions.check_equal(len(ivy.shape(indices)), 2, message="indices must be 2D")
+    ivy.assertions.check_equal(len(ivy.shape(values)), 1, message="values must be 1D")
+    ivy.assertions.check_equal(
+        len(ivy.to_ivy_shape(dense_shape)),
+        ivy.shape(indices)[0],
+        message="shape and indices shape do not match",
+    )
     # number of values must match number of coordinates
-    assert (
-        ivy.shape(values)[0] == ivy.shape(indices)[1]
-    ), "values and indices do not match"
+    ivy.assertions.check_equal(
+        ivy.shape(values)[0],
+        ivy.shape(indices)[1],
+        message="values and indices do not match",
+    )
     for i in range(ivy.shape(indices)[0]):
-        assert ivy.all(
-            ivy.less(indices[i], ivy.to_ivy_shape(dense_shape)[i])
-        ), "indices is larger than shape"
+        ivy.assertions.check_less(
+            indices[i],
+            ivy.to_ivy_shape(dense_shape)[i],
+            message="indices is larger than shape",
+        )
 
 
 def _verify_csr_components(
     *, crow_indices=None, col_indices=None, values=None, dense_shape=None
 ):
-    assert (
-        ivy.exists(crow_indices)
-        and ivy.exists(col_indices)
-        and ivy.exists(values)
-        and ivy.exists(dense_shape)
-    ), "crow_indices, col_indices, values and dense_shape must all be specified"
-    assert len(ivy.shape(crow_indices)) == 1, "crow_indices must be 1D"
-    assert len(ivy.shape(col_indices)) == 1, "col_indices must be 1D"
-    assert len(ivy.shape(values)) == 1, "values must be 1D"
-    assert len(dense_shape) == 2, "only 2D arrays can be converted to CSR sparse arrays"
+    ivy.assertions.check_all_or_any_fn(
+        crow_indices,
+        col_indices,
+        values,
+        dense_shape,
+        fn=ivy.exists,
+        type="all",
+        message="crow_indices, col_indices, values and dense_shape must all \
+        be specified",
+    )
+    ivy.assertions.check_equal(
+        len(ivy.shape(crow_indices)), 1, message="crow_indices must be 1D"
+    )
+    ivy.assertions.check_equal(
+        len(ivy.shape(col_indices)), 1, message="col_indices must be 1D"
+    )
+    ivy.assertions.check_equal(len(ivy.shape(values)), 1, message="values must be 1D")
+    ivy.assertions.check_equal(
+        len(dense_shape),
+        2,
+        message="only 2D arrays can be converted to CSR sparse arrays",
+    )
     # number of intervals must be equal to x in shape (x, y)
-    assert ivy.shape(crow_indices)[0] - 1 == dense_shape[0]
+    ivy.assertions.check_equal(ivy.shape(crow_indices)[0] - 1, dense_shape[0])
     # index in col_indices must not exceed y in shape (x, y)
-    assert ivy.all(
-        ivy.less(col_indices, dense_shape[1])
-    ), "index in col_indices does not match shape"
+    ivy.assertions.check_less(
+        col_indices, dense_shape[1], message="index in col_indices does not match shape"
+    )
     # number of values must match number of coordinates
-    assert (
-        ivy.shape(col_indices)[0] == ivy.shape(values)[0]
-    ), "values and col_indices do not match"
+    ivy.assertions.check_equal(
+        ivy.shape(col_indices)[0],
+        ivy.shape(values)[0],
+        message="values and col_indices do not match",
+    )
     # index in crow_indices must not exceed length of col_indices
-    assert ivy.all(
-        ivy.less_equal(crow_indices, ivy.shape(col_indices)[0])
-    ), "index in crow_indices does not match the number of col_indices"
+    ivy.assertions.check_less(
+        crow_indices,
+        ivy.shape(col_indices)[0],
+        allow_equal=True,
+        message="index in crow_indices does not match the number of col_indices",
+    )
 
 
 def _is_data_not_indices_values_and_shape(
@@ -61,18 +90,19 @@ def _is_data_not_indices_values_and_shape(
     dense_shape=None,
 ):
     if data is not None:
-        if (
-            ivy.exists(coo_indices)
-            or ivy.exists(csr_crow_indices)
-            or ivy.exists(csr_col_indices)
-            or ivy.exists(values)
-            or ivy.exists(dense_shape)
-        ):
-            raise Exception(
-                "only specify either data, all coo components (coo_indices, values \
-                and dense_shape), or all csr components (csr_crow_indices, \
-                csr_col_indices, values and dense_shape)"
-            )
+        ivy.assertions.check_all_or_any_fn(
+            coo_indices,
+            csr_crow_indices,
+            csr_col_indices,
+            values,
+            dense_shape,
+            fn=ivy.exists,
+            type="any",
+            limit=[0],
+            message="only specify either data, all coo components (coo_indices, values \
+            and dense_shape), or all csr components (csr_crow_indices, \
+            csr_col_indices, values and dense_shape)",
+        )
         return True
     return False
 
@@ -101,7 +131,7 @@ def _is_coo_not_csr(
     ):
         return False
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "specify either all coo components (coo_indices, values \
             and dense_shape), or all csr components (csr_crow_indices, \
             csr_col_indices, values and dense_shape)"
@@ -141,7 +171,9 @@ class SparseArray:
             self._values = data.values
             self._dense_shape = data.dense_shape
         else:
-            assert ivy.is_native_sparse_array(data), "not a native sparse array"
+            ivy.assertions.check_true(
+                ivy.is_native_sparse_array(data), message="not a native sparse array"
+            )
             self._data = data
             self._native_sparse_array_to_indices_values_and_shape()
 
@@ -310,11 +342,13 @@ def is_ivy_sparse_array(x):
 
 
 @inputs_to_native_arrays
+@handle_exceptions
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
 
 
 @inputs_to_native_arrays
+@handle_exceptions
 def native_sparse_array(
     data=None,
     *,
@@ -334,5 +368,6 @@ def native_sparse_array(
     )
 
 
+@handle_exceptions
 def native_sparse_array_to_indices_values_and_shape(x):
     return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)

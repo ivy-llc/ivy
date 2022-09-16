@@ -167,10 +167,10 @@ class ContainerBase(dict, abc.ABC):
         out=None,
         **kwargs,
     ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
-        arg_cont_idxs = ivy.nested_indices_where(
+        arg_cont_idxs = ivy.nested_argwhere(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
-        kwarg_cont_idxs = ivy.nested_indices_where(
+        kwarg_cont_idxs = ivy.nested_argwhere(
             kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
         )
         # retrieve all the containers in args and kwargs
@@ -186,7 +186,7 @@ class ContainerBase(dict, abc.ABC):
             conts = arg_conts + kwarg_conts + [out]
         else:
             conts = arg_conts + kwarg_conts
-        ivy.assertions.check_exists(conts)
+        ivy.assertions.check_exists(conts, message="no containers found in arguments")
         cont0 = conts[0]
         # Get the function with the name fn_name, enabling containers to specify
         # their backends irrespective of global ivy's backend
@@ -489,7 +489,7 @@ class ContainerBase(dict, abc.ABC):
                 idxs_added = list()
                 for idx in cont_range:
                     if idx not in idxs_added:
-                        idxs_to_add = ivy.indices_where(equal_mat[idx])
+                        idxs_to_add = ivy.argwhere(equal_mat[idx])
                         idxs_to_add_list = sorted(
                             ivy.to_numpy(idxs_to_add).reshape(-1).tolist()
                         )
@@ -655,7 +655,10 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(cont, ivy.Container):
                 container0 = cont
                 break
-        ivy.assertions.check_exists(container0)
+        ivy.assertions.check_exists(
+            container0,
+            message="No containers found in the inputs to ivy.Container.multi_map",
+        )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
@@ -1498,7 +1501,7 @@ class ContainerBase(dict, abc.ABC):
             att_name = "_" + k
             if k in self._config_in:
                 if k == "types_to_iteratively_nest":
-                    v = ivy.default(lambda: tuple(v), (), True)
+                    v = ivy.default(lambda: tuple(v), (), catch_exceptions=True)
                 elif k == "keyword_color_dict":
                     v = ivy.default(v, {})
                 elif k == "ivyh":

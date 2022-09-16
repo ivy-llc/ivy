@@ -12,13 +12,9 @@ def argsort(
     stable: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if descending:
-        ret = np.asarray(
-            np.argsort(-1 * np.searchsorted(np.unique(x), x), axis, kind="stable")
-        )
-    else:
-        ret = np.asarray(np.argsort(x, axis, kind="stable"))
-    return ret
+    x = -1 * np.searchsorted(np.unique(x), x) if descending else x
+    kind = "stable" if stable else "quicksort"
+    return np.argsort(x, axis, kind=kind)
 
 
 def sort(

@@ -68,27 +68,22 @@ def _astype_helper(draw):
         )
     )
 
-    def cast_filter(d):
-        if ivy.is_int_dtype(d):
-            max_val = ivy.iinfo(d).max
-        elif ivy.is_float_dtype(d):
-            max_val = ivy.finfo(d).max
-        else:
-            max_val = 1
-        max_x = np.max(np.abs(np.asarray(x)))
-        return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
-
     cast_dtype = draw(
-        st.sampled_from(draw(helpers.get_dtypes("valid"))).filter(cast_filter)
+        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype, x)
     )
-    if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x)).tolist()
     return dtype, x, cast_dtype
 
 
 # astype
 @handle_cmd_line_args
 @given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        num_arrays=1,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
+    ),
     dtype_and_x_and_cast_dtype=_astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
 )

@@ -248,8 +248,9 @@ def test_tensorflow_logical_and(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_value_safety_factor=1.0,
-        large_value_safety_factor=1.0,
+        large_abs_safety_factor=3,
+        small_abs_safety_factor=3,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.log_sigmoid"
