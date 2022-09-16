@@ -2238,9 +2238,8 @@ def dtype_and_values(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2392,9 +2391,8 @@ def dtype_values_axis(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2708,9 +2706,8 @@ def array_values(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
