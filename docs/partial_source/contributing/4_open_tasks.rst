@@ -226,7 +226,9 @@ category in the backend reference API.
 Taking :code:`numpy.inner` as an example, we can see that there are a few :code:`ivy/functional/frontends/numpy`
 sub-directories to choose from:
 
-.. code-block:: none
+.. code-block:: bash
+    :emphasize-lines: 4
+
     creation_routines
     fft
     indexing_routines
@@ -243,11 +245,13 @@ sub-directories to choose from:
     ufunc
 
 There is a :code:`linear_algebra` sub-directory, so we choose this. There is then a linalg sub-directory. From the numpy
-API, we can see that certain functions listed under 'Linear Algebra (:code:`numpy.linalg`)' actually do _not_ require the
-linalg namespace. `inner` is one such function, hence it will not be placed in this directory. We then need to choose
+API, we can see that certain functions listed under 'Linear Algebra (:code:`numpy.linalg`)' actually do *not* require the
+linalg namespace. :code:`inner` is one such function, hence it will not be placed in this directory. We then need to choose
 from the files at this hierarchy (ignoring :code:`__init__.py` files):
 
-.. code-block:: none
+.. code-block:: bash
+    :emphasize-lines: 1
+
     matrix_and_vector_products.py
     norms_and_other_numbers.py
 
