@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -115,19 +116,6 @@ def asarray_infer_device(fn: Callable) -> Callable:
     return new_fn
 
 
-def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-    assert (
-        (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-        and isinstance(fill_value, int)
-    ) or (
-        ivy.is_float_dtype(dtype)
-        and isinstance(fill_value, float)
-        or (isinstance(fill_value, bool))
-    ), "the fill_value:\n\n{}\n\nand data type:\n\n{}\n\nare not compatible.".format(
-        fill_value, dtype
-    )
-
-
 # Array API Standard #
 # -------------------#
 
@@ -136,6 +124,7 @@ def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def arange(
     start: Number,
     /,
@@ -201,6 +190,7 @@ def arange(
 
 
 @handle_out_argument
+@handle_exceptions
 def asarray(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -251,6 +241,7 @@ def asarray(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -305,6 +296,7 @@ def zeros(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -359,6 +351,7 @@ def ones(
 @infer_device
 @infer_dtype
 @handle_nestable
+@handle_exceptions
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -485,6 +478,7 @@ def full_like(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -540,6 +534,7 @@ def ones_like(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -652,6 +647,7 @@ def zeros_like(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -697,6 +693,7 @@ def tril(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -744,6 +741,7 @@ def triu(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -789,6 +787,7 @@ def empty(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -836,6 +835,7 @@ def empty_like(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -893,6 +893,7 @@ def eye(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -956,6 +957,7 @@ def linspace(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray], indexing: str = "xy"
 ) -> List[ivy.Array]:
@@ -1056,6 +1058,7 @@ def meshgrid(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
     fill_value: Union[float, bool],
@@ -1159,6 +1162,7 @@ def full(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1207,6 +1211,7 @@ array = asarray
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1306,6 +1311,7 @@ def copy_array(
     return current_backend(x).copy_array(x, out=out)
 
 
+@handle_exceptions
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -1342,6 +1348,7 @@ def native_array(
 @handle_out_argument
 @infer_device
 @handle_nestable
+@handle_exceptions
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1380,6 +1387,7 @@ def one_hot(
 @infer_dtype
 @infer_device
 @handle_nestable
+@handle_exceptions
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
