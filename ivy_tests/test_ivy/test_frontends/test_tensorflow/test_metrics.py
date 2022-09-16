@@ -14,8 +14,9 @@ def _get_dtype_y_true_y_pred(
     *,
     min_value=None,
     max_value=None,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
+    large_abs_safety_factor=1,
+    small_abs_safety_factor=1,
+    safety_factor_scale=None,
     allow_inf=False,
     exclude_min=False,
     exclude_max=False,
@@ -68,8 +69,9 @@ def _get_dtype_y_true_y_pred(
             allow_inf=allow_inf,
             exclude_min=exclude_min,
             exclude_max=exclude_max,
-            large_value_safety_factor=large_value_safety_factor,
-            small_value_safety_factor=small_value_safety_factor,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
     )
 
@@ -82,8 +84,9 @@ def _get_dtype_y_true_y_pred(
             allow_inf=allow_inf,
             exclude_min=exclude_min,
             exclude_max=exclude_max,
-            large_value_safety_factor=large_value_safety_factor,
-            small_value_safety_factor=small_value_safety_factor,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
     )
 
