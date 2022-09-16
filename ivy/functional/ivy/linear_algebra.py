@@ -640,8 +640,7 @@ def inv(
 
     Examples
     --------
-
-
+    
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
