@@ -658,11 +658,19 @@ class ArrayWithElementwise(abc.ABC):
         --------
         With :code:`ivy.Array` inputs:
 
-        >>> x1 = ivy.array([2., 7., 9.])
+        >>> x1 = ivy.array([1., -7., 9.])
         >>> x2 = ivy.array([2., 2., 2.])
         >>> y = x1.divide(x2)
         >>> print(y)
-        ivy.array([1., 3.5, 4.5])
+        ivy.array([1., -3.5, 4.5])
+
+        >>> y = x1.divide(x2, rounding_mode='floor')
+        >>> print(y)
+        ivy.array([ 1., -4.,  4.])
+
+        >>> y = x1.divide(x2, rounding_mode='trunc')
+        >>> print(y)
+        ivy.array([ 1., -3.,  4.])
 
         With mixed :code:`ivy.Array` and `ivy.NativeArray` inputs:
 
