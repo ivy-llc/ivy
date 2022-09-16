@@ -51,9 +51,6 @@ def native_sparse_array_to_indices_values_and_shape(x):
     return None, None, None
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 def conv_transpose(
     x: JaxArray,
     filters: Union[int, float],
@@ -69,5 +66,5 @@ def conv_transpose(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return _to_device(
-        jnp.conv_transpose(x, filters, strides, padding, output_shape, data_format, dilations, dtype=dtype
+        jnp.nn.conv_transpose(x, filters, strides, padding, output_shape, data_format, dilations, dtype=dtype
     ), device=device)
