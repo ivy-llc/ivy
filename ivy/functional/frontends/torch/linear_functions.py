@@ -42,7 +42,10 @@ def bilinear(input1, input2, weight, bias=None):
             output[j][i] = buff_2[j]
 
     if bias is not None:
-        output = ivy.add(output, bias)
+        # Reshape to (Hout)
+        bias_flattened = ivy.reshape(bias, -1)
+        output = ivy.add(output, bias_flattened)
+        
     # Reshape output to original shape (N,*,Hout)
     ivy.reshape(output, input1_shape[1:-1] + weight_shape[:-2])
     return output
