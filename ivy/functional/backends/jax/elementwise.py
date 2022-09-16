@@ -42,6 +42,7 @@ def add(
     alpha: Optional[Union[int, float]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x2 = alpha * x2
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.add(x1, x2*alpha)
 
