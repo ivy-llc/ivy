@@ -590,10 +590,10 @@ def _repeat_helper(draw):
     )
     repeat = draw(
         helpers.dtype_and_values(
-            available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+            available_dtypes=helpers.get_dtypes("integer"),
             shape=repeat_shape,
             min_value=0,
-            max_value=100,
+            max_value=10,
         )
     )
     return repeat
@@ -616,7 +616,7 @@ def _repeat_helper(draw):
         ),
         key="axis",
     ),
-    repeat=st.one_of(st.integers(1, 100), _repeat_helper()),
+    repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
 )
 def test_repeat(
@@ -695,7 +695,7 @@ def _split_helper(draw):
     If noss is a tuple, then the sum of the values in the tuple must equal the size of
     the dimension chosen from the shape of the array generated.
     """
-    noss_dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
+    noss_dtype = draw(st.sampled_from(draw(helpers.get_dtypes("integer"))))
     num_or_size_splits = []
     while sum(num_or_size_splits) < shape[axis]:
         split_value = draw(
