@@ -8,7 +8,7 @@ def bilinear(input1, input2, weight, bias=None):
     input2_shape = ivy.shape(input2)
     if len(input2_shape) < 2:
         raise RuntimeError("Input2 dimensions must be of format (N,*,Hin2)")
-    if input1_shape[1:-1] != input2.shape[1:-1]:
+    if input1_shape[:-1] != input2.shape[:-1]:
         raise RuntimeError("All dimension of input1 and input2 \
             should match except for last dimension")
     weight_shape = ivy.shape(weight)
@@ -45,7 +45,7 @@ def bilinear(input1, input2, weight, bias=None):
         # Reshape to (Hout)
         bias_flattened = ivy.reshape(bias, -1)
         output = ivy.add(output, bias_flattened)
-        
+
     # Reshape output to original shape (N,*,Hout)
-    ivy.reshape(output, input1_shape[1:-1] + weight_shape[:-2])
+    ivy.reshape(output, input1_shape[:-1] + weight_shape[:-2])
     return output
