@@ -2,51 +2,81 @@ import ivy
 import builtins
 
 
-# General #
-# ------- #
+# General with Custom Message #
+# --------------------------- #
 
 
-def check_elem_in_list(elem, list):
-    if elem not in list:
-        raise ivy.exceptions.IvyException("{} must be one of {}".format(elem, list))
-
-
-def check_less(x1, x2, allow_equal=False):
+def check_less(x1, x2, allow_equal=False, message=""):
+    # less_equal
     if allow_equal and ivy.any(x1 > x2):
         raise ivy.exceptions.IvyException(
             "{} must be lesser than or equal to {}".format(x1, x2)
+            if message == ""
+            else message
         )
+    # less
     elif not allow_equal and ivy.any(x1 >= x2):
-        raise ivy.exceptions.IvyException("{} must be lesser than {}".format(x1, x2))
+        raise ivy.exceptions.IvyException(
+            "{} must be lesser than {}".format(x1, x2) if message == "" else message
+        )
 
 
-def check_greater(x1, x2, allow_equal=False):
+def check_greater(x1, x2, allow_equal=False, message=""):
+    # greater_equal
     if allow_equal and ivy.any(x1 < x2):
         raise ivy.exceptions.IvyException(
             "{} must be greater than or equal to {}".format(x1, x2)
+            if message == ""
+            else message
         )
+    # greater
     elif not allow_equal and ivy.any(x1 <= x2):
-        raise ivy.exceptions.IvyException("{} must be greater than {}".format(x1, x2))
+        raise ivy.exceptions.IvyException(
+            "{} must be greater than {}".format(x1, x2) if message == "" else message
+        )
 
 
-def check_equal(x1, x2, inverse=False):
+def check_equal(x1, x2, inverse=False, message=""):
+    # not_equal
     if inverse and ivy.any(x1 == x2):
-        raise ivy.exceptions.IvyException("{} must not be equal to {}".format(x1, x2))
+        raise ivy.exceptions.IvyException(
+            "{} must not be equal to {}".format(x1, x2) if message == "" else message
+        )
+    # equal
     elif not inverse and ivy.any(x1 != x2):
-        raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
+        raise ivy.exceptions.IvyException(
+            "{} must be equal to {}".format(x1, x2) if message == "" else message
+        )
 
 
-def check_isinstance(x, allowed_types):
+def check_isinstance(x, allowed_types, message=""):
     if not isinstance(x, allowed_types):
         raise ivy.exceptions.IvyException(
             "type of x: {} must be one of the allowed types: {}".format(
                 type(x), allowed_types
             )
+            if message == ""
+            else message
         )
 
 
-# General with Custom Message #
-# --------------------------- #
+def check_exists(x, inverse=False, message=""):
+    # not_exists
+    if inverse and ivy.exists(x):
+        raise ivy.exceptions.IvyException(
+            "arg must be None" if message == "" else message
+        )
+    # exists
+    elif not inverse and not ivy.exists(x):
+        raise ivy.exceptions.IvyException(
+            "arg must not be None" if message == "" else message
+        )
+
+
+def check_elem_in_list(elem, list, message=""):
+    message = message if message != "" else "{} must be one of {}".format(elem, list)
+    if elem not in list:
+        raise ivy.exceptions.IvyException(message)
 
 
 def check_true(expression, message="expression must be True"):

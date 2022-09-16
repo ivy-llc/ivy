@@ -30,10 +30,11 @@ def leaky_relu(
 def gelu(
     x, /, *, approximate: bool = True, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if erf is None:
-        raise Exception(
-            "scipy must be installed in order to call ivy.gelu with a numpy backend."
-        )
+    ivy.assertions.check_exists(
+        erf,
+        message="scipy must be installed in order to call ivy.gelu with a \
+        numpy backend.",
+    )
     if approximate:
         ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
     else:

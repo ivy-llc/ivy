@@ -167,6 +167,46 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
     assert res == true_res
 
 
+@handle_cmd_line_args
+@given(
+    dtype_x_indices_axis=st.one_of(
+        helpers.array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+            disable_random_axis=True,
+        ),
+        helpers.array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            boolean_mask=True,
+            disable_random_axis=True,
+        ),
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="get_item"),
+)
+def test_get_item(
+    dtype_x_indices_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    device,
+):
+    dtypes, x, indices, _ = dtype_x_indices_axis
+    helpers.test_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=False,
+        instance_method=False,
+        fw=fw,
+        fn_name="get_item",
+        x=np.asarray(x, dtype=dtypes[0]),
+        query=np.asarray(indices, dtype=dtypes[1]),
+    )
+
+
 # to_numpy
 @handle_cmd_line_args
 @given(
@@ -283,7 +323,9 @@ def test_shape(
 def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
     dtype, object_in = x0_n_x1_n_res
     assume(not (dtype not in ivy_np.valid_float_dtypes and tensor_fn == helpers.var_fn))
-    ret = ivy.get_num_dims(tensor_fn(object_in, dtype=dtype, device=device), as_tensor)
+    ret = ivy.get_num_dims(
+        tensor_fn(object_in, dtype=dtype, device=device), as_array=as_tensor
+    )
     # type test
     if as_tensor:
         assert ivy.is_ivy_array(ret)
@@ -303,8 +345,9 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 @given(
     x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=20,
-        small_value_safety_factor=2.5,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     max_norm=st.floats(),
     p=st.floats(),
@@ -506,62 +549,78 @@ def test_scatter_nd(
 
 
 # gather
-# @given(
-#     params_n_indices_n_axis=helpers.array_and_indices_and_axis(
-#         last_dim_same_size=False,
-#         allow_inf=False,
-#         min_num_dims=1,
-#         max_num_dims=5,
-#         min_dim_size=1,
-#         max_dim_size=10
-#     ),
-#     as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-#     with_out=st.booleans(),
-#     num_positional_args=helpers.num_positional_args(fn_name='gather'),
-#     native_array=helpers.list_of_length(x=st.booleans(), length=2),
-#     container=helpers.list_of_length(x=st.booleans(), length=2),
-#     instance_method=st.booleans(),
-# )
-# def test_gather(params_n_indices_n_axis, as_variable, with_out,
-#                 num_positional_args, native_array, container, instance_method , fw):
-#     params, indices, axis = params_n_indices_n_axis
-#     params_dtype, params = params
-#     indices_dtype, indices = indices
-#     helpers.test_function(
-#         input_dtypes=[params_dtype, indices_dtype],
-#         as_variable_flags=as_variable,
-#         with_out=with_out,
-#         num_positional_args=num_positional_args,
-#         native_array_flags=native_array,
-#         container_flags=container,
-#         instance_method=instance_method,
-#         fw=fw,
-#         fn_name="gather",
-#         params=np.asarray(params, dtype=params_dtype),
-#         indices=np.asarray(indices, dtype=indices_dtype),
-#         axis=axis
-#     )
+@handle_cmd_line_args
+@given(
+    params_n_indices_n_axis=helpers.array_n_indices_n_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        disable_random_axis=False,
+        boolean_mask=False,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="gather"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
+)
+def test_gather(
+    params_n_indices_n_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    [params_dtype, indices_dtype], params, indices, axis = params_n_indices_n_axis
+    helpers.test_function(
+        input_dtypes=[params_dtype, indices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gather",
+        params=np.asarray(params, dtype=params_dtype),
+        indices=np.asarray(indices, dtype=indices_dtype),
+        axis=axis,
+    )
 
 
 # gather_nd
 # @given(
 #     params_n_ndindices=helpers.array_and_ndindices(
-#         allow_inf=False,
-#         min_num_dims=1,
-#         max_num_dims=5,
-#         min_dim_size=1,
-#         max_dim_size=10
+#         allow_inf=False, min_num_dims=1, max_num_dims=5, min_dim_size=1,
+#  max_dim_size=10
 #     ),
 #     ndindices_dtype=st.sampled_from(["int32", "int64"]),
 #     as_variable=helpers.list_of_length(st.booleans(), 2),
 #     with_out=st.booleans(),
-#     num_positional_args=helpers.num_positional_args(fn_name='gather_nd'),
+#     num_positional_args=helpers.num_positional_args(fn_name="gather_nd"),
 #     native_array=helpers.list_of_length(st.booleans(), 2),
 #     container=helpers.list_of_length(st.booleans(), 2),
 #     instance_method=st.booleans(),
 # )
-# def test_gather_nd(params_n_ndindices, ndindices_dtype, as_variable,
-#         with_out, num_positional_args, native_array, container, instance_method , fw):
+# def test_gather_nd(
+#     params_n_ndindices,
+#     ndindices_dtype,
+#     as_variable,
+#     with_out,
+#     num_positional_args,
+#     native_array,
+#     container,
+#     instance_method,
+#     fw,
+# ):
 #     params, ndindices = params_n_ndindices
 #     params_dtype, params = params
 #     helpers.test_function(
@@ -575,12 +634,11 @@ def test_scatter_nd(
 #         fw=fw,
 #         fn_name="gather_nd",
 #         params=np.asarray(params, dtype=params_dtype),
-#         indices=np.asarray(ndindices, dtype=ndindices_dtype)
+#         indices=np.asarray(ndindices, dtype=ndindices_dtype),
 #     )
 
+
 # exists
-
-
 @handle_cmd_line_args
 @given(
     x=st.one_of(
@@ -1305,7 +1363,7 @@ def test_clip_matrix_norm(
 )
 def test_value_is_nan(x_n_include_inf_n_value):
     x, include_inf, value = x_n_include_inf_n_value
-    ret = ivy.value_is_nan(x, include_inf)
+    ret = ivy.value_is_nan(x, include_infs=include_inf)
     assert ret == value
 
 
