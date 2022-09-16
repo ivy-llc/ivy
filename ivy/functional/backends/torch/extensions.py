@@ -59,3 +59,20 @@ def native_sparse_array_to_indices_values_and_shape(x):
     elif x.layout == torch.sparse_csr:
         return [x.crow_indices(), x.col_indices()], x.values(), x.size()
     raise ivy.exceptions.IvyException("not a sparse COO/CSR Tensor")
+
+    
+def conv_transpose(
+    x: torch.Tensor,
+    filters: Union[int, float],
+    strides: Union[int, float],
+    padding: Union[int, float],
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    data_format: str = "NCDHW",
+    dilations: int = 1,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.conv_transpose(x, filters, strides, padding, output_shape, data_format, dilations, dtype=dtype, device=device)
