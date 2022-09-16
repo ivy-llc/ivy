@@ -226,7 +226,6 @@ def test_torch_diagonal(
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        # available_dtypes=st.sampled_from(["bool"]),
         min_num_dims=2,  # Torch requires this.
     ),
     diagonal=st.integers(),
