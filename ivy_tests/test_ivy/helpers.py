@@ -485,9 +485,9 @@ def assert_all_close(
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_gt_np.dtype,
+            ret_from_gt_np.dtype.type,
             ivy.current_backend_str(),
-            ret_np.dtype,
+            ret_np.dtype.type,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
