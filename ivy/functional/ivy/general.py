@@ -3302,7 +3302,13 @@ def _get_devices_and_dtypes(fn, complement=True):
     for device in supported_devices:
         supported[device] = supported_dtypes
 
-    # Their values are formated like either
+    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
+        if complement:
+            all_comb = _all_dnd_combinations()
+            supported = _dnd_dict_difference(all_comb, supported)
+        return supported
+
+    # Their values are formatted like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
 
     if hasattr(fn, "supported_device_and_dtype"):
