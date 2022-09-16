@@ -19,10 +19,10 @@ from . import ndarray
 from .ndarray import *
 from . import matrix
 from .matrix import *
+from . import random
+from .random import *
 
 from . import ma
 from . import fft
-from . import matrix
 from . import ndarray
-from . import random
 from . import ufunc
