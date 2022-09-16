@@ -395,38 +395,26 @@ that the inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<dl>
-<dt>&gt;&gt; x = ivy.array([[[5,4],</dt><dd><blockquote>
-<div><p>[11, 2]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[3, 5],</dt><dd><p>[9, 7]]])</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; b c’, ‘max’)
-&gt;&gt; print(reduced)
-ivy.array([[ 5,  5],</p>
-<blockquote>
-<div><p>[11,  7]])</p>
-</div></blockquote>
-<dl>
-<dt>&gt;&gt; x = ivy.array([[[5, 4, 3],</dt><dd><blockquote>
-<div><p>[11, 2, 9]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[3, 5, 7],</dt><dd><p>[9, 7, 1]]])</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; a () c’, ‘min’)
-&gt;&gt; print(reduced)
-ivy.array([[[5, 2, 3]],</p>
-<blockquote>
-<div><p>[[3, 5, 1]]])</p>
-</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+<span class="go">               [11, 2]],</span>
+<span class="go">              [[3, 5],</span>
+<span class="go">               [9, 7]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reduced</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_reduce</span><span class="p">(</span><span class="s1">&#39;a b c -&gt; b c&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reduced</span><span class="p">)</span>
+<span class="go">ivy.array([[ 5,  5],</span>
+<span class="go">           [11,  7]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="go">                [11, 2, 9]],</span>
+<span class="go">               [[3, 5, 7],</span>
+<span class="go">                [9, 7, 1]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reduced</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_reduce</span><span class="p">(</span><span class="s1">&#39;a b c -&gt; a () c&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reduced</span><span class="p">)</span>
+<span class="go">ivy.array([[[5, 2, 3]],</span>
+<span class="go">           [[3, 5, 1]]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -453,32 +441,24 @@ that the inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>&gt;&gt; x = ivy.array([5,4])
-&gt;&gt; repeated = x.einops_repeat(‘a -&gt; a c’, c=3)
-&gt;&gt; print(repeated)
-ivy.array([[5, 4],</p>
-<blockquote>
-<div><blockquote>
-<div><p>[5, 4],</p>
-</div></blockquote>
-<p>[5, 4]])</p>
-</div></blockquote>
-<dl class="simple">
-<dt>&gt;&gt; x = ivy.array([[5,4],</dt><dd><p>[2, 3]])</p>
-</dd>
-</dl>
-<p>&gt;&gt; repeated = x.einops_repeat(‘a b -&gt;  a b c’, c=3)
-&gt;&gt; print(repeated)
-ivy.array([[[5, 5, 5],</p>
-<blockquote>
-<div><blockquote>
-<div><p>[4, 4, 4]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[2, 2, 2],</dt><dd><p>[3, 3, 3]]])</p>
-</dd>
-</dl>
-</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repeated</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="s1">&#39;a -&gt; a c&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">repeated</span><span class="p">)</span>
+<span class="go">ivy.array([[5, 4],</span>
+<span class="go">           [5, 4],</span>
+<span class="go">          [5, 4]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+<span class="go">            [2, 3]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repeated</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="s1">&#39;a b -&gt;  a b c&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">repeated</span><span class="p">)</span>
+<span class="go">ivy.array([[[5, 5, 5],</span>
+<span class="go">            [4, 4, 4]],</span>
+<span class="go">           [[2, 2, 2],</span>
+<span class="go">            [3, 3, 3]]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -532,17 +512,19 @@ this channel.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.general.ArrayWithGeneral.gather">
-<span class="sig-name descname"><span class="pre">gather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/general.html#ArrayWithGeneral.gather"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.gather" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.gather. This method simply wraps the
-function, and so the docstring for ivy.gather also applies to this method
-with minimal changes.</p>
+<span class="sig-name descname"><span class="pre">gather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/general.html#ArrayWithGeneral.gather"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.general.ArrayWithGeneral.gather" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.gather. This method simply
+wraps the function, and so the docstring for ivy.gather also applies to
+this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – array, the array from which to gather values.</p></li>
-<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – array, index array.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – optional int, the axis from which to gather from. Default is -1. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>params</strong> – The array from which to gather values.</p></li>
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – The array which indicates the indices that will be gathered along
+the specified axis.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The axis from which the indices will be gathered. Default is -1. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – An array for writing the result to. It must have a shape (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+that the inputs broadcast to. (Optional)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -553,6 +535,13 @@ with minimal changes.</p>
 the specified axis.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0., 1.])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -862,8 +851,8 @@ the inputs broadcast to.</p></li>
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – The tensor in which to scatter the results</p></li>
 <li><p><strong>indices</strong> – Tensor of indices</p></li>
 <li><p><strong>updates</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]) – values to update input tensor with</p></li>
-<li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – The shape of the result. Default is None, in which case tensor argument must (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-be provided.</p></li>
+<li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – The shape of the result. Default is None, in which case tensor (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+argument must be provided.</p></li>
 <li><p><strong>reduction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The reduction method for the scatter, one of ‘sum’, ‘min’, ‘max’ (default: <code class="docutils literal notranslate"><span class="pre">'sum'</span></code>)
 or ‘replace’</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
@@ -877,25 +866,23 @@ or ‘replace’</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>scatter values into an array</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">updates</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scatter</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">updates</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">arr</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">scatter</span><span class="p">)</span>
-<span class="go">ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])</span>
-</pre></div>
-</div>
-<p>scatter values into an empty array</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">updates</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">25</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">scatter</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">scatter</span><span class="p">)</span>
-<span class="go">ivy.array([[ 0,  0, 22, 40,  0],</span>
-<span class="go">            [ 0, 21,  0,  0, 25]])</span>
-</pre></div>
-</div>
+<p>scatter values into an array
+&gt;&gt;&gt; arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
+&gt;&gt;&gt; indices = ivy.array([[4], [3], [1], [7]])
+&gt;&gt;&gt; updates = ivy.array([9, 10, 11, 12])
+&gt;&gt;&gt; scatter = indices.scatter_nd(updates, reduction=’replace’, out=arr)
+&gt;&gt;&gt; print(scatter)
+ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])</p>
+<p>scatter values into an empty array
+&gt;&gt;&gt; shape = ivy.array([2, 5])
+&gt;&gt;&gt; indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
+&gt;&gt;&gt; updates = ivy.array([25, 40, 21, 22])
+&gt;&gt;&gt; scatter = indices.scatter_nd(updates, shape=shape)
+&gt;&gt;&gt; print(scatter)
+ivy.array([[ 0,  0, 22, 40,  0],</p>
+<blockquote>
+<div><p>[ 0, 21,  0,  0, 25]])</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">

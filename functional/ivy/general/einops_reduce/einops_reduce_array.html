@@ -239,38 +239,26 @@ that the inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<dl>
-<dt>&gt;&gt; x = ivy.array([[[5,4],</dt><dd><blockquote>
-<div><p>[11, 2]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[3, 5],</dt><dd><p>[9, 7]]])</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; b c’, ‘max’)
-&gt;&gt; print(reduced)
-ivy.array([[ 5,  5],</p>
-<blockquote>
-<div><p>[11,  7]])</p>
-</div></blockquote>
-<dl>
-<dt>&gt;&gt; x = ivy.array([[[5, 4, 3],</dt><dd><blockquote>
-<div><p>[11, 2, 9]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[3, 5, 7],</dt><dd><p>[9, 7, 1]]])</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; a () c’, ‘min’)
-&gt;&gt; print(reduced)
-ivy.array([[[5, 2, 3]],</p>
-<blockquote>
-<div><p>[[3, 5, 1]]])</p>
-</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+<span class="go">               [11, 2]],</span>
+<span class="go">              [[3, 5],</span>
+<span class="go">               [9, 7]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reduced</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_reduce</span><span class="p">(</span><span class="s1">&#39;a b c -&gt; b c&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reduced</span><span class="p">)</span>
+<span class="go">ivy.array([[ 5,  5],</span>
+<span class="go">           [11,  7]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="go">                [11, 2, 9]],</span>
+<span class="go">               [[3, 5, 7],</span>
+<span class="go">                [9, 7, 1]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reduced</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_reduce</span><span class="p">(</span><span class="s1">&#39;a b c -&gt; a () c&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reduced</span><span class="p">)</span>
+<span class="go">ivy.array([[[5, 2, 3]],</span>
+<span class="go">           [[3, 5, 1]]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

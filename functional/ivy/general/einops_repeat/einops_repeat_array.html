@@ -237,32 +237,24 @@ that the inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>&gt;&gt; x = ivy.array([5,4])
-&gt;&gt; repeated = x.einops_repeat(‘a -&gt; a c’, c=3)
-&gt;&gt; print(repeated)
-ivy.array([[5, 4],</p>
-<blockquote>
-<div><blockquote>
-<div><p>[5, 4],</p>
-</div></blockquote>
-<p>[5, 4]])</p>
-</div></blockquote>
-<dl class="simple">
-<dt>&gt;&gt; x = ivy.array([[5,4],</dt><dd><p>[2, 3]])</p>
-</dd>
-</dl>
-<p>&gt;&gt; repeated = x.einops_repeat(‘a b -&gt;  a b c’, c=3)
-&gt;&gt; print(repeated)
-ivy.array([[[5, 5, 5],</p>
-<blockquote>
-<div><blockquote>
-<div><p>[4, 4, 4]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[2, 2, 2],</dt><dd><p>[3, 3, 3]]])</p>
-</dd>
-</dl>
-</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repeated</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="s1">&#39;a -&gt; a c&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">repeated</span><span class="p">)</span>
+<span class="go">ivy.array([[5, 4],</span>
+<span class="go">           [5, 4],</span>
+<span class="go">          [5, 4]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+<span class="go">            [2, 3]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repeated</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="s1">&#39;a b -&gt;  a b c&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">repeated</span><span class="p">)</span>
+<span class="go">ivy.array([[[5, 5, 5],</span>
+<span class="go">            [4, 4, 4]],</span>
+<span class="go">           [[2, 2, 2],</span>
+<span class="go">            [3, 3, 3]]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

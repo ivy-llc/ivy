@@ -130,6 +130,7 @@
   <h1>Source code for ivy.functional.ivy.extensions</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">inputs_to_native_arrays</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <span class="c1"># helpers</span>
@@ -471,11 +472,13 @@
 
 
 <div class="viewcode-block" id="is_native_sparse_array"><a class="viewcode-back" href="../../../../functional/ivy/extensions/is_native_sparse_array.html#ivy.functional.ivy.extensions.is_native_sparse_array">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">is_native_sparse_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">is_native_sparse_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="native_sparse_array"><a class="viewcode-back" href="../../../../functional/ivy/extensions/native_sparse_array.html#ivy.functional.ivy.extensions.native_sparse_array">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">native_sparse_array</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -495,7 +498,8 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="native_sparse_array_to_indices_values_and_shape"><a class="viewcode-back" href="../../../../functional/ivy/extensions/native_sparse_array_to_indices_values_and_shape.html#ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape">[docs]</a><span class="k">def</span> <span class="nf">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="native_sparse_array_to_indices_values_and_shape"><a class="viewcode-back" href="../../../../functional/ivy/extensions/native_sparse_array_to_indices_values_and_shape.html#ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 </pre></div>
 

@@ -243,22 +243,17 @@ shape that the inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<dl class="simple">
-<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[30, 40], [50, 75]]),</dt><dd><p>b=ivy.array([[1, 2], [4, 5]]))</p>
-</dd>
-</dl>
-<p>&gt;&gt; repeated = x.einops_repeat(‘h w -&gt;  h  (w tile)’, tile=2)
-&gt;&gt; print(repeated)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([[30, 30, 40, 40],</dt><dd><p>[50, 50, 75, 75]]),</p>
-</dd>
-<dt>b: ivy.array([[1, 1, 2, 2],</dt><dd><p>[4, 4, 5, 5]])</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">]]),</span>                         <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repeated</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="s1">&#39;h w -&gt;  h  (w tile)&#39;</span><span class="p">,</span> <span class="n">tile</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">repeated</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[30, 30, 40, 40],</span>
+<span class="go">                  [50, 50, 75, 75]]),</span>
+<span class="go">    b: ivy.array([[1, 1, 2, 2],</span>
+<span class="go">                  [4, 4, 5, 5]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">

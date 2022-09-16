@@ -226,15 +226,15 @@ to this method with minimal changes.</p>
 <li><p><strong>pattern</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Reduction pattern.</p></li>
 <li><p><strong>reduction</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]) – One of available reductions (‘min’, ‘max’, ‘sum’, ‘mean’, ‘prod’), or
 callable.</p></li>
-<li><p><strong>axes_lengths</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Any additional specifications for dimensions.</p></li>
 <li><p><strong>key_chains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]) – The key-chains to apply or not apply the method to. Default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>to_apply</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the method will be applied to key_chains, otherwise key_chains will (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 be skipped. Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to prune key_chains for which the function was not applied. Default (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 is False.</p></li>
 <li><p><strong>map_sequences</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also map method to sequences (lists, tuples). Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>axes_lengths</strong> – Any additional specifications for dimensions.</p></li>
-<li><p><strong>**axes_lengths</strong> – </p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. It must have a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+shape that the inputs broadcast to.</p></li>
+<li><p><strong>axes_lengths</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Any additional specifications for dimensions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -245,43 +245,18 @@ is False.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<dl>
-<dt>&gt;&gt; x = ivy.Container(a=ivy.array([[[5, 4, 3],</dt><dd><blockquote>
-<div><blockquote>
-<div><p>[11, 2, 9]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[3, 5, 7],</dt><dd><p>[9, 7, 1]]]),</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl>
-<dt>b=ivy.array([[[9,7,6],</dt><dd><blockquote>
-<div><p>[5,2,1]],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>[[4,1,2],</dt><dd><p>[2,3,6]],</p>
-</dd>
-<dt>[[1, 9, 6],</dt><dd><p>[0, 2, 1]]]))</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>&gt;&gt; reduced = x.einops_reduce(‘a b c -&gt; a b’, ‘sum’)
-&gt;&gt; print(reduced)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([[12, 22],</dt><dd><p>[15, 17]]),</p>
-</dd>
-<dt>b: ivy.array([[22, 8],</dt><dd><p>[7, 11],
-[16, 3]])</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>                                       <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">]],</span>                                      <span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>                                       <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]]),</span>                        <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span>                                      <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span>                                    <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>                                     <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span>                                    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>                                     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reduced</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">einops_reduce</span><span class="p">(</span><span class="s1">&#39;a b c -&gt; a b&#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reduced</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[12, 22],</span>
+<span class="go">                [15, 17]]),</span>
+<span class="go">    b: ivy.array([[22, 8],</span>
+<span class="go">                [7, 11],</span>
+<span class="go">                [16, 3]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
