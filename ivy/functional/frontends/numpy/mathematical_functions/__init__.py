@@ -23,4 +23,3 @@ from . import extrema_finding
 from .extrema_finding import *
 from . import miscellaneous
 from .miscellaneous import *
-
