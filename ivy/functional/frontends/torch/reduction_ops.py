@@ -33,5 +33,5 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
-def std(input, dim=None, *, correction=0.0, keepdim=False, out=None):
+def std(input, dim, *, correction=0.0, keepdim=False, out=None):
     return ivy.std(input, axis=dim, correction=correction, keepdims=keepdim, out=out)
