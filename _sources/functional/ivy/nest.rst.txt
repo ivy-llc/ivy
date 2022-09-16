@@ -23,7 +23,7 @@ Nest
    nest/set_nest_at_indices.rst
    nest/insert_into_nest_at_indices.rst
    nest/map_nest_at_indices.rst
-   nest/nested_indices_where.rst
+   nest/nested_argwhere.rst
    nest/all_nested_indices.rst
    nest/map.rst
    nest/nested_map.rst

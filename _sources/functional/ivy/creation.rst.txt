@@ -13,6 +13,9 @@ Creation
    :maxdepth: -1
    :caption: Creation
 
+   creation/asarray_handle_nestable.rst
+   creation/asarray_to_native_arrays_and_back.rst
+   creation/asarray_infer_device.rst
    creation/arange.rst
    creation/asarray.rst
    creation/zeros.rst

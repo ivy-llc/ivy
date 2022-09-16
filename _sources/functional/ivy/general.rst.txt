@@ -66,6 +66,7 @@ General
    general/inplace_variables_supported.rst
    general/supports_inplace_updates.rst
    general/assert_supports_inplace.rst
+   general/get_item.rst
    general/inplace_update.rst
    general/inplace_decrement.rst
    general/inplace_increment.rst

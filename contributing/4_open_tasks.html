@@ -56,7 +56,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#formatting-checklist">Formatting checklist</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#frontend-apis">Frontend APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-apis">Frontend APIs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#where-to-place-a-frontend-function">Where to place a frontend function</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-api-extensions">Ivy API Extensions</a></li>
 </ul>
 </li>
@@ -268,6 +271,7 @@ with frontend APIs implemented for:
 for this task.</p>
 <p>The general workflow for this task is:</p>
 <ol class="arabic simple">
+<li><p>find the correct location for the function by following the <em>Where to place a frontend function</em> subsection below</p></li>
 <li><p>implement the function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html">Ivy Frontends</a> guide</p></li>
 <li><p>write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
 <li><p>verify that the tests for your function are passing</p></li>
@@ -325,6 +329,48 @@ issue to request for the function to be added to Ivy. Meanwhile, you can select
 another frontend function to work on from the ToDo list! If you’re stuck on a
 function which requires complex compositions, you’re allowed to reselect a function
 too!</p>
+<section id="where-to-place-a-frontend-function">
+<h3>Where to place a frontend function<a class="headerlink" href="#where-to-place-a-frontend-function" title="Permalink to this heading"></a></h3>
+<p>The placement of new frontend functions for a given backend should follow the categorisation of the backend API as
+faithfully as possible. In each <a class="reference external" href="https://github.com/unifyai/ivy/issues/1526">issue description</a>, there will be a link to the relevant <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.linalg.html">reference API</a>. Check
+where the function you’re working on is located, e.g. <code class="code docutils literal notranslate"><span class="pre">numpy.inner</span></code> falls under <code class="code docutils literal notranslate"><span class="pre">numpy.linalg</span></code>. Then, in the
+Ivy source code, check <code class="code docutils literal notranslate"><span class="pre">ivy/functional/frontends/[backend]</span></code> for pre-existing files which best match the function’s
+category in the backend reference API.</p>
+<p>Taking <code class="code docutils literal notranslate"><span class="pre">numpy.inner</span></code> as an example, we can see that there are a few <code class="code docutils literal notranslate"><span class="pre">ivy/functional/frontends/numpy</span></code>
+sub-directories to choose from:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>creation_routines
+fft
+indexing_routines
+<span class="hll">linear_algebra
+</span>logic
+ma
+manipulation_routines
+mathematical_functions
+matrix
+ndarray
+random
+sorting_searching_counting
+statistics
+ufunc
+</pre></div>
+</div>
+<p>There is a <code class="code docutils literal notranslate"><span class="pre">linear_algebra</span></code> sub-directory, so we choose this. There is then a linalg sub-directory. From the numpy
+API, we can see that certain functions listed under ‘Linear Algebra (<code class="code docutils literal notranslate"><span class="pre">numpy.linalg</span></code>)’ actually do <em>not</em> require the
+linalg namespace. <code class="code docutils literal notranslate"><span class="pre">inner</span></code> is one such function, hence it will not be placed in this directory. We then need to choose
+from the files at this hierarchy (ignoring <code class="code docutils literal notranslate"><span class="pre">__init__.py</span></code> files):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="hll">matrix_and_vector_products.py
+</span>norms_and_other_numbers.py
+</pre></div>
+</div>
+<p>This may require a bit of reasoning. <code class="code docutils literal notranslate"><span class="pre">inner</span></code> calculates the inner product of two arrays, so
+<code class="code docutils literal notranslate"><span class="pre">matrix_and_vector_products.py</span></code> seems like the most appropriate option. The location of
+<code class="code docutils literal notranslate"><span class="pre">test_numpy_inner</span></code> should mirror the location of its corresponding function, this time in
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/[backend]</span></code>.</p>
+<p>If you’re unsure about where to put the function you’re working on, explore the content of these files to see if you
+can find a similar function. In <code class="code docutils literal notranslate"><span class="pre">matrix_and_vector_products.py</span></code>, we can see other functions such as <code class="code docutils literal notranslate"><span class="pre">outer</span></code>
+that are similar to <code class="code docutils literal notranslate"><span class="pre">inner</span></code>. This is confirmation that we’ve found the correct place! If many of the files are
+empty and you’re unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.</p>
+</section>
 </section>
 <section id="ivy-api-extensions">
 <h2>Ivy API Extensions<a class="headerlink" href="#ivy-api-extensions" title="Permalink to this heading"></a></h2>

@@ -51,6 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Superset Behaviour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-softplus">ivy.softplus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-linspace">ivy.linspace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-eye">ivy.eye</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-scatter-nd">ivy.scatter_nd</a></li>
@@ -165,46 +166,64 @@ backend implementation should Ivy most closely follow?</p>
 <p>It might seem as though this question is already answered.
 Ivy fully adheres to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, which helpfully limits our design space
 for the functions, but in its current form this only covers a relatively small number of
-functions which together make up less than half of the functions in Ivy.
+functions, which together make up less than half of the functions in Ivy.
 Even for Ivy functions which adhere to the standard,
 the standard permits the addition of extra arguments and function features,
 provided that they do not contradict the requirements of the standard.
 Therefore, we are still faced with the same kind of design decisions for all Ivy
 functions, even those appearing in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.</p>
 <p>In this section, we explain through examples how Ivy always goes for the superset of
-functionality among the backend frameworks. This is not always totally possible,
-and in some cases certain framework-specific features must be sacrificed,
-but usually it’s possible to implement a very generalized function which covers most of
-the unique features among the corresponding functions in each framework.</p>
-<p>Despite this general approach, the total superset is not always strived for, especially
-in cases where the behaviour can very easily be replicated by a simple composition of
-other functions, or where the extra behaviour is redundant as it is already covered by
-another function.
+functionality among the backend frameworks. This means that even if only one framework
+supports a certain feature, then we still strive to include this feature in the Ivy
+function. The Ivy function then entails the <em>superset</em> of all backend features.
+However, this is not always totally possible, and in some cases certain
+framework-specific features must be sacrificed, but usually it’s possible to implement a
+very generalized function which covers most of the unique features among the
+corresponding functions in each framework.</p>
+<p>Despite this general approach, the total superset is not always actually strived for,
+especially in cases where the behaviour can very easily be replicated by a simple
+composition of other functions, or where the extra behaviour is redundant as it is
+already covered by another function.
 As an example, many pointwise functions in NumPy support the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument,
 which enables a mask array to be specified, with the function then only evaluated
 at elements for which the <code class="code docutils literal notranslate"><span class="pre">where</span></code> array is <code class="code docutils literal notranslate"><span class="pre">True</span></code>.
 This inclusion of this feature in NumPy is totally understandable,
-compositions of NumPy functions are never compiled into computation graph which span
+compositions of NumPy functions are never compiled into computation graphs which span
 multiple operations, and therefore a good way to maximize efficiency of NumPy code is to
 minimize the number of unique NumPy functions which are called, each of which are
 implemented with very high efficiency in <code class="code docutils literal notranslate"><span class="pre">C</span></code>. In this case, the inclusion of
-<code class="code docutils literal notranslate"><span class="pre">where</span></code> as an argument also prevents unnecessary values from being computed,
-only to be masked out in the immediately subsequent operation.
-For these reasons, calling <code class="code docutils literal notranslate"><span class="pre">np.absolute(x,</span> <span class="pre">where=mask)</span></code> is much better than
-calling <code class="code docutils literal notranslate"><span class="pre">np.where(mask,</span> <span class="pre">np.absolute(x),</span> <span class="pre">np.empty_like(x))</span></code> in NumPy.
+<code class="code docutils literal notranslate"><span class="pre">where</span></code> as an argument also prevents unnecessary values from being computed in the
+first place, only to then be masked out in the immediately subsequent operation.
+For these reasons, calling <code class="code docutils literal notranslate"><span class="pre">np.absolute(x,</span> <span class="pre">where=mask)</span></code> is much more efficient
+than calling <code class="code docutils literal notranslate"><span class="pre">np.where(mask,</span> <span class="pre">np.absolute(x),</span> <span class="pre">np.empty_like(x))</span></code> in NumPy.
 However, other frameworks are able to compile compositions of python operations directly
 to computation graphs in low-level languages, and are also able to intelligently fuse
 operations into combined kernels, via libraries such as
 <a class="reference external" href="https://github.com/NVIDIA/TensorRT">TensorRT</a>.
 This removes the need for highly general function signatures such as those found in
 NumPy. Instead, a compositional approach is preferred, where each function in Python
-serves a particular and non-overlapping purpose.
+generally serves a particular and non-overlapping purpose.
 This helps to keep things more clean and clear at the Python level,
 without sacrificing efficiency at the lower level.</p>
 <p>We now take a look at some examples, and explain our rational for deciding upon the
-function signature that we should use in Ivy. The first three examples are more-or-less
+function signature that we should use in Ivy. The first four examples are more-or-less
 superset examples, while the last example involves a deliberate decision to not
-implement the full superset, for the reason explained above.</p>
+implement the full superset, for some of the reasons explained above.</p>
+<section id="ivy-softplus">
+<h2>ivy.softplus<a class="headerlink" href="#ivy-softplus" title="Permalink to this heading"></a></h2>
+<p>When looking at the <code class="code docutils literal notranslate"><span class="pre">softplus</span></code> (or closest equivalent) implementations for
+<a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/activations/softplus/softplus_functional.html">Ivy</a>,
+<a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.nn.softplus.html">JAX</a>,
+<a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/softplus">TensorFlow</a>,
+and
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.functional.softplus.html">PyTorch</a>,
+we can see that <code class="code docutils literal notranslate"><span class="pre">torch</span></code> is the only framework which supports the inclusion of the
+<code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> arguments, which are added for improved numerical
+stability. We can also see that <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> does not support a <code class="code docutils literal notranslate"><span class="pre">softplus</span></code>
+function at all. Ivy also supports the <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> arguments,
+and in doing so provides the generalized superset implementation among the backend
+frameworks.</p>
+</section>
 <section id="ivy-linspace">
 <h2>ivy.linspace<a class="headerlink" href="#ivy-linspace" title="Permalink to this heading"></a></h2>
 <p>When looking at the <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> (or closest equivalent) implementations for
