@@ -402,6 +402,7 @@ class ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
+    @staticmethod
     def static_sum(
         x: ivy.Container,
         /,
@@ -415,7 +416,7 @@ class ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        ContainerBase.multi_map_in_static_method(
+        return ContainerBase.multi_map_in_static_method(
             "sum",
             x,
             axis=axis,

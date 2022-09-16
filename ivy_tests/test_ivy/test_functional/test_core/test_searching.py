@@ -188,17 +188,14 @@ def test_where(
     )
 
 
-# indices_where
+# argwhere
+@handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
-    with_out=st.booleans(),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="indices_where"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="argwhere"),
 )
-def test_indices_where(
+def test_argwhere(
+    *,
     x,
     with_out,
     as_variable,
@@ -206,7 +203,6 @@ def test_indices_where(
     native_array,
     container,
     instance_method,
-    device,
     fw,
 ):
     dtype, x = x
@@ -219,6 +215,6 @@ def test_indices_where(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="indices_where",
+        fn_name="argwhere",
         x=np.asarray(x, dtype=dtype),
     )

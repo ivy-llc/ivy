@@ -13,7 +13,7 @@ def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_length(
-                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
+                x=st.sampled_from(draw(helpers.get_dtypes("valid"))), length=1
             ),
             key="dtype",
         )
@@ -60,7 +60,7 @@ def test_numpy_empty(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     shape=helpers.get_shape(
         allow_none=True,
@@ -203,7 +203,7 @@ def test_numpy_ones(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     shape=helpers.get_shape(
         allow_none=True,
@@ -281,7 +281,7 @@ def test_numpy_zeros(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     shape=helpers.get_shape(
         allow_none=True,
@@ -320,17 +320,18 @@ def test_numpy_zeros_like(
     )
 
 
-# full
+# full and full_like helpers
 @st.composite
-def _fill_value(draw):
-    dtype = draw(_dtypes())[0]
+def _dtype_and_fill_value(draw):
+    dtype = draw(helpers.get_dtypes("numeric", full=False))
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        return dtype, draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
+        return dtype, draw(helpers.ints(min_value=-5, max_value=5))
+    return dtype, draw(helpers.floats(min_value=-5, max_value=5))
 
 
+# full
 @handle_cmd_line_args
 @given(
     shape=helpers.get_shape(
@@ -340,21 +341,22 @@ def _fill_value(draw):
         min_dim_size=1,
         max_dim_size=10,
     ),
-    fill_value=_fill_value(),
-    dtypes=_dtypes(),
+    dtype_and_fill_value=_dtype_and_fill_value(),
+    # dtypes=helpers.get_dtypes("numeric"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.full"
     ),
 )
 def test_numpy_full(
     shape,
-    fill_value,
-    dtypes,
+    dtype_and_fill_value,
+    # dtypes,
     num_positional_args,
     fw,
 ):
+    dtype, fill_value = dtype_and_fill_value
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=[dtype],
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -364,7 +366,7 @@ def test_numpy_full(
         fn_tree="full",
         shape=shape,
         fill_value=fill_value,
-        dtype=dtypes[0],
+        dtype=dtype,
     )
 
 
@@ -372,10 +374,10 @@ def test_numpy_full(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
-    fill_value=_fill_value(),
-    dtypes=_dtypes(),
+    dtype_and_fill_value=_dtype_and_fill_value(),
+    # dtypes=helpers.get_dtypes("numeric", full=False),
     shape=helpers.get_shape(
         allow_none=True,
         min_num_dims=1,
@@ -389,8 +391,8 @@ def test_numpy_full(
 )
 def test_numpy_full_like(
     dtype_and_x,
-    fill_value,
-    dtypes,
+    dtype_and_fill_value,
+    # dtypes,
     shape,
     as_variable,
     num_positional_args,
@@ -398,6 +400,7 @@ def test_numpy_full_like(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    dtype, fill_value = dtype_and_fill_value
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
@@ -409,7 +412,7 @@ def test_numpy_full_like(
         fn_tree="full_like",
         a=np.asarray(x, dtype=input_dtype),
         fill_value=fill_value,
-        dtype=dtypes[0],
+        dtype=dtype,
         order="K",
         subok=True,
         shape=shape,
