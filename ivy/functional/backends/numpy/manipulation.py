@@ -1,4 +1,3 @@
-# For Review
 # global
 import ivy
 import numpy as np
@@ -108,7 +107,7 @@ def squeeze(
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise ValueError(
+        raise ivy.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     return np.squeeze(x, axis=axis)
@@ -141,7 +140,7 @@ def split(
 ):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -171,6 +170,9 @@ def repeat(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.repeat(x, repeats, axis)
+
+
+repeat.unsupported_dtypes = ("uint64",)
 
 
 def tile(
@@ -219,7 +221,7 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    assert np.all(np.less(x_min, x_max)), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 
