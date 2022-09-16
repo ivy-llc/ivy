@@ -156,7 +156,7 @@ def get_current_frontend():
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=True, none=False):
+def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     """
     Draws a valid dtypes for the test function. For frontend tests,
     it draws the data types from the intersection between backend
@@ -206,7 +206,10 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes += (None,)
     if full:
         return valid_dtypes[index:]
-    return draw(st.sampled_from(valid_dtypes[index:]))
+    if key is None:
+        return draw(st.sampled_from(valid_dtypes[index:]))
+    ret = draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))
+    return [ret]
 
 
 @st.composite
@@ -2238,9 +2241,8 @@ def dtype_and_values(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2392,9 +2394,8 @@ def dtype_values_axis(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2708,9 +2709,8 @@ def array_values(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2733,6 +2733,10 @@ def array_values(
         for dim in shape:
             size *= dim
 
+    if isinstance(dtype, st._internal.SearchStrategy):
+        dtype = draw(dtype)
+        dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
+
     if "float" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
@@ -2748,29 +2752,37 @@ def array_values(
         )
 
     if kind_dtype != "bool":
-        min_value = (
-            _clamp_value(min_value, dtype_info)
-            if min_value is not None
-            else dtype_info.min
-        )
-        max_value = (
-            _clamp_value(max_value, dtype_info)
-            if max_value is not None
-            else dtype_info.max
-        )
+        if min_value is None:
+            min_value = dtype_info.min
+            b_scale_min = True
+        else:
+            min_value = _clamp_value(min_value, dtype_info)
+            b_scale_min = False
+
+        if max_value is None:
+            max_value = dtype_info.max
+            b_scale_max = True
+        else:
+            max_value = _clamp_value(max_value, dtype_info)
+            b_scale_max = False
+
         assert max_value >= min_value
 
         # Scale the values
         if safety_factor_scale == "linear":
-            min_value = min_value / large_abs_safety_factor
-            max_value = max_value / large_abs_safety_factor
+            if b_scale_min:
+                min_value = min_value / large_abs_safety_factor
+            if b_scale_max:
+                max_value = max_value / large_abs_safety_factor
             if kind_dtype == "float":
                 abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
         elif safety_factor_scale == "log":
-            min_sign = math.copysign(1, min_value)
-            max_sign = math.copysign(1, max_value)
-            min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
-            max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+            if b_scale_min:
+                min_sign = math.copysign(1, min_value)
+                min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+            if b_scale_max:
+                max_sign = math.copysign(1, max_value)
+                max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
             if kind_dtype == "float":
                 m, e = math.frexp(dtype_info.smallest_normal)
                 abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
@@ -3333,19 +3345,14 @@ def handle_cmd_line_args(test_fn):
             flag = True
 
         global frontend_fw
-        # Infer the frontend
-        try:
-            # naming convention `test_framework_`
-            frontend_string = test_fn.__name__.split("_")[1]
-            if frontend_string in FW_STRS:
-                frontend_fw = TEST_BACKENDS[frontend_string]
-            else:  # Clear the global variable
-                frontend_fw = None
-        except IndexError:
-            raise RuntimeError(
-                "'{}' is not a valid test function, "
-                "a test function should start with 'test_'.".format(test_fn.__name__)
-            )
+        # Reset the global variable,
+        # only set if frontend fw is inferred
+        frontend_fw = None
+        full_fn_test_path = test_fn.__module__.split(".")
+        if len(full_fn_test_path) > 2:
+            if full_fn_test_path[2] == "test_frontends":
+                frontend_fw = TEST_BACKENDS[full_fn_test_path[3][5:]]
+
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
