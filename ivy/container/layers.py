@@ -185,7 +185,7 @@ class ContainerWithLayers(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
             "multi_head_attention",
@@ -225,7 +225,7 @@ class ContainerWithLayers(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_multi_head_attention(
             self,
@@ -467,7 +467,7 @@ class ContainerWithLayers(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
             "conv1d_transpose",
@@ -499,7 +499,7 @@ class ContainerWithLayers(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_conv1d_transpose(
             self,
@@ -531,7 +531,7 @@ class ContainerWithLayers(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.multi_map_in_static_method(
             "conv2d_transpose",
@@ -563,7 +563,7 @@ class ContainerWithLayers(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self.static_conv2d_transpose(
             self,
