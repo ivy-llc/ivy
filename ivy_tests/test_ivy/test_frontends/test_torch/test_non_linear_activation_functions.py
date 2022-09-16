@@ -850,3 +850,34 @@ def test_torch_log_softmax(
         dim=axis,
         dtype=dtypes[0],
     )
+
+
+# tanhshrink
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tanhshrink"
+    ),
+)
+def test_torch_tanhshrink(
+    dtype_and_input,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.tanhshrink",
+        input=np.asarray(input, dtype=input_dtype),
+    )

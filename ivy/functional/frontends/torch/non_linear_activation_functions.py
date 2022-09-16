@@ -195,3 +195,7 @@ def log_softmax(input, dim=None, dtype=None):
     if dim is None:
         dim = -1
     return ivy.log(ivy.softmax(input, axis=dim))
+
+
+def tanhshrink(input):
+    return ivy.subtract(input, ivy.tanh(input))
