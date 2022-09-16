@@ -628,20 +628,57 @@ def inv(
         floating-point data type determined by :ref:`type-promotion` and must have the
         same shape as ``x``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
+
+    With :code:`ivy.Array` inputs:
+
     >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
     >>> y = ivy.inv(x)
     >>> print(y)
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
+    Using optional output array
+
+    >>> x = iny.array([1.0, 2.0], [3.0, 4.0])
+    >>> y = inv.zeros(3)
+    >>> ivy.inv(x, out=y)
+    >>> print(y)
+    ivy.array([[-2.0, 1.0],[1.5, -0.5]])
+
+    Using inplace
+    >>> x = iny.array([1.0, 2.0], [5.0, 5.0])
+    >>> ivy.inv(x, out=x)
+    >>> print(x)
+    ivy.array([[-1., 0.4],[1., -0.2]])
+
     Inverses of several matrices can be computed at once:
 
-    >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])
+    >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],\
+                       [[1.0, 3.0], [3.0, 5.0]]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])
+    ivy.array([[[-2., 1.],[1.5, -0.5]],
+               [[-1.25, 0.75],[0.75, -0.25]]])
 
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1.], [4., 4.]), b=ivy.array([4., 4.], [2., 1]))
+    >>> y = ivy.Container.inv(x)
+    >>> print(x)
+    {
+        a: ivy.array([-1., 0.25], [1., 0.]),
+        b: ivy.array([-0.25., 1.], [0.5, -1.])
+    }
     """
     return current_backend(x).inv(x, out=out)
 

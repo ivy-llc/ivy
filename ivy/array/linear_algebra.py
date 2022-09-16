@@ -162,6 +162,12 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.inner(self._data, x2, out=out)
 
     def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.inv.
+        This method simply wraps the function, and so the docstring for
+        ivy.inv also applies to this method with minimal changes.
+
+        """
         return ivy.inv(self._data, out=out)
 
     def matrix_norm(
