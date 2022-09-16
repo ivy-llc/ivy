@@ -47,11 +47,12 @@ def to_list(x: np.ndarray, /) -> list:
 def gather(
     params: np.ndarray,
     indices: np.ndarray,
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.take_along_axis(params, indices, axis))
+    return _to_device(np.take(params, indices, axis))
 
 
 def gather_nd(

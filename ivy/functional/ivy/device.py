@@ -1175,7 +1175,7 @@ def _get_devices(fn, complement=True):
 
     supported = set(VALID_DEVICES)
 
-    if "backend" not in fn.__module__:
+    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
         if complement:
             supported = set(ALL_DEVICES).difference(supported)
         return supported
