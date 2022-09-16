@@ -31,3 +31,7 @@ def any(input, dim=None, keepdim=False, *, out=None):
     if ivy.is_uint_dtype(input_dtype):
         ret = ivy.astype(ret, input_dtype, out=out)
     return ret
+
+
+def prod(input, dim=None, dtype=None, keepdim=False, *, out=None):
+    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
