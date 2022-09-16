@@ -16,6 +16,15 @@ NativeShape = torch.Size
 
 NativeSparseArray = torch.Tensor
 
+
+# devices
+all_devices = ("cpu", "gpu", "tpu")
+
+valid_devices = all_devices
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = torch.int8
 native_int16 = torch.int16
