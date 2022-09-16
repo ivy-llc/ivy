@@ -82,7 +82,8 @@ def test_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=2.0,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),

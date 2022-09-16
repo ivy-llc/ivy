@@ -71,6 +71,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -141,13 +142,12 @@ def var(
     if x.size == 0:
         return np.asarray(float("nan"))
     size = 1
-    if size == correction:
-        size += 0.0001  # to avoid division by zero in return
     for a in axis:
         size *= x.shape[a]
     return np.asarray(
         np.multiply(
-            np.var(x, axis=axis, keepdims=keepdims, out=out), size / (size - correction)
+            np.var(x, axis=axis, keepdims=keepdims, out=out),
+            ivy.stable_divide(size, (size - correction)),
         )
     ).astype(x.dtype)
 
