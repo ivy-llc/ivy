@@ -120,6 +120,12 @@ ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod_
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is -0) -> NaN]
 ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]
 
+############################# Ivy only skips - torch #############################
+
+# Test is sending unsupported torch dtypes
+ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_prod
+ivy_tests/test_array_api/array_api_tests/test_statistical_functions.py::test_sum
+
 ### Failing for other reasons ###
 
 # output differs from expected
@@ -149,6 +155,10 @@ ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_setitem_mask
 
 # ValueError: mask cannot be scalar
 ivy_tests/test_array_api/array_api_tests/test_array_object.py::test_getitem_masking
+
+############################# Ivy only skips - numpy ####################################
+# tolerance issue when asserting isequal()
+ivy_tests/test_array_api/array_api_tests/test_linalg.py::test_matrix_norm
 
 ############################# Ivy only skips - values error #############################
 
