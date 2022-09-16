@@ -17,7 +17,6 @@ class ndarray:
     def tolist(self, newshape, copy=None):
         return np_frontend.tolist(self.data, newshape, copy=copy)
         
-
     def reshape(self, newshape, copy=None):
         return np_frontend.reshape(self.data, newshape, copy=copy)
 
