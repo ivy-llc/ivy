@@ -3337,19 +3337,14 @@ def handle_cmd_line_args(test_fn):
             flag = True
 
         global frontend_fw
-        # Infer the frontend
-        try:
-            # naming convention `test_framework_`
-            frontend_string = test_fn.__name__.split("_")[1]
-            if frontend_string in FW_STRS:
-                frontend_fw = TEST_BACKENDS[frontend_string]
-            else:  # Clear the global variable
-                frontend_fw = None
-        except IndexError:
-            raise RuntimeError(
-                "'{}' is not a valid test function, "
-                "a test function should start with 'test_'.".format(test_fn.__name__)
-            )
+        # Reset the global variable,
+        # only set if frontend fw is inferred
+        frontend_fw = None
+        full_fn_test_path = test_fn.__module__.split(".")
+        if len(full_fn_test_path) > 2:
+            if full_fn_test_path[2] == "test_frontends":
+                frontend_fw = TEST_BACKENDS[full_fn_test_path[3][5:]]
+
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
