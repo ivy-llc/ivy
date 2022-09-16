@@ -630,7 +630,8 @@ def inv(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html>`_
+    `docstring <https://data-apis.org/array-api/
+    latest/extensions/generated/signatures.linalg.inv.html>`
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -639,6 +640,7 @@ def inv(
 
     Examples
     --------
+
 
     With :code:`ivy.Array` inputs:
 
@@ -672,13 +674,15 @@ def inv(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1.], [4., 4.]), b=ivy.array([4., 4.], [2., 1]))
+    >>> x = ivy.Container(a=ivy.array([0., 1.], [4., 4.]),\
+                          b=ivy.array([4., 4.], [2., 1]))
     >>> y = ivy.Container.inv(x)
     >>> print(x)
     {
         a: ivy.array([-1., 0.25], [1., 0.]),
         b: ivy.array([-0.25., 1.], [0.5, -1.])
     }
+
     """
     return current_backend(x).inv(x, out=out)
 
