@@ -67,7 +67,9 @@ def _batch_promotion(*args, default_dtype="float64"):
 
 def _canonicalize_axis(axis, ndim):
     if not -ndim <= axis < ndim:
-        raise ValueError(f"axis {axis} is out of bounds for array of dimension {ndim}")
+        raise ivy.exceptions.IvyException(
+            f"axis {axis} is out of bounds for array of dimension {ndim}"
+        )
     if axis < 0:
         axis = axis + ndim
     return axis
@@ -87,8 +89,11 @@ def _reduction_dims(a, axis):
     if not isinstance(axis, (tuple, list)):
         axis = (axis,)
     canon_axis = tuple(_canonicalize_axis(ax, ndims) for ax in axis)
-    if len(canon_axis) != len(set(canon_axis)):
-        raise ValueError(f"duplicate value in 'axis': {axis}")
+    ivy.assertions.check_equal(
+        len(canon_axis),
+        len(set(canon_axis)),
+        message=f"duplicate value in 'axis': {axis}",
+    )
 
     # TODO: deal with named axis
 
