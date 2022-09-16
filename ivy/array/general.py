@@ -37,8 +37,8 @@ class ArrayWithGeneral(abc.ABC):
     def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_ivy_array. This method simply
-        wraps the function, and so the docstring for ivy.is_ivy_array also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.is_ivy_array also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -560,12 +560,13 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.stable_divide(self, denominator, min_denominator=min_denominator)
 
-        def stable_pow(
+    def stable_pow(
         self: ivy.Array,
         exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
         min_base: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
+        """
+        ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
         the function, and so the docstring for ivy.stable_pow also applies to this
         method with minimal changes.
 
@@ -602,6 +603,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array([[   4,   25,  216],
                [  49,  512, 6560]])
+
         """
         return ivy.stable_pow(self, exponent, min_base=min_base)
 
@@ -861,25 +863,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.default(self, default_val, catch_exceptions, rev, with_callable)
-
-    def supports_inplace(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.supports_inplace. This method simply
-        wraps the function, and so the docstring for ivy.supports_inplace also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not inplace operations are supported for x.
-
-        """
-        return ivy.supports_inplace(self)
 
     def inplace_update(
         self: ivy.Array,

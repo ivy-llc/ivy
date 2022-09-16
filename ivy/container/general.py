@@ -6,7 +6,6 @@ from typing import Any, Union, List, Dict, Iterable, Optional, Callable
 from ivy.container.base import ContainerBase
 import ivy
 
-
 # ToDo: implement all methods here as public instance methods
 
 
@@ -3045,110 +3044,6 @@ class ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_stable_pow(
-        base: ivy.Container,
-        exponent: Union[Number, ivy.Array, ivy.Container],
-        /,
-        *,
-        min_base: float = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.stable_pow. This method simply
-        wraps the function, and so the docstring for ivy.stable_pow also applies
-        to this method with minimal changes.
-
-        Parameters
-        ----------
-        base
-            Container of the base.
-        exponent
-            Container of the exponent.
-        min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            A container of elements containing the new items following the numerically
-            stable power.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "stable_pow",
-            base,
-            exponent,
-            min_base=min_base,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    def stable_pow(
-        self,
-        exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        *,
-        min_base: float = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.stable_pow. This method
-        simply wraps the function, and so the docstring for ivy.stable_pow
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Container of the base.
-        exponent
-            Container of the exponent.
-        min_base
-            The minimum base to use, use global ivy._MIN_BASE by default.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-        ret
-            A container of elements containing the new items following the numerically
-            stable power.
-        """
-        return self.static_stable_pow(
-            self,
-            exponent,
-            min_base=min_base,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-        )
-
-    @staticmethod
     def static_einops_rearrange(
         x: ivy.Container,
         pattern: str,
@@ -3533,7 +3428,7 @@ class ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
-        
+
     @staticmethod
     def static_stable_pow(
         base: ivy.Container,
