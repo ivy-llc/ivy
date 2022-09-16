@@ -310,7 +310,7 @@ def test_torch_cumprod(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
     ),
     num_positional_args=helpers.num_positional_args(
@@ -326,8 +326,6 @@ def test_torch_trace(
     fw,
 ):
     dtype, value = dtype_and_values
-
-    assume("float16" not in dtype)
 
     value = np.asarray(value, dtype=dtype)
 
