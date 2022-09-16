@@ -1122,14 +1122,11 @@ def qr(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None
+    /
 ) -> ivy.Array:
     """Computes the sign and natural logarithm of the determinant of an array.
 
@@ -1137,9 +1134,6 @@ def slogdet(
     ----------
     x
         This is a 2D array, and it has to be square
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
