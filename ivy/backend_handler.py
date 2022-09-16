@@ -1,4 +1,5 @@
 # global
+import collections
 import ivy
 import logging
 import importlib
@@ -7,7 +8,8 @@ from ivy import verbosity
 from typing import Optional
 
 # local
-from ivy.func_wrapper import _wrap_function
+# from ivy.func_wrapper import _wrap_function
+from ivy.func_wrapper import _wrap_methods
 
 
 backend_stack = []
@@ -266,8 +268,15 @@ def set_backend(backend: str):
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
-
+        # ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+        specific_v = backend.__dict__[k]
+        ivy.__dict__[k] = specific_v
+        if isinstance(specific_v, collections.Hashable):
+            try:
+                ivy_original_fn_dict[specific_v] = v
+            except TypeError:
+                pass
+    _wrap_methods()
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
@@ -375,6 +384,9 @@ def unset_backend():
                 v = _wrap_function(k, v, ivy_original_dict[k])
             if k in ivy_original_dict:
                 ivy.__dict__[k] = v
+            # if backend_stack and k in ivy.__dict__:
+            #     v = _wrap_function(k, v, ivy.__dict__[k])
+            # ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend
