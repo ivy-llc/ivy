@@ -878,10 +878,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_matrix_rank(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             rtol=rtol,
             out=out,
         )
@@ -1225,6 +1225,65 @@ class ContainerWithLinearAlgebra(ContainerBase):
         offset: int = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trace.
+        This method Returns the sum along the specified diagonals of a matrix (or a
+        stack of matrices).
+
+        Parameters
+        ----------
+        x
+            input container having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
+        offset
+            Offset of the diagonal from the main diagonal. Can be both positive and
+            negative. Defaults to 0.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the traces and whose shape is determined by removing
+            the last two dimensions and storing the traces in the last array dimension.
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
+            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+
+            ::
+
+            out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+
+            The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        With :code: `ivy.Container` input:
+        >>> x = ivy.Container(\
+            a = ivy.array([[7, 1, 2],\
+                           [1, 3, 5],\
+                           [0, 7, 4]]),\
+            b = ivy.array([[4, 3, 2],\
+                           [1, 9, 5],\
+                           [7, 0, 6]])\
+        )
+        >>> y = x.Container.static_trace(x)
+        >>> print(y)
+        {
+            a: ivy.array(14),
+            b: ivy.array(19)
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "trace",
             x,
@@ -1246,6 +1305,65 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.trace.
+        This method Returns the sum along the specified diagonals of a matrix (or a
+        stack of matrices).
+
+        Parameters
+        ----------
+        self
+            input container having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
+        offset
+            Offset of the diagonal from the main diagonal. Can be both positive and
+            negative. Defaults to 0.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the traces and whose shape is determined by removing
+            the last two dimensions and storing the traces in the last array dimension.
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
+            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+
+            ::
+
+            out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+
+            The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        With :code: `ivy.Container` input:
+        >>> x = ivy.Container(\
+            a = ivy.array([[7, 1, 2],\
+                           [1, 3, 5],\
+                           [0, 7, 4]]),\
+            b = ivy.array([[4, 3, 2],\
+                           [1, 9, 5],\
+                           [7, 0, 6]])\
+        )
+        >>> y = x.trace()
+        >>> print(y)
+        {
+            a: ivy.array(14),
+            b: ivy.array(19)
+        }
+        """
         return self.static_trace(
             self,
             key_chains,
