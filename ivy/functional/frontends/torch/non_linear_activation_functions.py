@@ -199,3 +199,9 @@ def log_softmax(input, dim=None, dtype=None):
 
 def tanhshrink(input):
     return ivy.subtract(input, ivy.tanh(input))
+
+
+def leaky_relu_(input, negative_slope=0.01):
+    ret = ivy.leaky_relu(input, alpha=negative_slope)
+    ivy.inplace_update(input, ret)
+    return input
