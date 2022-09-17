@@ -168,7 +168,11 @@ def test_add(
 # asin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="asin"),
 )
 def test_asin(
@@ -193,6 +197,8 @@ def test_asin(
         instance_method=instance_method,
         fw=fw,
         fn_name="asin",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -200,7 +206,11 @@ def test_asin(
 # asinh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="asinh"),
 )
 def test_asinh(
@@ -225,6 +235,8 @@ def test_asinh(
         instance_method=instance_method,
         fw=fw,
         fn_name="asinh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
