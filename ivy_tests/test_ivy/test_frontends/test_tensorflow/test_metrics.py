@@ -571,7 +571,7 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
 @handle_cmd_line_args
 @given(
     y_true_dtype_y_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("int"),
         min_value=0,
         max_value=2,
         shape=(3, 2),
