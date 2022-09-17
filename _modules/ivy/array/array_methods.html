@@ -3294,31 +3294,42 @@
 <div class="viewcode-block" id="gather"><a class="viewcode-back" href="../../../functional/ivy/general/gather/gather_array.html#ivy.array.array_methods.gather">[docs]</a><span class="k">def</span> <span class="nf">gather</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.gather. This method simply wraps the</span>
-<span class="sd">    function, and so the docstring for ivy.gather also applies to this method</span>
-<span class="sd">    with minimal changes.</span>
+<span class="sd">    ivy.Array instance method variant of ivy.gather. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.gather also applies to</span>
+<span class="sd">    this method with minimal changes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        array, the array from which to gather values.</span>
+<span class="sd">    params</span>
+<span class="sd">        The array from which to gather values.</span>
 <span class="sd">    indices</span>
-<span class="sd">        array, index array.</span>
+<span class="sd">        The array which indicates the indices that will be gathered along</span>
+<span class="sd">        the specified axis.</span>
 <span class="sd">    axis</span>
-<span class="sd">        optional int, the axis from which to gather from. Default is -1.</span>
+<span class="sd">        The axis from which the indices will be gathered. Default is -1.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
+<span class="sd">        An array for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to. (Optional)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array with the values gathered at the specified indices along</span>
 <span class="sd">        the specified axis.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; x.gather(y)</span>
+<span class="sd">    ivy.array([0., 1.])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -3344,8 +3355,8 @@
 <span class="sd">    updates</span>
 <span class="sd">        values to update input tensor with</span>
 <span class="sd">    shape</span>
-<span class="sd">        The shape of the result. Default is None, in which case tensor argument must</span>
-<span class="sd">        be provided.</span>
+<span class="sd">        The shape of the result. Default is None, in which case tensor</span>
+<span class="sd">        argument must be provided.</span>
 <span class="sd">    reduction</span>
 <span class="sd">        The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;</span>
 <span class="sd">        or &#39;replace&#39;</span>
@@ -3360,7 +3371,6 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    scatter values into an array</span>
-
 <span class="sd">    &gt;&gt;&gt; arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])</span>
 <span class="sd">    &gt;&gt;&gt; indices = ivy.array([[4], [3], [1], [7]])</span>
 <span class="sd">    &gt;&gt;&gt; updates = ivy.array([9, 10, 11, 12])</span>
@@ -3369,7 +3379,6 @@
 <span class="sd">    ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])</span>
 
 <span class="sd">    scatter values into an empty array</span>
-
 <span class="sd">    &gt;&gt;&gt; shape = ivy.array([2, 5])</span>
 <span class="sd">    &gt;&gt;&gt; indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])</span>
 <span class="sd">    &gt;&gt;&gt; updates = ivy.array([25, 40, 21, 22])</span>
@@ -3384,6 +3393,7 @@
 <div class="viewcode-block" id="gather_nd"><a class="viewcode-back" href="../../../functional/ivy/general/gather_nd/gather_nd_array.html#ivy.array.array_methods.gather_nd">[docs]</a><span class="k">def</span> <span class="nf">gather_nd</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
@@ -3491,21 +3501,21 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt; x = ivy.array([[[5,4],</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[5,4],</span>
 <span class="sd">                   [11, 2]],</span>
 <span class="sd">                  [[3, 5],</span>
 <span class="sd">                   [9, 7]]])</span>
-<span class="sd">    &gt;&gt; reduced = x.einops_reduce(&#39;a b c -&gt; b c&#39;, &#39;max&#39;)</span>
-<span class="sd">    &gt;&gt; print(reduced)</span>
+<span class="sd">    &gt;&gt;&gt; reduced = x.einops_reduce(&#39;a b c -&gt; b c&#39;, &#39;max&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(reduced)</span>
 <span class="sd">    ivy.array([[ 5,  5],</span>
 <span class="sd">               [11,  7]])</span>
 
-<span class="sd">    &gt;&gt; x = ivy.array([[[5, 4, 3],</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[5, 4, 3],</span>
 <span class="sd">                    [11, 2, 9]],</span>
 <span class="sd">                   [[3, 5, 7],</span>
 <span class="sd">                    [9, 7, 1]]])</span>
-<span class="sd">    &gt;&gt; reduced = x.einops_reduce(&#39;a b c -&gt; a () c&#39;, &#39;min&#39;)</span>
-<span class="sd">    &gt;&gt; print(reduced)</span>
+<span class="sd">    &gt;&gt;&gt; reduced = x.einops_reduce(&#39;a b c -&gt; a () c&#39;, &#39;min&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(reduced)</span>
 <span class="sd">    ivy.array([[[5, 2, 3]],</span>
 <span class="sd">               [[3, 5, 1]]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3544,17 +3554,17 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt; x = ivy.array([5,4])</span>
-<span class="sd">    &gt;&gt; repeated = x.einops_repeat(&#39;a -&gt; a c&#39;, c=3)</span>
-<span class="sd">    &gt;&gt; print(repeated)</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([5,4])</span>
+<span class="sd">    &gt;&gt;&gt; repeated = x.einops_repeat(&#39;a -&gt; a c&#39;, c=3)</span>
+<span class="sd">    &gt;&gt;&gt; print(repeated)</span>
 <span class="sd">    ivy.array([[5, 4],</span>
 <span class="sd">               [5, 4],</span>
 <span class="sd">              [5, 4]])</span>
 
-<span class="sd">    &gt;&gt; x = ivy.array([[5,4],</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5,4],</span>
 <span class="sd">                [2, 3]])</span>
-<span class="sd">    &gt;&gt; repeated = x.einops_repeat(&#39;a b -&gt;  a b c&#39;, c=3)</span>
-<span class="sd">    &gt;&gt; print(repeated)</span>
+<span class="sd">    &gt;&gt;&gt; repeated = x.einops_repeat(&#39;a b -&gt;  a b c&#39;, c=3)</span>
+<span class="sd">    &gt;&gt;&gt; print(repeated)</span>
 <span class="sd">    ivy.array([[[5, 5, 5],</span>
 <span class="sd">                [4, 4, 4]],</span>
 <span class="sd">               [[2, 2, 2],</span>
@@ -4943,7 +4953,7 @@
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Examples</span>
@@ -5244,7 +5254,7 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.trace.</span>
-<span class="sd">    This method Returns the sum along the specified diagonals of a matrix (or a </span>
+<span class="sd">    This method Returns the sum along the specified diagonals of a matrix (or a</span>
 <span class="sd">    stack of matrices).</span>
 
 <span class="sd">    Parameters</span>
@@ -5253,7 +5263,7 @@
 <span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two</span>
 <span class="sd">        dimensions form ``MxN`` matrices. Should have a floating-point data type.</span>
 <span class="sd">    offset</span>
-<span class="sd">        Offset of the diagonal from the main diagonal. Can be both positive and </span>
+<span class="sd">        Offset of the diagonal from the main diagonal. Can be both positive and</span>
 <span class="sd">        negative. Defaults to 0.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
@@ -5262,9 +5272,9 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the traces and whose shape is determined by removing </span>
+<span class="sd">        an array containing the traces and whose shape is determined by removing</span>
 <span class="sd">        the last two dimensions and storing the traces in the last array dimension.</span>
-<span class="sd">        For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, </span>
+<span class="sd">        For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,</span>
 <span class="sd">        then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where</span>
 
 <span class="sd">        ::</span>
@@ -6490,12 +6500,10 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="indices_where"><a class="viewcode-back" href="../../../functional/ivy/searching/indices_where/indices_where_array.html#ivy.array.array_methods.indices_where">[docs]</a><span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="argwhere"><a class="viewcode-back" href="../../../functional/ivy/searching/argwhere/argwhere_array.html#ivy.array.array_methods.argwhere">[docs]</a><span class="k">def</span> <span class="nf">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.indices_where. This method simply</span>
-<span class="sd">    wraps the function, and so the docstring for ivy.indices_where also applies</span>
+<span class="sd">    ivy.Array instance method variant of ivy.argwhere. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.argwhere also applies</span>
 <span class="sd">    to this method with minimal changes.</span>
 
 <span class="sd">    Parameters</span>

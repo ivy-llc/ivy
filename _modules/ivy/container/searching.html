@@ -409,8 +409,8 @@
     <span class="c1"># Extra #</span>
     <span class="c1"># ----- #</span>
 
-<div class="viewcode-block" id="ContainerWithSearching.static_indices_where"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_indices_where">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">static_indices_where</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithSearching.static_argwhere"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.static_argwhere">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_argwhere</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -421,8 +421,8 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.indices_where. This method</span>
-<span class="sd">        simply wraps the function, and so the docstring for ivy.indices_where</span>
+<span class="sd">        ivy.Container static method variant of ivy.argwhere. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.argwhere</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -446,7 +446,7 @@
 <span class="sd">            Indices for where the boolean array is True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
-            <span class="s2">&quot;indices_where&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;argwhere&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
@@ -455,7 +455,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithSearching.indices_where"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.indices_where">[docs]</a>    <span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithSearching.argwhere"><a class="viewcode-back" href="../../../data_classes/container/searching/ContainerWithSearching.html#ivy.container.searching.ContainerWithSearching.argwhere">[docs]</a>    <span class="k">def</span> <span class="nf">argwhere</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -466,8 +466,8 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.indices_where. This method</span>
-<span class="sd">        simply wraps the function, and so the docstring for ivy.indices_where</span>
+<span class="sd">        ivy.Container instance method variant of ivy.argwhere. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.argwhere</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -490,7 +490,7 @@
 <span class="sd">        ret</span>
 <span class="sd">            Indices for where the boolean array is True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_indices_where</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_argwhere</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>

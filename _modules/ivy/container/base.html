@@ -297,10 +297,10 @@
         <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]:</span>
-        <span class="n">arg_cont_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span>
+        <span class="n">arg_cont_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
             <span class="n">args</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span>
         <span class="p">)</span>
-        <span class="n">kwarg_cont_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span>
+        <span class="n">kwarg_cont_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
             <span class="n">kwargs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">,</span> <span class="n">to_ignore</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span>
         <span class="p">)</span>
         <span class="c1"># retrieve all the containers in args and kwargs</span>
@@ -619,7 +619,7 @@
                 <span class="n">idxs_added</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">cont_range</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">idxs_added</span><span class="p">:</span>
-                        <span class="n">idxs_to_add</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">indices_where</span><span class="p">(</span><span class="n">equal_mat</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                        <span class="n">idxs_to_add</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">equal_mat</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
                         <span class="n">idxs_to_add_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
                             <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">idxs_to_add</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
                         <span class="p">)</span>

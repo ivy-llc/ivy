@@ -1595,16 +1595,16 @@
 <span class="sd">        }</span>
 
 <span class="sd">        With multiple :code:`ivy.Container` inputs:</span>
-
+<span class="sd">        </span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                              b=ivy.array([3., 4., 5.]))</span>
-<span class="sd">        &gt;&gt;&gt; x_min = ivy.Container(a=1, b=-1)</span>
-<span class="sd">        &gt;&gt;&gt; x_max = ivy.Container(a=1, b=-1)</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_roll(x, x_min, x_max)</span>
+<span class="sd">        &gt;&gt;&gt; x_min = ivy.Container(a=0, b=0)</span>
+<span class="sd">        &gt;&gt;&gt; x_max = ivy.Container(a=1, b=1)</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_clip(x, x_min, x_max)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([1., 1., 1.]),</span>
-<span class="sd">            b: ivy.array([-1., -1., -1.])</span>
+<span class="sd">            a: ivy.array([0., 1., 1.]),</span>
+<span class="sd">            b: ivy.array([1., 1., 1.])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
