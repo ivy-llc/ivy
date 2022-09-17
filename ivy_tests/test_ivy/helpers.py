@@ -1865,7 +1865,7 @@ def test_frontend_function(
     ret = frontend_fn(*args, **kwargs)
     ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
     out = ret
-    assert not with_out or not with_inplace
+    assert not with_out or not with_inplace, "only one of with_out or with_inplace can be set as True"
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
