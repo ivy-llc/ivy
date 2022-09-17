@@ -1756,7 +1756,9 @@ def test_pow(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     modulus=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="remainder"),
