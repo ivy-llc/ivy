@@ -63,8 +63,9 @@ def _astype_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=1,
-            small_value_safety_factor=2.5,
-            large_value_safety_factor=20,
+            small_abs_safety_factor=4,
+            large_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
 
@@ -77,13 +78,6 @@ def _astype_helper(draw):
 # astype
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-        num_arrays=1,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=1.5,
-        safety_factor_scale="log",
-    ),
     dtype_and_x_and_cast_dtype=_astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
 )
@@ -230,9 +224,10 @@ def test_can_cast(
 
 @st.composite
 def _array_or_type(draw, float_or_int):
-    valid_dtypes = {"float": ivy_np.valid_float_dtypes, "int": ivy_np.valid_int_dtypes}[
-        float_or_int
-    ]
+    valid_dtypes = {
+        "float": draw(helpers.get_dtypes("float")),
+        "int": draw(helpers.get_dtypes("integer")),
+    }[float_or_int]
     return draw(
         st.sampled_from(
             (
@@ -649,7 +644,7 @@ def test_is_int_dtype(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
     ),

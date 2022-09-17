@@ -58,6 +58,8 @@ def current_backend_str():
 
 
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+    if not ivy.is_array(query):
+        return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
     if dtype is tf.bool:
         return tf.boolean_mask(x, query)
@@ -101,17 +103,19 @@ def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=axis)
+    return tf.gather(params, indices, axis=axis, batch_dims=None)
 
 
 def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

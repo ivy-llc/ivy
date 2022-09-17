@@ -39,13 +39,20 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     # Temporary composition
     def _in_top_k(targets, predictions, topk):
         # Sanity check
-        assert targets.ndim == 1, "targets must be 1-dimensional"
-        assert predictions.ndim == 2, "predictions must be 2-dimensional"
+        ivy.assertions.check_equal(
+            targets.ndim, 1, message="targets must be 1-dimensional"
+        )
+        ivy.assertions.check_equal(
+            predictions.ndim, 2, message="predictions must be 2-dimensional"
+        )
         targets_batch = targets.shape[0]
         pred_batch = predictions.shape[0]
-        assert targets_batch == pred_batch, (
-            f"First dimension of predictions {pred_batch} "
-            f"must match length of targets {targets_batch}"
+        ivy.assertions.check_equal(
+            targets_batch,
+            pred_batch,
+            message="first dim of predictions: {} must match targets length: {}".format(
+                pred_batch, targets_batch
+            ),
         )
 
         # return array of top k values from the input
