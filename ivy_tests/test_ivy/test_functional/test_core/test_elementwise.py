@@ -1228,7 +1228,11 @@ def test_log(
 # log1p
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="log1p"),
 )
 def test_log1p(
