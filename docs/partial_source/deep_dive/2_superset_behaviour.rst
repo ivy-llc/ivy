@@ -124,9 +124,9 @@ extra :code:`threshold` and :code:`beta` arguments, then a :code:`6×` increase 
 backend functions is a heavy price to pay effiency-wise.
 
 Therefore, we should in general adopt a different approach when implementing superset
-behaviour. We should still implement the superset, but keep this extended behaviour
-optional as possible, with maximal effiency in the case that this extended behaviour is
-not desired. The following would be a much better solution:
+behaviour. We should still implement the superset, but keep this extended behaviour as
+optional as possible, with maximal effiency and minimal intrusion in the case that this
+extended behaviour is not required. The following would be a much better solution:
 
 .. code-block:: python
 
