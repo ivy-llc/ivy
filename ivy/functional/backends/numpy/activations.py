@@ -61,16 +61,23 @@ softmax.support_native_out = True
 def softplus(x: np.ndarray,
              /,
              *,
-             beta: Optional[Union[int, float]] = 1,
+             beta: Optional[Union[int, float, None]] = None,
              threshold: Optional[Union[int, float]] = 20,
              out: Optional[np.ndarray] = None
              ) -> np.ndarray:
-    res = (np.add(
-        np.log1p(np.exp(-np.abs(x * beta))),
-        np.maximum(x * beta, 0, dtype=x.dtype),
-        out=out
-    )) / beta
-    return np.where(x * beta > threshold, x, res)
+    if beta is not None and beta != 1:
+        res = (np.add(
+            np.log1p(np.exp(-np.abs(x * beta))),
+            np.maximum(x * beta, 0, dtype=x.dtype),
+            out=out
+        )) / beta
+        return np.where(x * beta > threshold, x, res)
+    else:
+        res = (np.add(
+            np.log1p(np.exp(-np.abs(x))),
+            np.maximum(x, 0, dtype=x.dtype),
+            out=out))
+        return np.where(x > threshold, x, res)
 
 
 softplus.support_native_out = True

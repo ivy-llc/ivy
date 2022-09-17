@@ -44,8 +44,14 @@ def softmax(
 def softplus(x: JaxArray,
              /,
              *,
-             beta: Optional[Union[int, float]] = 1,
+             beta: Optional[Union[int, float, None]] = None,
              threshold: Optional[Union[int, float]] = 20,
              out: Optional[JaxArray] = None) -> JaxArray:
-    res = (jnp.log1p(jnp.exp(-jnp.abs(x * beta))) + jnp.maximum(x * beta, 0)) / beta
-    return jnp.where(x * beta > threshold, x, res)
+
+    if beta is not None and beta != 1:
+        res = (jnp.log1p(jnp.exp(-jnp.abs(x * beta)))
+               + jnp.maximum(x * beta, 0)) / beta
+        return np.where(x * beta > threshold, x, res)
+    else:
+        res = (jnp.log1p(jnp.exp(-jnp.abs(x))) + jnp.maximum(x, 0))
+        return np.where(x > threshold, x, res)

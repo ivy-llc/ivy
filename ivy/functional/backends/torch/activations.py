@@ -73,10 +73,13 @@ softmax.unsupported_dtypes = ("float16",)
 def softplus(x: torch.Tensor,
              /,
              *,
-             beta: Optional[Union[int, float]] = 1,
+             beta: Optional[Union[int, float]] = None,
              threshold: Optional[Union[int, float]] = 20,
              out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.nn.functional.softplus(x, beta=beta, threshold=threshold)
+    if beta is None:
+        return torch.nn.functional.softplus(x, threshold)
+    else:
+        return torch.nn.functional.softplus(x, beta=beta, threshold=threshold)
 
 
 softplus.unsupported_dtypes = ("float16", "bfloat16")

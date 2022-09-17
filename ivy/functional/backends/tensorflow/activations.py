@@ -43,8 +43,14 @@ def softmax(
 def softplus(x: Tensor,
              /,
              *,
-             beta: Optional[Union[int, float]] = 1,
+             beta: Optional[Union[int, float, None]] = None,
              threshold: Optional[Union[int, float]] = 20,
              out: Optional[Tensor] = None) -> Tensor:
-    res = (tf.nn.softplus(x * beta)) / beta
-    return tf.where(x * beta > threshold, x, res)
+    if beta is not None and beta != 1:
+        x_beta = x * beta
+        res = (tf.nn.softplus(x_beta)) / beta
+        return tf.where(x_beta > threshold, x, res)
+    else:
+        res = tf.nn.softplus(x)
+        return tf.where(x > threshold, x, res)
+
