@@ -125,7 +125,7 @@ class Module(abc.ABC):
     # Private #
     # --------#
 
-    def _fn_with_var_arg(self, fn, v_fn, /, *):
+    def _fn_with_var_arg(self, fn, v_fn, /):
         def new_fn(*a, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
@@ -290,9 +290,9 @@ class Module(abc.ABC):
         """
         return self.sub_mods().max_depth - 1
 
-    def _find_variables(self, /, *, obj=None):
+    def _find_variables(self,/,*, obj=None):
         """
-        Find all interval varibles in obj. Return empty Container if obj is None.
+        Find all interval variables in obj. Return empty Container if obj is None.
 
         Parameters
         ----------
@@ -310,20 +310,20 @@ class Module(abc.ABC):
         #  uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
             obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(
-                depth, flatten_key_chains
+                depth=depth, flatten_key_chains=flatten_key_chains
             )
-            obj.top_mod = lambda depth=None: self._top_mod_fn(depth)
+            obj.top_mod = lambda depth=None: self._top_mod_fn(depth=depth)
             self._sub_mods.add(obj)
             return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
-                ret = self._find_variables(v)
+                ret = self._find_variables(obj=v)
                 if ret:
                     vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
-                ret = self._find_variables(v)
+                ret = self._find_variables(obj=v)
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
             return vs
@@ -331,13 +331,13 @@ class Module(abc.ABC):
             return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__":
-                ret = self._find_variables(v)
+                ret = self._find_variables(obj=v)
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
 
     @staticmethod
-    def _extract_v(v, keychain_mappings: dict, orig_key_chain, /, *):
+    def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
         """
 
 
@@ -365,13 +365,16 @@ class Module(abc.ABC):
 
     def _wrap_call_methods(self, keychain_mappings, /, *, key="", obj=None):
         """
-        (TODO)
+        wraps the call methods of the Module object
 
         Parameters
         ----------
         keychain_mappings
+            The keychain mappings of the object
         key
+            
         obj
+            the object whose __call__ method is to be wrapped
 
 
         Returns
@@ -388,12 +391,12 @@ class Module(abc.ABC):
             return
         elif isinstance(obj, (list, tuple)):
             for i, val in enumerate(obj):
-                self._wrap_call_methods(keychain_mappings, key + "/v" + str(i), val)
+                self._wrap_call_methods(keychain_mappings, key=key + "/v" + str(i), obj=val)
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
                 k = (key + "/" + k) if key != "" else k
-                self._wrap_call_methods(keychain_mappings, k, val)
+                self._wrap_call_methods(keychain_mappings, key=k, obj=val)
             return
         if not hasattr(obj, "__dict__"):
             return
@@ -402,11 +405,11 @@ class Module(abc.ABC):
                 continue
             k = (key + "/" + k) if key != "" else k
             if val is not None:
-                self._wrap_call_methods(keychain_mappings, k, val)
+                self._wrap_call_methods(keychain_mappings, key=k, obj=val)
         return
 
     @staticmethod
-    def _remove_duplicate_variables(vs, created, /, *):
+    def _remove_duplicate_variables(vs, created, /):
         """
         Remove duplicate variables in `vs` referring to `created`.
 
@@ -452,7 +455,7 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, device, dtype, /, *):
+    def _create_variables(self, *,device=None, dtype=None):
         """
         Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
@@ -517,7 +520,7 @@ class Module(abc.ABC):
             self._check_submod_ret()
         return ret
 
-    def _call(self, *args, /, *, v=None, with_grads=None, **kwargs):
+    def _call(self, *args, v=None, with_grads=None, **kwargs):
         """
         The forward pass of the layer,
         treating layer instance as callable function.
@@ -599,7 +602,7 @@ class Module(abc.ABC):
                 {
                     ivy.Container.flatten_key_chain(
                         sm.__repr__(), replacement="_"
-                    ): sm.sub_mods(show_v, next_depth)
+                    ): sm.sub_mods(show_v=show_v, depth=next_depth)
                     for sm in self._sub_mods
                 }
             )
@@ -679,7 +682,7 @@ class Module(abc.ABC):
 
         flatten_key_chains
             If set True, will return return a flat (depth-1) container, 
-            which all nested key-chains flattened. Default is False.
+            with all nested key-chains flattened. Default is False.
 
         Returns
         -------
@@ -752,8 +755,7 @@ class Module(abc.ABC):
         submods_to_track,
         track_submod_call_order,
         expected_submod_rets,
-        /,
-        *
+        /
     ):
         """
         Set flags of the submodule.
@@ -827,7 +829,7 @@ class Module(abc.ABC):
         idx_key = submod_dict[name_key][id_str]
         return " " * self.mod_depth() + "_".join([name_key, idx_key])
 
-    def _add_submod_ret(self, ret, /, *):
+    def _add_submod_ret(self, ret, /):
         """
         Add returns in the submodule return of the top module.
 
@@ -843,7 +845,7 @@ class Module(abc.ABC):
         top_mod = self.top_mod()
         sr = top_mod.submod_rets
         ret = ivy.to_numpy(ret)
-        key = self.get_mod_key(top_mod)
+        key = self.get_mod_key(top_mod=top_mod)
         if key in sr:
             sr[key].append(ret)
         else:
@@ -860,7 +862,7 @@ class Module(abc.ABC):
         """
         top_mod = self.top_mod()
         esr = top_mod.expected_submod_rets
-        key = self.get_mod_key(top_mod)
+        key = self.get_mod_key(top_mod=top_mod)
         esr_key = key
         if key not in esr:
             esr_key = key.replace(" ", "")
@@ -972,11 +974,8 @@ class Module(abc.ABC):
     def __call__(
         self,
         *args,
-        /,
-        *,
         v=None,
         with_grads=None,
-        # consider remove unused parameters?
         stateful=None,
         arg_stateful_idxs=None,
         kwarg_stateful_idxs=None,
@@ -996,14 +995,7 @@ class Module(abc.ABC):
             If given, use this container as internal varibles temporarily.
             Default is None.
         with_grads
-            If True, forward this pass with gradients. 
-
-        ### (TODO) Unused Parameters Below ###
-        stateful
-        arg_stateful_idxs
-        kwarg_stateful_idxs
-        ### (TODO) Unused Parameters Above ###
-
+            If True, forward this pass with gradients.
         track_submod_rets
             If True, will track the returns of submodules.
         submod_depth
@@ -1039,7 +1031,7 @@ class Module(abc.ABC):
         self._unset_submod_flags()
         return ret
 
-    def save_weights(self, weights_path, /, *):
+    def save_weights(self, weights_path, /):
         """
         Save the weights on the Module.
 
@@ -1055,7 +1047,7 @@ class Module(abc.ABC):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, /, *, from_call=False, device=None, dtype=None, **kwargs):
+    def build(self, *args,from_call=False, device=None, dtype=None,**kwargs):
         """
         Build the internal layers and variables for this module.
 
@@ -1090,8 +1082,8 @@ class Module(abc.ABC):
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(self._dev, dtype=dtype))
-        created_n_found = Container(dict(**self._find_variables(self), **created))
+        created = Container(self._create_variables(device=self._dev, dtype=dtype))
+        created_n_found = Container(dict(**self._find_variables(obj=self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
@@ -1126,7 +1118,7 @@ class Module(abc.ABC):
             if not ivy.exists(v_from_constructor):
                 created_n_found = Container(
                     dict(
-                        **self._find_variables(self),
+                        **self._find_variables(obj=self),
                         **self._create_variables(self._dev, dtype=dtype)
                     )
                 )
@@ -1159,10 +1151,10 @@ class Module(abc.ABC):
         Returns
         -------
         this_repr
-            String of the stucture of the module.
+            String of the structure of the module.
         """
         this_repr = termcolor.colored(object.__repr__(self), "green")
-        sub_mod_repr = self.sub_mods(False).__repr__()
+        sub_mod_repr = self.sub_mods(show_v=False).__repr__()
         if sub_mod_repr == "''":
             return this_repr
         print("\n".join([this_repr, sub_mod_repr]))

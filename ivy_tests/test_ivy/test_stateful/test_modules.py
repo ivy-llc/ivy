@@ -23,7 +23,7 @@ class TrainableModule(ivy.Module):
         self._linear0 = ivy.Linear(in_size, hidden_size, device=device)
         self._linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
         self._linear2 = ivy.Linear(hidden_size, out_size, device=device)
-        ivy.Module.__init__(self, device, v=v, with_partial_v=with_partial_v)
+        ivy.Module.__init__(self, device=device, v=v, with_partial_v=with_partial_v)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, axis=0)
@@ -96,7 +96,7 @@ class TrainableModuleWithList(ivy.Module):
         linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
         linear2 = ivy.Linear(hidden_size, out_size, device=device)
         self._layers = [linear0, linear1, linear2]
-        ivy.Module.__init__(self, device)
+        ivy.Module.__init__(self, device=device)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, axis=0)
@@ -237,7 +237,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
 class ModuleWithNoneAttribute(ivy.Module):
     def __init__(self, device=None, hidden_size=64):
         self.some_attribute = None
-        ivy.Module.__init__(self, device)
+        ivy.Module.__init__(self, device=device)
 
     def _forward(self, x):
         return x
@@ -349,7 +349,7 @@ class TrainableModuleWithDict(ivy.Module):
         linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
         linear2 = ivy.Linear(hidden_size, out_size, device=device)
         self._layers = {"linear0": linear0, "linear1": linear1, "linear2": linear2}
-        ivy.Module.__init__(self, device)
+        ivy.Module.__init__(self, device=device)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, axis=0)
@@ -420,7 +420,7 @@ class WithCustomVarStructure(ivy.Module):
         self._linear0 = ivy.Linear(in_size, hidden_size, device=device)
         self._linear1 = ivy.Linear(hidden_size, hidden_size, device=device)
         self._linear2 = ivy.Linear(hidden_size, out_size, device=device)
-        ivy.Module.__init__(self, device)
+        ivy.Module.__init__(self, device=device)
 
     def _create_variables(self, device, dtype):
         return ivy.Container(x=self._linear0.v, y=self._linear1.v, z=self._linear2.v)
@@ -455,7 +455,7 @@ class DoubleLinear(ivy.Module):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
         self._l0 = ivy.Linear(in_size, hidden_size, device=device)
         self._l1 = ivy.Linear(hidden_size, out_size, device=device)
-        ivy.Module.__init__(self, device)
+        ivy.Module.__init__(self, device=device)
 
     def _forward(self, x):
         x = self._l0(x)
@@ -601,19 +601,19 @@ def test_v_with_top_v_key_chains(batch_shape, input_channels, output_channels, d
 
     # depth 1
 
-    v = module._dl0._l0.v_with_top_v_key_chains(1)
+    v = module._dl0._l0.v_with_top_v_key_chains(depth=1)
     assert "l0" in v
     assert v.l0 is module._dl0._l0.v
 
-    v = module._dl0._l1.v_with_top_v_key_chains(1)
+    v = module._dl0._l1.v_with_top_v_key_chains(depth=1)
     assert "l1" in v
     assert v.l1 is module._dl0._l1.v
 
-    v = module._dl1._l0.v_with_top_v_key_chains(1)
+    v = module._dl1._l0.v_with_top_v_key_chains(depth=1)
     assert "l0" in v
     assert v.l0 is module._dl1._l0.v
 
-    v = module._dl1._l1.v_with_top_v_key_chains(1)
+    v = module._dl1._l1.v_with_top_v_key_chains(depth=1)
     assert "l1" in v
     assert v.l1 is module._dl1._l1.v
 
