@@ -6,7 +6,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -537,7 +536,7 @@ def test_full_like(
 @handle_cmd_line_args
 @given(
     dtype_and_arrays=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=st.integers(min_value=2, max_value=5),
         min_num_dims=1,
         max_num_dims=1,
