@@ -289,8 +289,7 @@ def test_torch_hardtanh(
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.hardtanh",
-        input=np.asarray(x, dtype=input_dtype),
-        negative_slope=alpha,
+        input=np.asarray(x, dtype=input_dtype)
     )
  
 
