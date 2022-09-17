@@ -274,9 +274,9 @@ def test_finfo(
     if not ivy.exists(ret):
         return
     mach_lims, mach_lims_np = ret
-    assert mach_lims.min == mach_lims_np.min
-    assert mach_lims.max == mach_lims_np.max
-    assert mach_lims.eps == mach_lims_np.eps
+    assert np.allclose(mach_lims.min, mach_lims_np.min, rtol=1e-2, atol=1e-2)
+    assert np.allclose(mach_lims.max, mach_lims_np.max, rtol=1e-2, atol=1e-2)
+    assert np.allclose(mach_lims.eps, mach_lims_np.eps, rtol=1e-2, atol=1e-2)
     assert mach_lims.bits == mach_lims_np.bits
 
 
