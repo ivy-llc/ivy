@@ -199,3 +199,17 @@ def squared_hinge(y_true, y_pred):
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
     y_true = _cond_convert_labels(y_true)
     return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)
+
+
+def cosine_similarity(y_true, y_pred):
+    y_pred = ivy.array(y_pred)
+    y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
+
+    if ivy.equal(y_true.shape,y_pred.shape) and len(y_true.shape)==2:
+        numerator = ivy.sum(y_true * y_pred, axis= 1)
+        denominator = (ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred))
+        cosine = numerator / denominator
+    else:
+        cosine = (y_true @ y_pred) / (ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred))
+    
+    return ivy.array(cosine)

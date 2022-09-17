@@ -643,3 +643,39 @@ def test_tensorflow_batch_normalization(
         scale=np.asarray(scale, dtype=input_dtype),
         variance_epsilon=1e-7,
     )
+    
+    
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="1d",
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.max_pool1d"
+    ),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+)
+def test_tensorflow_max_pool1d(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x, ksize, data_format, stride, pad = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.max_pool1d",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        ksize=ksize,
+        stride=stride,
+        padding=pad,
+        data_format=data_format,
+    )
