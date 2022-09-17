@@ -503,7 +503,11 @@ def diagonal(
 @handle_nestable
 @handle_exceptions
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    UPLO="L",
+    out: Optional[ivy.Array] = None,
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -543,7 +547,7 @@ def eigh(
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
     """
-    return current_backend(x).eigh(x, out=out)
+    return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
 
 @to_native_arrays_and_back
