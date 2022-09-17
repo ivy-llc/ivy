@@ -73,7 +73,7 @@ valid_int_dtypes = (
     ivy.uint32,
     ivy.uint64,
 )
-valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 
 # invalid data types

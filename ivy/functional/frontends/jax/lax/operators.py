@@ -293,6 +293,15 @@ def log1p(x):
 def pad(operand, padding_value, padding_config):
     operand_new = []
     padding_row = []
+    data_type = padding_value.dtype
+    import numpy as np
+    if data_type == 'float16':
+        data_type_converter = np.float16
+    elif data_type == 'float32':
+        data_type_converter = np.float32
+    elif data_type == 'float64':
+        data_type_converter = np.float64
+    padding_value = data_type_converter(padding_value)
     for i in range(0, operand.shape[1] + (operand.shape[1] - 1) * padding_config[1][2]):
         padding_row.append(padding_value)
     for i in range(operand.shape[0] * 2 - 1):
@@ -303,33 +312,31 @@ def pad(operand, padding_value, padding_config):
             row = []
             for j in range(operand.shape[1] * 2 - 1):
                 if j % 2 == 0:
-                    row.append(operand[int(i / 2)][int(j / 2)])
+                    row.append(data_type_converter(operand[int(i / 2)][int(j / 2)]))
                 else:
                     for k in range(0, padding_config[1][2]):
                         row.append(padding_value)
             operand_new.append(row)
-    operand_new = ivy.array(operand_new)
-    operand_copy = operand_new
+    operand_new_ = ivy.asarray(operand_new, dtype=data_type)
     ret_new = []
     for j in range(0, padding_config[0][0]):
         row = []
-        for i in range(operand_copy.shape[1] + padding_config[1][0] + padding_config[1][1]):
+        for i in range(operand_new_.shape[1] + padding_config[1][0] + padding_config[1][1]):
             row.append(padding_value)
         ret_new.append(row)
-    for k in range(0, operand_copy.shape[0]):
+    for k in range(0, operand_new_.shape[0]):
         col = []
         for i in range(padding_config[1][0]):
             col.append(padding_value)
-        for i in range(0, operand_copy.shape[1]):
-            col.append(operand_copy[k][i])
+        for i in range(0, operand_new_.shape[1]):
+            col.append(operand_new[k][i])
         for i in range(padding_config[1][1]):
             col.append(padding_value)
         ret_new.append(col)
     for j in range(0, padding_config[0][1]):
         row = []
-        for i in range(operand_copy.shape[1] + padding_config[1][0] + padding_config[1][1]):
+        for i in range(operand_new_.shape[1] + padding_config[1][0] + padding_config[1][1]):
             row.append(padding_value)
         ret_new.append(row)
-    ret_new = ivy.asarray(ret_new, dtype=padding_value.dtype)
-    print("test")
+    ret_new = ivy.asarray(ret_new, dtype=operand_new_.dtype)
     return ret_new
