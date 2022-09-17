@@ -8,7 +8,7 @@ import numpy as np
 import math
 import gc
 from typing import Optional, Union, List
-from hypothesis import given, assume, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 from functools import reduce
@@ -1114,14 +1114,6 @@ def test_method(
         for v, d in zip(as_variable_flags_method, input_dtypes_method)
     ]
 
-    # change all data types so that they are supported by this framework
-    input_dtypes_init = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_init
-    ]
-    input_dtypes_method = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
-    ]
-
     # create args
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args_init,
@@ -1887,9 +1879,6 @@ def test_frontend_array_instance_method(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
-
     # create args
     if test_unsupported:
         try:
@@ -1956,9 +1945,6 @@ def test_frontend_array_instance_method(
         if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
