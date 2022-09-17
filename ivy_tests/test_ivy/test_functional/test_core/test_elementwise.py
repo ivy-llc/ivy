@@ -1633,8 +1633,8 @@ def _pow_helper(draw):
     dtype1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
-            small_value_safety_factor=2.5,
-            large_value_safety_factor=40,
+            small_abs_safety_factor=4,
+            large_abs_safety_factor=4,
         )
     )
 
@@ -1662,9 +1662,9 @@ def _pow_helper(draw):
             max_value = None
     dtype2, x2 = draw(
         helpers.dtype_and_values(
-            small_value_safety_factor=2.5,
-            large_value_safety_factor=40,
-            max_op="log",
+            small_abs_safety_factor=12,
+            large_abs_safety_factor=12,
+            safety_factor_scale="log",
             max_value=max_value,
             dtype=[dtype2],
         )
@@ -1721,6 +1721,8 @@ def test_pow(
         instance_method=instance_method,
         fw=fw,
         fn_name="pow",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x1,
         x2=x2,
     )
