@@ -224,9 +224,10 @@ def test_can_cast(
 
 @st.composite
 def _array_or_type(draw, float_or_int):
-    valid_dtypes = {"float": ivy_np.valid_float_dtypes, "int": ivy_np.valid_int_dtypes}[
-        float_or_int
-    ]
+    valid_dtypes = {
+        "float": draw(helpers.get_dtypes("float")),
+        "int": draw(helpers.get_dtypes("integer")),
+    }[float_or_int]
     return draw(
         st.sampled_from(
             (
