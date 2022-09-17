@@ -63,8 +63,9 @@ def _astype_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=1,
-            small_value_safety_factor=2.5,
-            large_value_safety_factor=20,
+            small_abs_safety_factor=4,
+            large_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
 
@@ -77,13 +78,6 @@ def _astype_helper(draw):
 # astype
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-        num_arrays=1,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=1.5,
-        safety_factor_scale="log",
-    ),
     dtype_and_x_and_cast_dtype=_astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
 )
