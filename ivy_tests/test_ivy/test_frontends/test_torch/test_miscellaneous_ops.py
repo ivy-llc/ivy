@@ -341,8 +341,8 @@ def test_torch_tril_indices(
         offset=offset,
         dtype=dtype_result,
     )
-    
-   
+
+
 @handle_cmd_line_args
 @given(
     row=st.integers(min_value=0, max_value=100),
@@ -374,4 +374,72 @@ def test_torch_triu_indices(
         row=row,
         col=col,
         offset=offset,
+    )
+
+
+@st.composite
+def _get_dtype_and_arrays_and_start_end_dim(
+    draw,
+    *,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=5,
+):
+    num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
+    shape = tuple(
+        draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+        for _ in range(num_dims)
+    )
+
+    dtype, array, s2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            shape=shape,
+            ret_shape=True,
+        )
+    )
+
+    assert shape == s2
+
+    start_dim = draw(st.integers(min_value=0, max_value=num_dims - 1))
+    end_dim = draw(st.integers(min_value=start_dim, max_value=num_dims - 1))
+
+    return dtype, array, start_dim, end_dim
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_input_and_start_end_dim=_get_dtype_and_arrays_and_start_end_dim(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.flatten"
+    ),
+)
+def test_torch_flatten(
+    dtype_and_input_and_start_end_dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, input, start_dim, end_dim = dtype_and_input_and_start_end_dim
+
+    input = np.asarray(input, dtype=dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="flatten",
+        input=input,
+        start_dim=start_dim,
+        end_dim=end_dim,
     )
