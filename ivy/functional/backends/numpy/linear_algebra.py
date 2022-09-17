@@ -58,8 +58,10 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-def eigh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.linalg.eigh(x)
+def eigh(
+    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.linalg.eigh(x, UPLO=UPLO)
 
 
 eigh.unsupported_dtypes = ("float16",)
