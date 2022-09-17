@@ -44,9 +44,20 @@ def test_relu(
 # leaky_relu
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
+        safety_factor_scale="log",
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="leaky_relu"),
-    alpha=st.floats(width=16),
+    alpha=helpers.array_values(
+        dtype=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        shape=(),
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
+        safety_factor_scale="log",
+    ),
 )
 def test_leaky_relu(
     *,
@@ -71,7 +82,8 @@ def test_leaky_relu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="leaky_relu",
-        rtol_=1e-4,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         alpha=alpha,
     )
@@ -82,7 +94,8 @@ def test_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_value_safety_factor=2.0,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
@@ -110,8 +123,8 @@ def test_gelu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="gelu",
-        atol_=1e-4,
-        rtol_=1e-4,
+        atol_=1e-2,
+        rtol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         approximate=approximate,
     )
@@ -145,6 +158,8 @@ def test_sigmoid(
         container_flags=container,
         instance_method=instance_method,
         fn_name="sigmoid",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
     )
 
@@ -218,5 +233,7 @@ def test_softplus(
         container_flags=container,
         instance_method=instance_method,
         fn_name="softplus",
+        rtol_=1e-02,
+        atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
     )

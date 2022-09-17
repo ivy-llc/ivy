@@ -72,7 +72,7 @@ class IvyModule(ivy.Module):
                     # noinspection PyProtectedMember
                     native.__setattr__(k, v.data)
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "found item in variable container {} which was neither a "
                     "sub ivy.Container nor a variable.".format(v)
                 )
@@ -101,10 +101,10 @@ def to_ivy_module(
     kwargs = ivy.default(kwargs, {})
 
     if not ivy.exists(native_module):
-        if not ivy.exists(native_module_class):
-            raise Exception(
-                "native_module_class must be specified if native_module is not given"
-            )
+        ivy.assertions.check_exists(
+            native_module_class,
+            message="native_module_class must be specified if native_module is None",
+        )
 
     return IvyModule(
         native_module_class,

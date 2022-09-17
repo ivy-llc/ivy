@@ -8,6 +8,8 @@ Open Tasks
 .. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
 .. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
+.. _`issue description`: https://github.com/unifyai/ivy/issues/1526
+.. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -17,6 +19,13 @@ completed tasks will be removed. The tasks outlined here are generally broad hig
 tasks, each of which is made up of many individual sub-tasks,
 distributed across task-specific
 `ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
+
+Please read about
+`ToDo List Issues <https://lets-unify.ai/ivy/contributing/1_the_basics.html#todo-list-issues>`_
+in detail before continuing.
+ALl tasks should be selected and allocated as described in the ToDo List Issues section.
+We make no mention of task selection and allocation in the explanations below, which
+instead focus on the steps to complete only once a sub-task has been allocated to you.
 
 The tasks currently open are:
 
@@ -146,6 +155,7 @@ for this task.
 
 The general workflow for this task is:
 
+#. find the correct location for the function by following the *Where to place a frontend function* subsection below
 #. implement the function by following the `Ivy Frontends`_ guide
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
@@ -204,6 +214,58 @@ another frontend function to work on from the ToDo list! If you're stuck on a
 function which requires complex compositions, you're allowed to reselect a function
 too!
 
+Where to place a frontend function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The placement of new frontend functions for a given backend should follow the categorisation of the backend API as
+faithfully as possible. In each `issue description`_, there will be a link to the relevant `reference API`_. Check
+where the function you're working on is located, e.g. :code:`numpy.inner` falls under :code:`numpy.linalg`. Then, in the
+Ivy source code, check :code:`ivy/functional/frontends/[backend]` for pre-existing files which best match the function's
+category in the backend reference API.
+
+Taking :code:`numpy.inner` as an example, we can see that there are a few :code:`ivy/functional/frontends/numpy`
+sub-directories to choose from:
+
+.. code-block:: bash
+    :emphasize-lines: 4
+
+    creation_routines
+    fft
+    indexing_routines
+    linear_algebra
+    logic
+    ma
+    manipulation_routines
+    mathematical_functions
+    matrix
+    ndarray
+    random
+    sorting_searching_counting
+    statistics
+    ufunc
+
+There is a :code:`linear_algebra` sub-directory, so we choose this. There is then a linalg sub-directory. From the numpy
+API, we can see that certain functions listed under 'Linear Algebra (:code:`numpy.linalg`)' actually do *not* require the
+linalg namespace. :code:`inner` is one such function, hence it will not be placed in this directory. We then need to choose
+from the files at this hierarchy (ignoring :code:`__init__.py` files):
+
+.. code-block:: bash
+    :emphasize-lines: 1
+
+    matrix_and_vector_products.py
+    norms_and_other_numbers.py
+
+This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
+:code:`matrix_and_vector_products.py` seems like the most appropriate option. The location of
+:code:`test_numpy_inner` should mirror the location of its corresponding function, this time in
+:code:`ivy_tests/test_ivy/test_frontends/[backend]`.
+
+If you're unsure about where to put the function you're working on, explore the content of these files to see if you
+can find a similar function. In :code:`matrix_and_vector_products.py`, we can see other functions such as :code:`outer`
+that are similar to :code:`inner`. This is confirmation that we've found the correct place! If many of the files are
+empty and you're unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.
+
+
 Ivy API Extensions
 ------------------
 
@@ -213,6 +275,10 @@ would help with the implementation for many of the functions in the frontend.
 Your task is to implement these functions in Ivy, along with their Implementation 
 in the respective backends which are :code:`Jax`, :code:`PyTorch`, :code:`TensorFlow` 
 and :code:`NumPy`. You must also implement tests for these functions.
+
+There is only one central ToDo list
+`issue <https://github.com/unifyai/ivy/issues/3856>`_
+for this task.
 
 A general workflow for these tasks would be:
 

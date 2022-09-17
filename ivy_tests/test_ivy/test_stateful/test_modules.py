@@ -72,11 +72,7 @@ def test_module_training(batch_shape, input_channels, output_channels, device):
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
@@ -144,11 +140,7 @@ def test_module_w_list_training(batch_shape, input_channels, output_channels, de
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.layers.v0.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.v0.w)) > 0
@@ -175,11 +167,13 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
+
         return
     if ivy.current_backend_str() == "mxnet":
         # MXNet ivy.Container repr currently does not work
         return
     # batch_shape, input_channels, output_channels = bs_ic_oc
+
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -209,7 +203,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
             "TrainableModule did not raise exception desipite being passed "
             "with wrongly shaped variables."
         )
-    except AssertionError:
+    except ivy.exceptions.IvyException:
         pass
     v = ivy.Container(
         {
@@ -226,7 +220,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
             "TrainableModule did not raise exception desipite being passed "
             "with wrongly shaped variables."
         )
-    except AssertionError:
+    except ivy.exceptions.IvyException:
         pass
     module = TrainableModule(
         input_channels, output_channels, device=device, v=v, with_partial_v=True
@@ -327,11 +321,7 @@ def test_module_training_with_duplicate(batch_shape, channels, same_layer, devic
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.linear0.b)) > 0
     assert ivy.max(ivy.abs(grads.linear0.w)) > 0
@@ -397,11 +387,7 @@ def test_module_w_dict_training(batch_shape, input_channels, output_channels, de
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
-    if ivy.current_backend_str() == "mxnet":
-        # mxnet slicing cannot reduce dimension to zero
-        assert loss.shape == (1,)
-    else:
-        assert loss.shape == ()
+    assert loss.shape == ()
     # value test
     assert ivy.max(ivy.abs(grads.layers.linear0.b)) > 0
     assert ivy.max(ivy.abs(grads.layers.linear0.w)) > 0
@@ -812,7 +798,7 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except AssertionError:
+    except ivy.exceptions.IvyException:
         pass
 
     # depth 2 (full)
@@ -826,7 +812,7 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except AssertionError:
+    except ivy.exceptions.IvyException:
         pass
 
     # partial submodules
@@ -842,7 +828,7 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except AssertionError:
+    except ivy.exceptions.IvyException:
         pass
 
     # with tolerances
@@ -868,7 +854,7 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except AssertionError:
+    except ivy.exceptions.IvyException:
         pass
 
 

@@ -33,21 +33,18 @@ _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
 _array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
-_array_types["mxnet.ndarray.ndarray"] = "ivy.functional.backends.mxnet"
 
 _backend_dict = dict()
 _backend_dict["numpy"] = "ivy.functional.backends.numpy"
 _backend_dict["jax"] = "ivy.functional.backends.jax"
 _backend_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
 _backend_dict["torch"] = "ivy.functional.backends.torch"
-_backend_dict["mxnet"] = "ivy.functional.backends.mxnet"
 
 _backend_reverse_dict = dict()
 _backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
 _backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
 _backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
 _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
-_backend_reverse_dict["ivy.functional.backends.mxnet"] = "mxnet"
 
 
 # Backend Getting/Setting #
@@ -244,10 +241,10 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
-    if isinstance(backend, str) and backend not in _backend_dict:
-        raise ValueError(
-            "backend must be one from {}".format(list(_backend_dict.keys()))
-        )
+    ivy.assertions.check_false(
+        isinstance(backend, str) and backend not in _backend_dict,
+        "backend must be one from {}".format(list(_backend_dict.keys())),
+    )
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     if not backend_stack:
@@ -284,7 +281,7 @@ def get_backend(backend: Optional[str] = None):
     ----------
     backend
         The backend for which we want to retrieve Ivy's backend i.e. one of 'jax',
-        'torch', 'tensorflow', 'numpy', 'mxnet'.
+        'torch', 'tensorflow', 'numpy'.
 
     Returns
     -------
@@ -435,20 +432,6 @@ def try_import_ivy_torch(warn=False):
         )
 
 
-def try_import_ivy_mxnet(warn=False):
-    try:
-        import ivy.functional.backends.mxnet
-
-        return ivy.functional.backends.mxnet
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\nmxnet does not appear to be installed, "
-            "ivy.functional.backends.mxnet can therefore not be imported.\n".format(e)
-        )
-
-
 def try_import_ivy_numpy(warn=False):
     try:
         import ivy.functional.backends.numpy
@@ -467,7 +450,6 @@ FW_DICT = {
     "jax": try_import_ivy_jax,
     "tensorflow": try_import_ivy_tf,
     "torch": try_import_ivy_torch,
-    "mxnet": try_import_ivy_mxnet,
     "numpy": try_import_ivy_numpy,
 }
 
@@ -475,11 +457,13 @@ FW_DICT = {
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
-        if len(excluded) == 5:
-            raise Exception(
-                "Unable to select backend, all backends are either excluded "
-                "or not installed."
-            )
+        ivy.assertions.check_equal(
+            len(excluded),
+            4,
+            inverse=True,
+            message="""Unable to select backend, all backends are excluded,\
+            or not installed.""",
+        )
         f = np.random.choice(
             [f_srt for f_srt in list(FW_DICT.keys()) if f_srt not in excluded]
         )

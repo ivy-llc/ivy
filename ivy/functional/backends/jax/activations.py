@@ -1,33 +1,32 @@
 """Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional
-
 # global
 import jax
 import jax.numpy as jnp
+from typing import Optional
 
 # local
 from ivy.functional.backends.jax import JaxArray
-
-
-def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.maximum(x, 0)
-
-
-def leaky_relu(
-    x: JaxArray, /, *, alpha: Optional[float] = 0.2, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.where(x > 0, x, x * alpha)
 
 
 def gelu(
     x: JaxArray,
     /,
     *,
-    approximate: Optional[bool] = True,
+    approximate: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)
+
+
+def leaky_relu(
+    x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.asarray(jnp.where(x > 0, x, jnp.multiply(x, alpha)), x.dtype)
+
+
+def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.maximum(x, 0)
 
 
 def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
