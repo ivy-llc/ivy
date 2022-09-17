@@ -566,3 +566,37 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         y_true=np.asarray(x[0], dtype=input_dtype[0]),
         y_pred=np.asarray(x[1], dtype=input_dtype[1]),
     )
+
+
+@handle_cmd_line_args
+@given(
+    y_true_dtype_y_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1,
+        shape=(2, 2),
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cosine_similarity"
+    ),
+)
+def test_cosine_similarity(
+    y_true_dtype_y_pred, as_variable, num_positional_args, native_array, fw, with_out
+):
+    dtype, y_true_y_pred = y_true_dtype_y_pred
+    y_true_y_pred = ivy.array(y_true_y_pred, dtype=dtype)
+    y_true, y_pred = y_true_y_pred
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.cosine_similarity",
+        y_true=y_true,
+        y_pred=y_pred,
+    )
