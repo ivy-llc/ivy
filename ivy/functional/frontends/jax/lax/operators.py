@@ -331,4 +331,5 @@ def pad(operand, padding_value, padding_config):
             row.append(padding_value)
         ret_new.append(row)
     ret_new = ivy.asarray(ret_new, dtype=padding_value.dtype)
+    print("test")
     return ret_new
