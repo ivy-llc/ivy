@@ -77,8 +77,10 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.linalg.eigh(x, out=out)
+def eigh(
+    x: torch.Tensor, /, UPLO: Optional[str] = "L", *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.linalg.eigh(x, UPLO=UPLO, out=out)
 
 
 eigh.unsupported_dtypes = ("float16",)
