@@ -137,11 +137,13 @@ extended behaviour is not required. The following would be a much better solutio
                  threshold: Optional[Union[int, float]] = None,
                  out: Optional[Tensor] = None) -> Tensor:
         if beta is not None and beta != 1:
-            res = (tf.nn.softplus(x * beta)) / beta
+            x_beta = x * beta
+            res = (tf.nn.softplus(x_beta)) / beta
         else:
+            x_beta = x
             res = tf.nn.softplus(x)
         if threshold is not None:
-            return tf.where(x * beta > threshold, x, res)
+            return tf.where(x_beta > threshold, x, res)
         return res
 
 You will notice that this implementation involves more lines of code, but this should
