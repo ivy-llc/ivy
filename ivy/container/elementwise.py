@@ -2341,7 +2341,6 @@ class ContainerWithElementwise(ContainerBase):
             optional string/NoneType specifying the rounding mode. If None, true division is used.
             If 'floor', the floor division mode is used rounding results down.
             If 'trunc', C-style integer division is used rounding results towards zero.
-            division mode is used.
 
         out
             optional output container, for writing the result to. It must have a shape
@@ -2434,7 +2433,6 @@ class ContainerWithElementwise(ContainerBase):
             optional string/NoneType specifying the rounding mode. If None, true division is used.
             If 'floor', the floor division mode is used rounding results down.
             If 'trunc', C-style integer division is used rounding results towards zero.
-            division mode is used.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
