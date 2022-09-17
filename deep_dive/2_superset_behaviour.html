@@ -51,11 +51,11 @@
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Superset Behaviour</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-softplus">ivy.softplus</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-linspace">ivy.linspace</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-eye">ivy.eye</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-scatter-nd">ivy.scatter_nd</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-logical-and">ivy.logical_and</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extending-the-standard">Extending the Standard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-the-superset">What is the Superset?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-the-superset-is-too-much">When the Superset is Too Much</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#balancing-generalization-with-efficiency">Balancing Generalization with Efficiency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#more-examples">More Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
@@ -163,6 +163,8 @@
 <h1>Superset Behaviour<a class="headerlink" href="#superset-behaviour" title="Permalink to this heading"></a></h1>
 <p>When implementing functions in Ivy, we are constantly faced with the question: which
 backend implementation should Ivy most closely follow?</p>
+<section id="extending-the-standard">
+<h2>Extending the Standard<a class="headerlink" href="#extending-the-standard" title="Permalink to this heading"></a></h2>
 <p>It might seem as though this question is already answered.
 Ivy fully adheres to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, which helpfully limits our design space
 for the functions, but in its current form this only covers a relatively small number of
@@ -172,7 +174,10 @@ the standard permits the addition of extra arguments and function features,
 provided that they do not contradict the requirements of the standard.
 Therefore, we are still faced with the same kind of design decisions for all Ivy
 functions, even those appearing in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.</p>
-<p>In this section, we explain through examples how Ivy always goes for the superset of
+</section>
+<section id="what-is-the-superset">
+<h2>What is the Superset?<a class="headerlink" href="#what-is-the-superset" title="Permalink to this heading"></a></h2>
+<p>We explain through examples how Ivy always goes for the superset of
 functionality among the backend frameworks. This means that even if only one framework
 supports a certain feature, then we still strive to include this feature in the Ivy
 function. The Ivy function then entails the <em>superset</em> of all backend features.
@@ -180,11 +185,14 @@ However, this is not always totally possible, and in some cases certain
 framework-specific features must be sacrificed, but usually it’s possible to implement a
 very generalized function which covers most of the unique features among the
 corresponding functions in each framework.</p>
+</section>
+<section id="when-the-superset-is-too-much">
+<h2>When the Superset is Too Much<a class="headerlink" href="#when-the-superset-is-too-much" title="Permalink to this heading"></a></h2>
 <p>Despite this general approach, the total superset is not always actually strived for,
 especially in cases where the behaviour can very easily be replicated by a simple
 composition of other functions, or where the extra behaviour is redundant as it is
-already covered by another function.
-As an example, many pointwise functions in NumPy support the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument,
+already covered by another function.</p>
+<p>As an example, many pointwise functions in NumPy support the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument,
 which enables a mask array to be specified, with the function then only evaluated
 at elements for which the <code class="code docutils literal notranslate"><span class="pre">where</span></code> array is <code class="code docutils literal notranslate"><span class="pre">True</span></code>.
 This inclusion of this feature in NumPy is totally understandable,
@@ -196,7 +204,9 @@ implemented with very high efficiency in <code class="code docutils literal notr
 first place, only to then be masked out in the immediately subsequent operation.
 For these reasons, calling <code class="code docutils literal notranslate"><span class="pre">np.absolute(x,</span> <span class="pre">where=mask)</span></code> is much more efficient
 than calling <code class="code docutils literal notranslate"><span class="pre">np.where(mask,</span> <span class="pre">np.absolute(x),</span> <span class="pre">np.empty_like(x))</span></code> in NumPy.
-However, other frameworks are able to compile compositions of python operations directly
+<code class="code docutils literal notranslate"><span class="pre">ivy.logical_and</span></code> is another example where the superset is too much, as we explain
+in the extra examples given at the end of this section.</p>
+<p>However, other frameworks are able to compile compositions of python operations directly
 to computation graphs in low-level languages, and are also able to intelligently fuse
 operations into combined kernels, via libraries such as
 <a class="reference external" href="https://github.com/NVIDIA/TensorRT">TensorRT</a>.
@@ -205,12 +215,12 @@ NumPy. Instead, a compositional approach is preferred, where each function in Py
 generally serves a particular and non-overlapping purpose.
 This helps to keep things more clean and clear at the Python level,
 without sacrificing efficiency at the lower level.</p>
-<p>We now take a look at some examples, and explain our rational for deciding upon the
-function signature that we should use in Ivy. The first four examples are more-or-less
-superset examples, while the last example involves a deliberate decision to not
-implement the full superset, for some of the reasons explained above.</p>
-<section id="ivy-softplus">
-<h2>ivy.softplus<a class="headerlink" href="#ivy-softplus" title="Permalink to this heading"></a></h2>
+</section>
+<section id="balancing-generalization-with-efficiency">
+<h2>Balancing Generalization with Efficiency<a class="headerlink" href="#balancing-generalization-with-efficiency" title="Permalink to this heading"></a></h2>
+<p>Sometimes, the simplest way to implement superset behaviour comes at the direct expense
+of runtime efficiency. We explore this through the examples of <code class="code docutils literal notranslate"><span class="pre">softplus</span></code>.</p>
+<p><strong>ivy.softplus</strong></p>
 <p>When looking at the <code class="code docutils literal notranslate"><span class="pre">softplus</span></code> (or closest equivalent) implementations for
 <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/activations/softplus/softplus_functional.html">Ivy</a>,
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.nn.softplus.html">JAX</a>,
@@ -220,12 +230,77 @@ and
 we can see that <code class="code docutils literal notranslate"><span class="pre">torch</span></code> is the only framework which supports the inclusion of the
 <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> arguments, which are added for improved numerical
 stability. We can also see that <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> does not support a <code class="code docutils literal notranslate"><span class="pre">softplus</span></code>
-function at all. Ivy also supports the <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> arguments,
-and in doing so provides the generalized superset implementation among the backend
+function at all. Ivy should also support the <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code>
+arguments, in order to provide the generalized superset implementation among the backend
 frameworks.</p>
+<p>Let’s take the <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> backend implementation as an example when assessing
+the necessary changes. Without superset behaviour, the implementation is incredibly
+simple, with only a single <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> function called under the hood.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="o">/</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span>
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The simplest approach would be to implement <code class="code docutils literal notranslate"><span class="pre">softplus</span></code> in each Ivy backend as
+a simple composition. For example, a simple composition in the <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>
+backend would look like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="o">/</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span>
+             <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">beta</span><span class="p">))</span> <span class="o">/</span> <span class="n">beta</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">beta</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This approach uses the default argument values used by PyTorch, and it does indeed
+extend the behaviour correctly. However, the implementation now uses <strong>six</strong>
+<code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> function calls instead of one, being: <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">tf.nn.softplus</span></code>, <code class="code docutils literal notranslate"><span class="pre">__div__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__gt__</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">tf.where</span></code> in order of execution respectively. If a user doesn’t care about the
+extra <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> and <code class="code docutils literal notranslate"><span class="pre">beta</span></code> arguments, then a <code class="code docutils literal notranslate"><span class="pre">6×</span></code> increase in
+backend functions is a heavy price to pay effiency-wise.</p>
+<p>Therefore, we should in general adopt a different approach when implementing superset
+behaviour. We should still implement the superset, but keep this extended behaviour
+optional as possible, with maximal effiency in the case that this extended behaviour is
+not desired. The following would be a much better solution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="o">/</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span>
+             <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">beta</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">beta</span><span class="p">))</span> <span class="o">/</span> <span class="n">beta</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">beta</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+<p>You will notice that this implementation involves more lines of code, but this should
+not be confused with added complexity. All Ivy code should be graph compiled for
+efficiency, and in this case all the <code class="code docutils literal notranslate"><span class="pre">if</span></code> and <code class="code docutils literal notranslate"><span class="pre">else</span></code> statements are removed,
+and all that remain are the backend functions which were executed. This new
+implementation will compiled to a graph of either one, three, four or six functions
+depending on the values of <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code>, while the previous
+implementation would <em>always</em> compile to six functions.</p>
+<p>This does mean we do not adopt the default values used by PyTorch, but that’s okay.
+Implementing the superset does not mean adopting the same default values for arguments,
+it simply means equiping the Ivy function with the capabilities to execute the superset
+of behaviours.</p>
 </section>
-<section id="ivy-linspace">
-<h2>ivy.linspace<a class="headerlink" href="#ivy-linspace" title="Permalink to this heading"></a></h2>
+<section id="more-examples">
+<h2>More Examples<a class="headerlink" href="#more-examples" title="Permalink to this heading"></a></h2>
+<p>We now take a look at some examples, and explain our rational for deciding upon the
+function signature that we should use in Ivy. The first three examples are more-or-less
+superset examples, while the last example involves a deliberate decision to not
+implement the full superset, for some of the reasons explained above.</p>
+<p><strong>ivy.linspace</strong></p>
 <p>When looking at the <code class="code docutils literal notranslate"><span class="pre">linspace</span></code> (or closest equivalent) implementations for
 <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/linspace/linspace_functional.html">Ivy</a>,
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html">JAX</a>,
@@ -238,9 +313,7 @@ we can see that <code class="code docutils literal notranslate"><span class="pre
 Likewise, Ivy also supports arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">stop</span></code> arguments,
 and in doing so provides the generalized superset implementation among the backend
 frameworks.</p>
-</section>
-<section id="ivy-eye">
-<h2>ivy.eye<a class="headerlink" href="#ivy-eye" title="Permalink to this heading"></a></h2>
+<p><strong>ivy.eye</strong></p>
 <p>When looking at the <code class="code docutils literal notranslate"><span class="pre">eye</span></code> (or closest equivalent) implementations for
 <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/eye/eye_functional.html">Ivy</a>,
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html">JAX</a>,
@@ -252,9 +325,7 @@ we can see that <code class="code docutils literal notranslate"><span class="pre
 <code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code> argument. Likewise, Ivy also supports a <code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code>
 argument, and in doing so provides the generalized superset implementation among the
 backend frameworks.</p>
-</section>
-<section id="ivy-scatter-nd">
-<h2>ivy.scatter_nd<a class="headerlink" href="#ivy-scatter-nd" title="Permalink to this heading"></a></h2>
+<p><strong>ivy.scatter_nd</strong></p>
 <p>When looking at the <code class="code docutils literal notranslate"><span class="pre">scatter_nd</span></code> (or closest equivalent) implementations for
 <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/general/scatter_nd/scatter_nd_functional.html">Ivy</a>,
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at">JAX</a>,
@@ -267,9 +338,7 @@ while all other frameworks support scattering across multiple dimensions at once
 Likewise, Ivy also supports scattering across multiple dimensions at once,
 and in doing so provides the generalized superset implementation among the backend
 frameworks.</p>
-</section>
-<section id="ivy-logical-and">
-<h2>ivy.logical_and<a class="headerlink" href="#ivy-logical-and" title="Permalink to this heading"></a></h2>
+<p><strong>ivy.logical_and</strong></p>
 <p>When looking at the <code class="code docutils literal notranslate"><span class="pre">logical_and</span></code> (or closest equivalent) implementations for
 <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/elementwise/logical_and/logical_and_functional.html">Ivy</a>,
 <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html">JAX</a>,
