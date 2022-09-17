@@ -56,7 +56,11 @@ def test_abs(
 # acosh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="acosh"),
 )
 def test_acosh(
@@ -81,6 +85,8 @@ def test_acosh(
         instance_method=instance_method,
         fw=fw,
         fn_name="acosh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
