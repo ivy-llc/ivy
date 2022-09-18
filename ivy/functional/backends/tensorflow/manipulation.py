@@ -26,7 +26,7 @@ def concat(
         xs = list(xs)
     highest_dtype = xs[0].dtype
     for i in xs:
-        highest_dtype = tf.experimental.numpy.promote_types(highest_dtype, i.dtype)
+        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
 
     for i in range(len(xs)):
         if is_axis_none:
