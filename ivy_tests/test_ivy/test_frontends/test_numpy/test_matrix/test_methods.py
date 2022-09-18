@@ -198,6 +198,7 @@ def test_numpy_any(
 def _dtype_x_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
     axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
+    # set None
     if random.randint(0, 9) % 2 != 0:
         axis = None
 
@@ -209,6 +210,8 @@ def _dtype_x_axis(draw, **kwargs):
 @given(
     dtype_x_axis=_dtype_x_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=2,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.max"
