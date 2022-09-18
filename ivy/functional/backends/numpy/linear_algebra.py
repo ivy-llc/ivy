@@ -14,7 +14,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 
 def cholesky(
-    x: np.ndarray, upper: bool = False, *, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, upper: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if not upper:
         ret = np.linalg.cholesky(x)
@@ -28,13 +28,18 @@ cholesky.unsupported_dtypes = ("float16",)
 
 
 def cross(
-    x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.cross(a=x1, b=x2, axis=axis)
 
 
 @_handle_0_dim_output
-def det(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
 
 
@@ -43,38 +48,54 @@ det.unsupported_dtypes = ("float16",)
 
 def diagonal(
     x: np.ndarray,
+    /,
+    *,
     offset: int = 0,
     axis1: int = -2,
     axis2: int = -1,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-def eigh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def eigh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.eigh(x)
 
 
 eigh.unsupported_dtypes = ("float16",)
 
 
-def eigvalsh(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
 
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
-def inv(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.linalg.inv(x)
+@_handle_0_dim_output
+def inner(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return np.inner(x1, x2)
 
 
-inv.unsupported_dtypes = ("float16",)
+def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    if np.any(np.linalg.det(x.astype("float64")) == 0):
+        ret = x
+    else:
+        ret = np.linalg.inv(x)
+    return ret
+
+
+inv.unsupported_dtypes = (
+    "bfloat16",
+    "float16",
+)
 
 
 def matmul(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ret = np.matmul(x1, x2, out=out)
     if len(x1.shape) == len(x2.shape) == 1:
@@ -88,34 +109,47 @@ matmul.support_native_out = True
 @_handle_0_dim_output
 def matrix_norm(
     x: np.ndarray,
+    /,
+    *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     keepdims: bool = False,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.linalg.norm(x, ord=ord, axis=(-2, -1), keepdims=keepdims)
 
 
-matrix_norm.unsupported_dtypes = ("float16",)
+matrix_norm.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_power(
-    x: np.ndarray, n: int, *, out: Optional[np.ndarray] = None
+    x: np.ndarray, n: int, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.linalg.matrix_power(x, n)
 
 
 def matrix_rank(
     x: np.ndarray,
-    rtol: Optional[Union[float, Tuple[float]]] = None,
+    /,
     *,
+    rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if rtol is None:
-        ret = np.linalg.matrix_rank(x)
+    singular_values = np.linalg.svd(x, compute_uv=False)
+    max_value = np.max(singular_values)
+    if rtol:
+        num = np.sum(singular_values > max_value * rtol)
     else:
-        ret = np.linalg.matrix_rank(x, rtol)
-    return np.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
+        num = singular_values.size
+    return np.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
+
+
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -234,8 +268,7 @@ trace.support_native_out = True
 def vecdot(
     x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    x1, x2 = x1.astype(np.float32), x2.astype(np.float32)
-    return np.tensordot(x1, x2, (axis, axis))
+    return np.tensordot(x1, x2, axes=(axis, axis))
 
 
 def vector_norm(

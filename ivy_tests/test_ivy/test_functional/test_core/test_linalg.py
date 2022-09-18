@@ -3,9 +3,8 @@
 
 # global
 import sys
-
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy
@@ -20,7 +19,7 @@ def dtype_value1_value2_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=1,
@@ -28,6 +27,9 @@ def dtype_value1_value2_axis(
     min_dim_size=1,
     max_dim_size=10,
     specific_dim_size=3,
+    large_abs_safety_factor=10,
+    small_abs_safety_factor=2,
+    safety_factor_scale="linear",
 ):
     # For cross product, a dim with size 3 is required
     shape = draw(
@@ -45,7 +47,7 @@ def dtype_value1_value2_axis(
     shape = shape[:axis] + [specific_dim_size] + shape[axis:]
     shape = tuple(shape)
 
-    dtype = draw(available_dtypes)
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
 
     values = []
     for i in range(2):
@@ -59,6 +61,9 @@ def dtype_value1_value2_axis(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
                 )
             )
         )
@@ -73,7 +78,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
     available_dtypes,
     min_value=None,
     max_value=None,
-    allow_inf=True,
+    allow_inf=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=1,
@@ -92,7 +97,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
         )
     )
     axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    dtype = draw(available_dtypes)
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
 
     values = []
     for i in range(2):
@@ -106,6 +111,9 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
+                    large_abs_safety_factor=10,
+                    small_abs_safety_factor=2,
+                    safety_factor_scale="linear",
                 )
             )
         )
@@ -163,7 +171,10 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 def _get_first_matrix_and_dtype(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+            key="shared_dtype",
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -186,7 +197,10 @@ def _get_first_matrix_and_dtype(draw):
 def _get_second_matrix_and_dtype(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_numeric_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+            key="shared_dtype",
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -209,7 +223,12 @@ def _get_second_matrix_and_dtype(draw):
 @st.composite
 def _get_dtype_and_vector(draw):
     # batch_shape, shared, random_size
-    input_dtype = draw(st.sampled_from(ivy_np.valid_numeric_dtypes))
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+            key="shared_dtype",
+        )
+    )
     batch_shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
     return input_dtype, draw(
         helpers.array_values(
@@ -258,13 +277,13 @@ def test_vector_to_skew_symmetric_matrix(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="matrix_power"),
     n=helpers.ints(min_value=1, max_value=8),
+    num_positional_args=helpers.num_positional_args(fn_name="matrix_power"),
 )
 def test_matrix_power(
     *,
@@ -333,6 +352,8 @@ def test_matmul(
         instance_method=instance_method,
         fw=fw,
         fn_name="matmul",
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=np.asarray(x_1, dtype=input_dtype1),
         x2=np.asarray(y_1, dtype=input_dtype2),
     )
@@ -366,6 +387,8 @@ def test_det(
         instance_method=instance_method,
         fw=fw,
         fn_name="det",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -463,7 +486,58 @@ def test_eigvalsh(
         fw=fw,
         fn_name="eigvalsh",
         rtol_=1e-3,
+        test_values=False,
         x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# inner
+@handle_cmd_line_args
+@given(
+    dtype_xy=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="inner"),
+)
+def test_inner(
+    *,
+    dtype_xy,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    types, arrays = dtype_xy
+    type1, type2 = types
+    x1, x2 = arrays
+    input_dtype = [type1, type2]
+    as_variable = [as_variable, as_variable]
+    native_array = [native_array, native_array]
+    container = [container, container]
+
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="inner",
+        rtol_=1e-1,
+        atol_=1e-2,
+        x1=np.asarray(x1, input_dtype[0]),
+        x2=np.asarray(x2, input_dtype[1]),
     )
 
 
@@ -471,9 +545,9 @@ def test_eigvalsh(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
-        min_value=0,
-        max_value=50,
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
@@ -500,6 +574,8 @@ def test_inv(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
+        rtol_=1e-3,
+        atol_=1e-3,
         fn_name="inv",
         x=np.asarray(x, dtype=input_dtype),
     )
@@ -541,7 +617,7 @@ def test_matrix_transpose(
 @handle_cmd_line_args
 @given(
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=1,
         max_value=50,
@@ -588,10 +664,13 @@ def test_outer(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
-        min_value=0,
-        max_value=50,
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda dtype_and_x: round(float(np.linalg.det(np.asarray(dtype_and_x[1]))), 3)
+        != 0.0
     ),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
 )
@@ -610,12 +689,14 @@ def test_slogdet(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
+        rtol_=1e-3,
+        atol_=1e-3,
         fn_name="slogdet",
         x=np.asarray(x, dtype=input_dtype),
     )
@@ -692,8 +773,8 @@ def test_solve(
         instance_method=instance_method,
         fw=fw,
         fn_name="solve",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=np.asarray(x1, dtype=input_dtype1),
         x2=np.asarray(x2, dtype=input_dtype2),
     )
@@ -703,12 +784,12 @@ def test_solve(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
         min_num_dims=2,
     ),
-    num_positional_args=helpers.ints(min_value=0, max_value=1),
+    num_positional_args=helpers.num_positional_args(fn_name="svdvals"),
 )
 def test_svdvals(
     *,
@@ -732,6 +813,8 @@ def test_svdvals(
         instance_method=instance_method,
         fw=fw,
         fn_name="svdvals",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -741,10 +824,10 @@ def test_svdvals(
 @given(
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_tensordot(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=3,
-        max_num_dims=8,
+        min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=15,
+        max_dim_size=10,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="tensordot"),
 )
@@ -781,6 +864,8 @@ def test_tensordot(
         instance_method=instance_method,
         fw=fw,
         fn_name="tensordot",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x1,
         x2=x2,
         axes=axis,
@@ -791,14 +876,14 @@ def test_tensordot(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=50,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="trace"),
     offset=helpers.ints(min_value=-10, max_value=10),
+    num_positional_args=helpers.num_positional_args(fn_name="trace"),
 )
 def test_trace(
     *,
@@ -816,13 +901,15 @@ def test_trace(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="trace",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=dtype),
         offset=offset,
     )
@@ -833,6 +920,9 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -876,7 +966,7 @@ def test_vecdot(
 @handle_cmd_line_args
 @given(
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=3,
         min_dim_size=2,
@@ -884,14 +974,15 @@ def test_vecdot(
         min_axis=-2,
         max_axis=1,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="vector_norm"),
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2),
+    num_positional_args=helpers.num_positional_args(fn_name="vector_norm"),
 )
 def test_vector_norm(
     *,
     dtype_values_axis,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
@@ -904,13 +995,15 @@ def test_vector_norm(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="vector_norm",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         axis=axis,
         keepdims=kd,
@@ -922,14 +1015,17 @@ def test_vector_norm(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="pinv"),
     rtol=st.floats(1e-5, 1e-3),
+    num_positional_args=helpers.num_positional_args(fn_name="pinv"),
 )
 def test_pinv(
     *,
@@ -963,8 +1059,8 @@ def test_pinv(
 @handle_cmd_line_args
 @given(
     dtype_x=_get_dtype_and_matrix(),
-    num_positional_args=helpers.num_positional_args(fn_name="qr"),
     mode=st.sampled_from(("reduced", "complete")),
+    num_positional_args=helpers.num_positional_args(fn_name="qr"),
 )
 def test_qr(
     *,
@@ -1014,7 +1110,7 @@ def test_qr(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
@@ -1022,8 +1118,10 @@ def test_qr(
         min_value=0.1,
         max_value=10.0,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="svd"),
     fm=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="svd",
+    ),
 )
 def test_svd(
     *,
@@ -1083,7 +1181,7 @@ def test_svd(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
@@ -1091,14 +1189,15 @@ def test_svd(
         min_value=-10,
         max_value=10,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
+    num_positional_args=helpers.num_positional_args(fn_name="matrix_norm"),
 )
 def test_matrix_norm(
     *,
     dtype_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
@@ -1111,7 +1210,7 @@ def test_matrix_norm(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -1124,17 +1223,28 @@ def test_matrix_norm(
     )
 
 
+@st.composite
+def _matrix_rank_helper(draw):
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+            large_abs_safety_factor=8,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype_x
+
+
 # matrix_rank
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
-        min_num_dims=2,
-        min_value=-1e05,
-        max_value=1e05,
-    ),
+    dtype_x=_matrix_rank_helper(),
+    rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    | st.just(None),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_matrix_rank(
     *,
@@ -1149,6 +1259,9 @@ def test_matrix_rank(
     rtol,
 ):
     dtype, x = dtype_x
+    x_temp = np.asarray(x, dtype="float64")
+    for x_i in x_temp.reshape(-1, *x_temp.shape[-2:]):
+        assume(round(np.linalg.det(x_i), 1) != 0.0)
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1159,7 +1272,6 @@ def test_matrix_rank(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_rank",
-        atol_=1.0,
         x=np.asarray(x, dtype=dtype),
         rtol=rtol,
     )
@@ -1169,7 +1281,7 @@ def test_matrix_rank(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -1177,13 +1289,14 @@ def test_matrix_rank(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
     upper=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="cholesky"),
 )
 def test_cholesky(
     *,
     dtype_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
@@ -1200,7 +1313,7 @@ def test_cholesky(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -1223,6 +1336,9 @@ def test_cholesky(
         max_num_dims=10,
         min_dim_size=3,
         max_dim_size=3,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cross"),
 )
@@ -1261,17 +1377,17 @@ def test_cross(
 @handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
         max_dim_size=50,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="diagonal"),
     offset=helpers.ints(min_value=-10, max_value=50),
     axes=st.lists(
         helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
     ).filter(lambda axes: axes[0] % 2 != axes[1] % 2),
+    num_positional_args=helpers.num_positional_args(fn_name="diagonal"),
 )
 def test_diagonal(
     *,
