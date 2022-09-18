@@ -214,7 +214,7 @@ class Module(abc.ABC):
     def check_submod_rets(self):
         """
         Compares the submodule returns with the expected submodule
-        returns passed during call (Need discussion)
+        returns passed during call
 
         Returns
         -------
