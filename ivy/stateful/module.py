@@ -19,9 +19,8 @@ from ivy.func_wrapper import _get_first_array
 
 
 class Module(abc.ABC):
-    """
-    Module is a base class for deriving trainable modules.
-    """
+
+    "Module is a base class for deriving trainable modules."
 
     def __init__(
         self,
@@ -361,7 +360,7 @@ class Module(abc.ABC):
 
     def _wrap_call_methods(self, keychain_mappings, /, *, key="", obj=None):
         """
-        wraps the call methods of the Module object
+        Wraps the call methods of the Module object
 
         Parameters
         ----------
@@ -582,6 +581,7 @@ class Module(abc.ABC):
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
             which all nested key-chains flattened. Default is False.
+
         Returns
         -------
         ret
@@ -1011,7 +1011,6 @@ class Module(abc.ABC):
         -------
         ret
         """
-
         with_grads = ivy.with_grads(with_grads=with_grads)
         self.submod_rets = ivy.Container(
             alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
@@ -1060,6 +1059,7 @@ class Module(abc.ABC):
             Default is None.
         dtype
             The data type for building the module. Default is None.
+
         Returns
         -------
         ret
