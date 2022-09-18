@@ -19,8 +19,7 @@ from ivy.func_wrapper import _get_first_array
 
 
 class Module(abc.ABC):
-
-    "Module is a base class for deriving trainable modules."
+    """Module is a base class for deriving trainable modules."""
 
     def __init__(
         self,
