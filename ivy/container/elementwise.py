@@ -7498,9 +7498,9 @@ class ContainerWithElementwise(ContainerBase):
             out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.trunc_divide. This method simply wraps
-        the function, and so the docstring for ivy.trunc_divide also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.trunc_divide. This method simply
+        wraps the function, and so the docstring for ivy.trunc_divide also applies
+        to this method with minimal changes.
 
         Parameters
         ----------

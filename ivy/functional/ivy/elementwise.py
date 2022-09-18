@@ -5858,7 +5858,8 @@ def trunc_divide(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Performs elementwise integer division of the inputs rounding the results towards zero.
+    """Performs elementwise integer division of the inputs rounding the
+    results towards zero.
 
     Parameters
     ----------
