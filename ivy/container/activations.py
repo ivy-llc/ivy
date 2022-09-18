@@ -620,8 +620,8 @@ class ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        beta: Optional[Union[int, float]] = 1,
-        threshold: Optional[Union[int, float]] = 20,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -638,7 +638,9 @@ class ContainerWithActivations(ContainerBase):
         x
             input container.
         beta
-            the beta value of the softplus formation. Default is 1.
+            The beta value for the softplus formation. Default: None.
+        threshold
+            values above this revert to a linear function. Default: None.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -690,8 +692,8 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        beta: Optional[Union[int, float]] = 1,
-        threshold: Optional[Union[int, float]] = 20,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -708,7 +710,9 @@ class ContainerWithActivations(ContainerBase):
         self
             input container.
         beta
-            the beta value of the softplus formation. Default is 1.
+            The beta value for the softplus formation. Default: None.
+        threshold
+            values above this revert to a linear function. Default: None.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply

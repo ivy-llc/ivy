@@ -316,7 +316,7 @@ def softplus(
     /,
     *,
     beta: Optional[Union[int, float]] = None,
-    threshold: Optional[Union[int, float]] = 20,
+    threshold: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the softplus function element-wise.
@@ -328,7 +328,7 @@ def softplus(
     beta
         The beta value for the softplus formation. Default: None.
     threshold
-        values above this revert to a linear function. Default: 20
+        values above this revert to a linear function. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

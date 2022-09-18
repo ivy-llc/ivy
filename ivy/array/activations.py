@@ -106,8 +106,8 @@ class ArrayWithActivations(abc.ABC):
     def softplus(self: ivy.Array,
                  /,
                  *,
-                 beta: Optional[Union[int, float]] = 1,
-                 threshold: Optional[Union[int, float]] = 20,
+                 beta: Optional[Union[int, float]] = None,
+                 threshold: Optional[Union[int, float]] = None,
                  out: Optional[ivy.Array] = None
                  ) -> ivy.Array:
         """
