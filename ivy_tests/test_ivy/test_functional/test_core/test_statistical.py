@@ -193,7 +193,7 @@ def test_var(
         instance_method=instance_method,
         fw=fw,
         fn_name="var",
-        rtol_=1e-2,
+        rtol_=1e-1,
         atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
