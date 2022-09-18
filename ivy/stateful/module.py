@@ -41,7 +41,7 @@ class Module(abc.ABC):
         dtype=None,
     ):
         """
-        Initialze Ivy layer, which is a stateful object consisting of trainable
+        Initialize Ivy layer, which is a stateful object consisting of trainable
         variables.
 
         Parameters
@@ -136,15 +136,15 @@ class Module(abc.ABC):
 
     def _top_v_fn(self, /, *, depth=None, flatten_key_chains=False):
         """
-        Help in visualising the top view of a nested network upto
-        a certain depth (Need Discussion, I don't think `v` stands for visualization. Any clues?)
+        Helps in visualising the top view of a nested network upto
+        a certain depth
 
         Parameters
         ----------
         depth
             depth upto which we want to visualise
         flatten_key_chains
-            If set True, will return return a flat (depth-1) container, 
+            If set True, will return a flat (depth-1) container,
             which all nested key-chains flattened. Default is False.
 
         Returns
@@ -176,7 +176,7 @@ class Module(abc.ABC):
         Returns
         -------
         ret
-            The module we want to track down. Return current layer if no top 
+            The module we want to track down. Return current layer if no top
             module exists.
         """
         if ivy.exists(self.top_mod):
@@ -188,13 +188,13 @@ class Module(abc.ABC):
     # noinspection PyProtectedMember
     def track_submod_rets(self):
         """
-        Tracks the returns of the submodules if track_submod_returns 
-        argument is set to True during call (Need discussion)
+        Tracks the returns of the submodules if track_submod_returns
+        argument is set to True during call
 
         Returns
         -------
         ret
-            True if the current module gets tracked in the computation 
+            True if the current module gets tracked in the computation
             graph.
         """
         if not ivy.exists(self.top_mod):
@@ -215,7 +215,7 @@ class Module(abc.ABC):
 
     def check_submod_rets(self):
         """
-        Compares the submodule returns with the expected submodule 
+        Compares the submodule returns with the expected submodule
         returns passed during call (Need discussion)
 
         Returns
@@ -233,7 +233,7 @@ class Module(abc.ABC):
     def track_submod_call_order(self):
         """
         Tracks the order in which the submodules are called.
-        (Need discussion)
+
 
         Returns
         -------
@@ -260,7 +260,7 @@ class Module(abc.ABC):
         """
         Return the depth of the current module.
 
-        Returns 
+        Returns
         -------
         ret
             The depth of the module in the network. Return 0 for root module.
@@ -277,7 +277,7 @@ class Module(abc.ABC):
 
     def mod_height(self):
         """
-        Return the height of the current module. 
+        Return the height of the current module.
 
         Returns
         -------
@@ -286,7 +286,7 @@ class Module(abc.ABC):
         """
         return self.sub_mods().max_depth - 1
 
-    def _find_variables(self,/,*, obj=None):
+    def _find_variables(self, /, *, obj=None):
         """
         Find all interval variables in obj. Return empty Container if obj is None.
 
@@ -294,7 +294,7 @@ class Module(abc.ABC):
         ----------
         obj
             The submodule whose internal variables are to be returned. Default
-            is None. 
+            is None.
 
         Returns
         -------
@@ -368,7 +368,7 @@ class Module(abc.ABC):
         keychain_mappings
             The keychain mappings of the object
         key
-            
+
         obj
             the object whose __call__ method is to be wrapped
 
@@ -387,7 +387,9 @@ class Module(abc.ABC):
             return
         elif isinstance(obj, (list, tuple)):
             for i, val in enumerate(obj):
-                self._wrap_call_methods(keychain_mappings, key=key + "/v" + str(i), obj=val)
+                self._wrap_call_methods(
+                    keychain_mappings, key=key + "/v" + str(i), obj=val
+                )
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
@@ -451,7 +453,7 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, *,device=None, dtype=None):
+    def _create_variables(self, *, device=None, dtype=None):
         """
         Create internal trainable variables, and return as arbitrary nested dict.
         Overridable.
@@ -470,13 +472,13 @@ class Module(abc.ABC):
 
     def _build(self, *args, **kwargs) -> bool:
         """
-        Build the internal layers and variables for this module. Overridable. 
+        Build the internal layers and variables for this module. Overridable.
 
         Returns
         -------
         ret
             False or empty Container if the build only partially completed (i.e. some
-            child Modules have "on_call" build mode). Alternatviely, return True or a
+            child Modules have "on_call" build mode). Alternatively, return True or a
             container of the built variables if the module is built.
         """
         return True
@@ -524,7 +526,7 @@ class Module(abc.ABC):
         Parameters
         ----------
         v
-            Replace `v` of current layer when forwarding. Restore 
+            Replace `v` of current layer when forwarding. Restore
             after the forward finished.
         with_grads
             Whether to forward with gradients.
@@ -540,7 +542,7 @@ class Module(abc.ABC):
                 *args,
                 **kwargs,
                 from_call=True,
-                dtype=_get_first_array(*args, **kwargs).dtype
+                dtype=_get_first_array(*args, **kwargs).dtype,
             )
         if v is not None:
             v_orig = self.v
@@ -578,7 +580,7 @@ class Module(abc.ABC):
             How many layers we step in before beginning enumerating submodules.
             None for current layer. Default is None.
         flatten_key_chains
-            If set True, will return return a flat (depth-1) container, 
+            If set True, will return a flat (depth-1) container,
             which all nested key-chains flattened. Default is False.
         Returns
         -------
@@ -644,7 +646,7 @@ class Module(abc.ABC):
             The number of modules we want to step in. None for the value of
             current module. Default is None.
         flatten_key_chains
-            If set True, will return return a flat (depth-1) container, 
+            If set True, will return a flat (depth-1) container,
             which all nested key-chains flattened. Default is False.
 
         Returns
@@ -676,8 +678,8 @@ class Module(abc.ABC):
         ----------
         depth
 
-        flatten_key_chains
-            If set True, will return return a flat (depth-1) container, 
+        flatten_key_chain
+            If set True, will return return a flat (depth-1) container,
             with all nested key-chains flattened. Default is False.
 
         Returns
@@ -708,7 +710,7 @@ class Module(abc.ABC):
         self, /, *, upper_depth=None, lower_depth=None, flatten_key_chains=False
     ):
         """
-        Show lower submodules in the top module. `uppper_depth` and `lower_depth`
+        Show lower submodules in the top module. `upper_depth` and `lower_depth`
         are for controlling the coverage of upper and lower modules.
         Will give prompt if no top module found.
 
@@ -721,7 +723,7 @@ class Module(abc.ABC):
             How many modules it tracks down. None for current module.
             Default is None. Will be truncated to mod_height.
         flatten_key_chains
-            If set True, will return return a flat (depth-1) container, 
+            If set True, will return a flat (depth-1) container,
             which all nested key-chains flattened. Default is False.
 
         Returns
@@ -751,7 +753,7 @@ class Module(abc.ABC):
         submods_to_track,
         track_submod_call_order,
         expected_submod_rets,
-        /
+        /,
     ):
         """
         Set flags of the submodule.
@@ -763,11 +765,11 @@ class Module(abc.ABC):
         submod_depth
             The depth of tracked submodules.
         submods_to_track
-            If given, will only tracks submodules in `submods_to_track`.
+            If given, will only track submodules in `submods_to_track`.
         track_submod_call_order
-            If True, will tracks the call order of submodules.
+            If True, will track the call order of submodules.
         expected_submod_rets
-            If given, will raise exception if submodule returns are 
+            If given, will raise exception if submodule returns are
             different from expected returns.
 
         Returns
@@ -981,7 +983,7 @@ class Module(abc.ABC):
         submods_to_track=None,
         track_submod_call_order=False,
         expected_submod_rets=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Forward an input through current module.
@@ -998,11 +1000,11 @@ class Module(abc.ABC):
         submod_depth
             The depth of tracked submodules.
         submods_to_track
-            If given, will only tracks submodules in `submods_to_track`.
+            If given, will only track submodules in `submods_to_track`.
         track_submod_call_order
-            If True, will tracks the call order of submodules.
+            If True, will track the call order of submodules.
         expected_submod_rets
-            If given, will raise exception if submodule returns are 
+            If given, will raise exception if submodule returns are
             different from expected returns.
 
         Returns
@@ -1044,14 +1046,14 @@ class Module(abc.ABC):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args,from_call=False, device=None, dtype=None,**kwargs):
+    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """
         Build the internal layers and variables for this module.
 
         Parameters
         ----------
         from_call
-            If True, denote that this build is triggered by calling. Otherwise 
+            If True, denote that this build is triggered by calling. Otherwise,
             triggered by initializing the module. Default is False.
         device
             The device we want to build module on. None for default device.
@@ -1116,7 +1118,7 @@ class Module(abc.ABC):
                 created_n_found = Container(
                     dict(
                         **self._find_variables(obj=self),
-                        **self._create_variables(self._dev, dtype=dtype)
+                        **self._create_variables(device=self._dev, dtype=dtype),
                     )
                 )
                 self.v = created_n_found
