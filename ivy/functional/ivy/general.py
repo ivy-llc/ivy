@@ -2210,7 +2210,7 @@ def stable_divide(
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-@inputs_to_native_arrays
+@to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
 def stable_pow(
