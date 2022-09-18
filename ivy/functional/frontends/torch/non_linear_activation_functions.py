@@ -149,7 +149,7 @@ def hardtanh(input, min_val=-1., max_val=1., inplace=False):
     return result
 
 
-hardtanh.unsupported_dtypes = {"torch": ("float16",)}
+hardtanh.unsupported_dtypes = ("float16",)
 
 
 def selu(input, inplace=False):
