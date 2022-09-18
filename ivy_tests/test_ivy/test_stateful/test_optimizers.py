@@ -8,7 +8,6 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -66,7 +65,7 @@ def test_sgd_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_tf.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -119,7 +118,7 @@ def test_lars_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_tf.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -180,7 +179,7 @@ def test_adam_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_tf.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float", full=True),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
