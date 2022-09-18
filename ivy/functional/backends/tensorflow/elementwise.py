@@ -721,3 +721,20 @@ def rad2deg(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rad2deg(x)
+
+
+def trunc_divide(
+    x1: Union[float, tf.Tensor, tf.Variable],
+    x2: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret = tf.experimental.numpy.divide(x1, x2)
+    ret = tf.math.trunc(ret)
+    if ivy.is_float_dtype(x1.dtype):
+        ret = tf.cast(ret, dtype=x1.dtype)
+    else:
+        ret = tf.cast(ret, dtype=ivy.default_float_dtype(as_native=True))
+    return ret
