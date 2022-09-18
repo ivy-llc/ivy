@@ -1,6 +1,8 @@
 # global
 import numpy as np
 from hypothesis import given, strategies as st
+import random
+
 
 # local
 import ivy
@@ -11,20 +13,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def _array_with_dtype_axis_keepdims_and_where(draw):
-    dtypes = draw(
-        helpers.array_dtypes(
-            num_arrays=1
-        )
-    )
+    dtypes = draw(helpers.array_dtypes(num_arrays=1))
     shape = draw(
         helpers.get_shape(
             min_num_dims=1,
             max_num_dims=5,
         )
     )
-    axis = draw(
-        helpers.ints(min_value=-1, max_value=len(shape) - 1)
-    )
+    axis = draw(helpers.ints(min_value=-1, max_value=len(shape) - 1))
     if axis == -1:
         axis = None
     x = draw(
@@ -41,11 +37,14 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
                 max_value=where_shape_length - 1,
             )
         )
-        where_dims_to_change = [draw(
-            helpers.ints(
-                min_value=0,
-                max_value=where_shape_length - 1,
-            )) for i in range(where_nb_dims_to_change)
+        where_dims_to_change = [
+            draw(
+                helpers.ints(
+                    min_value=0,
+                    max_value=where_shape_length - 1,
+                )
+            )
+            for i in range(where_nb_dims_to_change)
         ]
         where_dims_list = [1] * where_shape_length
         for dim in where_dims_to_change:
@@ -58,12 +57,8 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
             )
         )
     else:
-        where = draw(
-            st.booleans()
-        ) 
-    keepdims = draw(
-        st.booleans()
-    )
+        where = draw(st.booleans())
+    keepdims = draw(st.booleans())
     return x, dtypes[0], axis, keepdims, where
 
 
@@ -141,17 +136,30 @@ def test_numpy_any(
     as_variable = [as_variable]
     native_array = [native_array]
     if keepdims:
-        out = ivy.zeros(
-            [dim if i != axis and axis is not None
-             else 1 for i, dim in enumerate(x.shape)],
-            dtype=bool
-        ) if with_out else None
+        out = (
+            ivy.zeros(
+                [
+                    dim if i != axis and axis is not None else 1
+                    for i, dim in enumerate(x.shape)
+                ],
+                dtype=bool,
+            )
+            if with_out
+            else None
+        )
     else:
-        out = ivy.zeros(
-            [dim for i, dim in enumerate(x.shape)
-             if i != axis and axis is not None],
-            dtype=bool
-        ) if with_out else None
+        out = (
+            ivy.zeros(
+                [
+                    dim
+                    for i, dim in enumerate(x.shape)
+                    if i != axis and axis is not None
+                ],
+                dtype=bool,
+            )
+            if with_out
+            else None
+        )
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -181,6 +189,54 @@ def test_numpy_any(
     if isinstance(ret_gt, tuple):
         ret_gt = ret_gt[0]
     if len(ret.shape) == 0:
-        assert (ret and ret_gt or not ret and not ret_gt)
+        assert ret and ret_gt or not ret and not ret_gt
     else:
-        assert (ret.shape == ret_gt.shape and np.all(ret == ret_gt))
+        assert ret.shape == ret_gt.shape and np.all(ret == ret_gt)
+
+
+@st.composite
+def _dtype_x_axis(draw, **kwargs):
+    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
+    if random.randint(0, 9) % 2 != 0:
+        axis = None
+
+    return dtype, x, axis
+
+
+# max
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=_dtype_x_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.max"
+    ),
+    keep_dims=st.booleans(),
+)
+def test_numpy_max(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+    keep_dims,
+):
+    input_dtype, x, axis = dtype_x_axis
+
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="max",
+        x=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        out=None,
+        keepdims=keep_dims,
+    )
