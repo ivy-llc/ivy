@@ -67,7 +67,7 @@ def prod(
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
+    return tf.experimental.numpy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def std(
