@@ -3515,7 +3515,7 @@ class ContainerWithGeneral(ContainerBase):
             "stable_pow",
             base,
             exponent,
-            min_base,
+            min_base=min_base,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

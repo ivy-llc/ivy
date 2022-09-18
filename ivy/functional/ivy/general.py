@@ -2282,8 +2282,6 @@ def stable_pow(
         b: ivy.array([3., 1300.])
     }
 
-
-
     """
     # noinspection PyProtectedMember
     return (base + default(min_base, ivy._MIN_BASE)) ** exponent
