@@ -1527,20 +1527,29 @@ def test_jax_lax_cos(
 
 @st.composite
 def _same_dims_min_x_max(draw):
-    dtypes, xs, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            num_arrays=2,
-            shared_dtype=True,
-            ret_shape=True,
-            min_value=0,
-            max_value=10,
+    dtype = draw(helpers.get_dtypes("numeric", full=False))
+    bound = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=(),
+            large_abs_safety_factor=1.5,
+            small_abs_safety_factor=1.5,
+            safety_factor_scale="log",
         )
     )
-    max_val = draw(
-        helpers.array_values(dtype=dtypes[0], shape=shape, min_value=11, max_value=20)
-    )  # TODO remove hardcoded values.
-    return ([dtypes[0]] * 3), (xs[0], xs[1], max_val)
+    _, x, shape = draw(
+        helpers.dtype_and_values(
+            dtype=[dtype],
+            ret_shape=True,
+        )
+    )
+    min_val = draw(
+        helpers.array_values(
+            dtype=dtype, shape=shape, max_value=bound, exclude_max=False
+        )
+    )
+    max_val = draw(helpers.array_values(dtype=dtype, shape=shape, min_value=bound))
+    return ((dtype,) * 3), (x, min_val, max_val)
 
 
 @st.composite
@@ -1551,11 +1560,16 @@ def _basic_min_x_max(draw):
         )
     )
     min_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=1, max_value=10)
+        helpers.array_values(
+            dtype=dtype,
+            shape=(),
+            large_abs_safety_factor=1.5,
+            small_abs_safety_factor=1.5,
+            safety_factor_scale="log",
+            exclude_max=False,
+        )
     )
-    max_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=11, max_value=20)
-    )  # TODO remove hardcoded values.
+    max_val = draw(helpers.array_values(dtype=dtype, shape=(), min_value=min_val))
     return ([dtype] * 3), (value, min_val, max_val)
 
 

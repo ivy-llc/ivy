@@ -33,5 +33,9 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
+def mean(input, dim, keepdim=False, *, out=None):
+    return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+
+
 def var(input, dim, *, correction=0, keepdim=False, out=None):
     return ivy.var(input, axis=dim, correction=correction, keepdims=keepdim, out=out)
