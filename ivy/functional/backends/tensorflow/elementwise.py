@@ -732,7 +732,7 @@ def trunc_divide(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = tf.experimental.numpy.divide(x1, x2)
-    ret = tf.math.trunc(ret)
+    ret = tf.where(ret > 0, tf.math.floor(ret), tf.math.ceil(ret))
     if ivy.is_float_dtype(x1.dtype):
         ret = tf.cast(ret, dtype=x1.dtype)
     else:
