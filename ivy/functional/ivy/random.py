@@ -31,7 +31,13 @@ def _check_bounds_and_get_shape(low, high, shape):
         )
         return shape
 
-    valid_types = (ivy.Array, ivy.get_backend('torch').NativeArray,ivy.get_backend('jax').NativeArray,ivy.get_backend('numpy').NativeArray,ivy.get_backend('tensorflow').NativeArray)
+    valid_types = (
+        ivy.Array,
+        ivy.get_backend("torch").NativeArray,
+        ivy.get_backend("jax").NativeArray,
+        ivy.get_backend("numpy").NativeArray,
+        ivy.get_backend("tensorflow").NativeArray,
+    )
 
     if len(backend_stack) == 0:
         valid_types += (ivy.current_backend().NativeArray,)
