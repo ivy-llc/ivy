@@ -11,20 +11,14 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-def is_broadcastable(shp1, shp2):
-    for a, b in zip(shp1[::-1], shp2[::-1]):
-        if a == 1 or b == 1 or a == b:
-            pass
-        else:
-            return False
-    return True
-
-
-@pytest.mark.filterwarnings("ignore: dist")
 @handle_cmd_line_args
 @given(
-    dtype_and_x=statistical_dtype_values(function="dist"),
-    dtype_and_y=statistical_dtype_values(function="dist"),
+    dtype_and_input= helpers.dtype_and_values(
+        available_dtypes = helpers.get_dtypes("numeric"),
+        num_arrays = 2,
+        shared_dtype=True,
+        allow_inf=False,
+    ),
     as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.dist"
@@ -33,30 +27,27 @@ def is_broadcastable(shp1, shp2):
     p=st.integers(),
 )
 def test_torch_dist(
-    dtype_and_x,
-    dtype_and_y,
+    dtype_and_input,
     as_variable,
     num_positional_args,
     native_array,
     fw,
     p,
 ):
-    input_x_dtype, x, dim_x = dtype_and_x
-    input_y_dtype, y, dim_y = dtype_and_y
-    if is_broadcastable(np.array(x).shape, np.array(y).shape):
-        helpers.test_frontend_function(
-            input_dtypes=[input_x_dtype],
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="torch",
-            fn_tree="dist",
-            input=np.asarray(x, dtype=input_x_dtype),
-            other=np.asarray(y, dtype=input_y_dtype),
-            p=p,
-        )
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="dist",
+        input=np.asarray(input[0], dtype=input_dtype[0]),
+        other=np.asarray(input[1], dtype=input_dtype[1]),
+        p=p,
+    )
 
 
 @handle_cmd_line_args
