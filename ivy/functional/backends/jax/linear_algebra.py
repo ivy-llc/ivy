@@ -78,6 +78,11 @@ def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
+def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return jnp.inner(x1, x2)
+
+
 def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
         ret = x
@@ -133,18 +138,19 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if x.size == 0:
-        ret = 0
-    elif x.size == 1:
-        ret = jnp.count_nonzero(x)
+    singular_values = jnp.linalg.svd(x, compute_uv=False)
+    max_value = jnp.max(singular_values)
+    if rtol:
+        num = jnp.sum(singular_values > max_value * rtol)
     else:
-        if x.ndim > 2:
-            x = x.reshape([-1])
-        ret = jnp.linalg.matrix_rank(x, rtol)
-    return jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
+        num = singular_values.size
+    return jnp.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
 
 
-matrix_rank.unsupported_dtypes = ("float16",)
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
