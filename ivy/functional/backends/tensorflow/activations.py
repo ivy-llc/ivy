@@ -47,13 +47,12 @@ def softplus(x: Tensor,
              threshold: Optional[Union[int, float]] = None,
              out: Optional[Tensor] = None) -> Tensor:
 
-        if beta is not None and beta != 1:
-            x_beta = x * beta
-            res = (tf.nn.softplus(x_beta)) / beta
-        else:
-            x_beta = x
-            res = tf.nn.softplus(x)
-        if threshold is not None:
-            return tf.where(x_beta > threshold, x, res)
-        return res
-
+    if beta is not None and beta != 1:
+        x_beta = x * beta
+        res = (tf.nn.softplus(x_beta)) / beta
+    else:
+        x_beta = x
+        res = tf.nn.softplus(x)
+    if threshold is not None:
+        return tf.where(x_beta > threshold, x, res)
+    return res

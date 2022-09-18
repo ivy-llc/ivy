@@ -84,4 +84,5 @@ def softplus(x: np.ndarray,
         return np.where(x_beta > threshold, x, res)
     return res
 
+
 softplus.support_native_out = True
