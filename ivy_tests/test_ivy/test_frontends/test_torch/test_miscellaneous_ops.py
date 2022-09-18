@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, given, strategies as st, settings
 
 # local
 import ivy
@@ -410,6 +410,7 @@ def _get_dtype_and_arrays_and_start_end_dim(
 
 
 @handle_cmd_line_args
+@settings(max_examples=100)
 @given(
     dtype_and_input_and_start_end_dim=_get_dtype_and_arrays_and_start_end_dim(
         available_dtypes=helpers.get_dtypes("valid"),
