@@ -36,5 +36,11 @@ def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
 
 
+def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
+    #TODO: Handle layout flag when possible.
+    sample_matrix = ivy.triu(ivy.ones((row, col), device=device), k=offset)
+    return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
+
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
+
