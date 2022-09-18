@@ -254,6 +254,7 @@ class ArrayWithGeneral(abc.ABC):
     def gather_nd(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
