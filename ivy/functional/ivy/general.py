@@ -1317,9 +1317,36 @@ def value_is_nan(
     ret
         Boolean as to whether the input value is a nan or not.
 
+    Examples
+    --------
+    >>> x = ivy.array([451])
+    >>> y = x.value_is_nan()
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('inf')])
+    >>> y = x.value_is_nan()
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf')])
+    >>> y = x.value_is_nan(include_infs=False)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('nan')])
+    >>> y = x.value_is_nan(include_infs=False)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([0])
+    >>> y = x.value_is_nan()
+    >>> print(y)
+    False
+
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
-    if not x_scalar == x_scalar:
+    if not x_scalar == x:
         return True
     if include_infs and x_scalar == INF or x_scalar == -INF:
         return True
