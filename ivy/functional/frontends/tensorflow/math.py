@@ -186,6 +186,10 @@ def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
 
 
+def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
+
+
 def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
     return ivy.var(input_tensor, axis=axis, keepdims=keepdims)
 
