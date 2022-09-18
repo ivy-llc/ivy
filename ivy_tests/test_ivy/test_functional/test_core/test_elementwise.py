@@ -2253,8 +2253,10 @@ def test_maximum(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
         num_arrays=1,
-        allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="reciprocal"),
 )
