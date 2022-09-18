@@ -393,18 +393,22 @@ def _get_dtype_and_arrays_and_start_end_dim(
         for _ in range(num_dims)
     )
 
-    dtype, array, s2 = draw(
+    dtype, array = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
             shape=shape,
-            ret_shape=True,
         )
     )
 
-    assert shape == s2
-
     start_dim = draw(st.integers(min_value=0, max_value=num_dims - 1))
-    end_dim = draw(st.integers(min_value=start_dim, max_value=num_dims - 1))
+
+    # End_dim must be either -1 or in [start_dim, num_dims)
+    # If end_dim is -1, then its going to flatten to a 1-D array.
+    is_full_flatten = draw(st.booleans())
+    if is_full_flatten:
+        end_dim = -1
+    else:
+        end_dim = draw(st.integers(min_value=start_dim, max_value=num_dims - 1))
 
     return dtype, array, start_dim, end_dim
 
