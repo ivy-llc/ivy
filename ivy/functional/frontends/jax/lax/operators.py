@@ -263,9 +263,6 @@ def rem(x, y):
 def log1p(x):
     return ivy.log1p(x)
 
-def erf(x):
-    return ivy.erf(x)
-
 def sub(x, y):
     return ivy.subtract(x, y)
 
