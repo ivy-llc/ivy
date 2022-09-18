@@ -2030,7 +2030,7 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.rad2deg(self._data, out=out)
 
-    def divide(
+    def trunc_divide(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -2066,10 +2066,9 @@ class ArrayWithElementwise(abc.ABC):
         With :code:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 7., 9.])
-        >>> x2 = ivy.array([2., 2., 2.])
-        >>> y = x1.divide(x2)
+        >>> x2 = ivy.array([2., -2., 2.])
+        >>> y = x1.trunc_divide(x2)
         >>> print(y)
-        ivy.array([1., 3.5, 4.5])
-
+        ivy.array([ 1., -3.,  4.])
         """
-        return ivy.divide(self._data, x2, out=out)
+        return ivy.trunc_divide(self._data, x2, out=out)

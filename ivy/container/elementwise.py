@@ -7535,13 +7535,13 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :code:`ivy.Container` inputs:
 
-        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
-        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
         >>> y = ivy.Container.static_divide(x1, x2)
         >>> print(y)
         {
-            a: ivy.array([12., 1.52, 2.1]),
-            b: ivy.array([1.25, 0.333, 0.45])
+            a: ivy.array([12., 1., -2.]),
+            b: ivy.array([1., 0., -4.])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -7605,13 +7605,13 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :code:`ivy.Container` inputs:
 
-        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
-        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
-        >>> y = x1.divide(x2)
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
+        >>> y = x1.trunc_divide()
         >>> print(y)
         {
-            a: ivy.array([12., 1.52, 2.1]),
-            b: ivy.array([1.25, 0.333, 0.45])
+            a: ivy.array([12., 1., -2.]),
+            b: ivy.array([1., 0., -4.])
         }
         """
         return self.static_trunc_divide(
