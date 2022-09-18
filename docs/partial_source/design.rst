@@ -16,7 +16,12 @@ after you've gone through the higher level overview which is covered in this *de
 | 1. enable automatic code conversions between frameworks
 | 2. serve as a new ML framework with multi-framework support
 |
-| The Ivy codebase can then be split into three categories, and can be further split into 8 distinct submodules, each of which fall into one of these three categories as follows:
+| The Ivy codebase can then be split into three categories which are labelled (a),
+| (b) and (c) below, and can be further split into 8 distinct submodules.
+| The eight submodules are Ivy API, Backend Handler, Backend API, Ivy Array,
+| Ivy Container, Ivy Stateful API, and finally Frontend API.
+
+| All eight fall into one of the three categories as follows:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
    :align: center
@@ -34,7 +39,7 @@ after you've gone through the higher level overview which is covered in this *de
 | (c) :ref:`Ivy as a Framework`
 | Ivy stateful API ✅
 | Ivy Container ✅
-| Ivy Array 🚧
+| Ivy Array ✅
 
 .. toctree::
    :hidden:

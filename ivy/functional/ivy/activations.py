@@ -9,7 +9,9 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    integer_arrays_to_float,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
@@ -19,8 +21,9 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
@@ -41,7 +44,7 @@ def relu(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input: 
+    With :code: `ivy.Array` input:
 
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.relu(x)
@@ -85,10 +88,12 @@ def relu(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
-    alpha: Optional[float] = 0.2,
+    /,
     *,
+    alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
@@ -111,7 +116,7 @@ def leaky_relu(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input: 
+    With :code: `ivy.Array` input:
 
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
@@ -151,16 +156,19 @@ def leaky_relu(
     ivy.array([-0.1,  1. , -0.5])
 
     """
-    return current_backend(x).leaky_relu(x, alpha, out=out)
+    return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
-    approximate=True,
+    /,
     *,
+    approximate=True,
     out: Optional[ivy.Array] = None,
 ):
     """Applies the Gaussian error linear unit (GELU) activation function.
@@ -178,70 +186,19 @@ def gelu(
     Returns
     -------
     ret
-        The input array with leaky relu applied element-wise.
+        The input array with gelu applied element-wise.
 
     """
-    return current_backend(x).gelu(x, approximate, out=out)
+    return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
+@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def tanh(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """Applies the Hyperbolic tangent activation function element-wise.
-
-    Parameters
-    ----------
-    x
-        input array
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        The input array with Hyperbolic tangent activation applied element-wise.
-
-
-    Functional Examples
-    -------------------
-
-    With :code: `ivy.Array` input:
-
-    >>> x = ivy.array([0.55 , -0.55])
-    >>> y = ivy.tanh(x)
-    >>> print(y)
-    ivy.array([0.501, -0.501])
-
-    With :code: `ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., -1., 2.])
-    >>> y = ivy.tanh(x)
-    >>> print(y)
-    ivy.array([0., -0.762, 0.964])
-
-    Instance Method Example
-    -----------------------
-
-    Using :code: `ivy.Array` instance method:
-
-    >>> x = ivy.array([0.55 , -0.55])
-    >>> y = x.tanh()
-    >>> print(y)
-    ivy.array([0.501, -0.501])
-
-    """
-    return current_backend(x).tanh(x, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+@handle_exceptions
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the sigmoid function element-wise.
 
@@ -292,10 +249,12 @@ def sigmoid(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softmax function element-wise.
@@ -319,7 +278,7 @@ def softmax(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input: 
+    With :code: `ivy.Array` input:
 
     >>> x = ivy.array([1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
@@ -333,8 +292,8 @@ def softmax(
     ivy.array([[0.0768, 0.231 , 0.693 ],
                [0.0768, 0.231 , 0.693 ]])
 
-    
-    With :code: `ivy.NativeArray` input: 
+
+    With :code: `ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1.5, 0.3, 1.2])
     >>> y = ivy.softmax(x)
@@ -352,14 +311,15 @@ def softmax(
     ivy.array([0.422, 0.155, 0.422])
 
     """
-    return current_backend(x).softmax(x, axis, out=out)
+    return current_backend(x).softmax(x, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def softplus(
-    x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the softplus function element-wise.
 

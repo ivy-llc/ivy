@@ -1,11 +1,21 @@
 """Base class for deriving trainable modules"""
 
+# global
+from typing import Union
+
 # local
+import ivy
 from ivy.stateful.module import Module
 
 
 class Sequential(Module):
-    def __init__(self, *sub_modules, device=None, v=None, dtype=None):
+    def __init__(
+        self,
+        *sub_modules: Module,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
+        v: Union[ivy.Variable, ivy.NativeVariable] = None,
+        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
+    ):
         """
         A sequential container. Modules will be added to it in the order they are
         passed in the constructor.
@@ -28,7 +38,7 @@ class Sequential(Module):
                     submod.v = v["submodules"]["v" + str(i)]
                 except KeyError:
                     if submod.v:
-                        raise Exception(
+                        raise ivy.exceptions.IvyException(
                             "variables v passed to Sequential class must have key "
                             "chains in the form of "
                             '"submodules/v{}", where {} is an idx'
@@ -57,7 +67,7 @@ class Sequential(Module):
                 x = submod(x, v=self.v.submodules["v" + str(i)])
             except KeyError:
                 if submod.v:
-                    raise Exception(
+                    raise ivy.exceptions.IvyException(
                         "variables v passed to Sequential class must have key chains "
                         "in the form of "
                         '"submodules/v{}", where {} is an idx'

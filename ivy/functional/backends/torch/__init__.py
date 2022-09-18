@@ -14,6 +14,15 @@ NativeDevice = torch.device
 NativeDtype = torch.dtype
 NativeShape = torch.Size
 
+NativeSparseArray = torch.Tensor
+
+
+# devices
+valid_devices = ("cpu", "gpu", "tpu")
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = torch.int8
 native_int16 = torch.int16
@@ -53,12 +62,18 @@ valid_numeric_dtypes = (
 )
 valid_int_dtypes = (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_uint_dtypes = (ivy.uint8,)
 
 # invalid data types
 invalid_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = ()
+invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+
+native_inplace_support = True
+
+supports_gradients = True
 
 
 def closest_valid_dtype(type):
@@ -90,6 +105,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import extensions
+from .extensions import *
 from . import general
 from .general import *
 from . import gradients

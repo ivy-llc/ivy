@@ -44,6 +44,15 @@ NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
 NativeShape = tuple
 
+NativeSparseArray = None
+
+
+# devices
+valid_devices = ("cpu", "gpu", "tpu")
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = jnp.dtype("int8")
 native_int16 = jnp.dtype("int16")
@@ -101,12 +110,18 @@ valid_int_dtypes = (
     ivy.uint64,
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 
 # invalid data types
 invalid_dtypes = ()
 invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
+invalid_uint_dtypes = ()
+
+native_inplace_support = False
+
+supports_gradients = True
 
 
 def closest_valid_dtype(type):
@@ -137,6 +152,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import extensions
+from .extensions import *
 from . import general
 from .general import *
 from . import gradients

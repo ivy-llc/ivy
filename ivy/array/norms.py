@@ -12,17 +12,42 @@ class ArrayWithNorms(abc.ABC):
     def layer_norm(
         self: ivy.Array,
         normalized_idxs: List[int],
+        /,
+        *,
         epsilon: float = ivy._MIN_BASE,
         scale: float = None,
         offset: float = None,
         new_std: float = 1.0,
-        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.layer_norm. This method simply wraps 
         the function, and so the docstring for ivy.layer_norm also applies to this
         method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array
+        normalized_idxs
+            Indices to apply the normalization to.
+        epsilon
+            small constant to add to the denominator, use global ivy._MIN_BASE by
+            default.
+        scale
+            Learnable gamma variables for post-multiplication, default is None.
+        offset
+            Learnable beta variables for post-addition, default is None.
+        new_std
+            The standard deviation of the new normalized values. Default is 1.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The layer after applying layer normalization.
 
         Examples
         --------

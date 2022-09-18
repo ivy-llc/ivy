@@ -73,11 +73,7 @@ class Module(abc.ABC):
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
-        if build_mode not in valid_build_modes:
-            raise Exception(
-                "build_mode must be one of {} of type str, but found "
-                "{} of type {}".format(valid_build_modes, build_mode, type(build_mode))
-            )
+        ivy.assertions.check_elem_in_list(build_mode, valid_build_modes)
         self._dev = ivy.default(
             device, ivy.default(lambda: devices[0], ivy.default_device(), True)
         )
@@ -93,7 +89,7 @@ class Module(abc.ABC):
         self._compiled = False
         self._compiled_fn = None
         self._compile_on_next_step = compile_on_next_step
-        self._v_in = v if (isinstance(v, Container) or v is None) else Container(v)
+        self._v_in = v if isinstance(v, Container) or v is None else Container(v)
         self.v = v
         self.top_v = None
         self.top_mod = None
@@ -102,12 +98,12 @@ class Module(abc.ABC):
         self._submods_to_track = None
         self._track_submod_call_order = False
         self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
         )
         self.expected_submod_rets = None
         self.submod_dict = dict()
         self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
         )
         self._sub_mods = set()
         self._dtype = dtype
@@ -120,12 +116,12 @@ class Module(abc.ABC):
 
     def _fn_with_var_arg(self, fn, v_fn):
         def new_fn(*a, with_grads=None, **kw):
-            with_grads = ivy.with_grads(with_grads)
+            with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
                 del kw["v"]
             v = v_fn(self.v)
             if not with_grads:
-                v = v.stop_gradients()
+                v = v.stop_gradient()
             return fn(*a, **kw, v=v)
 
         new_fn.wrapped = True
@@ -339,7 +335,7 @@ class Module(abc.ABC):
         Forward pass of the layer,
         called after handling the optional input variables.
         """
-        raise NotImplementedError
+        raise ivy.exceptions.IvyNotImplementedException
 
     def _forward_with_tracking(self, *args, **kwargs):
         """Forward pass while optionally tracking submodule returns and call order"""
@@ -359,7 +355,7 @@ class Module(abc.ABC):
         The forward pass of the layer,
         treating layer instance as callable function.
         """
-        with_grads = ivy.with_grads(with_grads)
+        with_grads = ivy.with_grads(with_grads=with_grads)
         if not self._built:
             self.build(
                 *args,
@@ -370,7 +366,7 @@ class Module(abc.ABC):
         if v is not None:
             v_orig = self.v
             if not with_grads:
-                v = v.stop_gradients()
+                v = v.stop_gradient()
             self.v = (
                 Container(v, **v.config) if isinstance(v, Container) else Container(v)
             )
@@ -381,7 +377,7 @@ class Module(abc.ABC):
             return self.__call__(*args, with_grads=with_grads, **kwargs)
         elif not with_grads:
             v_orig = self.v
-            self.v = v_orig.stop_gradients()
+            self.v = v_orig.stop_gradient()
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
             return ret
@@ -402,9 +398,9 @@ class Module(abc.ABC):
                 next_depth = None
             ret = ivy.Container(
                 {
-                    ivy.Container.flatten_key_chain(sm.__repr__(), "_"): sm.sub_mods(
-                        show_v, next_depth
-                    )
+                    ivy.Container.flatten_key_chain(
+                        sm.__repr__(), replacement="_"
+                    ): sm.sub_mods(show_v, next_depth)
                     for sm in self._sub_mods
                 }
             )
@@ -448,12 +444,14 @@ class Module(abc.ABC):
         max_depth = depth
         depth = 1
         top_mod = self
-        mods = [ivy.Container.flatten_key_chain(top_mod.__repr__(), "_")]
+        mods = [ivy.Container.flatten_key_chain(top_mod.__repr__(), replacement="_")]
         while True:
             if not ivy.exists(top_mod.top_mod):
                 break
             top_mod = top_mod.top_mod(1)
-            mods.append(ivy.Container.flatten_key_chain(top_mod.__repr__(), "_"))
+            mods.append(
+                ivy.Container.flatten_key_chain(top_mod.__repr__(), replacement="_")
+            )
             if depth == max_depth:
                 break
             depth += 1
@@ -561,10 +559,11 @@ class Module(abc.ABC):
                 kwargs["atol"] = atol
             if rtol:
                 kwargs["rtol"] = rtol
-            assert np.allclose(
-                ret, expected_ret, **kwargs
-            ), "ret\n\n{}\n\nand expected_ret\n\n{}\n\nwere not close enough".format(
-                ret, expected_ret
+            ivy.assertions.check_true(
+                np.allclose(ret, expected_ret, **kwargs),
+                message="ret: {} and expected_ret: {} were not close enough".format(
+                    ret, expected_ret
+                ),
             )
 
     # noinspection PyProtectedMember
@@ -594,7 +593,7 @@ class Module(abc.ABC):
             else:
                 max_key = key + "_0"
                 sco[max_key] = ivy.Container(
-                    alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
+                    alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
@@ -623,7 +622,7 @@ class Module(abc.ABC):
             ).to_numpy()
         else:
             sco[new_key] = ivy.Container(
-                alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
+                alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
             )
 
     def __call__(
@@ -642,12 +641,12 @@ class Module(abc.ABC):
         **kwargs
     ):
 
-        with_grads = ivy.with_grads(with_grads)
+        with_grads = ivy.with_grads(with_grads=with_grads)
         self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
         )
         self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend("numpy")
+            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
         )
         self._set_submod_flags(
             track_submod_rets,
@@ -679,9 +678,9 @@ class Module(abc.ABC):
         if not from_call and self._build_mode == "on_call":
             return self.v
         if dtype:
-            dtype = ivy.default_dtype(dtype, as_native=True)
+            dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         else:
-            dtype = ivy.default_dtype(self._dtype, as_native=True)
+            dtype = ivy.default_dtype(dtype=self._dtype, as_native=True)
 
         kwargs["dtype"] = dtype
         # build local Module, and any child modules flagged with "explicit" build mode

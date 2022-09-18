@@ -11,19 +11,53 @@ class ContainerWithLosses(ContainerBase):
     def static_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cross_entropy. This method simply
         wraps the function, and so the docstring for ivy.cross_entropy also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        true
+            input array or container containing true labels.
+        pred
+            input array or container containing the predicted labels.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``,
+            the cross-entropy will be computed along the last dimension.
+            Default: ``-1``.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The cross-entropy loss between the given distributions.
 
         Examples
         --------
@@ -65,19 +99,53 @@ class ContainerWithLosses(ContainerBase):
     def cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.cross_entropy. This method simply
         wraps the function, and so the docstring for ivy.cross_entropy also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container containing true labels.
+        pred
+            input array or container containing the predicted labels.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``,
+            the cross-entropy will be computed along the last dimension.
+            Default: ``-1``.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The cross-entropy loss between the given distributions.
 
         Examples
         --------
@@ -93,12 +161,12 @@ class ContainerWithLosses(ContainerBase):
         return self.static_cross_entropy(
             self,
             pred,
-            axis,
-            epsilon,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            epsilon=epsilon,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -106,18 +174,48 @@ class ContainerWithLosses(ContainerBase):
     def static_binary_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.binary_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.binary_cross_entropy
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        true
+            input array or container containing true labels.
+        pred
+            input array or container containing Predicted labels.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy between the given distributions.
 
         Examples
         --------
@@ -158,18 +256,48 @@ class ContainerWithLosses(ContainerBase):
     def binary_cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.binary_cross_entropy. This
         method simply wraps the function, and so the docstring for
         ivy.binary_cross_entropy also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container containing true labels.
+        pred
+            input array or container containing Predicted labels.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The binary cross entropy between the given distributions.
 
         Examples
         --------
@@ -185,11 +313,11 @@ class ContainerWithLosses(ContainerBase):
         return self.static_binary_cross_entropy(
             self,
             pred,
-            epsilon,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            epsilon=epsilon,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -197,19 +325,52 @@ class ContainerWithLosses(ContainerBase):
     def static_sparse_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sparse_cross_entropy. This method
         simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        true
+            input array or container containing the true labels as logits.
+        pred
+            input array or container containing the predicted labels as logits.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``, the
+            cross-entropy will be computed along the last dimension. Default: ``-1``.
+            epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The sparse cross-entropy loss between the given distributions.
 
         Examples
         --------
@@ -251,19 +412,52 @@ class ContainerWithLosses(ContainerBase):
     def sparse_cross_entropy(
         self: ivy.Container,
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.sparse_cross_entropy. This
         method simply wraps the function, and so the docstring for
         ivy.sparse_cross_entropy also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container containing the true labels as logits.
+        pred
+            input array or container containing the predicted labels as logits.
+        axis
+            the axis along which to compute the cross-entropy. If axis is ``-1``, the
+            cross-entropy will be computed along the last dimension. Default: ``-1``.
+            epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``1e-7``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The sparse cross-entropy loss between the given distributions.
 
         Examples
         --------
@@ -279,11 +473,11 @@ class ContainerWithLosses(ContainerBase):
         return self.static_sparse_cross_entropy(
             self,
             pred,
-            axis,
-            epsilon,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            axis=axis,
+            epsilon=epsilon,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
