@@ -3104,7 +3104,7 @@ def get_axis(
                     st.integers(-lower_axes_bound, axes - 1),
                     min_size=min_size,
                     max_size=max_size,
-                    unique_by=unique_by,
+                    unique=unique,
                 )
             )
 
