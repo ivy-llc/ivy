@@ -314,8 +314,8 @@ def test_numpy_cosh(
 
 # arctanh
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
@@ -336,6 +336,7 @@ def test_numpy_arctanh(
 ):
     input_dtype, x = dtype_and_x
     input_dtype = [input_dtype]
+
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -361,7 +362,7 @@ def test_numpy_arctanh(
         test_values=False,
     )
 
-    
+
 # rad2deg
 @handle_cmd_line_args
 @given(

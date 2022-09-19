@@ -11,6 +11,18 @@ from ivy.functional.backends.jax import JaxArray
 # -------------------#
 
 
+def min(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+
+
 def max(
     x: JaxArray,
     /,
@@ -33,18 +45,6 @@ def mean(
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.mean(x, axis=axis, keepdims=keepdims)
-
-
-def min(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
 def _infer_dtype(dtype: jnp.dtype):

@@ -10,6 +10,21 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
+
+
+min.support_native_out = True
+
+
 def max(
     x: np.ndarray,
     /,
@@ -31,6 +46,7 @@ def mean(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -38,22 +54,6 @@ def mean(
 
 
 mean.support_native_out = True
-
-
-def min(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
-
-
-min.support_native_out = True
 
 
 def _infer_dtype(dtype: np.dtype):
