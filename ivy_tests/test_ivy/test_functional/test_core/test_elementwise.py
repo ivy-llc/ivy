@@ -396,8 +396,6 @@ def test_bitwise_and(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
@@ -415,7 +413,9 @@ def test_bitwise_left_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    x[1] = np.abs(x[1])
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -509,8 +509,6 @@ def test_bitwise_or(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
@@ -528,7 +526,9 @@ def test_bitwise_right_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    x[1] = np.abs(x[1])
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_function(
         input_dtypes=input_dtype,
