@@ -1,9 +1,14 @@
 # global
+from typing import List
 import ivy
 
 
 def add(x, y, name=None):
     return ivy.add(x, y)
+
+def abs(x, name=None):
+    x = ivy.asarray(x)
+    return x.abs()
 
 
 def argmax(input, axis, output_type, name=None):
