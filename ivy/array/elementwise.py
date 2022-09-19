@@ -1876,16 +1876,17 @@ class ArrayWithElementwise(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([5, 2, 3])
-        >>> y = ivy.array([2, 5, 6])
+        >>> y = ivy.array([1, 2, 6])
         >>> z = x.subtract(y)
         >>> print(z)
-        ivy.array([3, -3, -3])
+        ivy.array([4, 0, -3])
 
         >>> x = ivy.array([5., 5, 3])
         >>> y = ivy.array([4, 5, 6])
         >>> z = x.subtract(y, alpha=2)
         >>> print(z)
-        ivy.array([1., 0., -3.])
+        ivy.array([-3., -5., -9.])
+
 
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
