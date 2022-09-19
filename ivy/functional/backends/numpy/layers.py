@@ -477,3 +477,27 @@ def conv3d_transpose(
     if data_format == "NCDHW":
         res = np.transpose(res, (0, 4, 1, 2, 3))
     return res
+
+
+def dropout(
+    x: np.ndarray,
+    prob: Union[int, float],
+    /,
+    *,
+    scale: bool = True,
+    dtype: np.dtype = None,
+    device: str,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    # noinspection PyUnresolvedReferences
+    x = ivy.where(
+        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
+        ivy.zeros_like(x),
+        x,
+    )
+    if scale:
+        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
+    return x
