@@ -1,0 +1,26 @@
+name: test-ivy-cron
+on: [pull_request]
+
+jobs:
+  run-ivy-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+            path: ivy
+            persist-credentials: false
+            submodules: 'recursive'
+
+      - name: Choose and Run Ivy Test
+        id: ivy_test
+        run: |
+          export BACKEND = "none" SUBMODULE = "none"
+          cd ivy
+          python3 random_test.py
+          echo $BACKEND $SUBMODULE
+          ./run_tests_CLI/test_ivy_core.sh $BACKEND $SUBMODULE
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
