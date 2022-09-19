@@ -1303,7 +1303,7 @@ def value_is_nan(
     *,
     include_infs: Optional[bool] = True,
 ) -> bool:
-    """Determine whether the single valued array or scalar is of nan type.
+    """Determines whether the single valued array or scalar is of nan type.
 
     Parameters
     ----------
@@ -1317,9 +1317,35 @@ def value_is_nan(
     ret
         Boolean as to whether the input value is a nan or not.
 
+    Examples
+    --------
+    >>> x = ivy.array([451])
+    >>> y = ivy.value_is_nan(x)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('inf')])
+    >>> y = ivy.value_is_nan(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf')])
+    >>> y = ivy.value_is_nan(x, include_infs=False)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('nan')])
+    >>> y = ivy.value_is_nan(x, include_infs=False)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([0])
+    >>> y = ivy.value_is_nan(x)
+    >>> print(y)
+    False
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
-    if not x_scalar == x_scalar:
+    if not x_scalar == x:
         return True
     if include_infs and x_scalar == INF or x_scalar == -INF:
         return True
