@@ -159,10 +159,7 @@ def bitwise_left_shift(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
-    ret = np.left_shift(x1, x2)
-    return np.where(
-        x2 >= np.iinfo(x1.dtype).bits, np.zeros(ret.shape, dtype=ret.dtype), ret
-    )
+    return np.left_shift(x1, x2)
 
 
 bitwise_left_shift.support_native_out = True
