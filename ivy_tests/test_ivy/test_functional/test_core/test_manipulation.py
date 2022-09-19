@@ -706,6 +706,8 @@ def _split_helper(draw):
                 shape=(),
                 min_value=0,
                 max_value=shape[axis] - sum(num_or_size_splits),
+                exclude_min=False,
+                exclude_max=False,
             )
         )
         num_or_size_splits.append(split_value)
