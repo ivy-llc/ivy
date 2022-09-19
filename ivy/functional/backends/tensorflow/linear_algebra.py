@@ -87,7 +87,10 @@ def eigvalsh(
     return tf.linalg.eigvalsh(x)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
