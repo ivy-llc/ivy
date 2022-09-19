@@ -87,13 +87,16 @@ This ensures that the given example is always tested while running the test, all
 efficiently.
 
 Test Skipping
------------------
+-------------
 Certain tests may need to be skipped when running the array-api test suite. This could be due to a variety of reasons:
 
-#. the test function has a known issue which the `array-api test repository`_ developers are working on (e.g. :code:`test_asarray_arrays`),
+#. the test function has a known issue which the `array-api test repository`_ developers are working on (e.g. :code:`test_asarray_arrays`)
+
 #. the function itself deviates from the standard (e.g. :code:`test_floor_divide`)
+
 #. there is an issue with the hypothesis test data generation i.e. a failed 'health check' (e.g.
 :code:`test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]`)
+
 #. tolerance issues when asserting output :code:`isequal()` (e.g. :code:`test_matrix_norm`)
 
 All the examples in this list except point 3 (which only occurs with tensorflow) refer to numpy functions, and the first
@@ -104,7 +107,9 @@ have our own fork that we can tweak at will. The rationale for doing so is that 
 standard as possible. These issues have been raised in the array-api test repo and will be addressed in due course.
 
 There are currently two ways to skip array-api tests:
+
 #. in :code:`ivy_tests/array_api_methods_to_test/<submodule>.txt` and
+
 #. in :code:`ivy_tests/skips.txt`
 
 The first method was implemented before the second. Each :code:`<submodule>.txt` file contains a comprehensive list
@@ -116,8 +121,9 @@ test suite contains a set of special tests which aim to cover edge-case input an
 (see :code:`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`). In :code:`ivy_tests/skips.txt`, tests are
 skipped by writing the filepath + conditions on the input of the test e.g.,
 
-:code:`ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0
-and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]`
+.. code-block:: bash
+
+    ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
 
 is skipping the in-place operations test on the :code:`pow`
 instance method when x1 is -infinity and x2 is a positive, odd float. The result should be +infinity, however there is
