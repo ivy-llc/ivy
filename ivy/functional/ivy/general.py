@@ -1509,6 +1509,9 @@ def exists(x: Any) -> bool:
     True
 
     """
+    if x is None:
+        return False
+
     return x is not None
 
 
