@@ -344,7 +344,7 @@ def test_torch_std(
         fn_tree="std",
         input=np.asarray(x, dtype=input_dtype),
         dim=axis,
-        correction=int(correction),
+        unbiased=bool(correction),
         keepdim=keepdims,
         out=None,
     )

@@ -37,5 +37,5 @@ def mean(input, dim, keepdim=False, *, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
-def std(input, dim, *, correction=0.0, keepdim=False, out=None):
-    return ivy.std(input, axis=dim, correction=correction, keepdims=keepdim, out=out)
+def std(input, dim, unbiased, keepdim=False, *, out=None):
+    return ivy.std(input, axis=dim, correction=1 if unbiased else 0, keepdims=keepdim, out=out)
