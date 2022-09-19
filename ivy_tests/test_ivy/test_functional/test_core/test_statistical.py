@@ -11,21 +11,17 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def statistical_dtype_values(draw, *, function):
-    max_op = "linear"
-    large_abs_safety_factor = 4
+    large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if function in ["prod", "sum", "mean"]:
-        max_op = "log"
-    elif function in ["var", "std"]:
-        max_op = "log"
+    if function in ["mean", "std", "var"]:
+        large_abs_safety_factor = 24
+        small_abs_safety_factor = 24
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("float"),
-            large_value_safety_factor=20,
-            small_value_safety_factor=2.5,
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
-            safety_factor_scale=max_op,
+            safety_factor_scale="log",
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=2,
@@ -159,8 +155,8 @@ def test_mean(
         instance_method=instance_method,
         fw=fw,
         fn_name="mean",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
@@ -197,7 +193,7 @@ def test_var(
         instance_method=instance_method,
         fw=fw,
         fn_name="var",
-        rtol_=1e-2,
+        rtol_=1e-1,
         atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
