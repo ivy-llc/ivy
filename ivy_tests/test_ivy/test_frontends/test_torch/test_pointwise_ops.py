@@ -825,11 +825,8 @@ def test_torch_negative(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_and"
@@ -863,7 +860,7 @@ def test_torch_bitwise_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=1,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -896,7 +893,7 @@ def test_torch_bitwise_not(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -931,7 +928,7 @@ def test_torch_bitwise_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -983,6 +980,8 @@ def test_torch_bitwise_left_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
     x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_frontend_function(
@@ -1020,6 +1019,8 @@ def test_torch_bitwise_right_shift(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
     x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_frontend_function(
