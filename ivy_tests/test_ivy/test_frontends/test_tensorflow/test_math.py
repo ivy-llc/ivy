@@ -960,7 +960,7 @@ def test_tensorflow_zero_fraction(
     )
 
 
-#abs
+# abs
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -972,7 +972,7 @@ def test_tensorflow_zero_fraction(
         fn_name="ivy.functional.frontends.tensorflow.abs"
     ),
 )
-def test_tensorflow_asinh(
+def test_tensorflow_abs(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
