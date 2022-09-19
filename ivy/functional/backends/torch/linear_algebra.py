@@ -6,6 +6,7 @@ from collections import namedtuple
 # local
 import ivy
 from ivy import inf
+from .data_type import native_dtype_dict
 
 
 # Array API Standard #
@@ -46,9 +47,7 @@ def cross(
 ) -> torch.Tensor:
     if axis is None:
         axis = -1
-    promote_type = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(promote_type)
-    x2 = x2.type(promote_type)
+    x1,x2=ivy.promote_types_of_inputs(x1,x2)
     return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
 
 
@@ -127,10 +126,8 @@ inv.support_native_out = True
 def matmul(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    dtype_from = torch.promote_types(x1.dtype, x2.dtype)
-    x1 = x1.type(dtype_from)
-    x2 = x2.type(dtype_from)
-    return torch.matmul(x1, x2, out=out).type(dtype_from)
+    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    return torch.matmul(x1, x2, out=out)
 
 
 matmul.support_native_out = True
@@ -310,7 +307,7 @@ def tensordot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
+    dtype = native_dtype_dict[ivy.promote_types(x1.dtype, x2.dtype)]
     # type conversion to one that torch.tensordot can work with
     x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
 

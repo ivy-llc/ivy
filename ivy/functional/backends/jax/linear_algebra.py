@@ -7,7 +7,7 @@ from collections import namedtuple
 import ivy
 from ivy import inf
 from ivy.functional.backends.jax import JaxArray
-
+from ivy import promote_types_of_inputs
 
 # Array API Standard #
 # -------------------#
@@ -33,6 +33,7 @@ cholesky.unsupported_dtypes = (
 def cross(
     x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x1,x2=promote_types_of_inputs(x1,x2)
     return jnp.cross(a=x1, b=x2, axis=axis)
 
 
@@ -100,6 +101,7 @@ inv.unsupported_dtypes = (
 def matmul(
     x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x1,x2=promote_types_of_inputs(x1,x2)
     return jnp.matmul(x1, x2)
 
 
@@ -270,6 +272,7 @@ def tensordot(
     axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1,x2=promote_types_of_inputs(x1,x2)
     return jnp.tensordot(x1, x2, axes)
 
 
@@ -285,6 +288,7 @@ trace.unsupported_dtypes = ("float16",)
 def vecdot(
     x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
+    x1,x2=promote_types_of_inputs(x1,x2)
     return jnp.tensordot(x1, x2, axes=(axis, axis))
 
 

@@ -41,6 +41,7 @@ def cross(
     axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.cross(x1, x2, axis=axis)
 
 
@@ -134,10 +135,8 @@ def matmul(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype_from = tf.experimental.numpy.promote_types(
-        x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
-    )
-    dtype_from = tf.as_dtype(dtype_from)
+    x1,x2=ivy.promote_types_of_inputs(x1,x2)
+    dtype_from = tf.as_dtype(x1.dtype)
     if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
         x1 = tf.cast(x1, tf.int64)
         x2 = tf.cast(x2, tf.int64)
@@ -458,7 +457,7 @@ def tensordot(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # find type to promote to
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.promote_types(x1.dtype, x2.dtype)
 
     # type casting to float32 which is acceptable for tf.tensordot
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
@@ -489,7 +488,7 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.promote_types(x1.dtype, x2.dtype)
     if dtype != "float64":
         x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     else:
