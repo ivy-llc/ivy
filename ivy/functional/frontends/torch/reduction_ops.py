@@ -33,7 +33,7 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
-def nansum(input, dim=None, keepdim=False, *, out=None):
+def nansum(input, dim, keepdim=False, *, out=None):
     input_dtype = ivy.as_ivy_dtype(input.dtype)
     fill_values = ivy.zeros_like(input)
     input = ivy.where(ivy.isnan(input), fill_values, input)
