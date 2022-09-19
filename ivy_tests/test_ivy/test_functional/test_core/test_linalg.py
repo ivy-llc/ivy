@@ -9,7 +9,6 @@ from hypothesis import given, assume, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -708,7 +707,9 @@ def test_slogdet(
 def _get_first_matrix(draw):
     # batch_shape, random_size, shared
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_float_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -727,7 +728,9 @@ def _get_first_matrix(draw):
 def _get_second_matrix(draw):
     # batch_shape, shared, random_size
     input_dtype = draw(
-        st.shared(st.sampled_from(ivy_np.valid_float_dtypes), key="shared_dtype")
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))), key="shared_dtype"
+        )
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
