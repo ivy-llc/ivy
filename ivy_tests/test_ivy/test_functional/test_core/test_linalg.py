@@ -881,8 +881,8 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=6,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
         safety_factor_scale="log",
         min_num_dims=2,
     ),
@@ -912,8 +912,8 @@ def test_trace(
         instance_method=instance_method,
         fw=fw,
         fn_name="trace",
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         offset=offset,
     )
