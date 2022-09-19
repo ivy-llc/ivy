@@ -1082,11 +1082,11 @@ def split_func_call(
             max_chunk_size = max_dim
     chunk_size = ivy.default(
         chunk_size,
-        lambda: 1
+        default_val=lambda: 1
         + int(
             round((max_chunk_size - 1) * ivy.split_factor(ivy.default_device(device)))
         ),
-        True,
+        with_callable=True,
     )
     dim_size = inputs[0].shape[input_axes[0]]
     if chunk_size >= dim_size:
