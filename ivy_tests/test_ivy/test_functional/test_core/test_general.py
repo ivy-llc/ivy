@@ -734,21 +734,21 @@ def test_exists(x):
     x=st.one_of(
         st.none(),
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
+            available_dtypes=helpers.get_dtypes("numeric"),
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
         ),
-        st.sampled_from([ivy.array]),
+        st.sampled_from([lambda *args, **kwargs: None]),
     ),
     default_val=st.one_of(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
+            available_dtypes=helpers.get_dtypes("numeric"),
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
         ),
-        st.sampled_from([ivy.array]),
+        st.sampled_from([lambda *args, **kwargs: None]),
     ),
 )
 def test_default(x, default_val):
