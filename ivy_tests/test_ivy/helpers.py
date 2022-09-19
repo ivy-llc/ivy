@@ -1381,7 +1381,8 @@ def test_function(
     instance = None
     if instance_method:
         is_instance = [
-            (not n) or c for n, c in zip(native_array_flags, container_flags)
+            (not native_flag) or container_flag
+            for native_flag, container_flag in zip(native_array_flags, container_flags)
         ]
         arg_is_instance = is_instance[:num_arg_vals]
         kwarg_is_instance = is_instance[num_arg_vals:]
