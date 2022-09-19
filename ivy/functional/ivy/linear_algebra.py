@@ -1126,14 +1126,15 @@ def qr(
 @handle_exceptions
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
-    /
+    /,
 ) -> ivy.Array:
     """Computes the sign and natural logarithm of the determinant of an array.
 
     Parameters
     ----------
     x
-        input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
+        input array having shape (..., M, M) and whose innermost two dimensions form
+        square matrices. Should have a floating-point data type.
 
     Returns
     -------
@@ -1209,6 +1210,7 @@ def slogdet(
 
     """
     return current_backend(x).slogdet(x)
+
 
 @to_native_arrays_and_back
 @handle_out_argument
