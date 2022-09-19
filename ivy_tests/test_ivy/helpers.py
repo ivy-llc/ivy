@@ -481,13 +481,15 @@ def assert_all_close(
     -------
     None if the test passes, else marks the test as failed.
     """
-    assert ret_np.dtype is ret_from_gt_np.dtype, (
+    ret_dtype = str(ret_np.dtype)
+    ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
+    assert ret_dtype == ret_from_gt_dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_gt_np.dtype.type,
+            ret_from_gt_dtype,
             ivy.current_backend_str(),
-            ret_np.dtype.type,
+            ret_dtype,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
