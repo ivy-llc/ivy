@@ -1208,7 +1208,7 @@ def slogdet(
     }
 
     """
-    return current_backend(x).slogdet(x, out=out)
+    return current_backend(x).slogdet(x)
 
 
 @to_native_arrays_and_back

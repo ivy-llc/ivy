@@ -232,10 +232,10 @@ qr.unsupported_dtypes = ("float16",)
 
 
 def slogdet(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     results = namedtuple("slogdet", "sign logabsdet")
-    sign, logabsdet = torch.linalg.slogdet(x, out=out)
+    sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)
 
 

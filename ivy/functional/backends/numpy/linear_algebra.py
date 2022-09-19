@@ -183,9 +183,7 @@ qr.unsupported_dtypes = ("float16",)
 
 
 def slogdet(
-    x: np.ndarray,
-    *,
-    out: Optional[np.ndarray] = None,
+    x: np.ndarray
 ) -> Tuple[np.ndarray, np.ndarray]:
     results = namedtuple("slogdet", "sign logabsdet")
     sign, logabsdet = np.linalg.slogdet(x)
