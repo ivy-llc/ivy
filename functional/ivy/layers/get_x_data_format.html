@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>handle_padding &mdash; Ivy 1.0 documentation</title>
+  <title>get_x_data_format &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="deconv_length" href="deconv_length.html" />
-    <link rel="prev" title="ivy.Container.static_lstm_update" href="lstm_update/static_lstm_update_container.html" /> 
+    <link rel="next" title="Linear algebra" href="../linear_algebra.html" />
+    <link rel="prev" title="deconv_length" href="deconv_length.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -77,9 +77,9 @@
 <li class="toctree-l2"><a class="reference internal" href="conv3d_transpose.html">conv3d_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv_general_dilated.html">conv_general_dilated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lstm_update.html">lstm_update</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">handle_padding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="handle_padding.html">handle_padding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="deconv_length.html">deconv_length</a></li>
-<li class="toctree-l2"><a class="reference internal" href="get_x_data_format.html">get_x_data_format</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">get_x_data_format</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../linear_algebra.html">Linear algebra</a></li>
@@ -139,9 +139,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../layers.html">Layers</a> &raquo;</li>
-      <li>handle_padding</li>
+      <li>get_x_data_format</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/layers/handle_padding.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/layers/get_x_data_format.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -149,11 +149,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="handle-padding">
-<h1>handle_padding<a class="headerlink" href="#handle-padding" title="Permalink to this heading"></a></h1>
+  <section id="get-x-data-format">
+<h1>get_x_data_format<a class="headerlink" href="#get-x-data-format" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.layers.handle_padding">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">handle_padding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#handle_padding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.handle_padding" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.get_x_data_format">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">get_x_data_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'channel_first'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/layers.html#get_x_data_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.get_x_data_format" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <div class="line-block">
@@ -167,8 +167,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="lstm_update/static_lstm_update_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_lstm_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="deconv_length.html" class="btn btn-neutral float-right" title="deconv_length" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="deconv_length.html" class="btn btn-neutral float-left" title="deconv_length" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../linear_algebra.html" class="btn btn-neutral float-right" title="Linear algebra" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1244,7 +1244,7 @@
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;channel_last&quot;</span><span class="p">,</span>
     <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -1264,10 +1264,7 @@
 <span class="sd">    dims</span>
 <span class="sd">        Shape of input.</span>
 <span class="sd">    data_format</span>
-<span class="sd">        &quot;NWC&quot; or &quot;NCW&quot; for conv1d</span>
-<span class="sd">        &quot;NHWC&quot; or &quot;NCHW&quot; for conv2d</span>
-<span class="sd">        &quot;NDHWC&quot; or &quot;NCDHW&quot; for conv3d.</span>
-<span class="sd">         Defaults to &quot;NHWC&quot;.</span>
+<span class="sd">        &quot;channel_first&quot; or &quot;channel_last&quot; Defaults to &quot;channel_last&quot;</span>
 <span class="sd">    dilations</span>
 <span class="sd">        The dilation factor for each dimension of input. (Default value = 1)</span>
 <span class="sd">    out</span>
@@ -1408,6 +1405,24 @@
     <span class="k">elif</span> <span class="n">padding</span> <span class="o">==</span> <span class="s2">&quot;SAME&quot;</span><span class="p">:</span>
         <span class="n">dim_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">*</span> <span class="n">stride_size</span>
     <span class="k">return</span> <span class="n">dim_size</span></div>
+
+
+<div class="viewcode-block" id="get_x_data_format"><a class="viewcode-back" href="../../../../functional/ivy/layers/get_x_data_format.html#ivy.functional.ivy.layers.get_x_data_format">[docs]</a><span class="k">def</span> <span class="nf">get_x_data_format</span><span class="p">(</span><span class="n">dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data_format</span> <span class="o">==</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;NCW&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;NWC&quot;</span>
+    <span class="k">if</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data_format</span> <span class="o">==</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;NCHW&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;NHWC&quot;</span>
+    <span class="k">elif</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data_format</span> <span class="o">==</span> <span class="s2">&quot;channel_first&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;NCDHW&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;NDHWC&quot;</span></div>
 </pre></div>
 
            </div>

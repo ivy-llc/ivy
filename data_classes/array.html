@@ -174,8 +174,6 @@ with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> – first input array. Should have a numeric data type.</p></li>
-<li><p><strong>other</strong> – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
-(see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -274,8 +272,6 @@ with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> – first input array. Should have a numeric data type.</p></li>
-<li><p><strong>other</strong> – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
-(see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -303,6 +299,9 @@ ivy.bitwise_right_shift also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> – first input array. Should have an integer data type.</p></li>
+<li><p><strong>other</strong> – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>).
+Should have an integer data type. Each element must be greater than or equal
+to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -330,6 +329,9 @@ also applies to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> – first input array. Should have an integer data type.</p></li>
+<li><p><strong>other</strong> – second input array. Must be compatible with <code class="docutils literal notranslate"><span class="pre">x1</span></code> (see <span class="xref std std-ref">broadcasting</span>).
+Should have an integer data type. Each element must be greater than or equal
+to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -354,6 +356,76 @@ a data type determined by <span class="xref std std-ref">type-promotion</span>.<
 <span class="go">{</span>
 <span class="go">    a: ivy.array([5, 5, 16]),</span>
 <span class="go">    b: ivy.array([0, 1, 8])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.array.Array.__rsub__">
+<span class="sig-name descname"><span class="pre">__rsub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array.html#Array.__rsub__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array.Array.__rsub__" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array reverse special method variant of ivy.subtract. This method simply wraps
+the function, and so the docstring for ivy.subtract also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – first input array. Should have a numeric data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – an array containing the element-wise differences. The returned array must have a
+data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([-3, -4, -5])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.array.Array.__sub__">
+<span class="sig-name descname"><span class="pre">__sub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array.html#Array.__sub__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array.Array.__sub__" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array special method variant of ivy.subtract. This method simply wraps the
+function, and so the docstring for ivy.subtract also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – first input array. Should have a numeric data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – an array containing the element-wise differences. The returned array must have a
+data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances only:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([-3, -3, -3])</span>
+</pre></div>
+</div>
+<p>With mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.</span><span class="p">],</span> <span class="p">[</span><span class="mf">5.</span><span class="p">],</span> <span class="p">[</span><span class="mf">6.</span><span class="p">]]),</span>                            <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.</span><span class="p">],</span> <span class="p">[</span><span class="mf">6.</span><span class="p">],</span> <span class="p">[</span><span class="mf">7.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[-2.9, -1.7, -7.6],</span>
+<span class="go">                  [-3.9, -2.7, -8.6],</span>
+<span class="go">                  [-4.9, -3.7, -9.6]]),</span>
+<span class="go">    b: ivy.array([[-3.9, -2.7, -8.6],</span>
+<span class="go">                  [-4.9, -3.7, -9.6],</span>
+<span class="go">                  [-5.9, -4.7, -10.6]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -777,6 +849,14 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.get_tmp_dir">
 <span class="sig-name descname"><span class="pre">get_tmp_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.array.array.Array.get_tmp_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Add the data of the current array from which the instance function is invoked
+as the first arg parameter or kwarg parameter. Return the new function with
+the name function_name and the new args variable or kwargs as the new inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.array.Array.get_x_data_format">
+<span class="sig-name descname"><span class="pre">get_x_data_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.array.array.Array.get_x_data_format" title="Permalink to this definition"></a></dt>
 <dd><p>Add the data of the current array from which the instance function is invoked
 as the first arg parameter or kwarg parameter. Return the new function with
 the name function_name and the new args variable or kwargs as the new inputs.</p>
