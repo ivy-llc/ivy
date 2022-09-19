@@ -86,10 +86,7 @@ def bitwise_left_shift(
 ) -> JaxArray:
     x1, x2 = _cast_for_bitwise_op(x1, x2)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
-    ret = jnp.left_shift(x1, x2)
-    return jnp.where(
-        x2 >= x1.dtype.itemsize * 8, jnp.zeros(ret.shape, dtype=ret.dtype), ret
-    )
+    return jnp.left_shift(x1, x2)
 
 
 def bitwise_or(

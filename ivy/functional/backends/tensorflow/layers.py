@@ -258,3 +258,51 @@ def conv3d_transpose(
 
 
 conv3d_transpose.unsupported_dtypes = ("bfloat16",)
+
+
+def conv_general_dilated(
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    dilations: int = 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    data_format = ivy.get_x_data_format(dims, data_format)
+    if dims == 1:
+        return conv1d(
+            x,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
+        )
+    elif dims == 2:
+        return conv2d(
+            x,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
+        )
+    else:
+        return conv3d(
+            x,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
+        )
+
+
+conv_general_dilated.unsupported_dtypes = ("bfloat16",)
