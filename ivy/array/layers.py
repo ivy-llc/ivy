@@ -292,7 +292,7 @@ class ArrayWithLayers(abc.ABC):
 
         """
         return ivy.conv2d(
-            self._data,
+            self,
             filters,
             strides,
             padding,
