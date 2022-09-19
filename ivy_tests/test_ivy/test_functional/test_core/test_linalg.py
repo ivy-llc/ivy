@@ -924,8 +924,8 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=6,
-        small_abs_safety_factor=1.5,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
@@ -960,6 +960,8 @@ def test_vecdot(
         instance_method=instance_method,
         fw=fw,
         fn_name="vecdot",
+        rtol_=1e-1,
+        atol_=1e-1,
         x1=np.asarray(x1, dtype=dtype),
         x2=np.asarray(x2, dtype=dtype),
         axis=axis,
