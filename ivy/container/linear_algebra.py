@@ -1011,13 +1011,61 @@ class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_slogdet(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static instance method variant of ivy.slogdet.
+        This method simply wraps the function, and so the docstring
+        for ivy.slogdet also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array or container having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            This function returns a container containing two values for each square matrix.
+            Each value of output will have -
+                sign:
+                A number representing the sign of the determinant.
+
+                logdet:
+                The natural log of the absolute value of the determinant.
+
+        Examples
+        --------
+
+        >>> a = ivy.array([[[1.0, 2.0],  \
+                            [3.0, 4.0]], \
+                           [[1.0, 2.0],  \
+                            [2.0, 1.0]], \
+                           [[1.0, 3.0],  \
+                            [3.0, 1.0]]])
+        >>> x = ivy.Container(a=a)
+        >>> y = ivy.Container.static_slogdet(x)
+        >>> print(y)
+        {
+            a: (list[2], <class ivy.array.array.Array> shape=[3])
+        }
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "slogdet",
             x,
@@ -1034,9 +1082,51 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.slogdet.
+        This method simply wraps the function, and so the docstring
+        for ivy.slogdet also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            This function returns container containing two values for each square matrix.
+            Each value of output will have -
+                sign:
+                A number representing the sign of the determinant.
+
+                logdet:
+                The natural log of the absolute value of the determinant.
+
+        Examples
+        --------
+
+        >>> x = ivy.Container(a=ivy.array([[1.0, 2.0], \
+                                           [3.0, 4.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        {
+            a: (list[2], <class ivy.array.array.Array> shape=[3])
+        }
+
+        """
+
         return self.static_slogdet(
             self,
             key_chains,
