@@ -9,16 +9,10 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
-def _cast_for_bitwise_op(x1, x2, clamp=False):
+def _cast_for_bitwise_op(x1, x2):
     if not isinstance(x1, int):
         if isinstance(x2, int):
             x2 = jnp.asarray(x2, dtype=x1.dtype)
-    if clamp:
-        x2 = jax.lax.clamp(
-            jnp.array(0, dtype=x2.dtype),
-            x2,
-            jnp.array(x1.dtype.itemsize * 8 - 1, dtype=x2.dtype),
-        )
     return x1, x2
 
 
@@ -41,6 +35,7 @@ def add(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.add(x1, x2)
 
 
@@ -89,7 +84,8 @@ def bitwise_left_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2, clamp=True)
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.left_shift(x1, x2)
 
 
@@ -111,7 +107,8 @@ def bitwise_right_shift(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = _cast_for_bitwise_op(x1, x2, clamp=True)
+    x1, x2 = _cast_for_bitwise_op(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return jnp.right_shift(x1, x2)
 
 

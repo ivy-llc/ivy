@@ -438,18 +438,18 @@ def where(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-def indices_where(
+def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns indices or true elements in an input boolean array.
+    """Returns indices the indices of all non-zero elements of the input array.
 
     Parameters
     ----------
     x
-        Boolean array, for which indices are desired.
+        input array, for which indices are desired.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -457,7 +457,7 @@ def indices_where(
     Returns
     -------
     ret
-        Indices for where the boolean array is True.
+        Indices of non-zero elements.
 
     """
-    return current_backend(x).indices_where(x, out=out)
+    return current_backend(x).argwhere(x, out=out)
