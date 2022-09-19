@@ -5883,10 +5883,10 @@ def trunc_divide(
     With :code:`ivy.Array` inputs:
 
     >>> x1 = ivy.array([2., 7., 9.])
-    >>> x2 = ivy.array([3., 4., 0.6])
-    >>> y = ivy.divide(x1, x2)
+    >>> x2 = ivy.array([3., -4., 0.6])
+    >>> y = ivy.trunc_divide(x1, x2)
     >>> print(y)
-    ivy.array([0.667, 1.75, 15.])
+    ivy.array([ 0., -1., 15.])
 
     """
     return ivy.trunc(ivy.divide(x1, x2, out=out))

@@ -7607,7 +7607,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
         >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
-        >>> y = x1.trunc_divide()
+        >>> y = x1.trunc_divide(x2)
         >>> print(y)
         {
             a: ivy.array([12., 1., -2.]),
