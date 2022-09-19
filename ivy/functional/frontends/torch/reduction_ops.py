@@ -38,4 +38,4 @@ def mean(input, dim, keepdim=False, *, out=None):
 
 
 def std(input, dim, unbiased, keepdim=False, *, out=None):
-    return ivy.std(input, axis=dim, correction=1 if unbiased else 0, keepdims=keepdim, out=out)
+    return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
