@@ -1114,7 +1114,7 @@ def conv_general_dilated(
     /,
     *,
     dims: int = 2,
-    data_format: str = "NHWC",
+    data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1134,10 +1134,7 @@ def conv_general_dilated(
     dims
         Shape of input.
     data_format
-        "NWC" or "NCW" for conv1d
-        "NHWC" or "NCHW" for conv2d
-        "NDHWC" or "NCDHW" for conv3d.
-         Defaults to "NHWC".
+        "channel_first" or "channel_last" Defaults to "channel_last"
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     out
@@ -1278,3 +1275,21 @@ def deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
     elif padding == "SAME":
         dim_size = dim_size * stride_size
     return dim_size
+
+
+def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
+    if dims == 1:
+        if data_format == "channel_first":
+            return "NCW"
+        else:
+            return "NWC"
+    if dims == 2:
+        if data_format == "channel_first":
+            return "NCHW"
+        else:
+            return "NHWC"
+    elif dims == 3:
+        if data_format == "channel_first":
+            return "NCDHW"
+        else:
+            return "NDHWC"
