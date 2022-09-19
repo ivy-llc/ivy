@@ -237,7 +237,10 @@ def qr(
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(
@@ -353,10 +356,10 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
-    if x1.dtype != x2.dtype:
-        x1, x2 = x1.type(dtype), x2.type(dtype)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    if dtype != "float64":
+        x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
 
 
 vecdot.support_native_out = True
