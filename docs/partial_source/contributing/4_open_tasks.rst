@@ -10,6 +10,7 @@ Open Tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
+.. _`functional/frontends/numpy/__init__.py`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -232,7 +233,7 @@ sub-directories to choose from:
     creation_routines
     fft
     indexing_routines
-    linear_algebra
+    linalg
     logic
     ma
     manipulation_routines
@@ -244,19 +245,29 @@ sub-directories to choose from:
     statistics
     ufunc
 
-There is a :code:`linear_algebra` sub-directory, so we choose this. There is then a linalg sub-directory. From the numpy
-API, we can see that certain functions listed under 'Linear Algebra (:code:`numpy.linalg`)' actually do *not* require the
-linalg namespace. :code:`inner` is one such function, hence it will not be placed in this directory. We then need to choose
-from the files at this hierarchy (ignoring :code:`__init__.py` files):
+There is a :code:`linalg` sub-directory, so we choose this. Then we need to choose
+from the files at this hierarchy:
 
 .. code-block:: bash
-    :emphasize-lines: 1
+    :emphasize-lines: 3
 
+    __init__.py
+    decompositions.py
     matrix_and_vector_products.py
+    matrix_eigenvalues.py
     norms_and_other_numbers.py
+    solving_equations_and_inverting_matrices.py
+
 
 This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
-:code:`matrix_and_vector_products.py` seems like the most appropriate option. The location of
+:code:`matrix_and_vector_products.py` seems like the most appropriate option. It is important to note that some functions
+require the :code:`np.linalg.[func]` namespace, as can gleamed from the numpy `reference API`_.
+These functions are listed out under the :code:`functional/frontends/numpy/__init__.py`_ imports. There are some
+functions which have not been implemented yet, and are therefore commented out. Once you have finished the implementation of
+one of these functions, uncomment it from the list.
+
+
+The location of
 :code:`test_numpy_inner` should mirror the location of its corresponding function, this time in
 :code:`ivy_tests/test_ivy/test_frontends/[backend]`.
 
