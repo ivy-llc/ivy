@@ -461,3 +461,27 @@ def conv3d_transpose(
 
 
 conv3d_transpose.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def dropout(
+    x: torch.Tensor,
+    prob: Union[int, float],
+    /,
+    *,
+    scale: bool = True,
+    dtype: torch.dtype = None,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+
+    # noinspection PyUnresolvedReferences
+    x = ivy.where(
+        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
+        ivy.zeros_like(x),
+        x,
+    )
+    if scale:
+        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
+    return x
