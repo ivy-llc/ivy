@@ -471,7 +471,7 @@ def conv_general_dilated(
     /,
     *,
     dims: int = 2,
-    data_format: str = "NDHWC",
+    data_format: str = "channel_last",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[torch.Tensor] = None,
 ):
