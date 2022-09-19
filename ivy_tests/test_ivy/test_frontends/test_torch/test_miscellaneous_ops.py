@@ -387,6 +387,38 @@ def _get_dtype_and_arrays_and_start_end_dim(
     min_dim_size=1,
     max_dim_size=5,
 ):
+    """Samples a dtype, array, and start and end dimension which are within the array,
+    with the caveat that the end dimension can be `-1`. This is to match the API
+    for PyTorch's flatten.
+
+    Parameters
+    ----------
+    available_dtypes
+        The dtypes that are permitted for the array, expected to be
+        `helpers.get_dtypes("valid") or similar.
+
+    min_num_dims
+        The minimum number of dimensions the array can have. Defaults to 1
+
+    max_num_dims
+        The maximum number of dimensions the array can have. Defaults to 5
+
+    min_dim_size
+        The minimum size of any dimension in the array. Defaults to 1
+
+    max_dim_size
+        The maximum size of any dimension in the array. Defaults to 5
+
+    Returns
+    -------
+    ret
+        A 4-tuple (dtype, array, start_dim, end_dim) where dtype is
+        one of the available dtypes, the array is an array of values
+        and start_dim and end_dim are legal dimensions contained
+        within the array, with either start_dim <= end_dim or
+        end_dim = 1.
+
+    """
     num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
     shape = tuple(
         draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
@@ -403,7 +435,7 @@ def _get_dtype_and_arrays_and_start_end_dim(
     start_dim = draw(st.integers(min_value=0, max_value=num_dims - 1))
 
     # End_dim must be either -1 or in [start_dim, num_dims)
-    # If end_dim is -1, then its going to flatten to a 1-D array.
+    # If end_dim is -1, then it's going to flatten to a 1-D array.
     is_full_flatten = draw(st.booleans())
     if is_full_flatten:
         end_dim = -1
