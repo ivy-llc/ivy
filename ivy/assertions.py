@@ -1,54 +1,71 @@
 import ivy
-import builtins
-
-
-# General #
-# ------- #
-
-
-def check_less(x1, x2, allow_equal=False):
-    if allow_equal and ivy.any(x1 > x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be lesser than or equal to {}".format(x1, x2)
-        )
-    elif not allow_equal and ivy.any(x1 >= x2):
-        raise ivy.exceptions.IvyException("{} must be lesser than {}".format(x1, x2))
-
-
-def check_greater(x1, x2, allow_equal=False):
-    if allow_equal and ivy.any(x1 < x2):
-        raise ivy.exceptions.IvyException(
-            "{} must be greater than or equal to {}".format(x1, x2)
-        )
-    elif not allow_equal and ivy.any(x1 <= x2):
-        raise ivy.exceptions.IvyException("{} must be greater than {}".format(x1, x2))
-
-
-def check_equal(x1, x2, inverse=False):
-    if inverse and ivy.any(x1 == x2):
-        raise ivy.exceptions.IvyException("{} must not be equal to {}".format(x1, x2))
-    elif not inverse and ivy.any(x1 != x2):
-        raise ivy.exceptions.IvyException("{} must be equal to {}".format(x1, x2))
-
-
-def check_isinstance(x, allowed_types):
-    if not isinstance(x, allowed_types):
-        raise ivy.exceptions.IvyException(
-            "type of x: {} must be one of the allowed types: {}".format(
-                type(x), allowed_types
-            )
-        )
 
 
 # General with Custom Message #
 # --------------------------- #
 
 
+def check_less(x1, x2, allow_equal=False, message=""):
+    # less_equal
+    if allow_equal and ivy.any(x1 > x2):
+        raise ivy.exceptions.IvyException(
+            "{} must be lesser than or equal to {}".format(x1, x2)
+            if message == ""
+            else message
+        )
+    # less
+    elif not allow_equal and ivy.any(x1 >= x2):
+        raise ivy.exceptions.IvyException(
+            "{} must be lesser than {}".format(x1, x2) if message == "" else message
+        )
+
+
+def check_greater(x1, x2, allow_equal=False, message=""):
+    # greater_equal
+    if allow_equal and ivy.any(x1 < x2):
+        raise ivy.exceptions.IvyException(
+            "{} must be greater than or equal to {}".format(x1, x2)
+            if message == ""
+            else message
+        )
+    # greater
+    elif not allow_equal and ivy.any(x1 <= x2):
+        raise ivy.exceptions.IvyException(
+            "{} must be greater than {}".format(x1, x2) if message == "" else message
+        )
+
+
+def check_equal(x1, x2, inverse=False, message=""):
+    # not_equal
+    if inverse and ivy.any(x1 == x2):
+        raise ivy.exceptions.IvyException(
+            "{} must not be equal to {}".format(x1, x2) if message == "" else message
+        )
+    # equal
+    elif not inverse and ivy.any(x1 != x2):
+        raise ivy.exceptions.IvyException(
+            "{} must be equal to {}".format(x1, x2) if message == "" else message
+        )
+
+
+def check_isinstance(x, allowed_types, message=""):
+    if not isinstance(x, allowed_types):
+        raise ivy.exceptions.IvyException(
+            "type of x: {} must be one of the allowed types: {}".format(
+                type(x), allowed_types
+            )
+            if message == ""
+            else message
+        )
+
+
 def check_exists(x, inverse=False, message=""):
+    # not_exists
     if inverse and ivy.exists(x):
         raise ivy.exceptions.IvyException(
             "arg must be None" if message == "" else message
         )
+    # exists
     elif not inverse and not ivy.exists(x):
         raise ivy.exceptions.IvyException(
             "arg must not be None" if message == "" else message
@@ -72,12 +89,12 @@ def check_false(expression, message="expression must be False"):
 
 
 def check_all(results, message="one of the args is False"):
-    if not builtins.all(results):
+    if not ivy.all(results):
         raise ivy.exceptions.IvyException(message)
 
 
 def check_any(results, message="all of the args are False"):
-    if not builtins.any(results):
+    if not ivy.any(results):
         raise ivy.exceptions.IvyException(message)
 
 

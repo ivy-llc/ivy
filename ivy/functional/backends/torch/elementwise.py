@@ -610,7 +610,7 @@ def bitwise_right_shift(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return torch.bitwise_right_shift(x1, x2, out=out)
 
 
@@ -625,7 +625,7 @@ def bitwise_left_shift(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return torch.bitwise_left_shift(x1, x2, out=out)
 
 

@@ -1,6 +1,7 @@
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
+    _verify_csr_components,
     _is_data_not_indices_values_and_shape,
     _is_coo_not_csr,
 )
@@ -24,7 +25,9 @@ def native_sparse_array(
     if _is_data_not_indices_values_and_shape(
         data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
     ):
-        assert ivy.is_native_sparse_array(data), "not a sparse array"
+        ivy.assertions.check_true(
+            ivy.is_native_sparse_array(data), message="not a sparse array"
+        )
         return data
     elif _is_coo_not_csr(
         coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -36,6 +39,12 @@ def native_sparse_array(
             indices=coo_indices, values=values, dense_shape=dense_shape
         )
     else:
+        _verify_csr_components(
+            crow_indices=csr_crow_indices,
+            col_indices=csr_col_indices,
+            values=values,
+            dense_shape=dense_shape,
+        )
         logging.warning(
             "Tensorflow does not support CSR sparse array natively. None is returned."
         )
@@ -45,4 +54,4 @@ def native_sparse_array(
 def native_sparse_array_to_indices_values_and_shape(x):
     if isinstance(x, tf.SparseTensor):
         return x.indices, x.values, x.dense_shape
-    raise Exception("not a SparseTensor")
+    raise ivy.exceptions.IvyException("not a SparseTensor")

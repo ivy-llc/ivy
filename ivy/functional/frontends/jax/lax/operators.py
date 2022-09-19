@@ -261,3 +261,7 @@ def rem(x, y):
 
 def sub(x, y):
     return ivy.subtract(x, y)
+
+
+def erf(x):
+    return ivy.erf(x)

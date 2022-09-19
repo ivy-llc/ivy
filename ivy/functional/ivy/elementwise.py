@@ -1141,6 +1141,12 @@ def bitwise_left_shift(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    in the standard.
+
     """
     return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
@@ -2007,7 +2013,7 @@ def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to ``exp(x)-1``, having
     domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element
@@ -2610,7 +2616,7 @@ def multiply(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
     the respective element ``x2_i`` of the input array ``x2``.
@@ -5447,7 +5453,7 @@ def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes the Gauss error function of ``x`` element-wise.
 
@@ -5477,7 +5483,7 @@ def maximum(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
@@ -5571,7 +5577,7 @@ def minimum(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
