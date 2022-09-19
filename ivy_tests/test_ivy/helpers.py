@@ -1869,11 +1869,12 @@ def test_frontend_function(
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
-        # pass correct return variable to out argument
-        # check if passed reference is correctly updated
-        kwargs["out"] = out
-        ret = frontend_fn(*args, **kwargs)
-        assert ret is out
+        if ivy.native_inplace_support:
+            # pass return value to out argument
+            # check if passed reference is correctly updated
+            kwargs["out"] = out
+            ret = frontend_fn(*args, **kwargs)
+            assert ret is out
     elif with_inplace:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
