@@ -138,6 +138,12 @@ class ArrayWithElementwise(abc.ABC):
         >>> z = x.add(y)
         >>> print(z)
         ivy.array([5, 7, 9])
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.add(y, alpha=2)
+        >>> print(z)
+        ivy.array([9, 12, 15])
         """
         return ivy.add(self._data, x2, alpha=alpha, out=out)
 
@@ -1860,12 +1866,27 @@ class ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
-
         Returns
         -------
         ret
             an array containing the element-wise differences. The returned array
             must have a data type determined by :ref:`type-promotion`.
+
+
+        Examples
+        --------
+        >>> x = ivy.array([5, 2, 3])
+        >>> y = ivy.array([2, 5, 6])
+        >>> z = x.subtract(y)
+        >>> print(z)
+        ivy.array([3, -3, -3])
+
+        >>> x = ivy.array([5., 5, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.subtract(y, alpha=2)
+        >>> print(z)
+        ivy.array([1., 0., -3.])
+
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
 

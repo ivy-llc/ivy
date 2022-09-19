@@ -393,6 +393,17 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([5, 7, 9]),
             b: ivy.array([7, 9, 11])
         }
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                            b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_add(x, y, alpha=2)
+        >>> print(z)
+        {
+            a: ivy.array([9, 12, 15]),
+            b: ivy.array([12, 15, 18])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "add",
@@ -524,6 +535,13 @@ class ContainerWithElementwise(ContainerBase):
         {
             a: ivy.array([5, 7, 9]),
             b: ivy.array([7, 9, 11])
+        }
+
+        >>> z = x.add(y, alpha=3)
+        >>> print(z)
+        {
+            a: ivy.array([13, 17, 21]),
+            b: ivy.array([17, 21, 25])
         }
         """
         return self.static_add(
@@ -6543,6 +6561,8 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        alpha
+            optional scalar multiplier for ``x2``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6553,6 +6573,26 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+                Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                       b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
+                       b=ivy.array([1, -1, 0]))
+        >>> z = ivy.Container.static_subtract(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, 1, 0]),
+            b: ivy.array([1, 4, 4])
+        }
+
+        >>> z = ivy.Container.static_subtract(x, y, alpha=3)
+        >>> print(z)
+        {
+            a: ivy.array([-11, -1, -6]),
+            b: ivy.array([-1, 6, 4])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "subtract",
@@ -6599,7 +6639,8 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
-
+        alpha
+            optional scalar multiplier for ``x2``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6610,6 +6651,27 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                       b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
+                       b=ivy.array([1, -1, 0]))
+        >>> z = x.subtract(y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, 1, 0]),
+            b: ivy.array([1, 4, 4])
+        }
+
+        >>> z = x.subtract(y, alpha=3)
+        >>> print(z)
+        {
+            a: ivy.array([-11, -1, -6]),
+            b: ivy.array([-1, 6, 4])
+        }
+
         """
         return self.static_subtract(
             self,
