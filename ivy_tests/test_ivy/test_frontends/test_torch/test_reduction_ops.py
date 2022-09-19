@@ -286,11 +286,11 @@ def test_torch_any(
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
+        allow_nan=True,
         min_num_dims=1,
         min_axis=-1,
         max_axis=0,
     ),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.nansum"
     ),
