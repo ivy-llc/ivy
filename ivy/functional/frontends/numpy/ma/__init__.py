@@ -1,7 +1,4 @@
 # flake8: noqa
-from . import MaskedArray
-from . import masked_array
-
 from . import from_existing_data
 from .from_existing_data import *
 from . import ones_and_zeros
@@ -44,3 +41,9 @@ from . import clipping_and_rounding
 from .clipping_and_rounding import *
 from . import miscellanea
 from .miscellanea import *
+
+from . import masked_array
+from .masked_array import *
+
+from . import MaskedArray
+from .MaskedArray import *
