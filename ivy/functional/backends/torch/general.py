@@ -46,6 +46,7 @@ def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x1 = x1.type(dtype=dtype)
     return torch.equal(x0, x1)
 
+
 array_equal.unsupported_dtypes = ("bfloat16",)
 
 
@@ -55,6 +56,15 @@ def container_types():
 
 def current_backend_str() -> str:
     return "torch"
+
+
+def get_item(
+    x: torch.Tensor,
+    query: torch.Tensor,
+) -> torch.Tensor:
+    if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
+        return x.__getitem__(query.to(torch.int64))
+    return x.__getitem__(query)
 
 
 def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
@@ -99,15 +109,22 @@ def to_list(x: torch.Tensor, /) -> list:
 def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.gather(params, axis, indices.type(torch.int64))
+    sl = [slice(None)] * params.ndim
+    sl[axis] = indices.type(torch.int64)
+    return params[tuple(sl)]
 
 
 def gather_nd(
-    params: torch.Tensor, indices: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    params: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -340,12 +357,12 @@ def scatter_nd(
         initial_val = torch.tensor(0).type(dtype)
     elif reduction == "min":
         if dtype.is_floating_point:
-            initial_val = min(torch.finfo(dtype).max, 1e12) 
+            initial_val = min(torch.finfo(dtype).max, 1e12)
         else:
             initial_val = min(torch.iinfo(dtype).max, 1e12)
     elif reduction == "max":
         if dtype.is_floating_point:
-            initial_val = max(torch.finfo(dtype).min, 1e-12) 
+            initial_val = max(torch.finfo(dtype).min, 1e-12)
         else:
             initial_val = max(torch.iinfo(dtype).min, 1e-12)
     else:

@@ -63,26 +63,15 @@ def _astype_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=1,
-            small_value_safety_factor=2.5,
-            large_value_safety_factor=20,
+            small_abs_safety_factor=4,
+            large_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
 
-    def cast_filter(d):
-        if ivy.is_int_dtype(d):
-            max_val = ivy.iinfo(d).max
-        elif ivy.is_float_dtype(d):
-            max_val = ivy.finfo(d).max
-        else:
-            max_val = 1
-        max_x = np.max(np.abs(np.asarray(x)))
-        return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
-
     cast_dtype = draw(
-        st.sampled_from(draw(helpers.get_dtypes("valid"))).filter(cast_filter)
+        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype, x)
     )
-    if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x)).tolist()
     return dtype, x, cast_dtype
 
 
@@ -235,9 +224,10 @@ def test_can_cast(
 
 @st.composite
 def _array_or_type(draw, float_or_int):
-    valid_dtypes = {"float": ivy_np.valid_float_dtypes, "int": ivy_np.valid_int_dtypes}[
-        float_or_int
-    ]
+    valid_dtypes = {
+        "float": draw(helpers.get_dtypes("float")),
+        "int": draw(helpers.get_dtypes("integer")),
+    }[float_or_int]
     return draw(
         st.sampled_from(
             (
@@ -284,9 +274,9 @@ def test_finfo(
     if not ivy.exists(ret):
         return
     mach_lims, mach_lims_np = ret
-    assert mach_lims.min == mach_lims_np.min
-    assert mach_lims.max == mach_lims_np.max
-    assert mach_lims.eps == mach_lims_np.eps
+    assert np.allclose(mach_lims.min, mach_lims_np.min, rtol=1e-2, atol=1e-2)
+    assert np.allclose(mach_lims.max, mach_lims_np.max, rtol=1e-2, atol=1e-2)
+    assert np.allclose(mach_lims.eps, mach_lims_np.eps, rtol=1e-2, atol=1e-2)
     assert mach_lims.bits == mach_lims_np.bits
 
 
@@ -654,7 +644,7 @@ def test_is_int_dtype(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
     ),

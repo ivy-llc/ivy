@@ -57,6 +57,23 @@ def current_backend_str():
     return "tensorflow"
 
 
+def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+    if not ivy.is_array(query):
+        return x.__getitem__(query)
+    dtype = ivy.dtype(query, as_native=True)
+    if dtype is tf.bool:
+        return tf.boolean_mask(x, query)
+    # ToDo tf.int16 is listed as supported, but it fails
+    # temporary fix till issue is fixed by TensorFlow
+    if dtype in [tf.int8, tf.int16]:
+        query = tf.cast(query, tf.int32)
+    return tf.gather(x, query)
+
+
+# tensorflow does not support uint indexing
+get_item.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
+
+
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if (
@@ -86,17 +103,19 @@ def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=axis)
+    return tf.gather(params, indices, axis=axis, batch_dims=None)
 
 
 def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

@@ -299,10 +299,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 @handle_nestable
 @handle_exceptions
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], 
-    /, 
-    *, 
-    attr_only: bool = True
+    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -312,10 +309,10 @@ def print_all_ivy_arrays_on_dev(
     ----------
     device
         The device on which to print the arrays
-    
+
     attr_only
         Whether or not to only print the `shape` and `dtype` attributes of the array
-    
+
     Examples
     --------
     >>> x = ivy.array([[1,0,2], [3,2,1]])
@@ -323,8 +320,8 @@ def print_all_ivy_arrays_on_dev(
     >>> ivy.print_all_ivy_arrays_on_dev(y)
     ((3,), 'int32')
     ((3,), 'int32')
-    
-        
+
+
     >>> x = ivy.array([[1,0,2], [3,2,1]])
     >>> y = ivy.dev(x)
     >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
@@ -568,7 +565,7 @@ def used_mem_on_dev(
         return info.used / 1e9
     elif device == "cpu":
         if process_specific:
-            return psutil.Process(os.getpid()).memory_info().rss
+            return psutil.Process(os.getpid()).memory_info().rss / 1e9
         vm = psutil.virtual_memory()
         return (vm.total - vm.available) / 1e9
     else:
@@ -900,7 +897,7 @@ def to_device(
     /,
     *,
     stream: Optional[Union[int, Any]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Move the input array x to the desired device, specified by device string.
 
@@ -1085,11 +1082,11 @@ def split_func_call(
             max_chunk_size = max_dim
     chunk_size = ivy.default(
         chunk_size,
-        lambda: 1
+        default_val=lambda: 1
         + int(
             round((max_chunk_size - 1) * ivy.split_factor(ivy.default_device(device)))
         ),
-        True,
+        with_callable=True,
     )
     dim_size = inputs[0].shape[input_axes[0]]
     if chunk_size >= dim_size:
@@ -1178,7 +1175,7 @@ def _get_devices(fn, complement=True):
 
     supported = set(VALID_DEVICES)
 
-    if "backend" not in fn.__module__:
+    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
         if complement:
             supported = set(ALL_DEVICES).difference(supported)
         return supported

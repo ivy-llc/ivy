@@ -413,7 +413,7 @@ def multi_head_attention(
     to_q_v=None,
     to_kv_v=None,
     to_out_v=None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Applies multi-head attention to inputs x.
 
@@ -594,7 +594,7 @@ def conv1d_transpose(
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
     dilations: int = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
@@ -742,7 +742,7 @@ def conv2d_transpose(
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
