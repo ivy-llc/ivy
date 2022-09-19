@@ -1303,7 +1303,7 @@ def value_is_nan(
     *,
     include_infs: Optional[bool] = True,
 ) -> bool:
-    """Determine whether the single valued array or scalar is of nan type.
+    """Determines whether the single valued array or scalar is of nan type.
 
     Parameters
     ----------
@@ -1317,9 +1317,35 @@ def value_is_nan(
     ret
         Boolean as to whether the input value is a nan or not.
 
+    Examples
+    --------
+    >>> x = ivy.array([451])
+    >>> y = ivy.value_is_nan(x)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('inf')])
+    >>> y = ivy.value_is_nan(x)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([float('inf')])
+    >>> y = ivy.value_is_nan(x, include_infs=False)
+    >>> print(y)
+    False
+
+    >>> x = ivy.array([float('nan')])
+    >>> y = ivy.value_is_nan(x, include_infs=False)
+    >>> print(y)
+    True
+
+    >>> x = ivy.array([0])
+    >>> y = ivy.value_is_nan(x)
+    >>> print(y)
+    False
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
-    if not x_scalar == x_scalar:
+    if not x_scalar == x:
         return True
     if include_infs and x_scalar == INF or x_scalar == -INF:
         return True
@@ -2210,7 +2236,7 @@ def stable_divide(
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-@inputs_to_native_arrays
+@to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
 def stable_pow(
@@ -2956,6 +2982,7 @@ def gather(
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
+    /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -2985,20 +3012,6 @@ def gather_nd(
     >>> print(ivy.gather_nd(x, y))
     ivy.array(1.)
 
-    With :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.native_array([1])
-    >>> print(ivy.gather_nd(x, y))
-    ivy.array(1.)
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.array([1])
-    >>> print(ivy.gather_nd(x, y))
-    ivy.array(1.)
-
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
@@ -3012,14 +3025,14 @@ def gather_nd(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-                          b=ivy.array([4., 5., 6.]))
-    >>> y = ivy.Container(a=ivy.array([0]), \
-                          b=ivy.array([2]))
+    >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),\
+                              b=ivy.array([[0., 100., 200.],[300.,400.,500.]]))
+    >>> y = ivy.Container(a=ivy.array([1,0]),\
+                              b=ivy.array([0]))
     >>> print(ivy.gather_nd(x, y))
     {
-        a: ivy.array(0.),
-        b: ivy.array(6.)
+        a: ivy.array(30.),
+        b: ivy.array([0., 100., 200.])
     }
     """
     res = current_backend(params, indices).gather_nd(params, indices)

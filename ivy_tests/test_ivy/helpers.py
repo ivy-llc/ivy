@@ -8,7 +8,7 @@ import numpy as np
 import math
 import gc
 from typing import Optional, Union, List
-from hypothesis import given, assume, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 from functools import reduce
@@ -481,13 +481,15 @@ def assert_all_close(
     -------
     None if the test passes, else marks the test as failed.
     """
-    assert ret_np.dtype is ret_from_gt_np.dtype, (
+    ret_dtype = str(ret_np.dtype)
+    ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
+    assert ret_dtype == ret_from_gt_dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_gt_np.dtype,
+            ret_from_gt_dtype,
             ivy.current_backend_str(),
-            ret_np.dtype,
+            ret_dtype,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
@@ -1114,14 +1116,6 @@ def test_method(
         for v, d in zip(as_variable_flags_method, input_dtypes_method)
     ]
 
-    # change all data types so that they are supported by this framework
-    input_dtypes_init = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_init
-    ]
-    input_dtypes_method = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
-    ]
-
     # create args
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args_init,
@@ -1387,7 +1381,8 @@ def test_function(
     instance = None
     if instance_method:
         is_instance = [
-            (not n) or c for n, c in zip(native_array_flags, container_flags)
+            (not native_flag) or container_flag
+            for native_flag, container_flag in zip(native_array_flags, container_flags)
         ]
         arg_is_instance = is_instance[:num_arg_vals]
         kwarg_is_instance = is_instance[num_arg_vals:]
@@ -1887,9 +1882,6 @@ def test_frontend_array_instance_method(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
-
     # create args
     if test_unsupported:
         try:
@@ -1956,9 +1948,6 @@ def test_frontend_array_instance_method(
         if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
