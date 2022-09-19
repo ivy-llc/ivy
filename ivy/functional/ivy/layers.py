@@ -701,7 +701,7 @@ def conv2d(
     >>> x = ivy.Container(a=ivy.array([[[[1.], [2.0],[3.]], \
                                         [[1.], [2.0],[3.]], \
                                         [[1.], [2.0],[3.]]]]))
-    >>> filters = ivy.eye(3, 3).unsqueeze(-1).unsqueeze(-1).float()
+    >>> filters = ivy.eye(3, 3).reshape((3, 3, 1, 1)).astype(ivy.float32)
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME', data_format='NHWC', \
         dilations= (1,))
     >>> print(result)
@@ -710,12 +710,12 @@ def conv2d(
     }
 
     With multiple :code:`ivy.Container` inputs:
-    >>> x = ivy.Container(a = (3, 3).view(1, 3, 3, 1),  \
-                          b = (4, 4).view(1, 4, 4, 1), \
-                          c = (5, 5).view(1, 5, 5, 1))
+    >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),  \
+                          b = ivy.eye(4, 4).reshape((1, 4, 4, 1)), \
+                          c = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
     >>> filters = ivy.array([[1, 1, 1], \
                              [0, 1, 1], \
-                             [0, 0, 1]]).unsqueeze(-1).unsqueeze(-1).float()
+                             [0, 0, 1]], dtype = ivy.float32).reshape((3, 3, 1, 1))
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
     >>> print(result)
     {
@@ -729,11 +729,11 @@ def conv2d(
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
-                          b = ivy.eye(5, 5).view(1, 5, 5, 1))
+    >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \
+                          b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
     >>> filters = ivy.array([[2, 0, 1], \
                              [1, 3, 1], \
-                             [0, 1, 1]]).unsqueeze(-1).unsqueeze(-1).float()
+                             [0, 1, 1]], dtype = ivy.float32).reshape((3, 3, 1, 1))
     >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
     >>> print(result)
     {
