@@ -200,7 +200,10 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     return res(q, r)
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
