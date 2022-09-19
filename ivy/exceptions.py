@@ -24,18 +24,7 @@ class IvyNotImplementedException(NotImplementedError):
         super().__init__(message)
 
 
-class IvyIndex(IndexError, IvyBackendException):
-    def __init__(self, *messages):
-        self._default = [
-            "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
-        ]
-        self._delimiter = ": "
-        for message in messages:
-            self._default.append(message)
-        super().__init__(self._delimiter.join(self._default))
-
-
-class IvyValue(ValueError, IvyBackendException):
+class IvyError(IndexError, ValueError, IvyException):
     def __init__(self, *messages):
         self._default = [
             "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
@@ -66,10 +55,8 @@ def handle_exceptions(fn: Callable) -> Callable:
         """
         try:
             return fn(*args, **kwargs)
-        except IndexError as i:
-            raise ivy.exceptions.IvyIndex(fn.__name__, str(i)) from None
-        except ValueError as v:
-            raise ivy.exceptions.IvyValue(fn.__name__, str(v)) from None
+        except (IndexError, ValueError) as e:
+            raise ivy.exceptions.IvyError(fn.__name__, str(e)) from None
         except Exception as e:
             raise ivy.exceptions.IvyBackendException(fn.__name__, str(e)) from None
 
