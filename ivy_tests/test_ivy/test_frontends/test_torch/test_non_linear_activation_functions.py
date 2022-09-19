@@ -174,7 +174,7 @@ def test_torch_tanh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -266,9 +266,6 @@ def test_torch_softmin(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold"
     ),
-    value=st.floats(min_value=-1e-6, max_value=10),
-    threshold=st.floats(min_value=-1e-6, max_value=10),
-    inplace=st.booleans(),
 )
 def test_torch_threshold(
     dtype_and_input,
@@ -276,9 +273,6 @@ def test_torch_threshold(
     num_positional_args,
     native_array,
     fw,
-    value,
-    threshold,
-    inplace,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -292,9 +286,9 @@ def test_torch_threshold(
         frontend="torch",
         fn_tree="nn.functional.threshold",
         input=np.asarray(input, dtype=input_dtype),
-        threshold=threshold,
-        value=value,
-        inplace=inplace,
+        threshold=0.5,
+        value=20,
+        inplace=False,
     )
 
 
@@ -307,8 +301,6 @@ def test_torch_threshold(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.threshold_"
     ),
-    value=st.floats(min_value=-1e-6, max_value=10),
-    threshold=st.floats(min_value=-1e-6, max_value=10),
 )
 def test_torch_threshold_(
     dtype_and_input,
@@ -316,8 +308,6 @@ def test_torch_threshold_(
     num_positional_args,
     native_array,
     fw,
-    value,
-    threshold,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -331,8 +321,8 @@ def test_torch_threshold_(
         frontend="torch",
         fn_tree="nn.functional.threshold_",
         input=np.asarray(input, dtype=input_dtype),
-        threshold=threshold,
-        value=value,
+        threshold=0.5,
+        value=20,
     )
 
 
@@ -378,8 +368,7 @@ def test_torch_relu6(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.elu"
     ),
-    alpha=helpers.floats(min_value=0, max_value=1.0, exclude_min=True),
-    inplace=st.booleans(),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
 )
 def test_torch_elu(
     dtype_and_input,
@@ -388,7 +377,6 @@ def test_torch_elu(
     num_positional_args,
     native_array,
     fw,
-    inplace,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -403,7 +391,7 @@ def test_torch_elu(
         fn_tree="nn.functional.elu",
         input=np.asarray(input, dtype=input_dtype),
         alpha=alpha,
-        inplace=inplace,
+        inplace=False,
     )
 
 
@@ -417,7 +405,7 @@ def test_torch_elu(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.elu_"
     ),
-    alpha=helpers.floats(min_value=0, max_value=1.0, exclude_min=True),
+    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
 )
 def test_torch_elu_(
     dtype_and_input,
@@ -440,6 +428,7 @@ def test_torch_elu_(
         fn_tree="nn.functional.elu_",
         input=np.asarray(input, dtype=input_dtype),
         alpha=alpha,
+        test_values=False,
     )
 
 
@@ -555,7 +544,6 @@ def test_torch_prelu(
     ),
     lower=helpers.floats(min_value=0, max_value=0.5, exclude_min=True),
     upper=helpers.floats(min_value=0.5, max_value=1.0, exclude_min=True),
-    inplace=st.booleans(),
 )
 def test_torch_rrelu(
     dtype_and_input,
@@ -565,7 +553,6 @@ def test_torch_rrelu(
     num_positional_args,
     native_array,
     fw,
-    inplace,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -581,7 +568,7 @@ def test_torch_rrelu(
         input=np.asarray(input, dtype=input_dtype),
         lower=lower,
         upper=upper,
-        inplace=inplace,
+        inplace=False,
     )
 
 
@@ -621,6 +608,7 @@ def test_torch_rrelu_(
         input=np.asarray(input, dtype=input_dtype),
         lower=lower,
         upper=upper,
+        test_values=False,
     )
 
 
@@ -901,4 +889,5 @@ def test_torch_leaky_relu_(
         fn_tree="nn.functional.leaky_relu_",
         input=np.asarray(x, dtype=input_dtype),
         negative_slope=alpha,
+        test_values=False,
     )
