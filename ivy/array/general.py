@@ -807,8 +807,23 @@ class ArrayWithGeneral(abc.ABC):
         --------
         With one :code:`ivy.Array` instance method:
 
-        >>> x = ivy.array([-1, 0, 1])
-        >>> y = x.has_nans()
+        >>> x = ivy.array([92])
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        False
+
+        >>> x = ivy.array([float('inf')])
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        True
+
+        >>> x = ivy.array([float('nan')])
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        True
+
+        >>> x = ivy.array([float('inf')])
+        >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
         False
 

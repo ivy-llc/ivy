@@ -1344,6 +1344,32 @@ def value_is_nan(
     >>> print(y)
     False
 
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([420.]), b=ivy.array([72]))
+    >>> y = ivy.value_is_nan(x)
+    >>> print(y)
+    {
+        a: False,
+        b: False
+    }
+
+    With one :code:`ivy.Container` static method:
+    >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
+    >>> y = ivy.Container.static_value_is_nan(x)
+    >>> print(y)
+    {
+        a: True,
+        b: False
+    }
+
+    With :code:`ivy.Container` instance method:
+    >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([float('nan')]))
+    >>> y = x.value_is_nan(include_infs=False)
+    >>> print(y)
+    {
+        a: False,
+        b: True
+    }
     """
     x_scalar = ivy.to_scalar(x) if ivy.is_native_array(x) else x
     if not x_scalar == x:
