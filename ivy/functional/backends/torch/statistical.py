@@ -234,6 +234,7 @@ cumprod.support_native_out = True
 cumprod.unsupported_dtypes = (
     "uint8",
     "bfloat16",
+    "float16",
 )  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 
@@ -274,6 +275,7 @@ cumsum.support_native_out = True
 cumsum.unsupported_dtypes = (
     "uint8",
     "bfloat16",
+    "float16",
 )  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 
