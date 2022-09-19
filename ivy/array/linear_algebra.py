@@ -266,6 +266,39 @@ class ArrayWithLinearAlgebra(abc.ABC):
     ) -> NamedTuple:
         return ivy.qr(self._data, mode=mode)
 
+    def slogdet(
+        self: ivy.Array,
+    ) -> NamedTuple:
+        """
+        ivy.Array instance method variant of ivy.slogdet. This method computes the sign and natural logarithm of the determinant of an array.
+
+        Parameters
+        ----------
+        self
+            input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
+
+        Returns
+        -------
+        ret
+            This function returns two values -
+                sign:
+                A number representing the sign of the determinant.
+
+                logdet:
+                The natural log of the absolute value of the determinant.
+
+        Examples
+        --------
+
+        >>> x = ivy.array([[1.0, 2.0], \
+                          [3.0, 4.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.69314718))
+
+        """
+        return ivy.slogdet(self._data)
+
     def solve(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],

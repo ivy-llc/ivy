@@ -1133,7 +1133,7 @@ def slogdet(
     Parameters
     ----------
     x
-        This is a 2D array, and it has to be square
+        input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
 
     Returns
     -------
