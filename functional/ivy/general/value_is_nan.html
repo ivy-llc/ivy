@@ -392,36 +392,40 @@ is False.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul>
-<li><p><em>ret</em> –    Boolean as to whether the input value is a nan or not.</p>
-<p>Examples</p>
-</li>
-<li><p><em>——–</em></p></li>
-<li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input</p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([452]), b=ivy.array([float(‘inf’)]))</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>{</em> – a: false,
-b: true</p></li>
-<li><p><em>}</em></p></li>
-<li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input</p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(‘nan’)]), b=ivy.array([0]))</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>{</em> – a: true,
-b: false</p></li>
-<li><p><em>}</em></p></li>
-<li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input</p></li>
-<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(‘inf’)]), b=ivy.array([22]))</em></p></li>
-<li><p><em>&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x, include_infs=False)</em></p></li>
-<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
-<li><p><em>{</em> – a: false,
-b: false</p></li>
-<li><p><em>}</em></p></li>
-</ul>
-</p>
+<dd class="field-odd"><p><em>ret</em> – Boolean as to whether the input value is a nan or not.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([452]), b=ivy.array([float(‘inf’)]))
+&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)
+&gt;&gt;&gt; print(y)
+{</p>
+<blockquote>
+<div><p>a: false,
+b: true</p>
+</div></blockquote>
+<p>}</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(‘nan’)]), b=ivy.array([0]))
+&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)
+&gt;&gt;&gt; print(y)
+{</p>
+<blockquote>
+<div><p>a: true,
+b: false</p>
+</div></blockquote>
+<p>}</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(‘inf’)]), b=ivy.array([22]))
+&gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x, include_infs=False)
+&gt;&gt;&gt; print(y)
+{</p>
+<blockquote>
+<div><p>a: false,
+b: false</p>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <div class="line-block">

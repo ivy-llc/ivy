@@ -161,8 +161,9 @@
              
   <section id="superset-behaviour">
 <h1>Superset Behaviour<a class="headerlink" href="#superset-behaviour" title="Permalink to this heading"></a></h1>
-<p>When implementing functions in Ivy, we are constantly faced with the question: which
-backend implementation should Ivy most closely follow?</p>
+<p>When implementing functions in Ivy, whether they are primary, compositional or mixed,
+we are constantly faced with the question: which backend implementation should Ivy most
+closely follow?</p>
 <section id="extending-the-standard">
 <h2>Extending the Standard<a class="headerlink" href="#extending-the-standard" title="Permalink to this heading"></a></h2>
 <p>It might seem as though this question is already answered.
@@ -185,6 +186,12 @@ However, this is not always totally possible, and in some cases certain
 framework-specific features must be sacrificed, but usually it’s possible to implement a
 very generalized function which covers most of the unique features among the
 corresponding functions in each framework.</p>
+<p>We strive to implement the superset for primary, compositional and mixed functions. In
+many cases compositional functions do not actually have corresponding backend-specific
+functions, but this is not always the case. For example, <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> is a
+fully compositional function, but <code class="code docutils literal notranslate"><span class="pre">torch.nn.functional.linear</span></code> also exists.
+We should therefore make sure the compositional <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> function includes all
+behaviours supported by <code class="code docutils literal notranslate"><span class="pre">torch.nn.functional.linear</span></code>.</p>
 </section>
 <section id="when-the-superset-is-too-much">
 <h2>When the Superset is Too Much<a class="headerlink" href="#when-the-superset-is-too-much" title="Permalink to this heading"></a></h2>
