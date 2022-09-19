@@ -404,10 +404,7 @@ def floor_divide(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    nonzeros = torch.count_nonzero(x2)
-    if len(x2.shape) == 0 or len(nonzeros.shape) == 0:
-        return x1
-    return torch.div(x1, x2, rounding_mode="floor", out=out)
+    return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
 
 
 floor_divide.support_native_out = True
@@ -589,16 +586,13 @@ def remainder(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    nonzeros = torch.count_nonzero(x2)
-    if len(x2.shape) == 0 or len(nonzeros.shape) == 0:
-        return x1
     if not modulus:
         res = x1 / x2
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
-    return torch.remainder(x1, x2, out=out)
+    return x1 - torch.floor(torch.div(x1, x2), out=out).type(x1.dtype) * x2
 
 
 remainder.support_native_out = True
