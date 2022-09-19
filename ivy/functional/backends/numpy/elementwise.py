@@ -66,19 +66,19 @@ def acosh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 acosh.support_native_out = True
 
 
-
 @_handle_0_dim_output
 def add(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
     /,
     *,
-    alpha: Optional[Union[int, float]] = 1,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x2 = x2 * alpha
+    if alpha is not None and alpha != 1:
+        x2 = alpha * x2
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.add(x1, x2, out=out)
+    return np.add(x1, x2)
 
 
 add.support_native_out = True
@@ -627,11 +627,13 @@ def subtract(
     x2: Union[float, np.ndarray],
     /,
     *,
-    alpha: Optional[Union[int, float]] = 1,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if alpha not in [1, None]:
+        x2 = alpha*x2
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.subtract(x1, x2*alpha, out=out)
+    return np.subtract(x1, x2)
 
 
 subtract.support_native_out = True

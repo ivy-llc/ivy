@@ -42,9 +42,10 @@ def add(
     alpha: Optional[Union[int, float]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x2 = alpha * x2
+    if alpha is not None and alpha != 1:
+        x2 = alpha * x2
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.add(x1, x2*alpha)
+    return jnp.add(x1, x2)
 
 
 def asin(x: JaxArray, /, *, out: Union[float, JaxArray] = None) -> JaxArray:
@@ -388,11 +389,13 @@ def subtract(
     x2: Union[float, JaxArray],
     /,
     *,
-    alpha: Optional[Union[int, float]] = 1,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if alpha not in [1, None]:
+        x2 = alpha*x2
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.subtract(x1, x2*alpha)
+    return jnp.subtract(x1, x2)
 
 
 def tan(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

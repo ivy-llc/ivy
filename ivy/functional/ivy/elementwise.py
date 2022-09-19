@@ -267,7 +267,7 @@ def add(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
-    alpha: Optional[Union[int, float]] = 1,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the

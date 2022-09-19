@@ -104,7 +104,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        alpha: Optional[Union[int, float]] = 1,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

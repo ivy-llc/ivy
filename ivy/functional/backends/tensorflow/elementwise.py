@@ -51,10 +51,11 @@ def add(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
-    alpha: Optional[Union[int, float]] = 1,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x2 = x2*alpha
+    if alpha is not None and alpha != 1:
+        x2 = alpha * x2
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.add(x1, x2)
 
@@ -610,11 +611,13 @@ def subtract(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
-    alpha: Optional[Union[int, float]] = 1,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if alpha is not None and alpha != 1:
+        x2 = x2 * alpha
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.subtract(x1, x2*alpha)
+    return tf.subtract(x1, x2)
 
 
 def tan(

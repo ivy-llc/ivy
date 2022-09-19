@@ -325,7 +325,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        alpha: Optional[Union[int, float]] = 1,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -474,7 +474,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        alpha: Optional[Union[int, float]] = 1,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -6518,6 +6518,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -6561,6 +6562,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            alpha=alpha,
             out=out,
         )
 
@@ -6572,6 +6574,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -6596,6 +6599,7 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6614,6 +6618,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            alpha=alpha,
             out=out,
         )
 
