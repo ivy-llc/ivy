@@ -97,11 +97,15 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         visited.add(fn)
 
-        # Assuming that it's set in backend
+        # if it's in the backend, we can get the dtypes directly
+        # if it's in the front end, we need to recurse
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
             continue
+        elif "frontend" in fn.__module__:
+            f_supported = wrapper(get_fn(fn, False))
+            out = merge_fn(f_supported, out)
 
         # skip if it's not a function
         if not inspect.isfunction(fn):
@@ -122,7 +126,7 @@ def _get_dtypes(fn, complement=True):
     # We only care about getting dtype info from the base function
     # if we do need to at some point use dtype information from the parent function
     # we can comment out the following condition
-    if "backend" not in fn.__module__:
+    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported
@@ -907,19 +911,11 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
     return current_backend(None).as_native_dtype(dtype_in)
 
 
-# len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
 # noinspection PyShadowingBuiltins
 def _check_float64(input) -> bool:
     if math.isfinite(input):
-        tmp = str(input).replace("-", "").split(".")
-        exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(float(tmp[0]))).replace("0b", "")
-        return (
-            (input > 3.4028235 * 10**38)
-            or (len(mant) > 24 and int(mant[24:]) > 0)
-            or (exponent < -126)
-            or (exponent > 127)
-        )
+        m, e = math.frexp(input)
+        return (abs(input) > 3.4028235e38) or (e < -126) or (e > 128)
     return False
 
 

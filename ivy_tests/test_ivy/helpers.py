@@ -8,7 +8,7 @@ import numpy as np
 import math
 import gc
 from typing import Optional, Union, List
-from hypothesis import given, assume, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 from functools import reduce
@@ -156,7 +156,7 @@ def get_current_frontend():
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=True, none=False):
+def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     """
     Draws a valid dtypes for the test function. For frontend tests,
     it draws the data types from the intersection between backend
@@ -206,7 +206,10 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes += (None,)
     if full:
         return valid_dtypes[index:]
-    return draw(st.sampled_from(valid_dtypes[index:]))
+    if key is None:
+        return draw(st.sampled_from(valid_dtypes[index:]))
+    ret = draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))
+    return [ret]
 
 
 @st.composite
@@ -344,7 +347,7 @@ def floats(
         )
 
     else:
-        if ivy.exists(min_value):
+        if min_value is not None:
             if min_value > -lim_float16 * safety_factor and (
                 width == 16 or not ivy.exists(width)
             ):
@@ -358,7 +361,7 @@ def floats(
         else:
             dtype_min = draw(st.sampled_from(ivy_np.valid_float_dtypes))
 
-        if ivy.exists(max_value):
+        if max_value is not None:
             if max_value < lim_float16 * safety_factor and (
                 width == 16 or not ivy.exists(width)
             ):
@@ -482,9 +485,9 @@ def assert_all_close(
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_gt_np.dtype,
+            ret_from_gt_np.dtype.type,
             ivy.current_backend_str(),
-            ret_np.dtype,
+            ret_np.dtype.type,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
@@ -596,7 +599,7 @@ def value_test(
     ret_np_flat
         A list (flattened) containing Numpy arrays. Return from the
         framework to test.
-    ret_from_np_flat
+    ret_np_from_gt_flat
         A list (flattened) containing Numpy arrays. Return from the ground
         truth framework.
     rtol
@@ -1109,14 +1112,6 @@ def test_method(
     as_variable_flags_method = [
         v if ivy.is_float_dtype(d) else False
         for v, d in zip(as_variable_flags_method, input_dtypes_method)
-    ]
-
-    # change all data types so that they are supported by this framework
-    input_dtypes_init = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_init
-    ]
-    input_dtypes_method = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
     ]
 
     # create args
@@ -1884,9 +1879,6 @@ def test_frontend_array_instance_method(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
-
     # create args
     if test_unsupported:
         try:
@@ -1953,9 +1945,6 @@ def test_frontend_array_instance_method(
         if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -2238,9 +2227,8 @@ def dtype_and_values(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2392,9 +2380,8 @@ def dtype_values_axis(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2531,12 +2518,12 @@ def subsets(draw, *, elements):
 
 
 @st.composite
-def array_and_indices(
+def array_n_indices_n_axis(
     draw,
     *,
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
-    last_dim_same_size=True,
+    disable_random_axis=False,
     boolean_mask=False,
     allow_inf=False,
     min_num_dims=1,
@@ -2554,16 +2541,10 @@ def array_and_indices(
         list of data type to draw the array dtype from.
     indices_dtypes
         list of data type to draw the indices dtype from.
-    last_dim_same_size
-        True:
-            The shape of the indices array is the exact same as the shape of the values
-            array.
-        False:
-            The last dimension of the second array is generated from a range of
-            (0 -> dimension size of first array). This results in output shapes such as
-            x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+    disable_random_axis
+        axis is set to -1 when True. Randomly generated with hypothesis if False.
     allow_inf
-        True: inf values are allowed to be generated in the values array
+        inf values are allowed to be generated in the values array when True.
     min_num_dims
         The minimum number of dimensions the arrays can have.
     max_num_dims
@@ -2581,39 +2562,45 @@ def array_and_indices(
     Examples
     --------
     @given(
-        array_and_indices=array_and_indices(
-            last_dim_same_size= False
+        array_n_indices_n_axis=array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+            boolean_mask=False,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=10
             )
     )
-    @given(
-        array_and_indices=array_and_indices( last_dim_same_size= True)
-    )
     """
-    x_num_dims = draw(ints(min_value=min_num_dims, max_value=max_num_dims))
-    x_dim_size = draw(ints(min_value=min_dim_size, max_value=max_dim_size))
-    x_dtype, x, indices_shape = draw(
+    x_dtype, x, x_shape = draw(
         dtype_and_values(
             available_dtypes=array_dtypes,
             allow_inf=allow_inf,
             ret_shape=True,
-            min_num_dims=x_num_dims,
-            max_num_dims=x_num_dims,
-            min_dim_size=x_dim_size,
-            max_dim_size=x_dim_size,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
         )
     )
-    if not last_dim_same_size:
-        indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
-        indices_shape[-1] = indices_dim_size
+    if disable_random_axis:
+        axis = -1
+    else:
+        axis = draw(
+            ints(
+                min_value=-1 * len(x_shape),
+                max_value=len(x_shape) - 1,
+            )
+        )
     if boolean_mask:
         indices_dtype, indices = draw(
             dtype_and_values(
                 dtype=["bool"],
-                shape=indices_shape,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
     else:
@@ -2622,11 +2609,14 @@ def array_and_indices(
                 available_dtypes=indices_dtypes,
                 allow_inf=False,
                 min_value=0,
-                max_value=max(indices_shape[-1] - 1, 0),
-                shape=indices_shape,
+                max_value=max(x_shape[axis] - 1, 0),
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
-    return [x_dtype, indices_dtype], x, indices
+    return [x_dtype, indices_dtype], x, indices, axis
 
 
 def _zeroing_and_casting(x, cast_type):
@@ -2705,9 +2695,8 @@ def array_values(
         minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
 
         when a "log" safety factor scaler is used, a data type with minimum
-        representable number of 0.5 * 2^16 and a safety factor of 2 transforms the
-        minimum to 0.5 * 2^8, a safety factor of 3 transforms the minimum to  0.5 * 2^4.
-
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
     safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
         "linear" or "log". Default value = "linear".
@@ -2730,6 +2719,10 @@ def array_values(
         for dim in shape:
             size *= dim
 
+    if isinstance(dtype, st._internal.SearchStrategy):
+        dtype = draw(dtype)
+        dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
+
     if "float" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)
@@ -2745,29 +2738,37 @@ def array_values(
         )
 
     if kind_dtype != "bool":
-        min_value = (
-            _clamp_value(min_value, dtype_info)
-            if min_value is not None
-            else dtype_info.min
-        )
-        max_value = (
-            _clamp_value(max_value, dtype_info)
-            if max_value is not None
-            else dtype_info.max
-        )
+        if min_value is None:
+            min_value = dtype_info.min
+            b_scale_min = True
+        else:
+            min_value = _clamp_value(min_value, dtype_info)
+            b_scale_min = False
+
+        if max_value is None:
+            max_value = dtype_info.max
+            b_scale_max = True
+        else:
+            max_value = _clamp_value(max_value, dtype_info)
+            b_scale_max = False
+
         assert max_value >= min_value
 
         # Scale the values
         if safety_factor_scale == "linear":
-            min_value = min_value / large_abs_safety_factor
-            max_value = max_value / large_abs_safety_factor
+            if b_scale_min:
+                min_value = min_value / large_abs_safety_factor
+            if b_scale_max:
+                max_value = max_value / large_abs_safety_factor
             if kind_dtype == "float":
                 abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
         elif safety_factor_scale == "log":
-            min_sign = math.copysign(1, min_value)
-            max_sign = math.copysign(1, max_value)
-            min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
-            max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+            if b_scale_min:
+                min_sign = math.copysign(1, min_value)
+                min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+            if b_scale_max:
+                max_sign = math.copysign(1, max_value)
+                max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
             if kind_dtype == "float":
                 m, e = math.frexp(dtype_info.smallest_normal)
                 abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
@@ -3266,7 +3267,7 @@ def num_positional_args_from_fn(draw, *, fn):
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    fn_name
+    fn
         name of the function.
 
     Returns
@@ -3330,19 +3331,14 @@ def handle_cmd_line_args(test_fn):
             flag = True
 
         global frontend_fw
-        # Infer the frontend
-        try:
-            # naming convention `test_framework_`
-            frontend_string = test_fn.__name__.split("_")[1]
-            if frontend_string in FW_STRS:
-                frontend_fw = TEST_BACKENDS[frontend_string]
-            else:  # Clear the global variable
-                frontend_fw = None
-        except IndexError:
-            raise RuntimeError(
-                "'{}' is not a valid test function, "
-                "a test function should start with 'test_'.".format(test_fn.__name__)
-            )
+        # Reset the global variable,
+        # only set if frontend fw is inferred
+        frontend_fw = None
+        full_fn_test_path = test_fn.__module__.split(".")
+        if len(full_fn_test_path) > 2:
+            if full_fn_test_path[2] == "test_frontends":
+                frontend_fw = TEST_BACKENDS[full_fn_test_path[3][5:]]
+
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
@@ -3583,4 +3579,4 @@ def array_and_broadcastable_shape(draw, dtype):
         .filter(lambda s: broadcast_shapes(in_shape, s) == s),
         label="shape",
     )
-    return (x, to_shape)
+    return x, to_shape
