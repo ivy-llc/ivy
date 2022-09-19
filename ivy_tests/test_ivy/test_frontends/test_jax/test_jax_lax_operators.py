@@ -2083,6 +2083,7 @@ def test_jax_lax_square(
         x=np.asarray(x, dtype=input_dtype),
     )
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
