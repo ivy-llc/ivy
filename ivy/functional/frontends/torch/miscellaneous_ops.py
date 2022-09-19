@@ -46,6 +46,10 @@ def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
 
 
+def tril(input, diagonal=0, *, out=None):
+    return ivy.tril(input, k=diagonal, out=out)
+
+
 def flatten(input, start_dim=0, end_dim=-1):
 
     # This loop is to work out the new shape
