@@ -1026,7 +1026,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-            input array or container having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
+            input array or container having shape (..., M, M) and whose innermost two
+            dimensions form square matrices. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1041,7 +1042,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            This function returns a container containing two values for each square matrix.
+            This function returns a container containing two values for each square
+            matrix.
             Each value of output will have -
                 sign:
                 A number representing the sign of the determinant.
@@ -1073,7 +1075,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def slogdet(
@@ -1091,7 +1092,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         self
-            input container having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
+            input container having shape (..., M, M) and whose innermost two dimensions
+            form square matrices. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1106,7 +1108,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            This function returns container containing two values for each square matrix.
+            This function returns container containing two values for each square
+            matrix.
             Each value of output will have -
                 sign:
                 A number representing the sign of the determinant.
@@ -1133,7 +1136,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             to_apply,
             prune_unapplied,
             map_sequences,
-            out=out,
         )
 
     @staticmethod

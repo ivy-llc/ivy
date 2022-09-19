@@ -270,12 +270,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
     ) -> NamedTuple:
         """
-        ivy.Array instance method variant of ivy.slogdet. This method computes the sign and natural logarithm of the determinant of an array.
+        ivy.Array instance method variant of ivy.slogdet. This method computes the sign
+        and natural logarithm of the determinant of an array.
 
         Parameters
         ----------
         self
-            input array having shape (..., M, M) and whose innermost two dimensions form square matrices. Should have a floating-point data type.
+            input array having shape (..., M, M) and whose innermost two dimensions
+            form square matrices. Should have a floating-point data type.
 
         Returns
         -------
