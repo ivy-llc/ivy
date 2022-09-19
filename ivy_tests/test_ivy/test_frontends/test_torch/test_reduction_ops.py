@@ -317,6 +317,41 @@ def test_torch_mean(
 
 @handle_cmd_line_args
 @given(
+    dtype_and_x=statistical_dtype_values(function="std"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.std"
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_std(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+    keepdims,
+):
+    input_dtype, x, axis, correction = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="std",
+        input=np.asarray(x, dtype=input_dtype),
+        dim=axis,
+        unbiased=bool(correction),
+        keepdim=keepdims,
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
     dtype_and_x=statistical_dtype_values(function="var"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.var"
@@ -344,7 +379,7 @@ def test_torch_var(
         fn_tree="var",
         input=np.asarray(x, dtype=input_dtype),
         dim=axis,
-        correction=int(correction),
+        unbiased=bool(correction),
         keepdim=keepdims,
         out=None,
     )
