@@ -266,7 +266,8 @@ def dropout(
     /,
     *,
     scale: bool = True,
-    dtype: ivy.Dtype = None,
+    dtype: tf.Dtype = None,
+    device: str,
     out: Union[tf.Tensor, tf.Variable] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     
