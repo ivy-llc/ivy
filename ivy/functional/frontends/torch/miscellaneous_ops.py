@@ -43,4 +43,3 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
 
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
-
