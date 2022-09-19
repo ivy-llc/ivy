@@ -224,21 +224,25 @@ efficiently.</p>
 <h2>Test Skipping<a class="headerlink" href="#test-skipping" title="Permalink to this heading"></a></h2>
 <p>Certain tests may need to be skipped when running the array-api test suite. This could be due to a variety of reasons:</p>
 <ol class="arabic simple">
-<li><p>the test function has a known issue which the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> developers are working on (e.g. <code class="code docutils literal notranslate"><span class="pre">test_asarray_arrays</span></code>),</p></li>
+<li><p>the test function has a known issue which the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> developers are working on (e.g. <code class="code docutils literal notranslate"><span class="pre">test_asarray_arrays</span></code>)</p></li>
 <li><p>the function itself deviates from the standard (e.g. <code class="code docutils literal notranslate"><span class="pre">test_floor_divide</span></code>)</p></li>
 </ol>
 <p>#. there is an issue with the hypothesis test data generation i.e. a failed ‘health check’ (e.g.
-<code class="code docutils literal notranslate"><span class="pre">test_iop[__imod__(x1_i</span> <span class="pre">&lt;</span> <span class="pre">0</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">is</span> <span class="pre">+0)</span> <span class="pre">-&gt;</span> <span class="pre">NaN]</span></code>)
-#. tolerance issues when asserting output <code class="code docutils literal notranslate"><span class="pre">isequal()</span></code> (e.g. <code class="code docutils literal notranslate"><span class="pre">test_matrix_norm</span></code>)</p>
+<code class="code docutils literal notranslate"><span class="pre">test_iop[__imod__(x1_i</span> <span class="pre">&lt;</span> <span class="pre">0</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">is</span> <span class="pre">+0)</span> <span class="pre">-&gt;</span> <span class="pre">NaN]</span></code>)</p>
+<ol class="arabic simple">
+<li><p>tolerance issues when asserting output <code class="code docutils literal notranslate"><span class="pre">isequal()</span></code> (e.g. <code class="code docutils literal notranslate"><span class="pre">test_matrix_norm</span></code>)</p></li>
+</ol>
 <p>All the examples in this list except point 3 (which only occurs with tensorflow) refer to numpy functions, and the first
 two are skipped in the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> also. The data generation and tolerance issues are not skipped in the
 array-api repo and are difficult for Ivy developers
 to solve as we cannot alter the tests directly. Currently, we import the test suite and run it; we do not
 have our own fork that we can tweak at will. The rationale for doing so is that we should adhere as closely to the
 standard as possible. These issues have been raised in the array-api test repo and will be addressed in due course.</p>
-<p>There are currently two ways to skip array-api tests:
-#. in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test/&lt;submodule&gt;.txt</span></code> and
-#. in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code></p>
+<p>There are currently two ways to skip array-api tests:</p>
+<ol class="arabic simple">
+<li><p>in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test/&lt;submodule&gt;.txt</span></code> and</p></li>
+<li><p>in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code></p></li>
+</ol>
 <p>The first method was implemented before the second. Each <code class="code docutils literal notranslate"><span class="pre">&lt;submodule&gt;.txt</span></code> file contains a comprehensive list
 of functions which belong to that submodule, some of which are commented out. The commented-out functions are being
 skipped <em>only</em> for the backend(s) that is/are causing the failure, not all the backends. The latter method, on the
@@ -247,8 +251,9 @@ it is just failing on one. The <code class="code docutils literal notranslate"><
 test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules
 (see <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_array_api/array_api_tests/test_special_cases.py</span></code>). In <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code>, tests are
 skipped by writing the filepath + conditions on the input of the test e.g.,</p>
-<p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i</span> <span class="pre">is</span> <span class="pre">-infinity</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">&gt;</span> <span class="pre">0</span>
-<span class="pre">and</span> <span class="pre">not</span> <span class="pre">(x2_i.is_integer()</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">%</span> <span class="pre">2</span> <span class="pre">==</span> <span class="pre">1))</span> <span class="pre">-&gt;</span> <span class="pre">+infinity]</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop<span class="o">[</span>__ipow__<span class="o">(</span>x1_i is -infinity and x2_i &gt; <span class="m">0</span> and not <span class="o">(</span>x2_i.is_integer<span class="o">()</span> and x2_i % <span class="nv">2</span> <span class="o">==</span> <span class="m">1</span><span class="o">))</span> -&gt; +infinity<span class="o">]</span>
+</pre></div>
+</div>
 <p>is skipping the in-place operations test on the <code class="code docutils literal notranslate"><span class="pre">pow</span></code>
 instance method when x1 is -infinity and x2 is a positive, odd float. The result should be +infinity, however there is
 an issue with the numpy instance method and an <a class="reference external" href="https://github.com/numpy/numpy/issues/21213">issue</a> has been raised on the numpy repository. Tests are categorised
