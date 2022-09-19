@@ -40,7 +40,10 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def diagonal(
