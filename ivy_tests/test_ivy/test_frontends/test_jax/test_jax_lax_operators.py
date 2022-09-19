@@ -1008,6 +1008,46 @@ def test_jax_lax_convert_element_type(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_dim_size=2,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.cummax"
+    ),
+    reverse=st.booleans(),
+)
+def test_jax_lax_cummax(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    reverse,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.cummax",
+        operand=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        reverse=reverse,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
