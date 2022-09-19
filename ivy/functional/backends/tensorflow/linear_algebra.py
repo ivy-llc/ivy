@@ -367,7 +367,10 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(
