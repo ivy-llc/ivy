@@ -2585,7 +2585,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container static method variant of ivy.value_is_nan. This method simply</span>
-<span class="sd">        wrapsthe function, and so the docstring for ivy.value_is_nan also applies to</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.value_is_nan also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -2610,6 +2610,35 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            Boolean as to whether the input value is a nan or not.</span>
+
+<span class="sd">         Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Container` input:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([452]), b=ivy.array([float(&#39;inf&#39;)]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With :code:`ivy.Container` input:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(&#39;nan&#39;)]), b=ivy.array([0]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: false</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With :code:`ivy.Container` input:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(&#39;inf&#39;)]), b=ivy.array([22]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_value_is_nan(x, include_infs=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: false</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;value_is_nan&quot;</span><span class="p">,</span>
@@ -2659,6 +2688,31 @@
 <span class="sd">        ret</span>
 <span class="sd">            Boolean as to whether the input value is a nan or not.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([425]), b=ivy.array([float(&#39;nan&#39;)]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.value_is_nan()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(&#39;inf&#39;)]), b=ivy.array([0]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.value_is_nan()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: false</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([float(&#39;inf&#39;)]), b=ivy.array([22]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.value_is_nan(include_infs=False)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: false</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_value_is_nan</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

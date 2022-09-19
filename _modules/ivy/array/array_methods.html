@@ -3949,8 +3949,23 @@
 <span class="sd">    --------</span>
 <span class="sd">    With one :code:`ivy.Array` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.has_nans()</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([92])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.value_is_nan()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([float(&#39;inf&#39;)])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.value_is_nan()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([float(&#39;nan&#39;)])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.value_is_nan()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([float(&#39;inf&#39;)])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.value_is_nan(include_infs=False)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    False</span>
 
