@@ -5889,4 +5889,4 @@ def trunc_divide(
     ivy.array([0.667, 1.75, 15.])
 
     """
-    return ivy.current_backend(x1, x2).trunc_divide(x1, x2, out=out)
+    return ivy.trunc(ivy.divide(x1, x2, out=out))

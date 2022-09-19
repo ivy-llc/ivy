@@ -444,19 +444,3 @@ def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
-
-
-def trunc_divide(
-    x1: Union[float, JaxArray],
-    x2: Union[float, JaxArray],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = jnp.trunc(jnp.divide(x1, x2))
-    if ivy.is_float_dtype(x1.dtype):
-        ret = jnp.asarray(ret, dtype=x1.dtype)
-    else:
-        ret = jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
-    return ret

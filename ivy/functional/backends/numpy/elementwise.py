@@ -734,20 +734,3 @@ def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 
 rad2deg.support_native_out = True
-
-
-@_handle_0_dim_output
-def trunc_divide(
-    x1: Union[float, np.ndarray],
-    x2: Union[float, np.ndarray],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = np.trunc(np.divide(x1, x2))
-    if ivy.is_float_dtype(x1):
-        ret = np.asarray(ret, dtype=x1.dtype)
-    else:
-        ret = np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
-    return ret
