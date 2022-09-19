@@ -496,8 +496,8 @@ def test_eigvalsh(
     dtype_xy=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=6,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
         safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=1,
