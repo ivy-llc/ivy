@@ -14,10 +14,7 @@ jobs:
         submodules: [test_array_object, test_constants, test_creation_functions, test_data_type_functions,
                     test_linalg, test_manipulation_functions, test_operators_and_elementwise_functions,
                     test_searching_functions, test_set_functions, test_signatures, test_sorting_functions,
-                    test_special_cases, test_statistical_functions, test_type_promotion, test_utility_functions,
-                     meta/test_array_helpers, meta/test_broadcasting, meta/test_equality_mapping,
-                     meta/test_hypothesis_helpers, meta/test_partial_adopters, meta/test_pytest_helpers,
-                     meta/test_signatures, meta/test_special_cases, meta/test_utils]
+                    test_special_cases, test_statistical_functions, test_type_promotion, test_utility_functions]
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:

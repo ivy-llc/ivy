@@ -157,33 +157,44 @@ class ArrayWithGeneral(abc.ABC):
     def gather(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
-        axis: int = -1,
+        /,
         *,
+        axis: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.gather. This method simply wraps the
-        function, and so the docstring for ivy.gather also applies to this method
-        with minimal changes.
+        ivy.Array instance method variant of ivy.gather. This method simply
+        wraps the function, and so the docstring for ivy.gather also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        self
-            array, the array from which to gather values.
+        params
+            The array from which to gather values.
         indices
-            array, index array.
+            The array which indicates the indices that will be gathered along
+            the specified axis.
         axis
-            optional int, the axis from which to gather from. Default is -1.
+            The axis from which the indices will be gathered. Default is -1.
         out
-            optional output array, for writing the result to.
+            An array for writing the result to. It must have a shape
+            that the inputs broadcast to. (Optional)
 
         Returns
         -------
         ret
             New array with the values gathered at the specified indices along
             the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = ivy.array([0, 1])
+        >>> x.gather(y)
+        ivy.array([0., 1.])
+
         """
-        return ivy.gather(self._data, indices, axis, out=out)
+        return ivy.gather(self._data, indices, axis=axis, out=out)
 
     def scatter_nd(
         self: ivy.Array,
@@ -206,8 +217,8 @@ class ArrayWithGeneral(abc.ABC):
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor argument must
-            be provided.
+            The shape of the result. Default is None, in which case tensor
+            argument must be provided.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max'
             or 'replace'
@@ -222,7 +233,6 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         scatter values into an array
-
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
@@ -231,7 +241,6 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
         scatter values into an empty array
-
         >>> shape = ivy.array([2, 5])
         >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
         >>> updates = ivy.array([25, 40, 21, 22])
@@ -245,6 +254,7 @@ class ArrayWithGeneral(abc.ABC):
     def gather_nd(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -351,21 +361,21 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >> x = ivy.array([[[5,4],
+        >>> x = ivy.array([[[5,4],
                        [11, 2]],
                       [[3, 5],
                        [9, 7]]])
-        >> reduced = x.einops_reduce('a b c -> b c', 'max')
-        >> print(reduced)
+        >>> reduced = x.einops_reduce('a b c -> b c', 'max')
+        >>> print(reduced)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
-        >> x = ivy.array([[[5, 4, 3],
+        >>> x = ivy.array([[[5, 4, 3],
                         [11, 2, 9]],
                        [[3, 5, 7],
                         [9, 7, 1]]])
-        >> reduced = x.einops_reduce('a b c -> a () c', 'min')
-        >> print(reduced)
+        >>> reduced = x.einops_reduce('a b c -> a () c', 'min')
+        >>> print(reduced)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
         """
@@ -405,17 +415,17 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >> x = ivy.array([5,4])
-        >> repeated = x.einops_repeat('a -> a c', c=3)
-        >> print(repeated)
+        >>> x = ivy.array([5,4])
+        >>> repeated = x.einops_repeat('a -> a c', c=3)
+        >>> print(repeated)
         ivy.array([[5, 4],
                    [5, 4],
                   [5, 4]])
 
-        >> x = ivy.array([[5,4],
+        >>> x = ivy.array([[5,4],
                     [2, 3]])
-        >> repeated = x.einops_repeat('a b ->  a b c', c=3)
-        >> print(repeated)
+        >>> repeated = x.einops_repeat('a b ->  a b c', c=3)
+        >>> print(repeated)
         ivy.array([[[5, 5, 5],
                     [4, 4, 4]],
                    [[2, 2, 2],
@@ -797,8 +807,23 @@ class ArrayWithGeneral(abc.ABC):
         --------
         With one :code:`ivy.Array` instance method:
 
-        >>> x = ivy.array([-1, 0, 1])
-        >>> y = x.has_nans()
+        >>> x = ivy.array([92])
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        False
+
+        >>> x = ivy.array([float('inf')])
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        True
+
+        >>> x = ivy.array([float('nan')])
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        True
+
+        >>> x = ivy.array([float('inf')])
+        >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
         False
 

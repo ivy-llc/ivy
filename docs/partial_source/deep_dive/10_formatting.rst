@@ -74,8 +74,8 @@ single line of code like so:
 
 .. code-block:: python
 
-    def indices_where(
-        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    def argwhere(
+        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
 When a commit is attempted, `pre-commit` would detect this error by running the lint
@@ -101,10 +101,10 @@ and committed accordingly.
 
 .. code-block:: python
 
-    def indices_where(
+    def argwhere(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
 
 
