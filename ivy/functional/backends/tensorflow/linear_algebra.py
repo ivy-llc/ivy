@@ -501,11 +501,8 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
-    if dtype != "float64":
-        x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    else:
-        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
     ret = tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
     return ret
 
