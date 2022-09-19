@@ -354,7 +354,8 @@ def vecdot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
-    x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
+    if dtype != "float64":
+        x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
     return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
 
 
