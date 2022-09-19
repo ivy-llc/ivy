@@ -4667,6 +4667,10 @@ def round(
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
+    Note: PyTorch supports an additional argument :code:`decimals` for the
+    `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
+    It has been deliberately omitted here due to the imprecise
+    nature of the argument in :code:`torch.round`.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
