@@ -398,16 +398,16 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         helpers.array_values(
             dtype=dtype,
             shape=x_shape,
-            small_abs_safety_factor=2,
-            safety_factor_scale="log",
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     filters = draw(
         helpers.array_values(
             dtype=dtype,
             shape=filter_shape,
-            small_abs_safety_factor=2,
-            safety_factor_scale="log",
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     if transpose:

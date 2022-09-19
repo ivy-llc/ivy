@@ -22,7 +22,7 @@ def gelu(
 def leaky_relu(
     x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.where(x > 0, x, x * alpha)
+    return jnp.asarray(jnp.where(x > 0, x, jnp.multiply(x, alpha)), x.dtype)
 
 
 def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

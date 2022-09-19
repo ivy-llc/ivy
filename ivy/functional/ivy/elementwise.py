@@ -1122,6 +1122,12 @@ def bitwise_left_shift(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    in the standard.
+
     """
     return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 

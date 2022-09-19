@@ -2028,8 +2028,8 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_gather_nd(
-        params: ivy.Container,
-        indices: ivy.Container,
+        params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -2059,6 +2059,18 @@ class ContainerWithGeneral(ContainerBase):
         Returns
         -------
             Container object with all sub-array dimensions gathered.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0., 10., 20.],[30.,40.,50.]]),\
+                              b=ivy.array([[0., 100., 200.],[300.,400.,500.]]))
+        >>> y = ivy.Container(a=ivy.array([1,0]),\
+                                b=ivy.array([0]))
+        >>> print(ivy.Container.static_gather_nd(x, y))
+        {
+            a: ivy.array(30.),
+            b: ivy.array([0., 100., 200.])
+        }
 
         """
         return ContainerBase.multi_map_in_static_method(
@@ -2119,15 +2131,18 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([2]),\
-                              b=ivy.array([1]))
+        >>> x = ivy.Container(a=ivy.array([[[0., 10.], [20.,30.]],\
+                                            [[40.,50.],[60.,70.]]]),\
+                              b=ivy.array([[[0., 100.], [200.,300.]],\
+                                            [[400.,500.],[600.,700.]]]))
+        >>> y = ivy.Container(a=ivy.array([1,0]),\
+                                b=ivy.array([0]))
         >>> z = x.gather_nd(y)
         >>> print(z)
         {
-            a: ivy.array(3),
-            b: ivy.array(3)
+            a: ivy.array([40., 50.]),
+            b: ivy.array([[0., 100.], 
+                        [200., 300.]])
         }
         """
         return self.static_gather_nd(
@@ -2440,7 +2455,7 @@ class ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.value_is_nan. This method simply
-        wrapsthe function, and so the docstring for ivy.value_is_nan also applies to
+        wraps the function, and so the docstring for ivy.value_is_nan also applies to
         this method with minimal changes.
 
         Parameters
@@ -2465,6 +2480,35 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean as to whether the input value is a nan or not.
+
+         Examples
+        --------
+        With :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([452]), b=ivy.array([float('inf')]))
+        >>> y = ivy.Container.static_value_is_nan(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
+        With :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([float('nan')]), b=ivy.array([0]))
+        >>> y = ivy.Container.static_value_is_nan(x)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        With :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
+        >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
+        >>> print(y)
+        {
+            a: false,
+            b: false
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "value_is_nan",
@@ -2514,6 +2558,31 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean as to whether the input value is a nan or not.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([425]), b=ivy.array([float('nan')]))
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([0]))
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
+        >>> y = x.value_is_nan(include_infs=False)
+        >>> print(y)
+        {
+            a: false,
+            b: false
+        }
         """
         return self.static_value_is_nan(
             self,

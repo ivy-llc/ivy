@@ -185,3 +185,23 @@ def silu(input, inplace=False):
 def glu(input, dim=-1):
     a, b = ivy.split(input, num_or_size_splits=2, axis=dim)
     return ivy.multiply(a, ivy.sigmoid(b))
+
+
+# ToDo Implement log_softmax in ivy functional API
+# for it to be faster than ivy.log(ivy.softmax) and more mathematical stable
+def log_softmax(input, dim=None, dtype=None):
+    if dtype:
+        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+    if dim is None:
+        dim = -1
+    return ivy.log(ivy.softmax(input, axis=dim))
+
+
+def tanhshrink(input):
+    return ivy.subtract(input, ivy.tanh(input))
+
+
+def leaky_relu_(input, negative_slope=0.01):
+    ret = ivy.leaky_relu(input, alpha=negative_slope)
+    ivy.inplace_update(input, ret)
+    return input
