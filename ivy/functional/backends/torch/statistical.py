@@ -11,6 +11,27 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if axis == ():
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
+        else:
+            return x
+    if not keepdims and not axis and axis != 0:
+        return torch.amin(input=x, out=out)
+    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+
+
+min.support_native_out = True
+
+
 def max(
     x: torch.Tensor,
     /,
@@ -52,27 +73,6 @@ def mean(
 
 
 mean.support_native_out = True
-
-
-def min(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if axis == ():
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        else:
-            return x
-    if not keepdims and not axis and axis != 0:
-        return torch.amin(input=x, out=out)
-    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
-
-
-min.support_native_out = True
 
 
 def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
