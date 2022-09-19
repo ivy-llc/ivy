@@ -1210,7 +1210,6 @@ def slogdet(
     """
     return current_backend(x).slogdet(x)
 
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

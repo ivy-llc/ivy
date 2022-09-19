@@ -10,6 +10,21 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
+
+
+min.support_native_out = True
+
+
 def max(
     x: np.ndarray,
     /,
@@ -40,21 +55,6 @@ def mean(
 mean.support_native_out = True
 
 
-def min(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
-
-
-min.support_native_out = True
-
-
 def _infer_dtype(dtype: np.dtype):
     default_dtype = ivy.infer_default_dtype(dtype)
     if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
@@ -71,6 +71,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -141,13 +142,12 @@ def var(
     if x.size == 0:
         return np.asarray(float("nan"))
     size = 1
-    if size == correction:
-        size += 0.0001  # to avoid division by zero in return
     for a in axis:
         size *= x.shape[a]
     return np.asarray(
         np.multiply(
-            np.var(x, axis=axis, keepdims=keepdims, out=out), size / (size - correction)
+            np.var(x, axis=axis, keepdims=keepdims, out=out),
+            ivy.stable_divide(size, (size - correction)),
         )
     ).astype(x.dtype)
 

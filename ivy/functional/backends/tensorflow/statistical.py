@@ -11,6 +11,18 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+
+
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -35,18 +47,6 @@ def mean(
     return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
-def min(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
-
-
 def _infer_dtype(dtype: tf.DType):
     default_dtype = ivy.infer_default_dtype(dtype)
     if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
@@ -67,7 +67,7 @@ def prod(
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
+    return tf.experimental.numpy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def std(

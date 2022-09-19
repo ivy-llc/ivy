@@ -14,7 +14,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Examples
@@ -334,7 +334,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.trace.
-        This method Returns the sum along the specified diagonals of a matrix (or a 
+        This method Returns the sum along the specified diagonals of a matrix (or a
         stack of matrices).
 
         Parameters
@@ -343,7 +343,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
             input array having shape ``(..., M, N)`` and whose innermost two
             dimensions form ``MxN`` matrices. Should have a floating-point data type.
         offset
-            Offset of the diagonal from the main diagonal. Can be both positive and 
+            Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -352,9 +352,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Returns
         -------
         ret
-            an array containing the traces and whose shape is determined by removing 
+            an array containing the traces and whose shape is determined by removing
             the last two dimensions and storing the traces in the last array dimension.
-            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, 
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
             then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
 
             ::

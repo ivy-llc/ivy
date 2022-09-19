@@ -368,7 +368,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
 
 
 @handle_exceptions
-def nested_indices_where(
+def nested_argwhere(
     nest: Iterable,
     fn: Callable,
     check_nests: bool = False,
@@ -411,7 +411,7 @@ def nested_indices_where(
 
     >>> nest = [[[1, -2, 3], 19], [[9, -36, 80], -10.19]]
     >>> fun = ivy.abs
-    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> nested_indices = ivy.nested_argwhere(nest, fn=fun)
     >>> print(nested_indices)
     [
         [0, 0, 0], [0, 0, 1],
@@ -425,7 +425,7 @@ def nested_indices_where(
 
     >>> nest = ([-5, 9, 2], [0.3, 4.])
     >>> fun = ivy.abs
-    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun, stop_after_n_found=4)
+    >>> nested_indices = ivy.nested_argwhere(nest, fn=fun, stop_after_n_found=4)
     >>> print(nested_indices)
     [[0, 0], [0, 1], [0, 2], [1, 0]]
 
@@ -433,7 +433,7 @@ def nested_indices_where(
 
     >>> nest={'a': [2., 0.6, -2.], 'b': [1., 4., 1.9], 'c': [9.4]}
     >>> fun = ivy.abs
-    >>> nested_indices = ivy.nested_indices_where(nest, fn=fun)
+    >>> nested_indices = ivy.nested_argwhere(nest, fn=fun)
     >>> print(nested_indices)
     [
         ['a', 0], ['a', 1],
@@ -449,7 +449,7 @@ def nested_indices_where(
         _indices = []
         for i, item in enumerate(nest):
             ind = (
-                nested_indices_where(
+                nested_argwhere(
                     item,
                     fn,
                     check_nests,
@@ -459,7 +459,7 @@ def nested_indices_where(
                     stop_after_n_found - n,
                 )
                 if stop_after_n_found is not None
-                else nested_indices_where(
+                else nested_argwhere(
                     item, fn, check_nests, to_ignore, _index + [i], False
                 )
             )
@@ -481,7 +481,7 @@ def nested_indices_where(
         _indices = []
         for k, v in nest.items():
             ind = (
-                nested_indices_where(
+                nested_argwhere(
                     v,
                     fn,
                     check_nests,
@@ -491,9 +491,7 @@ def nested_indices_where(
                     stop_after_n_found - n,
                 )
                 if stop_after_n_found is not None
-                else nested_indices_where(
-                    v, fn, check_nests, to_ignore, _index + [k], False
-                )
+                else nested_argwhere(v, fn, check_nests, to_ignore, _index + [k], False)
             )
             if stop_after_n_found is not None and ind:
                 if n < stop_after_n_found:

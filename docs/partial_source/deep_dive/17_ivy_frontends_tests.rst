@@ -9,6 +9,7 @@ Ivy Frontend Tests
 .. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`Function_wrapping`: https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html
+.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
 
 Introduction
 ------------
@@ -47,6 +48,9 @@ To get a better understanding for writing frontend tests lets run through some e
 
 Frontend Test Examples
 -----------------------
+
+Before you begin writing a frontend test, make sure you are placing it in the correct location. See the
+'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
