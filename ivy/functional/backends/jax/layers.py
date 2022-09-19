@@ -275,3 +275,26 @@ def conv3d_transpose(
         (data_format, "DHWIO", data_format),
         True,
     )
+
+
+def dropout(
+    x: JaxArray,
+    prob: Union[int, float],
+    /,
+    *,
+    scale: bool = True,
+    dtype: jnp.dtype = None,
+    out: Optional[Jaxarray] = None,
+) -> JaxArray:
+
+    # noinspection PyUnresolvedReferences
+    x = ivy.where(
+        ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
+        ivy.zeros_like(x),
+        x,
+    )
+    if scale:
+        x = ivy.multiply(x, 1 / (1 - prob), out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, x)
+    return x
