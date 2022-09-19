@@ -6,7 +6,6 @@ from collections import namedtuple
 # local
 import ivy
 from ivy import inf
-from .data_type import native_dtype_dict
 
 
 # Array API Standard #
@@ -307,7 +306,7 @@ def tensordot(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to
-    dtype = native_dtype_dict[ivy.promote_types(x1.dtype, x2.dtype)]
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     # type conversion to one that torch.tensordot can work with
     x1, x2 = x1.type(torch.float32), x2.type(torch.float32)
 
