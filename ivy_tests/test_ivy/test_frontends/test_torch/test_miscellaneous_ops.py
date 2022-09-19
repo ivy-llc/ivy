@@ -377,6 +377,42 @@ def test_torch_triu_indices(
     )
 
 
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,  # Torch requires this.
+    ),
+    diagonal=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tril"
+    ),
+)
+def test_torch_tril(
+    dtype_and_values,
+    diagonal,
+    fw,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+):
+    dtype, values = dtype_and_values
+    values = np.asarray(values, dtype=dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="tril",
+        input=values,
+        diagonal=diagonal,
+    )
+
+
 @st.composite
 def _get_dtype_and_arrays_and_start_end_dim(
     draw,
