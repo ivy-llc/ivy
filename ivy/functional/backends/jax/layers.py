@@ -275,3 +275,39 @@ def conv3d_transpose(
         (data_format, "DHWIO", data_format),
         True,
     )
+
+
+def _get_filter_dataformat(dims: int = 2):
+    if dims == 1:
+        return "WIO"
+    if dims == 2:
+        return "HWIO"
+    elif dims == 3:
+        return "DHWIO"
+
+
+def conv_general_dilated(
+    x: JaxArray,
+    filters: JaxArray,
+    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    padding: Union[str, Sequence[Tuple[int, int]]],
+    /,
+    *,
+    dims: int = 2,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    data_format: str = "NDHWC",
+    out: Optional[JaxArray] = None,
+):
+    strides = [strides] * dims if isinstance(strides, int) else strides
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+    filter_df = _get_filter_dataformat(dims)
+    data_format = ivy.get_x_data_format(dims, data_format)
+    return jlax.conv_general_dilated(
+        x,
+        filters,
+        strides,
+        padding,
+        None,
+        dilations,
+        (data_format, filter_df, data_format),
+    )
