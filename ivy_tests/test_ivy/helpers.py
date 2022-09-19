@@ -1685,11 +1685,13 @@ def test_frontend_function(
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
+        # pass return value to out argument
+        # check if passed reference is correctly updated
+        kwargs["out"] = out
+        ret = frontend_fn(*args, **kwargs)
         if ivy.native_inplace_support:
-            # pass return value to out argument
-            # check if passed reference is correctly updated
-            kwargs["out"] = out
-            ret = frontend_fn(*args, **kwargs)
+            assert ret.data is out.data
+        else:
             assert ret is out
     elif with_inplace:
         assert not isinstance(ret, tuple)
@@ -1702,12 +1704,18 @@ def test_frontend_function(
             kwargs["inplace"] = True
             input_argument = ivy.func_wrapper._get_first_array(args, kwargs)
             ret = frontend_fn(*args, **kwargs)
-            assert input_argument is ret and ret is out
+            if ivy.native_inplace_support:
+                assert ret.data is input_argument.data
+            else:
+                assert input_argument is ret
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
             input_argument = ivy.func_wrapper._get_first_array(args, kwargs)
-            assert input_argument is ret
+            if ivy.native_inplace_support:
+                assert ret.data is input_argument.data
+            else:
+                assert input_argument is ret
 
     # create NumPy args
     args_np = ivy.nested_map(
