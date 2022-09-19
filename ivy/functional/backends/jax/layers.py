@@ -295,7 +295,7 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    data_format: str = "NDHWC",
+    data_format: str = "channel_last",
     out: Optional[JaxArray] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
