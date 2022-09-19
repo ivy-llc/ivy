@@ -573,8 +573,8 @@ def test_inv(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-2,
+        atol_=1e-2,
         fn_name="inv",
         x=np.asarray(x, dtype=input_dtype),
     )
