@@ -2564,24 +2564,24 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.value_is_nan()
         >>> print(y)
         {
-            a: False,
-            b: True
+            a: false,
+            b: true
         }
 
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([0]))
         >>> y = x.value_is_nan()
         >>> print(y)
         {
-            a: True,
-            b: False
+            a: true,
+            b: false
         }
 
         >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
         >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
         {
-            a: False,
-            b: False
+            a: false,
+            b: false
         }
         """
         return self.static_value_is_nan(
