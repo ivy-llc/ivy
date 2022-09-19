@@ -284,6 +284,7 @@ def dropout(
     *,
     scale: bool = True,
     dtype: jnp.dtype = None,
+    device: str,
     out: Optional[Jaxarray] = None,
 ) -> JaxArray:
 
