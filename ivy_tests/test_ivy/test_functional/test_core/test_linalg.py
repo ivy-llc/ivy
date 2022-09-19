@@ -110,8 +110,8 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    large_abs_safety_factor=4,
-                    small_abs_safety_factor=4,
+                    large_abs_safety_factor=24,
+                    small_abs_safety_factor=24,
                     safety_factor_scale="log",
                 )
             )
