@@ -14,6 +14,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_x_normidxs=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
         valid_axis=True,

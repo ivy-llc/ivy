@@ -35,7 +35,9 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes())
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
+    )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
@@ -410,7 +412,7 @@ def _stack_helper(draw):
     num_arrays = draw(
         st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
     )
-    dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
 

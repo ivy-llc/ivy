@@ -110,7 +110,7 @@ def sort(
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
 
@@ -223,6 +223,7 @@ def searchsorted(
     *,
     side="left",
     sorter=None,
+    ret_dtype=ivy.int64,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
@@ -238,6 +239,11 @@ def searchsorted(
         'right' side in the sorted array x1. If the side is 'left', the
         index of the first suitable location located is given. If
         'right', return the last such index.
+    ret_dtype
+        the data type for the return value, Default: ivy.int64,
+        only ivy.int32 or ivy.int64 is allowed.
+    sorter
+
     out
         optional output array, for writing the result to.
 
@@ -269,5 +275,10 @@ def searchsorted(
     ivy.array([3,2,4])
     """
     return ivy.current_backend(x, v).searchsorted(
-        x, v, side=side, sorter=sorter, out=out
+        x,
+        v,
+        side=side,
+        sorter=sorter,
+        out=out,
+        ret_dtype=ret_dtype,
     )
