@@ -136,7 +136,7 @@ def test_acos(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
-    alpha=st.integers(min_value=1, max_value=3),
+    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_add(
     *,
@@ -2018,7 +2018,7 @@ def test_sqrt(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
-    alpha=st.integers(min_value=1, max_value=10),
+    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_subtract(
     *,
