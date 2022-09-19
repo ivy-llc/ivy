@@ -6544,6 +6544,37 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = ivy.Container.static_subtract(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[-2.9, -1.7, -7.6], 
+                          [-3.9, -2.7, -8.6], 
+                          [-4.9, -3.7, -9.6]]),
+            b: ivy.array([[-3.9, -2.7, -8.6], 
+                          [-4.9, -3.7, -9.6], 
+                          [-5.9, -4.7, -10.6]])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                              b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([6, 5, 4]))
+        >>> z = ivy.Container.static_subtract(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, -3, -3]),
+            b: ivy.array([-2, -2, -2])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "subtract",
@@ -6598,6 +6629,19 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                              b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([6, 5, 4]))
+        >>> z = x.subtract(y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, -3, -3]),
+            b: ivy.array([-2, -2, -2])
+        }
         """
         return self.static_subtract(
             self,
