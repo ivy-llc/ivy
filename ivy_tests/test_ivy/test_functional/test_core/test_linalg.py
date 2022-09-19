@@ -27,9 +27,9 @@ def dtype_value1_value2_axis(
     min_dim_size=1,
     max_dim_size=10,
     specific_dim_size=3,
-    large_abs_safety_factor=10,
-    small_abs_safety_factor=2,
-    safety_factor_scale="linear",
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
+    safety_factor_scale="log",
 ):
     # For cross product, a dim with size 3 is required
     shape = draw(
@@ -111,9 +111,9 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    large_abs_safety_factor=10,
-                    small_abs_safety_factor=2,
-                    safety_factor_scale="linear",
+                    large_abs_safety_factor=4,
+                    small_abs_safety_factor=4,
+                    safety_factor_scale="log",
                 )
             )
         )
@@ -132,7 +132,7 @@ def _get_dtype_value1_value2_axis_for_tensordot(
 @st.composite
 def _get_dtype_and_matrix(draw, *, symmetric=False):
     # batch_shape, shared, random_size
-    input_dtype = draw(st.shared(st.sampled_from(ivy_np.valid_float_dtypes)))
+    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("float")))))
     random_size = draw(helpers.ints(min_value=2, max_value=4))
     batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
     if symmetric:
@@ -696,8 +696,8 @@ def test_slogdet(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-1,
+        atol_=1e-2,
         fn_name="slogdet",
         x=np.asarray(x, dtype=input_dtype),
     )
