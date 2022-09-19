@@ -110,8 +110,8 @@ def _get_dtype_value1_value2_axis_for_tensordot(
                     allow_inf=allow_inf,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    large_abs_safety_factor=64,
-                    small_abs_safety_factor=64,
+                    large_abs_safety_factor=72,
+                    small_abs_safety_factor=72,
                     safety_factor_scale="log",
                 )
             )
@@ -868,7 +868,7 @@ def test_tensordot(
         instance_method=instance_method,
         fw=fw,
         fn_name="tensordot",
-        rtol_=1e-1,
+        rtol_=5e-1,
         atol_=5e-1,
         x1=x1,
         x2=x2,
@@ -924,8 +924,8 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=64,
-        small_abs_safety_factor=64,
+        large_abs_safety_factor=72,
+        small_abs_safety_factor=72,
         safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
@@ -960,7 +960,7 @@ def test_vecdot(
         instance_method=instance_method,
         fw=fw,
         fn_name="vecdot",
-        rtol_=1e-1,
+        rtol_=5e-1,
         atol_=5e-1,
         x1=np.asarray(x1, dtype=dtype),
         x2=np.asarray(x2, dtype=dtype),
