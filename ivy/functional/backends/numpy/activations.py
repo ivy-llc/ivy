@@ -24,7 +24,7 @@ relu.support_native_out = True
 def leaky_relu(
     x: np.ndarray, /, *, alpha: float = 0.2, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.asarray(np.where(x > 0, x, x * alpha), x.dtype)
+    return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
 def gelu(

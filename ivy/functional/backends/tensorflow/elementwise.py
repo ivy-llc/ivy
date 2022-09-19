@@ -7,15 +7,6 @@ import tensorflow as tf
 import ivy
 
 
-def _clamp_bits(x1, x2):
-    x2 = tf.clip_by_value(
-        x2,
-        tf.constant(0, dtype=x2.dtype),
-        tf.constant(x1.dtype.size * 8 - 1, dtype=x2.dtype),
-    )
-    return x1, x2
-
-
 def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -138,7 +129,7 @@ def bitwise_left_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -164,7 +155,7 @@ def bitwise_right_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
 

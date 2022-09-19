@@ -341,3 +341,37 @@ def test_torch_tril_indices(
         offset=offset,
         dtype=dtype_result,
     )
+    
+   
+@handle_cmd_line_args
+@given(
+    row=st.integers(min_value=0, max_value=100),
+    col=st.integers(min_value=0, max_value=100),
+    offset=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.triu_indices"
+    ),
+)
+def test_torch_triu_indices(
+    row,
+    col,
+    offset,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes="int32",
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="triu_indices",
+        row=row,
+        col=col,
+        offset=offset,
+    )
