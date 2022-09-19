@@ -239,3 +239,10 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 # TODO: Ibeta for Future Release
+
+def accumulate_n(inputs, shape, tensor_dtype=None, name="accumulate_n"):
+    # inputs = ivy.asarray(inputs)
+    tensor_dtype = inputs[0].dtype or tensor_dtype
+    if shape is not None:
+        ivy.assertions.check_equal(inputs[0].shape, shape)
+    return ivy.astype(ivy.sum(inputs, axis=0, dtype=tensor_dtype), tensor_dtype)

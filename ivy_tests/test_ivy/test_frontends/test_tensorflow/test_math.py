@@ -796,7 +796,7 @@ def test_tensorflow_is_strictly_increasing(
         fn_name="ivy.functional.frontends.tensorflow.count_nonzero"
     ),
 )
-def test_tensorflow_count_nonzero(
+def test_tensorflow_accumulate_n(
     dtype_and_x, axis, keepdims, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
@@ -957,4 +957,53 @@ def test_tensorflow_zero_fraction(
         frontend="tensorflow",
         fn_tree="math.zero_fraction",
         value=np.asarray(x, dtype=input_dtype),
+    )
+
+# accumulate_n
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=3,
+        max_num_dims=3,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.tensorflow.math.accumulate_n"),
+    dtype=helpers.get_dtypes("numeric", none=True),
+)
+def test_tensorflow_accumulate_n(
+    *,
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    # keep_dims,
+    dtype,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.accumulate_n",
+        rtol_=1e-1,
+        atol_=1e-2,
+        x=np.asarray(x, dtype=input_dtype),
+        # axis=axis,
+        # keepdims=keep_dims,
+        shape=np.asarray(x, dtype=input_dtype)[0].shape,
+        dtype=dtype,
     )
