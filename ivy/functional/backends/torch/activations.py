@@ -75,3 +75,17 @@ def softplus(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch
 
 
 softplus.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def log_softmax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    return torch.nn.functional.log_softmax(x, dim=axis, dtype=dtype)
+
+
+log_softmax.unsupported_dtypes = ("float16", "bfloat16")
