@@ -1,4 +1,3 @@
 
-tf.keras.layers.concatenate(
-inputs, axis=-1,
-)    return ivy.tf.keras.layers.concatenate(input, axis)
+def tf.keras.layers.concatenate(inputs, axis=-1,name=None)
+    return ivy.tf.keras.layers.concatenate(input, axis)
