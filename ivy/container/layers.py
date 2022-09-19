@@ -439,11 +439,11 @@ class ContainerWithLayers(ContainerBase):
         
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
-                              b = ivy.eye(5, 5).view(1, 5, 5, 1))
-        >>> filters = ivy.array([[2, 0, 1], \
-                                [1, 3, 1], \
-                                [0, 1, 1]]).unsqueeze(-1).unsqueeze(-1).float()
+        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \
+                              b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
+        >>> filters = ivy.array([[2., 0., 1.], \
+                                [1., 3., 1.], \
+                                [0., 1., 1.]]).reshape((3, 3, 1, 1))
         >>> result = ivy.Container.static_conv2d(x, filters, (2,), 'SAME')
         >>> print(result)
         {
@@ -512,11 +512,11 @@ class ContainerWithLayers(ContainerBase):
         
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.eye(3, 3).view(1, 3, 3, 1), \
-                              b = ivy.eye(5, 5).view(1, 5, 5, 1))
+        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \
+                              b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
         >>> filters = ivy.array([[2, 0, 1], \
                                  [1, 3, 1], \
-                                 [0, 1, 1]]).unsqueeze(-1).unsqueeze(-1).float()
+                                 [0, 1, 1]], dtype= ivy.float32).reshape((3, 3, 1, 1))
         >>> result = x.conv2d(filters, (2,), 'SAME')
         >>> print(result)
         {
