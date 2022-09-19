@@ -167,9 +167,6 @@ def deg2rad(
     return ret
 
 
-arctan.unsupported_dtypes = {"torch": ("float16",)}
-
-
 @from_zero_dim_arrays_to_float
 def arctanh(
     x,
@@ -189,9 +186,6 @@ def arctanh(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
-
-
-arctanh.unsupported_dtypes = {"torch": ("float16",)}
 
 @from_zero_dim_arrays_to_float
 def rad2deg(
