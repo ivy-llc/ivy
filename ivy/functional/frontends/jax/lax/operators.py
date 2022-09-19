@@ -108,6 +108,27 @@ def cosh(x):
     return ivy.cosh(x)
 
 
+def cummax(operand, axis=0, reverse=False):
+    def make_index(num_dimension, i_pos, i):
+        zeros = [slice(None)] * num_dimension
+        zeros[i_pos] = i
+        return tuple(zeros)
+    dim = len(operand.shape)
+    import numpy as np
+    ret = np.empty(operand.shape)
+    t = -ivy.inf
+    if not reverse:
+        for i in range(operand.shape[axis]):
+            t = ivy.maximum(t, operand[make_index(dim, axis, i)])
+            ret[make_index(dim, axis, i)] = t
+    else:
+        for i in range(operand.shape[axis] - 1, -1, -1):
+            t = ivy.maximum(t, operand[make_index(dim, axis, i)])
+            ret[make_index(dim, axis, i)] = t
+    ret = ivy.array(ret, dtype=operand.dtype)
+    return ret
+
+
 def cumprod(operand, axis=0, reverse=False):
     if reverse:
         return ivy.flip(ivy.cumprod(ivy.flip(operand), axis, dtype=operand.dtype))
