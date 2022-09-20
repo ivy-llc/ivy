@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -390,7 +390,7 @@ def test_tensorflow_reduce_euclidean_norm(
     )
 
 
-# reduce_logsumexp()
+# reduce_logsumexp
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -403,10 +403,7 @@ def test_tensorflow_reduce_euclidean_norm(
 def test_tensorflow_reduce_logsumexp(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    (
-        input_dtype,
-        x,
-    ) = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -511,7 +508,7 @@ def test_tensorflow_reduce_min(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.reduce_prod"
@@ -592,7 +589,7 @@ def test_tensorflow_asinh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.reduce_sum"
@@ -844,19 +841,19 @@ def test_tensorflow_is_strictly_increasing(
 # count_nonzero
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), shape=(2, 3)
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric")
     ),
-    axis=helpers.get_axis(shape=(2, 3), max_size=2),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.count_nonzero"
     ),
+    dtype=helpers.get_dtypes("numeric"),
 )
 def test_tensorflow_count_nonzero(
-    dtype_and_x, axis, keepdims, as_variable, num_positional_args, native_array, fw
+    dtype_x_axis, dtype, keepdims, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -869,7 +866,7 @@ def test_tensorflow_count_nonzero(
         input=x,
         axis=axis,
         keepdims=keepdims,
-        dtype=input_dtype,
+        dtype=dtype,
     )
 
 
