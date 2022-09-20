@@ -5,9 +5,9 @@ stop_gradient
 
 .. autofunction:: ivy.array.array_methods.stop_gradient
 
-.. autofunction:: ivy.container.container_methods.static_stop_gradient
-
 .. autofunction:: ivy.container.container_methods.stop_gradient
+
+.. autofunction:: ivy.container.container_methods.static_stop_gradient
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ all
 
 .. autofunction:: ivy.array.array_methods.all
 
-.. autofunction:: ivy.container.container_methods.all
-
 .. autofunction:: ivy.container.container_methods.static_all
+
+.. autofunction:: ivy.container.container_methods.all
 |
 | **Supported Frameworks:**
 
