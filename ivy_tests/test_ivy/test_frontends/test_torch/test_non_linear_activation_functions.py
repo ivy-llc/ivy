@@ -894,6 +894,9 @@ def test_torch_leaky_relu_(
 
 
 # hardsigmoid
+# ToDo Test inplace once inplace testing implemented
+# It was validated to work outside of the testing framework,
+# but causes errors in the testing framework.
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
@@ -902,7 +905,6 @@ def test_torch_leaky_relu_(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.hardsigmoid"
     ),
-    #inplace=st.booleans(),
 )
 def test_torch_hardsigmoid(
     dtype_and_input,
@@ -911,7 +913,6 @@ def test_torch_hardsigmoid(
     num_positional_args,
     native_array,
     fw,
-    #inplace,
 ):
     input_dtype, input = dtype_and_input
     assume("float16" not in input_dtype)
@@ -925,5 +926,5 @@ def test_torch_hardsigmoid(
         frontend="torch",
         fn_tree="nn.functional.hardsigmoid",
         input=np.asarray(input, dtype=input_dtype),
-        inplace=False,#it was validated to work outside of the testing framework, but causes errors in the testing framework.)
+        inplace=False,
     )
