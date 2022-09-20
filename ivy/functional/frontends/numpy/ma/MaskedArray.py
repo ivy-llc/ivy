@@ -11,12 +11,12 @@ class MaskedArray(np_frontend.ndarray):
         mask=nomask,
         dtype=None,
         copy=False,
-        subok=True,
         ndmin=0,
         fill_value=None,
         keep_mask=True,
         hard_mask=None,
         shrink=True,
+        subok=True,
         order=None,
     ):
         self._init_data_and_dtype(data, dtype)
