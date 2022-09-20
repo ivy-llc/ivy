@@ -5,9 +5,9 @@ sum
 
 .. autofunction:: ivy.array.array_methods.sum
 
-.. autofunction:: ivy.container.container_methods.sum
-
 .. autofunction:: ivy.container.container_methods.static_sum
+
+.. autofunction:: ivy.container.container_methods.sum
 |
 | **Supported Frameworks:**
 
