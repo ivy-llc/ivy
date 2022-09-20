@@ -1452,7 +1452,10 @@ def test_value_is_nan(x_n_include_inf_n_value):
 @handle_cmd_line_args
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
     include_infs=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="has_nans"),
