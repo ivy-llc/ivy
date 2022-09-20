@@ -2350,3 +2350,44 @@ def test_rad2deg(
         fn_name="rad2deg",
         x=np.asarray(x, dtype=input_dtype),
     )
+
+
+# trunc_divide
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="trunc_divide"),
+)
+def test_trunc_divide(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # prevent too close to zero
+    assume(not np.any(np.isclose(x2, 0)))
+
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="trunc_divide",
+        x1=x1,
+        x2=x2)
