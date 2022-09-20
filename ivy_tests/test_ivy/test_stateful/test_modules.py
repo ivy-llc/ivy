@@ -33,7 +33,6 @@ class TrainableModule(ivy.Module):
 
 
 # module training
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -102,7 +101,6 @@ class TrainableModuleWithList(ivy.Module):
 
 
 # module with list training
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -156,7 +154,6 @@ def test_module_w_list_training(batch_shape, input_channels, output_channels, de
 
 
 # module with partial v
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -240,7 +237,6 @@ class ModuleWithNoneAttribute(ivy.Module):
 
 
 # module with none attribute
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -285,8 +281,6 @@ class TrainableModuleWithDuplicate(ivy.Module):
 
 
 # module training with duplicate
-# @pytest.mark.parametrize("bs_c", [([1, 2], 64)])
-# @pytest.mark.parametrize("same_layer", [True, False])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -352,7 +346,6 @@ class TrainableModuleWithDict(ivy.Module):
 
 
 # module with dict training
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -420,7 +413,6 @@ class WithCustomVarStructure(ivy.Module):
 
 
 # with custom var structure
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -469,7 +461,6 @@ class WithNestedModules(ivy.Module):
 
 
 # top variables
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -514,7 +505,6 @@ def test_top_variables(batch_shape, input_channels, output_channels, device):
 
 
 # top module
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -548,7 +538,6 @@ def test_top_module(batch_shape, input_channels, output_channels, device):
 
 
 # v with top v key chains
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -614,7 +603,6 @@ def test_v_with_top_v_key_chains(batch_shape, input_channels, output_channels, d
 
 
 # module depth
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -646,7 +634,6 @@ def test_module_depth(batch_shape, input_channels, output_channels, device):
 
 
 # module height
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -678,7 +665,6 @@ def test_module_height(batch_shape, input_channels, output_channels, device):
 
 
 # sub modules
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -716,7 +702,6 @@ def test_sub_modules(batch_shape, input_channels, output_channels, device):
 
 
 # track submod returns
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -779,7 +764,6 @@ def test_module_track_submod_rets(batch_shape, input_channels, output_channels, 
 
 
 # check submod returns
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
@@ -873,7 +857,6 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
 
 
 # track submod call order
-# @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
