@@ -18,6 +18,7 @@ Ivy Frontends
 .. _`ivy frontends discussion`: https://github.com/unifyai/ivy/discussions/2051
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+.. _`open task`: https://lets-unify.ai/ivy/contributing/4_open_tasks.html#open-tasks
 
 Introduction
 ------------
@@ -34,20 +35,35 @@ The Basics
 **NOTE:** Type hints, docstrings and examples are not required when working on
 frontend functions.
 
+There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
+explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs `open_task`_.
+
 **Jax**
 
-In general, all functions in the :code:`jax.numpy` namespace are themselves implemented
-as a composition of the lower-level functions in the :code:`jax.lax` namespace,
-which maps very closely to the API for the Accelerated Linear Algebra (XLA) compiler
-which is used under the hood to run high performance JAX code.
+JAX has two distinct groups of functions, those in the :code:`jax.lax` namespace and
+those in the :code:`jax.numpy` namespace. The former set of functions map very closely
+to the API for the Accelerated Linear Algebra (`XLA <https://www.tensorflow.org/xla>`_)
+compiler, which is used under the hood to run high performance JAX code. The latter set
+of functions map very closely to NumPy's well known API. In general, all functions in
+the :code:`jax.numpy` namespace are themselves implemented as a composition of the
+lower-level functions in the :code:`jax.lax` namespace.
 
 When transpiling between frameworks, the first step is to compile the computation graph
-into the lowest level python functions for the source framework using Ivy's graph
+into low level python functions for the source framework using Ivy's graph
 compiler, before then replacing these nodes with the associated functions in Ivy's
-frontend API. Given that almost all jax code can be decomposed into :code:`jax.lax`
-functions, these are the most important functions to implement in Ivy's frontend API.
-Thus, a :code:`lax` module is created in the frontend API, and most functions are placed
-there. We start with the function :code:`add` as an example.
+frontend API. Given that all jax code can be decomposed into :code:`jax.lax`
+function calls, when transpiling :code:`jax` code it should always be possible to
+express the computation graph as a composition of only :code:`jax.lax` functions.
+Therefore, arguably these are the *only* functions we should need to implement in the
+JAX frontend. However, in general we wish to be able to compile a graph in the backend
+framework with varying levels of dynamicism. A graph of only :code:`jax.lax` functions
+chained together in general is more *static* and less *dynamic* than a graph which
+chains :code:`jax.numpy` functions together. We wish to enable varying extents of
+dynamicism when compiling a graph with our graph compiler, and therefore we also
+implement the functions in the :code:`jax.numpy` namespace in our frontend API for JAX.
+
+Thus, both :code:`lax` and :code:`numpy` modules are created in the JAX frontend API.
+We start with the function :code:`lax.add` as an example.
 
 .. code-block:: python
 
@@ -55,15 +71,16 @@ there. We start with the function :code:`add` as an example.
     def add(x, y):
         return ivy.add(x, y)
 
-:code:`add` is categorised under :code:`operators` as shown in the `jax.lax`_ package
-directory. We organize the functions using the same categorizations as the original
-framework, and also mimick the importing behaviour regarding modules and namespaces etc.
+:code:`lax.add` is categorised under :code:`operators` as shown in the `jax.lax`_
+package directory. We organize the functions using the same categorizations as the
+original framework, and also mimick the importing behaviour regarding modules and
+namespaces etc.
 
 For the function arguments, these must be identical to the original function in
 Jax. In this case, `jax.lax.add`_ has two arguments,
-and so we will also have the same two arguments in our Jax frontend :code:`add`.
+and so we will also have the same two arguments in our Jax frontend :code:`lax.add`.
 In this case, the function will then simply return :code:`ivy.add`,
-which in turn will link to the backend-specific implementation :code:`add`
+which in turn will link to the backend-specific implementation :code:`ivy.add`
 according to the framework set in the backend.
 
 .. code-block:: python
@@ -72,11 +89,11 @@ according to the framework set in the backend.
     def tan(x):
         return ivy.tan(x)
 
-Using :code:`tan` as a second example, we can see that this is placed under
+Using :code:`lax.tan` as a second example, we can see that this is placed under
 :code:`operators`, again in the `jax.lax`_ directory.
 By referring to the `jax.lax.tan`_ documentation, we can see that it has only one
-argument. In the same manner as our :code:`add` function, we simply link its return to
-:code:`ivy.tan`, and again the computation then depends on the backend framework.
+argument. In the same manner as our :code:`add` function, we simply link its return
+to :code:`ivy.tan`, and again the computation then depends on the backend framework.
 
 **NumPy**
 
@@ -298,7 +315,7 @@ the backend :code:`ivy.cumprod()` does not support this argument or behaviour.
         axis: int = 0,
         *,
         exclusive: bool = False,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, ivy.NativeArray]:
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
@@ -392,7 +409,7 @@ restrictions than the data type limitations of the framework itself) should be f
 in a manner like the following:
 
 .. code-block:: python
-    
+
    logical_and.supported_dtypes = ("bool",)
 
 The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
@@ -401,10 +418,10 @@ same as those supported by the function in the native framework. Again, this is 
 needed if the limitations go beyond those of the framework itself. For example, it is
 not necessary to uniquely flag every single NumPy function as supporting only CPU,
 as this is a limitation of the entire framework, and this limitation is already
-`globally flagged <>`_.
+`globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
-Instance Methods
-----------------
+Classes and Instance Methods
+----------------------------
 
 Most frameworks include instance methods on their array class for common array
 processing functions, such as :code:`reshape`, :code:`expand_dims` etc.
@@ -443,8 +460,8 @@ replace each of the original instance methods in the extracted computation graph
 these new instance methods defined in the Ivy frontend class.
 
 
-Framework-Specific Classes
---------------------------
+Framework-Specific Argument Types
+---------------------------------
 
 Some of the frontend functions that we need to implement include framework-specific
 classes as the default values for some of the arguments,
@@ -467,7 +484,7 @@ native Python classes to map to.
 For example, in `ivy/ivy_tests/test_ivy/test_frontends/test_numpy/__init__.py`, we have:
 
 .. code-block:: python
-    
+
     numpy_classes_to_ivy_classes = {np._NoValue: None}
 
 Where :code:`np._NoValue` is a reference to the :code:`_NoValueType` class defined in

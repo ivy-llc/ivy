@@ -523,7 +523,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy=copy, out=out)
+    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -536,7 +536,7 @@ def roll(
     shift: Union[int, Sequence[int]],
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
     last position are re-introduced at the first position. Array elements that roll
@@ -1112,7 +1112,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Interchange two axes of an array.
 
@@ -1389,7 +1389,7 @@ def zero_pad(
     /,
     pad_width: Iterable[Tuple[int]],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Pads an array with zeros.
 

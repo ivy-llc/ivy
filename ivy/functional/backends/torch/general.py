@@ -58,6 +58,15 @@ def current_backend_str() -> str:
     return "torch"
 
 
+def get_item(
+    x: torch.Tensor,
+    query: torch.Tensor,
+) -> torch.Tensor:
+    if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
+        return x.__getitem__(query.to(torch.int64))
+    return x.__getitem__(query)
+
+
 def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
     if isinstance(x, (float, int, bool)):
         return x
@@ -100,15 +109,22 @@ def to_list(x: torch.Tensor, /) -> list:
 def gather(
     params: torch.Tensor,
     indices: torch.Tensor,
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.gather(params, axis, indices.type(torch.int64))
+    sl = [slice(None)] * params.ndim
+    sl[axis] = indices.type(torch.int64)
+    return params[tuple(sl)]
 
 
 def gather_nd(
-    params: torch.Tensor, indices: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    params: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -256,6 +272,9 @@ def scatter_flat(
             res,
         )
     return res
+
+
+scatter_flat.unsupported_dtypes = ("bfloat16",)
 
 
 def scatter_nd(

@@ -61,12 +61,5 @@ def where(
 # ----- #
 
 
-def indices_where(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    where_x = np.where(x)
-    if len(where_x) == 1:
-        return np.expand_dims(where_x[0], -1)
-    res = np.concatenate([np.expand_dims(item, -1) for item in where_x], -1, out=out)
-    return res
-
-
-indices_where.support_native_out = True
+def argwhere(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.argwhere(x)

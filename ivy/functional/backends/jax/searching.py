@@ -55,6 +55,5 @@ def where(
 # ----- #
 
 
-def indices_where(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    where_x = jnp.where(x)
-    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
+def argwhere(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.argwhere(x)

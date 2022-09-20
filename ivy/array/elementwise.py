@@ -1860,6 +1860,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise differences. The returned array
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.subtract(y)
+        >>> print(z)
+        ivy.array([-3, -3, -3])
         """
         return ivy.subtract(self._data, x2, out=out)
 

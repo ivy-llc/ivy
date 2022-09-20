@@ -25,6 +25,10 @@ def current_backend_str():
     return "numpy"
 
 
+def get_item(x: np.ndarray, query: np.ndarray) -> np.ndarray:
+    return x.__getitem__(query)
+
+
 def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return x.copy()
@@ -43,15 +47,16 @@ def to_list(x: np.ndarray, /) -> list:
 def gather(
     params: np.ndarray,
     indices: np.ndarray,
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.take_along_axis(params, indices, axis))
+    return _to_device(np.take(params, indices, axis))
 
 
 def gather_nd(
-    params: np.ndarray, indices: np.ndarray, *, out: Optional[np.ndarray] = None
+    params: np.ndarray, indices: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     indices_shape = indices.shape
     params_shape = params.shape

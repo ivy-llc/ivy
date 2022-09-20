@@ -58,7 +58,7 @@ def where(
 # ----- #
 
 
-def indices_where(
+def argwhere(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
