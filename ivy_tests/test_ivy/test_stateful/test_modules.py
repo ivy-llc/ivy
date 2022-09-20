@@ -170,7 +170,6 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
         # MXNet ivy.Container repr currently does not work
         return
 
-
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",

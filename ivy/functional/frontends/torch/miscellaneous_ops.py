@@ -72,4 +72,3 @@ def flatten(input, start_dim=0, end_dim=-1):
 
     input = ivy.reshape(input, shape=new_shape)
     return input
-
