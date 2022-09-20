@@ -53,7 +53,10 @@ def det(
     return tf.linalg.det(x)
 
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def diagonal(
@@ -78,7 +81,10 @@ def eigh(
     return tf.linalg.eigh(x)
 
 
-eigh.unsupported_dtypes = ("float16",)
+eigh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def eigvalsh(
@@ -90,7 +96,10 @@ def eigvalsh(
     return tf.linalg.eigvalsh(x)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -364,7 +373,10 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(
@@ -418,7 +430,10 @@ def solve(
     return ret
 
 
-solve.unsupported_dtypes = ("float16",)
+solve.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def svd(
@@ -464,7 +479,7 @@ def tensordot(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # find type to promote to
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
 
     # type casting to float32 which is acceptable for tf.tensordot
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
@@ -495,13 +510,10 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
         x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    else:
-        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
-    ret = tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
-    return ret
+    return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
 vecdot.supported_dtypes = ("bfloat16", "float16", "float32", "float64")

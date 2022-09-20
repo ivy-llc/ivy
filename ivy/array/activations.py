@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -103,7 +103,13 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.softmax(self._data, axis=axis, out=out)
 
-    def softplus(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def softplus(self: ivy.Array,
+                 /,
+                 *,
+                 beta: Optional[Union[int, float]] = None,
+                 threshold: Optional[Union[int, float]] = None,
+                 out: Optional[ivy.Array] = None
+                 ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method
@@ -115,5 +121,16 @@ class ArrayWithActivations(abc.ABC):
         >>> y = x.softplus()
         >>> print(y)
         ivy.array([0.535, 0.42 ])
+
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> x.softplus(beta=0.5)
+        >>> print(y)
+        ivy.array([1.22, 1.09])
+
+        >>> ivy.array([1.31, 2., 2.])
+        >>> x.softplus(threshold=2)
+        >>> print(y)
+        ivy.array([2.15, 2.63, 2.63])
+
         """
-        return ivy.softplus(self._data, out=out)
+        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
