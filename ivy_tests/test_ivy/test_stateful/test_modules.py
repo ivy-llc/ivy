@@ -46,7 +46,6 @@ def test_module_training(batch_shape, input_channels, output_channels, device):
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -114,7 +113,6 @@ def test_module_w_list_training(batch_shape, input_channels, output_channels, de
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -171,7 +169,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
     if ivy.current_backend_str() == "mxnet":
         # MXNet ivy.Container repr currently does not work
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
 
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
@@ -250,7 +248,7 @@ def test_module_w_none_attribute(batch_shape, input_channels, output_channels, d
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -294,7 +292,6 @@ def test_module_training_with_duplicate(batch_shape, channels, same_layer, devic
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, channels = bs_c
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), "float32"
     )
@@ -359,7 +356,6 @@ def test_module_w_dict_training(batch_shape, input_channels, output_channels, de
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -428,7 +424,6 @@ def test_with_custom_var_structure(
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithCustomVarStructure(input_channels, output_channels, device=device)
     assert "x" in module.v
     assert "y" in module.v
@@ -474,7 +469,6 @@ def test_top_variables(batch_shape, input_channels, output_channels, device):
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithNestedModules(input_channels, output_channels, device=device)
     for key_chain in [
         "dl0",
@@ -518,7 +512,7 @@ def test_top_module(batch_shape, input_channels, output_channels, device):
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # full depth
@@ -551,7 +545,7 @@ def test_v_with_top_v_key_chains(batch_shape, input_channels, output_channels, d
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # full depth
@@ -616,7 +610,7 @@ def test_module_depth(batch_shape, input_channels, output_channels, device):
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 0
@@ -647,7 +641,7 @@ def test_module_height(batch_shape, input_channels, output_channels, device):
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # height 2
@@ -678,7 +672,7 @@ def test_sub_modules(batch_shape, input_channels, output_channels, device):
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     module = WithNestedModules(input_channels, output_channels, device=device)
 
     # depth 0
@@ -715,7 +709,7 @@ def test_module_track_submod_rets(batch_shape, input_channels, output_channels, 
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -777,7 +771,7 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -872,7 +866,7 @@ def test_module_track_submod_call_order(
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    # batch_shape, input_channels, output_channels = bs_ic_oc
+
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
