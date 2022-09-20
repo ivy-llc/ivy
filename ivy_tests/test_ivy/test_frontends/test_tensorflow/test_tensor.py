@@ -115,7 +115,6 @@ def test_tensorflow_instance_abs(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        frontend_class=Tensor,
         fn_tree="Tensor.abs",
         self=np.asarray(x, dtype=input_dtype),
     )
