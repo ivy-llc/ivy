@@ -1293,7 +1293,9 @@ def test_is_ivy_array(
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     exclusive=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_array"),
 )
