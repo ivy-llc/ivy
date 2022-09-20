@@ -10,12 +10,12 @@ class MaskedArray(np_frontend.ndarray):
         data,
         mask=nomask,
         dtype=None,
-        copy=False,
-        ndmin=0,
+        copy=False,  # TODO
+        ndmin=0,  # TODO
         fill_value=None,
-        keep_mask=True,
-        hard_mask=None,
-        shrink=True,
+        keep_mask=True,  # TODO
+        hard_mask=None,  # TODO
+        shrink=True,  # TODO
         subok=True,
         order=None,
     ):
