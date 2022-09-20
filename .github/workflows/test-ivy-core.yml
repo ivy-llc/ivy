@@ -41,8 +41,6 @@ jobs:
              -or $_ -match 'ivy/functional/ivy/${{ matrix.submodules }}.py' `
            }
            $HasDiff = $SourceDiff.Length -gt 0
-           $a = Get-Random -Maximum 10
-           $HasDiff = $HasDiff -or ($a -eq 1)
            Write-Host "::set-output name=changed::$HasDiff"
 
        - name: Download artifact
