@@ -360,14 +360,14 @@ def scatter_nd(
         initial_val = torch.tensor(0).type(dtype)
     elif reduction == "min":
         if dtype.is_floating_point:
-            initial_val = min(torch.finfo(dtype).max, 1e12)
+            initial_val = torch.finfo(dtype).max
         else:
-            initial_val = min(torch.iinfo(dtype).max, 1e12)
+            initial_val = torch.iinfo(dtype).max
     elif reduction == "max":
         if dtype.is_floating_point:
-            initial_val = max(torch.finfo(dtype).min, 1e-12)
+            initial_val = torch.finfo(dtype).min
         else:
-            initial_val = max(torch.iinfo(dtype).min, 1e-12)
+            initial_val = torch.iinfo(dtype).min
     else:
         raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -401,6 +401,9 @@ def scatter_nd(
         flat_output[flat_indices_for_flat] = flat_updates
         flat_scatter = flat_output
     else:
+        flat_updates, flat_output = ivy.promote_types_of_inputs(
+            flat_updates, flat_output
+        )
         flat_scatter = torch_scatter.scatter(
             flat_updates,
             flat_indices_for_flat,
@@ -410,7 +413,7 @@ def scatter_nd(
     if not target_given:
         flat_scatter = torch.where(
             flat_scatter == initial_val,
-            torch.zeros(flat_result_size, dtype=updates.dtype),
+            torch.zeros(flat_result_size, dtype=flat_updates.dtype),
             flat_scatter,
         )
     res = torch.reshape(flat_scatter, list(shape))
@@ -419,7 +422,10 @@ def scatter_nd(
     return res
 
 
-scatter_nd.unsupported_dtypes = ("float16",)
+scatter_nd.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:

@@ -508,14 +508,20 @@ def test_scatter_flat(
     ).flatmap(
         lambda n: st.tuples(
             helpers.dtype_and_values(
-                available_dtypes=ivy_np.valid_numeric_dtypes,
+                available_dtypes=helpers.get_dtypes("numeric", key="scatter_nd"),
                 shape=(n[1], n[0]),
+                large_abs_safety_factor=24,
+                small_abs_safety_factor=24,
+                safety_factor_scale="log",
             ),
             helpers.dtype_and_values(
                 available_dtypes=["int32", "int64"],
                 min_value=0,
                 max_value=max(n[1] - 1, 0),
                 shape=(n[1],),
+                large_abs_safety_factor=24,
+                small_abs_safety_factor=24,
+                safety_factor_scale="log",
             ).filter(lambda l: len(set(l[1])) == len(l[1])),
         )
     ),
@@ -546,6 +552,8 @@ def test_scatter_nd(
         instance_method=instance_method,
         fw=fw,
         fn_name="scatter_nd",
+        rtol_=1e-1,
+        atol_=1e-1,
         indices=np.asarray(ind, dtype=ind_dtype).reshape([len(vals), 1]),
         updates=np.asarray(vals, dtype=val_dtype),
         shape=shape,

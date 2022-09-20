@@ -346,7 +346,7 @@ def scatter_nd(
             if "int" in dtype.name:
                 max_value = tf.cast(
                     min(
-                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).max,
+                        ivy.iinfo(updates.dtype).max,
                         1e12,
                     ),
                     updates.dtype,
@@ -354,7 +354,7 @@ def scatter_nd(
             else:
                 max_value = tf.cast(
                     min(
-                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).max,
+                        ivy.finfo(updates.dtype).max,
                         1e12,
                     ),
                     updates.dtype,
@@ -368,7 +368,7 @@ def scatter_nd(
             if "int" in dtype.name:
                 min_value = tf.cast(
                     max(
-                        tf.experimental.numpy.iinfo(updates.dtype.as_numpy_dtype).min,
+                        ivy.iinfo(updates.dtype).min,
                         -1e12,
                     ),
                     updates.dtype,
@@ -376,7 +376,7 @@ def scatter_nd(
             else:
                 min_value = tf.cast(
                     max(
-                        tf.experimental.numpy.finfo(updates.dtype.as_numpy_dtype).min,
+                        ivy.finfo(updates.dtype).min,
                         -1e12,
                     ),
                     updates.dtype,
