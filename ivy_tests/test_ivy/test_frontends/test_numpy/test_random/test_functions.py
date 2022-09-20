@@ -1,4 +1,3 @@
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args, given
@@ -7,7 +6,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args, given
 # random
 @handle_cmd_line_args
 @given(
-    input_dtypes=helpers.get_dtypes('integer', full=False),
+    input_dtypes=helpers.get_dtypes("integer", full=False),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.random"
     ),
@@ -29,5 +28,5 @@ def test_numpy_random(
         fw=fw,
         frontend="numpy",
         fn_tree="random.random",
-        size=size
+        size=size,
     )
