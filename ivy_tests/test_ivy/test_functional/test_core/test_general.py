@@ -126,12 +126,12 @@ def test_array_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
     # smoke test
-    x0 = ivy.array(x0, dtype=dtype0, device=device)
-    x1 = ivy.array(x1, dtype=dtype1, device=device)
-    res = ivy.array_equal(x0, x1)
+    x0_array = ivy.array(x0, dtype=dtype0, device=device)
+    x1_array = ivy.array(x1, dtype=dtype1, device=device)
+    res = ivy.array_equal(x0_array, x1_array)
     # type test
-    assert ivy.is_ivy_array(x0)
-    assert ivy.is_ivy_array(x1)
+    assert ivy.is_ivy_array(x0_array)
+    assert ivy.is_ivy_array(x1_array)
     assert isinstance(res, bool) or ivy.is_ivy_array(res)
     # value test
     assert res == np.array_equal(np.array(x0, dtype=dtype0), np.array(x1, dtype=dtype1))
