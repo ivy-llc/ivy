@@ -187,6 +187,8 @@ def glu(input, dim=-1):
     return ivy.multiply(a, ivy.sigmoid(b))
 
 def hardsigmoid(input, inplace=False):
+    ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6)
     if inplace:
-        return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6,out=input)
-    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6)
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
