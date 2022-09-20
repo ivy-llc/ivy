@@ -154,6 +154,7 @@ def kl_divergence(y_true, y_pred):
 
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred))
+    
 
 mae = mean_absolute_error
 
