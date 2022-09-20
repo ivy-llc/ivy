@@ -458,6 +458,40 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     return draw(st.integers(min_value, max_value))
 
 
+@st.composite
+def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+    """Draws integers or floats with a safety factor
+    applied to values.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_value
+        minimum value of integers generated.
+    max_value
+        maximum value of integers generated.
+    safety_factor
+        default = 0.95. Only values which are 95% or less than the edge of
+        the limit for a given dtype are generated.
+
+    Returns
+    -------
+    ret
+        integer or float.
+    """
+
+    return draw(
+        ints(
+            min_value=int(min_value),
+            max_value=int(max_value),
+            safety_factor=safety_factor,
+        )
+        | floats(min_value=min_value, max_value=max_value, safety_factor=safety_factor)
+    )
+
+
 def assert_all_close(
     ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
@@ -3353,7 +3387,7 @@ def num_positional_args(draw, *, fn_name: str = None):
 
 
 @st.composite
-def num_positional_args_from_fn(draw, *, fn):
+def num_positional_args_from_fn(draw, *, fn: str = None):
     """Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
 
@@ -3372,10 +3406,10 @@ def num_positional_args_from_fn(draw, *, fn):
     Examples
     --------
     @given(
-        num_positional_args=num_positional_args(fn_name="floor_divide")
+        num_positional_args=num_positional_args_from_fn(fn="floor_divide")
     )
     @given(
-        num_positional_args=num_positional_args(fn_name="add")
+        num_positional_args=num_positional_args_from_fn(fn="add")
     )
     """
     num_positional_only = 0
