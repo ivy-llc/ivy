@@ -54,7 +54,7 @@ class MaskedArray(np_frontend.ndarray):
             self._fill_value = ivy.array(1e20, dtype="float64")
 
     # Properties #
-    # -----------#
+    # ---------- #
 
     @property
     def data(self):
@@ -71,3 +71,19 @@ class MaskedArray(np_frontend.ndarray):
     @property
     def fill_value(self):
         return self._fill_value
+
+    # Setter #
+    # ------ #
+
+    @mask.setter
+    def mask(self, mask):
+        self._init_mask(mask)
+
+    @dtype.setter
+    def dtype(self, mask):
+        # TODO: check type casting
+        pass
+
+    @fill_value.setter
+    def fill_value(self, fill_value):
+        self._init_fill_value(fill_value)
