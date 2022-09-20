@@ -1465,16 +1465,16 @@ class ContainerWithManipulation(ContainerBase):
         }
 
         With multiple :code:`ivy.Container` inputs:
-
+        
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                               b=ivy.array([3., 4., 5.]))
-        >>> x_min = ivy.Container(a=1, b=-1)
-        >>> x_max = ivy.Container(a=1, b=-1)
-        >>> y = ivy.Container.static_roll(x, x_min, x_max)
+        >>> x_min = ivy.Container(a=0, b=0)
+        >>> x_max = ivy.Container(a=1, b=1)
+        >>> y = ivy.Container.static_clip(x, x_min, x_max)
         >>> print(y)
         {
-            a: ivy.array([1., 1., 1.]),
-            b: ivy.array([-1., -1., -1.])
+            a: ivy.array([0., 1., 1.]),
+            b: ivy.array([1., 1., 1.])
         }
         """
         return ContainerBase.multi_map_in_static_method(

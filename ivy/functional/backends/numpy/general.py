@@ -56,7 +56,7 @@ def gather(
 
 
 def gather_nd(
-    params: np.ndarray, indices: np.ndarray, *, out: Optional[np.ndarray] = None
+    params: np.ndarray, indices: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     indices_shape = indices.shape
     params_shape = params.shape
