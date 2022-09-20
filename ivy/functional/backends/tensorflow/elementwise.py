@@ -48,7 +48,7 @@ def add(
     if alpha is not None and alpha != 1:
         x2 = alpha * x2
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.add(x1, x2)
+    return tf.add(x1, x2)
 
 
 def asin(
@@ -608,7 +608,7 @@ def subtract(
     if alpha is not None and alpha != 1:
         x2 = x2 * alpha
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.subtract(x1, x2)
+    return tf.experimental.numpy.subtract(x1, x2)
 
 
 def tan(

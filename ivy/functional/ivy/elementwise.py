@@ -4648,6 +4648,10 @@ def round(
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
+    Note: PyTorch supports an additional argument :code:`decimals` for the
+    `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
+    It has been deliberately omitted here due to the imprecise
+    nature of the argument in :code:`torch.round`.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -5204,9 +5208,17 @@ def subtract(
     ret
         an array containing the element-wise differences.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.subtract.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-    With :code:`ivy.Array` inputs:
     >>> x = ivy.array([3, 6, 3])
     >>> y = ivy.array([2, 1, 6])
     >>> z = ivy.subtract(x, y)
@@ -5218,16 +5230,6 @@ def subtract(
     >>> z = ivy.subtract(x, y, alpha=2)
     >>> print(z)
     ivy.array([-1,  4, -9])
-
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.array([[4.8], [5.2], [6.1]])
-    >>> z = ivy.zeros((3, 3))
-    >>> ivy.add(x, y, out=z)
-    >>> print(z)
-    ivy.array([[5.9, 7.1, 1.2],
-               [6.3, 7.5, 1.6],
-               [7.2, 8.4, 2.5]])
 
     """
     return ivy.current_backend(x1).subtract(x1, x2, alpha=alpha, out=out)
@@ -5860,3 +5862,48 @@ def rad2deg(
     }
     """
     return ivy.current_backend(x).rad2deg(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def trunc_divide(
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Performs elementwise integer division of the inputs rounding the
+    results towards zero.
+
+    Parameters
+    ----------
+    x1
+        dividend input array. Should have a numeric data type.
+    x2
+        divisor input array. Must be compatible with x1 (see Broadcasting). Should have
+        a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the element-wise results. The returned array must have a
+        floating-point data type determined by Type Promotion Rules.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2., 7., 9.])
+    >>> x2 = ivy.array([3., -4., 0.6])
+    >>> y = ivy.trunc_divide(x1, x2)
+    >>> print(y)
+    ivy.array([ 0., -1., 15.])
+
+    """
+    return ivy.trunc(ivy.divide(x1, x2, out=out))

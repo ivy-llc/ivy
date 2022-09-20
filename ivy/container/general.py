@@ -2481,7 +2481,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean as to whether the input value is a nan or not.
 
-         Examples
+        Examples
         --------
         With :code:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([452]), b=ivy.array([float('inf')]))

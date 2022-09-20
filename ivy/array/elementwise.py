@@ -1872,7 +1872,6 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise differences. The returned array
             must have a data type determined by :ref:`type-promotion`.
 
-
         Examples
         --------
         >>> x = ivy.array([5, 2, 3])
@@ -1886,7 +1885,6 @@ class ArrayWithElementwise(abc.ABC):
         >>> z = x.subtract(y, alpha=2)
         >>> print(z)
         ivy.array([-3., -5., -9.])
-
 
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
@@ -2057,3 +2055,46 @@ class ArrayWithElementwise(abc.ABC):
 
         """
         return ivy.rad2deg(self._data, out=out)
+
+    def trunc_divide(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trunc_divide. This method simply
+        wraps the function, and so the docstring for ivy.trunc_divide also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            dividend input array. Should have a real-valued data type.
+        x2
+            divisor input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results.
+            The returned array must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([2., 7., 9.])
+        >>> x2 = ivy.array([2., -2., 2.])
+        >>> y = x1.trunc_divide(x2)
+        >>> print(y)
+        ivy.array([ 1., -3.,  4.])
+        """
+        return ivy.trunc_divide(self._data, x2, out=out)
