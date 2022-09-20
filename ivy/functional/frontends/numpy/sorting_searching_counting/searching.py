@@ -35,7 +35,7 @@ def argmax(
 
 
 def flatnonzero(a):
-    return ivy.nonzero(a.flatten())
+    return ivy.nonzero(ivy.reshape(a, (-1,)))
 
 
 def searchsorted(a, v, side='left', sorter=None):
