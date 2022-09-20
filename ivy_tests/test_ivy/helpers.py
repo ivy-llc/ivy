@@ -483,12 +483,12 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     """
 
     return draw(
-        ints(min_value=int(min_value),
-             max_value=int(max_value),
-             safety_factor=safety_factor)
-        | floats(min_value=min_value,
-                 max_value=max_value,
-                 safety_factor=safety_factor)
+        ints(
+            min_value=int(min_value),
+            max_value=int(max_value),
+            safety_factor=safety_factor,
+        )
+        | floats(min_value=min_value, max_value=max_value, safety_factor=safety_factor)
     )
 
 
@@ -3299,7 +3299,7 @@ def num_positional_args(draw, *, fn_name: str = None):
 
 
 @st.composite
-def num_positional_args_from_fn(draw, *, fn):
+def num_positional_args_from_fn(draw, *, fn: str = None):
     """Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
 
@@ -3318,10 +3318,10 @@ def num_positional_args_from_fn(draw, *, fn):
     Examples
     --------
     @given(
-        num_positional_args=num_positional_args(fn_name="floor_divide")
+        num_positional_args=num_positional_args_from_fn(fn="floor_divide")
     )
     @given(
-        num_positional_args=num_positional_args(fn_name="add")
+        num_positional_args=num_positional_args_from_fn(fn="add")
     )
     """
     num_positional_only = 0
