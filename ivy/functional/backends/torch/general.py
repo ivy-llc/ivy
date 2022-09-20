@@ -274,6 +274,9 @@ def scatter_flat(
     return res
 
 
+scatter_flat.unsupported_dtypes = ("bfloat16",)
+
+
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
