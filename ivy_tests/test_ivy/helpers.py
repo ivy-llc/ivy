@@ -2533,6 +2533,7 @@ def array_n_indices_n_axis(
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
+    first_dimension_only=False,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -2607,12 +2608,15 @@ def array_n_indices_n_axis(
             )
         )
     else:
+        max_axis = max(x_shape[axis] - 1, 0)
+        if first_dimension_only:
+            max_axis = max(x_shape[0] - 1, 0)
         indices_dtype, indices = draw(
             dtype_and_values(
                 available_dtypes=indices_dtypes,
                 allow_inf=False,
                 min_value=0,
-                max_value=max(x_shape[axis] - 1, 0),
+                max_value=max_axis,
                 min_num_dims=min_num_dims,
                 max_num_dims=max_num_dims,
                 min_dim_size=min_dim_size,

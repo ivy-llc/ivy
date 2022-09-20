@@ -615,6 +615,33 @@ def test_tensorflow_reduce_sum(
     )
 
 
+# reduce_mean
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.reduce_mean"
+    ),
+)
+def test_tensorflow_reduce_mean(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="reduce_mean",
+        input_tensor=np.asarray(x, dtype=input_dtype),
+    )
+
+
 # reduce_variance
 @handle_cmd_line_args
 @given(
@@ -698,6 +725,36 @@ def test_tensorflow_divide_no_nan(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.divide_no_nan",
+        x=np.asarray(xy[0], dtype=input_dtypes[0]),
+        y=np.asarray(xy[1], dtype=input_dtypes[1]),
+    )
+
+
+# multiply_no_nan
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.multiply_no_nan"
+    ),
+)
+def test_tensorflow_multiply_no_nan(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtypes, xy = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="math.multiply_no_nan",
         x=np.asarray(xy[0], dtype=input_dtypes[0]),
         y=np.asarray(xy[1], dtype=input_dtypes[1]),
     )

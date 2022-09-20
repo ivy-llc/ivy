@@ -86,6 +86,14 @@ def divide_no_nan(x, y, name="divide_no_nan"):
     )
 
 
+def multiply_no_nan(x, y, name="multiply_no_nan"):
+    return ivy.where(
+        y == 0,
+        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
+        x * y,
+    )
+
+
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
 
@@ -184,6 +192,10 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
 def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):

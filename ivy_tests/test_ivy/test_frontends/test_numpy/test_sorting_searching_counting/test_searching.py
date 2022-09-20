@@ -161,3 +161,77 @@ def test_numpy_argmax(
         out=None,
         keepdims=st.booleans(),
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.flatnonzero"
+    )
+)
+def test_numpy_flatnonzero(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    num_positional_args,
+    fw
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="flatnonzero",
+        a=np.array(x, dtype=dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1
+    ),
+    dtype_and_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1
+    ),
+    side=st.sampled_from(['left', 'right']),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.searchsorted"
+    )
+)
+def test_numpy_searchsorted(
+    dtype_and_x,
+    dtype_and_v,
+    side,
+    as_variable,
+    native_array,
+    num_positional_args,
+    fw
+):
+    dtype_x, x = dtype_and_x
+    dtype_v, v = dtype_and_v
+    helpers.test_frontend_function(
+        input_dtypes=[dtype_x, dtype_v, np.int64],
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="searchsorted",
+        a=np.array(x, dtype=dtype_x),
+        v=np.array(v, dtype=dtype_v),
+        side=side,
+        sorter=np.argsort(np.array(x))
+    )
