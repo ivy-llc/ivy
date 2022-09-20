@@ -898,6 +898,7 @@ def test_torch_leaky_relu_(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.hardswish"
