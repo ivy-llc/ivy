@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -88,7 +88,8 @@ def test_numpy_amax(
     initial,
     fw,
 ):
-
+    if initial is None and where is not None:
+        assume(initial is np.NINF)
     input_dtype, x, axis = dtype_and_x
     input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
