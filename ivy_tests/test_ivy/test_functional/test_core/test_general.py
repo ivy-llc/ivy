@@ -510,8 +510,8 @@ def test_scatter_flat(
             helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric", key="scatter_nd"),
                 shape=(n[1], n[0]),
-                large_abs_safety_factor=24,
-                small_abs_safety_factor=24,
+                large_abs_safety_factor=40,
+                small_abs_safety_factor=40,
                 safety_factor_scale="log",
             ),
             helpers.dtype_and_values(
@@ -519,8 +519,8 @@ def test_scatter_flat(
                 min_value=0,
                 max_value=max(n[1] - 1, 0),
                 shape=(n[1],),
-                large_abs_safety_factor=24,
-                small_abs_safety_factor=24,
+                large_abs_safety_factor=40,
+                small_abs_safety_factor=40,
                 safety_factor_scale="log",
             ).filter(lambda l: len(set(l[1])) == len(l[1])),
         )
