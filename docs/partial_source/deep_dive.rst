@@ -72,7 +72,7 @@ We're excited for you to get involved!  🦾
 | How to add new tests for each frontend function ➡️❓
 |
 | (s) :ref:`Exception Handling`
-| How to handle exceptions and assertions in a function 
+| How to handle exceptions and assertions in a function ⚠️
 
 .. toctree::
    :hidden:
