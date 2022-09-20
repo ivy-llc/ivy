@@ -457,9 +457,12 @@ FW_DICT = {
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
-        ivy.assertions.check_false(
-            len(excluded) == 4,
-            "Unable to select backend, all backends are excluded, or not installed.",
+        ivy.assertions.check_equal(
+            len(excluded),
+            4,
+            inverse=True,
+            message="""Unable to select backend, all backends are excluded,\
+            or not installed.""",
         )
         f = np.random.choice(
             [f_srt for f_srt in list(FW_DICT.keys()) if f_srt not in excluded]

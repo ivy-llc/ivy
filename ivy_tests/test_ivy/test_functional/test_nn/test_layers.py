@@ -182,7 +182,8 @@ def x_and_scaled_attention(draw, dtypes):
             shape=mask_shape,
             min_value=0,
             max_value=1,
-            large_value_safety_factor=1,
+            large_abs_safety_factor=2,
+            safety_factor_scale="linear",
         )
     )
     return dtype, q, k, v, mask, scale
@@ -346,7 +347,11 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+def x_and_filters(
+    draw, dim: int = 2, transpose: bool = False, depthwise=False, general=False
+):
+    if not isinstance(dim, int):
+        dim = draw(dim)
     strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
     batch_size = draw(st.integers(1, 5))
@@ -389,24 +394,26 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         filter_shape = filter_shape + (input_channels, output_channels)
     else:
         filter_shape = filter_shape + (input_channels,)
+    channel_first = True
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = (batch_size,) + x_dim + (input_channels,)
+        channel_first = False
     else:
         x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         helpers.array_values(
             dtype=dtype,
             shape=x_shape,
-            small_value_safety_factor=2.5,
-            max_op="log",
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     filters = draw(
         helpers.array_values(
             dtype=dtype,
             shape=filter_shape,
-            small_value_safety_factor=2.5,
-            max_op="log",
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     if transpose:
@@ -420,6 +427,9 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             padding,
             output_shape,
         )
+    if general:
+        data_format = "channel_first" if channel_first else "channel_last"
+
     return dtype, vals, filters, dilations, data_format, strides, padding
 
 
@@ -696,6 +706,51 @@ def test_conv3d(
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dims=st.shared(st.integers(1, 3), key="dims"),
+    x_f_d_df=x_and_filters(dim=st.shared(st.integers(1, 3), key="dims"), general=True),
+    num_positional_args=helpers.num_positional_args(fn_name="conv_general_dilated"),
+)
+def test_conv_general_dilated(
+    *,
+    dims,
+    x_f_d_df,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype = [dtype] * 2
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=False,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv_general_dilated",
+        rtol_=1e-2,
+        atol_=1e-2,
+        ground_truth_backend="jax",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
+        strides=stride,
+        padding=pad,
+        dims=dims,
         data_format=data_format,
         dilations=dilations,
     )

@@ -383,7 +383,8 @@ As with the :code:`out` argument, the :code:`copy` argument is also handled `by 
 
 **Round Up**
 
-This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
+This should have hopefully given you a good feel for inplace updates,
+and how these are handled in Ivy.
 
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `inplace updates discussion`_,

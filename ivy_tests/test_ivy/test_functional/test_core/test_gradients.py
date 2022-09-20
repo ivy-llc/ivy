@@ -18,9 +18,9 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         helpers.dtype_and_values(
             available_dtypes=ivy_np.valid_float_dtypes,
             num_arrays=num_arrays,
-            small_value_safety_factor=4.0,
-            large_value_safety_factor=20.0,
-            max_op="log",
+            large_abs_safety_factor=6,
+            small_abs_safety_factor=3,
+            safety_factor_scale="log",
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
@@ -201,7 +201,7 @@ def test_execute_with_gradients(
     fw,
 ):
     def func(xs):
-        array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
+        array_idxs = ivy.nested_argwhere(xs, ivy.is_ivy_array)
         array_vals = ivy.multi_index_nest(xs, array_idxs)
         final_array = ivy.stack(array_vals)
         ret = ivy.mean(final_array)

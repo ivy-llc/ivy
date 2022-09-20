@@ -280,7 +280,7 @@ class ContainerWithSearching(ContainerBase):
     # ----- #
 
     @staticmethod
-    def static_indices_where(
+    def static_argwhere(
         x: ivy.Container,
         /,
         *,
@@ -291,8 +291,8 @@ class ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.indices_where. This method
-        simply wraps the function, and so the docstring for ivy.indices_where
+        ivy.Container static method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere
         also applies to this method with minimal changes.
 
         Parameters
@@ -316,7 +316,7 @@ class ContainerWithSearching(ContainerBase):
             Indices for where the boolean array is True.
         """
         return ContainerBase.multi_map_in_static_method(
-            "indices_where",
+            "argwhere",
             x,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -325,7 +325,7 @@ class ContainerWithSearching(ContainerBase):
             out=out,
         )
 
-    def indices_where(
+    def argwhere(
         self: ivy.Container,
         /,
         *,
@@ -336,8 +336,8 @@ class ContainerWithSearching(ContainerBase):
         out: Optional[ivy.Container] = None,
     ):
         """
-        ivy.Container instance method variant of ivy.indices_where. This method
-        simply wraps the function, and so the docstring for ivy.indices_where
+        ivy.Container instance method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere
         also applies to this method with minimal changes.
 
         Parameters
@@ -360,7 +360,7 @@ class ContainerWithSearching(ContainerBase):
         ret
             Indices for where the boolean array is True.
         """
-        return self.static_indices_where(
+        return self.static_argwhere(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

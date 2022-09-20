@@ -1,6 +1,7 @@
 """Collection of tests for elementwise functions."""
 
 # global
+import math
 import numpy as np
 from hypothesis import given, assume, strategies as st
 
@@ -55,7 +56,11 @@ def test_abs(
 # acosh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="acosh"),
 )
 def test_acosh(
@@ -80,6 +85,8 @@ def test_acosh(
         instance_method=instance_method,
         fw=fw,
         fn_name="acosh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -87,7 +94,11 @@ def test_acosh(
 # acos
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="acos"),
 )
 def test_acos(
@@ -112,6 +123,8 @@ def test_acos(
         instance_method=instance_method,
         fw=fw,
         fn_name="acos",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -155,7 +168,11 @@ def test_add(
 # asin
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="asin"),
 )
 def test_asin(
@@ -180,6 +197,8 @@ def test_asin(
         instance_method=instance_method,
         fw=fw,
         fn_name="asin",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -187,7 +206,11 @@ def test_asin(
 # asinh
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="asinh"),
 )
 def test_asinh(
@@ -212,6 +235,8 @@ def test_asinh(
         instance_method=instance_method,
         fw=fw,
         fn_name="asinh",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
     )
 
@@ -332,7 +357,8 @@ def test_atanh(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_and"),
 )
@@ -368,11 +394,9 @@ def test_bitwise_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes,
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
 )
@@ -389,9 +413,9 @@ def test_bitwise_left_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    # make sure x2 is not negative
-    if "int" in input_dtype[0] and "int" in input_dtype[1]:
-        x[1] = np.abs(x[1])
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -412,7 +436,7 @@ def test_bitwise_left_shift(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",)
+        available_dtypes=helpers.get_dtypes("integer")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
 )
@@ -446,7 +470,8 @@ def test_bitwise_invert(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_or"),
 )
@@ -482,11 +507,9 @@ def test_bitwise_or(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes,
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
-        large_value_safety_factor=1.1,
-        small_value_safety_factor=0.9,
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
 )
@@ -503,9 +526,9 @@ def test_bitwise_right_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    # make sure x2 is not negative
-    if "int" in input_dtype[0] and "int" in input_dtype[1]:
-        x[1] = np.abs(x[1])
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -526,7 +549,8 @@ def test_bitwise_right_shift(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy.all_int_dtypes + ("bool",), num_arrays=2
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_xor"),
 )
@@ -563,7 +587,8 @@ def test_bitwise_xor(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        small_value_safety_factor=2,
+        small_abs_safety_factor=3,
+        safety_factor_scale="linear",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="ceil"),
 )
@@ -843,7 +868,8 @@ def test_floor(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
-        large_value_safety_factor=1.1,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="floor_divide"),
@@ -1202,7 +1228,11 @@ def test_log(
 # log1p
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="log1p"),
 )
 def test_log1p(
@@ -1622,13 +1652,45 @@ def test_positive(
 
 @st.composite
 def _pow_helper(draw):
-    dtype, x = draw(
+    dtype1, x1 = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_abs_safety_factor=4,
+            large_abs_safety_factor=4,
         )
     )
-    dtype1, dtype2 = dtype
-    x1, x2 = x
+
+    def cast_filter(dtype1_x1_dtype2):
+        dtype1, _, dtype2 = dtype1_x1_dtype2
+        if (ivy.as_ivy_dtype(dtype1), ivy.as_ivy_dtype(dtype2)) in ivy.promotion_table:
+            return True
+        return False
+
+    dtype1, x1, dtype2 = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("numeric")), dtype1, x1
+        ).filter(cast_filter)
+    )
+    if ivy.is_int_dtype(dtype2):
+        max_val = ivy.iinfo(dtype2).max
+    else:
+        max_val = ivy.finfo(dtype2).max
+    max_x1 = np.max(np.abs(np.asarray(x1))) if isinstance(x1, list) else abs(x1)
+    if max_x1 in [0, 1]:
+        max_value = None
+    else:
+        max_value = int(math.log(max_val) / math.log(max_x1))
+        if abs(max_value) > abs(max_val) / 40 or max_value < 0:
+            max_value = None
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            small_abs_safety_factor=12,
+            large_abs_safety_factor=12,
+            safety_factor_scale="log",
+            max_value=max_value,
+            dtype=[dtype2],
+        )
+    )
     if "int" in dtype2:
         x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
     return [dtype1, dtype2], [x1, x2]
@@ -1681,6 +1743,8 @@ def test_pow(
         instance_method=instance_method,
         fw=fw,
         fn_name="pow",
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x1,
         x2=x2,
     )
@@ -1692,7 +1756,9 @@ def test_pow(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        allow_inf=False,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ),
     modulus=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="remainder"),
@@ -1732,6 +1798,8 @@ def test_remainder(
         fn_name="remainder",
         x1=x1,
         x2=x2,
+        rtol_=1e-2,
+        atol_=1e-2,
         modulus=modulus,
     )
 
@@ -2217,8 +2285,10 @@ def test_maximum(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        small_abs_safety_factor=2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
         num_arrays=1,
-        allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="reciprocal"),
 )
