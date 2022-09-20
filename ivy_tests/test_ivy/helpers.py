@@ -1047,7 +1047,11 @@ def _get_nested_np_arrays(nest):
 def create_args_kwargs(
     *,
     args_np,
+    arg_np_vals,
+    args_idxs,
     kwargs_np,
+    kwarg_np_vals,
+    kwargs_idxs,
     input_dtypes,
     as_variable_flags,
     native_array_flags=None,
@@ -1076,21 +1080,6 @@ def create_args_kwargs(
     Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
     keyword-arguments.
     """
-    # extract all arrays from the arguments and keyword arguments
-    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
-    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
-
-    # assert that the number of arrays aligns with the dtypes and as_variable_flags
-    num_arrays = c_arg_vals + c_kwarg_vals
-    if num_arrays > 0:
-        assert num_arrays == len(input_dtypes), (
-            "Found {} arrays in the input arguments, but {} dtypes and "
-            "as_variable_flags. Make sure to pass in a sequence of bools for all "
-            "associated boolean flag inputs to test_function, with the sequence length "
-            "being equal to the number of arrays in the arguments.".format(
-                num_arrays, len(input_dtypes)
-            )
-        )
 
     # create args
     num_arg_vals = len(arg_np_vals)
@@ -1513,13 +1502,17 @@ def test_function(
         input_dtypes, as_variable_flags, native_array_flags, container_flags
     )
 
-    # make all lists equal in length
-    num_arrays = max(
-        len(input_dtypes),
-        len(as_variable_flags),
-        len(native_array_flags),
-        len(container_flags),
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # make all lists equal in length
+    num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
     if len(as_variable_flags) < num_arrays:
@@ -1539,11 +1532,6 @@ def test_function(
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (
         not native_array_flags[0] or container_flags[0]
-    )
-
-    # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
     fn = getattr(ivy, fn_name)
@@ -1567,7 +1555,11 @@ def test_function(
         try:
             args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwarg_np_vals=kwarg_np_vals,
+                kwargs_idxs=kwargs_idxs,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -1578,7 +1570,11 @@ def test_function(
     else:
         args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
             args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
             kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
             input_dtypes=input_dtypes,
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
@@ -1667,7 +1663,11 @@ def test_function(
             try:
                 args, kwargs, _, _, _ = create_args_kwargs(
                     args_np=args_np,
+                    arg_np_vals=arg_np_vals,
+                    args_idxs=args_idxs,
                     kwargs_np=kwargs_np,
+                    kwargs_idxs=kwargs_idxs,
+                    kwarg_np_vals=kwarg_np_vals,
                     input_dtypes=input_dtypes,
                     as_variable_flags=as_variable_flags,
                     native_array_flags=native_array_flags,
@@ -1679,7 +1679,11 @@ def test_function(
         else:
             args, kwargs, _, _, _ = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwargs_idxs=kwargs_idxs,
+                kwarg_np_vals=kwarg_np_vals,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -1794,12 +1798,18 @@ def test_frontend_function(
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
     )
-    # make all lists equal in length
-    num_arrays = max(
-        len(input_dtypes),
-        len(as_variable_flags),
-        len(native_array_flags),
+
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # make all lists equal in length
+    num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
     if len(as_variable_flags) < num_arrays:
@@ -1830,17 +1840,16 @@ def test_frontend_function(
             all_as_kwargs_np=all_as_kwargs_np,
         )
 
-    # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
-    )
-
     # create args
     if test_unsupported:
         try:
-            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args, kwargs, _ = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwarg_np_vals=kwarg_np_vals,
+                kwargs_idxs=kwargs_idxs,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -1849,14 +1858,20 @@ def test_frontend_function(
         except Exception:
             return
     else:
-        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+        args, kwargs, _ = create_args_kwargs(
             args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
             kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
             input_dtypes=input_dtypes,
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
         )
-        args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+        args_ivy, kwargs_ivy = ivy.args_to_ivy(
+            *args, **kwargs
+        )  # ToDo, probably redundant?
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
@@ -2058,12 +2073,18 @@ def test_frontend_array_instance_method(
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
     )
-    # make all lists equal in length
-    num_arrays = max(
-        len(input_dtypes),
-        len(as_variable_flags),
-        len(native_array_flags),
+
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # make all lists equal in length
+    num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
     if len(as_variable_flags) < num_arrays:
@@ -2086,20 +2107,19 @@ def test_frontend_array_instance_method(
         fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
 
-    # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
-    )
-
     # change all data types so that they are supported by this framework
     input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
 
     # create args
     if test_unsupported:
         try:
-            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args, kwargs, _ = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwarg_np_vals=kwarg_np_vals,
+                kwargs_idxs=kwargs_idxs,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -2108,9 +2128,13 @@ def test_frontend_array_instance_method(
         except Exception:
             return
     else:
-        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+        args, kwargs, _ = create_args_kwargs(
             args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
             kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
             input_dtypes=input_dtypes,
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
