@@ -114,3 +114,58 @@ def test_numpy_amax(
         initial=initial,
         where=where,
     )
+
+
+# amin
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+    with_out=st.booleans(),
+    where=np_frontend_helpers.where(),
+    initial=st.one_of(st.floats(), st.none()),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.amin"
+    ),
+)
+def test_numpy_amin(
+    dtype_and_x,
+    where,
+    as_variable,
+    with_out,
+    keepdims,
+    num_positional_args,
+    native_array,
+    initial,
+    fw,
+):
+    if initial is None and np.all(where) is not True:
+        assume(initial is np.inf)
+    input_dtype, x, axis = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="amin",
+        test_values=False,
+        a=np.asarray(x, dtype=input_dtype[0]),
+        axis=axis,
+        keepdims=keepdims,
+        initial=initial,
+        where=where,
+    )
