@@ -1755,9 +1755,7 @@ def test_frontend_function(
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
         )
-        args_ivy, kwargs_ivy = ivy.args_to_ivy(
-            *args, **kwargs
-        )  # ToDo, probably redundant?
+        args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
