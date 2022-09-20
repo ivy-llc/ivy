@@ -676,9 +676,17 @@ def gradient_test(
         ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
         return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
 
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
     args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
         args_np=args_np,
+        arg_np_vals=arg_np_vals,
+        args_idxs=args_idxs,
         kwargs_np=kwargs_np,
+        kwarg_np_vals=kwarg_np_vals,
+        kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable_flags,
         native_array_flags=native_array_flags,
