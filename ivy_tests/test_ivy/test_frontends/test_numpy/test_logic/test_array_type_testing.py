@@ -17,7 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isfinite"
-    )
+    ),
 )
 def test_numpy_isfinite(
     dtype_and_x,
@@ -65,7 +65,7 @@ def test_numpy_isfinite(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isinf"
-    )
+    ),
 )
 def test_numpy_isinf(
     dtype_and_x,
@@ -113,7 +113,7 @@ def test_numpy_isinf(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isnan"
-    )
+    ),
 )
 def test_numpy_isnan(
     dtype_and_x,
