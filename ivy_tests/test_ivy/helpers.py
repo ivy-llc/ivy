@@ -1704,15 +1704,15 @@ def test_frontend_function(
             first_array = ivy.func_wrapper._get_first_array(args, kwargs)
             ret = frontend_fn(*args, **kwargs)
             if ivy.native_inplace_support:
-                assert ret.data is input_argument.data
-            assert input_argument is ret
+                assert ret.data is first_array.data
+            assert first_array is ret
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
             first_array = ivy.func_wrapper._get_first_array(args, kwargs)
             if ivy.native_inplace_support:
-                assert ret.data is input_argument.data
-            assert input_argument is ret
+                assert ret.data is first_array.data
+            assert first_array is ret
 
     # create NumPy args
     args_np = ivy.nested_map(
