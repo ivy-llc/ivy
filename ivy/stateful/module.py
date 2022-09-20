@@ -765,9 +765,7 @@ class Module(abc.ABC):
         )
 
     def _unset_submod_flags(self):
-        """
-        Unset flags of the submodule.
-        """
+        """Unset flags of the submodule."""
         self._track_submod_rets = False
         self._submod_depth = None
         self._submods_to_track = None
