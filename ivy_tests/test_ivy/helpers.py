@@ -34,12 +34,14 @@ from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 cmd_line_args = (
-    "as_variable",
-    "native_array",
     "with_out",
-    "container",
     "instance_method",
     "test_gradients",
+)
+cmd_line_args_lists = (
+    "as_variable",
+    "native_array",
+    "container",
 )
 frontend_fw = None
 
@@ -2570,7 +2572,7 @@ def dtype_values_axis(
     )
     dtype, values, arr_shape = results
     if valid_axis or shape:
-        if not isinstance(values, list):
+        if values.ndim == 0:
             axis = None
         else:
             axis = draw(
@@ -3472,6 +3474,10 @@ def handle_cmd_line_args(test_fn):
                     kwargs[param.name] = data.draw(
                         bool_val_flags(get_command_line_flags[param.name])
                     )
+                elif param.name in cmd_line_args_lists:
+                    kwargs[param.name] = [
+                        data.draw(bool_val_flags(get_command_line_flags[param.name]))
+                    ]
                 elif param.name == "fw":
                     kwargs["fw"] = fw if flag else backend_string
                 elif param.name == "device":
