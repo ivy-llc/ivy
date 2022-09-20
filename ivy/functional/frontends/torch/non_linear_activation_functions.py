@@ -208,7 +208,7 @@ def leaky_relu_(input, negative_slope=0.01):
 
 
 def hardsigmoid(input, inplace=False):
-    ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input,3),0),6),6)
+    ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
     if inplace:
         ivy.inplace_update(input, ret)
         return input
