@@ -517,7 +517,7 @@ class ContainerWithLayers(ContainerBase):
         >>> filters = ivy.array([[2, 0, 1], \
                                  [1, 3, 1], \
                                  [0, 1, 1]], dtype= ivy.float32).reshape((3, 3, 1, 1))
-        >>> result = x.conv2d(filters, (2,), 'SAME')
+        >>> result = x.conv2d(filters, 2, 'SAME')
         >>> print(result)
         {
             a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
