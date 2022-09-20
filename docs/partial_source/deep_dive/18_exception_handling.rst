@@ -1,22 +1,22 @@
 Exception Handling
 ==================
 
-As Ivy is unifying various backends, various issues are seen during exception
+As Ivy is unifying multiple backends, various issues are seen during exception
 handling:
 
 #. each backend throws their own exceptions
 #. exceptions thrown are backend-specific, therefore inconsistent
 
-To unify the handling of exceptions and assertions, we created our custom
-exception class and decorator, which will be explained further in the following
-sections.
+To unify the handling of exceptions and assertions, Ivy includes a custom
+exception class and decorator, which are explained further in the following
+sub-sections.
 
 
 Ivy Exception Class
 -------------------
 
-Firstly, we created our main :code:`IvyException` class, inheriting from the
-Python :code:`Exception` class.
+Firstly, Ivy's base exception class is :code:`IvyException` class, which inherits
+from the Python :code:`Exception` class.
 
 .. code-block:: python
 
@@ -25,7 +25,7 @@ Python :code:`Exception` class.
         def __init__(self, message):
             super().__init__(message)
 
-In cases where we require specific-purposed exception class, we will inherit
+In cases where an exception class for a specific purpose is required, we inherit
 from the :code:`IvyException` class.
 For example, the :code:`IvyBackendException` class is created to unify
 backend exceptions.
@@ -44,8 +44,8 @@ backend exceptions.
             super().__init__(self._delimiter.join(self._default))
 
 In some Array API tests, :code:`IndexError` and :code:`ValueError` are
-explicitly tested to ensure that the functions are behaving correctly. Thus, we
-created an :code:`IvyError` class to unify the special cases.
+explicitly tested to ensure that the functions are behaving correctly. Thus,
+the :code:`IvyError` class unifies these special cases.
 This is to reduce repetition and the creation of similar exception classes.
 
 .. code-block:: python
@@ -64,7 +64,7 @@ This is to reduce repetition and the creation of similar exception classes.
 @handle_exceptions Decorator
 ----------------------------
 
-To ensure that all backend exceptions are caught properly, we created a decorator
+To ensure that all backend exceptions are caught properly, a decorator is used
 to handle functions in the :code:`try/except` block.
 
 .. code-block:: python
