@@ -174,6 +174,7 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
             array_dtypes=helpers.get_dtypes("valid"),
             indices_dtypes=helpers.get_dtypes("integer"),
             disable_random_axis=True,
+            first_dimension_only=True,
         ),
         helpers.array_n_indices_n_axis(
             array_dtypes=helpers.get_dtypes("valid"),
