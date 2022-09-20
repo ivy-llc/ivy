@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -35,7 +34,7 @@ def test_jax_cond(
 
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -46,7 +45,7 @@ def test_jax_cond(
         pred=pred_cond,
         true_fun=_test_true_fn,
         false_fun=_test_false_fn,
-        operand=np.array(x, dtype=input_dtype),
+        operand=x[0],
     )
 
 
@@ -73,7 +72,7 @@ def test_jax_map(
 
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -82,7 +81,7 @@ def test_jax_map(
         frontend="jax",
         fn_tree="lax.map",
         f=_test_map_fn,
-        xs=np.array(x, dtype=input_dtype),
+        xs=x[0],
     )
 
 
@@ -114,7 +113,7 @@ def test_jax_switch(
 
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -124,5 +123,5 @@ def test_jax_switch(
         fn_tree="lax.switch",
         index=index,
         branches=[_test_branch_1, _test_branch_2],
-        operand=np.array(x, dtype=input_dtype),
+        operand=x[0],
     )
