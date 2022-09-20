@@ -30,7 +30,7 @@ def _clamp_bits(x1, x2):
     x2 = np.clip(
         x2,
         np.array(0, dtype=x2.dtype),
-        np.array(np.dtype(x1.dtype).itemsize * 8 - 1),
+        None,
         dtype=x2.dtype,
     )
     return x1, x2
@@ -158,8 +158,8 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
-    return np.left_shift(x1, x2, out=out)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
+    return np.left_shift(x1, x2)
 
 
 bitwise_left_shift.support_native_out = True
@@ -189,8 +189,8 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
-    return np.right_shift(x1, x2, out=out)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
+    return np.right_shift(x1, x2)
 
 
 bitwise_right_shift.support_native_out = True
