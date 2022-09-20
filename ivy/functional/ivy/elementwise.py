@@ -5919,3 +5919,48 @@ def rad2deg(
     }
     """
     return ivy.current_backend(x).rad2deg(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def trunc_divide(
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Performs elementwise integer division of the inputs rounding the
+    results towards zero.
+
+    Parameters
+    ----------
+    x1
+        dividend input array. Should have a numeric data type.
+    x2
+        divisor input array. Must be compatible with x1 (see Broadcasting). Should have
+        a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the element-wise results. The returned array must have a
+        floating-point data type determined by Type Promotion Rules.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2., 7., 9.])
+    >>> x2 = ivy.array([3., -4., 0.6])
+    >>> y = ivy.trunc_divide(x1, x2)
+    >>> print(y)
+    ivy.array([ 0., -1., 15.])
+
+    """
+    return ivy.trunc(ivy.divide(x1, x2, out=out))

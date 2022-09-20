@@ -696,3 +696,19 @@ def rad2deg(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 
 
 rad2deg.support_native_out = True
+
+
+def trunc_divide(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret = torch.div(x1, x2, rounding_mode="trunc")
+    if ivy.is_float_dtype(x1.dtype):
+        ret = ret.to(x1.dtype)
+    else:
+        ret = ret.to(ivy.default_float_dtype(as_native=True))
+    return ret
