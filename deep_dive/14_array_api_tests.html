@@ -226,10 +226,7 @@ efficiently.</p>
 <ol class="arabic simple">
 <li><p>the test function has a known issue which the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> developers are working on (e.g. <code class="code docutils literal notranslate"><span class="pre">test_asarray_arrays</span></code>)</p></li>
 <li><p>the function itself deviates from the standard (e.g. <code class="code docutils literal notranslate"><span class="pre">test_floor_divide</span></code>)</p></li>
-</ol>
-<p>#. there is an issue with the hypothesis test data generation i.e. a failed ‘health check’ (e.g.
-<code class="code docutils literal notranslate"><span class="pre">test_iop[__imod__(x1_i</span> <span class="pre">&lt;</span> <span class="pre">0</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">is</span> <span class="pre">+0)</span> <span class="pre">-&gt;</span> <span class="pre">NaN]</span></code>)</p>
-<ol class="arabic simple">
+<li><p>there is an issue with the hypothesis test data generation i.e. a failed ‘health check’ (e.g. <code class="code docutils literal notranslate"><span class="pre">test_iop[__imod__(x1_i</span> <span class="pre">&lt;</span> <span class="pre">0</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">is</span> <span class="pre">+0)</span> <span class="pre">-&gt;</span> <span class="pre">NaN]</span></code>)</p></li>
 <li><p>tolerance issues when asserting output <code class="code docutils literal notranslate"><span class="pre">isequal()</span></code> (e.g. <code class="code docutils literal notranslate"><span class="pre">test_matrix_norm</span></code>)</p></li>
 </ol>
 <p>All the examples in this list except point 3 (which only occurs with tensorflow) refer to numpy functions, and the first
