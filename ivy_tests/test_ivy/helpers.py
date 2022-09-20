@@ -1050,6 +1050,9 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    # split the arguments into their positional and keyword components
+
+    # Constructor arguments #
     # convert single values to length 1 lists
     (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = as_lists(
         ivy.default(input_dtypes_init, []),
@@ -1069,12 +1072,21 @@ def test_method(
         container_flags_method,
     )
 
-    # make all lists equal in length
-    num_arrays_constructor = max(
-        len(input_dtypes_init),
-        len(as_variable_flags_init),
-        len(native_array_flags_init),
+    args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_init,
+        kwargs=all_as_kwargs_np_init,
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    con_arg_np_vals, con_args_idxs, con_c_arg_vals = _get_nested_np_arrays(
+        args_np_constructor
+    )
+    con_kwarg_np_vals, con_kwargs_idxs, con_c_kwarg_vals = _get_nested_np_arrays(
+        kwargs_np_constructor
+    )
+
+    # make all lists equal in length
+    num_arrays_constructor = con_c_arg_vals + con_c_kwarg_vals
     if len(input_dtypes_init) < num_arrays_constructor:
         input_dtypes_init = [
             input_dtypes_init[0] for _ in range(num_arrays_constructor)
@@ -1088,12 +1100,41 @@ def test_method(
             native_array_flags_init[0] for _ in range(num_arrays_constructor)
         ]
 
-    num_arrays_method = max(
-        len(input_dtypes_method),
-        len(as_variable_flags_method),
-        len(native_array_flags_method),
-        len(container_flags_method),
+    # update variable flags to be compatible with float dtype
+    as_variable_flags_init = [
+        v if ivy.is_float_dtype(d) else False
+        for v, d in zip(as_variable_flags_init, input_dtypes_init)
+    ]
+
+    # Create Args
+    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+        args_np=args_np_constructor,
+        arg_np_vals=con_arg_np_vals,
+        args_idxs=con_args_idxs,
+        kwargs_np=kwargs_np_constructor,
+        kwarg_np_vals=con_kwarg_np_vals,
+        kwargs_idxs=con_kwargs_idxs,
+        input_dtypes=input_dtypes_init,
+        as_variable_flags=as_variable_flags_init,
+        native_array_flags=native_array_flags_init,
     )
+    # End constructor #
+
+    # Method arguments #
+    args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
+    )
+
+    # extract all arrays from the arguments and keyword arguments
+    met_arg_np_vals, met_args_idxs, met_c_arg_vals = _get_nested_np_arrays(
+        args_np_method
+    )
+    met_kwarg_np_vals, met_kwargs_idxs, met_c_kwarg_vals = _get_nested_np_arrays(
+        kwargs_np_method
+    )
+
+    # make all lists equal in length
+    num_arrays_method = met_c_arg_vals + met_c_kwarg_vals
     if len(input_dtypes_method) < num_arrays_method:
         input_dtypes_method = [input_dtypes_method[0] for _ in range(num_arrays_method)]
     if len(as_variable_flags_method) < num_arrays_method:
@@ -1109,40 +1150,27 @@ def test_method(
             container_flags_method[0] for _ in range(num_arrays_method)
         ]
 
-    # update variable flags to be compatible with float dtype
-    as_variable_flags_init = [
-        v if ivy.is_float_dtype(d) else False
-        for v, d in zip(as_variable_flags_init, input_dtypes_init)
-    ]
     as_variable_flags_method = [
         v if ivy.is_float_dtype(d) else False
         for v, d in zip(as_variable_flags_method, input_dtypes_method)
     ]
 
-    # create args
-    args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_init,
-        kwargs=all_as_kwargs_np_init,
-    )
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
-        args_np=args_np_constructor,
-        kwargs_np=kwargs_np_constructor,
-        input_dtypes=input_dtypes_init,
-        as_variable_flags=as_variable_flags_init,
-        native_array_flags=native_array_flags_init,
-    )
-    args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
-    )
+    # Create Args
     args_method, kwargs_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
+        arg_np_vals=met_arg_np_vals,
+        args_idxs=met_args_idxs,
         kwargs_np=kwargs_np_method,
+        kwarg_np_vals=met_kwarg_np_vals,
+        kwargs_idxs=met_kwargs_idxs,
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
         native_array_flags=native_array_flags_method,
         container_flags=container_flags_method,
     )
-    # run
+    # End Method #
+
+    # Run testing
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     v_np = None
     if isinstance(ins, ivy.Module):
@@ -1159,18 +1187,27 @@ def test_method(
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
-    # compute the return with a Ground Truth backend
+
+    # Compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
         args_np=args_np_constructor,
+        arg_np_vals=con_arg_np_vals,
+        args_idxs=con_args_idxs,
         kwargs_np=kwargs_np_constructor,
+        kwarg_np_vals=con_kwarg_np_vals,
+        kwargs_idxs=con_kwargs_idxs,
         input_dtypes=input_dtypes_init,
         as_variable_flags=as_variable_flags_init,
         native_array_flags=native_array_flags_init,
     )
     args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
+        arg_np_vals=met_arg_np_vals,
+        args_idxs=met_args_idxs,
         kwargs_np=kwargs_np_method,
+        kwarg_np_vals=met_kwarg_np_vals,
+        kwargs_idxs=met_kwargs_idxs,
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
         native_array_flags=native_array_flags_method,
