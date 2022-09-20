@@ -72,3 +72,60 @@ def flatten(input, start_dim=0, end_dim=-1):
 
     input = ivy.reshape(input, shape=new_shape)
     return input
+
+
+def renorm(input, p, dim, maxnorm, *, out=None):
+    # Avoids division by 0 error later.
+    if maxnorm == 0:
+        ret = ivy.zeros(input.shape, dtype=input.dtype)
+    else:
+        # The p-norm of a single value is that value
+        # if len(input.shape) == 1:
+        #    norms = input
+
+        # The p-norm of a single value is that value
+        # This avoids the case where a 0 dimensional array presents an indexing error
+        # E.g. axis 0 is out of bounds for array of dimension 0
+        if len(input.shape) <= 1:
+            norms = input
+        else:
+            # norms = ivy.broadcast_to(
+            # ivy.vector_norm(input, axis=dim, ord=p), input.shape)
+            norms = ivy.vector_norm(input, axis=dim, ord=p)
+
+        # norms = input if len(input.shape) <= 1 else
+        # ivy.vector_norm(input, axis=dim, ord=p)
+        # a, b[:, np.newaxis]
+        if norms.shape != input.shape:
+            if norms.transpose().shape == input.shape:
+                norms = norms.transpose()
+            else:
+                # norms = ivy.repeat(norms, repeats=input.shape[dim-1],
+                # axis=dim)
+                # repeats_numerator = input.shape[dim-1]
+                # repeats_numerator = input.shape[dim]
+                # repeats_denominator = norms.shape[dim-1]
+                # repeats_denominator = norms.shape[dim]
+                # norms = ivy.repeat(norms, repeats=repeats_numerator /
+                # repeats_denominator)
+
+                # norms = ivy.broadcast_to(norms, input.shape)
+                # norms = norms.transpose()
+                # input = input.transpose()
+                # norms = ivy.broadcast_to(norms, input.shape)
+                # norms = norms.transpose()
+                # input = input.transpose()
+                norms = norms[:, ivy.newaxis]
+                norms = ivy.swapaxes(norms, -1, dim)
+
+        ret = ivy.multiply(input, maxnorm / norms)
+        ret = ivy.astype(ret, input.dtype)
+        # ivy.prod()
+
+        # ret = ivy.astype(input * norms / maxnorm, dtype=input.dtype)
+
+    # ret
+
+    if ivy.exists(out):
+        ivy.inplace_update(input, ret)
+    return ret
