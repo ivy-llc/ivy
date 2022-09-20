@@ -1701,7 +1701,7 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             kwargs["inplace"] = True
-            input_argument = ivy.func_wrapper._get_first_array(args, kwargs)
+            first_array = ivy.func_wrapper._get_first_array(args, kwargs)
             ret = frontend_fn(*args, **kwargs)
             if ivy.native_inplace_support:
                 assert ret.data is input_argument.data
@@ -1709,7 +1709,7 @@ def test_frontend_function(
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
-            input_argument = ivy.func_wrapper._get_first_array(args, kwargs)
+            first_array = ivy.func_wrapper._get_first_array(args, kwargs)
             if ivy.native_inplace_support:
                 assert ret.data is input_argument.data
             assert input_argument is ret
