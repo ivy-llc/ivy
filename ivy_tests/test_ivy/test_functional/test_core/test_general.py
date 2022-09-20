@@ -449,14 +449,14 @@ def test_clip_vector_norm(
     x=st.integers(min_value=1, max_value=10).flatmap(
         lambda n: st.tuples(
             helpers.dtype_and_values(
-                available_dtypes=ivy_np.valid_float_dtypes,
+                available_dtypes=helpers.get_dtypes("float"),
                 min_num_dims=1,
                 max_num_dims=1,
                 min_dim_size=n,
                 max_dim_size=n,
             ),
             helpers.dtype_and_values(
-                available_dtypes=ivy_np.valid_int_dtypes,
+                available_dtypes=helpers.get_dtypes("integer"),
                 min_value=0,
                 max_value=max(n - 1, 0),
                 min_num_dims=1,
@@ -483,11 +483,6 @@ def test_scatter_flat(
     fw,
 ):
     (val_dtype, vals), (ind_dtype, ind), size = x
-    if fw == "torch" and (
-        val_dtype in ["uint16", "uint32", "uint64"]
-        or ind_dtype in ["uint16", "uint32", "uint64"]
-    ):
-        return
     helpers.test_function(
         input_dtypes=[ind_dtype, val_dtype],
         as_variable_flags=as_variable,
