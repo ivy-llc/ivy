@@ -16,4 +16,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build Dockerfile
-      run: docker build . --file Dockerfile --tag unifyai/ivy:$(date +%s)
+      run: |
+        cd docker
+        docker build . --file Dockerfile --tag unifyai/ivy:$(date +%s)
