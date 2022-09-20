@@ -38,5 +38,5 @@ def flatnonzero(a):
     return ivy.nonzero(ivy.reshape(a, (-1,)))
 
 
-def searchsorted(a, v, side='left', sorter=None):
+def searchsorted(a, v, side="left", sorter=None):
     return ivy.searchsorted(a, v, side=side, sorter=sorter)
