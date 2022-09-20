@@ -460,7 +460,10 @@ def multiply(
     return tf.math.multiply(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")},
+    version
+)
 def negative(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -492,7 +495,9 @@ def positive(
     return tf.experimental.numpy.positive(x)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")}, version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")}, version
+)
 def pow(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -681,9 +686,13 @@ def minimum(
     return tf.minimum(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below":
-                              ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "int32", "int64",)}, version
-                         )
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below":
+            ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "int32", "int64",)
+    },
+    version
+)
 def reciprocal(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -701,9 +710,6 @@ def deg2rad(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.deg2rad(x)
-
-
-deg2rad.unsupported_dtypes = ("bfloat16",)
 
 
 def rad2deg(

@@ -53,9 +53,6 @@ def conv2d(
     )
 
 
-conv2d.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def conv2d_transpose(
     input,
     filters,
@@ -88,9 +85,6 @@ def conv3d(
     )
 
 
-conv3d.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def conv3d_transpose(
     input,
     filters,
@@ -110,9 +104,6 @@ def conv3d_transpose(
         data_format=data_format,
         dilations=dilations,
     )
-
-
-conv3d_transpose.unsupported_dtypes = {"torch": ("float16",)}
 
 
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):

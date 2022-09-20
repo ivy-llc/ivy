@@ -1,16 +1,17 @@
-# flake8: noqa
-from . import numpy
-from . import jax
-from . import torch
-from . import tensorflow
-import importlib
-
-latest_version = {
+versions = {
     "torch": "1.12",
     "tensorflow": "2.9.0",
     "numpy": "1.23.2",
     "jax": "0.3.16",
 }
+
+# flake8: noqa
+import importlib
+
+from . import jax
+from . import numpy
+from . import tensorflow
+from . import torch
 
 
 def fn_name_from_version_specific_fn_name(name, version):
@@ -37,23 +38,23 @@ def fn_name_from_version_specific_fn_name(name, version):
     if "_to_" in name:
         i = name.index("_v_")
         e = name.index("_to_")
-        version_start = name[i + 3 : e]
+        version_start = name[i + 3: e]
         version_start = int(version_start.replace("p", ""))
-        version_end = name[e + 4 :]
+        version_end = name[e + 4:]
         version_end = int(version_end.replace("p", ""))
         if version in range(version_start, version_end + 1):
             return name[0:i]
     elif "_and_above" in name:
         i = name.index("_v_")
         e = name.index("_and_")
-        version_start = name[i + 3 : e]
+        version_start = name[i + 3: e]
         version_start = int(version_start.replace("p", ""))
         if version >= version_start:
             return name[0:i]
     else:
         i = name.index("_v_")
         e = name.index("_and_")
-        version_start = name[i + 3 : e]
+        version_start = name[i + 3: e]
         version_start = int(version_start.replace("p", ""))
         if version <= version_start:
             return name[0:i]
@@ -74,12 +75,12 @@ def set_frontend_to_specific_version(frontend):
 
     """
     f = str(frontend.__name__)
-    f = f[f.index("frontends") + 10 :]
+    f = f[f.index("frontends") + 10:]
     try:
         f = importlib.import_module(f)
         f_version = f.__version__
-    except Exception:
-        f_version = latest_version[f]
+    except ImportError:
+        f_version = versions[f]
 
     for i in list(frontend.__dict__):
         if "_v_" in i:
