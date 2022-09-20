@@ -137,6 +137,7 @@
 <span class="kn">import</span> <span class="nn">termcolor</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container</span> <span class="kn">import</span> <span class="n">Container</span>
@@ -148,8 +149,12 @@
 
 
 <div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module">[docs]</a><span class="k">class</span> <span class="nc">Module</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Module is a base class for deriving trainable modules.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">build_mode</span><span class="o">=</span><span class="s2">&quot;on_init&quot;</span><span class="p">,</span>
@@ -164,7 +169,7 @@
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialze Ivy layer, which is a stateful object consisting of trainable</span>
+<span class="sd">        Initialize Ivy layer, which is a stateful object consisting of trainable</span>
 <span class="sd">        variables.</span>
 
 <span class="sd">        Parameters</span>
@@ -205,7 +210,7 @@
         <span class="n">valid_build_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;on_init&quot;</span><span class="p">,</span> <span class="s2">&quot;explicit&quot;</span><span class="p">,</span> <span class="s2">&quot;on_call&quot;</span><span class="p">]</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">build_mode</span><span class="p">,</span> <span class="n">valid_build_modes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span>
-            <span class="n">device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">devices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">devices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(),</span> <span class="n">rev</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">devices</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_mode</span> <span class="o">=</span> <span class="n">build_mode</span>
@@ -244,7 +249,7 @@
     <span class="c1"># Private #</span>
     <span class="c1"># --------#</span>
 
-    <span class="k">def</span> <span class="nf">_fn_with_var_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">v_fn</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_fn_with_var_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">v_fn</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
             <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;v&quot;</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -257,7 +262,25 @@
         <span class="n">new_fn</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">new_fn</span>
 
-    <span class="k">def</span> <span class="nf">_top_v_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_top_v_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helps in visualising the top view of a nested network upto</span>
+<span class="sd">        a certain depth</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        depth</span>
+<span class="sd">            depth upto which we want to visualise</span>
+<span class="sd">        flatten_key_chains</span>
+<span class="sd">            If set True, will return a flat (depth-1) container,</span>
+<span class="sd">            which all nested key-chains flattened. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
@@ -269,7 +292,21 @@
             <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-    <span class="k">def</span> <span class="nf">_top_mod_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_top_mod_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the top module at specific depth.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        depth</span>
+<span class="sd">            The number of modules we want to trace back.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The module we want to track down. Return current layer if no top</span>
+<span class="sd">            module exists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">(</span><span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="bp">self</span>
@@ -278,6 +315,16 @@
 
     <span class="c1"># noinspection PyProtectedMember</span>
 <div class="viewcode-block" id="Module.track_submod_rets"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.track_submod_rets">[docs]</a>    <span class="k">def</span> <span class="nf">track_submod_rets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tracks the returns of the submodules if track_submod_returns</span>
+<span class="sd">        argument is set to True during call</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            True if the current module gets tracked in the computation</span>
+<span class="sd">            graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
@@ -295,6 +342,15 @@
         <span class="k">return</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">_track_submod_rets</span></div>
 
 <div class="viewcode-block" id="Module.check_submod_rets"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.check_submod_rets">[docs]</a>    <span class="k">def</span> <span class="nf">check_submod_rets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compares the submodule returns with the expected submodule</span>
+<span class="sd">        returns passed during call</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            True if the top module has expected_submod_rets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">expected_submod_rets</span><span class="p">):</span>
@@ -303,6 +359,15 @@
 
     <span class="c1"># noinspection PyProtectedMember</span>
 <div class="viewcode-block" id="Module.track_submod_call_order"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.track_submod_call_order">[docs]</a>    <span class="k">def</span> <span class="nf">track_submod_call_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tracks the order in which the submodules are called.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            True if the current module allows call order tracking.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
@@ -320,6 +385,14 @@
         <span class="k">return</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">_track_submod_call_order</span></div>
 
 <div class="viewcode-block" id="Module.mod_depth"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_depth">[docs]</a>    <span class="k">def</span> <span class="nf">mod_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the depth of the current module.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The depth of the module in the network. Return 0 for root module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">mod_above</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -331,28 +404,50 @@
         <span class="k">return</span> <span class="n">depth</span></div>
 
 <div class="viewcode-block" id="Module.mod_height"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_height">[docs]</a>    <span class="k">def</span> <span class="nf">mod_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the height of the current module.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The height of the network. Return 0 for leaf module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">()</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">-</span> <span class="mi">1</span></div>
 
-    <span class="k">def</span> <span class="nf">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find all interval variables in obj. Return empty Container if obj is None.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        obj</span>
+<span class="sd">            The submodule whose internal variables are to be returned. Default</span>
+<span class="sd">            is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The internal variables of the submodule passed in the argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
         <span class="c1"># ToDo: add support for finding local variables, if/when JAX supports</span>
         <span class="c1">#  uniquely flagging variables</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Module</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">top_v</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top_v_fn</span><span class="p">(</span>
-                <span class="n">depth</span><span class="p">,</span> <span class="n">flatten_key_chains</span>
+                <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="n">flatten_key_chains</span>
             <span class="p">)</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">top_mod</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top_mod_fn</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">top_mod</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top_mod_fn</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sub_mods</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">v</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
                     <span class="n">vs</span><span class="p">[</span><span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ret</span>
             <span class="k">return</span> <span class="n">vs</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
                     <span class="n">vs</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span> <span class="k">else</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span>
             <span class="k">return</span> <span class="n">vs</span>
@@ -360,13 +455,27 @@
             <span class="k">return</span> <span class="n">vs</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;__&quot;</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
                     <span class="n">vs</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span> <span class="k">else</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span>
         <span class="k">return</span> <span class="n">vs</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_extract_v</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">orig_key_chain</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_extract_v</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">orig_key_chain</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">        keychain_mappings</span>
+<span class="sd">        orig_key_chain</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret_cont</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">has_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">):</span>
             <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -378,7 +487,24 @@
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">ret_cont</span>
 
-    <span class="k">def</span> <span class="nf">_wrap_call_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wrap_call_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mappings</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wraps the call methods of the Module object</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        keychain_mappings</span>
+<span class="sd">            The keychain mappings of the object</span>
+<span class="sd">        key</span>
+
+<span class="sd">        obj</span>
+<span class="sd">            the object whose __call__ method is to be wrapped</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Module</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">orig_key_chain</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span> <span class="k">else</span> <span class="n">key</span>
 
@@ -389,12 +515,14 @@
             <span class="k">return</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_call_methods</span><span class="p">(</span><span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;/v&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">val</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_call_methods</span><span class="p">(</span>
+                    <span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;/v&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">obj</span><span class="o">=</span><span class="n">val</span>
+                <span class="p">)</span>
             <span class="k">return</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">k</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_call_methods</span><span class="p">(</span><span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_call_methods</span><span class="p">(</span><span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">):</span>
             <span class="k">return</span>
@@ -403,11 +531,28 @@
                 <span class="k">continue</span>
             <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">k</span>
             <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_call_methods</span><span class="p">(</span><span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_call_methods</span><span class="p">(</span><span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_remove_duplicate_variables</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="n">created</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_duplicate_variables</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="n">created</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove duplicate variables in `vs` referring to `created`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vs</span>
+<span class="sd">            The container that needs to be pruned.</span>
+<span class="sd">        created</span>
+<span class="sd">            The container as the duplication reference.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        vs</span>
+<span class="sd">            The container after removing duplicate variables.</span>
+<span class="sd">        keychain_mappings</span>
+<span class="sd">            Dict storing those keys and ids being removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">created_ids</span> <span class="o">=</span> <span class="n">created</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">vs_ids</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -436,7 +581,7 @@
     <span class="c1"># Overridable #</span>
 
     <span class="c1"># noinspection PyMethodMayBeStatic,PyUnusedLocal</span>
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create internal trainable variables, and return as arbitrary nested dict.</span>
 <span class="sd">        Overridable.</span>
@@ -445,15 +590,24 @@
 <span class="sd">        ----------</span>
 <span class="sd">        device</span>
 <span class="sd">            The device string, specifying the device on which to create the variables.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            An empty set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build the internal layers and variables for this module. Overridable. Return</span>
-<span class="sd">        False or empty Container if the build only partially completed (i.e. some</span>
-<span class="sd">        child Modules have &quot;on_call&quot; build mode). Alternatviely, return True or a</span>
-<span class="sd">        container of the built variables if the module is built.</span>
+<span class="sd">        Build the internal layers and variables for this module. Overridable.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            False or empty Container if the build only partially completed (i.e. some</span>
+<span class="sd">            child Modules have &quot;on_call&quot; build mode). Alternatively, return True or a</span>
+<span class="sd">            container of the built variables if the module is built.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -464,11 +618,23 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Forward pass of the layer,</span>
 <span class="sd">        called after handling the optional input variables.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyNotImplementedException</span>
 
     <span class="k">def</span> <span class="nf">_forward_with_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Forward pass while optionally tracking submodule returns and call order&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward pass while optionally tracking submodule returns</span>
+<span class="sd">        and call order.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Result of the forward pass of the layer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_call_order</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter</span><span class="p">()</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -484,6 +650,19 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The forward pass of the layer,</span>
 <span class="sd">        treating layer instance as callable function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            Replace `v` of current layer when forwarding. Restore</span>
+<span class="sd">            after the forward finished.</span>
+<span class="sd">        with_grads</span>
+<span class="sd">            Whether to forward with gradients.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Result of the forward pass of the layer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span><span class="p">:</span>
@@ -491,7 +670,7 @@
                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="n">from_call</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="n">_get_first_array</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">_get_first_array</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">v_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
@@ -516,7 +695,27 @@
     <span class="c1"># Public #</span>
     <span class="c1"># -------#</span>
 
-<div class="viewcode-block" id="Module.sub_mods"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.sub_mods">[docs]</a>    <span class="k">def</span> <span class="nf">sub_mods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.sub_mods"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.sub_mods">[docs]</a>    <span class="k">def</span> <span class="nf">sub_mods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">show_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a container composing of all submodules.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        show_v</span>
+<span class="sd">            If set True, will return values of all submodule variables.</span>
+<span class="sd">            Default is True.</span>
+<span class="sd">        depth</span>
+<span class="sd">            How many layers we step in before beginning enumerating submodules.</span>
+<span class="sd">            None for current layer. Default is None.</span>
+<span class="sd">        flatten_key_chains</span>
+<span class="sd">            If set True, will return a flat (depth-1) container,</span>
+<span class="sd">            which all nested key-chains flattened. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A container composing of all submodules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_mods</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -530,7 +729,7 @@
                 <span class="p">{</span>
                     <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">flatten_key_chain</span><span class="p">(</span>
                         <span class="n">sm</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="n">replacement</span><span class="o">=</span><span class="s2">&quot;_&quot;</span>
-                    <span class="p">):</span> <span class="n">sm</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">(</span><span class="n">show_v</span><span class="p">,</span> <span class="n">next_depth</span><span class="p">)</span>
+                    <span class="p">):</span> <span class="n">sm</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">(</span><span class="n">show_v</span><span class="o">=</span><span class="n">show_v</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">next_depth</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">sm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_mods</span>
                 <span class="p">}</span>
             <span class="p">)</span>
@@ -541,7 +740,21 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="Module.show_v_in_top_v"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_v_in_top_v">[docs]</a>    <span class="k">def</span> <span class="nf">show_v_in_top_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.show_v_in_top_v"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_v_in_top_v">[docs]</a>    <span class="k">def</span> <span class="nf">show_v_in_top_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show sub containers from the perspective of value of top layer.</span>
+<span class="sd">        Will give prompt if either of `v` and `top_v` is not initialized.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        depth</span>
+<span class="sd">            The number of modules we want to step in. None for the value of</span>
+<span class="sd">            current module. Default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">show_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -551,7 +764,25 @@
                 <span class="s2">&quot;but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Module.v_with_top_v_key_chains"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.v_with_top_v_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">v_with_top_v_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.v_with_top_v_key_chains"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.v_with_top_v_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">v_with_top_v_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show current layer from the perspective of value of top layer.</span>
+<span class="sd">        Will give prompt if either of `v` and `top_v` is not initialized.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        depth</span>
+<span class="sd">            The number of modules we want to step in. None for the value of</span>
+<span class="sd">            current module. Default is None.</span>
+<span class="sd">        flatten_key_chains</span>
+<span class="sd">            If set True, will return a flat (depth-1) container,</span>
+<span class="sd">            which all nested key-chains flattened. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
             <span class="n">kc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">kc</span><span class="p">:</span>
@@ -568,7 +799,22 @@
                 <span class="s2">&quot;but found</span><span class="se">\n\n</span><span class="s2">top_v: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">v: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Module.mod_with_top_mod_key_chain"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_with_top_mod_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">mod_with_top_mod_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.mod_with_top_mod_key_chain"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.mod_with_top_mod_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">mod_with_top_mod_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (TODO)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        depth</span>
+
+<span class="sd">        flatten_key_chain</span>
+<span class="sd">            If set True, will return return a flat (depth-1) container,</span>
+<span class="sd">            with all nested key-chains flattened. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">)</span> <span class="ow">or</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
         <span class="n">max_depth</span> <span class="o">=</span> <span class="n">depth</span>
@@ -590,8 +836,29 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">mod</span> <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">mods</span><span class="p">)]</span></div>
 
 <div class="viewcode-block" id="Module.show_mod_in_top_mod"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_mod_in_top_mod">[docs]</a>    <span class="k">def</span> <span class="nf">show_mod_in_top_mod</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">upper_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">upper_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flatten_key_chains</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show lower submodules in the top module. `upper_depth` and `lower_depth`</span>
+<span class="sd">        are for controlling the coverage of upper and lower modules.</span>
+<span class="sd">        Will give prompt if no top module found.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        upper_depth</span>
+<span class="sd">            How many modules it tracks up as upper module. None for current module.</span>
+<span class="sd">            Default is None. Will be truncated to mod_depth.</span>
+<span class="sd">        lower_depth</span>
+<span class="sd">            How many modules it tracks down. None for current module.</span>
+<span class="sd">            Default is None. Will be truncated to mod_height.</span>
+<span class="sd">        flatten_key_chains</span>
+<span class="sd">            If set True, will return a flat (depth-1) container,</span>
+<span class="sd">            which all nested key-chains flattened. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="n">upper_depth</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">upper_depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_depth</span><span class="p">())</span>
             <span class="n">lower_depth</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">lower_depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_height</span><span class="p">())</span>
@@ -615,7 +882,29 @@
         <span class="n">submods_to_track</span><span class="p">,</span>
         <span class="n">track_submod_call_order</span><span class="p">,</span>
         <span class="n">expected_submod_rets</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set flags of the submodule.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        track_submod_rets</span>
+<span class="sd">            If True, will track the returns of submodules.</span>
+<span class="sd">        submod_depth</span>
+<span class="sd">            The depth of tracked submodules.</span>
+<span class="sd">        submods_to_track</span>
+<span class="sd">            If given, will only track submodules in `submods_to_track`.</span>
+<span class="sd">        track_submod_call_order</span>
+<span class="sd">            If True, will track the call order of submodules.</span>
+<span class="sd">        expected_submod_rets</span>
+<span class="sd">            If given, will raise exception if submodule returns are</span>
+<span class="sd">            different from expected returns.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_rets</span> <span class="o">=</span> <span class="n">track_submod_rets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submod_depth</span> <span class="o">=</span> <span class="n">submod_depth</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submods_to_track</span> <span class="o">=</span> <span class="n">submods_to_track</span>
@@ -627,13 +916,33 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_unset_submod_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unset flags of the submodule.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_rets</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submod_depth</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submods_to_track</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_call_order</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expected_submod_rets</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Module.get_mod_key"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.get_mod_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_mod_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_mod</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.get_mod_key"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.get_mod_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_mod_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">top_mod</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the key of current module.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        top_mod</span>
+<span class="sd">            Explicit indicate the top module. None for the top</span>
+<span class="sd">            module of current module. Default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            A string of current module key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">top_mod</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
         <span class="n">submod_dict</span> <span class="o">=</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">submod_dict</span>
@@ -647,20 +956,40 @@
         <span class="n">idx_key</span> <span class="o">=</span> <span class="n">submod_dict</span><span class="p">[</span><span class="n">name_key</span><span class="p">][</span><span class="n">id_str</span><span class="p">]</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_depth</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name_key</span><span class="p">,</span> <span class="n">idx_key</span><span class="p">])</span></div>
 
-    <span class="k">def</span> <span class="nf">_add_submod_ret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_submod_ret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add returns in the submodule return of the top module.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The return you want to add.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
         <span class="n">sr</span> <span class="o">=</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">submod_rets</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mod_key</span><span class="p">(</span><span class="n">top_mod</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mod_key</span><span class="p">(</span><span class="n">top_mod</span><span class="o">=</span><span class="n">top_mod</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">sr</span><span class="p">:</span>
             <span class="n">sr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_check_submod_ret</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check submodule returns with expected submodule returns.</span>
+<span class="sd">        Raise AssertError if returns are not close enough.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
         <span class="n">esr</span> <span class="o">=</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">expected_submod_rets</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mod_key</span><span class="p">(</span><span class="n">top_mod</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mod_key</span><span class="p">(</span><span class="n">top_mod</span><span class="o">=</span><span class="n">top_mod</span><span class="p">)</span>
         <span class="n">esr_key</span> <span class="o">=</span> <span class="n">key</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">esr</span><span class="p">:</span>
             <span class="n">esr_key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -698,6 +1027,14 @@
 
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="k">def</span> <span class="nf">_is_submod_leaf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the submodule is the leaf node of the network.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            True if the submodule is the leaf node of the network.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">submod_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">_submod_depth</span>
         <span class="n">submods_to_track</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">_submods_to_track</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -707,6 +1044,13 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_submod_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (TODO)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sco</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">submod_call_order</span>
         <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_with_top_mod_key_chain</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">key_chain</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -755,7 +1099,7 @@
                 <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<div class="viewcode-block" id="Module.__call__"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -768,9 +1112,34 @@
         <span class="n">submods_to_track</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">track_submod_call_order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">expected_submod_rets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward an input through current module.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v</span>
+<span class="sd">            If given, use this container as internal varibles temporarily.</span>
+<span class="sd">            Default is None.</span>
+<span class="sd">        with_grads</span>
+<span class="sd">            If True, forward this pass with gradients.</span>
+<span class="sd">        track_submod_rets</span>
+<span class="sd">            If True, will track the returns of submodules.</span>
+<span class="sd">        submod_depth</span>
+<span class="sd">            The depth of tracked submodules.</span>
+<span class="sd">        submods_to_track</span>
+<span class="sd">            If given, will only track submodules in `submods_to_track`.</span>
+<span class="sd">        track_submod_call_order</span>
+<span class="sd">            If True, will track the call order of submodules.</span>
+<span class="sd">        expected_submod_rets</span>
+<span class="sd">            If given, will raise exception if submodule returns are</span>
+<span class="sd">            different from expected returns.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">with_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">submod_rets</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
             <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
@@ -787,21 +1156,44 @@
         <span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unset_submod_flags</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="Module.save_weights"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.save_weights">[docs]</a>    <span class="k">def</span> <span class="nf">save_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save the weights on the Module.</span>
+<div class="viewcode-block" id="Module.save_weights"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.save_weights">[docs]</a>    <span class="k">def</span> <span class="nf">save_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the weights on the Module.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        weights_path</span>
 <span class="sd">            The hdf5 file for saving the weights.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">weights_path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Module.build"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Build the internal layers and variables for this module.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the internal layers and variables for this module.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        from_call</span>
+<span class="sd">            If True, denote that this build is triggered by calling. Otherwise,</span>
+<span class="sd">            triggered by initializing the module. Default is False.</span>
+<span class="sd">        device</span>
+<span class="sd">            The device we want to build module on. None for default device.</span>
+<span class="sd">            Default is None.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            The data type for building the module. Default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            True for successfully built a module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
         <span class="c1"># return False if not from_call but build_mode is on_call</span>
 
@@ -818,8 +1210,8 @@
 
         <span class="c1"># build variables based on locally built layers, if v not passed in constructor</span>
         <span class="n">v_from_constructor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v_in</span>
-        <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">created</span><span class="p">))</span>
+        <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">created</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_partial_v</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">v_from_constructor</span><span class="p">:</span>
@@ -854,8 +1246,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
                 <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span>
                     <span class="nb">dict</span><span class="p">(</span>
-                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="p">),</span>
+                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">created_n_found</span>
@@ -881,8 +1273,16 @@
         <span class="k">return</span> <span class="n">v_ret</span> <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">v_ret</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">built</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="k">else</span> <span class="n">built</span></div>
 
 <div class="viewcode-block" id="Module.show_structure"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.show_structure">[docs]</a>    <span class="k">def</span> <span class="nf">show_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the structure of the layer network.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        this_repr</span>
+<span class="sd">            String of the structure of the module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">this_repr</span> <span class="o">=</span> <span class="n">termcolor</span><span class="o">.</span><span class="n">colored</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span>
-        <span class="n">sub_mod_repr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="n">sub_mod_repr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">(</span><span class="n">show_v</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">sub_mod_repr</span> <span class="o">==</span> <span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">this_repr</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">this_repr</span><span class="p">,</span> <span class="n">sub_mod_repr</span><span class="p">]))</span></div>
