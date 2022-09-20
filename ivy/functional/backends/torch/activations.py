@@ -76,14 +76,8 @@ def softplus(x: torch.Tensor,
              beta: Optional[Union[int, float]] = None,
              threshold: Optional[Union[int, float]] = None,
              out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    if beta is None and threshold is None:
-        return torch.nn.functional.softplus(x)
-    elif beta is None:
-        return torch.nn.functional.softplus(x, threshold=threshold)
-    elif threshold is None:
-        return torch.nn.functional.softplus(x, beta=beta)
-
-    return torch.nn.functional.softplus(x, beta=beta, threshold=threshold)
+    kwargs = {k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None}
+    return torch.nn.functional.softplus(x, **kwargs)
 
 
 softplus.unsupported_dtypes = ("float16", "bfloat16")
