@@ -209,7 +209,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     if full:
         return valid_dtypes[index:]
     if key is None:
-        return [draw(st.sampled_from(valid_dtypes[index:]))]
+        return draw(st.sampled_from(valid_dtypes[index:]))
     return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]
 
 
@@ -2572,7 +2572,7 @@ def dtype_values_axis(
     )
     dtype, values, arr_shape = results
     if valid_axis or shape:
-        if values.ndim == 0:
+        if values[0].ndim == 0:
             axis = None
         else:
             axis = draw(
