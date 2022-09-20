@@ -210,10 +210,16 @@ def test_softmax(
         available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
+    beta=st.one_of([helpers.ints_or_floats(min_value=0.1, max_value=10), st.none()]),
+    threshold=st.one_of(
+        [helpers.ints_or_floats(min_value=0.1, max_value=30), st.none()]
+    ),
 )
 def test_softplus(
     *,
     dtype_and_x,
+    beta,
+    threshold,
     as_variable,
     with_out,
     num_positional_args,
@@ -236,4 +242,6 @@ def test_softplus(
         rtol_=1e-02,
         atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
+        beta=beta,
+        threshold=threshold,
     )

@@ -8,7 +8,7 @@ import numpy as np
 import math
 import gc
 from typing import Optional, Union, List
-from hypothesis import given, assume, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 from functools import reduce
@@ -30,6 +30,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
 from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
 from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
 from ivy_tests.test_ivy.test_frontends.test_jax import convjax
+import ivy.func_wrapper
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -458,6 +459,39 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     return draw(st.integers(min_value, max_value))
 
 
+@st.composite
+def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+    """Draws integers or floats with a safety factor
+    applied to values.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_value
+        minimum value of integers generated.
+    max_value
+        maximum value of integers generated.
+    safety_factor
+        default = 0.95. Only values which are 95% or less than the edge of
+        the limit for a given dtype are generated.
+
+    Returns
+    -------
+    ret
+        integer or float.
+    """
+    return draw(
+        ints(
+            min_value=int(min_value),
+            max_value=int(max_value),
+            safety_factor=safety_factor,
+        )
+        | floats(min_value=min_value, max_value=max_value, safety_factor=safety_factor)
+    )
+
+
 def assert_all_close(
     ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
@@ -481,13 +515,15 @@ def assert_all_close(
     -------
     None if the test passes, else marks the test as failed.
     """
-    assert ret_np.dtype is ret_from_gt_np.dtype, (
+    ret_dtype = str(ret_np.dtype)
+    ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
+    assert ret_dtype == ret_from_gt_dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_gt_np.dtype.type,
+            ret_from_gt_dtype,
             ivy.current_backend_str(),
-            ret_np.dtype.type,
+            ret_dtype,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
@@ -1114,14 +1150,6 @@ def test_method(
         for v, d in zip(as_variable_flags_method, input_dtypes_method)
     ]
 
-    # change all data types so that they are supported by this framework
-    input_dtypes_init = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_init
-    ]
-    input_dtypes_method = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
-    ]
-
     # create args
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args_init,
@@ -1387,7 +1415,8 @@ def test_function(
     instance = None
     if instance_method:
         is_instance = [
-            (not n) or c for n, c in zip(native_array_flags, container_flags)
+            (not native_flag) or container_flag
+            for native_flag, container_flag in zip(native_array_flags, container_flags)
         ]
         arg_is_instance = is_instance[:num_arg_vals]
         kwarg_is_instance = is_instance[num_arg_vals:]
@@ -1537,6 +1566,7 @@ def test_frontend_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
+    with_inplace: bool = False,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
     fw: str,
@@ -1559,7 +1589,12 @@ def test_frontend_function(
         dictates whether the corresponding input argument should be treated
         as an ivy Variable.
     with_out
-        if True, the function is also tested with the optional out argument.
+        if True, the function is also tested for inplace update to an array 
+        passed to the optional out argument, should not be True together 
+        with with_inplace.
+    with_inplace
+        if True, the function is also tested with direct inplace update back to
+        the inputted array, should not be True together with with_out.
     num_positional_args
         number of input arguments that must be passed as positional
         arguments.
@@ -1678,24 +1713,39 @@ def test_frontend_function(
 
     ret = frontend_fn(*args, **kwargs)
     ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
-    # assert idx of return if the idx of the out array provided
     out = ret
+    assert not with_out or not with_inplace, "only one of with_out or with_inplace can be set as True"
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
-        if "out" in kwargs:
-            kwargs["out"] = out
-            kwargs_ivy["out"] = out
-        else:
-            args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
-            args_ivy = list(args_ivy)
-            args_ivy[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
-            args_ivy = tuple(args_ivy)
+        # pass return value to out argument
+        # check if passed reference is correctly updated
+        kwargs["out"] = out
         ret = frontend_fn(*args, **kwargs)
-
         if ivy.native_inplace_support:
-            # these backends do not always support native inplace updates
             assert ret.data is out.data
+        assert ret is out
+    elif with_inplace:
+        assert not isinstance(ret, tuple)
+        assert ivy.is_array(ret)
+        if "inplace" in inspect.getfullargspec(frontend_fn).args:
+            # the function provides optional inplace update
+            # set inplace update to be True and check
+            # if returned reference is inputted reference
+            # and if inputted reference's content is correctly updated
+            kwargs["inplace"] = True
+            first_array = ivy.func_wrapper._get_first_array(args, kwargs)
+            ret = frontend_fn(*args, **kwargs)
+            if ivy.native_inplace_support:
+                assert ret.data is first_array.data
+            assert first_array is ret
+        else:
+            # the function provides inplace update by default
+            # check if returned reference is inputted reference
+            first_array = ivy.func_wrapper._get_first_array(args, kwargs)
+            if ivy.native_inplace_support:
+                assert ret.data is first_array.data
+            assert first_array is ret
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -1887,9 +1937,6 @@ def test_frontend_array_instance_method(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
-
     # create args
     if test_unsupported:
         try:
@@ -1956,9 +2003,6 @@ def test_frontend_array_instance_method(
         if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -2544,6 +2588,7 @@ def array_n_indices_n_axis(
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
+    first_dimension_only=False,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -2618,12 +2663,15 @@ def array_n_indices_n_axis(
             )
         )
     else:
+        max_axis = max(x_shape[axis] - 1, 0)
+        if first_dimension_only:
+            max_axis = max(x_shape[0] - 1, 0)
         indices_dtype, indices = draw(
             dtype_and_values(
                 available_dtypes=indices_dtypes,
                 allow_inf=False,
                 min_value=0,
-                max_value=max(x_shape[axis] - 1, 0),
+                max_value=max_axis,
                 min_num_dims=min_num_dims,
                 max_num_dims=max_num_dims,
                 min_dim_size=min_dim_size,
@@ -3272,7 +3320,7 @@ def num_positional_args(draw, *, fn_name: str = None):
 
 
 @st.composite
-def num_positional_args_from_fn(draw, *, fn):
+def num_positional_args_from_fn(draw, *, fn: str = None):
     """Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
 
@@ -3291,10 +3339,10 @@ def num_positional_args_from_fn(draw, *, fn):
     Examples
     --------
     @given(
-        num_positional_args=num_positional_args(fn_name="floor_divide")
+        num_positional_args=num_positional_args_from_fn(fn="floor_divide")
     )
     @given(
-        num_positional_args=num_positional_args(fn_name="add")
+        num_positional_args=num_positional_args_from_fn(fn="add")
     )
     """
     num_positional_only = 0
