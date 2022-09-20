@@ -88,7 +88,7 @@ def test_numpy_amax(
     initial,
     fw,
 ):
-    if initial is None and where is not None:
+    if initial is None and np.all(where) is not True:
         assume(initial is np.NINF)
     input_dtype, x, axis = dtype_and_x
     input_dtype = [input_dtype]
