@@ -1032,12 +1032,15 @@ def test_einops_rearrange(
 @handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=3,
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=2,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
     ).filter(
         lambda x: ivy.array([x[1]], dtype="float32").shape[2] % 2 == 0
         and ivy.array([x[1]], dtype="float32").shape[3] % 2 == 0
@@ -1078,6 +1081,8 @@ def test_einops_reduce(
         instance_method=instance_method,
         fw=fw,
         fn_name="einops_reduce",
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=dtype),
         pattern=pattern,
         reduction=reduction,

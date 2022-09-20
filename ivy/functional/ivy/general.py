@@ -1978,9 +1978,10 @@ def einops_reduce(
         b: ivy.array([-1.4, 6.21])
     }
     """
+    dtype = x.dtype
     x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
-    ret = ivy.array(ret)
+    ret = ivy.array(ret, dtype=dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
