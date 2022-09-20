@@ -620,10 +620,6 @@ class Module(abc.ABC):
         depth
             The number of modules we want to step in. None for the value of
             current module. Default is None.
-
-        Returns
-        -------
-        None
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             self.top_v(depth).show_sub_container(self.v)
@@ -647,11 +643,6 @@ class Module(abc.ABC):
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
             which all nested key-chains flattened. Default is False.
-
-        Returns
-        -------
-        ret
-
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).find_sub_container(self.v)
@@ -680,10 +671,6 @@ class Module(abc.ABC):
         flatten_key_chain
             If set True, will return return a flat (depth-1) container,
             with all nested key-chains flattened. Default is False.
-
-        Returns
-        -------
-
         """
         if not ivy.exists(self.top_mod) or depth == 0:
             return self.__repr__()
@@ -724,10 +711,6 @@ class Module(abc.ABC):
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
             which all nested key-chains flattened. Default is False.
-
-        Returns
-        -------
-        None
         """
         if ivy.exists(self.top_mod):
             upper_depth = ivy.default(upper_depth, self.mod_depth())
@@ -770,10 +753,6 @@ class Module(abc.ABC):
         expected_submod_rets
             If given, will raise exception if submodule returns are
             different from expected returns.
-
-        Returns
-        -------
-        None
         """
         self._track_submod_rets = track_submod_rets
         self._submod_depth = submod_depth
@@ -788,10 +767,6 @@ class Module(abc.ABC):
     def _unset_submod_flags(self):
         """
         Unset flags of the submodule.
-
-        Returns
-        -------
-        None
         """
         self._track_submod_rets = False
         self._submod_depth = None
@@ -835,9 +810,6 @@ class Module(abc.ABC):
         ret
             The return you want to add.
 
-        Returns
-        -------
-        None
         """
         top_mod = self.top_mod()
         sr = top_mod.submod_rets
@@ -852,10 +824,6 @@ class Module(abc.ABC):
         """
         Check submodule returns with expected submodule returns.
         Raise AssertError if returns are not close enough.
-
-        Returns
-        -------
-        None
         """
         top_mod = self.top_mod()
         esr = top_mod.expected_submod_rets
