@@ -133,7 +133,6 @@ def test_nonzero(
     *,
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,
@@ -186,4 +185,36 @@ def test_where(
         condition=cond,
         x1=x1,
         x2=x2,
+    )
+
+
+# argwhere
+@handle_cmd_line_args
+@given(
+    x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
+    num_positional_args=helpers.num_positional_args(fn_name="argwhere"),
+)
+def test_argwhere(
+    *,
+    x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="argwhere",
+        x=np.asarray(x, dtype=dtype),
     )

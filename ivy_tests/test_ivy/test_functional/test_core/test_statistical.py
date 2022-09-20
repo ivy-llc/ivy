@@ -6,41 +6,33 @@ from hypothesis import given, assume, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
 def statistical_dtype_values(draw, *, function):
-    dtype = draw(st.sampled_from(ivy_np.valid_float_dtypes))
-    size = draw(helpers.ints(min_value=1, max_value=10))
-    if dtype == "float16":
-        max_value = 2048
-    elif dtype == "float32":
-        max_value = 16777216
-    elif dtype == "float64":
-        max_value = 9.0071993e15
-
-    if function == "prod":
-        abs_value_limit = 0.99 * max_value ** (1 / size)
-    elif function in ["var", "std"]:
-        abs_value_limit = 0.99 * (max_value / size) ** 0.5
-    else:
-        abs_value_limit = 0.99 * max_value / size
-
-    values = draw(
-        helpers.list_of_length(
-            x=helpers.floats(
-                min_value=-abs_value_limit,
-                max_value=abs_value_limit,
-                allow_subnormal=False,
-            ),
-            length=size,
+    large_abs_safety_factor = 2
+    small_abs_safety_factor = 2
+    if function in ["mean", "std", "var"]:
+        large_abs_safety_factor = 24
+        small_abs_safety_factor = 24
+    dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=2,
+            valid_axis=True,
+            allow_neg_axes=False,
+            min_axes_size=1,
         )
     )
     shape = np.asarray(values, dtype=dtype).shape
     size = np.asarray(values, dtype=dtype).size
-    axis = draw(helpers.get_axis(shape=shape, allow_none=True))
+    max_correction = np.min(shape)
     if function == "var" or function == "std":
         if size == 1:
             correction = 0
@@ -52,8 +44,8 @@ def statistical_dtype_values(draw, *, function):
             return dtype, values, axis, correction
         else:
             correction = draw(
-                helpers.ints(min_value=0, max_value=size - 1)
-                | helpers.floats(min_value=0, max_value=size - 1)
+                helpers.ints(min_value=0, max_value=max_correction - 1)
+                | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
     return dtype, values, axis
@@ -64,7 +56,6 @@ def statistical_dtype_values(draw, *, function):
 @given(
     dtype_and_x=statistical_dtype_values(function="min"),
     num_positional_args=helpers.num_positional_args(fn_name="min"),
-    container=st.booleans(),
     keep_dims=st.booleans(),
 )
 def test_min(
@@ -102,7 +93,6 @@ def test_min(
 @given(
     dtype_and_x=statistical_dtype_values(function="max"),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
-    container=st.booleans(),
     keep_dims=st.booleans(),
 )
 def test_max(
@@ -140,7 +130,6 @@ def test_max(
 @given(
     dtype_and_x=statistical_dtype_values(function="mean"),
     num_positional_args=helpers.num_positional_args(fn_name="mean"),
-    container=st.booleans(),
     keep_dims=st.booleans(),
 )
 def test_mean(
@@ -167,6 +156,7 @@ def test_mean(
         fw=fw,
         fn_name="mean",
         rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
@@ -178,7 +168,6 @@ def test_mean(
 @given(
     dtype_and_x=statistical_dtype_values(function="var"),
     num_positional_args=helpers.num_positional_args(fn_name="var"),
-    container=st.booleans(),
     keep_dims=st.booleans(),
 )
 def test_var(
@@ -204,6 +193,8 @@ def test_var(
         instance_method=instance_method,
         fw=fw,
         fn_name="var",
+        rtol_=1e-1,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         correction=correction,
@@ -214,14 +205,22 @@ def test_var(
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_and_x=statistical_dtype_values(function="prod"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="prod"),
-    container=st.booleans(),
     keep_dims=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_prod(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -230,8 +229,9 @@ def test_prod(
     instance_method,
     fw,
     keep_dims,
+    dtype,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -245,21 +245,29 @@ def test_prod(
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
-        dtype=input_dtype,
+        dtype=dtype,
     )
 
 
 # sum
 @handle_cmd_line_args
 @given(
-    dtype_and_x=statistical_dtype_values(function="sum"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
-    container=st.booleans(),
     keep_dims=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_sum(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     as_variable,
     with_out,
     num_positional_args,
@@ -268,8 +276,9 @@ def test_sum(
     instance_method,
     fw,
     keep_dims,
+    dtype,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -280,11 +289,12 @@ def test_sum(
         instance_method=instance_method,
         fw=fw,
         fn_name="sum",
-        rtol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-2,
         x=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
-        dtype=input_dtype,
+        dtype=dtype,
     )
 
 
@@ -293,7 +303,6 @@ def test_sum(
 @given(
     dtype_and_x=statistical_dtype_values(function="std"),
     num_positional_args=helpers.num_positional_args(fn_name="std"),
-    container=st.booleans(),
     keep_dims=st.booleans(),
 )
 def test_std(
@@ -325,6 +334,100 @@ def test_std(
         axis=axis,
         correction=correction,
         keepdims=keep_dims,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="cumsum"),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
+)
+def test_cumsum(
+    dtype_x_axis,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    exclusive,
+    reverse,
+    dtype,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="cumsum",
+        x=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        dtype=dtype,
+    )
+
+
+# cumprod
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
+    exclusive=st.booleans(),
+    dtype=helpers.get_dtypes("numeric", none=True),
+)
+def test_cumprod(
+    dtype_x_axis,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    exclusive,
+    dtype,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="cumprod",
+        x=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        exclusive=exclusive,
+        dtype=dtype,
     )
 
 

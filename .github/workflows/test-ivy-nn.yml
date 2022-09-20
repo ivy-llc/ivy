@@ -7,7 +7,7 @@ permissions:
   actions: read
 jobs:
    run-nightly-tests:
-     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Ivy Functional API')}}
+     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Ivy Functional API')}}
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
@@ -24,6 +24,7 @@ jobs:
            fetch-depth: 2
 
        - name: Check Files Changed
+         if: ${{ (github.event_name == 'push') || !contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') }}
          shell: pwsh
          id: check_file_changed
          run: |
@@ -38,13 +39,11 @@ jobs:
              -or $_ -match 'ivy/functional/ivy/${{ matrix.submodules }}.py' `
            }
            $HasDiff = $SourceDiff.Length -gt 0
-           $a = Get-Random -Maximum 10
-           $HasDiff = $HasDiff -or ($a -eq 1)
            Write-Host "::set-output name=changed::$HasDiff"
 
        - name: Download artifact
          uses: dawidd6/action-download-artifact@v2
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          with:
            github_token: ${{secrets.GITHUB_TOKEN}}
            workflow: test-ivy-nn.yml
@@ -57,7 +56,7 @@ jobs:
 
        - name: Unzip Hypothesis Examples
          id: unzip
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          run: |
            cd ivy/.hypothesis
            unzip examples.zip
@@ -65,7 +64,7 @@ jobs:
          continue-on-error: true
 
        - name: Create Hypothesis Directory
-         if: steps.check_file_changed.outputs.changed == 'True' && steps.unzip.outcome != 'success'
+         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.unzip.outcome != 'success'
          run: |
            cd ivy
            mkdir -p .hypothesis
@@ -75,10 +74,10 @@ jobs:
 
        - name: Run Functional-NN Tests
          id: tests
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          run: |
            cd ivy
-           ./test_ivy_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }}
+           ./run_tests_CLI/test_ivy_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
@@ -90,7 +89,7 @@ jobs:
 
        - name: Upload hypothesis
          uses: actions/upload-artifact@v3
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          with:
            name: hypothesis_${{ matrix.backends }}_test_${{ matrix.submodules }}_zip
            path: |
@@ -98,5 +97,5 @@ jobs:
          continue-on-error: true
 
        - name: Check on failures
-         if: steps.check_file_changed.outputs.changed == 'True' && steps.tests.outcome != 'success'
+         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.tests.outcome != 'success'
          run: exit 1

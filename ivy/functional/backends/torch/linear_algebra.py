@@ -81,7 +81,10 @@ def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.linalg.eigh(x, out=out)
 
 
-eigh.unsupported_dtypes = ("float16",)
+eigh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 eigh.support_native_out = True
 
@@ -90,13 +93,33 @@ def eigvalsh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch
     return torch.linalg.eigvalsh(x, out=out)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 eigvalsh.support_native_out = True
 
 
+def inner(
+    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return torch.inner(x1, x2, out=out)
+
+
+inner.unsupported_dtypes = ("uint8", "int8", "int16", "int32")
+inner.support_native_out = True
+
+
 def inv(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.inverse(x, out=out)
+    if torch.any(torch.linalg.det(x.to(dtype=torch.float64)) == 0):
+        ret = x
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+    else:
+        ret = torch.inverse(x, out=out)
+    return ret
 
 
 inv.unsupported_dtypes = (
@@ -153,11 +176,14 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, atol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
     return torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
 
 
-matrix_rank.unsupported_dtypes = ("float16",)
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 matrix_rank.support_native_out = True
 
 
@@ -205,13 +231,16 @@ def qr(
         q, r = torch.qr(x, some=False, out=out)
         ret = res(q, r)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed for the torch backend."
         )
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(
@@ -258,7 +287,10 @@ def solve(
     return ret
 
 
-solve.unsupported_dtypes = ("float16",)
+solve.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def svd(
@@ -324,10 +356,10 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
-    if x1.dtype != x2.dtype:
-        x1, x2 = x1.type(dtype), x2.type(dtype)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    if dtype != "float64":
+        x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
 
 
 vecdot.support_native_out = True

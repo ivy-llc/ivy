@@ -14,7 +14,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Examples
@@ -152,6 +152,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigvalsh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.eigvalsh(self._data, out=out)
+
+    def inner(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.inner(self._data, x2, out=out)
 
     def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.inv(self._data, out=out)
@@ -291,6 +299,49 @@ class ArrayWithLinearAlgebra(abc.ABC):
         offset: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trace.
+        This method Returns the sum along the specified diagonals of a matrix (or a
+        stack of matrices).
+
+        Parameters
+        ----------
+        self
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices. Should have a floating-point data type.
+        offset
+            Offset of the diagonal from the main diagonal. Can be both positive and
+            negative. Defaults to 0.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the traces and whose shape is determined by removing
+            the last two dimensions and storing the traces in the last array dimension.
+            For example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``,
+            then an output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where
+
+            ::
+
+            out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])
+
+            The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> y = x.trace()
+        >>> print(y)
+        ivy.array(5.)
+
+        >>> x = ivy.array([[1., 2., 4.], [6., 5., 3.]])
+        >>> y = ivy.Array.trace(x)
+        >>> print(y)
+        ivy.array(6.)
+        """
         return ivy.trace(self._data, offset=offset, out=out)
 
     def vecdot(

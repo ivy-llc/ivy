@@ -312,21 +312,19 @@ def test_numpy_cosh(
     )
 
 
-# deg2rad
-@handle_cmd_line_args
+# arctanh
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
+    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.deg2rad"
+        fn_name="ivy.functional.frontends.numpy.arctanh"
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-def test_numpy_deg2rad(
+def test_numpy_arctanh(
     dtype_and_x,
     dtype,
     where,
@@ -353,7 +351,7 @@ def test_numpy_deg2rad(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_tree="deg2rad",
+        fn_tree="arctanh",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
@@ -365,62 +363,7 @@ def test_numpy_deg2rad(
     )
 
 
-# arctan2
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_num_dims=1,
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.arctan2"
-    ),
-    native_array=helpers.array_bools(num_arrays=2),
-)
-def test_numpy_arctan2(
-    dtype_and_x,
-    dtype,
-    where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
-):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="arctan2",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
-        out=None,
-        where=where,
-        casting="same_kind",
-        order="k",
-        dtype=dtype,
-        subok=True,
-        test_values=False,
-    )
-
-
-# radians
+# rad2deg
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
@@ -429,11 +372,11 @@ def test_numpy_arctan2(
     as_variable=helpers.array_bools(num_arrays=1),
     with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.radians"
+        fn_name="ivy.functional.frontends.numpy.rad2deg"
     ),
     native_array=helpers.array_bools(num_arrays=1),
 )
-def test_numpy_radians(
+def test_numpy_rad2deg(
     dtype_and_x,
     dtype,
     where,
@@ -444,13 +387,6 @@ def test_numpy_radians(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -459,7 +395,7 @@ def test_numpy_radians(
         native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
-        fn_tree="radians",
+        fn_tree="rad2deg",
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
@@ -467,5 +403,5 @@ def test_numpy_radians(
         order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
+        test_values=True,
     )

@@ -4,12 +4,14 @@
 import ivy
 from typing import Optional, Union
 from ivy.func_wrapper import handle_nestable
+from ivy.exceptions import handle_exceptions
 
 # Extra #
 # ------#
 
 
 @handle_nestable
+@handle_exceptions
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -60,6 +62,7 @@ def cross_entropy(
 
 
 @handle_nestable
+@handle_exceptions
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -160,6 +163,7 @@ def binary_cross_entropy(
 
 
 @handle_nestable
+@handle_exceptions
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],

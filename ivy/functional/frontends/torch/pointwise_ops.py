@@ -102,6 +102,26 @@ def bitwise_and(input, other, *, out=None):
     return ivy.bitwise_and(input, other, out=out)
 
 
+def bitwise_not(input, *, out=None):
+    return ivy.bitwise_invert(input, out=out)
+
+
+def bitwise_xor(input, other, *, out=None):
+    return ivy.bitwise_xor(input, other, out=out)
+
+
+def bitwise_or(input, other, *, out=None):
+    return ivy.bitwise_or(input, other, out=out)
+
+
+def bitwise_left_shift(input, other, *, out=None):
+    return ivy.bitwise_left_shift(input, other, out=out)
+
+
+def bitwise_right_shift(input, other, *, out=None):
+    return ivy.bitwise_right_shift(input, other, out=out)
+
+
 def log10(input, *, out=None):
     return ivy.log10(input, out=out)
 
@@ -120,3 +140,19 @@ def sign(input, *, out=None):
 
 def absolute(input, *, out=None):
     return ivy.abs(input, out=out)
+
+
+def logical_not(input, *, out=None):
+    return ivy.logical_not(input, out=out)
+
+
+def logical_and(input, other, *, out=None):
+    return ivy.logical_and(input, other, out=out)
+
+
+def logical_or(input, other, *, out=None):
+    return ivy.logical_or(input, other, out=out)
+
+
+def logical_xor(input, other, *, out=None):
+    return ivy.logical_xor(input, other, out=out)
