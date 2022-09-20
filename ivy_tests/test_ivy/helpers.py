@@ -207,9 +207,8 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     if full:
         return valid_dtypes[index:]
     if key is None:
-        return draw(st.sampled_from(valid_dtypes[index:]))
-    ret = draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))
-    return [ret]
+        return [draw(st.sampled_from(valid_dtypes[index:]))]
+    return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]
 
 
 @st.composite
@@ -2436,9 +2435,6 @@ def dtype_and_values(
                 )
             )
         )
-    if num_arrays == 1:
-        dtype = dtype[0] if isinstance(dtype, list) else dtype
-        values = values[0]
     if ret_shape:
         return dtype, values, shape
     return dtype, values
@@ -2982,10 +2978,10 @@ def array_values(
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
 
-    array = np.array(values)
+    array = np.array(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
-        array = array.reshape(shape)
-    return array.tolist()
+        return array.reshape(shape)
+    return array
 
 
 @st.composite
@@ -3221,7 +3217,7 @@ def get_bounds(draw, *, dtype):
             low, high = values[0], values[1]
         if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
             return draw(get_bounds(dtype=dtype))
-    return low, high
+    return [low, high]
 
 
 @st.composite
