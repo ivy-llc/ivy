@@ -458,6 +458,40 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     return draw(st.integers(min_value, max_value))
 
 
+@st.composite
+def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+    """Draws integers or floats with a safety factor
+    applied to values.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_value
+        minimum value of integers generated.
+    max_value
+        maximum value of integers generated.
+    safety_factor
+        default = 0.95. Only values which are 95% or less than the edge of
+        the limit for a given dtype are generated.
+
+    Returns
+    -------
+    ret
+        integer or float.
+    """
+
+    return draw(
+        ints(min_value=int(min_value),
+             max_value=int(max_value),
+             safety_factor=safety_factor)
+        | floats(min_value=min_value,
+                 max_value=max_value,
+                 safety_factor=safety_factor)
+    )
+
+
 def assert_all_close(
     ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
@@ -2533,6 +2567,7 @@ def array_n_indices_n_axis(
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
+    first_dimension_only=False,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -2607,12 +2642,15 @@ def array_n_indices_n_axis(
             )
         )
     else:
+        max_axis = max(x_shape[axis] - 1, 0)
+        if first_dimension_only:
+            max_axis = max(x_shape[0] - 1, 0)
         indices_dtype, indices = draw(
             dtype_and_values(
                 available_dtypes=indices_dtypes,
                 allow_inf=False,
                 min_value=0,
-                max_value=max(x_shape[axis] - 1, 0),
+                max_value=max_axis,
                 min_num_dims=min_num_dims,
                 max_num_dims=max_num_dims,
                 min_dim_size=min_dim_size,

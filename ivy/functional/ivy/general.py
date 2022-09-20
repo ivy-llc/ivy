@@ -14,6 +14,7 @@ import numpy as np
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
     inputs_to_native_arrays,
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
@@ -1977,9 +1978,10 @@ def einops_reduce(
         b: ivy.array([-1.4, 6.21])
     }
     """
+    dtype = x.dtype
     x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
-    ret = ivy.array(ret)
+    ret = ivy.array(ret, dtype=dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -2142,7 +2144,7 @@ def set_min_base(val: float) -> None:
     ivy._MIN_BASE = val
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def stable_divide(
@@ -2863,7 +2865,7 @@ def scatter_nd(
     }
 
     scatter into an array, With : `ivy.Container` and `ivy.Array` input:
-    
+
     >>> indices = ivy.array([[4],[3],[1]])
     >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),\
                     b=ivy.array([200, 300, 400]))
@@ -2900,22 +2902,22 @@ def gather(
     params
         The array from which to gather values.
     indices
-        The array which indicates the indices that will be gathered along 
+        The array which indicates the indices that will be gathered along
         the specified axis.
     axis
         optional int, the axis from which to gather from. Default is -1.
     out
-        An array for writing the result to. It must have a shape 
+        An array for writing the result to. It must have a shape
         that the inputs broadcast to. (Optional)
 
     Returns
     -------
     ret
-        New array with the values gathered at the specified indices along the 
+        New array with the values gathered at the specified indices along the
         specified axis.
 
-    Both the description and the type hints above assumes an array input for 
-    simplicity, but this function is *nestable*, and therefore also accepts 
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
     :code:`ivy.Container` instances in place of any of the arguments.
 
     Examples
@@ -2961,7 +2963,7 @@ def gather(
     }
 
     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-    
+
     >>> x = ivy.Container(a = ivy.array([0., 1., 2.]), \
                           b = ivy.array([4., 5., 6.]))
     >>> y = ivy.array([0, 1])
@@ -2972,7 +2974,7 @@ def gather(
     }
 
     """
-    return current_backend(params).gather(params, indices, axis, out=out)
+    return current_backend(params).gather(params, indices, axis=axis, out=out)
 
 
 @to_native_arrays_and_back
