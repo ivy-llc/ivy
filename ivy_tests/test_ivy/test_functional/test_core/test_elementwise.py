@@ -2390,4 +2390,5 @@ def test_trunc_divide(
         fw=fw,
         fn_name="trunc_divide",
         x1=x1,
-        x2=x2)
+        x2=x2,
+    )
