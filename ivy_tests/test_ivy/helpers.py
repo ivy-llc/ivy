@@ -481,7 +481,6 @@ def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     ret
         integer or float.
     """
-
     return draw(
         ints(
             min_value=int(min_value),
