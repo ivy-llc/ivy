@@ -1233,7 +1233,7 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
 @handle_cmd_line_args
 @given(
     x_val_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
