@@ -1,4 +1,3 @@
-# For Review
 # global
 import numpy as np
 import torch
@@ -14,8 +13,11 @@ from ivy import (
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
 # noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
-
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+)
 
 # Array API Standard #
 # -------------------#
@@ -71,6 +73,9 @@ arange.support_native_out = True
 arange.unsupported_dtypes = ("float16",)
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
     object_in: Union[torch.Tensor, np.ndarray, List[float], Tuple[float]],
     /,
@@ -87,11 +92,12 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
+            return torch.as_tensor(object_in).clone().detach().to(device)
         else:
-            return torch.as_tensor(object_in, dtype=dtype).to(device)
+            return torch.as_tensor(object_in).to(device)
+
+        dtype = default_dtype(item=object_in, as_native=True)
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))
@@ -219,7 +225,7 @@ def full(
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     if isinstance(shape, int):
         shape = (shape,)
     return torch.full(
@@ -243,7 +249,7 @@ def full_like(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 

@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -16,6 +17,7 @@ from ivy.func_wrapper import (
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """Returns the unique elements of an input array ``x``, the first occurring indices
     for each unique element in ``x``, the indices from the set of unique elements that
@@ -250,6 +252,7 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """Returns the unique elements of an input array ``x``, and the indices from the
      set of unique elements that reconstruct ``x``.
@@ -349,6 +352,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -403,6 +407,7 @@ def unique_values(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     """
     Returns the unique elements of an input array ``x`` and the corresponding counts for

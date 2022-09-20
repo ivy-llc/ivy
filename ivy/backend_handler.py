@@ -241,10 +241,10 @@ def set_backend(backend: str):
     <class 'jaxlib.xla_extension.DeviceArray'>
 
     """
-    if isinstance(backend, str) and backend not in _backend_dict:
-        raise ValueError(
-            "backend must be one from {}".format(list(_backend_dict.keys()))
-        )
+    ivy.assertions.check_false(
+        isinstance(backend, str) and backend not in _backend_dict,
+        "backend must be one from {}".format(list(_backend_dict.keys())),
+    )
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     if not backend_stack:
@@ -457,11 +457,13 @@ FW_DICT = {
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
-        if len(excluded) == 4:
-            raise Exception(
-                "Unable to select backend, all backends are either excluded "
-                "or not installed."
-            )
+        ivy.assertions.check_equal(
+            len(excluded),
+            4,
+            inverse=True,
+            message="""Unable to select backend, all backends are excluded,\
+            or not installed.""",
+        )
         f = np.random.choice(
             [f_srt for f_srt in list(FW_DICT.keys()) if f_srt not in excluded]
         )

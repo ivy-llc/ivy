@@ -860,34 +860,6 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.floor_divide(self._data, x2, out=out)
 
-    def floormod(
-        self: ivy.Array,
-        x: Union[ivy.Array, ivy.NativeArray],
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
-        """
-        ivy.Array instance method variant of ivy.floormod. This method simply wraps the
-        function, and so the docstring for ivy.floormod also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        x
-            input array for the denominator
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            An array of the same shape and type as x, with the elements floor modded.
-
-        """
-        return ivy.floormod(self, x, out=out)
-
     def greater(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
@@ -1888,6 +1860,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise differences. The returned array
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.subtract(y)
+        >>> print(z)
+        ivy.array([-3, -3, -3])
         """
         return ivy.subtract(self._data, x2, out=out)
 
@@ -1995,3 +1975,65 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the Gauss error of ``self``.
         """
         return ivy.erf(self._data, out=out)
+
+    def deg2rad(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.deg2rad.
+        This method simply wraps the function, and so the docstring
+        for ivy.deg2rad also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. to be converted from degrees to radians.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise conversion from degrees to radians.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x=ivy.array([90,180,270,360])
+        >>> y=x.deg2rad()
+        >>> print(y)
+        ivy.array([1.57, 3.14, 4.71, 6.28])
+
+        """
+        return ivy.deg2rad(self._data, out=out)
+
+    def rad2deg(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.rad2deg.
+        This method simply wraps the function, and so the docstring
+        for ivy.rad2deg also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. to be converted from degrees to radians.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise conversion from radians to degrees.
+
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x=ivy.array([1,5,8,10])
+        >>> y=x.rad2deg()
+        >>> print(y)
+        ivy.array([ 57.3, 286. , 458. , 573. ])
+
+        """
+        return ivy.rad2deg(self._data, out=out)

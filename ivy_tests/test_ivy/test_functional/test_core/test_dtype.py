@@ -1,8 +1,5 @@
 """Collection of tests for unified dtype functions."""
 
-from functools import reduce  # for making strategy
-from operator import mul  # for making strategy
-from typing import Tuple
 
 # global
 import numpy as np
@@ -36,88 +33,6 @@ def test_dtype_instances(device):
     assert ivy.exists(ivy.bool)
 
 
-# Functions to use in strategy #
-# ---------------------------- #
-
-# from array-api repo
-def _broadcast_shapes(shape1, shape2):
-    """Broadcasts `shape1` and `shape2`"""
-    N1 = len(shape1)
-    N2 = len(shape2)
-    N = max(N1, N2)
-    shape = [None for _ in range(N)]
-    i = N - 1
-    while i >= 0:
-        n1 = N1 - N + i
-        if N1 - N + i >= 0:
-            d1 = shape1[n1]
-        else:
-            d1 = 1
-        n2 = N2 - N + i
-        if N2 - N + i >= 0:
-            d2 = shape2[n2]
-        else:
-            d2 = 1
-
-        if d1 == 1:
-            shape[i] = d2
-        elif d2 == 1:
-            shape[i] = d1
-        elif d1 == d2:
-            shape[i] = d1
-        else:
-            raise Exception("Broadcast error")
-
-        i = i - 1
-
-    return tuple(shape)
-
-
-# from array-api repo
-def broadcast_shapes(*shapes):
-    if len(shapes) == 0:
-        raise ValueError("shapes=[] must be non-empty")
-    elif len(shapes) == 1:
-        return shapes[0]
-    result = _broadcast_shapes(shapes[0], shapes[1])
-    for i in range(2, len(shapes)):
-        result = _broadcast_shapes(result, shapes[i])
-    return result
-
-
-# np.prod and others have overflow and math.prod is Python 3.8+ only
-def prod(seq):
-    return reduce(mul, seq, 1)
-
-
-# from array-api repo
-def mutually_broadcastable_shapes(
-    num_shapes: int,
-    *,
-    base_shape: Tuple[int, ...] = (),
-    min_dims: int = 1,
-    max_dims: int = 4,
-    min_side: int = 1,
-    max_side: int = 4,
-):
-    if max_dims is None:
-        max_dims = min(max(len(base_shape), min_dims) + 5, 32)
-    if max_side is None:
-        max_side = max(base_shape[-max_dims:] + (min_side,)) + 5
-    return (
-        helpers.nph.mutually_broadcastable_shapes(
-            num_shapes=num_shapes,
-            base_shape=base_shape,
-            min_dims=min_dims,
-            max_dims=max_dims,
-            min_side=min_side,
-            max_side=max_side,
-        )
-        .map(lambda BS: BS.input_shapes)
-        .filter(lambda shapes: all(prod(i for i in s if i > 0) < 1000 for s in shapes))
-    )
-
-
 # for data generation in multiple tests
 dtype_shared = st.shared(st.sampled_from(ivy_np.valid_dtypes), key="dtype")
 
@@ -142,21 +57,32 @@ def dtypes_shared(draw, num_dtypes):
 # --------------------------------- #
 
 
+@st.composite
+def _astype_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            small_abs_safety_factor=4,
+            large_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
+    )
+
+    cast_dtype = draw(
+        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype, x)
+    )
+    return dtype, x, cast_dtype
+
+
 # astype
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-        num_arrays=1,
-        small_value_safety_factor=1.5,
-        large_value_safety_factor=10,
-    ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype_and_x_and_cast_dtype=_astype_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="astype"),
 )
 def test_astype(
-    dtype_and_x,
-    dtype,
+    dtype_and_x_and_cast_dtype,
     with_out,
     as_variable,
     num_positional_args,
@@ -165,7 +91,7 @@ def test_astype(
     instance_method,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, cast_dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -176,8 +102,10 @@ def test_astype(
         instance_method=instance_method,
         fw=fw,
         fn_name="astype",
+        rtol_=1e-3,
+        atol_=1e-3,
         x=np.asarray(x, dtype=input_dtype),
-        dtype=dtype,
+        dtype=cast_dtype,
     )
 
 
@@ -185,7 +113,7 @@ def test_astype(
 @st.composite
 def broadcastable_arrays(draw, dtypes):
     num_arrays = st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays")
-    shapes = draw(num_arrays.flatmap(mutually_broadcastable_shapes))
+    shapes = draw(num_arrays.flatmap(helpers.mutually_broadcastable_shapes))
     dtypes = draw(dtypes)
     arrays = []
     for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
@@ -226,23 +154,9 @@ def test_broadcast_arrays(
     )
 
 
-# broadcast_to
-@st.composite
-def array_and_broadcastable_shape(draw, dtype):
-    in_shape = draw(helpers.nph.array_shapes(min_dims=1, max_dims=4))
-    x = draw(helpers.nph.arrays(shape=in_shape, dtype=dtype))
-    to_shape = draw(
-        mutually_broadcastable_shapes(1, base_shape=in_shape)
-        .map(lambda S: S[0])
-        .filter(lambda s: broadcast_shapes(in_shape, s) == s),
-        label="shape",
-    )
-    return x, to_shape
-
-
 @handle_cmd_line_args
 @given(
-    array_and_shape=array_and_broadcastable_shape(dtype_shared),
+    array_and_shape=helpers.array_and_broadcastable_shape(dtype_shared),
     input_dtype=dtype_shared,
     num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
 )
@@ -310,9 +224,10 @@ def test_can_cast(
 
 @st.composite
 def _array_or_type(draw, float_or_int):
-    valid_dtypes = {"float": ivy_np.valid_float_dtypes, "int": ivy_np.valid_int_dtypes}[
-        float_or_int
-    ]
+    valid_dtypes = {
+        "float": draw(helpers.get_dtypes("float")),
+        "int": draw(helpers.get_dtypes("integer")),
+    }[float_or_int]
     return draw(
         st.sampled_from(
             (
@@ -359,9 +274,9 @@ def test_finfo(
     if not ivy.exists(ret):
         return
     mach_lims, mach_lims_np = ret
-    assert mach_lims.min == mach_lims_np.min
-    assert mach_lims.max == mach_lims_np.max
-    assert mach_lims.eps == mach_lims_np.eps
+    assert np.allclose(mach_lims.min, mach_lims_np.min, rtol=1e-2, atol=1e-2)
+    assert np.allclose(mach_lims.max, mach_lims_np.max, rtol=1e-2, atol=1e-2)
+    assert np.allclose(mach_lims.eps, mach_lims_np.eps, rtol=1e-2, atol=1e-2)
     assert mach_lims.bits == mach_lims_np.bits
 
 
@@ -729,7 +644,7 @@ def test_is_int_dtype(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=ivy.valid_dtypes,
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
     ),

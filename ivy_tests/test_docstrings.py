@@ -1,5 +1,10 @@
 # global
 import warnings
+import re
+from contextlib import redirect_stdout
+from io import StringIO
+import numpy as np
+import sys
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
@@ -7,6 +12,195 @@ import pytest
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+
+
+# function that trims white spaces from docstrings
+def trim(*, docstring):
+    """Trim function from PEP-257"""
+    if not docstring:
+        return ""
+    # Convert tabs to spaces (following the normal Python rules)
+    # and split into a list of lines:
+    lines = docstring.expandtabs().splitlines()
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxsize
+    for line in lines[1:]:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = [lines[0].strip()]
+    if indent < sys.maxsize:
+        for line in lines[1:]:
+            trimmed.append(line[indent:].rstrip())
+    # Strip off trailing and leading blank lines:
+    while trimmed and not trimmed[-1]:
+        trimmed.pop()
+    while trimmed and not trimmed[0]:
+        trimmed.pop(0)
+
+    # Current code/unittests expects a line return at
+    # end of multiline docstrings
+    # workaround expected behavior from unittests
+    if "\n" in docstring:
+        trimmed.append("")
+
+    # Return a single string:
+    return "\n".join(trimmed)
+
+
+def check_docstring_examples_run(
+    *, fn, from_container=False, from_array=False, num_sig_fig=3
+):
+    """Performs docstring tests for a given function.
+
+    Parameters
+    ----------
+    fn
+        Callable function to be tested.
+    from_container
+        if True, check docstring of the function as a method of an Ivy Container.
+    from_array
+        if True, check docstring of the function as a method of an Ivy Array.
+    num_sig_fig
+        Number of significant figures to check in the example.
+
+    Returns
+    -------
+    None if the test passes, else marks the test as failed.
+    """
+    if not hasattr(fn, "__name__"):
+        return True
+    fn_name = fn.__name__
+    if fn_name not in ivy.backend_handler.ivy_original_dict:
+        return True
+
+    if from_container:
+        docstring = getattr(
+            ivy.backend_handler.ivy_original_dict["Container"], fn_name
+        ).__doc__
+    elif from_array:
+        docstring = getattr(
+            ivy.backend_handler.ivy_original_dict["Array"], fn_name
+        ).__doc__
+    else:
+        docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
+
+    if docstring is None:
+        return True
+
+    # removing extra new lines and trailing white spaces from the docstrings
+    trimmed_docstring = trim(docstring=docstring)
+    trimmed_docstring = trimmed_docstring.split("\n")
+
+    # end_index: -1, if print statement is not found in the docstring
+    end_index = -1
+
+    # parsed_output is set as an empty string to manage functions with multiple inputs
+    parsed_output = ""
+
+    # parsing through the docstrings to find lines with print statement
+    # following which is our parsed output
+    sub = ">>> print("
+    for index, line in enumerate(trimmed_docstring):
+        if sub in line:
+            end_index = trimmed_docstring.index("", index)
+            p_output = trimmed_docstring[index + 1 : end_index]
+            p_output = ("").join(p_output).replace(" ", "")
+            if parsed_output != "":
+                parsed_output += ","
+            parsed_output += p_output
+
+    if end_index == -1:
+        return True
+
+    executable_lines = [
+        line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
+    ]
+
+    # noinspection PyBroadException
+    f = StringIO()
+    with redirect_stdout(f):
+        for line in executable_lines:
+            # noinspection PyBroadException
+            try:
+                if f.getvalue() != "" and f.getvalue()[-2] != ",":
+                    print(",")
+                exec(line)
+            except Exception as e:
+                print(e, " ", ivy.current_backend_str(), " ", line)
+
+    output = f.getvalue()
+    output = output.rstrip()
+    output = output.replace(" ", "").replace("\n", "")
+    output = output.rstrip(",")
+
+    # handling cases when the stdout contains ANSI colour codes
+    # 7-bit C1 ANSI sequences
+    ansi_escape = re.compile(
+        r"""
+    \x1B  # ESC
+    (?:   # 7-bit C1 Fe (except CSI)
+        [@-Z\\-_]
+    |     # or [ for CSI, followed by a control sequence
+        \[
+        [0-?]*  # Parameter bytes
+        [ -/]*  # Intermediate bytes
+        [@-~]   # Final byte
+    )
+    """,
+        re.VERBOSE,
+    )
+
+    output = ansi_escape.sub("", output)
+
+    # print("Output: ", output)
+    # print("Putput: ", parsed_output)
+
+    # assert output == parsed_output, "Output is unequal to the docstrings output."
+    sig_fig = float("1e-" + str(num_sig_fig))
+    numeric_pattern = re.compile(
+        r"""
+            [\{\}\(\)\[\]]|\w+:
+        """,
+        re.VERBOSE,
+    )
+    num_output = output.replace("ivy.array", "")
+    num_output = numeric_pattern.sub("", num_output)
+    num_parsed_output = parsed_output.replace("ivy.array", "")
+    num_parsed_output = numeric_pattern.sub("", num_parsed_output)
+    num_output = num_output.split(",")
+    num_parsed_output = num_parsed_output.split(",")
+    docstr_result = True
+    for (doc_u, doc_v) in zip(num_output, num_parsed_output):
+        try:
+            docstr_result = np.allclose(
+                np.nan_to_num(complex(doc_u)),
+                np.nan_to_num(complex(doc_v)),
+                rtol=sig_fig,
+            )
+        except Exception:
+            if str(doc_u) != str(doc_v):
+                docstr_result = False
+        if not docstr_result:
+            print(
+                "output for ",
+                fn_name,
+                " on run: ",
+                output,
+                "\noutput in docs :",
+                parsed_output,
+                "\n",
+                doc_u,
+                " != ",
+                doc_v,
+                "\n",
+            )
+            ivy.warn(
+                "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
+            )
+            break
+    return docstr_result
 
 
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
@@ -27,6 +221,7 @@ def test_docstrings(backend):
         "random_uniform",
         "randint",
         "shuffle",
+        "dev",
         "num_gpus",
         "current_backend",
         "get_backend",
@@ -41,6 +236,7 @@ def test_docstrings(backend):
         "total_mem_on_dev",
         "used_mem_on_dev",
         "percent_used_mem_on_dev",
+        "function_supported_dtypes",
         "function_unsupported_dtypes",
         "randint",
         "unique_counts",
@@ -75,7 +271,7 @@ def test_docstrings(backend):
                         or helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
-                        or helpers.docstring_examples_run(fn=method, from_array=True)
+                        or check_docstring_examples_run(fn=method, from_array=True)
                     ):
                         continue
                     success = False
@@ -85,7 +281,7 @@ def test_docstrings(backend):
                     if (
                         method_name in skip_arr_cont
                         or helpers.gradient_incompatible_function(fn=method)
-                        or helpers.docstring_examples_run(fn=method, from_array=True)
+                        or check_docstring_examples_run(fn=method, from_array=True)
                     ):
                         continue
                     success = False
@@ -100,9 +296,7 @@ def test_docstrings(backend):
                         or helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
-                        or helpers.docstring_examples_run(
-                            fn=method, from_container=True
-                        )
+                        or check_docstring_examples_run(fn=method, from_container=True)
                     ):
                         continue
                     success = False
@@ -112,9 +306,7 @@ def test_docstrings(backend):
                     if (
                         method_name in skip_arr_cont
                         or helpers.gradient_incompatible_function(fn=method)
-                        or helpers.docstring_examples_run(
-                            fn=method, from_container=True
-                        )
+                        or check_docstring_examples_run(fn=method, from_container=True)
                     ):
                         continue
                     success = False
@@ -124,7 +316,7 @@ def test_docstrings(backend):
             if (
                 k in to_skip
                 or helpers.gradient_incompatible_function(fn=v)
-                or helpers.docstring_examples_run(fn=v)
+                or check_docstring_examples_run(fn=v)
             ):
                 continue
             success = False

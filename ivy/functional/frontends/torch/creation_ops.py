@@ -51,3 +51,20 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
     if requires_grad:
         return ivy.variable(ret)
     return ret
+
+
+def empty(
+    size,
+    *,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False,
+    memory_format=None
+):
+    ret = ivy.empty(shape=size, dtype=dtype, device=device, out=out)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret

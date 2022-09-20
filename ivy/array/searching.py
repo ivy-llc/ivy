@@ -139,12 +139,10 @@ class ArrayWithSearching(abc.ABC):
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)
 
-    def indices_where(
-        self: ivy.Array, *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None
-    ) -> ivy.Array:
+    def argwhere(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.indices_where. This method simply
-        wraps the function, and so the docstring for ivy.indices_where also applies
+        ivy.Array instance method variant of ivy.argwhere. This method simply
+        wraps the function, and so the docstring for ivy.argwhere also applies
         to this method with minimal changes.
 
         Parameters
@@ -161,4 +159,4 @@ class ArrayWithSearching(abc.ABC):
             Indices for where the boolean array is True.
 
         """
-        return ivy.indices_where(self, out=out)
+        return ivy.argwhere(self._data, out=out)
