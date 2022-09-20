@@ -523,7 +523,7 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy=copy, out=out)
+    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
