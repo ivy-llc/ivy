@@ -853,7 +853,7 @@ def _get_nested_np_arrays(nest):
     -------
          Items found, indices, and total number of arrays found
     """
-    indices = ivy.nested_indices_where(nest, lambda x: isinstance(x, np.ndarray))
+    indices = ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
     ret = ivy.multi_index_nest(nest, indices)
     return ret, indices, len(ret)
 
