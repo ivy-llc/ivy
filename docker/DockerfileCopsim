@@ -32,5 +32,5 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,display
 
 RUN git clone https://github.com/stepjam/PyRep.git && \
     cd PyRep && \
-    pip3 install -r requirements/requirements.txt && \
+    pip3 install -r requirements.txt && \
     python3 setup.py install
