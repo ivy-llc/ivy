@@ -59,6 +59,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#macos">MacOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-up-testing">Setting Up Testing</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#more-detailed-hypothesis-logs">More Detailed Hypothesis Logs</a></li>
 </ul>
 </li>
@@ -404,6 +405,46 @@ $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &
 <p>For questions, please reach out on the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1308">setting up discussion</a>
 or on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
 </section>
+<section id="setting-up-testing">
+<h3>Setting Up Testing<a class="headerlink" href="#setting-up-testing" title="Permalink to this heading"></a></h3>
+<p>There are a couple of options to choose from when running ivy tests in PyCharm. To run a single unit test, e.g. <cite>test_abs</cite>,
+you can avail of the context menu in the PyCharm code editor by pressing the green ▶️ symbol which appears to the left
+of <cite>def test_abs(</cite>.</p>
+<a class="reference internal image-reference" href="../_images/pycharm_test_run_1.png"><img alt="../_images/pycharm_test_run_1.png" src="../_images/pycharm_test_run_1.png" style="width: 420px;" /></a>
+<p>You can then click ‘Run pytest for…’ or ‘Debug pytest for…’. Keyboard shortcuts for running the rest are displayed
+also. These screenshots are from a Mac, hence the shortcut for running a test is <code class="code docutils literal notranslate"><span class="pre">ctrl</span> <span class="pre">-</span> <span class="pre">shift</span> <span class="pre">-</span> <span class="pre">R</span></code>.</p>
+<a class="reference internal image-reference" href="../_images/pycharm_test_run_2.png"><img alt="../_images/pycharm_test_run_2.png" src="../_images/pycharm_test_run_2.png" style="width: 420px;" /></a>
+<p>The test run should pop up in a window at the bottom of the screen (or elsewhere, depending on your settings).</p>
+<a class="reference internal image-reference" href="../_images/pycharm_test_run_3.png"><img alt="../_images/pycharm_test_run_3.png" src="../_images/pycharm_test_run_3.png" style="width: 420px;" /></a>
+<p>To run all the tests in a file, press <code class="code docutils literal notranslate"><span class="pre">ctrl</span></code> - right click (on Mac) on the <code class="code docutils literal notranslate"><span class="pre">test_elementwise.py</span></code> open tab.
+A menu will appear in which you can find ‘Run pytest in test_elementwise.py…’</p>
+<a class="reference internal image-reference" href="../_images/pycharm_run_all_1.png"><img alt="../_images/pycharm_run_all_1.png" src="../_images/pycharm_run_all_1.png" style="width: 420px;" /></a>
+<p>Click this and you should see a progress bar of all the tests running in the file.</p>
+<a class="reference internal image-reference" href="../_images/pycharm_run_all_2.png"><img alt="../_images/pycharm_run_all_2.png" src="../_images/pycharm_run_all_2.png" style="width: 420px;" /></a>
+<p>It is also possible to run the entire set of ivy tests or the array api test suite using pre-written shell scripts that
+can be run from the ‘Terminal’ tab in PyCharm. There are a number of such shell scripts in <a class="reference external" href="https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI">ivy/run_tests_CLI</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>run_ivy_core_test.py
+run_ivy_nn_test.py
+run_ivy_stateful_test.py
+<span class="hll">run_tests.sh
+</span><span class="hll">test_array_api.sh
+</span>test_dependencies.py
+test_dependencies.sh
+<span class="hll">test_ivy_core.sh
+</span><span class="hll">test_ivy_nn.sh
+</span><span class="hll">test_ivy_stateful.sh
+</span></pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">run_tests.sh</span></code> - is run by typing <code class="code docutils literal notranslate"><span class="pre">./run_tests.sh</span></code> in the <code class="code docutils literal notranslate"><span class="pre">run_tests_CLI</span></code>. This runs all tests in</p></li>
+</ul>
+<p><code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests</span></code>.
+* <code class="code docutils literal notranslate"><span class="pre">test_array_api.sh</span></code> - is run by typing <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code>. This runs all
+array-api tests for a certain submodule in a certain backend.
+* <code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code> - is run by typing <code class="code docutils literal notranslate"><span class="pre">./test_ivy_core.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code>. This runs all
+ivy tests for a certain submodule in a certain backend in <code class="code docutils literal notranslate"><span class="pre">test_ivy/test_functional/test_core</span></code>.
+* <code class="code docutils literal notranslate"><span class="pre">test_ivy_nn.sh</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_ivy_stateful.sh</span></code> are run in a similar manner to <code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code>.</p>
+</section>
 <section id="more-detailed-hypothesis-logs">
 <h3>More Detailed Hypothesis Logs<a class="headerlink" href="#more-detailed-hypothesis-logs" title="Permalink to this heading"></a></h3>
 <p>For testing, we use the <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/#">Hypothesis</a> module for data generation.
@@ -459,7 +500,7 @@ This is because PyCharm by default turns off headers and summary’s while runni
 <ol class="arabic simple" start="5">
 <li><p>That’s it, you have just setup GitHub codespaces and can start developing Ivy. The configuration files installs all the required packages, extensions for you to get started quickly.</p></li>
 </ol>
-<p><strong>Opening an existing Codespaces</strong></p>
+<p><strong>Opening an existing Codespace</strong></p>
 <p>If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.</p>
 <p>There are 3 ways to connect your existing codespaces, you can use any of the approaches mentioned below.</p>
 <ol class="arabic simple">
