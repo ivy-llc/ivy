@@ -170,14 +170,10 @@ def test_numpy_argmax(
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.flatnonzero"
-    )
+    ),
 )
 def test_numpy_flatnonzero(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_and_x, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -196,28 +192,18 @@ def test_numpy_flatnonzero(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
     ),
     dtype_and_v=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
     ),
-    side=st.sampled_from(['left', 'right']),
+    side=st.sampled_from(["left", "right"]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.searchsorted"
-    )
+    ),
 )
 def test_numpy_searchsorted(
-    dtype_and_x,
-    dtype_and_v,
-    side,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_and_x, dtype_and_v, side, as_variable, native_array, num_positional_args, fw
 ):
     dtype_x, x = dtype_and_x
     dtype_v, v = dtype_and_v
@@ -233,5 +219,5 @@ def test_numpy_searchsorted(
         a=np.array(x, dtype=dtype_x),
         v=np.array(v, dtype=dtype_v),
         side=side,
-        sorter=np.argsort(np.array(x))
+        sorter=np.argsort(np.array(x)),
     )
