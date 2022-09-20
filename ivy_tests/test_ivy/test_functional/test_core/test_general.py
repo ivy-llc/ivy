@@ -596,46 +596,112 @@ def test_gather(
     )
 
 
+@st.composite
+def array_and_ndindices(
+    draw,
+    *,
+    array_dtypes,
+    indices_dtypes=ivy_np.valid_int_dtypes,
+    min_num_ndindices=1,
+    max_num_ndindices=10,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    x_dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=array_dtypes,
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+
+    # num_ndindices defines the number of elements to generate.
+    num_ndindices = draw(
+        helpers.ints(
+            min_value=min_num_ndindices,
+            max_value=max_num_ndindices,
+        )
+    )
+    # indices_dims defines how far into the array to index.
+    indices_dims = draw(
+        helpers.ints(
+            min_value=1,
+            max_value=len(x_shape),
+        )
+    )
+    indices = []
+    indices_dtype = draw(st.sampled_from(indices_dtypes))
+    if num_ndindices == 1:
+        index = draw(
+            helpers.ints(
+                min_value=0,
+                max_value=max(0, x_shape[0] - 1),
+            )
+        )
+        indices.append(index)
+    else:
+        for _ in range(num_ndindices):
+            nd_index = []
+            for j in range(indices_dims):
+                axis_index = draw(
+                    helpers.ints(
+                        min_value=0,
+                        max_value=max(0, x_shape[j] - 1),
+                    )
+                )
+                nd_index.append(axis_index)
+            indices.append(nd_index)
+    return [x_dtype, indices_dtype], x, indices
+
+
 # gather_nd
-# @given(
-#     params_n_ndindices=helpers.array_and_ndindices(
-#         allow_inf=False, min_num_dims=1, max_num_dims=5, min_dim_size=1,
-#  max_dim_size=10
-#     ),
-#     ndindices_dtype=st.sampled_from(["int32", "int64"]),
-#     as_variable=helpers.list_of_length(st.booleans(), 2),
-#     with_out=st.booleans(),
-#     num_positional_args=helpers.num_positional_args(fn_name="gather_nd"),
-#     native_array=helpers.list_of_length(st.booleans(), 2),
-#     container=helpers.list_of_length(st.booleans(), 2),
-#     instance_method=st.booleans(),
-# )
-# def test_gather_nd(
-#     params_n_ndindices,
-#     ndindices_dtype,
-#     as_variable,
-#     with_out,
-#     num_positional_args,
-#     native_array,
-#     container,
-#     instance_method,
-#     fw,
-# ):
-#     params, ndindices = params_n_ndindices
-#     params_dtype, params = params
-#     helpers.test_function(
-#         input_dtypes=[params_dtype, ndindices_dtype],
-#         as_variable_flags=as_variable,
-#         with_out=with_out,
-#         num_positional_args=num_positional_args,
-#         native_array_flags=native_array,
-#         container_flags=container,
-#         instance_method=instance_method,
-#         fw=fw,
-#         fn_name="gather_nd",
-#         params=np.asarray(params, dtype=params_dtype),
-#         indices=np.asarray(ndindices, dtype=ndindices_dtype),
-#     )
+@handle_cmd_line_args
+@given(
+    params_n_ndindices=array_and_ndindices(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_ndindices=1,
+        max_num_ndindices=10,
+        allow_inf=False,
+    ),
+    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
+    with_out=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="gather_nd"),
+    native_array=helpers.list_of_length(x=st.booleans(), length=2),
+    container=helpers.list_of_length(x=st.booleans(), length=2),
+    instance_method=st.booleans(),
+)
+def test_gather_nd(
+    params_n_ndindices,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    [params_dtype, ndindices_dtype], params, ndindices = params_n_ndindices
+    helpers.test_function(
+        input_dtypes=[params_dtype, ndindices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gather_nd",
+        params=np.asarray(params, dtype=params_dtype),
+        indices=np.asarray(ndindices, dtype=ndindices_dtype),
+    )
 
 
 # exists
@@ -668,21 +734,21 @@ def test_exists(x):
     x=st.one_of(
         st.none(),
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
+            available_dtypes=helpers.get_dtypes("numeric"),
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
         ),
-        st.sampled_from([ivy.array]),
+        st.sampled_from([lambda *args, **kwargs: None]),
     ),
     default_val=st.one_of(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_numeric_dtypes,
+            available_dtypes=helpers.get_dtypes("numeric"),
             allow_inf=False,
             min_num_dims=0,
             min_dim_size=2,
         ),
-        st.sampled_from([ivy.array]),
+        st.sampled_from([lambda *args, **kwargs: None]),
     ),
 )
 def test_default(x, default_val):

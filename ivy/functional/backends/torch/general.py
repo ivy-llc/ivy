@@ -62,9 +62,9 @@ def get_item(
     x: torch.Tensor,
     query: torch.Tensor,
 ) -> torch.Tensor:
-    if ivy.dtype(query, as_native=True) is torch.bool:
-        return x.__getitem__(query)
-    return x.__getitem__(query.to(torch.int64))
+    if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
+        return x.__getitem__(query.to(torch.int64))
+    return x.__getitem__(query)
 
 
 def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
@@ -120,7 +120,11 @@ def gather(
 
 
 def gather_nd(
-    params: torch.Tensor, indices: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    params: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     indices_shape = indices.shape
     params_shape = params.shape
