@@ -76,19 +76,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -440,9 +440,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># COO sparse array</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="n">coordinate</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="p">)</span>
+                <span class="n">coordinate</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">i</span><span class="p">]]))</span>
                 <span class="n">coordinate</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinate</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coo_indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span>
                 <span class="n">all_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coordinate</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
