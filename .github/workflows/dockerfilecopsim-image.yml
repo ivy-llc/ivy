@@ -16,4 +16,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build DockerfileCopsim
-      run: docker build . --file DockerfileCopsim --tag unifyai/ivy:copsim$(date +%s)
+      run: |
+      cd docker
+      docker build . --file DockerfileCopsim --tag unifyai/ivy:copsim$(date +%s)
