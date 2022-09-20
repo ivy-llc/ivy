@@ -1650,7 +1650,7 @@ def test_frontend_function(
     # create args
     if test_unsupported:
         try:
-            args, kwargs, _ = create_args_kwargs(
+            args, kwargs, _, _, _ = create_args_kwargs(
                 args_np=args_np,
                 arg_np_vals=arg_np_vals,
                 args_idxs=args_idxs,
@@ -1665,7 +1665,7 @@ def test_frontend_function(
         except Exception:
             return
     else:
-        args, kwargs, _ = create_args_kwargs(
+        args, kwargs, _, _, _ = create_args_kwargs(
             args_np=args_np,
             arg_np_vals=arg_np_vals,
             args_idxs=args_idxs,
@@ -1920,7 +1920,7 @@ def test_frontend_array_instance_method(
     # create args
     if test_unsupported:
         try:
-            args, kwargs, _ = create_args_kwargs(
+            args, kwargs, _, _, _ = create_args_kwargs(
                 args_np=args_np,
                 arg_np_vals=arg_np_vals,
                 args_idxs=args_idxs,
@@ -1935,7 +1935,7 @@ def test_frontend_array_instance_method(
         except Exception:
             return
     else:
-        args, kwargs, _ = create_args_kwargs(
+        args, kwargs, _, _, _ = create_args_kwargs(
             args_np=args_np,
             arg_np_vals=arg_np_vals,
             args_idxs=args_idxs,
