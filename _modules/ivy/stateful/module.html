@@ -76,19 +76,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/container.html">Container</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -750,10 +750,6 @@
 <span class="sd">        depth</span>
 <span class="sd">            The number of modules we want to step in. None for the value of</span>
 <span class="sd">            current module. Default is None.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">show_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
@@ -777,11 +773,6 @@
 <span class="sd">        flatten_key_chains</span>
 <span class="sd">            If set True, will return a flat (depth-1) container,</span>
 <span class="sd">            which all nested key-chains flattened. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ret</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
             <span class="n">kc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
@@ -810,10 +801,6 @@
 <span class="sd">        flatten_key_chain</span>
 <span class="sd">            If set True, will return return a flat (depth-1) container,</span>
 <span class="sd">            with all nested key-chains flattened. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">)</span> <span class="ow">or</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
@@ -854,10 +841,6 @@
 <span class="sd">        flatten_key_chains</span>
 <span class="sd">            If set True, will return a flat (depth-1) container,</span>
 <span class="sd">            which all nested key-chains flattened. Default is False.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
             <span class="n">upper_depth</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">upper_depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_depth</span><span class="p">())</span>
@@ -900,10 +883,6 @@
 <span class="sd">        expected_submod_rets</span>
 <span class="sd">            If given, will raise exception if submodule returns are</span>
 <span class="sd">            different from expected returns.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_rets</span> <span class="o">=</span> <span class="n">track_submod_rets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submod_depth</span> <span class="o">=</span> <span class="n">submod_depth</span>
@@ -916,13 +895,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_unset_submod_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Unset flags of the submodule.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Unset flags of the submodule.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_rets</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submod_depth</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submods_to_track</span> <span class="o">=</span> <span class="kc">None</span>
@@ -965,9 +938,6 @@
 <span class="sd">        ret</span>
 <span class="sd">            The return you want to add.</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
         <span class="n">sr</span> <span class="o">=</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">submod_rets</span>
@@ -982,10 +952,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check submodule returns with expected submodule returns.</span>
 <span class="sd">        Raise AssertError if returns are not close enough.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
         <span class="n">esr</span> <span class="o">=</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">expected_submod_rets</span>
