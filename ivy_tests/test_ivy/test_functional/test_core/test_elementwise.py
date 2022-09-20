@@ -1911,7 +1911,11 @@ def test_sin(
 # sinc
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="sinc"),
 )
 def test_sinc(
