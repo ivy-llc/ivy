@@ -345,13 +345,20 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 @handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=2,
+        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
+        min_num_dims=1,
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
         safety_factor_scale="log",
     ),
-    max_norm=st.floats(),
-    p=st.floats(),
+    max_norm_n_p=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
+        num_arrays=2,
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
+        safety_factor_scale="log",
+        shape=(),
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="clip_vector_norm"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -361,8 +368,7 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 )
 def test_clip_vector_norm(
     x,
-    max_norm,
-    p,
+    max_norm_n_p,
     as_variable,
     num_positional_args,
     with_out,
@@ -373,6 +379,7 @@ def test_clip_vector_norm(
     fw,
 ):
     dtype, x = x[0], x[1]
+    max_norm, p = max_norm_n_p[1]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -383,6 +390,8 @@ def test_clip_vector_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="clip_vector_norm",
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=dtype),
         max_norm=max_norm,
         p=p,
