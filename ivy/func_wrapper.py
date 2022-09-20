@@ -9,22 +9,22 @@ from typing import Callable
 
 
 wrapped_modules_n_classes = []
-NON_WRAPPED_METHODS = ['copy_nest','current_framework', 'current_backend_str', 'set_framework', 'get_framework',
-                       'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
-                       'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
+NON_WRAPPED_METHODS = ['copy_nest','current_backend', 'current_backend_str', 'set_backend', 'get_backend',
+                       'unset_backend', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
-                       'get_min_denominator', 'split_func_call_across_gpus', 'cache_fn', 'split_func_call',
-                       'compile', 'compile_graph', 'dev', 'dev', 'dev_to_str', 'dev_from_str', 'memory_on_dev',
-                       'gpu_is_available', 'num_gpus', 'tpu_is_available', 'dtype', 'dtype_to_str', 'cprint',
+                       'get_min_denominator', 'cache_fn', 'split_func_call',
+                       'compile', 'compile_graph', 'dev', 'as_ivy_dev', 'as_native_dev', 'memory_on_dev',
+                       'gpu_is_available', 'num_gpus', 'tpu_is_available', 'dtype', 'as_ivy_dtype', 'cprint',
                        'to_ivy_module', 'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling',
                        'get_compiled', 'index_nest', 'set_nest_at_index', 'map_nest_at_index', 'multi_index_nest',
-                       'set_nest_at_indices', 'map_nest_at_indices', 'nested_indices_where', 'map',
-                       'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'dtype_from_str','is_ivy_array',
+                       'set_nest_at_indices', 'map_nest_at_indices', 'nested_argwhere', 'map',
+                       'unset_default_device', 'closest_valid_dtype', 'default_dtype', 'as_native_dtype','is_ivy_array',
                        'inplace_update', 'inplace_increment', 'inplace_decrement']
 
 ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_native_array', 'is_ivy_array',
                          'is_variable']
-NESTED_ARRAY_RET_METHODS = ['unstack', 'split', 'promote_types_of_inputs']
+# NESTED_ARRAY_RET_METHODS = ['unstack', 'split', 'promote_types_of_inputs']
+NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
 
 FW_FN_KEYWORDS = {'numpy': [],
                   'jax': [],
