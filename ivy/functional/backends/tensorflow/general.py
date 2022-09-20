@@ -58,6 +58,8 @@ def current_backend_str():
 
 
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+    if not ivy.is_array(query):
+        return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
     if dtype is tf.bool:
         return tf.boolean_mask(x, query)
@@ -113,6 +115,7 @@ def gather(
 def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
