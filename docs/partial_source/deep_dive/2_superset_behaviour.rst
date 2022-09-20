@@ -6,8 +6,9 @@ Superset Behaviour
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
 .. _`superset behavior discussion`: https://github.com/unifyai/ivy/discussions/4367
 
-When implementing functions in Ivy, we are constantly faced with the question: which
-backend implementation should Ivy most closely follow?
+When implementing functions in Ivy, whether they are primary, compositional or mixed,
+we are constantly faced with the question: which backend implementation should Ivy most
+closely follow?
 
 Extending the Standard
 ----------------------
@@ -33,6 +34,13 @@ However, this is not always totally possible, and in some cases certain
 framework-specific features must be sacrificed, but usually it's possible to implement a
 very generalized function which covers most of the unique features among the
 corresponding functions in each framework.
+
+We strive to implement the superset for primary, compositional and mixed functions. In
+many cases compositional functions do not actually have corresponding backend-specific
+functions, but this is not always the case. For example, :code:`ivy.linear` is a
+fully compositional function, but :code:`torch.nn.functional.linear` also exists.
+We should therefore make sure the compositional :code:`ivy.linear` function includes all
+behaviours supported by :code:`torch.nn.functional.linear`.
 
 When the Superset is Too Much
 -----------------------------
