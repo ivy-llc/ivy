@@ -17,5 +17,10 @@ class Tensor:
     def Reshape(self, shape, name="Reshape"):
         return tf_frontend.Reshape(self.data, shape, name)
 
+
     def add(self, y, name="add"):
         return tf_frontend.add(self.data, y, name)
+
+
+    def abs(self, name="abs"):
+        return tf_frontend.abs(self.data, name)
