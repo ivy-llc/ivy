@@ -126,12 +126,12 @@ def test_array_equal(x0_n_x1_n_res, device, fw):
     dtype0, x0 = x0_n_x1_n_res[0][0], x0_n_x1_n_res[1][0]
     dtype1, x1 = x0_n_x1_n_res[0][1], x0_n_x1_n_res[1][1]
     # smoke test
-    x0 = ivy.array(x0, dtype=dtype0, device=device)
-    x1 = ivy.array(x1, dtype=dtype1, device=device)
-    res = ivy.array_equal(x0, x1)
+    x0_array = ivy.array(x0, dtype=dtype0, device=device)
+    x1_array = ivy.array(x1, dtype=dtype1, device=device)
+    res = ivy.array_equal(x0_array, x1_array)
     # type test
-    assert ivy.is_ivy_array(x0)
-    assert ivy.is_ivy_array(x1)
+    assert ivy.is_ivy_array(x0_array)
+    assert ivy.is_ivy_array(x1_array)
     assert isinstance(res, bool) or ivy.is_ivy_array(res)
     # value test
     assert res == np.array_equal(np.array(x0, dtype=dtype0), np.array(x1, dtype=dtype1))
@@ -174,6 +174,7 @@ def test_arrays_equal(x0_n_x1_n_res, device, fw):
             array_dtypes=helpers.get_dtypes("valid"),
             indices_dtypes=helpers.get_dtypes("integer"),
             disable_random_axis=True,
+            first_dimension_only=True,
         ),
         helpers.array_n_indices_n_axis(
             array_dtypes=helpers.get_dtypes("valid"),
@@ -344,13 +345,20 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 @handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=2,
+        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
+        min_num_dims=1,
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
         safety_factor_scale="log",
     ),
-    max_norm=st.floats(),
-    p=st.floats(),
+    max_norm_n_p=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
+        num_arrays=2,
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
+        safety_factor_scale="log",
+        shape=(),
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="clip_vector_norm"),
     as_variable=st.booleans(),
     with_out=st.booleans(),
@@ -360,8 +368,7 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
 )
 def test_clip_vector_norm(
     x,
-    max_norm,
-    p,
+    max_norm_n_p,
     as_variable,
     num_positional_args,
     with_out,
@@ -372,6 +379,7 @@ def test_clip_vector_norm(
     fw,
 ):
     dtype, x = x[0], x[1]
+    max_norm, p = max_norm_n_p[1]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -382,6 +390,8 @@ def test_clip_vector_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="clip_vector_norm",
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=dtype),
         max_norm=max_norm,
         p=p,
@@ -439,14 +449,14 @@ def test_clip_vector_norm(
     x=st.integers(min_value=1, max_value=10).flatmap(
         lambda n: st.tuples(
             helpers.dtype_and_values(
-                available_dtypes=ivy_np.valid_float_dtypes,
+                available_dtypes=helpers.get_dtypes("float"),
                 min_num_dims=1,
                 max_num_dims=1,
                 min_dim_size=n,
                 max_dim_size=n,
             ),
             helpers.dtype_and_values(
-                available_dtypes=ivy_np.valid_int_dtypes,
+                available_dtypes=helpers.get_dtypes("integer"),
                 min_value=0,
                 max_value=max(n - 1, 0),
                 min_num_dims=1,
@@ -473,11 +483,6 @@ def test_scatter_flat(
     fw,
 ):
     (val_dtype, vals), (ind_dtype, ind), size = x
-    if fw == "torch" and (
-        val_dtype in ["uint16", "uint32", "uint64"]
-        or ind_dtype in ["uint16", "uint32", "uint64"]
-    ):
-        return
     helpers.test_function(
         input_dtypes=[ind_dtype, val_dtype],
         as_variable_flags=as_variable,
@@ -970,7 +975,7 @@ def test_explicit_ivy_framework_handles(device):
 @handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=3,
         max_num_dims=3,

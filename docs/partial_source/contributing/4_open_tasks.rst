@@ -10,7 +10,7 @@ Open Tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
-.. _`functional/frontends/numpy/__init__.py`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
+.. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -262,7 +262,7 @@ from the files at this hierarchy:
 This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
 :code:`matrix_and_vector_products.py` seems like the most appropriate option. It is important to note that some functions
 require the :code:`np.linalg.[func]` namespace, as can gleamed from the numpy `reference API`_.
-These functions are listed out under the :code:`functional/frontends/numpy/__init__.py`_ imports. There are some
+These functions are listed out under the :code:`functional/frontends/numpy/__init__.py` `imports`_. There are some
 functions which have not been implemented yet, and are therefore commented out. Once you have finished the implementation of
 one of these functions, uncomment it from the list.
 

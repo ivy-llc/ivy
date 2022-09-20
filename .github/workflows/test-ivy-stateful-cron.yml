@@ -1,0 +1,72 @@
+name: test-stateful-ivy-cron
+on:
+  schedule:
+    - cron: '35 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+jobs:
+   run-nightly-tests:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout 🛎️Ivy
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+
+       - name: Download artifact
+         uses: dawidd6/action-download-artifact@v2
+         with:
+           github_token: ${{secrets.GITHUB_TOKEN}}
+           workflow: test-ivy-stateful-cron.yml
+           workflow_conclusion: ""
+           search_artifacts: true
+           name: hypothesis_zip
+           path: |
+             ivy/.hypothesis/
+         continue-on-error: true
+
+       - name: Unzip Hypothesis Examples
+         id: unzip
+         run: |
+           cd ivy/.hypothesis
+           unzip examples.zip
+           rm examples.zip
+         continue-on-error: true
+
+       - name: Create Hypothesis Directory
+         if: steps.unzip.outcome != 'success'
+         run: |
+           cd ivy
+           mkdir -p .hypothesis
+           cd .hypothesis
+           mkdir -p examples
+         continue-on-error: true
+
+       - name: Run Stateful Tests
+         id: tests
+         run: |
+           cd ivy
+           python run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}
+         continue-on-error: true
+
+       - name: Zip Hypothesis Examples
+         run: |
+           cd ivy/.hypothesis
+           zip -r examples.zip examples
+         continue-on-error: true
+
+       - name: Upload hypothesis
+         uses: actions/upload-artifact@v3
+         with:
+           name: hypothesis_zip
+           path: |
+             ivy/.hypothesis/examples.zip
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
