@@ -91,12 +91,8 @@ Test Skipping
 Certain tests may need to be skipped when running the array-api test suite. This could be due to a variety of reasons:
 
 #. the test function has a known issue which the `array-api test repository`_ developers are working on (e.g. :code:`test_asarray_arrays`)
-
 #. the function itself deviates from the standard (e.g. :code:`test_floor_divide`)
-
-#. there is an issue with the hypothesis test data generation i.e. a failed 'health check' (e.g.
-:code:`test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]`)
-
+#. there is an issue with the hypothesis test data generation i.e. a failed 'health check' (e.g. :code:`test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]`)
 #. tolerance issues when asserting output :code:`isequal()` (e.g. :code:`test_matrix_norm`)
 
 All the examples in this list except point 3 (which only occurs with tensorflow) refer to numpy functions, and the first
@@ -109,7 +105,6 @@ standard as possible. These issues have been raised in the array-api test repo a
 There are currently two ways to skip array-api tests:
 
 #. in :code:`ivy_tests/array_api_methods_to_test/<submodule>.txt` and
-
 #. in :code:`ivy_tests/skips.txt`
 
 The first method was implemented before the second. Each :code:`<submodule>.txt` file contains a comprehensive list
