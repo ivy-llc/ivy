@@ -103,13 +103,14 @@ class ArrayWithActivations(abc.ABC):
         """
         return ivy.softmax(self._data, axis=axis, out=out)
 
-    def softplus(self: ivy.Array,
-                 /,
-                 *,
-                 beta: Optional[Union[int, float]] = None,
-                 threshold: Optional[Union[int, float]] = None,
-                 out: Optional[ivy.Array] = None
-                 ) -> ivy.Array:
+    def softplus(
+        self: ivy.Array,
+        /,
+        *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.softplus. This method simply wraps the
         function, and so the docstring for ivy.softplus also applies to this method
