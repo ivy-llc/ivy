@@ -508,7 +508,7 @@ def test_scatter_flat(
     ).flatmap(
         lambda n: st.tuples(
             helpers.dtype_and_values(
-                available_dtypes=ivy_np.valid_numeric_dtypes,
+                available_dtypes=helpers.get_dtypes("numeric"),
                 shape=(n[1], n[0]),
             ),
             helpers.dtype_and_values(
@@ -1259,7 +1259,9 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     exclusive=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_ivy_array"),
 )
@@ -1323,7 +1325,9 @@ def test_is_array(
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="is_ivy_container"),
 )
 def test_is_ivy_container(
@@ -1348,7 +1352,7 @@ def test_is_ivy_container(
 @handle_cmd_line_args
 @given(
     dtypes_and_xs=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_dtypes, num_arrays=2, min_num_dims=1
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, min_num_dims=1
     ),
     equality_matrix=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="all_equal"),
@@ -1445,7 +1449,9 @@ def test_value_is_nan(x_n_include_inf_n_value):
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     include_infs=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="has_nans"),
 )
@@ -1458,8 +1464,7 @@ def test_has_nans(
     container,
     fw,
 ):
-    dtype = x_val_and_dtypes[0]
-    x = x_val_and_dtypes[1]
+    dtype, x = x_val_and_dtypes
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1633,7 +1638,7 @@ def test_set_min_base(x):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes, num_arrays=3, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=3, shared_dtype=True
     ),
     num_positional_args=helpers.num_positional_args(fn_name="stable_divide"),
 )
@@ -1657,10 +1662,19 @@ def test_stable_divide(
     )
 
 
+@st.composite  # ToDo remove when helpers.get_dtypes supports it
+def _get_valid_numeric_no_unsigned(draw):
+    return list(
+        set(draw(helpers.get_dtypes("numeric"))).difference(
+            draw(helpers.get_dtypes("unsigned"))
+        )
+    )
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=_get_valid_numeric_no_unsigned(),
         num_arrays=3,
         min_value=0,
         shared_dtype=True,
@@ -1671,10 +1685,6 @@ def test_stable_pow(
     dtype_and_x, as_variable, num_positional_args, native_array, container, fw
 ):
     input_dtype, x = dtype_and_x
-    for i in range(len(input_dtype)):
-        if input_dtype[i] in ["uint8", "uint16", "uint32", "uint64"]:
-            return
-    # assume(not (input_dtype[i] in ["uint8"] for i in range(len(input_dtype))))
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1741,7 +1751,9 @@ def test_set_tmp_dir():
 
 @handle_cmd_line_args
 @given(
-    x_val_and_dtypes=helpers.dtype_and_values(available_dtypes=ivy_np.valid_dtypes),
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="supports_inplace_updates"),
 )
 def test_supports_inplace_updates(
