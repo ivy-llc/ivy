@@ -891,6 +891,7 @@ def _get_nested_np_arrays(nest):
     ----------
     nest
         nest to search in.
+
     Returns
     -------
          Items found, indices, and total number of arrays found
@@ -936,7 +937,6 @@ def create_args_kwargs(
     Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
     keyword-arguments.
     """
-
     # create args
     num_arg_vals = len(arg_np_vals)
     arg_array_vals = [
