@@ -1141,6 +1141,12 @@ def bitwise_left_shift(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    in the standard.
+
     """
     return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
@@ -4661,6 +4667,10 @@ def round(
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
+    Note: PyTorch supports an additional argument :code:`decimals` for the
+    `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
+    It has been deliberately omitted here due to the imprecise
+    nature of the argument in :code:`torch.round`.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -5214,8 +5224,72 @@ def subtract(
     ret
         an array containing the element-wise differences.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.subtract.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.subtract(x, y)
+    >>> print(z)
+    ivy.array([-3, -3, -3])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> z = ivy.zeros((3, 3))
+    >>> ivy.subtract(x, y, out=z)
+    >>> print(z)
+    ivy.array([[-3.7, -2.5, -8.4],
+               [-4.1, -2.9, -8.8],
+               [-5. , -3.8, -9.7]])
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.subtract(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[-7.3],
+                [ 0.7],
+                [-7.9]]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                          b=ivy.array([4, 3, 2]))
+    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                          b=ivy.array([6, 5, 4]))
+    >>> z = ivy.subtract(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([-3, -3, -3]),
+        b: ivy.array([-2, -2, -2])
+    }
+
+    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                          b=ivy.array([[5.], [6.], [7.]]))
+    >>> z = ivy.subtract(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([[-2.9, -1.7, -7.6], 
+                      [-3.9, -2.7, -8.6], 
+                      [-4.9, -3.7, -9.6]]),
+        b: ivy.array([[-3.9, -2.7, -8.6], 
+                      [-4.9, -3.7, -9.6], 
+                      [-5.9, -4.7, -10.6]])
+    }
     """
-    return ivy.current_backend(x1).subtract(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).subtract(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
