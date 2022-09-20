@@ -975,7 +975,7 @@ def test_explicit_ivy_framework_handles(device):
 @handle_cmd_line_args
 @given(
     x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
         min_num_dims=3,
         max_num_dims=3,
