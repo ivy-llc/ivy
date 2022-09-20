@@ -46,7 +46,6 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
         -------
             The return of the function, with the nestable property handled correctly.
         """
-
         # This decorator should only be applied to ivy.asarray, so we know where
         # the container must be if there is one.
         cont_fn = getattr(ivy.Container, "static_" + fn_name)
@@ -230,9 +229,7 @@ def asarray(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
-
     """
-
     return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
 
 
