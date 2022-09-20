@@ -569,7 +569,7 @@ def sinc(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = x.astype(...)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
     return tf.experimental.numpy.sinc(x)
 
 
