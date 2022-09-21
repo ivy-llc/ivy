@@ -1018,7 +1018,7 @@ def clip_vector_norm(
     *,
     p: float = 2.0,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Clips (limits) the vector p-norm of an array.
 
     Parameters
@@ -1128,7 +1128,7 @@ def clip_matrix_norm(
     *,
     p: float = 2.0,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Clips (limits) the matrix norm of an array.
 
     Parameters
@@ -2239,7 +2239,6 @@ def stable_divide(
         b: ivy.array([0.857, 10.])
     }
     """
-    # noinspection PyProtectedMember
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
@@ -2272,7 +2271,6 @@ def stable_pow(
 
 
     """
-    # noinspection PyProtectedMember
     return (base + default(min_base, ivy._MIN_BASE)) ** exponent
 
 
@@ -2281,7 +2279,6 @@ def get_all_arrays_in_memory():
     """Gets all arrays which are currently alive."""
     all_arrays = list()
     for obj in gc.get_objects():
-        # noinspection PyBroadException
         try:
             if ivy.is_native_array(obj):
                 all_arrays.append(obj)
@@ -2561,7 +2558,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     query: Union[ivy.Array, ivy.NativeArray],
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].
 
@@ -2899,7 +2896,7 @@ def gather(
     *,
     axis: int = -1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Gather slices from params at axis according to indices.
 
     Parameters
@@ -2992,7 +2989,7 @@ def gather_nd(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Gather slices from params into a array with shape specified by indices.
 
     Parameters

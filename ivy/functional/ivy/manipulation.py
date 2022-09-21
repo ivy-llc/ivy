@@ -657,7 +657,7 @@ def roll(
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Optional[Union[int, Sequence[int]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1113,7 +1113,7 @@ def swapaxes(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Interchange two axes of an array.
 
     Parameters
@@ -1390,7 +1390,7 @@ def zero_pad(
     pad_width: Iterable[Tuple[int]],
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Pads an array with zeros.
 
     Parameters

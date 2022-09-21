@@ -150,7 +150,7 @@ def scaled_dot_product_attention(
     *,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Applies scaled dot product attention to inputs x using optional mask.
 
     Parameters
@@ -595,7 +595,7 @@ def conv1d_transpose(
     data_format: str = "NWC",
     dilations: int = 1,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
@@ -762,7 +762,7 @@ def conv2d_transpose(
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters
