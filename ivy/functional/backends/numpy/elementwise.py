@@ -72,10 +72,13 @@ def add(
     x2: Union[float, np.ndarray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.add(x1, x2, out=out)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return np.add(x1, x2)
 
 
 add.support_native_out = True
@@ -159,10 +162,7 @@ def bitwise_left_shift(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
-    ret = np.left_shift(x1, x2)
-    return np.where(
-        x2 >= np.iinfo(x1.dtype).bits, np.zeros(ret.shape, dtype=ret.dtype), ret
-    )
+    return np.left_shift(x1, x2)
 
 
 bitwise_left_shift.support_native_out = True
@@ -627,10 +627,13 @@ def subtract(
     x2: Union[float, np.ndarray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.subtract(x1, x2, out=out)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return np.subtract(x1, x2)
 
 
 subtract.support_native_out = True

@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
 # local
@@ -81,7 +81,10 @@ def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.linalg.eigh(x, out=out)
 
 
-eigh.unsupported_dtypes = ("float16",)
+eigh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 eigh.support_native_out = True
 
@@ -90,7 +93,10 @@ def eigvalsh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch
     return torch.linalg.eigvalsh(x, out=out)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 eigvalsh.support_native_out = True
 
@@ -231,7 +237,10 @@ def qr(
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(
@@ -278,7 +287,10 @@ def solve(
     return ret
 
 
-solve.unsupported_dtypes = ("float16",)
+solve.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def svd(
@@ -344,10 +356,10 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
-    if x1.dtype != x2.dtype:
-        x1, x2 = x1.type(dtype), x2.type(dtype)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    if dtype != "float64":
+        x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
 
 
 vecdot.support_native_out = True
@@ -355,7 +367,7 @@ vecdot.support_native_out = True
 
 def vector_norm(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

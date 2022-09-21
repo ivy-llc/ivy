@@ -259,10 +259,6 @@ def rem(x, y):
     return ivy.remainder(ivy.abs(x), ivy.abs(y)) * ivy.sign(x)
 
 
-
-def log1p(x):
-    return ivy.log1p(x)
-
 def sub(x, y):
     return ivy.subtract(x, y)
 
