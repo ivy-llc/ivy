@@ -119,7 +119,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :code:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 0., 0.])
         >>> y = ivy.array([0., 1., 0.])
@@ -167,6 +167,15 @@ class ArrayWithLinearAlgebra(abc.ABC):
         This method simply wraps the function, and so the docstring for
         ivy.inv also applies to this method with minimal changes.
 
+        Examples
+        --------
+
+        With :code:`ivy.Array` inputs:
+
+        >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+        >>> y = ivy.inv(x)
+        >>> print(y)
+        ivy.array([[-2., 1.],[1.5, -0.5]])
         """
         return ivy.inv(self._data, out=out)
 

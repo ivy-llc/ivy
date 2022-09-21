@@ -595,6 +595,19 @@ class ContainerWithLinearAlgebra(ContainerBase):
             determined by :ref:`type-promotion` and must have the
             same shape as ``x``.
 
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),\
+                              b=ivy.array([[4., 4.], [2., 1.]]))
+        >>> y = ivy.inv(x)
+        >>> print(y)
+        {
+            a: ivy.array([[-1, 0.25], [1., 0.]]),
+            b: ivy.array([-0.25, 1.], [0.5, -1.])
+        }
+
         """
         return self.static_inv(
             self,

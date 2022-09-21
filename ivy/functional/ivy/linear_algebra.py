@@ -642,13 +642,6 @@ def inv(
     --------
     With :code:`ivy.Array` inputs:
 
-    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-    >>> y = ivy.inv(x)
-    >>> print(y)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
-
-    Using optional output array
-
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> y = ivy.zeros(3)
     >>> ivy.inv(x, out=y)
@@ -670,15 +663,24 @@ def inv(
     ivy.array([[[-2., 1.],[1.5, -0.5]],
                [[-1.25, 0.75],[0.75, -0.25]]])
 
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),\
-                          b=ivy.array([[4., 4.], [2., 1.]]))
-    >>> y = ivy.inv(x)
+    Static method for Container
+    >>>  x = ivy.Container(a=ivy.array([[1., 1., 0.],\
+                        [4., 4., 1.], [2., 2.5, 1.]]),\
+                        b=ivy.array([[4., 4., 2.], [2., 1., 1.],\
+                        [1., 3., 2.]]), c=ivy.array([[2., 2., 1.],\
+                        [1.5, 2., 1.], [5., 5., 3.]]))
+    >>> y = ivy.Container.static_inv(x)
     >>> print(y)
     {
-        a: ivy.array([[-1, 0.25], [1., 0.]]),
-        b: ivy.array([-0.25, 1.], [0.5, -1.])
+        a: ivy.array([[-3., 2., -2.],
+                      [4., -2., 2.],
+                      [-4., 1., -0.]]),
+        b: ivy.array([[0.167, 0.333, -0.333],
+                      [0.5, -1., 0.],
+                      [-0.833, 1.33, 0.667]]),
+        c: ivy.array([[2.00e+00, -2.00e+00, 7.11e-16],
+                      [1.00e+00, 2.00e+00, -1.00e+00],
+                      [-5.00e+00, -0.00e+00, 2.00e+00]])
     }
 
     """
