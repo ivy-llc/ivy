@@ -37,8 +37,13 @@ class MaskedArray(np_frontend.ndarray):
         self._init_fill_value(fill_value)
         self._init_ndmin(ndmin)
         self._init_hard_mask(hard_mask)
-        self._init_shrink(shrink)
-        self._init_copy(copy)
+        # shrink
+        if shrink and not ivy.any(self._mask):
+            self._mask = ivy.array(False)
+        # copy
+        if copy:
+            self._data = ivy.copy_array(self._data)
+            self._mask = ivy.copy_array(self._mask)
         # TODO: init super class ndarray once it's fixed
 
     def _init_data(self, data, dtype, mask, keep_mask):
@@ -97,15 +102,6 @@ class MaskedArray(np_frontend.ndarray):
     def _init_hard_mask(self, hard_mask):
         ivy.assertions.check_isinstance(hard_mask, bool)
         self._hard_mask = hard_mask
-
-    def _init_shrink(self, shrink):
-        if shrink and not ivy.any(self._mask):
-            self._mask = ivy.array(False)
-
-    def _init_copy(self, copy):
-        if copy:
-            self._data = ivy.copy_array(self._data)
-            self._mask = ivy.copy_array(self._mask)
 
     # Properties #
     # ---------- #
