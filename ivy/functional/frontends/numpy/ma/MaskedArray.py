@@ -39,6 +39,7 @@ class MaskedArray(np_frontend.ndarray):
         self._init_hard_mask(hard_mask)
         self._init_shrink(shrink)
         self._init_copy(copy)
+        # TODO: init super class ndarray once it's fixed
 
     def _init_data(self, data, dtype, mask, keep_mask):
         if _is_masked_array(data):
@@ -117,17 +118,32 @@ class MaskedArray(np_frontend.ndarray):
     def mask(self):
         return self._mask
 
+    # TODO: impl and check read-only?
     @property
-    def dtype(self):
-        return self._dtype
+    def recordmask(self):
+        pass
 
     @property
     def fill_value(self):
         return self._fill_value
 
+    # TODO (read-only)
+    @property
+    def baseclass(self):
+        pass
+
+    # TODO (read-only)
+    @property
+    def sharedmask(self):
+        pass
+
     @property
     def hardmask(self):
         return self._hard_mask
+
+    @property
+    def dtype(self):
+        return self._dtype
 
     # Setter #
     # ------ #
@@ -136,11 +152,11 @@ class MaskedArray(np_frontend.ndarray):
     def mask(self, mask):
         self._init_mask(mask)
 
+    @fill_value.setter
+    def fill_value(self, fill_value):
+        self._init_fill_value(fill_value)
+
     @dtype.setter
     def dtype(self, mask):
         # TODO: check type casting
         pass
-
-    @fill_value.setter
-    def fill_value(self, fill_value):
-        self._init_fill_value(fill_value)
