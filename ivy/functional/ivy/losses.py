@@ -10,13 +10,13 @@ from ivy.exceptions import handle_exceptions
 # ------- #
 
 
-def _reduce_loss(red, true, log_pred, axis, out):
+def _reduce_loss(red, loss, axis, out):
     if red == "sum":
-        ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
+        ivy.negative(ivy.sum(loss, axis=axis, out=out), out=out)
     elif red == "mean":
-        ivy.negative(ivy.mean(log_pred * true, axis=axis, out=out), out=out)
+        ivy.negative(ivy.mean(loss, axis=axis, out=out), out=out)
     else:
-        return ivy.negative(log_pred * true, out=out)
+        return ivy.negative(loss, out=out)
 
 
 # Extra #
@@ -73,7 +73,7 @@ def cross_entropy(
     ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    return _reduce_loss(reduction, true, log_pred, axis, out)
+    return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
 @handle_nestable
@@ -173,9 +173,11 @@ def binary_cross_entropy(
     """
     ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    return ivy.negative(
+    return _reduce_loss(
+        reduction,
         ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
-        out=out,
+        None,
+        out,
     )
 
 

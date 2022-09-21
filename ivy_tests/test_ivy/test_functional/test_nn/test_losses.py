@@ -94,12 +94,14 @@ def test_cross_entropy(
         max_num_dims=1,
         min_dim_size=2,
     ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
     epsilon=helpers.floats(min_value=0, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
 )
 def test_binary_cross_entropy(
     dtype_and_true,
     dtype_and_pred,
+    reduction,
     epsilon,
     as_variable,
     with_out,
@@ -125,6 +127,7 @@ def test_binary_cross_entropy(
         true=np.asarray(true, dtype=true_dtype),
         pred=np.asarray(pred, dtype=pred_dtype),
         epsilon=epsilon,
+        reduction=reduction,
     )
 
 
