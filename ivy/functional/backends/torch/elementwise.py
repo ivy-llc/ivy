@@ -408,6 +408,7 @@ def floor_divide(
 
 
 floor_divide.support_native_out = True
+floor_divide.unsupported_dtypes = ("float16",)
 
 
 def bitwise_or(
