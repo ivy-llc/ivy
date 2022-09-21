@@ -6,7 +6,6 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -34,7 +33,7 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
 
 @st.composite
 def _broadcastable_trio(draw):
-    dtype = draw(st.sampled_from(ivy_np.valid_numeric_dtypes))
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))
 
     shapes_st = hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
     cond_shape, x1_shape, x2_shape = draw(shapes_st).input_shapes
@@ -191,7 +190,7 @@ def test_where(
 # argwhere
 @handle_cmd_line_args
 @given(
-    x=helpers.dtype_and_values(available_dtypes=(ivy_np.bool,)),
+    x=helpers.dtype_and_values(available_dtypes=("bool",)),
     num_positional_args=helpers.num_positional_args(fn_name="argwhere"),
 )
 def test_argwhere(
