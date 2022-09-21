@@ -106,7 +106,7 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     /,
-    axis: Union[int, Sequence[int]],
+    axis: Union[int, Sequence[int]] = None,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

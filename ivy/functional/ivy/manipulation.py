@@ -657,7 +657,7 @@ def roll(
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Optional[Union[int, Tuple[int, ...]]],
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
