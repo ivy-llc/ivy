@@ -440,7 +440,7 @@ def diagonal(
                         [3., 4.]],\
                        [[5., 6.],\
                         [7., 8.]]])
-    >>> d = ivy.diagonal(x, 1, 0, 1)
+    >>> d = ivy.diagonal(x, offset=1, axis1=0, axis2=1)
     >>> print(d)
     ivy.array([[3.],
                [4.]])
