@@ -219,5 +219,6 @@ def hardtanh(input, min_val=-1.0, max_val=1.0, inplace=False):
 def hardtanh_(input, min_val=-1.0, max_val=1.0):
     less = ivy.where(ivy.less(input, min_val), min_val, input)
     ret = ivy.where(ivy.greater(input, max_val), max_val, less)
+    input = ivy.asarray(input, dtype=input.dtype)
     ivy.inplace_update(input, ret)
     return input

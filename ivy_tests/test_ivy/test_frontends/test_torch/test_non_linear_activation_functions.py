@@ -928,12 +928,12 @@ def test_torch_hardtanh(
         fn_tree="nn.functional.hardtanh",
         input=np.asarray(x, dtype=input_dtype),
         min_val=max_min[1],
-        max_val=max_min[1],
-        inplace=False,
+        max_val=max_min[0],
     )
 
 
 # hardtanh_
+# ToDo test for value test once inplace testing is fixed
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -966,5 +966,6 @@ def test_torch_hardtanh_(
         fn_tree="nn.functional.hardtanh_",
         input=np.asarray(x, dtype=input_dtype),
         min_val=max_min[1],
-        max_val=max_min[1],
+        max_val=max_min[0],
+        test_values=False,
     )
