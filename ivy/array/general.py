@@ -826,7 +826,6 @@ class ArrayWithGeneral(abc.ABC):
         >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
         False
-
         """
         return ivy.value_is_nan(self, include_infs=include_infs)
 
@@ -845,19 +844,18 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             True if x is not None, else False.
-
         """
         return ivy.exists(self)
 
     def default(
         self: ivy.Array,
         /,
-        default_val: Union[ivy.Array, ivy.NativeArray],
+        default_val: Any,
         *,
         catch_exceptions: bool = False,
         rev: bool = False,
         with_callable: bool = False,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> Any:
         """
         ivy.Array instance method variant of ivy.default. This method simply wraps the
         function, and so the docstring for ivy.default also applies to this method
@@ -1053,9 +1051,6 @@ class ArrayWithGeneral(abc.ABC):
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max' or
             'replace'
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            updates if None.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1064,7 +1059,6 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array of given shape, with the values scattered at the indices.
-
         """
         return ivy.scatter_flat(self, updates, size=size, reduction=reduction, out=out)
 
