@@ -813,7 +813,7 @@ class ContainerWithManipulation(ContainerBase):
     def squeeze(
         self: ivy.Container,
         /,
-        axis: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]],
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,

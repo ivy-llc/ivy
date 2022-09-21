@@ -694,7 +694,7 @@ def squeeze(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
-    >>> print(ivy.squeeze(x))
+    >>> print(ivy.squeeze(x, axis=0))
     ivy.array([[0, 1], [2, 3]])
 
     >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
@@ -702,7 +702,7 @@ def squeeze(
     ivy.array([[[1, 2, 3], [4, 5, 6]]])
 
     >>> x = ivy.array([[[0], [1], [2]]])
-    >>> print(ivy.squeeze(x))
+    >>> print(ivy.squeeze(x, axis=None))
     ivy.array([0, 1, 2])
 
     >>> print(ivy.squeeze(x, axis=0))
@@ -720,7 +720,7 @@ def squeeze(
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.squeeze(x)
+    >>> y = ivy.squeeze(x, axis=None)
     >>> print(y)
     {
         a: ivy.array([0., 1., 2.]),
