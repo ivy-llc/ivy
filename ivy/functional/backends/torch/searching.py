@@ -16,7 +16,6 @@ def argmax(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.tensor(x)
     return torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
 
 
@@ -31,7 +30,6 @@ def argmin(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.tensor(x)
     return torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
 
 
