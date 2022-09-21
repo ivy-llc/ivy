@@ -79,118 +79,38 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     epsilon = 1e-07
 
     # Torch performs a conversion here for numerical stability
+    # But we wish to return an output with the same dtype as the input.
     original_dtype = input.dtype
     input = ivy.astype(input, ivy.float64)
 
-    # indices = ivy.array([i for i in range(input.shape[dim])])
-    # T_array = [input[(slice(None),) * (dim-1) + (i,) +
-    # (slice(None),) * (len(input.shape) - dim)] for i in indices]
-    # T_array = ivy.index_nest(input, )
+    # To iterate through the n-th dimension of `input`, it is easiest to swap
+    # the dimension that we wish to iterate through to be first, then iterate
+    # through the re-ordered data. This re-ordering is fine for our purposes
+    # as we calculate the p-norms and they are all order agnostic. That is,
+    # we may re-order the elements of any vector, and as long as none are
+    # added, edited, or removed, the p-norm will be the same.
     input_swapped = ivy.swapaxes(input, 0, dim)
-    T_array = [input_swapped[i, ...] for i in range(input_swapped.shape[0])]
-    # T_array = ivy.index_select(t, dim, indices)  # [0]
-    results = []
-    for i in T_array:
-        original_shape = i.shape
-        i_flattened = flatten(i)
-        # norm = torch.linalg.vector_norm(i_flattened, dim=0, keepdim=True, ord=p)
-        norm = ivy.vector_norm(i_flattened, axis=0, ord=p)
+    individual_tensors = [input_swapped[i, ...] for i in range(input_swapped.shape[0])]
+    ret = []
+    for individual_tensor in individual_tensors:
+        # These tensors may be multidimensional, but must be treated as a single vector.
+        original_shape = individual_tensor.shape
+        tensor_flattened = flatten(individual_tensor)
+
+        # Don't scale up to the maximum norm, only scale down to it.
+        norm = ivy.vector_norm(tensor_flattened, axis=0, ord=p)
         multiplier = ivy.minimum(maxnorm / (norm + epsilon), ivy.ones_like(norm))
-        results.append(
-            ivy.reshape(ivy.multiply(i_flattened, multiplier), original_shape)
+
+        # Store the result in its original shape
+        ret.append(
+            ivy.reshape(ivy.multiply(tensor_flattened, multiplier), original_shape)
         )
 
-    results = ivy.asarray(results, dtype=original_dtype)
-    results = ivy.swapaxes(results, 0, dim)
-    # results = ivy.reshape(results, input.shape)
-    # return ivy.matrix_transpose(results)
-    return ivy.reshape(results, input.shape)
-    # return ivy.stack(results)
+    # We must undo our axis swap from the start.
+    ret = ivy.asarray(ret, dtype=original_dtype)
+    ret = ivy.swapaxes(ret, 0, dim)
+    ret = ivy.reshape(ret, input.shape)
 
-    # T = torch.flatten(T_array)
-    # T = torch.flatten(T, axis, axis+1)
-    # T = torch.flatten(T, axis-1, axis)
-    # norms = torch.linalg.vector_norm(T, dim=axis, keepdim=True, ord=p)
-
-    # multiplier = torch.minimum(maxnorm / (norms + epsilon), torch.ones_like(norms))
-    # multiplier = maxnorm / (norms + epsilon)
-    # ret = torch.multiply(T, multiplier)
-    # return ret.to(t.dtype)
-
-    # ivy.map
-    # return ivy.clip_vector_norm(input, maxnorm, p=p, axis=dim, out=out)
-
-    # input_dtype = input.dtype
-    # input = ivy.astype(input, "float64")
-    # Avoids division by 0 error later.
-    # if maxnorm == 0:
-    # if False:
-    #    ret = ivy.zeros(input.shape, dtype=input_dtype)
-    # else:
-    # The p-norm of a single value is that value
-    # if len(input.shape) == 1:
-    #    norms = input
-
-    # The p-norm of a single value is that value
-    # This avoids the case where a 0 dimensional array presents an indexing error
-    # E.g. axis 0 is out of bounds for array of dimension 0
-    #    if len(input.shape) <= 1:
-    #        norms = input
-    #    else:
-    # norms = ivy.broadcast_to(
-    # ivy.vector_norm(input, axis=dim, ord=p), input.shape)
-    # true_dim = (dim - 1) % len(input.shape)
-    # true_dim = (dim + 1) % len(input.shape)
-    #        true_dim = 1 if dim != 1 else 0
-    # hypothesis.note(f"true_dim: {true_dim}")
-
-
-#         norms = ivy.vector_norm(input, axis=true_dim, ord=p, keepdims=True)
-
-# norms = input if len(input.shape) <= 1 else
-# ivy.vector_norm(input, axis=dim, ord=p)
-# a, b[:, np.newaxis]
-# if norms.shape != input.shape:
-# if norms.transpose().shape == input.shape:
-#    norms = norms.transpose()
-
-# else:
-# norms = ivy.repeat(norms, repeats=input.shape[dim-1],
-# axis=dim)
-# repeats_numerator = input.shape[dim-1]
-# repeats_numerator = input.shape[dim]
-# repeats_denominator = norms.shape[dim-1]
-# repeats_denominator = norms.shape[dim]
-# norms = ivy.repeat(norms, repeats=repeats_numerator /
-# repeats_denominator)
-
-# norms = ivy.broadcast_to(norms, input.shape)
-# norms = norms.transpose()
-# input = input.transpose()
-# norms = ivy.broadcast_to(norms, input.shape)
-# norms = norms.transpose()
-# input = input.transpose()
-# if dim == 0:
-#    if input.shape[0] == 1:
-# norms = norms[ivy.newaxis, ...]
-#    else:
-#        norms = norms[..., ivy.newaxis]
-# norms = norms[..., ivy.newaxis]
-#    norms = ivy.swapaxes(norms, -1, dim)
-
-#    if ivy.all(norms == 0):
-#        ret = ivy.zeros(input.shape, dtype=input_dtype)
-#    else:
-# hypothesis.note(f"Note, norms : {norms}")
-#        multiplier = ivy.minimum(maxnorm / norms, ivy.ones_like(norms))
-#        ret = ivy.multiply(input, multiplier)
-#        ret = ivy.astype(ret, input_dtype)
-# ivy.prod()
-
-# ret = ivy.astype(input * norms / maxnorm, dtype=input.dtype)
-
-# ret
-# ret = ivy.astype(ret, input_dtype)
-# if ivy.exists(out):
-#    ivy.inplace_update(input, ret)
-# return ret
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+    return ret
