@@ -87,6 +87,9 @@ def divide_no_nan(x, y, name="divide_no_nan"):
 
 
 def maximum(a, b):
+    # Cast inputs to ivy array
+    a = ivy.array(a)
+    b = ivy.array(b)
     return ivy.maximum(a, b)
 
 
