@@ -167,10 +167,10 @@ class ContainerBase(dict, abc.ABC):
         out=None,
         **kwargs,
     ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
-        arg_cont_idxs = ivy.nested_indices_where(
+        arg_cont_idxs = ivy.nested_argwhere(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
-        kwarg_cont_idxs = ivy.nested_indices_where(
+        kwarg_cont_idxs = ivy.nested_argwhere(
             kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
         )
         # retrieve all the containers in args and kwargs
@@ -489,7 +489,7 @@ class ContainerBase(dict, abc.ABC):
                 idxs_added = list()
                 for idx in cont_range:
                     if idx not in idxs_added:
-                        idxs_to_add = ivy.indices_where(equal_mat[idx])
+                        idxs_to_add = ivy.argwhere(equal_mat[idx])
                         idxs_to_add_list = sorted(
                             ivy.to_numpy(idxs_to_add).reshape(-1).tolist()
                         )

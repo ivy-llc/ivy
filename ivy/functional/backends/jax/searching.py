@@ -48,13 +48,12 @@ def where(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.where(condition, x1, x2)
+    return jnp.where(condition, x1, x2).astype(x1.dtype)
 
 
 # Extra #
 # ----- #
 
 
-def indices_where(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    where_x = jnp.where(x)
-    return jnp.concatenate([jnp.expand_dims(item, -1) for item in where_x], -1)
+def argwhere(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.argwhere(x)

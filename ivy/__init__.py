@@ -13,8 +13,6 @@ import warnings
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
-# local
-from .assertions import check_any, check_elem_in_list, check_isinstance
 
 # class placeholders
 
@@ -82,11 +80,12 @@ class Device(str):
 
 class Dtype(str):
     def __new__(cls, dtype_str):
-        check_isinstance(dtype_str, str)
-        check_any(
-            [substr in dtype_str for substr in ["int", "float", "bool"]],
-            "dtype must be string and starts with int, float, or bool",
-        )
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if not ("int" in dtype_str or "float" in dtype_str or "bool" in dtype_str):
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with int, float, or bool"
+            )
         return str.__new__(cls, dtype_str)
 
 
@@ -111,22 +110,34 @@ class Shape(tuple):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
-        check_isinstance(dtype_str, str)
-        check_elem_in_list("int", dtype_str)
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "int" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with int"
+            )
         return str.__new__(cls, dtype_str)
 
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
-        check_isinstance(dtype_str, str)
-        check_elem_in_list("float", dtype_str)
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "float" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with float"
+            )
         return str.__new__(cls, dtype_str)
 
 
 class UintDtype(IntDtype):
     def __new__(cls, dtype_str):
-        check_isinstance(dtype_str, str)
-        check_elem_in_list("uint", dtype_str)
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "uint" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with uint"
+            )
         return str.__new__(cls, dtype_str)
 
 
@@ -148,6 +159,14 @@ _MIN_BASE = 1e-5
 
 # local
 import threading
+
+
+# devices
+all_devices = ("cpu", "gpu", "tpu")
+
+valid_devices = all_devices
+
+invalid_devices = ()
 
 
 # data types

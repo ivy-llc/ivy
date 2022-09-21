@@ -2,17 +2,13 @@
 
 # global
 import importlib
-from contextlib import redirect_stdout
-from io import StringIO
-import sys
-import re
 import inspect
 import pytest
 import numpy as np
 import math
 import gc
 from typing import Optional, Union, List
-from hypothesis import given, assume, settings
+from hypothesis import given, settings
 import hypothesis.extra.numpy as nph  # noqa
 from hypothesis.internal.floats import float_of
 from functools import reduce
@@ -34,6 +30,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
 from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
 from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
 from ivy_tests.test_ivy.test_frontends.test_jax import convjax
+import ivy.func_wrapper
 
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
@@ -149,195 +146,6 @@ def _convert_vars(
     return new_vars
 
 
-# function that trims white spaces from docstrings
-def trim(*, docstring):
-    """Trim function from PEP-257"""
-    if not docstring:
-        return ""
-    # Convert tabs to spaces (following the normal Python rules)
-    # and split into a list of lines:
-    lines = docstring.expandtabs().splitlines()
-    # Determine minimum indentation (first line doesn't count):
-    indent = sys.maxsize
-    for line in lines[1:]:
-        stripped = line.lstrip()
-        if stripped:
-            indent = min(indent, len(line) - len(stripped))
-    # Remove indentation (first line is special):
-    trimmed = [lines[0].strip()]
-    if indent < sys.maxsize:
-        for line in lines[1:]:
-            trimmed.append(line[indent:].rstrip())
-    # Strip off trailing and leading blank lines:
-    while trimmed and not trimmed[-1]:
-        trimmed.pop()
-    while trimmed and not trimmed[0]:
-        trimmed.pop(0)
-
-    # Current code/unittests expects a line return at
-    # end of multiline docstrings
-    # workaround expected behavior from unittests
-    if "\n" in docstring:
-        trimmed.append("")
-
-    # Return a single string:
-    return "\n".join(trimmed)
-
-
-def docstring_examples_run(
-    *, fn, from_container=False, from_array=False, num_sig_fig=3
-):
-    """Performs docstring tests for a given function.
-
-    Parameters
-    ----------
-    fn
-        Callable function to be tested.
-    from_container
-        if True, check docstring of the function as a method of an Ivy Container.
-    from_array
-        if True, check docstring of the function as a method of an Ivy Array.
-    num_sig_fig
-        Number of significant figures to check in the example.
-
-    Returns
-    -------
-    None if the test passes, else marks the test as failed.
-    """
-    if not hasattr(fn, "__name__"):
-        return True
-    fn_name = fn.__name__
-    if fn_name not in ivy.backend_handler.ivy_original_dict:
-        return True
-
-    if from_container:
-        docstring = getattr(
-            ivy.backend_handler.ivy_original_dict["Container"], fn_name
-        ).__doc__
-    elif from_array:
-        docstring = getattr(
-            ivy.backend_handler.ivy_original_dict["Array"], fn_name
-        ).__doc__
-    else:
-        docstring = ivy.backend_handler.ivy_original_dict[fn_name].__doc__
-
-    if docstring is None:
-        return True
-
-    # removing extra new lines and trailing white spaces from the docstrings
-    trimmed_docstring = trim(docstring=docstring)
-    trimmed_docstring = trimmed_docstring.split("\n")
-
-    # end_index: -1, if print statement is not found in the docstring
-    end_index = -1
-
-    # parsed_output is set as an empty string to manage functions with multiple inputs
-    parsed_output = ""
-
-    # parsing through the docstrings to find lines with print statement
-    # following which is our parsed output
-    sub = ">>> print("
-    for index, line in enumerate(trimmed_docstring):
-        if sub in line:
-            end_index = trimmed_docstring.index("", index)
-            p_output = trimmed_docstring[index + 1 : end_index]
-            p_output = ("").join(p_output).replace(" ", "")
-            if parsed_output != "":
-                parsed_output += ","
-            parsed_output += p_output
-
-    if end_index == -1:
-        return True
-
-    executable_lines = [
-        line.split(">>>")[1][1:] for line in docstring.split("\n") if ">>>" in line
-    ]
-
-    # noinspection PyBroadException
-    f = StringIO()
-    with redirect_stdout(f):
-        for line in executable_lines:
-            # noinspection PyBroadException
-            try:
-                if f.getvalue() != "" and f.getvalue()[-2] != ",":
-                    print(",")
-                exec(line)
-            except Exception as e:
-                print(e, " ", ivy.current_backend_str(), " ", line)
-
-    output = f.getvalue()
-    output = output.rstrip()
-    output = output.replace(" ", "").replace("\n", "")
-    output = output.rstrip(",")
-
-    # handling cases when the stdout contains ANSI colour codes
-    # 7-bit C1 ANSI sequences
-    ansi_escape = re.compile(
-        r"""
-    \x1B  # ESC
-    (?:   # 7-bit C1 Fe (except CSI)
-        [@-Z\\-_]
-    |     # or [ for CSI, followed by a control sequence
-        \[
-        [0-?]*  # Parameter bytes
-        [ -/]*  # Intermediate bytes
-        [@-~]   # Final byte
-    )
-    """,
-        re.VERBOSE,
-    )
-
-    output = ansi_escape.sub("", output)
-
-    # print("Output: ", output)
-    # print("Putput: ", parsed_output)
-
-    # assert output == parsed_output, "Output is unequal to the docstrings output."
-    sig_fig = float("1e-" + str(num_sig_fig))
-    numeric_pattern = re.compile(
-        r"""
-            [\{\}\(\)\[\]]|\w+:
-        """,
-        re.VERBOSE,
-    )
-    num_output = output.replace("ivy.array", "")
-    num_output = numeric_pattern.sub("", num_output)
-    num_parsed_output = parsed_output.replace("ivy.array", "")
-    num_parsed_output = numeric_pattern.sub("", num_parsed_output)
-    num_output = num_output.split(",")
-    num_parsed_output = num_parsed_output.split(",")
-    docstr_result = True
-    for (doc_u, doc_v) in zip(num_output, num_parsed_output):
-        try:
-            docstr_result = np.allclose(
-                np.nan_to_num(complex(doc_u)),
-                np.nan_to_num(complex(doc_v)),
-                rtol=sig_fig,
-            )
-        except Exception:
-            if str(doc_u) != str(doc_v):
-                docstr_result = False
-        if not docstr_result:
-            print(
-                "output for ",
-                fn_name,
-                " on run: ",
-                output,
-                "\noutput in docs :",
-                parsed_output,
-                "\n",
-                doc_u,
-                " != ",
-                doc_v,
-                "\n",
-            )
-            ivy.warn(
-                "Output is unequal to the docstrings output: %s" % fn_name, stacklevel=0
-            )
-            break
-    return docstr_result
-
-
 def var_fn(x, *, dtype=None, device=None):
     """Returns x as an Ivy Variable wrapping an Ivy Array with given dtype and device"""
     return ivy.variable(ivy.array(x, dtype=dtype, device=device))
@@ -349,7 +157,7 @@ def get_current_frontend():
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=True, none=False):
+def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     """
     Draws a valid dtypes for the test function. For frontend tests,
     it draws the data types from the intersection between backend
@@ -399,7 +207,10 @@ def get_dtypes(draw, kind, index=0, full=True, none=False):
         valid_dtypes += (None,)
     if full:
         return valid_dtypes[index:]
-    return draw(st.sampled_from(valid_dtypes[index:]))
+    if key is None:
+        return draw(st.sampled_from(valid_dtypes[index:]))
+    ret = draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))
+    return [ret]
 
 
 @st.composite
@@ -438,9 +249,11 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
             max_x = np.max(np.abs(np.asarray(x)))
         return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
 
-    cast_dtype = draw(st.sampled_from(draw(available_dtypes)).filter(cast_filter))
+    cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
     if x is None:
         return dtype, cast_dtype
+    if "uint" in cast_dtype:
+        x = np.abs(np.asarray(x)).tolist()
     return dtype, x, cast_dtype
 
 
@@ -535,7 +348,7 @@ def floats(
         )
 
     else:
-        if ivy.exists(min_value):
+        if min_value is not None:
             if min_value > -lim_float16 * safety_factor and (
                 width == 16 or not ivy.exists(width)
             ):
@@ -549,7 +362,7 @@ def floats(
         else:
             dtype_min = draw(st.sampled_from(ivy_np.valid_float_dtypes))
 
-        if ivy.exists(max_value):
+        if max_value is not None:
             if max_value < lim_float16 * safety_factor and (
                 width == 16 or not ivy.exists(width)
             ):
@@ -646,6 +459,39 @@ def ints(draw, *, min_value=None, max_value=None, safety_factor=0.95):
     return draw(st.integers(min_value, max_value))
 
 
+@st.composite
+def ints_or_floats(draw, *, min_value=None, max_value=None, safety_factor=0.95):
+    """Draws integers or floats with a safety factor
+    applied to values.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    min_value
+        minimum value of integers generated.
+    max_value
+        maximum value of integers generated.
+    safety_factor
+        default = 0.95. Only values which are 95% or less than the edge of
+        the limit for a given dtype are generated.
+
+    Returns
+    -------
+    ret
+        integer or float.
+    """
+    return draw(
+        ints(
+            min_value=int(min_value),
+            max_value=int(max_value),
+            safety_factor=safety_factor,
+        )
+        | floats(min_value=min_value, max_value=max_value, safety_factor=safety_factor)
+    )
+
+
 def assert_all_close(
     ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
@@ -669,13 +515,15 @@ def assert_all_close(
     -------
     None if the test passes, else marks the test as failed.
     """
-    assert ret_np.dtype is ret_from_gt_np.dtype, (
+    ret_dtype = str(ret_np.dtype)
+    ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
+    assert ret_dtype == ret_from_gt_dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
             ground_truth_backend,
-            ret_from_gt_np.dtype,
+            ret_from_gt_dtype,
             ivy.current_backend_str(),
-            ret_np.dtype,
+            ret_dtype,
         )
     )
     if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
@@ -726,19 +574,19 @@ def flatten_fw(*, ret, fw):
     if not isinstance(ret, tuple):
         ret = (ret,)
     if fw == "jax":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_jax_native_array(x)
         )
     elif fw == "numpy":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_numpy_native_array(x)
         )
     elif fw == "tensorflow":
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_tensorflow_native_array(x)
         )
     else:
-        ret_idxs = ivy.nested_indices_where(
+        ret_idxs = ivy.nested_argwhere(
             ret, lambda x: ivy.is_ivy_array(x) or is_torch_native_array(x)
         )
     ret_flat = ivy.multi_index_nest(ret, ret_idxs)
@@ -752,7 +600,7 @@ def flatten(*, ret):
     """Returns a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
         ret = (ret,)
-    ret_idxs = ivy.nested_indices_where(ret, ivy.is_ivy_array)
+    ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
     return ivy.multi_index_nest(ret, ret_idxs)
 
 
@@ -787,7 +635,7 @@ def value_test(
     ret_np_flat
         A list (flattened) containing Numpy arrays. Return from the
         framework to test.
-    ret_from_np_flat
+    ret_np_from_gt_flat
         A list (flattened) containing Numpy arrays. Return from the ground
         truth framework.
     rtol
@@ -862,9 +710,17 @@ def gradient_test(
         ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
         return ivy.mean(ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable))
 
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
     args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
         args_np=args_np,
+        arg_np_vals=arg_np_vals,
+        args_idxs=args_idxs,
         kwargs_np=kwargs_np,
+        kwarg_np_vals=kwarg_np_vals,
+        kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable_flags,
         native_array_flags=native_array_flags,
@@ -1028,10 +884,31 @@ def check_unsupported_device_and_dtype(*, fn, device, input_dtypes, all_as_kwarg
     return False
 
 
+def _get_nested_np_arrays(nest):
+    """
+    A helper function to search for a NumPy arrays in a nest
+    Parameters
+    ----------
+    nest
+        nest to search in.
+
+    Returns
+    -------
+         Items found, indices, and total number of arrays found
+    """
+    indices = ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
+    ret = ivy.multi_index_nest(nest, indices)
+    return ret, indices, len(ret)
+
+
 def create_args_kwargs(
     *,
     args_np,
+    arg_np_vals,
+    args_idxs,
     kwargs_np,
+    kwarg_np_vals,
+    kwargs_idxs,
     input_dtypes,
     as_variable_flags,
     native_array_flags=None,
@@ -1060,26 +937,6 @@ def create_args_kwargs(
     Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
     keyword-arguments.
     """
-    # extract all arrays from the arguments and keyword arguments
-    args_idxs = ivy.nested_indices_where(args_np, lambda x: isinstance(x, np.ndarray))
-    arg_np_vals = ivy.multi_index_nest(args_np, args_idxs)
-    kwargs_idxs = ivy.nested_indices_where(
-        kwargs_np, lambda x: isinstance(x, np.ndarray)
-    )
-    kwarg_np_vals = ivy.multi_index_nest(kwargs_np, kwargs_idxs)
-
-    # assert that the number of arrays aligns with the dtypes and as_variable_flags
-    num_arrays = len(arg_np_vals) + len(kwarg_np_vals)
-    if num_arrays > 0:
-        assert num_arrays == len(input_dtypes), (
-            "Found {} arrays in the input arguments, but {} dtypes and "
-            "as_variable_flags. Make sure to pass in a sequence of bools for all "
-            "associated boolean flag inputs to test_function, with the sequence length "
-            "being equal to the number of arrays in the arguments.".format(
-                num_arrays, len(input_dtypes)
-            )
-        )
-
     # create args
     num_arg_vals = len(arg_np_vals)
     arg_array_vals = [
@@ -1235,6 +1092,9 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    # split the arguments into their positional and keyword components
+
+    # Constructor arguments #
     # convert single values to length 1 lists
     (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = as_lists(
         ivy.default(input_dtypes_init, []),
@@ -1254,12 +1114,21 @@ def test_method(
         container_flags_method,
     )
 
-    # make all lists equal in length
-    num_arrays_constructor = max(
-        len(input_dtypes_init),
-        len(as_variable_flags_init),
-        len(native_array_flags_init),
+    args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_init,
+        kwargs=all_as_kwargs_np_init,
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    con_arg_np_vals, con_args_idxs, con_c_arg_vals = _get_nested_np_arrays(
+        args_np_constructor
+    )
+    con_kwarg_np_vals, con_kwargs_idxs, con_c_kwarg_vals = _get_nested_np_arrays(
+        kwargs_np_constructor
+    )
+
+    # make all lists equal in length
+    num_arrays_constructor = con_c_arg_vals + con_c_kwarg_vals
     if len(input_dtypes_init) < num_arrays_constructor:
         input_dtypes_init = [
             input_dtypes_init[0] for _ in range(num_arrays_constructor)
@@ -1273,12 +1142,41 @@ def test_method(
             native_array_flags_init[0] for _ in range(num_arrays_constructor)
         ]
 
-    num_arrays_method = max(
-        len(input_dtypes_method),
-        len(as_variable_flags_method),
-        len(native_array_flags_method),
-        len(container_flags_method),
+    # update variable flags to be compatible with float dtype
+    as_variable_flags_init = [
+        v if ivy.is_float_dtype(d) else False
+        for v, d in zip(as_variable_flags_init, input_dtypes_init)
+    ]
+
+    # Create Args
+    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+        args_np=args_np_constructor,
+        arg_np_vals=con_arg_np_vals,
+        args_idxs=con_args_idxs,
+        kwargs_np=kwargs_np_constructor,
+        kwarg_np_vals=con_kwarg_np_vals,
+        kwargs_idxs=con_kwargs_idxs,
+        input_dtypes=input_dtypes_init,
+        as_variable_flags=as_variable_flags_init,
+        native_array_flags=native_array_flags_init,
     )
+    # End constructor #
+
+    # Method arguments #
+    args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
+    )
+
+    # extract all arrays from the arguments and keyword arguments
+    met_arg_np_vals, met_args_idxs, met_c_arg_vals = _get_nested_np_arrays(
+        args_np_method
+    )
+    met_kwarg_np_vals, met_kwargs_idxs, met_c_kwarg_vals = _get_nested_np_arrays(
+        kwargs_np_method
+    )
+
+    # make all lists equal in length
+    num_arrays_method = met_c_arg_vals + met_c_kwarg_vals
     if len(input_dtypes_method) < num_arrays_method:
         input_dtypes_method = [input_dtypes_method[0] for _ in range(num_arrays_method)]
     if len(as_variable_flags_method) < num_arrays_method:
@@ -1294,48 +1192,27 @@ def test_method(
             container_flags_method[0] for _ in range(num_arrays_method)
         ]
 
-    # update variable flags to be compatible with float dtype
-    as_variable_flags_init = [
-        v if ivy.is_float_dtype(d) else False
-        for v, d in zip(as_variable_flags_init, input_dtypes_init)
-    ]
     as_variable_flags_method = [
         v if ivy.is_float_dtype(d) else False
         for v, d in zip(as_variable_flags_method, input_dtypes_method)
     ]
 
-    # change all data types so that they are supported by this framework
-    input_dtypes_init = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_init
-    ]
-    input_dtypes_method = [
-        "float32" if d in ivy.invalid_dtypes else d for d in input_dtypes_method
-    ]
-
-    # create args
-    args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_init,
-        kwargs=all_as_kwargs_np_init,
-    )
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
-        args_np=args_np_constructor,
-        kwargs_np=kwargs_np_constructor,
-        input_dtypes=input_dtypes_init,
-        as_variable_flags=as_variable_flags_init,
-        native_array_flags=native_array_flags_init,
-    )
-    args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
-    )
+    # Create Args
     args_method, kwargs_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
+        arg_np_vals=met_arg_np_vals,
+        args_idxs=met_args_idxs,
         kwargs_np=kwargs_np_method,
+        kwarg_np_vals=met_kwarg_np_vals,
+        kwargs_idxs=met_kwargs_idxs,
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
         native_array_flags=native_array_flags_method,
         container_flags=container_flags_method,
     )
-    # run
+    # End Method #
+
+    # Run testing
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     v_np = None
     if isinstance(ins, ivy.Module):
@@ -1352,18 +1229,27 @@ def test_method(
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
-    # compute the return with a Ground Truth backend
+
+    # Compute the return with a Ground Truth backend
     ivy.set_backend(ground_truth_backend)
     args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
         args_np=args_np_constructor,
+        arg_np_vals=con_arg_np_vals,
+        args_idxs=con_args_idxs,
         kwargs_np=kwargs_np_constructor,
+        kwarg_np_vals=con_kwarg_np_vals,
+        kwargs_idxs=con_kwargs_idxs,
         input_dtypes=input_dtypes_init,
         as_variable_flags=as_variable_flags_init,
         native_array_flags=native_array_flags_init,
     )
     args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
+        arg_np_vals=met_arg_np_vals,
+        args_idxs=met_args_idxs,
         kwargs_np=kwargs_np_method,
+        kwarg_np_vals=met_kwarg_np_vals,
+        kwargs_idxs=met_kwargs_idxs,
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
         native_array_flags=native_array_flags_method,
@@ -1501,13 +1387,17 @@ def test_function(
         input_dtypes, as_variable_flags, native_array_flags, container_flags
     )
 
-    # make all lists equal in length
-    num_arrays = max(
-        len(input_dtypes),
-        len(as_variable_flags),
-        len(native_array_flags),
-        len(container_flags),
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # make all lists equal in length
+    num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
     if len(as_variable_flags) < num_arrays:
@@ -1527,11 +1417,6 @@ def test_function(
     # first term is either an ivy.Array or ivy.Container
     instance_method = instance_method and (
         not native_array_flags[0] or container_flags[0]
-    )
-
-    # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
     fn = getattr(ivy, fn_name)
@@ -1555,7 +1440,11 @@ def test_function(
         try:
             args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwarg_np_vals=kwarg_np_vals,
+                kwargs_idxs=kwargs_idxs,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -1566,7 +1455,11 @@ def test_function(
     else:
         args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
             args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
             kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
             input_dtypes=input_dtypes,
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
@@ -1577,7 +1470,8 @@ def test_function(
     instance = None
     if instance_method:
         is_instance = [
-            (not n) or c for n, c in zip(native_array_flags, container_flags)
+            (not native_flag) or container_flag
+            for native_flag, container_flag in zip(native_array_flags, container_flags)
         ]
         arg_is_instance = is_instance[:num_arg_vals]
         kwarg_is_instance = is_instance[num_arg_vals:]
@@ -1655,7 +1549,11 @@ def test_function(
             try:
                 args, kwargs, _, _, _ = create_args_kwargs(
                     args_np=args_np,
+                    arg_np_vals=arg_np_vals,
+                    args_idxs=args_idxs,
                     kwargs_np=kwargs_np,
+                    kwargs_idxs=kwargs_idxs,
+                    kwarg_np_vals=kwarg_np_vals,
                     input_dtypes=input_dtypes,
                     as_variable_flags=as_variable_flags,
                     native_array_flags=native_array_flags,
@@ -1667,7 +1565,11 @@ def test_function(
         else:
             args, kwargs, _, _, _ = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwargs_idxs=kwargs_idxs,
+                kwarg_np_vals=kwarg_np_vals,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -1727,6 +1629,7 @@ def test_frontend_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: Union[bool, List[bool]],
     with_out: bool,
+    with_inplace: bool = False,
     num_positional_args: int,
     native_array_flags: Union[bool, List[bool]],
     fw: str,
@@ -1749,7 +1652,12 @@ def test_frontend_function(
         dictates whether the corresponding input argument should be treated
         as an ivy Variable.
     with_out
-        if True, the function is also tested with the optional out argument.
+        if True, the function is also tested for inplace update to an array
+        passed to the optional out argument, should not be True together
+        with with_inplace.
+    with_inplace
+        if True, the function is also tested with direct inplace update back to
+        the inputted array, should not be True together with with_out.
     num_positional_args
         number of input arguments that must be passed as positional
         arguments.
@@ -1782,12 +1690,18 @@ def test_frontend_function(
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
     )
-    # make all lists equal in length
-    num_arrays = max(
-        len(input_dtypes),
-        len(as_variable_flags),
-        len(native_array_flags),
+
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # make all lists equal in length
+    num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
     if len(as_variable_flags) < num_arrays:
@@ -1795,13 +1709,13 @@ def test_frontend_function(
     if len(native_array_flags) < num_arrays:
         native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
-    # update variable flags to be compatible with float dtype and with_out args
+    # update var flags to be compatible with float dtype and with_out args
     as_variable_flags = [
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
-    # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
+    # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
     *frontend_submods, fn_tree = fn_tree.split(".")
 
     # check for unsupported dtypes in backend framework
@@ -1818,17 +1732,16 @@ def test_frontend_function(
             all_as_kwargs_np=all_as_kwargs_np,
         )
 
-    # split the arguments into their positional and keyword components
-    args_np, kwargs_np = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
-    )
-
     # create args
     if test_unsupported:
         try:
-            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args, kwargs, _, _, _ = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwarg_np_vals=kwarg_np_vals,
+                kwargs_idxs=kwargs_idxs,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -1837,9 +1750,13 @@ def test_frontend_function(
         except Exception:
             return
     else:
-        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+        args, kwargs, _, _, _ = create_args_kwargs(
             args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
             kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
             input_dtypes=input_dtypes,
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
@@ -1868,24 +1785,41 @@ def test_frontend_function(
 
     ret = frontend_fn(*args, **kwargs)
     ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
-    # assert idx of return if the idx of the out array provided
     out = ret
+    assert (
+        not with_out or not with_inplace
+    ), "only one of with_out or with_inplace can be set as True"
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)
-        if "out" in kwargs:
-            kwargs["out"] = out
-            kwargs_ivy["out"] = out
-        else:
-            args[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
-            args_ivy = list(args_ivy)
-            args_ivy[ivy.arg_info(frontend_fn, name="out")["idx"]] = out
-            args_ivy = tuple(args_ivy)
+        # pass return value to out argument
+        # check if passed reference is correctly updated
+        kwargs["out"] = out
         ret = frontend_fn(*args, **kwargs)
-
         if ivy.native_inplace_support:
-            # these backends do not always support native inplace updates
             assert ret.data is out.data
+        assert ret is out
+    elif with_inplace:
+        assert not isinstance(ret, tuple)
+        assert ivy.is_array(ret)
+        if "inplace" in inspect.getfullargspec(frontend_fn).args:
+            # the function provides optional inplace update
+            # set inplace update to be True and check
+            # if returned reference is inputted reference
+            # and if inputted reference's content is correctly updated
+            kwargs["inplace"] = True
+            first_array = ivy.func_wrapper._get_first_array(args, kwargs)
+            ret = frontend_fn(*args, **kwargs)
+            if ivy.native_inplace_support:
+                assert ret.data is first_array.data
+            assert first_array is ret
+        else:
+            # the function provides inplace update by default
+            # check if returned reference is inputted reference
+            first_array = ivy.func_wrapper._get_first_array(args, kwargs)
+            if ivy.native_inplace_support:
+                assert ret.data is first_array.data
+            assert first_array is ret
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -1951,9 +1885,7 @@ def test_frontend_function(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(
-                frontend_ret, ivy.is_native_array
-            )
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -2046,12 +1978,18 @@ def test_frontend_array_instance_method(
     input_dtypes, as_variable_flags, native_array_flags = as_lists(
         input_dtypes, as_variable_flags, native_array_flags
     )
-    # make all lists equal in length
-    num_arrays = max(
-        len(input_dtypes),
-        len(as_variable_flags),
-        len(native_array_flags),
+
+    # split the arguments into their positional and keyword components
+    args_np, kwargs_np = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
+
+    # extract all arrays from the arguments and keyword arguments
+    arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
+    kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
+
+    # make all lists equal in length
+    num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
     if len(as_variable_flags) < num_arrays:
@@ -2079,15 +2017,16 @@ def test_frontend_array_instance_method(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
     )
 
-    # change all data types so that they are supported by this framework
-    input_dtypes = ["float32" if d in ivy.invalid_dtypes else d for d in input_dtypes]
-
     # create args
     if test_unsupported:
         try:
-            args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+            args, kwargs, _, _, _ = create_args_kwargs(
                 args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
                 kwargs_np=kwargs_np,
+                kwarg_np_vals=kwarg_np_vals,
+                kwargs_idxs=kwargs_idxs,
                 input_dtypes=input_dtypes,
                 as_variable_flags=as_variable_flags,
                 native_array_flags=native_array_flags,
@@ -2096,9 +2035,13 @@ def test_frontend_array_instance_method(
         except Exception:
             return
     else:
-        args, kwargs, num_arg_vals, args_idxs, kwargs_idxs = create_args_kwargs(
+        args, kwargs, _, _, _ = create_args_kwargs(
             args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
             kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
             input_dtypes=input_dtypes,
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
@@ -2148,9 +2091,6 @@ def test_frontend_array_instance_method(
         if ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert ret.data is out.data
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtypes))
 
     # create NumPy args
     args_np = ivy.nested_map(
@@ -2239,7 +2179,7 @@ def test_frontend_array_instance_method(
             # tuplify the frontend return
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_indices_where(frontend_ret, ivy.is_array)
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
@@ -2384,9 +2324,9 @@ def dtype_and_values(
     num_arrays=1,
     min_value=None,
     max_value=None,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    max_op="divide",
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
@@ -2415,13 +2355,29 @@ def dtype_and_values(
         minimum value of elements in each array.
     max_value
         maximum value of elements in each array.
-    large_value_safety_factor
-        Factor to divide the values by to ensure that they are not too large.
-    small_value_safety_factor
-        Factor to multiply the values by to ensure that they are not too small.
-    max_op
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+    safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "divide", "sqrt" or "log". Default value = "divide".
+        "linear" or "log". Default value = "linear".
     allow_inf
         if True, allow inf in the arrays.
     allow_nan
@@ -2495,14 +2451,14 @@ def dtype_and_values(
                     allow_nan=allow_nan,
                     exclude_min=exclude_min,
                     exclude_max=exclude_max,
-                    large_value_safety_factor=large_value_safety_factor,
-                    small_value_safety_factor=small_value_safety_factor,
-                    max_op=max_op,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
                 )
             )
         )
     if num_arrays == 1:
-        dtype = dtype[0]
+        dtype = dtype[0] if isinstance(dtype, list) else dtype
         values = values[0]
     if ret_shape:
         return dtype, values, shape
@@ -2516,9 +2472,9 @@ def dtype_values_axis(
     available_dtypes,
     min_value=None,
     max_value=None,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    max_op="divide",
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
@@ -2552,6 +2508,29 @@ def dtype_values_axis(
         minimum value of elements in the array.
     max_value
         maximum value of elements in the array.
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+    safety_factor_scale
+        The operation to use when calculating the maximum value of the list. Can be
+        "linear" or "log". Default value = "linear".
     allow_inf
         if True, allow inf in the array.
     allow_nan
@@ -2598,9 +2577,9 @@ def dtype_values_axis(
             available_dtypes=available_dtypes,
             min_value=min_value,
             max_value=max_value,
-            large_value_safety_factor=large_value_safety_factor,
-            small_value_safety_factor=small_value_safety_factor,
-            max_op=max_op,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
             allow_inf=allow_inf,
             allow_nan=allow_nan,
             exclude_min=exclude_min,
@@ -2685,18 +2664,19 @@ def subsets(draw, *, elements):
 
 
 @st.composite
-def array_and_indices(
+def array_n_indices_n_axis(
     draw,
     *,
     array_dtypes,
     indices_dtypes=ivy_np.valid_int_dtypes,
-    last_dim_same_size=True,
+    disable_random_axis=False,
     boolean_mask=False,
     allow_inf=False,
     min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
     max_dim_size=10,
+    first_dimension_only=False,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -2708,16 +2688,10 @@ def array_and_indices(
         list of data type to draw the array dtype from.
     indices_dtypes
         list of data type to draw the indices dtype from.
-    last_dim_same_size
-        True:
-            The shape of the indices array is the exact same as the shape of the values
-            array.
-        False:
-            The last dimension of the second array is generated from a range of
-            (0 -> dimension size of first array). This results in output shapes such as
-            x = (5,5,5,5,5) & indices = (5,5,5,5,3) or x = (7,7) & indices = (7,2)
+    disable_random_axis
+        axis is set to -1 when True. Randomly generated with hypothesis if False.
     allow_inf
-        True: inf values are allowed to be generated in the values array
+        inf values are allowed to be generated in the values array when True.
     min_num_dims
         The minimum number of dimensions the arrays can have.
     max_num_dims
@@ -2735,52 +2709,64 @@ def array_and_indices(
     Examples
     --------
     @given(
-        array_and_indices=array_and_indices(
-            last_dim_same_size= False
+        array_n_indices_n_axis=array_n_indices_n_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+            boolean_mask=False,
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=10
             )
     )
-    @given(
-        array_and_indices=array_and_indices( last_dim_same_size= True)
-    )
     """
-    x_num_dims = draw(ints(min_value=min_num_dims, max_value=max_num_dims))
-    x_dim_size = draw(ints(min_value=min_dim_size, max_value=max_dim_size))
-    x_dtype, x, indices_shape = draw(
+    x_dtype, x, x_shape = draw(
         dtype_and_values(
             available_dtypes=array_dtypes,
             allow_inf=allow_inf,
             ret_shape=True,
-            min_num_dims=x_num_dims,
-            max_num_dims=x_num_dims,
-            min_dim_size=x_dim_size,
-            max_dim_size=x_dim_size,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
         )
     )
-    if not last_dim_same_size:
-        indices_dim_size = draw(ints(min_value=1, max_value=x_dim_size))
-        indices_shape[-1] = indices_dim_size
+    if disable_random_axis:
+        axis = -1
+    else:
+        axis = draw(
+            ints(
+                min_value=-1 * len(x_shape),
+                max_value=len(x_shape) - 1,
+            )
+        )
     if boolean_mask:
         indices_dtype, indices = draw(
             dtype_and_values(
                 dtype=["bool"],
-                shape=indices_shape,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
     else:
+        max_axis = max(x_shape[axis] - 1, 0)
+        if first_dimension_only:
+            max_axis = max(x_shape[0] - 1, 0)
         indices_dtype, indices = draw(
             dtype_and_values(
                 available_dtypes=indices_dtypes,
                 allow_inf=False,
                 min_value=0,
-                max_value=max(indices_shape[-1] - 1, 0),
-                shape=indices_shape,
+                max_value=max_axis,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
-    return [x_dtype, indices_dtype], x, indices
+    return [x_dtype, indices_dtype], x, indices, axis
 
 
 def _zeroing_and_casting(x, cast_type):
@@ -2791,18 +2777,11 @@ def _zeroing_and_casting(x, cast_type):
     return x
 
 
-def _clamp_value(x, dtype):
-    if ivy.is_int_dtype(dtype):
-        d_info = ivy.iinfo(dtype)
-    elif ivy.is_float_dtype(dtype):
-        d_info = ivy.finfo(dtype)
-    else:
-        raise TypeError(
-            f"{dtype} is not a valid data type. "
-            "dtype must be an integer or a float data type"
-        )
-    if x > d_info.max or x < d_info.min:
-        return None  # Calculated later using safety factor
+def _clamp_value(x, dtype_info):
+    if x > dtype_info.max:
+        return dtype_info.max
+    if x < dtype_info.min:
+        return dtype_info.min
     return x
 
 
@@ -2819,10 +2798,9 @@ def array_values(
     allow_inf=False,
     exclude_min=True,
     exclude_max=True,
-    allow_negative=True,
-    large_value_safety_factor=1.1,
-    small_value_safety_factor=1.1,
-    max_op="divide",
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
 ):
     """Draws a list (of lists) of a given shape containing values of a given data type.
 
@@ -2849,222 +2827,183 @@ def array_values(
         if True, exclude the minimum limit.
     exclude_max
         if True, exclude the maximum limit.
-    allow_negative
-        if True, allow negative numbers.
-    large_value_safety_factor
-        Factor to divide the values by to ensure that they are not too large.
-    small_value_safety_factor
-        Factor to multiply the values by to ensure that they are not too small.
-    max_op
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used,  a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+    safety_factor_scale
         The operation to use when calculating the maximum value of the list. Can be
-        "divide", "sqrt" or "log". Default value = "divide".
+        "linear" or "log". Default value = "linear".
+
+    In the case of min_value or max_value is not in the valid range
+    the invalid value will be replaced by data type limit, the range
+    of the numbers in that case is not preserved.
 
     Returns
     -------
         A strategy that draws a list.
     """
-    assert large_value_safety_factor >= 1, "large_value_safety_factor must be >= 1"
-    exclude_min = exclude_min if ivy.exists(min_value) else False
-    exclude_max = exclude_max if ivy.exists(max_value) else False
+    assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
+    assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
+
     size = 1
     if isinstance(shape, int):
         size = shape
     else:
         for dim in shape:
             size *= dim
-    values = None
-    limit = math.log(small_value_safety_factor)
-    min_value = _clamp_value(min_value, dtype) if ivy.exists(min_value) else None
-    max_value = _clamp_value(max_value, dtype) if ivy.exists(max_value) else None
-    if "uint" in dtype:
-        if dtype == "uint8":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value, min(255, round(255 / large_value_safety_factor))
-            )
-        elif dtype == "uint16":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value, min(65535, round(65535 / large_value_safety_factor))
-            )
-        elif dtype == "uint32":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value,
-                min(4294967295, round(4294967295 / large_value_safety_factor)),
-            )
-        elif dtype == "uint64":
-            min_value = ivy.default(
-                min_value, 1 if small_value_safety_factor < 1 else 0
-            )
-            max_value = ivy.default(
-                max_value,
-                min(
-                    18446744073709551615,
-                    round(18446744073709551615 / large_value_safety_factor),
-                ),
-            )
-        values = draw(list_of_length(x=st.integers(min_value, max_value), length=size))
-        for i, v in enumerate(values):
-            if max_op == "sqrt" and v != 0:
-                v = v / abs(v) * math.sqrt(abs(v))
-            elif max_op == "log" and v != 0:
-                v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
-            values[i] = int(v / large_value_safety_factor)
 
+    if isinstance(dtype, st._internal.SearchStrategy):
+        dtype = draw(dtype)
+        dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
+
+    if "float" in dtype:
+        kind_dtype = "float"
+        dtype_info = ivy.finfo(dtype)
     elif "int" in dtype:
-
-        if min_value is not None and max_value is not None:
-            values = draw(
-                list_of_length(
-                    x=st.integers(min_value, max_value),
-                    length=size,
-                )
-            )
-        else:
-            if dtype == "int8":
-                min_value = ivy.default(
-                    min_value, max(-128, round(-128 / large_value_safety_factor))
-                )
-                max_value = ivy.default(
-                    max_value, min(127, round(127 / large_value_safety_factor))
-                )
-
-            elif dtype == "int16":
-                min_value = ivy.default(
-                    min_value, max(-32768, round(-32768 / large_value_safety_factor))
-                )
-                max_value = ivy.default(
-                    max_value, min(32767, round(32767 / large_value_safety_factor))
-                )
-
-            elif dtype == "int32":
-                min_value = ivy.default(
-                    min_value,
-                    max(-2147483648, round(-2147483648 / large_value_safety_factor)),
-                )
-                max_value = ivy.default(
-                    max_value,
-                    min(2147483647, round(2147483647 / large_value_safety_factor)),
-                )
-
-            elif dtype == "int64":
-                min_value = ivy.default(
-                    min_value,
-                    max(
-                        -9223372036854775808,
-                        round(-9223372036854775808 / large_value_safety_factor),
-                    ),
-                )
-                max_value = ivy.default(
-                    max_value,
-                    min(
-                        9223372036854775807,
-                        round(9223372036854775807 / large_value_safety_factor),
-                    ),
-                )
-            max_neg_value = -1 if small_value_safety_factor > 1 else 0
-            min_pos_value = 1 if small_value_safety_factor > 1 else 0
-
-            if min_value >= max_neg_value:
-                min_value = min_pos_value
-                max_neg_value = max_value
-            elif max_value <= min_pos_value:
-                min_pos_value = min_value
-                max_value = max_neg_value
-
-            values = draw(
-                list_of_length(
-                    x=st.integers(min_value, max_neg_value)
-                    | st.integers(min_pos_value, max_value),
-                    length=size,
-                )
-            )
-            for i, v in enumerate(values):
-                if max_op == "sqrt" and v != 0:
-                    v = v / abs(v) * math.sqrt(abs(v))
-                elif max_op == "log" and v != 0:
-                    v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
-                values[i] = int(v / large_value_safety_factor)
-    elif "float" in dtype:
-        dtype_info = {
-            "float16": {"cast_type": "float16", "round_places": 3, "width": 16},
-            "bfloat16": {"cast_type": "float16", "round_places": 3, "width": 16},
-            "float32": {"cast_type": "float32", "round_places": 6, "width": 32},
-            "float64": {"cast_type": "float16", "round_places": 15, "width": 64},
-        }
-        min_value_neg = min_value
-        max_value_neg = round(-1 * limit, dtype_info[dtype]["round_places"])
-        min_value_pos = round(limit, dtype_info[dtype]["round_places"])
-        max_value_pos = max_value
-        if min_value_neg is None or max_value is None:
-            if min_value_neg is not None and min_value_neg >= max_value_neg:
-                min_value_neg = max(min_value_pos, min_value_neg)
-                max_value_neg = (
-                    max(max_value_pos, min_value_neg)
-                    if max_value_pos is not None
-                    else min_value_neg
-                )
-            if max_value_pos is not None and max_value_pos <= min_value_pos:
-                min_value_pos = (
-                    min(min_value_neg, min_value_pos)
-                    if min_value_neg is not None
-                    else min_value_pos
-                )
-                max_value_pos = min(max_value_neg, min_value_pos)
-        else:
-            min_value_neg = min_value
-            max_value_neg = max_value
-            min_value_pos = min_value
-            max_value_pos = max_value
-        bounds = [min_value_neg, max_value_neg, min_value_pos, max_value_pos]
-        bounds = [
-            _zeroing_and_casting(x, cast_type=dtype_info[dtype]["cast_type"])
-            for x in bounds
-        ]
-        min_value_neg, max_value_neg, min_value_pos, max_value_pos = bounds
-        values = draw(
-            list_of_length(
-                x=st.floats(
-                    min_value=min_value_neg,
-                    max_value=max_value_neg,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=dtype_info[dtype]["width"],
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                )
-                | st.floats(
-                    min_value=min_value_pos,
-                    max_value=max_value_pos,
-                    allow_nan=allow_nan,
-                    allow_subnormal=allow_subnormal,
-                    allow_infinity=allow_inf,
-                    width=dtype_info[dtype]["width"],
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                ),
-                length=size,
-            )
+        kind_dtype = "int"
+        dtype_info = ivy.iinfo(dtype)
+    elif "bool" in dtype:
+        kind_dtype = "bool"
+    else:
+        raise TypeError(
+            f"{dtype} is not a valid data type that can be generated,"
+            f" only integers, floats and booleans are allowed."
         )
-        for i, v in enumerate(values):
-            if max_op == "sqrt" and v != 0:
-                v = v / abs(v) * math.sqrt(abs(v))
-            elif max_op == "log" and v != 0:
-                v = (v / abs(v)) * (math.log(abs(v)) / math.log(2))
-            values[i] = v / large_value_safety_factor
-    elif dtype == "bool":
+
+    if kind_dtype != "bool":
+        if min_value is None:
+            min_value = dtype_info.min
+            b_scale_min = True
+        else:
+            min_value = _clamp_value(min_value, dtype_info)
+            b_scale_min = False
+
+        if max_value is None:
+            max_value = dtype_info.max
+            b_scale_max = True
+        else:
+            max_value = _clamp_value(max_value, dtype_info)
+            b_scale_max = False
+
+        assert max_value >= min_value
+
+        # Scale the values
+        if safety_factor_scale == "linear":
+            if b_scale_min:
+                min_value = min_value / large_abs_safety_factor
+            if b_scale_max:
+                max_value = max_value / large_abs_safety_factor
+            if kind_dtype == "float":
+                abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
+        elif safety_factor_scale == "log":
+            if b_scale_min:
+                min_sign = math.copysign(1, min_value)
+                min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+            if b_scale_max:
+                max_sign = math.copysign(1, max_value)
+                max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+            if kind_dtype == "float":
+                m, e = math.frexp(dtype_info.smallest_normal)
+                abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
+        else:
+            raise ValueError(
+                f"{safety_factor_scale} is not a valid safety factor scale."
+                f" use 'log' or 'linear'."
+            )
+
+        if kind_dtype == "int":
+            if exclude_min:
+                min_value += 1
+            if exclude_max:
+                max_value -= 1
+            values = draw(
+                list_of_length(
+                    x=st.integers(int(min_value), int(max_value)), length=size
+                )
+            )
+        elif kind_dtype == "float":
+            floats_info = {
+                "float16": {"cast_type": "float16", "width": 16},
+                "bfloat16": {"cast_type": "float32", "width": 32},
+                "float32": {"cast_type": "float32", "width": 32},
+                "float64": {"cast_type": "float64", "width": 64},
+            }
+            # The smallest possible value is determined by one of the arguments
+            if min_value > -abs_smallest_val or max_value < abs_smallest_val:
+                float_strategy = st.floats(
+                    # Using np.array to assert that value
+                    # can be represented of compatible width.
+                    min_value=np.array(
+                        min_value, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist(),
+                    max_value=np.array(
+                        max_value, dtype=floats_info[dtype]["cast_type"]
+                    ).tolist(),
+                    allow_nan=allow_nan,
+                    allow_subnormal=allow_subnormal,
+                    allow_infinity=allow_inf,
+                    width=floats_info[dtype]["width"],
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                )
+            else:
+                float_strategy = st.one_of(
+                    st.floats(
+                        min_value=np.array(
+                            min_value, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        max_value=np.array(
+                            -abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=floats_info[dtype]["width"],
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                    st.floats(
+                        min_value=np.array(
+                            abs_smallest_val, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        max_value=np.array(
+                            max_value, dtype=floats_info[dtype]["cast_type"]
+                        ).tolist(),
+                        allow_nan=allow_nan,
+                        allow_subnormal=allow_subnormal,
+                        allow_infinity=allow_inf,
+                        width=floats_info[dtype]["width"],
+                        exclude_min=exclude_min,
+                        exclude_max=exclude_max,
+                    ),
+                )
+            values = draw(
+                list_of_length(
+                    x=float_strategy,
+                    length=size,
+                )
+            )
+    else:
         values = draw(list_of_length(x=st.booleans(), length=size))
+
     array = np.array(values)
-    if dtype != "bool" and not allow_negative:
-        array = np.abs(array)
     if isinstance(shape, (tuple, list)):
         array = array.reshape(shape)
     return array.tolist()
@@ -3469,7 +3408,7 @@ def num_positional_args(draw, *, fn_name: str = None):
 
 
 @st.composite
-def num_positional_args_from_fn(draw, *, fn):
+def num_positional_args_from_fn(draw, *, fn: str = None):
     """Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
 
@@ -3478,7 +3417,7 @@ def num_positional_args_from_fn(draw, *, fn):
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    fn_name
+    fn
         name of the function.
 
     Returns
@@ -3488,10 +3427,10 @@ def num_positional_args_from_fn(draw, *, fn):
     Examples
     --------
     @given(
-        num_positional_args=num_positional_args(fn_name="floor_divide")
+        num_positional_args=num_positional_args_from_fn(fn="floor_divide")
     )
     @given(
-        num_positional_args=num_positional_args(fn_name="add")
+        num_positional_args=num_positional_args_from_fn(fn="add")
     )
     """
     num_positional_only = 0
@@ -3542,19 +3481,14 @@ def handle_cmd_line_args(test_fn):
             flag = True
 
         global frontend_fw
-        # Infer the frontend
-        try:
-            # naming convention `test_framework_`
-            frontend_string = test_fn.__name__.split("_")[1]
-            if frontend_string in FW_STRS:
-                frontend_fw = TEST_BACKENDS[frontend_string]
-            else:  # Clear the global variable
-                frontend_fw = None
-        except IndexError:
-            raise RuntimeError(
-                "'{}' is not a valid test function, "
-                "a test function should start with 'test_'.".format(test_fn.__name__)
-            )
+        # Reset the global variable,
+        # only set if frontend fw is inferred
+        frontend_fw = None
+        full_fn_test_path = test_fn.__module__.split(".")
+        if len(full_fn_test_path) > 2:
+            if full_fn_test_path[2] == "test_frontends":
+                frontend_fw = TEST_BACKENDS[full_fn_test_path[3][5:]]
+
         # set backend using the context manager
         with f.use:
             # inspecting for keyword arguments in test function
@@ -3674,16 +3608,18 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         array_values(
             dtype=dtype,
             shape=x_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     filters = draw(
         array_values(
             dtype=dtype,
             shape=filter_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
         )
     )
     if transpose:
@@ -3793,4 +3729,4 @@ def array_and_broadcastable_shape(draw, dtype):
         .filter(lambda s: broadcast_shapes(in_shape, s) == s),
         label="shape",
     )
-    return (x, to_shape)
+    return x, to_shape
