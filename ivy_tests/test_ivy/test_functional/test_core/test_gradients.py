@@ -7,7 +7,6 @@ import numpy as np
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -16,10 +15,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
     dtypes, arrays, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes,
+            available_dtypes=helpers.get_dtypes("float"),
             num_arrays=num_arrays,
-            large_abs_safety_factor=6,
-            small_abs_safety_factor=3,
+            large_abs_safety_factor=8,
+            small_abs_safety_factor=8,
             safety_factor_scale="log",
             min_num_dims=1,
             shared_dtype=True,

@@ -18,12 +18,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.array_bools(num_arrays=2),
     mode=st.sampled_from(["valid", "same", "full"]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.correlate"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_correlate(
     dtype_and_x,

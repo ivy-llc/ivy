@@ -74,8 +74,9 @@ def pixel_unshuffle(input, downscale_factor):
     oh = int(h / downscale_factor)
     ow = int(w / downscale_factor)
 
-    input_reshaped = ivy.reshape(input,
-                                 (b, c, oh, downscale_factor, ow, downscale_factor))
+    input_reshaped = ivy.reshape(
+        input, (b, c, oh, downscale_factor, ow, downscale_factor)
+    )
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 3, 5, 2, 4)), (b, oc, oh, ow)
     )

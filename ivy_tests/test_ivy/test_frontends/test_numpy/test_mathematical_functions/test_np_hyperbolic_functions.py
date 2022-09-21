@@ -15,12 +15,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sinh"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_sinh(
     dtype_and_x,
@@ -65,12 +62,9 @@ def test_numpy_sinh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.tanh"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_tanh(
     dtype_and_x,
@@ -170,12 +164,9 @@ def test_numpy_arcsinh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arccosh"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_arccosh(
     dtype_and_x,
