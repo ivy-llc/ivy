@@ -3,6 +3,8 @@ conv2d
 
 .. autofunction:: ivy.functional.ivy.layers.conv2d
 
+.. autofunction:: ivy.array.array_methods.conv2d
+
 .. autofunction:: ivy.container.container_methods.static_conv2d
 
 .. autofunction:: ivy.container.container_methods.conv2d
@@ -33,6 +35,7 @@ conv2d
    :caption: conv2d
 
    conv2d/conv2d_functional.rst
+   conv2d/conv2d_array.rst
    conv2d/conv2d_container.rst
    conv2d/static_conv2d_container.rst
 
