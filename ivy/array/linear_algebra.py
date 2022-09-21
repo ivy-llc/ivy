@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional, Literal, NamedTuple, Tuple, List
+from typing import Union, Optional, Literal, NamedTuple, Tuple, List, Sequence
 
 # local
 import ivy
@@ -370,7 +370,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def vector_norm(
         self: ivy.Array,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Array] = None,
