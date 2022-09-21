@@ -4,7 +4,6 @@ from hypothesis import assume, given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy import argsort, array
@@ -13,16 +12,13 @@ from ivy import argsort, array
 @handle_cmd_line_args
 @given(
     x_min_n_max=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=3, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=3, shared_dtype=True
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.clip"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_clip(
     x_min_n_max,
@@ -35,6 +31,8 @@ def test_numpy_clip(
     fw,
 ):
     (x_dtype, min_dtype, max_dtype), (x_list, min_val_list, max_val_list) = x_min_n_max
+    # ToDo should generate the data so we don't have to use assume here
+    # same that is done in JAX clamp
     assume(np.all(np.less(np.asarray(min_val_list), np.asarray(max_val_list))))
     input_dtype = [x_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
@@ -67,15 +65,14 @@ def test_numpy_clip(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cbrt"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_cbrt(
     dtype_and_x,
@@ -87,7 +84,14 @@ def test_numpy_cbrt(
     native_array,
     fw,
 ):
-    (input_dtype, x) = dtype_and_x
+    input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -97,7 +101,7 @@ def test_numpy_cbrt(
         fw=fw,
         frontend="numpy",
         fn_tree="cbrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
@@ -110,15 +114,14 @@ def test_numpy_cbrt(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.sqrt"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_sqrt(
     dtype_and_x,
@@ -131,6 +134,13 @@ def test_numpy_sqrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -140,28 +150,27 @@ def test_numpy_sqrt(
         fw=fw,
         frontend="numpy",
         fn_tree="sqrt",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=False,
+        subok=True,
         test_values=False,
     )
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.square"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_square(
     dtype_and_x,
@@ -174,6 +183,13 @@ def test_numpy_square(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    input_dtype = [input_dtype]
+    where = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -183,28 +199,25 @@ def test_numpy_square(
         fw=fw,
         frontend="numpy",
         fn_tree="square",
-        x=np.asarray(x, dtype=input_dtype),
+        x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
         casting="same_kind",
         order="k",
         dtype=dtype,
-        subok=False,
-        test_values=True,
+        subok=True,
+        test_values=False,
     )
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.absolute"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_absolute(
     dtype_and_x,
@@ -239,15 +252,12 @@ def test_numpy_absolute(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.fabs"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_fabs(
     dtype_and_x,
@@ -283,16 +293,15 @@ def test_numpy_fabs(
 @handle_cmd_line_args
 @given(
     x1_x2=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.heaviside"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_heaviside(
     x1_x2,
@@ -335,12 +344,10 @@ def test_numpy_heaviside(
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=helpers.array_bools(num_arrays=1),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nan_to_num"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
     posinf=st.one_of(st.none(), st.floats()),
     neginf=st.one_of(st.none(), st.floats()),
 )
@@ -364,13 +371,12 @@ def test_numpy_nan_to_num(
     )
 
 
+@handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.real_if_close"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_real_if_close(
     dtype_and_x,
@@ -395,13 +401,11 @@ def test_numpy_real_if_close(
 
 @handle_cmd_line_args
 @given(
-    as_variable=helpers.array_bools(num_arrays=3),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.interp"
     ),
-    native_array=helpers.array_bools(num_arrays=3),
     xp_and_fp=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes,
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
         max_num_dims=1,
@@ -409,7 +413,7 @@ def test_numpy_real_if_close(
         min_value=-10000,
         max_value=10000,
     ),
-    x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
+    x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     left=st.one_of(st.none(), st.floats()),
     right=st.one_of(st.none(), st.floats()),
     period=st.one_of(

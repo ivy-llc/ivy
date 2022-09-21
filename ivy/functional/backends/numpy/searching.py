@@ -4,6 +4,10 @@ import ivy
 import numpy as np
 
 
+# Array API Standard #
+# ------------------ #
+
+
 def argmax(
     x: np.ndarray,
     /,
@@ -13,8 +17,7 @@ def argmax(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmax(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmax.support_native_out = True
@@ -29,8 +32,7 @@ def argmin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.argmin(x, axis=axis, keepdims=keepdims, out=out)
-    ret = np.array(ret)
-    return ret
+    return np.array(ret)
 
 
 argmin.support_native_out = True
@@ -52,4 +54,12 @@ def where(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.where(condition, x1, x2)
+    return np.where(condition, x1, x2).astype(x1.dtype)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.argwhere(x)

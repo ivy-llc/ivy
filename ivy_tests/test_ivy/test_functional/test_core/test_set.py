@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, assume, settings
+from hypothesis import given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -19,7 +19,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
 )
-@settings(max_examples=1, deadline=None)
 def test_unique_values(
     *,
     dtype_and_x,
@@ -52,7 +51,7 @@ def test_unique_values(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -91,7 +90,7 @@ def test_unique_all(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
@@ -130,7 +129,7 @@ def test_unique_counts(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,

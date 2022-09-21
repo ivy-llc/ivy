@@ -228,11 +228,11 @@ One benefit of these instance methods is that they can help to tidy up code. For
     x = ivy.ones((1, 2, 3, 4, 5))
 
     # without ivy.Array
-    y = ivy.reshape(ivy.flip(ivy.transpose(
-                ivy.reshape(x, (6, 20)), (1, 0)), 0), (2, 10, 6))
+    y = ivy.reshape(ivy.flip(ivy.matrix_transpose(
+                ivy.reshape(x, (6, 20))), axis=0), (2, 10, 6))
 
     # with ivy.Array
-    y = x.reshape((6, 20)).transpose((1, 0)).flip(0).reshape((2, 10, 6))
+    y = x.reshape((6, 20)).matrix_transpose().flip(axis=0).reshape((2, 10, 6))
 
 In the example above, not only is the :code:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 

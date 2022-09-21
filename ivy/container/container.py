@@ -6,6 +6,7 @@ import operator
 import ivy
 from .activations import ContainerWithActivations
 from .base import ContainerBase
+from .conversions import ContainerWithConversions
 from .creation import ContainerWithCreation
 from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
@@ -28,6 +29,7 @@ from .utility import ContainerWithUtility
 
 class Container(
     ContainerWithActivations,
+    ContainerWithConversions,
     ContainerWithCreation,
     ContainerWithDataTypes,
     ContainerWithDevice,
@@ -205,11 +207,100 @@ class Container(
         )
 
     def __sub__(self, other):
+        """
+        ivy.Container special method for the subtract operator, calling 
+        :code:`operator.sub` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+        
+        Returns
+        -------
+        ret
+            a container containing the element-wise differences. The returned array must 
+            have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=1, b=2)
+        >>> y = ivy.Container(a=3, b=4)
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: -2,
+            b: -2
+        }
+
+        With :code:`ivy.Array` instances at the leaves:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                              b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
+                              b=ivy.array([6, 5, 4]))
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: ivy.array([-3, -3, -3]),
+            b: ivy.array([-2, -2, -2])
+        }
+
+        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:
+
+        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> y = ivy.array([[1.1, 2.3, -3.6]])
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: ivy.array([[2.9, 1.7, 7.6], 
+                          [3.9, 2.7, 8.6], 
+                          [4.9, 3.7, 9.6]]),
+            b: ivy.array([[3.9, 2.7, 8.6], 
+                          [4.9, 3.7, 9.6], 
+                          [5.9, 4.7, 10.6]])
+        }
+        """
         return ivy.Container.multi_map(
             lambda xs, _: operator.sub(xs[0], xs[1]), [self, other], map_nests=True
         )
 
     def __rsub__(self, other):
+        """
+        ivy.Container reverse special method for the subtract operator, calling
+        :code:`operator.sub` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise differences. The returned array must
+            have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = 1
+        >>> y = ivy.Container(a=3, b=4)
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: -2,
+            b: -3
+        }
+        """
         return ivy.Container.multi_map(
             lambda xs, _: operator.sub(xs[0], xs[1]), [other, self], map_nests=True
         )

@@ -6,6 +6,10 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
 
+# Array API Standard #
+# ------------------ #
+
+
 def argmax(
     x: JaxArray,
     /,
@@ -14,10 +18,7 @@ def argmax(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmax(x, axis=axis, out=out, keepdims=keepdims)
-
-
-argmax.support_native_out = True
+    return jnp.argmax(x, axis=axis, keepdims=keepdims)
 
 
 def argmin(
@@ -28,10 +29,7 @@ def argmin(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.argmin(x, axis=axis, out=out, keepdims=keepdims)
-
-
-argmin.support_native_out = True
+    return jnp.argmin(x, axis=axis, keepdims=keepdims)
 
 
 def nonzero(
@@ -50,4 +48,12 @@ def where(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.where(condition, x1, x2)
+    return jnp.where(condition, x1, x2).astype(x1.dtype)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.argwhere(x)

@@ -13,26 +13,34 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_x_normidxs=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
-        allow_inf=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=40,
+        small_abs_safety_factor=40,
+        safety_factor_scale="log",
         min_num_dims=1,
-        min_axis=1,
-        ret_shape=True,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
-    scale=st.floats(min_value=0.0),
-    offset=st.floats(min_value=0.0),
+    scale_n_offset_n_new_std=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        shape=(),
+        large_abs_safety_factor=40,
+        small_abs_safety_factor=40,
+        safety_factor_scale="log",
+    ),
     epsilon=st.floats(min_value=ivy._MIN_BASE, max_value=0.1),
-    new_std=st.floats(min_value=0.0, exclude_min=True),
+    num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
 )
 def test_layer_norm(
     *,
     dtype_x_normidxs,
-    num_positional_args,
-    scale,
-    offset,
+    scale_n_offset_n_new_std,
     epsilon,
-    new_std,
+    num_positional_args,
     as_variable,
     with_out,
     native_array,
@@ -41,6 +49,7 @@ def test_layer_norm(
     fw,
 ):
     dtype, x, normalized_idxs = dtype_x_normidxs
+    _, [scale, offset, new_std] = scale_n_offset_n_new_std
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -51,6 +60,8 @@ def test_layer_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="layer_norm",
+        rtol_=1e-1,
+        atol_=1e-1,
         x=np.asarray(x, dtype=dtype),
         normalized_idxs=normalized_idxs,
         epsilon=epsilon,

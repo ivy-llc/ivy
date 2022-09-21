@@ -1,18 +1,10 @@
 # global
-import tensorflow as tf
 from typing import Union, Optional
+
+import tensorflow as tf
 
 # local
 import ivy
-
-
-def _clamp_bits(x1, x2):
-    x2 = tf.clip_by_value(
-        x2,
-        tf.constant(0, dtype=x2.dtype),
-        tf.constant(x1.dtype.size * 8 - 1, dtype=x2.dtype),
-    )
-    return x1, x2
 
 
 def abs(
@@ -50,10 +42,13 @@ def add(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.add(x1, x2)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return tf.add(x1, x2)
 
 
 def asin(
@@ -137,7 +132,7 @@ def bitwise_left_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -163,7 +158,7 @@ def bitwise_right_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -276,8 +271,7 @@ def floor_divide(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = tf.experimental.numpy.floor_divide(x1, x2)
-    return ret
+    return tf.experimental.numpy.floor_divide(x1, x2)
 
 
 def greater(
@@ -407,6 +401,9 @@ def logaddexp(
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
+logaddexp.unsupported_dtypes = ("float16", "bfloat16")
+
+
 def logical_and(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -513,27 +510,6 @@ def pow(
 pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
 
 
-def reciprocal(
-    x: Union[float, tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.reciprocal(x)
-
-
-reciprocal.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-)
-
-
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -626,10 +602,13 @@ def subtract(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.subtract(x1, x2)
+    if alpha not in (1, None):
+        x2 = x2 * alpha
+    return tf.experimental.numpy.subtract(x1, x2)
 
 
 def tan(
@@ -658,7 +637,7 @@ def trunc(
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x
     if not ivy.is_array(x):
-        raise Exception("Input must be array")
+        raise ivy.exceptions.IvyException("Input must be array")
     elif not ("int" in str(x.dtype)):
         if not ret.get_shape().ndims == 0:
             ret = tf.tensor_scatter_nd_update(
@@ -705,3 +684,45 @@ def minimum(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.minimum(x1, x2)
+
+
+def reciprocal(
+    x: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.reciprocal(x)
+
+
+reciprocal.unsupported_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+)
+
+
+def deg2rad(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.deg2rad(x)
+
+
+deg2rad.unsupported_dtypes = ("bfloat16",)
+
+
+def rad2deg(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rad2deg(x)

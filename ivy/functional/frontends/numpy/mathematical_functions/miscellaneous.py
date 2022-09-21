@@ -33,11 +33,9 @@ def clip(
         ivy.default(out, a),
         out=out,
     )
-    ret = ivy.astype(ret, dtype, out=out)
-    return ret
+    return ivy.astype(ret, dtype, out=out)
 
 
-# sqrt
 @from_zero_dim_arrays_to_float
 def sqrt(
     x,
@@ -220,10 +218,11 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    assert xp.ndim == 1 and fp.ndim == 1
-    assert xp.shape[0] == fp.shape[0]
+    ivy.assertions.check_equal(xp.ndim, 1)
+    ivy.assertions.check_equal(fp.ndim, 1)
+    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
     if period is not None:
-        assert period != 0
+        ivy.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
         x = ivy.remainder(x, period)
         xp = ivy.remainder(xp, period)

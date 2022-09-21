@@ -27,9 +27,6 @@ def addmv(input, mat, vec, *, beta=1, alpha=1, out=None):
     return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
 
 
-addmv.unsupported_dtypes = ("float16",)
-
-
 def addr(input, vec1, vec2, *, beta=1, alpha=1, out=None):
     if len(ivy.shape(vec1)) != 1 or len(ivy.shape(vec2)) != 1:
         raise RuntimeError("input must be 1D vectors")
@@ -38,7 +35,12 @@ def addr(input, vec1, vec2, *, beta=1, alpha=1, out=None):
     return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
 
 
-addr.unsupported_dtypes = {"numpy": ("float16", "int8")}
+def baddbmm(input, batch1, batch2, *, beta=1, alpha=1, out=None):
+    if len(ivy.shape(batch1)) != 3 or len(ivy.shape(batch2)) != 3:
+        raise RuntimeError("input must be batched 2D matrices")
+    ret = ivy.matmul(batch1, batch2, out=out)
+    ret = ivy.multiply(alpha, ret, out=out)
+    return ivy.add(ivy.multiply(beta, input, out=out), ret, out=out)
 
 
 def bmm(input, mat2, *, out=None):
@@ -48,38 +50,27 @@ def bmm(input, mat2, *, out=None):
 
 
 def cholesky(input, upper=False, *, out=None):
-    return ivy.cholesky(input, upper, out=out)
-
-
-cholesky.unsupported_dtypes = ("float16",)
+    return ivy.cholesky(input, upper=upper, out=out)
 
 
 def ger(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 
 
-ger.unsupported_dtypes = {"numpy": ("float16", "int8")}
-
-
 def inverse(input, *, out=None):
     return ivy.inv(input, out=out)
-
-
-inverse.unsupported_dtypes = ("float16",)
 
 
 def det(input):
     return ivy.det(input)
 
 
-det.unsupported_dtypes = ("float16",)
+def logdet(input):
+    return ivy.det(input).log()
 
 
 def slogdet(input):
     return ivy.slogdet(input)
-
-
-slogdet.unsupported_dtypes = ("float16",)
 
 
 def matmul(input, other, *, out=None):
@@ -88,6 +79,11 @@ def matmul(input, other, *, out=None):
 
 def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
+
+
+def matrix_rank(input, tol=None, symmetric=False, *, out=None):
+    # TODO: add symmetric
+    return ivy.matrix_rank(input, rtol=tol, out=out).astype("int64")
 
 
 def mm(input, mat2, *, out=None):
@@ -102,21 +98,12 @@ def mv(input, vec, *, out=None):
     return ivy.matmul(input, vec, out=out)
 
 
-mv.unsupported_dtypes = ("float16",)
-
-
 def outer(input, vec2, *, out=None):
     return ivy.outer(input, vec2, out=out)
 
 
-outer.unsupported_dtypes = {"numpy": ("float16", "int8")}
-
-
 def pinverse(input, rcond=1e-15):
-    return ivy.pinv(input, rcond)
-
-
-pinverse.unsupported_dtypes = ("float16",)
+    return ivy.pinv(input, rtol=rcond)
 
 
 def qr(input, some=True, *, out=None):
@@ -129,11 +116,8 @@ def qr(input, some=True, *, out=None):
     return ret
 
 
-qr.unsupported_dtypes = ("float16",)
-
-
 def svd(input, some=True, compute_uv=True, *, out=None):
-    # TODO: add compute_uv checks
+    # TODO: add compute_uv
     if some:
         ret = ivy.svd(input, full_matrices=False)
     else:
@@ -143,4 +127,7 @@ def svd(input, some=True, compute_uv=True, *, out=None):
     return ret
 
 
-svd.unsupported_dtypes = ("float16",)
+def vdot(input, other, *, out=None):
+    if len(ivy.shape(input)) != 1 or len(ivy.shape(other)) != 1:
+        raise RuntimeError("input must be 1D vectors")
+    return ivy.vecdot(input, other, out=out)

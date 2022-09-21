@@ -4,8 +4,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.torch as ivy_torch
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -13,11 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -56,11 +50,7 @@ def test_torch_allclose(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -95,11 +85,7 @@ def test_torch_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -136,11 +122,7 @@ def test_torch_eq(
 @handle_cmd_line_args
 @given(
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -181,11 +163,7 @@ def test_torch_argsort(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -222,11 +200,7 @@ def test_torch_greater_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -263,11 +237,7 @@ def test_torch_greater(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -306,11 +276,7 @@ def test_torch_isclose(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -342,11 +308,7 @@ def test_torch_isfinite(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -378,11 +340,7 @@ def test_torch_isinf(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -414,11 +372,7 @@ def test_torch_isposinf(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -450,11 +404,7 @@ def test_torch_isneginf(
 @handle_cmd_line_args
 @given(
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -498,11 +448,7 @@ def test_torch_sort(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -534,11 +480,7 @@ def test_torch_isnan(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -574,11 +516,7 @@ def test_torch_less_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -614,11 +552,7 @@ def test_torch_less(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -654,11 +588,7 @@ def test_torch_not_equal(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -694,11 +624,7 @@ def test_torch_minimum(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=True,
         shared_dtype=True,
@@ -735,11 +661,7 @@ def test_torch_fmax(
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=True,
         shared_dtype=True,
@@ -776,11 +698,7 @@ def test_torch_fmin(
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         min_dim_size=2,
     ),

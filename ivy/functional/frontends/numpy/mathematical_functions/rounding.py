@@ -25,17 +25,10 @@ def ceil(
     return ret
 
 
-ceil.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def fix(
     x,
     /,
     out=None,
 ):
     where = ivy.greater_equal(x, 0)
-    ret = ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)
-    return ret
-
-
-ceil.unsupported_dtypes = {"torch": ("float16",)}
+    return ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)

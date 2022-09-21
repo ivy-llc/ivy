@@ -5,8 +5,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.tensorflow as ivy_tf
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -216,13 +214,7 @@ def _x_and_filters(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -259,13 +251,7 @@ def test_tensorflow_atrous_conv2d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -315,13 +301,7 @@ def test_tensorflow_atrous_conv2d_transpose(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=3,
@@ -360,13 +340,7 @@ def test_tensorflow_conv1d(
 @handle_cmd_line_args
 @given(
     x_f_d_df=_x_and_filters(
-        dtypes=st.sampled_from(
-            tuple(
-                set(ivy_np.valid_float_dtypes).intersection(
-                    set(ivy_tf.valid_float_dtypes)
-                )
-            )
-        ),
+        dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=3,
@@ -417,16 +391,14 @@ def test_tensorflow_conv1d_transpose(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.gelu"
     ),
 )
-def test_gelu(
+def test_tensorflow_gelu(
     dtype_and_x,
     as_variable,
     num_positional_args,
@@ -436,7 +408,7 @@ def test_gelu(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype] * 2,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -446,4 +418,228 @@ def test_gelu(
         fn_tree="nn.gelu",
         features=np.asarray(x, dtype=input_dtype),
         approximate=approximate,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv2d"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_conv2d(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv2d",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        filters=np.asarray(filters, dtype=input_dtype[1]),
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="2d",
+        transpose=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv2d_transpose"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_conv2d_transpose(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
+    (
+        input_dtype,
+        x,
+        filters,
+        dilation,
+        data_format,
+        stride,
+        padding,
+        output_shape,
+    ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv2d_transpose",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        filters=np.asarray(filters, dtype=input_dtype[1]),
+        output_shape=output_shape,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=1 if not ivy.gpu_is_available() else dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["SAME"]),
+        type="3d",
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv3d"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_conv3d(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    x = np.asarray(x, dtype=input_dtype[0])
+    filters = np.asarray(filters, dtype=input_dtype[1])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv3d",
+        input=x,
+        filters=filters.reshape(filters.shape[:-2] + x.shape[-1] + filters.shape[-1]),
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["SAME"]),
+        type="3d",
+        transpose=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv3d_transpose"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_conv3d_transpose(
+    x_f_d_df, as_variable, num_positional_args, native_array, fw
+):
+    (
+        input_dtype,
+        x,
+        filters,
+        dilation,
+        data_format,
+        stride,
+        padding,
+        output_shape,
+    ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    x = np.asarray(x, dtype=input_dtype[0])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv3d_transpose",
+        input=x,
+        filters=np.asarray(filters, dtype=input_dtype[1]).reshape(x.shape),
+        output_shape=output_shape,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=1 if not ivy.gpu_is_available() else dilation,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        shape=(3, 5),
+    ),
+    mean=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    variance=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    offset=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
+    scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.batch_normalization"
+    ),
+    native_array=st.booleans(),
+)
+def test_tensorflow_batch_normalization(
+    dtype_and_x,
+    mean,
+    variance,
+    offset,
+    scale,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.batch_normalization",
+        x=np.asarray(x, dtype=input_dtype),
+        mean=np.asarray(mean, dtype=input_dtype),
+        variance=np.asarray(variance, dtype=input_dtype),
+        offset=np.asarray(offset, dtype=input_dtype),
+        scale=np.asarray(scale, dtype=input_dtype),
+        variance_epsilon=1e-7,
     )
