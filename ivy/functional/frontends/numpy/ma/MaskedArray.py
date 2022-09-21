@@ -156,3 +156,7 @@ class MaskedArray(np_frontend.ndarray):
     def dtype(self, mask):
         # TODO: check type casting
         pass
+
+
+# masked_array (alias)
+masked_array = MaskedArray
