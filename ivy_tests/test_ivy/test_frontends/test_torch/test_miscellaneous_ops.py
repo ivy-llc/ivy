@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, given, strategies as st, settings
 
 # local
 import ivy
@@ -518,6 +518,7 @@ def test_torch_flatten(
 
 
 @handle_cmd_line_args
+@settings(max_examples=1000)
 @given(
     dtype_and_values=helpers.dtype_and_values(
         # Min_num_dims is 2 to prevent a Torch crash.
@@ -525,15 +526,19 @@ def test_torch_flatten(
         # Setting available types to valid allows Bool
         # which causes a Torch crash.
         available_dtypes=helpers.get_dtypes("float"),
+        max_value=1e8,
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
         force_int=True,
     ),
     p=st.floats(
-        min_value=0, exclude_min=True
+        min_value=0.5,
+        exclude_min=True,
+        max_value=5,
     ),  # Non-positive norms aren't supported in backends.
-    maxnorm=st.floats(),
+    # Small positive norms cause issues due to finite-precision.
+    maxnorm=st.floats(min_value=0),  # Norms are positive semidefinite
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.renorm"
     ),
@@ -550,7 +555,7 @@ def test_torch_renorm(
     fw,
 ):
     dtype, values = dtype_and_values
-
+    assume("float16" not in dtype)
     values = np.asarray(values, dtype=dtype)
 
     helpers.test_frontend_function(
@@ -566,4 +571,7 @@ def test_torch_renorm(
         p=p,
         dim=dim,
         maxnorm=maxnorm,
+        atol=1e-02,  # It appears that ivy.vector_norm induces a slight error
+        # Also at time of writing, the test for ivy.vector_norm has an atol
+        # of 1e-02
     )
