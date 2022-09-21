@@ -861,7 +861,7 @@ def cumsum(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the cumulative sum of the elements along a given axis.
 
     Parameters
@@ -1004,7 +1004,7 @@ def cumprod(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the cumulative product of the elements along a given axis.
 
     Parameters
