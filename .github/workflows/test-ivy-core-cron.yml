@@ -1,11 +1,13 @@
 name: test-core-ivy-cron
 on:
-  schedule:
-    - cron: '25 * * * *'
+  push:
+  pull_request:
+      types: [ labeled, opened, synchronize, reopened, review_requested ]
 permissions:
   actions: read
 jobs:
    run-nightly-tests:
+     if: ${{contains(github.event.pull_request.labels.*.name, 'Bug') }}
      runs-on: ubuntu-latest
      steps:
        - name: Checkout 🛎️Ivy
@@ -45,10 +47,14 @@ jobs:
          continue-on-error: true
 
        - name: Run Functional-Core Tests
+         shell: bash
          id: tests
          run: |
            cd ivy
+           echo "BACKEND=None" >> $GITHUB_ENV
+           echo "SUBMODULE=None" >> $GITHUB_ENV
            python run_tests_CLI/run_ivy_core_test.py ${{ github.run_number }}
+           echo ${{ github.workflow }} ${{ env.BACKEND }} ${{ matrix.SUBMODULE }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
@@ -65,6 +71,9 @@ jobs:
              ivy/.hypothesis/examples.zip
          continue-on-error: true
 
+       - name: Update Dashboard
+         run: |
+             echo ${{ github.workflow }} ${{ env.BACKEND }} ${{ matrix.SUBMODULE }}
        - name: Check on failures
          if: steps.tests.outcome != 'success'
          run: exit 1
