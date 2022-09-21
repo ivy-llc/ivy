@@ -1279,7 +1279,7 @@ def test_matrix_rank(
         fw=fw,
         fn_name="matrix_rank",
         x=np.asarray(x, dtype=dtype),
-        rtol=rtol,
+        rtol_=rtol,
     )
 
 
