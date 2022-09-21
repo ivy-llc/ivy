@@ -796,7 +796,7 @@ def test_tensorflow_is_strictly_increasing(
         fn_name="ivy.functional.frontends.tensorflow.count_nonzero"
     ),
 )
-def test_tensorflow_accumulate_n(
+def test_tensorflow_count_nonzero(
     dtype_and_x, axis, keepdims, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
