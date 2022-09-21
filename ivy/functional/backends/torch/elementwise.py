@@ -593,7 +593,7 @@ def remainder(
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
-    return x1 - torch.floor(torch.div(x1, x2), out=out).type(x1.dtype) * x2
+    return torch.remainder(x1, x2)
 
 
 remainder.support_native_out = True
