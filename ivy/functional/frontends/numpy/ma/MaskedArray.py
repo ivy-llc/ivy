@@ -2,7 +2,9 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 import numpy as np
 
+masked = True
 nomask = False
+masked_print_options = "--"
 
 # Helpers #
 # ------- #
