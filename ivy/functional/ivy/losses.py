@@ -12,9 +12,9 @@ from ivy.exceptions import handle_exceptions
 
 def _reduce_loss(red, loss, axis, out):
     if red == "sum":
-        ivy.negative(ivy.sum(loss, axis=axis, out=out), out=out)
+        return ivy.negative(ivy.sum(loss, axis=axis, out=out), out=out)
     elif red == "mean":
-        ivy.negative(ivy.mean(loss, axis=axis, out=out), out=out)
+        return ivy.negative(ivy.mean(loss, axis=axis, out=out), out=out)
     else:
         return ivy.negative(loss, out=out)
 
