@@ -237,7 +237,7 @@ and :code:`ivy.negative`, each of which are themselves *nestable*.
         /,
         *,
         axis: Optional[int] = -1,
-        epsilon: Optional[float] = 1e-7,
+        epsilon: float =1e-7,
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
@@ -294,7 +294,7 @@ are shared but not identical.
 
 .. code-block:: python
 
-    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 8})
+    x = ivy.Container(a={'b': 2, 'c': 4}, d={'e': 6, 'f': 9})
     y = ivy.Container(a=2, d=3)
 
 The shared key chains (chains of keys, used for indexing the container)
@@ -314,12 +314,12 @@ It's helpful to look at an example:
     print(x / y)
     {
         a: {
-          b: 1,
-          c: 2
+          b: 1.0,
+          c: 2.0
         },
         d: {
-          e: 3,
-          f: 2.67
+          e: 2.0,
+          f: 3.0
         }
     }
 

@@ -89,11 +89,16 @@ c. comment on the ToDo list issue with a reference to this issue like so:
    :code:`- [ ] #Issue_number`
 
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-   No need to wait for this to happen before progressing to stage.
+   No need to wait for this to happen before progressing to the next stage.
 
 d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly
-   reference the issue in the pull request. If you have a partial solution, the Ivy team can help to guide you through
-   the process of getting it working 🙂
+   reference the issue in the pull request by adding the following comment in the PR:
+
+   :code:`Close #Issue_number`
+
+   This is important, so that the merging of your PR will automatically close the
+   associated issue. If you have a partial solution, the Ivy team can help to guide you
+   through the process of getting it working 🙂
 
 e. Wait for us to review your PR. Once we have reviewed your PR we will either merge or request changes. Every time you
    respond to our requested changes you must re-request a review in order for us to re-engage with the PR.

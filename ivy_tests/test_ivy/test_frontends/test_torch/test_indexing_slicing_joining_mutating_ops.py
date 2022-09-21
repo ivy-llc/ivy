@@ -54,10 +54,11 @@ def _array_idxes_n_dtype(draw, **kwargs):
         )
     )
     idxes = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=0, max_value=num_dims - 1),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        st.lists(
+            helpers.ints(min_value=0, max_value=num_dims - 1),
+            min_size=num_dims,
+            max_size=num_dims,
+            unique=True,
         )
     )
     return x, idxes, dtype
@@ -243,25 +244,40 @@ def test_torch_swapdims(
 
 
 # reshape
+@st.composite
+def dtypes_x_reshape(draw):
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=10,
+            ),
+        )
+    )
+    shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
+    return dtypes, x, shape
+
+
 @handle_cmd_line_args
 @given(
-    dtype_value_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        ret_shape=True,
-    ),
+    dtypes_x_reshape=dtypes_x_reshape(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.reshape"
     ),
 )
 def test_torch_reshape(
-    dtype_value_shape,
+    dtypes_x_reshape,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, value, shape = dtype_value_shape
+    input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -271,7 +287,7 @@ def test_torch_reshape(
         fw=fw,
         frontend="torch",
         fn_tree="reshape",
-        input=np.asarray(value, dtype=input_dtype),
+        input=np.asarray(x, dtype=input_dtype),
         shape=shape,
     )
 
@@ -438,4 +454,45 @@ def test_torch_swapaxes(
         input=np.asarray(value, dtype=input_dtype),
         axis0=axis0,
         axis1=axis1,
+    )
+
+
+# chunk
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    chunks=helpers.ints(min_value=2, max_value=5),
+    dim=helpers.ints(min_value=0, max_value=1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.chunk"
+    ),
+)
+def test_torch_chunk(
+    dtype_value,
+    chunks,
+    dim,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="chunk",
+        input=np.asarray(value, dtype=input_dtype),
+        chunks=chunks,
+        dim=dim,
     )

@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
@@ -41,6 +42,7 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
+@handle_exceptions
 def with_grads(*, with_grads: bool = None) -> bool:
     """
     Enter a nested code space where gradients are computed. This method
@@ -61,7 +63,7 @@ def with_grads(*, with_grads: bool = None) -> bool:
         If with_grads is None, it returns the last element in the with_grads_stack
         representing the parent of the current nested code block. If with_grads_stack
         is empty, it returns True by default.
-        If with_grads is neither None nor boolean, it will raise an AssertionError
+        If with_grads is neither None nor boolean, it will raise an IvyException
 
     Examples
     --------
@@ -81,7 +83,7 @@ def with_grads(*, with_grads: bool = None) -> bool:
 
     """
     if ivy.exists(with_grads):
-        assert with_grads in [True, False]
+        ivy.assertions.check_elem_in_list(with_grads, [True, False])
         return with_grads
     global with_grads_stack
     if not with_grads_stack:
@@ -90,6 +92,7 @@ def with_grads(*, with_grads: bool = None) -> bool:
 
 
 # noinspection PyShadowingNames
+@handle_exceptions
 def set_with_grads(with_grads: bool):
     """
     Enter a nested code space where gradients are computed. This method
@@ -110,7 +113,7 @@ def set_with_grads(with_grads: bool):
         If with_grads is None, it returns the last element in the with_grads_stack
         representing the parent of the current nested code block. If with_grads_stack
         is empty, it returns True by default.
-        If with_grads is neither None nor boolean, it will raise an AssertionError
+        If with_grads is neither None nor boolean, it will raise an IvyException
 
     Examples
     --------
@@ -129,11 +132,12 @@ def set_with_grads(with_grads: bool):
     False
 
     """
-    assert with_grads in [True, False]
+    ivy.assertions.check_elem_in_list(with_grads, [True, False])
     global with_grads_stack
     with_grads_stack.append(with_grads)
 
 
+@handle_exceptions
 def unset_with_grads():
     """
     Enter a nested code space where gradients are computed. This method
@@ -170,6 +174,7 @@ def unset_with_grads():
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
     """Creates a variable, which supports gradient computation.
 
@@ -211,6 +216,7 @@ def variable(x: Union[ivy.Array, ivy.NativeArray]) -> ivy.Variable:
 
 @inputs_to_native_arrays
 @handle_nestable
+@handle_exceptions
 def is_variable(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
@@ -280,6 +286,7 @@ is_variable.computes_gradients = True
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def variable_data(x):
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
@@ -306,6 +313,7 @@ def variable_data(x):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -380,6 +388,7 @@ def stop_gradient(
 
 
 @inputs_to_ivy_arrays
+@handle_exceptions
 def execute_with_gradients(func, xs, /, *, retain_grads=False):
     """Call function func with input of xs variables, and return func first output y,
     the gradients [dy/dx for x in xs], and any other function outputs after the returned
@@ -409,6 +418,7 @@ execute_with_gradients.computes_gradients = True
 
 
 @to_native_arrays_and_back
+@handle_exceptions
 def value_and_grad(func):
     """
     Create a function that evaluates both func and the gradient of func.
@@ -443,6 +453,7 @@ value_and_grad.computes_gradients = True
 
 
 @to_native_arrays_and_back
+@handle_exceptions
 def jac(func):
     """Call function func, and return func's Jacobian partial derivatives.
 
@@ -456,11 +467,11 @@ def jac(func):
     -------
     ret
         the Jacobian function
-    
+
     Examples
     --------
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]])
     >>> func = lambda x: ivy.mean(ivy.square(x))
     >>> jac_fn = ivy.jac(func)
@@ -477,6 +488,7 @@ jac.computes_gradients = True
 
 
 @to_native_arrays_and_back
+@handle_exceptions
 def grad(func):
     """Call function func, and return func's gradients.
 
@@ -490,7 +502,7 @@ def grad(func):
     -------
     ret
         the grad function
-    
+
     Examples
     --------
     >>> x = ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]])
@@ -512,6 +524,7 @@ grad.computes_gradients = True
 
 
 @inputs_to_ivy_arrays
+@handle_exceptions
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -617,7 +630,7 @@ def adam_step(
         a: ivy.array([0., 0.024, 0.096]),
         b: ivy.array([0.216, 0.384, 0.6])
     })
-    
+
     With multiple :code:`ivy.Container` inputs:
 
     >>> dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\
@@ -663,6 +676,7 @@ adam_step.out_index = 0
 
 
 @inputs_to_ivy_arrays
+@handle_exceptions
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -696,7 +710,7 @@ def optimizer_update(
     -------
     ret
         The new function weights ws_new, following the optimizer updates.
-    
+
     Examples
     --------
     With :code:`ivy.Array` inputs:
@@ -715,7 +729,7 @@ def optimizer_update(
                                     out=None, stop_gradients=True)
     >>> print(ws_new)
     ivy.array([1., 2., 3.])
-    
+
     >>> w = ivy.array([[1., 2.], [4., 5.]])
     >>> out = ivy.zeros_like(w)
     >>> effective_grad = ivy.array([[4., 5.], [7., 8.]])
@@ -733,9 +747,9 @@ def optimizer_update(
                                       stop_gradients=False, out=out)
     >>> print(out)
     ivy.array([0.999, 2.   , 3.   ])
-    
+
     With one :code:`ivy.Container` input:
-        
+
     >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                           b=ivy.array([3., 4., 5.]))
     >>> effective_grad = ivy.array([0., 0., 0.])
@@ -748,7 +762,7 @@ def optimizer_update(
     }
 
     With multiple :code:`ivy.Container` inputs:
-    
+
     >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                           b=ivy.array([3., 4., 5.]))
     >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
@@ -760,7 +774,7 @@ def optimizer_update(
         a: ivy.array([0., 1., 2.]),
         b: ivy.array([3., 4., 5.])
     }
-    
+
     >>> w = ivy.Container(a=ivy.array([0., 1., 2.]),\
                         b=ivy.array([3., 4., 5.]))
     >>> effective_grad = ivy.Container(a=ivy.array([0., 0., 0.]),\
@@ -783,6 +797,7 @@ def optimizer_update(
 
 
 @inputs_to_ivy_arrays
+@handle_exceptions
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -832,7 +847,7 @@ def gradient_descent_update(
     ivy.array([[ 0.95,  1.98,  2.99],\
                [ 3.97,  5.94,  0.96],\
                [ 0.96, -0.07,  6.98]])
-    
+
     >>> w = ivy.array([1., 2., 3.])
     >>> dcdw = ivy.array([0.5, 0.2, 0.1])
     >>> lr = ivy.array(0.3)
@@ -840,7 +855,7 @@ def gradient_descent_update(
     >>> ivy.gradient_descent_update(w, dcdw, lr, out=out)
     >>> print(out)
     ivy.array([0.85, 1.94, 2.97])
-    
+
     With one :code:`ivy.Container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -853,7 +868,7 @@ def gradient_descent_update(
         a: ivy.array([0.85, 1.94, 2.97]),
         b: ivy.array([3.33, 5.66, 1.95])
     }
-    
+
     With multiple :code:`ivy.Container` inputs:
 
     >>> w = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -873,6 +888,7 @@ def gradient_descent_update(
 
 
 @inputs_to_ivy_arrays
+@handle_exceptions
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -921,6 +937,7 @@ def lars_update(
 
 
 @inputs_to_ivy_arrays
+@handle_exceptions
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -992,6 +1009,7 @@ adam_update.out_index = 0
 
 
 @inputs_to_ivy_arrays
+@handle_exceptions
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1082,7 +1100,7 @@ def lamb_update(
                                       beta2=beta2, epsilon=epsilon,\
                                       max_trust_ratio=max_trust_ratio,\
                                       decay_lambda=decay_lambda, out=out,\
-                                      stop_gradients=stop_gradients)  
+                                      stop_gradients=stop_gradients)
     >>> print(out)
     ivy.array([[ 0.639,  1.64 ,  2.64 ],\
                [ 3.64 ,  5.64 ,  0.639],\
@@ -1104,7 +1122,7 @@ def lamb_update(
     }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))
 
     With multiple :code:`ivy.Container` inputs:
-    
+
     >>> w = ivy.Container(a=ivy.array([1.,3.,5.]),\
                           b=ivy.array([3.,4.,2.]))
     >>> dcdw = ivy.Container(a=ivy.array([0.2,0.3,0.6]),\

@@ -10,7 +10,9 @@ def _get_reduction_func(reduction):
     elif reduction == "sum":
         ret = ivy.sum
     else:
-        raise ValueError("{} is not a valid value for reduction".format(reduction))
+        raise ivy.exceptions.IvyException(
+            "{} is not a valid value for reduction".format(reduction)
+        )
     return ret
 
 
@@ -43,7 +45,9 @@ def _get_reduction_method(reduction, to_reduce):
     elif reduction == "sum":
         ret = ivy.sum(to_reduce)
     else:
-        raise ValueError(f"{reduction} is not a valid value for reduction")
+        raise ivy.exceptions.IvyException(
+            f"{reduction} is not a valid value for reduction"
+        )
     return ret
 
 
@@ -87,9 +91,6 @@ def cross_entropy(
     return ret
 
 
-cross_entropy.unsupported_dtypes = ("float16",)
-
-
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
@@ -100,6 +101,3 @@ def binary_cross_entropy(
         result = ivy.multiply(weight, result)
     result = reduction(result)
     return result
-
-
-binary_cross_entropy.unsupported_dtypes = ("float16", "float64")

@@ -29,7 +29,6 @@ def _broadcastable_trio(draw):
 def test_numpy_where(
     broadcastables,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
@@ -80,21 +79,15 @@ def test_numpy_nonzero(
     )
 
 
-@st.composite
-def _dtype_x_bounded_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
-    return dtype, x, axis
-
-
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_bounded_axis(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
         min_num_dims=1,
-        min_dim_size=1,
+        force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.argmin"
     ),
@@ -102,7 +95,6 @@ def _dtype_x_bounded_axis(draw, **kwargs):
 )
 def test_numpy_argmin(
     dtype_x_axis,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -119,8 +111,108 @@ def test_numpy_argmin(
         fw=fw,
         frontend="numpy",
         fn_tree="argmin",
-        x=np.asarray(x, dtype=input_dtype),
+        a=np.asarray(x, dtype=input_dtype),
         axis=axis,
         keepdims=keep_dims,
         out=None,
+    )
+
+
+# argmax
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.argmax"
+    ),
+    keep_dims=st.booleans(),
+)
+def test_numpy_argmax(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    keep_dims,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="argmax",
+        a=np.asarray(x, dtype=input_dtype),
+        axis=axis,
+        keepdims=keep_dims,
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.flatnonzero"
+    ),
+)
+def test_numpy_flatnonzero(
+    dtype_and_x, as_variable, native_array, num_positional_args, fw
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="flatnonzero",
+        a=np.array(x, dtype=dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+    ),
+    dtype_and_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+    ),
+    side=st.sampled_from(["left", "right"]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.searchsorted"
+    ),
+)
+def test_numpy_searchsorted(
+    dtype_and_x, dtype_and_v, side, as_variable, native_array, num_positional_args, fw
+):
+    dtype_x, x = dtype_and_x
+    dtype_v, v = dtype_and_v
+    helpers.test_frontend_function(
+        input_dtypes=[dtype_x, dtype_v, np.int64],
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="searchsorted",
+        a=np.array(x, dtype=dtype_x),
+        v=np.array(v, dtype=dtype_v),
+        side=side,
+        sorter=np.argsort(np.array(x)),
     )

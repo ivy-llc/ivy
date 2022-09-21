@@ -17,6 +17,15 @@ NativeDevice = str
 NativeDtype = DType
 NativeShape = TensorShape
 
+NativeSparseArray = tf.SparseTensor
+
+
+# devices
+valid_devices = ("cpu", "gpu", "tpu")
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = tf.int8
 native_int16 = tf.int16
@@ -110,6 +119,8 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
+from . import extensions
+from .extensions import *
 from . import general
 from .general import *
 from . import gradients
