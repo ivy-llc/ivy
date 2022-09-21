@@ -126,7 +126,7 @@ def roll(
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    axis: Union[int, Sequence[int]],
+    axis: Union[int, Sequence[int]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
