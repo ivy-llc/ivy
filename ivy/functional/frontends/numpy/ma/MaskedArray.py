@@ -22,7 +22,7 @@ class MaskedArray(np_frontend.ndarray):
         data,
         mask=nomask,
         dtype=None,
-        copy=False,  # TODO
+        copy=False,
         ndmin=0,
         fill_value=None,
         keep_mask=True,
@@ -36,6 +36,7 @@ class MaskedArray(np_frontend.ndarray):
         self._init_ndmin(ndmin)
         self._init_hard_mask(hard_mask)
         self._init_shrink(shrink)
+        self._init_copy(copy)
 
     def _init_data(self, data, dtype, mask, keep_mask):
         if _is_masked_array(data):
@@ -97,6 +98,11 @@ class MaskedArray(np_frontend.ndarray):
     def _init_shrink(self, shrink):
         if shrink and not ivy.any(self._mask):
             self._mask = ivy.array(False)
+
+    def _init_copy(self, copy):
+        if copy:
+            self._data = ivy.copy_array(self._data)
+            self._mask = ivy.copy_array(self._mask)
 
     # Properties #
     # ---------- #
