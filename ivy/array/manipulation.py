@@ -218,7 +218,7 @@ class ArrayWithManipulation(abc.ABC):
     def squeeze(
         self: ivy.Array,
         /,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Tuple[int, ...]]],
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
