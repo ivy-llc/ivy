@@ -872,9 +872,35 @@ class ContainerWithManipulation(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.stack. This method simply wraps the
-        function, and so the docstring for ivy.stack also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.stack. This method simply
+        wraps the function, and so the docstring for ivy.stack also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            axis is the axiis(int) to stack along
+            Default ``0`` wich means the first dimension.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of self.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_stack(x)
+        >>> y
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "stack",
@@ -906,6 +932,16 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.stack. This method
         simply wraps the function, and so the docstring for ivy.stack
         also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.stack(x)
+        >>> y
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.])
+        }
         """
         new_xs = xs.copy()
         new_xs.insert(0, self.copy())

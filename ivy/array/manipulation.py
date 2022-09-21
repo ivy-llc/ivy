@@ -251,6 +251,28 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.stack. This method simply
         wraps the function, and so the docstring for ivy.stack also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            axis is the axiis(int) to stack along
+            Default ``0`` wich means the first dimension.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array with the elements of self.
+
+        Examples
+        --------
+        >>> x = ivy.stack([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> x
+        ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
         """
         return ivy.stack([self._data] + arrays, axis=axis, out=out)
 
