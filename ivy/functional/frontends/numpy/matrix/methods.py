@@ -16,5 +16,5 @@ def any(x, /, axis=None, out=None, keepdims=False, *, where=True):
     return ret
 
 
-def transpose(a, /, axes=None, out=None):
-    return ivy.matrix_transpose(a, out=out)
+def transpose(a, /, axes=None):
+    return ivy.matrix_transpose(a, out=None)
