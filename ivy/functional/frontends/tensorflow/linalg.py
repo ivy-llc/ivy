@@ -54,8 +54,8 @@ def trace(a, offset=0, axis1=0, axis2=1, dtype=None):
     return ivy.trace(a, offset=offset)
 
 
-def tensordot(x, y, axes, name=None):
-    return ivy.tensordot(x, y, axes)
+def tensordot(a, b, axes, name=None):
+    return ivy.tensordot(a, b, axes)
 
 
 tensordot.supported_dtypes = ("float32", "float64")
