@@ -34,7 +34,7 @@ j = run % M
 backend = backends[0]
 submodule = submodules[0]
 
-print(backend, submodule)
+# print(backend, submodule)
 os.environ["BACKEND"] = backend
 os.environ["SUBMODULE"] = submodule
 # os.system(f"./run_tests_CLI/test_ivy_core.sh {backend} test_{submodule}")
