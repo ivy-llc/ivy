@@ -316,7 +316,7 @@ the backend :code:`ivy.cumprod()` does not support this argument or behaviour.
         *,
         exclusive: bool = False,
         out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
