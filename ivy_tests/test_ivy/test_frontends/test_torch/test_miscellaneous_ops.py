@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st, settings
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy
@@ -518,7 +518,7 @@ def test_torch_flatten(
 
 
 @handle_cmd_line_args
-@settings(max_examples=1000)
+# @settings(max_examples=1000)
 @given(
     dtype_and_values=helpers.dtype_and_values(
         # Min_num_dims is 2 to prevent a Torch crash.
@@ -526,7 +526,8 @@ def test_torch_flatten(
         # Setting available types to valid allows Bool
         # which causes a Torch crash.
         available_dtypes=helpers.get_dtypes("float"),
-        max_value=1e8,
+        max_value=1e4,
+        min_value=-1e4,
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
