@@ -6,6 +6,19 @@ from typing import Optional, Union
 from ivy.func_wrapper import handle_nestable
 from ivy.exceptions import handle_exceptions
 
+# Helpers #
+# ------- #
+
+
+def _reduce_loss(red, true, log_pred, axis, out):
+    if red == "sum":
+        ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
+    elif red == "mean":
+        ivy.negative(ivy.mean(log_pred * true, axis=axis, out=out), out=out)
+    else:
+        return ivy.negative(log_pred * true, out=out)
+
+
 # Extra #
 # ------#
 
@@ -60,7 +73,7 @@ def cross_entropy(
     ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
+    return _reduce_loss(reduction, true, log_pred, axis, out)
 
 
 @handle_nestable
