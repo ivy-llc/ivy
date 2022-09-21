@@ -1,18 +1,21 @@
 """Collection of general Ivy functions."""
 
-# global
-from functools import wraps
 import gc
 import inspect
 import math
+
+# global
+from functools import wraps
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
+
 import einops
 import numpy as np
 
 # local
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
@@ -22,7 +25,6 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 from ivy.functional.ivy.device import dev
-from ivy.exceptions import handle_exceptions
 
 FN_CACHE = dict()
 INF = float("inf")
@@ -1987,6 +1989,9 @@ def einops_reduce(
     return ret
 
 
+einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
+
+
 @handle_nestable
 @handle_exceptions
 def einops_repeat(
@@ -2238,7 +2243,7 @@ def stable_divide(
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def stable_pow(
@@ -3317,17 +3322,24 @@ def _get_devices_and_dtypes(fn, complement=True):
     for device in supported_devices:
         supported[device] = supported_dtypes
 
-    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             all_comb = _all_dnd_combinations()
             supported = _dnd_dict_difference(all_comb, supported)
         return supported
 
+    backend = ivy.current_backend_str()
+
     # Their values are formatted like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
-
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
+
+        if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
+            fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
         ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
         # dict intersection
@@ -3335,6 +3347,9 @@ def _get_devices_and_dtypes(fn, complement=True):
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
+
+        if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
+            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
         ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
         # dict difference

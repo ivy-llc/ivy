@@ -54,7 +54,7 @@ def where(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.where(condition, x1, x2)
+    return torch.where(condition, x1, x2).to(dtype=x1.dtype)
 
 
 # Extra #

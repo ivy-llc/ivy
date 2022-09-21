@@ -56,9 +56,9 @@ def handle_exceptions(fn: Callable) -> Callable:
         try:
             return fn(*args, **kwargs)
         except (IndexError, ValueError) as e:
-            raise ivy.exceptions.IvyError(fn.__name__, str(e)) from None
+            raise ivy.exceptions.IvyError(fn.__name__, str(e))
         except Exception as e:
-            raise ivy.exceptions.IvyBackendException(fn.__name__, str(e)) from None
+            raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
 
     new_fn.handle_exceptions = True
     return new_fn

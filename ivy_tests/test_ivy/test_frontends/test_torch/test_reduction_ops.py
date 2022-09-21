@@ -393,3 +393,38 @@ def test_torch_prod(
         keepdim=keepdims,
         out=None,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=statistical_dtype_values(function="var"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.var"
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_var(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+    keepdims,
+):
+    input_dtype, x, axis, correction = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="var",
+        input=np.asarray(x, dtype=input_dtype),
+        dim=axis,
+        unbiased=bool(correction),
+        keepdim=keepdims,
+        out=None,
+    )
