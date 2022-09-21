@@ -26,7 +26,7 @@ class MaskedArray(np_frontend.ndarray):
         ndmin=0,
         fill_value=None,
         keep_mask=True,
-        hard_mask=None,  # TODO
+        hard_mask=None,  # TODO: assignments
         shrink=True,  # TODO
         subok=True,
         order=None,
@@ -34,6 +34,7 @@ class MaskedArray(np_frontend.ndarray):
         self._init_data(data, dtype, mask, keep_mask)
         self._init_fill_value(fill_value)
         self._init_ndmin(ndmin)
+        self._init_hard_mask(hard_mask)
 
     def _init_data(self, data, dtype, mask, keep_mask):
         if _is_masked_array(data):
@@ -83,9 +84,14 @@ class MaskedArray(np_frontend.ndarray):
             self._fill_value = ivy.array(1e20, dtype="float64")
 
     def _init_ndmin(self, ndmin):
+        ivy.assertions.check_isinstance(ndmin, int)
         if ndmin > len(ivy.shape(self._data)):
             self._data = ivy.expand_dims(self._data, axis=0)
             self._mask = ivy.expand_dims(self._mask, axis=0)
+
+    def _init_hard_mask(self, hard_mask):
+        ivy.assertions.check_isinstance(hard_mask, bool)
+        self._hard_mask = hard_mask
 
     # Properties #
     # ---------- #
@@ -105,6 +111,10 @@ class MaskedArray(np_frontend.ndarray):
     @property
     def fill_value(self):
         return self._fill_value
+
+    @property
+    def hardmask(self):
+        return self._hard_mask
 
     # Setter #
     # ------ #
