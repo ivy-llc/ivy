@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Formatting" href="9_formatting.html" />
+    <link rel="next" title="Function Wrapping" href="9_function_wrapping.html" />
     <link rel="prev" title="Devices" href="7_devices.html" /> 
 </head>
 
@@ -50,8 +50,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
@@ -61,71 +61,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#copy-argument">copy argument</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="9_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../array/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/array.html">Array</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/array_methods.html">Array methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container_methods.html">Container methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -153,15 +102,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
@@ -238,24 +192,6 @@ which <code class="code docutils literal notranslate"><span class="pre">ivy.Arra
 <p>JAX <strong>does not</strong> natively support inplace updates,
 and so there is no way of actually inplace updating the <code class="code docutils literal notranslate"><span class="pre">JaxArray</span></code> instance <code class="code docutils literal notranslate"><span class="pre">x_native</span></code>.
 Therefore, an inplace update is only performed on <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances provided in the input.</p>
-<p><strong>MXNet</strong>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">],</span>
-    <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">],</span>
-    <span class="n">ensure_in_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="p">(</span><span class="n">x_native</span><span class="p">,</span> <span class="n">val_native</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">args_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-    <span class="n">x_native</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">val_native</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">x_native</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">x_native</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x</span>
-</pre></div>
-</div>
-<p>MXNet <strong>does</strong> natively support inplace updates,
-and so <code class="code docutils literal notranslate"><span class="pre">x_native</span></code> is updated inplace with <code class="code docutils literal notranslate"><span class="pre">val_native</span></code>.
-Following this, an inplace update is then also performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, if provided in the input.</p>
 <p><strong>NumPy</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -338,14 +274,14 @@ This could for example be the input array itself, but can also be any other arra
 The type hint of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code>.
 However, as discussed above, if the function is <em>nestable</em> then <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is omitted from the type hint in such cases,
-as explained in the <a class="reference internal" href="10_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
+as explained in the <a class="reference internal" href="11_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
 <p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
 (or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> if <em>nestable</em>).
 However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.</p>
 <p>In the case of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> return types, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is predominantly handled in
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340">handle_out_argument</a>. As explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340">handle_out_argument</a>. As explained in the <a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
 this wrapping is applied to every function with the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_out_argument</span></code> decorator
 dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
 <p><strong>Primary Functions</strong></p>
@@ -360,11 +296,6 @@ and so the <code class="code docutils literal notranslate"><span class="pre">sup
 <p><strong>JAX</strong> (no <code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">JaxArray</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>MXNet</strong> (no <code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>NumPy</strong> (includes <code class="code docutils literal notranslate"><span class="pre">support_native_out</span></code> attribute):</p>
@@ -451,7 +382,7 @@ using inplace updates in as many of the inner Ivy functions as possible.</p></li
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">epsilon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
@@ -529,7 +460,8 @@ If only one of <code class="code docutils literal notranslate"><span class="pre"
 If both are specified, then priority is given to the more general <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
 As with the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, the <code class="code docutils literal notranslate"><span class="pre">copy</span></code> argument is also handled <a class="reference external" href="insert_link">by the wrapper</a></p>
 <p><strong>Round Up</strong></p>
-<p>This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.</p>
+<p>This should have hopefully given you a good feel for inplace updates,
+and how these are handled in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,
 please feel free to engage with the <a class="reference external" href="https://github.com/unifyai/ivy/discussions/1319">inplace updates discussion</a>,
 or reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738152236130335">inplace updates channel</a>!</p>
@@ -544,7 +476,7 @@ src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="7_devices.html" class="btn btn-neutral float-left" title="Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="9_formatting.html" class="btn btn-neutral float-right" title="Formatting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="9_function_wrapping.html" class="btn btn-neutral float-right" title="Function Wrapping" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

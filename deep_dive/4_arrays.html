@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Containers" href="5_containers.html" />
-    <link rel="prev" title="Function Wrapping" href="3_function_wrapping.html" /> 
+    <link rel="prev" title="Backend Setting" href="3_backend_setting.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,8 +50,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Arrays</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#native-array">Native Array</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-array">Ivy Array</a></li>
@@ -62,71 +62,20 @@
 <li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../array/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/array.html">Array</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/array_methods.html">Array methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container_methods.html">Container methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -154,15 +103,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
@@ -279,7 +233,7 @@ otherwise it would be impossible to chain functions together!</p>
 <li><p>convert all of the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances which are returned from the backend function back into <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, and return</p></li>
 </ol>
 <p>Given the repeating nature of these steps, this is all entirely handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L149">inputs_to_native_arrays</a> and
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209">outputs_to_ivy_arrays</a> wrappers, as explained in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L209">outputs_to_ivy_arrays</a> wrappers, as explained in the <a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
 <p>All Ivy functions <em>also</em> accept <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances in the input.
 This is for a couple of reasons.
 Firstly, <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances must be converted to <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances anyway,
@@ -287,7 +241,7 @@ and so supporting them in the input is not a problem.
 Secondly, this makes it easier to combine backend-specific code with Ivy code,
 without needing to explicitly wrap any arrays before calling sections of Ivy code.</p>
 <p>Therefore, all input arrays to Ivy functions have type <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code>,
-whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="10_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
+whereas the output arrays have type <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>. This is further explained in the <a class="reference internal" href="11_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
 <p>However, <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument,
 which is used in most functions.
 This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dictates the array to which the result should be written, and so it effectively
@@ -314,7 +268,7 @@ src="https://www.youtube.com/embed/tAlDPnWcLDE" class="video">
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="3_function_wrapping.html" class="btn btn-neutral float-left" title="Function Wrapping" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3_backend_setting.html" class="btn btn-neutral float-left" title="Backend Setting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="5_containers.html" class="btn btn-neutral float-right" title="Containers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

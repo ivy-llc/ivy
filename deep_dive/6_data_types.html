@@ -50,84 +50,35 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0_navigating_the_code.html">Navigating the Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
 <li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Data Types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#data-type-module">Data Type Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-type-promotion">Data Type Promotion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-and-unsupported-data-types">Supported and Unsupported Data Types</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#support-for-integer-arrays">Support for Integer Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend-data-type-bugs">Backend Data Type Bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#superset-data-type-support">Superset Data Type Support</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="10_function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="11_docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="12_docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="13_array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="14_ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="15_ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14_array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../array/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/array.html">Array</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/array_methods.html">Array methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../array/wrapping.html">Wrapping</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Container</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../container/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/base.html">Base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/container_methods.html">Container methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/conversions.html">Conversions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/utility.html">Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../container/wrapping.html">Wrapping</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
@@ -155,15 +106,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Stateful</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
@@ -270,6 +226,87 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482
 Any function in the functional API that receives a <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument will make use of this function,
 as explained below.</p>
 </section>
+<section id="data-type-promotion">
+<h2>Data Type Promotion<a class="headerlink" href="#data-type-promotion" title="Permalink to this heading"></a></h2>
+<p>In order to ensure that the same data type is always returned when operations are
+performed on arrays with different data types, regardless of which backend framework is
+set, Ivy has it’s own set of data type promotion rules and corresponding  functions.
+These rules build directly on top of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/type_promotion.html">rules</a>
+outlined in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.</p>
+<p>The rules are simple: all data type promotions in Ivy should adhere to this
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L366">promotion table</a>,
+which is the union of the Array API Standard
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L223">promotion table</a>
+and an extra
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L292">promotion table</a>.</p>
+<p>In order to ensure adherance to this promotion table, many backend functions make use of
+the functions
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1804">ivy.promote_types</a>,
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1940">ivy.type_promote_arrays</a>,
+or
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L2085">ivy.promote_types_of_inputs</a>.
+These functions: promote data types in the inputs and return the new data types,
+promote the data types of the arrays in the input and return new arrays,
+and promote the data types of the numeric or array values inputs and
+return new type promoted values, respectively.</p>
+<p>For an example of how some of these functions are used,
+the implementations for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> in each backend framework are as follows:</p>
+<p># JAX</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">JaxArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">JaxArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p># NumPy</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@_handle_0_dim_output</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p># TensorFlow</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p># PyTorch</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It’s important to always make use of the Ivy promotion functions as opposed to
+backend-specific promotion functions such as <code class="code docutils literal notranslate"><span class="pre">jax.numpy.promote_types</span></code>,
+<code class="code docutils literal notranslate"><span class="pre">numpy.promote_types</span></code>, <code class="code docutils literal notranslate"><span class="pre">tf.experimental.numpy.promote_types</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">torch.promote_types</span></code>, as these will generally have promotion rules which will
+subtly differ from one another and from Ivy’s unified promotion rules.</p>
+</section>
 <section id="arguments-in-other-functions">
 <h2>Arguments in other Functions<a class="headerlink" href="#arguments-in-other-functions" title="Permalink to this heading"></a></h2>
 <p>All <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> arguments are keyword-only.
@@ -281,7 +318,7 @@ array, which could result in overflows, and so an explicit <code class="code doc
 <p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249">infer_dtype</a> wrapper, for all functions which have the decorator
 <code class="code docutils literal notranslate"><span class="pre">&#64;infer_dtype</span></code>.
 This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> in order to determine the correct data type.
-As discussed in the <a class="reference internal" href="3_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
+As discussed in the <a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
 this is applied to all applicable functions dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
 <p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> infers the data type as follows:</p>
 <ol class="arabic simple">
@@ -319,15 +356,6 @@ all list <code class="code docutils literal notranslate"><span class="pre">dtype
     <span class="n">dtype</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">jaxlib</span><span class="o">.</span><span class="n">xla_extension</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
-</pre></div>
-</div>
-<p>MXNet:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">mx</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 </pre></div>
 </div>
 <p>NumPy:</p>
@@ -410,7 +438,7 @@ inferred automatically using the helper functions
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370">function_supported_dtypes</a>
 and
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407">function_unsupported_dtypes</a>
-respestively, which traverse the abstract syntax tree of the compositional function and
+respectively, which traverse the abstract syntax tree of the compositional function and
 evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.</p>
 <p>It should be noted that the <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from
@@ -451,6 +479,23 @@ In such cases, the best solution is to simply add the data type to the
 <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute,
 rather than trying to implement a long and complex patch to achieve the desired
 behaviour.</p>
+<p>Some cases where a data type is not supported are very subtle. For example,
+<code class="code docutils literal notranslate"><span class="pre">uint8</span></code> is not supported for <code class="code docutils literal notranslate"><span class="pre">ivy.prod</span></code> with a <code class="code docutils literal notranslate"><span class="pre">torch</span></code> backend,
+despite <code class="code docutils literal notranslate"><span class="pre">torch.prod</span></code> handling <code class="code docutils literal notranslate"><span class="pre">torch.uint8</span></code> types in the input totally fine.</p>
+<p>The reason for this is that the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> mandates that the <code class="code docutils literal notranslate"><span class="pre">prod</span></code>
+function upcast the unsigned integer return to have the same number of bits as the
+default integer data type. By default, the default integer data type in Ivy is
+<code class="code docutils literal notranslate"><span class="pre">int32</span></code>, and so we should return an array of type <code class="code docutils literal notranslate"><span class="pre">uint32</span></code> despite the input
+arrays being of type <code class="code docutils literal notranslate"><span class="pre">uint8</span></code>. However, <code class="code docutils literal notranslate"><span class="pre">torch</span></code> does not support <cite>uint32</cite>,
+and so we cannot fully adhere to the requirements of the standard for <code class="code docutils literal notranslate"><span class="pre">uint8</span></code>
+inputs. Rather than breaking this rule and returning arrays of type <code class="code docutils literal notranslate"><span class="pre">uint8</span></code> only
+with a <code class="code docutils literal notranslate"><span class="pre">torch</span></code> backend, we instead opt to remove official support entirely for
+this combination of data type, function and backend framework.
+This will avoid all of the potential confusion that could arise if we were to have
+inconsistent and unexpected outputs when using officially supported data types in Ivy.</p>
+</section>
+<section id="backend-data-type-bugs">
+<h2>Backend Data Type Bugs<a class="headerlink" href="#backend-data-type-bugs" title="Permalink to this heading"></a></h2>
 <p>In some cases, the lack of support might just be a bug which will likely be resolved in
 a future release of the framework. In these cases, as well as adding to the
 <code class="code docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute, we should also add a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment
@@ -492,16 +537,18 @@ version of each backend, but taking responsibility for patching this support for
 versions would substantially inflate the implementational requirements for ivy, and so
 we have decided to opt out of this responsibility!</p>
 </section>
-<section id="support-for-integer-arrays">
-<h2>Support for Integer Arrays<a class="headerlink" href="#support-for-integer-arrays" title="Permalink to this heading"></a></h2>
-<p>Some backends like <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> donot support integer array inputs for certain functions. For example
-<code class="code docutils literal notranslate"><span class="pre">ivy.cos</span></code> wouldn’t work for an input like <code class="code docutils literal notranslate"><span class="pre">ivy.array([1,2,3])</span></code> when the backend is set to <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>
-the reason being that <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> only supports non-integer values for this function. However, backends like
-<code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax</span></code> support integer arrays as inputs. So to provide this same functionality in
-<code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> we simply promote any integer array passed to such functions to the default float dtype.
-This behavior in Ivy makes it much easier to support such frameworks in our frontends, without the need for
-lots of extra logic for handling integer array inputs. This approach is also in keeping with our general approach in Ivy
-of implementing the superset of all behavior, rather than the lowest common denominator</p>
+<section id="superset-data-type-support">
+<h2>Superset Data Type Support<a class="headerlink" href="#superset-data-type-support" title="Permalink to this heading"></a></h2>
+<p>As explained in the superset section of the Deep Dive, we generally go for the superset
+of behaviour for all Ivy functions, and data type support is no exception.
+Some backends like <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> do not support integer array inputs for certain
+functions. For example <code class="code docutils literal notranslate"><span class="pre">tensorflow.cos</span></code> only supports non-integer values.
+However, backends like <code class="code docutils literal notranslate"><span class="pre">torch</span></code> and <code class="code docutils literal notranslate"><span class="pre">jax</span></code> support integer arrays as inputs.
+To ensure that integer types are supported in Ivy when a <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> backend is set,
+we simply promote any integer array passed to the function to the default float dtype.
+As with all superset design decisions, this behavior makes it much easier to support all
+frameworks in our frontends, without the need for lots of extra logic for handling
+integer array inputs for the frameworks which support it natively.</p>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for data types, and how these are handled in Ivy.</p>
 <p>If you’re ever unsure of how best to proceed,

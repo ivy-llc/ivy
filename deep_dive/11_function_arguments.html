@@ -52,12 +52,12 @@
 <li class="toctree-l2"><a class="reference internal" href="1_function_types.html">Function Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2_superset_behaviour.html">Superset Behaviour</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3_backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5_arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6_containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7_data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="8_devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="9_inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4_function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7_devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8_inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9_function_wrapping.html">Function Wrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="10_formatting.html">Formatting</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Function Arguments</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
@@ -76,6 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="15_ivy_tests.html">Ivy Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="16_ivy_frontends.html">Ivy Frontends</a></li>
 <li class="toctree-l2"><a class="reference internal" href="17_ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="18_exception_handling.html">Exception Handling</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -168,7 +169,7 @@
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and the backend-specific implementation at
 <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
 <p>Many of these points are already adressed in the previous sections:
-<a class="reference internal" href="5_arrays.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="7_data_types.html#data-types"><span class="std std-ref">Data Types</span></a>, <a class="reference internal" href="8_devices.html#devices"><span class="std std-ref">Devices</span></a> and <a class="reference internal" href="9_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>.
+<a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a>, <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a> and <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>.
 However, we thought it would be convenient to revisit all of these considerations in a single section,
 dedicated to function arguments.</p>
 <p>As for type-hints,
@@ -289,14 +290,14 @@ calling any of (<code class="code docutils literal notranslate"><span class="pre
 <p><code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances are also not permitted for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, which is used in many functions.
 This is because the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument dicates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return when no <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is specified.
-This is all explained in more detail in the <a class="reference internal" href="5_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
+This is all explained in more detail in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
 </section>
 <section id="out-argument">
 <h2>out Argument<a class="headerlink" href="#out-argument" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should always be provided as a keyword-only argument,
 and it should be added to all functions in the Ivy API and backend API which support
 inplace updates, with a default value of <code class="code docutils literal notranslate"><span class="pre">None</span></code> in all cases.
-The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is explained in more detail in the <a class="reference internal" href="9_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
+The <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is explained in more detail in the <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a> section.</p>
 </section>
 <section id="dtype-and-device-arguments">
 <h2>dtype and device arguments<a class="headerlink" href="#dtype-and-device-arguments" title="Permalink to this heading"></a></h2>
@@ -308,7 +309,7 @@ at <code class="code docutils literal notranslate"><span class="pre">ivy/functio
 In a nutshell, by the time the backend implementation is entered,
 the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
-This is futher explained in the <a class="reference internal" href="7_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and <a class="reference internal" href="8_devices.html#devices"><span class="std std-ref">Devices</span></a> sections respectively.</p>
+This is futher explained in the <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a> and <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a> sections respectively.</p>
 </section>
 <section id="numbers-in-operator-functions">
 <h2>Numbers in Operator Functions<a class="headerlink" href="#numbers-in-operator-functions" title="Permalink to this heading"></a></h2>
