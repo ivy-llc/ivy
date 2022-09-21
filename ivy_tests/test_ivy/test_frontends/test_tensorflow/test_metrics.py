@@ -177,6 +177,78 @@ def test_binary_crossentropy(
     )
 
 
+@st.composite
+def _dtype_pred_and_labels(
+    draw,
+    *,
+    dtype=None,
+    available_dtypes=helpers.get_dtypes("numeric"),
+    min_pred_val=0,
+    max_pred_val=None,
+    label_set=None,
+    min_label_val=0,
+    max_label_val=None,
+    allow_inf=False,
+    allow_nan=False,
+    exclude_min=False,
+    exclude_max=False,
+    sparse_label=False,
+    shape=None,
+):
+    if dtype is None:
+        dtype = draw(
+            helpers.array_dtypes(
+                num_arrays=2,
+                available_dtypes=available_dtypes,
+                shared_dtype=True,
+            )
+        )
+    # initialize shapes for pred and label
+    if not sparse_label:
+        assert shape is not None, "Unspecified array shape."
+        if not isinstance(shape, (tuple, list)):
+            shape = draw(shape)
+            label_shape = shape
+    else:
+        label_shape = shape[:-1]
+
+    pred = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=shape,
+            min_value=min_pred_val,
+            max_value=max_pred_val,
+            allow_inf=allow_inf,
+            allow_nan=allow_nan,
+            exclude_min=exclude_min,
+            exclude_max=exclude_max,
+        )
+    )
+    # generate labels by restriction
+    if label_set is not None:
+        length = 1
+        for _ in label_shape:
+            length *= _
+        values = draw(helpers.list_of_length(x=label_set, length=length))
+        array = np.array(values)
+        labels = array.reshape(label_shape).tolist()
+    else:
+        labels = draw(
+            helpers.array_values(
+                dtype=dtype[1],
+                shape=shape,
+                min_value=min_label_val,
+                max_value=max_label_val,
+                allow_inf=allow_inf,
+                allow_nan=allow_nan,
+                exclude_min=exclude_min,
+                exclude_max=exclude_max,
+            )
+        )
+
+    return dtype, pred, labels
+
+
 # sparse_top_k_categorical_accuracy
 @handle_cmd_line_args
 @given(
@@ -195,7 +267,6 @@ def test_sparse_top_k_categorical_accuracy(
     dtype_and_y_pred, y_true, k, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, y_pred = dtype_and_y_pred
-    print(y_pred, y_true, k)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
