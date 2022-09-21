@@ -518,7 +518,6 @@ def test_torch_flatten(
 
 
 @handle_cmd_line_args
-# @settings(max_examples=1000)
 @given(
     dtype_and_values=helpers.dtype_and_values(
         # Min_num_dims is 2 to prevent a Torch crash.
