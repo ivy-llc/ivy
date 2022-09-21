@@ -6267,8 +6267,8 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = x.sinc()
         >>> print(y)
         {
-            a: ivy.array([0.636, -0.212, 0.127]),
-            b: ivy.array([-0.090, 0.070, -0.057])
+            a: ivy.array([0.637,-0.212,0.127]),
+            b: ivy.array([-0.0909,0.0707,-0.0579])
         }
         """
         return self.static_sinc(

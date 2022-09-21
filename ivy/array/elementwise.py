@@ -1776,7 +1776,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
         >>> y = x.sinc()
         >>> print(y)
-        ivy.array([0.636, -0.212, 0.127, -0.090])
+        ivy.array([0.637,-0.212,0.127,-0.0909])
         """
         return ivy.sinc(self._data, out=out)
 

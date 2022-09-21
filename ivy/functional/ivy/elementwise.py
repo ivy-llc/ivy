@@ -4945,13 +4945,13 @@ def sinc(
     >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
     >>> y = x.sinc()
     >>> print(y)
-    ivy.array([0.636, -0.212, 0.127, -0.090])
+    ivy.array([0.637,-0.212,0.127,-0.0909])
 
     >>> x = ivy.array([1.5, 0.5, -1.5])
     >>> y = ivy.zeros(3)
     >>> ivy.sinc(x, out=y) # only PyTorch backend supports out argument for sinc function
     >>> print(y)
-    ivy.array([-0.2122,  0.6366, -0.2122])
+    ivy.array(([-0.212,0.637,-0.212])
 
 
     With :code:`ivy.NativeArray` input:
@@ -4959,7 +4959,7 @@ def sinc(
     >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
     >>> y = ivy.sinc(x)
     >>> print(y)
-    ivy.array([0.636, -0.212, 0.127, -0.090])
+    ivy.array([0.637,-0.212,0.127,-0.0909])
 
     With :code:`ivy.Container` input:
 
@@ -4967,8 +4967,8 @@ def sinc(
     >>> y = ivy.acos(x)
     >>> print(y)
     {
-        a: ivy.array([1.57, 3.14, 0.]),
-        b: ivy.array([0., 1.57, 3.14])
+        a: ivy.array([1.57,3.14,0.]),
+        b: ivy.array([0.,1.57,3.14])
     }
 
 
