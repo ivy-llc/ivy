@@ -1866,6 +1866,7 @@ class ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -1885,7 +1886,6 @@ class ArrayWithElementwise(abc.ABC):
         >>> z = x.subtract(y, alpha=2)
         >>> print(z)
         ivy.array([-3., -5., -9.])
-
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
 
