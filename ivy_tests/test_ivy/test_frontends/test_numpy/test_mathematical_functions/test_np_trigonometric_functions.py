@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -14,12 +14,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cos"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_cos(
     dtype_and_x,
@@ -65,12 +62,9 @@ def test_numpy_cos(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.tan"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_tan(
     dtype_and_x,
@@ -116,12 +110,9 @@ def test_numpy_tan(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arcsin"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_arcsin(
     dtype_and_x,
@@ -167,12 +158,9 @@ def test_numpy_arcsin(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arccos"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_arccos(
     dtype_and_x,
@@ -213,16 +201,14 @@ def test_numpy_arccos(
 
 
 # arctan
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arctan"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_arctan(
     dtype_and_x,
@@ -263,16 +249,14 @@ def test_numpy_arctan(
 
 
 # cosh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cosh"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_cosh(
     dtype_and_x,
@@ -313,16 +297,14 @@ def test_numpy_cosh(
 
 
 # arctanh
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arctanh"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_arctanh(
     dtype_and_x,
@@ -369,12 +351,9 @@ def test_numpy_arctanh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.rad2deg"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_rad2deg(
     dtype_and_x,
