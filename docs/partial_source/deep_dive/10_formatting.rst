@@ -76,7 +76,7 @@ single line of code like so:
 
     def argwhere(
         x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
 
 When a commit is attempted, `pre-commit` would detect this error by running the lint
 check, and it would then reformat the arguments automatically.
@@ -105,7 +105,7 @@ and committed accordingly.
         x: Union[ivy.Array, ivy.NativeArray],
         *,
         out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
 
 
 If the code is all formatted correctly, then in this case `pre-commit` will not modify

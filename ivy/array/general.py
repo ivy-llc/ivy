@@ -257,7 +257,7 @@ class ArrayWithGeneral(abc.ABC):
         /,
         *,
         out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
         function, and so the docstring for ivy.gather_nd also applies to this method
@@ -390,7 +390,7 @@ class ArrayWithGeneral(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
         **axes_lengths: Dict[str, int],
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.einops_repeat. This method simply
         wraps the function, and so the docstring for ivy.einops_repeat also applies
@@ -897,7 +897,7 @@ class ArrayWithGeneral(abc.ABC):
         /,
         *,
         min_base: float = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
         the function, and so the docstring for ivy.stable_pow also applies to this
