@@ -307,7 +307,7 @@ def vector_norm(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[JaxArray] = None,
