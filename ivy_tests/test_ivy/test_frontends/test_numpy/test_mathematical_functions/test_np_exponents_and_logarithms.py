@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -14,12 +14,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.exp"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_exp(
     dtype_and_x,

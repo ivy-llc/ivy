@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -16,12 +16,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.add"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_add(
     dtype_and_x,
@@ -69,12 +66,9 @@ def test_numpy_add(
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.subtract"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_subtract(
     dtype_and_x,
@@ -120,11 +114,9 @@ def test_numpy_subtract(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
-    as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.vdot"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_vdot(
     dtype_and_x,
@@ -157,12 +149,9 @@ def test_numpy_vdot(
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.divide"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_divide(
     dtype_and_x,
@@ -210,12 +199,9 @@ def test_numpy_divide(
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.multiply"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_multiply(
     dtype_and_x,
@@ -264,11 +250,9 @@ def test_numpy_multiply(
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.positive"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_positive(
     dtype_and_x,
@@ -316,11 +300,9 @@ def test_numpy_positive(
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.negative"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_negative(
     dtype_and_x,
