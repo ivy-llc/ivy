@@ -20,7 +20,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.torch.dist"
     ),
     native_array=helpers.array_bools(num_arrays=2),
-    p=st.integers(),
+    p=st.sampled_from([None, st.integers()]),
 )
 def test_torch_dist(
     dtype_and_input,
