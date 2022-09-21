@@ -1305,7 +1305,10 @@
 
     <span class="n">supported</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">VALID_DEVICES</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="s2">&quot;backend&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">and</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+    <span class="n">is_backend_fn</span> <span class="o">=</span> <span class="s2">&quot;backend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span>
+    <span class="n">is_frontend_fn</span> <span class="o">=</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span>
+    <span class="n">is_einops_fn</span> <span class="o">=</span> <span class="s2">&quot;einops&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_backend_fn</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_frontend_fn</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_einops_fn</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">complement</span><span class="p">:</span>
             <span class="n">supported</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ALL_DEVICES</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">supported</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">supported</span>
@@ -1320,6 +1323,8 @@
     <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">merge_fn</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="ow">in</span> <span class="n">basic</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;einops&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">(),</span> <span class="n">base</span><span class="p">)</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
             <span class="n">supported</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">supported</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 

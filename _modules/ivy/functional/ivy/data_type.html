@@ -229,11 +229,12 @@
 
         <span class="c1"># if it&#39;s in the backend, we can get the dtypes directly</span>
         <span class="c1"># if it&#39;s in the front end, we need to recurse</span>
+        <span class="c1"># if it&#39;s einops, we need to recurse</span>
         <span class="k">if</span> <span class="s2">&quot;backend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
             <span class="n">f_supported</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">f_supported</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
             <span class="k">continue</span>
-        <span class="k">elif</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">or</span> <span class="s2">&quot;einops&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
             <span class="n">f_supported</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">f_supported</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
@@ -256,7 +257,10 @@
     <span class="c1"># We only care about getting dtype info from the base function</span>
     <span class="c1"># if we do need to at some point use dtype information from the parent function</span>
     <span class="c1"># we can comment out the following condition</span>
-    <span class="k">if</span> <span class="s2">&quot;backend&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">and</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+    <span class="n">is_backend_fn</span> <span class="o">=</span> <span class="s2">&quot;backend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span>
+    <span class="n">is_frontend_fn</span> <span class="o">=</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span>
+    <span class="n">is_einops_fn</span> <span class="o">=</span> <span class="s2">&quot;einops&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_backend_fn</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_frontend_fn</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_einops_fn</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">complement</span><span class="p">:</span>
             <span class="n">supported</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">all_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">supported</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">supported</span>
@@ -271,6 +275,10 @@
     <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">merge_fn</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="ow">in</span> <span class="n">basic</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="c1"># only einops allowed to be a dictionary</span>
+            <span class="k">if</span> <span class="s2">&quot;einops&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">(),</span> <span class="n">base</span><span class="p">)</span>
+
             <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
             <span class="n">supported</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">supported</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
