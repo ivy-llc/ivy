@@ -363,7 +363,11 @@ class ArrayWithStatistical(abc.ABC):
                    [1, 5],
                    [1, 11]])
         """
-        return ivy.cumprod(self._data, axis=axis, exclusive=exclusive, reverse=reverse, out=out)
+        return ivy.cumprod(self._data,
+                           axis=axis,
+                           exclusive=exclusive,
+                           reverse=reverse,
+                           out=out)
 
     def einsum(
         self: ivy.Array,
