@@ -4913,8 +4913,9 @@ def sinc(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation of the principal value of
-    the normalized sinc function, having domain ``(-infinity, +infinity)`` and codomain ``[-0.217234, 1]``, for each element
-    ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+    the normalized sinc function, having domain ``(-infinity, +infinity)`` and
+    codomain ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``.
+    Each element ``x_i`` is assumed to be expressed in radians.
 
     **Special cases**
 
@@ -4935,8 +4936,9 @@ def sinc(
     Returns
     -------
     ret
-        an array containing the normalized sinc function of each element in x. The returned array
-        must have a floating-point data type determined by :ref:`type-promotion`.
+        an array containing the normalized sinc function of each element in x.
+        The returned array must have a floating-point data type determined
+        by :ref:`type-promotion`.
 
     Examples
     --------
@@ -4949,7 +4951,7 @@ def sinc(
 
     >>> x = ivy.array([1.5, 0.5, -1.5])
     >>> y = ivy.zeros(3)
-    >>> ivy.sinc(x, out=y) # only PyTorch backend supports out argument for sinc function
+    >>> ivy.sinc(x, out=y)
     >>> print(y)
     ivy.array(([-0.212,0.637,-0.212])
 
