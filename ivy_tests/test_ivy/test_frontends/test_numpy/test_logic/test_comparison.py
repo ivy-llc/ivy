@@ -1,13 +1,15 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # equal
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -15,12 +17,9 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.equal"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_equal(
     dtype_and_x,
