@@ -18,3 +18,8 @@ def inv(a):
 # pinv
 def pinv(a, rtol=1e-15, hermitian=False):
     return ivy.pinv(a, rtol)
+
+
+# tensorinv
+def tensorinv(a, ind=2):
+    return ivy.tensorinv(a, )
