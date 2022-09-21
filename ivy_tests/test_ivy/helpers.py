@@ -1709,13 +1709,13 @@ def test_frontend_function(
     if len(native_array_flags) < num_arrays:
         native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
-    # update variable flags to be compatible with float dtype and with_out args
+    # update var flags to be compatible with float dtype and with_out args
     as_variable_flags = [
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
-    # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
+    # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
     *frontend_submods, fn_tree = fn_tree.split(".")
 
     # check for unsupported dtypes in backend framework
@@ -3464,7 +3464,7 @@ def handle_cmd_line_args(test_fn):
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
-    @settings(max_examples=25)
+    @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         gc.collect()
         flag, backend_string = (False, "")

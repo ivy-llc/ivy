@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 # local
 import ivy
@@ -273,7 +273,7 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

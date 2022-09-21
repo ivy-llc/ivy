@@ -314,7 +314,7 @@ class ArrayWithManipulation(abc.ABC):
         /,
         repeats: Union[int, Iterable[int]],
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
