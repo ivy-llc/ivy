@@ -1,7 +1,10 @@
 import ivy
 
+from types import NoneType
+from typing import Optional, Union, Tuple, List
 
-def transpose(array, /, *, axes=None):
+
+def transpose(array, /, *, axes: Optional[Union[NoneType, Tuple[int], List[int]]]=None) -> ivy.Array:
     if axes is None:
         axes = list(range(len(array.shape)))[::-1]
     try:
