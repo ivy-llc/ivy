@@ -637,19 +637,61 @@ def inv(
         floating-point data type determined by :ref:`type-promotion` and must have the
         same shape as ``x``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/
+    latest/extensions/generated/signatures.linalg.inv.html>`
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-    >>> y = ivy.inv(x)
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
+    >>> y = ivy.zeros(3)
+    >>> ivy.inv(x, out=y)
     >>> print(y)
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
+    Using inplace
+    >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
+    >>> ivy.inv(x, out=x)
+    >>> print(x)
+    ivy.array([[-1., 0.4],[1., -0.2]])
+
     Inverses of several matrices can be computed at once:
 
-    >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])
+    >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],\
+                       [[1.0, 3.0], [3.0, 5.0]]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])
+    ivy.array([[[-2., 1.],[1.5, -0.5]],
+               [[-1.25, 0.75],[0.75, -0.25]]])
+
+    Static method for Container
+    >>> x = ivy.Container(a=ivy.array([[11., 100., 10.],\
+                        [300., 40., 20.], [25., 30, 100.]]),\
+                        b=ivy.array([[4., 400., 50.], [10., 10., 15.],\
+                        [50., 5000., 40.]]), c=ivy.array([[25., 22., 100.],\
+                        [55, 20., 20.], [55., 50., 100.]]))
+    >>> y = ivy.Container.static_inv(x)
+    >>> print(y)
+    {
+        a: ivy.array([[-0.0012, 0.00342, -0.000565],
+                      [0.0104, -0.0003, -0.000981],
+                      [-0.00282, -0.000766, 0.0104]]),
+        b: ivy.array([[-0.0322, 0.101, 0.00237],
+                      [0.000151, -0.00101, 0.00019],
+                      [0.0214, 0., -0.00171]]),
+        c: ivy.array([[0.0107, 0.03, -0.0167],
+                      [-0.0472, -0.0322, 0.0536],
+                      [0.0177, -0.000429, -0.00762]])
+
+    }
 
     """
     return current_backend(x).inv(x, out=out)
