@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Dict, Sequence
 
 # local
 from ivy.container.base import ContainerBase
@@ -1477,7 +1477,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Container] = None,
@@ -1577,7 +1577,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Container] = None,
