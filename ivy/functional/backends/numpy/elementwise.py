@@ -75,9 +75,9 @@ def add(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
         x2 = alpha * x2
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.add(x1, x2)
 
 
@@ -630,9 +630,9 @@ def subtract(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
         x2 = alpha*x2
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.subtract(x1, x2)
 
 
