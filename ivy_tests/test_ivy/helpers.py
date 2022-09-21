@@ -1721,8 +1721,7 @@ def test_frontend_function(
     # check for unsupported dtypes in backend framework
     function = getattr(ivy.functional.frontends.__dict__[frontend], fn_tree)
     test_unsupported = check_unsupported_dtype(
-        fn=function, input_dtypes=input_dtypes, 
-        all_as_kwargs_np=all_as_kwargs_np
+        fn=function, input_dtypes=input_dtypes, all_as_kwargs_np=all_as_kwargs_np
     )
 
     if not test_unsupported:
@@ -3465,7 +3464,7 @@ def handle_cmd_line_args(test_fn):
 
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
-    @settings(max_examples=25)
+    @settings(max_examples=1)
     def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
         gc.collect()
         flag, backend_string = (False, "")
