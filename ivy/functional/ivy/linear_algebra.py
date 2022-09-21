@@ -653,7 +653,7 @@ def inv(
     >>> y = ivy.zeros(3)
     >>> ivy.inv(x, out=y)
     >>> print(y)
-    ivy.array([[-2.0, 1.0],[1.5, -0.5]])
+    ivy.array([[-2., 1.],[1.5, -0.5]])
 
     Using inplace
     >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
@@ -675,9 +675,9 @@ def inv(
     >>> x = ivy.Container(a=ivy.array([[0., 1.], [4., 4.]]),\
                           b=ivy.array([[4., 4.], [2., 1.]]))
     >>> y = ivy.inv(x)
-    >>> print(x)
+    >>> print(y)
     {
-        a: ivy.array([-1., 0.25], [1., 0.]),
+        a: ivy.array([[-1, 0.25], [1.0, 0.]]),
         b: ivy.array([-0.25., 1.], [0.5, -1.])
     }
 
