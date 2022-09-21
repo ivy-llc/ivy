@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 @st.composite
 def where(draw):
-    _, values = draw(helpers.dtype_and_values(available_dtypes=("bool",)))
+    values = draw(st.lists(st.booleans(), min_size=1))
     return draw(st.just(values) | st.just(True))
 
 
