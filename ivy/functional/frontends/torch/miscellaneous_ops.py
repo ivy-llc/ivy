@@ -75,9 +75,16 @@ def flatten(input, start_dim=0, end_dim=-1):
 
 
 def renorm(input, p, dim, maxnorm, *, out=None):
+
+    # ivy.map
+    # return ivy.clip_vector_norm(input, maxnorm, p=p, axis=dim, out=out)
+
+    input_dtype = input.dtype
+    input = ivy.astype(input, "float64")
     # Avoids division by 0 error later.
     if maxnorm == 0:
-        ret = ivy.zeros(input.shape, dtype=input.dtype)
+        # if False:
+        ret = ivy.zeros(input.shape, dtype=input_dtype)
     else:
         # The p-norm of a single value is that value
         # if len(input.shape) == 1:
@@ -91,41 +98,56 @@ def renorm(input, p, dim, maxnorm, *, out=None):
         else:
             # norms = ivy.broadcast_to(
             # ivy.vector_norm(input, axis=dim, ord=p), input.shape)
-            norms = ivy.vector_norm(input, axis=dim, ord=p)
+            # true_dim = (dim - 1) % len(input.shape)
+            # true_dim = (dim + 1) % len(input.shape)
+            true_dim = 1 if dim != 1 else 0
+            # hypothesis.note(f"true_dim: {true_dim}")
+            norms = ivy.vector_norm(input, axis=true_dim, ord=p, keepdims=True)
 
         # norms = input if len(input.shape) <= 1 else
         # ivy.vector_norm(input, axis=dim, ord=p)
         # a, b[:, np.newaxis]
-        if norms.shape != input.shape:
-            if norms.transpose().shape == input.shape:
-                norms = norms.transpose()
-            else:
-                # norms = ivy.repeat(norms, repeats=input.shape[dim-1],
-                # axis=dim)
-                # repeats_numerator = input.shape[dim-1]
-                # repeats_numerator = input.shape[dim]
-                # repeats_denominator = norms.shape[dim-1]
-                # repeats_denominator = norms.shape[dim]
-                # norms = ivy.repeat(norms, repeats=repeats_numerator /
-                # repeats_denominator)
+        # if norms.shape != input.shape:
+        # if norms.transpose().shape == input.shape:
+        #    norms = norms.transpose()
 
-                # norms = ivy.broadcast_to(norms, input.shape)
-                # norms = norms.transpose()
-                # input = input.transpose()
-                # norms = ivy.broadcast_to(norms, input.shape)
-                # norms = norms.transpose()
-                # input = input.transpose()
-                norms = norms[:, ivy.newaxis]
-                norms = ivy.swapaxes(norms, -1, dim)
+        # else:
+        # norms = ivy.repeat(norms, repeats=input.shape[dim-1],
+        # axis=dim)
+        # repeats_numerator = input.shape[dim-1]
+        # repeats_numerator = input.shape[dim]
+        # repeats_denominator = norms.shape[dim-1]
+        # repeats_denominator = norms.shape[dim]
+        # norms = ivy.repeat(norms, repeats=repeats_numerator /
+        # repeats_denominator)
 
-        ret = ivy.multiply(input, maxnorm / norms)
-        ret = ivy.astype(ret, input.dtype)
+        # norms = ivy.broadcast_to(norms, input.shape)
+        # norms = norms.transpose()
+        # input = input.transpose()
+        # norms = ivy.broadcast_to(norms, input.shape)
+        # norms = norms.transpose()
+        # input = input.transpose()
+        # if dim == 0:
+        #    if input.shape[0] == 1:
+        # norms = norms[ivy.newaxis, ...]
+        #    else:
+        #        norms = norms[..., ivy.newaxis]
+        # norms = norms[..., ivy.newaxis]
+        #    norms = ivy.swapaxes(norms, -1, dim)
+
+        if ivy.all(norms == 0):
+            ret = ivy.zeros(input.shape, dtype=input_dtype)
+        else:
+            # hypothesis.note(f"Note, norms : {norms}")
+            multiplier = ivy.minimum(maxnorm / norms, ivy.ones_like(norms))
+            ret = ivy.multiply(input, multiplier)
+            ret = ivy.astype(ret, input_dtype)
         # ivy.prod()
 
         # ret = ivy.astype(input * norms / maxnorm, dtype=input.dtype)
 
     # ret
-
+    ret = ivy.astype(ret, input_dtype)
     if ivy.exists(out):
         ivy.inplace_update(input, ret)
     return ret
