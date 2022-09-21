@@ -98,6 +98,10 @@ jobs:
              ivy/.hypothesis/examples.zip
          continue-on-error: true
 
+       - name: Update Dashboard
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
+         run: |
+           echo ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }}
        - name: Check on failures
          if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.tests.outcome != 'success'
          run: exit 1
