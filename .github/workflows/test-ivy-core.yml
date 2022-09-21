@@ -26,7 +26,7 @@ jobs:
            fetch-depth: 2
 
        - name: Check Files Changed
-         if: ${{(github.event_name == 'push') || !contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') }}
+         if: ${{(github.event_name == 'push') || !contains(github.event.pull_request.labels.*.name, 'Ivy Functional API') }}
          shell: pwsh
          id: check_file_changed
          run: |
