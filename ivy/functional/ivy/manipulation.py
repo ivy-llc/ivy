@@ -785,30 +785,8 @@ def stack(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
-
-    With :code: `ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.Container.static_stack(x)
-    >>> y
-    {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., 5.])
-    }
-
-    With :code: `ivy.Array  ` input:
-
-    >>> x = ivy.stack([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-    >>> x
-    ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-
     """
-    res = current_backend(arrays).stack(arrays, axis=axis, out=out)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+    return current_backend(arrays).stack(arrays, axis=axis, out=out)
 
 
 # Extra #
