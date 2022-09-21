@@ -1782,7 +1782,7 @@ def test_frontend_function(
     if len(native_array_flags) < num_arrays:
         native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
-    # update variable flags to be compatible with float dtype and with_out args
+    # update var flags to be compatible with float dtype and with_out args
     as_variable_flags = [
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
