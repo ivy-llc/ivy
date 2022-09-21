@@ -962,48 +962,32 @@ def test_tensorflow_zero_fraction(
 # accumulate_n
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=helpers.dtype_values_axis(
+    dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=3,
-        max_num_dims=3,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
+        shape = helpers.get_shape(
+            min_dim_size=3,
+            min_num_dims=3,
+            allow_none=False,
+        )
+        ),
+    dtype = helpers.get_dtypes("numeric"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.accumulate_n"
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.tensorflow.math.accumulate_n"),
-    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_tensorflow_accumulate_n(
-    *,
-    dtype_x_axis,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-    # keep_dims,
-    dtype,
+    dtype_and_values,dtype, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, inputs = dtype_and_values
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype for _ in range(len(np.asarray(inputs)))],
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
+        test_values=False,
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.accumulate_n",
-        rtol_=1e-1,
-        atol_=1e-2,
-        x=np.asarray(x, dtype=input_dtype),
-        # axis=axis,
-        # keepdims=keep_dims,
-        shape=np.asarray(x, dtype=input_dtype)[0].shape,
-        dtype=dtype,
+        inputs = [np.asarray(np.asarray(inputs)[i], dtype=input_dtype) for i in range(len(np.asarray(inputs)))],
     )
