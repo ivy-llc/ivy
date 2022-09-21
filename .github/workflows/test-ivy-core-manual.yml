@@ -54,7 +54,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           ./test_ivy_core.sh ${{ matrix.backends }} ${{ matrix.submodules }}
+           ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} ${{ matrix.submodules }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples

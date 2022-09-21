@@ -3,6 +3,7 @@ import numpy as np
 from hypothesis import assume, given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -129,38 +130,42 @@ def test_torch_fliplr(
 # cumsum
 @handle_cmd_line_args
 @given(
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
     ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.cumsum"
     ),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_torch_cumsum(
-    dtype_and_values,
-    axis,
+    dtype_x_axis,
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
+    dtype,
     fw,
 ):
-    input_dtype, value = dtype_and_values
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=True,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="cumsum",
-        input=np.asarray(value, dtype=input_dtype),
+        input=np.asarray(x, dtype=input_dtype),
         dim=axis,
-        dtype=input_dtype,
+        dtype=dtype,
         out=None,
     )
 
@@ -222,40 +227,291 @@ def test_torch_diagonal(
     )
 
 
-# cumprod
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,  # Torch requires this.
     ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+    diagonal=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.triu"
+    ),
+)
+def test_torch_triu(
+    dtype_and_values,
+    diagonal,
+    fw,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+):
+    dtype, values = dtype_and_values
+    values = np.asarray(values, dtype=dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="triu",
+        input=values,
+        diagonal=diagonal,
+    )
+
+
+# cumprod
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.cumprod"
     ),
+    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_torch_cumprod(
-    dtype_and_values,
-    axis,
+    dtype_x_axis,
     as_variable,
     num_positional_args,
     native_array,
+    with_out,
+    dtype,
     fw,
 ):
-    input_dtype, value = dtype_and_values
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=True,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="cumprod",
-        input=np.asarray(value, dtype=input_dtype),
+        input=np.asarray(x, dtype=input_dtype),
         dim=axis,
-        dtype=input_dtype,
+        dtype=dtype,
         out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    row=st.integers(min_value=0, max_value=10),
+    col=st.integers(min_value=0, max_value=10),
+    offset=st.integers(),
+    dtype_result=helpers.get_dtypes("valid"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tril_indices"
+    ),
+)
+def test_torch_tril_indices(
+    row,
+    col,
+    offset,
+    dtype_result,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[ivy.int32],
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="tril_indices",
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype_result,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    row=st.integers(min_value=0, max_value=100),
+    col=st.integers(min_value=0, max_value=100),
+    offset=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.triu_indices"
+    ),
+)
+def test_torch_triu_indices(
+    row,
+    col,
+    offset,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes="int32",
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="triu_indices",
+        row=row,
+        col=col,
+        offset=offset,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,  # Torch requires this.
+    ),
+    diagonal=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.tril"
+    ),
+)
+def test_torch_tril(
+    dtype_and_values,
+    diagonal,
+    fw,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+):
+    dtype, values = dtype_and_values
+    values = np.asarray(values, dtype=dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="tril",
+        input=values,
+        diagonal=diagonal,
+    )
+
+
+@st.composite
+def _get_dtype_and_arrays_and_start_end_dim(
+    draw,
+    *,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=5,
+):
+    """Samples a dtype, array, and start and end dimension which are within the array,
+    with the caveat that the end dimension can be `-1`. This is to match the API
+    for PyTorch's flatten.
+
+    Parameters
+    ----------
+    available_dtypes
+        The dtypes that are permitted for the array, expected to be
+        `helpers.get_dtypes("valid") or similar.
+
+    min_num_dims
+        The minimum number of dimensions the array can have. Defaults to 1
+
+    max_num_dims
+        The maximum number of dimensions the array can have. Defaults to 5
+
+    min_dim_size
+        The minimum size of any dimension in the array. Defaults to 1
+
+    max_dim_size
+        The maximum size of any dimension in the array. Defaults to 5
+
+    Returns
+    -------
+    ret
+        A 4-tuple (dtype, array, start_dim, end_dim) where dtype is
+        one of the available dtypes, the array is an array of values
+        and start_dim and end_dim are legal dimensions contained
+        within the array, with either start_dim <= end_dim or
+        end_dim = 1.
+
+    """
+    num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
+    shape = tuple(
+        draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
+        for _ in range(num_dims)
+    )
+
+    dtype, array = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            shape=shape,
+        )
+    )
+
+    start_dim = draw(st.integers(min_value=0, max_value=num_dims - 1))
+
+    # End_dim must be either -1 or in [start_dim, num_dims)
+    # If end_dim is -1, then it's going to flatten to a 1-D array.
+    is_full_flatten = draw(st.booleans())
+    if is_full_flatten:
+        end_dim = -1
+    else:
+        end_dim = draw(st.integers(min_value=start_dim, max_value=num_dims - 1))
+
+    return dtype, array, start_dim, end_dim
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_input_and_start_end_dim=_get_dtype_and_arrays_and_start_end_dim(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.flatten"
+    ),
+)
+def test_torch_flatten(
+    dtype_and_input_and_start_end_dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, input, start_dim, end_dim = dtype_and_input_and_start_end_dim
+
+    input = np.asarray(input, dtype=dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="flatten",
+        input=input,
+        start_dim=start_dim,
+        end_dim=end_dim,
     )

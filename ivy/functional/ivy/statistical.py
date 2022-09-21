@@ -1,5 +1,5 @@
 # global
-from typing import Union, Tuple, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -18,12 +19,109 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def min(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculates the minimum value of the input array x.
+
+    .. note::
+    When the number of elements over which to compute the minimum value is zero, the
+    minimum value is implementation-defined. Specification-compliant libraries may
+    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
+    input array, return NaN), or return the maximum possible value for the input array x
+    data type (e.g., if x is a floating-point array, return +infinity).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
+
+    Parameters
+    ----------
+    x
+        Input array containing elements to min.
+    axis
+         axis or axes along which minimum values must be computed. By default, the
+         minimum value must be computed over the entire array. If a tuple of integers,
+         minimum values must be computed over multiple axes. Default: None.
+    keepdims
+        optional boolean, if True, the reduced axes (dimensions) must be included in the
+        result as singleton dimensions, and, accordingly, the result must be compatible
+        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the minimum value was computed over the entire array, a zero-dimensional
+        array containing the minimum value; otherwise, a non-zero-dimensional array
+        containing the minimum values. The returned array must have the same data type
+        as x.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = x.min()
+    >>> print(z)
+    ivy.array(1)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0, 0, 0])
+    >>> y = ivy.min(x, out=z)
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[0, 1, 2]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x)
+    >>> print(y)
+    ivy.array(0)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.min(x)
+    >>> print(y)
+    {
+        a: ivy.array(0.),
+        b: ivy.array(3.)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+    >>> z = x.min()
+    >>> print(z)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
+    """
+    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the maximum value of the input array ``x``.
@@ -126,12 +224,13 @@ def max(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the arithmetic mean of the input array ``x``.
@@ -302,7 +401,7 @@ def mean(
         a: ivy.array([1., 2.]),
         b: ivy.array([3., 4.])
     }
-    
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
@@ -318,65 +417,12 @@ def mean(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def min(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Calculates the minimum value of the input array x.
-
-    .. note::
-    When the number of elements over which to compute the minimum value is zero, the
-    minimum value is implementation-defined. Specification-compliant libraries may
-    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
-    input array, return NaN), or return the maximum possible value for the input array x
-    data type (e.g., if x is a floating-point array, return +infinity).
-
-    **Special Cases**
-
-    For floating-point operands,
-
-    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
-
-    Parameters
-    ----------
-    x
-        Input array containing elements to min.
-    axis
-         axis or axes along which minimum values must be computed. By default, the
-         minimum value must be computed over the entire array. If a tuple of integers,
-         minimum values must be computed over multiple axes. Default: None.
-    keepdims
-        optional boolean, if True, the reduced axes (dimensions) must be included in the
-        result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        if the minimum value was computed over the entire array, a zero-dimensional
-        array containing the minimum value; otherwise, a non-zero-dimensional array
-        containing the minimum values. The returned array must have the same data type
-        as x.
-
-    """
-    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+@handle_exceptions
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -439,11 +485,12 @@ def prod(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -513,13 +560,14 @@ def std(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum of the input array ``x``.
@@ -633,13 +681,14 @@ def sum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -803,6 +852,292 @@ def var(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
+def cumsum(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the cumulative sum of the elements along a given axis.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis along which the cumulative sum is computed. Default is ``0``.
+    exclusive
+        Whether to perform cumsum exclusively. Default is ``False``.
+    reverse
+        Whether to perform the cumsum from last to first element in the selected
+        axis. Default is False (from first to last element)
+    dtype
+        Data type of the returned array. Default is ``None``.
+        If None, if the default data type corresponding to the data type “kind”
+        (integer or floating-point) of x has a smaller range of values than the
+        data type of x (e.g., x has data type int64 and the default data type
+        is int32, or x has data type uint64 and the default data type is int64),
+        the returned array must have the same data type as x.
+        If x has a floating-point data type, the returned array must have the
+        default floating-point data type.
+        If x has a signed integer data type (e.g., int16), the returned array
+        must have the default integer data type.
+        If x has an unsigned integer data type (e.g., uint16), the returned
+        array must have an unsigned integer data type having the same number of
+        bits as the default integer data type (e.g., if the default integer data
+        type is int32, the returned array must have a uint32 data type).
+        If the data type (either specified or resolved) differs from the data type
+        of x, the input array should be cast to the specified data type before
+        computing the product.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Array which holds the result of applying cumsum at each
+        original array elements along the specified axis.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 5, 2, 0])
+    >>> y = ivy.cumsum(x, exclusive= True, reverse=False)
+    >>> print(y)
+    ivy.array([0, 1, 6, 8])
+
+    >>> x = ivy.array([[6, 4, 2], \
+                       [1, 3, 0]])
+    >>> y = ivy.zeros((2,3))
+    >>> ivy.cumsum(x, axis=0, exclusive=False, reverse=True, out=y)
+    >>> print(y)
+    ivy.array([[7, 7, 2],
+               [1, 3, 0]])
+
+    >>> x = ivy.array([[1, 5, 2], \
+                       [4, 3, 0]])
+    >>> y = ivy.cumsum(x, axis=0, exclusive=True, reverse=True)
+    >>> print(y)
+    ivy.array([[4, 3, 0],
+               [0, 0, 0]])
+
+    >>> x = ivy.array([[2, 4, 5], \
+                       [3, 6, 5], \
+                       [1, 3, 10]])
+    >>> ivy.cumsum(x,axis=1,reverse=True, dtype='int64', out=x)
+    >>> print(x)
+    ivy.array([[11,  9,  5],
+               [14, 11,  5],
+               [14, 13, 10]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
+                          b=ivy.array([[3, 5, 7]]))
+    >>> y = ivy.cumsum(x, axis= 0)
+    >>> print(y)
+    {
+        a: ivy.array([[1, 3, 5]]),
+        b: ivy.array([[3, 5, 7]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
+                          b=ivy.array([[3, 5, 8], \
+                                       [5, 6, 5]]), \
+                          c=ivy.array([[2, 4, 1], \
+                                       [3, 6, 9], \
+                                       [0, 2, 3]]))
+    >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
+                          b = ivy.zeros((2, 3)), \
+                          c = ivy.zeros((3,3)))
+    >>> ivy.cumsum(x,axis=1,reverse=True, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([[8, 7, 4]]),
+        b: ivy.array([[16, 13, 8],
+                      [16, 11, 5]]),
+        c: ivy.array([[7, 5, 1],
+                      [18, 15, 9],
+                      [5, 5, 3]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[0], \
+                                       [5]]), \
+                          b=ivy.array([[6, 8, 7], \
+                                       [4, 2, 3]]), \
+                          c=ivy.array([[1, 2], \
+                                       [3, 4], \
+                                       [6, 4]]))
+    >>> ivy.cumsum(x,axis=0,out=x)
+    >>> print(x)
+    {
+        a: ivy.array([[0],
+                      [5]]),
+        b: ivy.array([[6, 8, 7],
+                      [10, 10, 10]]),
+        c: ivy.array([[1, 2],
+                      [4, 6],
+                      [10, 10]])
+    }
+    """
+    return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def cumprod(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: int = 0,
+    exclusive: bool = False,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the cumulative product of the elements along a given axis.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        int , axis along which the cumulative product is computed. By default 0.
+    exclusive
+        optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    dtype
+        data type of the returned array. If None,
+        if the default data type corresponding to the data type “kind” (integer or
+        floating-point) of x has a smaller range of values than the data type of x
+        (e.g., x has data type int64 and the default data type is int32, or x has data
+        type uint64 and the default data type is int64), the returned array must have
+        the same data type as x. if x has a floating-point data type, the returned array
+        must have the default floating-point data type. if x has a signed integer data
+        type (e.g., int16), the returned array must have the default integer data type.
+        if x has an unsigned integer data type (e.g., uint16), the returned array must
+        have an unsigned integer data type having the same number of bits as the default
+        integer data type (e.g., if the default integer data type is int32, the returned
+        array must have a uint32 data type). If the data type (either specified or
+        resolved) differs from the data type of x, the input array should be cast to the
+        specified data type before computing the product. Default: None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Input array with cumulatively multiplied elements along axis.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
+    ivy.array([2, 6, 24])
+
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.cumprod(x, exclusive=True)
+    >>> print(y)
+    ivy.array([1, 2, 6])
+
+    >>> x = ivy.array([[2, 3],
+                       [5, 7],
+                       [11, 13]])
+    >>> y = ivy.zeros((3, 2))
+    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
+    >>> print(y)
+    ivy.array([[ 1.,  2.],
+               [ 1.,  5.],
+               [ 1., 11.]])
+
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
+    >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
+    >>> print(x)
+    ivy.array([[1,  1],
+               [2,  3],
+               [10, 21]])
+
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
+    >>> y = ivy.zeros((3, 2))
+    >>> x.cumprod(axis=0, exclusive=True, out=y)
+    >>> print(x)
+    ivy.array([[1.,  1.],
+                [2.,  3.],
+                [10., 21.]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
+    {
+        a: ivy.array([2, 6, 24]),
+        b: ivy.array([3, 12, 60])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.cumprod(x, exclusive=True)
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 6]),
+        b: ivy.array([1, 3, 12])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[2, 3],
+                                       [5, 7],
+                                       [11, 13]]),
+                          b=ivy.array([[3, 4],
+                                       [4, 5],
+                                       [5, 6]]))
+    >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([[1, 2],
+                      [1, 5],
+                      [1, 11]]),
+        b: ivy.array([[1, 3],
+                      [1, 4],
+                      [1, 5]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[2, 3],
+                                        [5, 7],
+                                        [11, 13]]),
+                            b=ivy.array([[3, 4],
+                                        [4, 5],
+                                        [5, 6]]))
+    >>> x.cumprod(axis=0, exclusive=True, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([[1, 1],
+                      [2, 3],
+                      [10, 21]]),
+        b: ivy.array([[1, 1],
+                      [3, 4],
+                      [15, 42]])
+    }
+    """
+    return current_backend(x).cumprod(x, axis, exclusive, dtype=dtype, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   run-nightly-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'NumPy Frontend')}}
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') ||contains(github.event.pull_request.labels.*.name, 'NumPy Frontend')}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
