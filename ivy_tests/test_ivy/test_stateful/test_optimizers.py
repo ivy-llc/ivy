@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
+import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -15,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -65,7 +66,7 @@ def test_sgd_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -118,7 +119,7 @@ def test_lars_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=ivy_np.valid_float_dtypes[1:],
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -179,7 +180,7 @@ def test_adam_optimizer(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=ivy_np.valid_float_dtypes[1:],
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
