@@ -1167,6 +1167,7 @@
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1181,6 +1182,8 @@
 <span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``self``</span>
 <span class="sd">        (see :ref:`broadcasting`). Should have a numeric data type.</span>
+<span class="sd">    alpha</span>
+<span class="sd">        optional scalar multiplier for ``x2``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">        the inputs broadcast to.</span>
@@ -1198,6 +1201,12 @@
 <span class="sd">    &gt;&gt;&gt; z = x.add(y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([5, 7, 9])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.add(y, alpha=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([9, 12, 15])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -2947,6 +2956,7 @@
     <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -2963,10 +2973,11 @@
 <span class="sd">        second input array. Must be compatible with ``self``</span>
 <span class="sd">        (see :ref:`broadcasting`).</span>
 <span class="sd">        Should have a real-valued data type.</span>
+<span class="sd">    alpha</span>
+<span class="sd">        optional scalar multiplier for ``x2``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
 <span class="sd">        the inputs broadcast to.</span>
-
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
@@ -2975,11 +2986,18 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([5, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 6])</span>
 <span class="sd">    &gt;&gt;&gt; z = x.subtract(y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([-3, -3, -3])</span>
+<span class="sd">    ivy.array([4, 0, -3])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([5., 5, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; z = x.subtract(y, alpha=2)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([-3., -5., -9.])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
