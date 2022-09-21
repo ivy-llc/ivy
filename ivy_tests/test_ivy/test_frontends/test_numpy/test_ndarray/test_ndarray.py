@@ -32,12 +32,9 @@ def dtypes_x_reshape(draw):
 @given(
     dtypes_x_shape=dtypes_x_reshape(),
     copy=st.booleans(),
-    with_out=st.booleans(),
-    as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.reshape"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_instance_reshape(
     dtypes_x_shape,
