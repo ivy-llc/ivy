@@ -26,6 +26,7 @@ jobs:
 
     - name: Build and push Dockerfile
       run: |
+        cd docker
         docker build . --file Dockerfile --tag unifyai/ivy:latest
         docker push unifyai/ivy:latest
         

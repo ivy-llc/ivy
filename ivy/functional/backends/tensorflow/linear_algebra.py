@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
 # local
@@ -515,7 +515,7 @@ vecdot.supported_dtypes = ("bfloat16", "float16", "float32", "float64")
 
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

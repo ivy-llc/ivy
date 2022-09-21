@@ -171,7 +171,18 @@ def reduce_euclidean_norm(
 
 
 def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
-    return ivy.exp(input_tensor).sum(axis=axis, keepdims=keepdims).log()
+    # stable logsumexp trick
+    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
+    return (
+        ivy.log(
+            ivy.sum(
+                ivy.exp(input_tensor - max_input_tensor),
+                axis=axis,
+                keepdims=keepdims,
+            )
+        )
+        + max_input_tensor
+    ).astype(input_tensor.dtype)
 
 
 def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
@@ -183,7 +194,9 @@ def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
 
 
 def reduce_prod(input_tensor, axis=None, keepdims=False, name="reduce_prod"):
-    return ivy.prod(input_tensor, axis=axis, keepdims=keepdims)
+    return ivy.prod(input_tensor, axis=axis, keepdims=keepdims).astype(
+        input_tensor.dtype
+    )
 
 
 def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
@@ -191,7 +204,9 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 
 def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
-    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
+    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
+        input_tensor.dtype
+    )
 
 
 def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
@@ -203,7 +218,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 
 def scalar_mul(scalar, x, name="scalar_mul"):
-    return ivy.multiply(x, ivy.array([scalar]))
+    return ivy.multiply(x, ivy.array([scalar])).astype(x.dtype)
 
 
 def subtract(x, y, name=None):
