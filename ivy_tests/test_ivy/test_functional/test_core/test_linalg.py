@@ -881,8 +881,8 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        large_abs_safety_factor=40,
+        small_abs_safety_factor=40,
         safety_factor_scale="log",
         min_num_dims=2,
     ),
