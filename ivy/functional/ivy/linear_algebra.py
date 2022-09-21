@@ -664,7 +664,7 @@ def inv(
                [[-1.25, 0.75],[0.75, -0.25]]])
 
     Static method for Container
-    >>>  x = ivy.Container(a=ivy.array([[1., 1., 0.],\
+    >>> x = ivy.Container(a=ivy.array([[1., 1., 0.],\
                         [4., 4., 1.], [2., 2.5, 1.]]),\
                         b=ivy.array([[4., 4., 2.], [2., 1., 1.],\
                         [1., 3., 2.]]), c=ivy.array([[2., 2., 1.],\
