@@ -190,8 +190,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def matrix_rank(
         self: ivy.Array,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
+        /,
         *,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -250,7 +251,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(0)
 
         """
-        return ivy.matrix_rank(self._data, rtol, out=out)
+        return ivy.matrix_rank(self._data, rtol=rtol, out=out)
 
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
