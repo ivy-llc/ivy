@@ -41,15 +41,23 @@ def cross(
     x2: torch.Tensor,
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis is None:
-        axis = -1
     promote_type = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(promote_type)
     x2 = x2.type(promote_type)
-    return torch.linalg.cross(input=x1, other=x2, dim=axis, out=out)
+
+    if axis:
+        return torch.linalg.cross(input=x1, other=x2, dim=axis)
+    x1 = torch.transpose(x1, axisa, 1)
+    x2 = torch.transpose(x2, axisb, 1)
+    return torch.transpose(
+        torch.linalg.cross(input=x1, other=x2, out=out), dim0=axisc, dim1=1
+    )
 
 
 cross.unsupported_dtypes = ("float16",)
@@ -77,8 +85,10 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.linalg.eigh(x, out=out)
+def eigh(
+    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.linalg.eigh(x, UPLO=UPLO, out=out)
 
 
 eigh.unsupported_dtypes = ("float16",)
@@ -86,8 +96,10 @@ eigh.unsupported_dtypes = ("float16",)
 eigh.support_native_out = True
 
 
-def eigvalsh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.linalg.eigvalsh(x, out=out)
+def eigvalsh(
+    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
 
 
 eigvalsh.unsupported_dtypes = ("float16",)
