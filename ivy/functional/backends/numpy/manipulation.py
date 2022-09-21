@@ -98,7 +98,7 @@ def roll(
 def squeeze(
     x: np.ndarray,
     /,
-    axis: Union[int, Sequence[int]],
+    axis: Union[int, Sequence[int]] = None,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
