@@ -163,8 +163,8 @@ Inconsistency is observed such as some functions:
 
 To unify the behaviours, our policy is to use conditional blocks and
 raise :code:`IvyException` whenever a check is required.
-Moreover, to reduce code redundancy, we collect commonly-used conditions
-into helper functions with custom parameters in :code:`ivy/assertions.py`.
+Moreover, to reduce code redundancy, conditions which are commonly used are collected
+as helper functions with custom parameters in :code:`ivy/assertions.py`.
 This allows them to be reused and promotes cleaner code.
 
 Let's look at an example!
@@ -205,5 +205,5 @@ Let's look at an example!
         split_factors[device] = factor
 
 Instead of coding a conditional block and raising an exception if the
-conditions are not met, we reuse our existing helper function to simplify
+conditions are not met, a helper function is used to simplify
 the logic and increase code readability.
