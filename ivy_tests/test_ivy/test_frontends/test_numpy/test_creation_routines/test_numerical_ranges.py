@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from numpy import mgrid as np_mgrid, ogrid as np_ogrid
 from hypothesis import given, strategies as st
 
@@ -105,8 +104,8 @@ def test_numpy_linspace(
         fw=fw,
         frontend="numpy",
         fn_tree="linspace",
-        start=np.asarray(start, dtype=dtype),
-        stop=np.asarray(stop, dtype=dtype),
+        start=start,
+        stop=stop,
         num=num,
         endpoint=True,
         retstep=False,
@@ -145,8 +144,8 @@ def test_numpy_logspace(
         frontend="numpy",
         fn_tree="logspace",
         rtol=1e-01,
-        start=np.asarray(start, dtype=dtype),
-        stop=np.asarray(stop, dtype=dtype),
+        start=start,
+        stop=stop,
         num=num,
         endpoint=True,
         base=base,
@@ -180,10 +179,9 @@ def test_numpy_meshgrid(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = np.asarray(x_, dtype=input_dtypes[0])
+        kw["x{}".format(i)] = x_
         i += 1
     num_positional_args = len(arrays)
-
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=False,

@@ -41,7 +41,7 @@ def test_numpy_norm(
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.norm",
-        x=np.array(x, dtype=dtype),
+        x=x[0],
         ord=None,
         axis=axis,
         keepdims=keepdims,
@@ -77,7 +77,7 @@ def test_numpy_matrix_rank(
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.matrix_rank",
-        A=np.array(x, dtype=dtype),
+        A=x[0],
         tol=rtol,
     )
 
@@ -103,7 +103,7 @@ def test_numpy_det(dtype_and_x, as_variable, native_array, num_positional_args, 
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.det",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
     )
 
 
@@ -133,5 +133,5 @@ def test_numpy_slogdet(dtype_and_x, as_variable, native_array, num_positional_ar
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.slogdet",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
     )

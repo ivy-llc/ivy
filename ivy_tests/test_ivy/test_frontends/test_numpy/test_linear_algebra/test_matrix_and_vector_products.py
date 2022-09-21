@@ -208,6 +208,6 @@ def test_numpy_matrix_power(
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.matrix_power",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
         n=n,
     )

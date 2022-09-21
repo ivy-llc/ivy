@@ -18,8 +18,8 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
-        lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1])) != 0
+        lambda x: np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0]) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.cholesky"
@@ -33,11 +33,10 @@ def test_numpy_cholesky(
     fw,
 ):
     dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=dtype)
+    x = x[0]
     x = (
         np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     )  # make symmetric positive-definite
-
     helpers.test_frontend_function(
         input_dtypes=[dtype],
         as_variable_flags=as_variable,
@@ -48,7 +47,7 @@ def test_numpy_cholesky(
         frontend="numpy",
         fn_tree="linalg.cholesky",
         rtol=1e-02,
-        a=np.array(x, dtype=dtype),
+        a=x,
     )
 
 
@@ -79,7 +78,7 @@ def test_numpy_qr(
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -88,7 +87,7 @@ def test_numpy_qr(
         frontend="numpy",
         fn_tree="linalg.qr",
         rtol=1e-02,
-        a=np.array(x, dtype=dtype),
+        a=x[0],
         mode=mode,
     )
 
@@ -118,7 +117,7 @@ def test_numpy_svd(
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -126,6 +125,6 @@ def test_numpy_svd(
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.svd",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
         full_matrices=fm,
     )

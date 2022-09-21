@@ -1,6 +1,5 @@
 # global
 import ivy
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -83,7 +82,7 @@ def test_numpy_empty_like(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -92,7 +91,7 @@ def test_numpy_empty_like(
         frontend="numpy",
         fn_tree="empty_like",
         test_values=False,
-        prototype=np.asarray(x, dtype=input_dtype),
+        prototype=x[0],
         dtype=input_dtype,
         order="K",
         subok=True,
@@ -226,7 +225,7 @@ def test_numpy_ones_like(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -234,7 +233,7 @@ def test_numpy_ones_like(
         fw=fw,
         frontend="numpy",
         fn_tree="ones_like",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         dtype=input_dtype,
         order="K",
         subok=True,
@@ -304,7 +303,7 @@ def test_numpy_zeros_like(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -312,7 +311,7 @@ def test_numpy_zeros_like(
         fw=fw,
         frontend="numpy",
         fn_tree="zeros_like",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         dtype=input_dtype,
         order="K",
         subok=True,
@@ -356,7 +355,7 @@ def test_numpy_full(
 ):
     dtype, fill_value = dtype_and_fill_value
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -402,7 +401,7 @@ def test_numpy_full_like(
     input_dtype, x = dtype_and_x
     dtype, fill_value = dtype_and_fill_value
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -410,7 +409,7 @@ def test_numpy_full_like(
         fw=fw,
         frontend="numpy",
         fn_tree="full_like",
-        a=np.asarray(x, dtype=input_dtype),
+        a=x[0],
         fill_value=fill_value,
         dtype=dtype,
         order="K",
