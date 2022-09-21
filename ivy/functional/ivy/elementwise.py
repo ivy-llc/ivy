@@ -4889,13 +4889,13 @@ def sin(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
-                          b=ivy.array([3.5, 4.5, 5.5]))
-    >>> y = x.sinc()
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),\
+                          b=ivy.array([-4., -5., -6., -7.]))
+    >>> y = ivy.sin(x)
     >>> print(y)
     {
-        a: ivy.array([0.636, -0.212, 0.127]),
-        b: ivy.array([-0.090, 0.070, -0.057])
+        a: ivy.array([0., 0.841, 0.909, 0.141]),
+        b: ivy.array([0.757, 0.959, 0.279, -0.657])
     }
     """
     return ivy.current_backend(x).sin(x, out=out)
@@ -4935,7 +4935,7 @@ def sinc(
     Returns
     -------
     ret
-        an array containing the inverse cosine of each element in x. The returned array
+        an array containing the normalized sinc function of each element in x. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
 
     Examples
