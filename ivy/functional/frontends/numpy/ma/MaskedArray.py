@@ -1,7 +1,19 @@
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
+import numpy as np
 
 nomask = False
+
+# Helpers #
+# ------- #
+
+
+def _is_masked_array(x):
+    return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
+
+
+# Class #
+# ----- #
 
 
 class MaskedArray(np_frontend.ndarray):
@@ -13,21 +25,37 @@ class MaskedArray(np_frontend.ndarray):
         copy=False,  # TODO
         ndmin=0,
         fill_value=None,
-        keep_mask=True,  # TODO
+        keep_mask=True,
         hard_mask=None,  # TODO
         shrink=True,  # TODO
         subok=True,
         order=None,
     ):
-        self._init_data_and_dtype(data, dtype)
-        self._init_mask(mask)
+        self._init_data(data, dtype, mask, keep_mask)
         self._init_fill_value(fill_value)
         self._init_ndmin(ndmin)
 
-    def _init_data_and_dtype(self, data, dtype):
-        self._data = (
-            ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
-        )
+    def _init_data(self, data, dtype, mask, keep_mask):
+        if _is_masked_array(data):
+            self._data = (
+                ivy.array(data.data, dtype=dtype)
+                if ivy.exists(dtype)
+                else ivy.array(data.data)
+            )
+            self._init_mask(mask)
+            if keep_mask:
+                # TODO: check! change to check size
+                try:
+                    self._mask = ivy.bitwise_or(self._mask, data.mask)
+                except Exception:
+                    raise ivy.exceptions.IvyException(
+                        "mask shape of the input data does not match the new mask"
+                    )
+        else:
+            self._data = (
+                ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
+            )
+            self._init_mask(mask)
         self._dtype = self._data.dtype
 
     def _init_mask(self, mask):
@@ -57,6 +85,7 @@ class MaskedArray(np_frontend.ndarray):
     def _init_ndmin(self, ndmin):
         if ndmin > len(ivy.shape(self._data)):
             self._data = ivy.expand_dims(self._data, axis=0)
+            self._mask = ivy.expand_dims(self._mask, axis=0)
 
     # Properties #
     # ---------- #
