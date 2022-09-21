@@ -656,7 +656,7 @@ def inv(
     ivy.array([[-2.0, 1.0],[1.5, -0.5]])
 
     Using inplace
-    >>> x = iny.array([[1.0, 2.0], [5.0, 5.0]])
+    >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
     >>> ivy.inv(x, out=x)
     >>> print(x)
     ivy.array([[-1., 0.4],[1., -0.2]])
