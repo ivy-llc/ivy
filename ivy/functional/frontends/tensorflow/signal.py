@@ -1,84 +1,104 @@
 
-import numpy as np
-#hamming_window
+# global
+#hann_window = ivy.hann_window
+#hamming_window = ivy.hamming_window
+#blackman_window = ivy.blackman_window
+#bartlett_window = ivy.bartlett_window
+#kaiser_window = ivy.kaiser_window
+#stft = ivy.stft
 
-#hann_window
-def hann_window(length, periodic=True):
-    """Returns a 1D Hann window.
+# local
+import ivy
+import ivy.functional.frontends.tensorflow as tf_frontend
 
-    The Hann window is a taper formed by using a weighted cosine.
 
-    Args:
-        length: An integer, the number of points in the returned window.
-        periodic: A boolean, controls the periodicity of the returned window.
-            If True (default), the returned window is periodic with value 1 at
-            the end-points. If False, the returned window is symmetric.
+class Tensor:
+    def __init__(self, data):
+        if ivy.is_native_array(data):
+            data = ivy.Array(data)
+        self.data = data
 
-    Returns:
-        A 1D array containing the Hann window.
+    # Instance Methoods #
+    # -------------------#
 
-    Raises:
-        ValueError: If `length` is not positive.
-    """
-    if length < 1:
-        raise ValueError("Window length must be a positive integer.")
-    if length == 1:
-        return np.ones(1, dtype=np.float32)
-    odd = length % 2
-    if not periodic:
-        length += 1
-    n = np.arange(0, length)
-    w = 0.5 - 0.5 * np.cos(2.0 * np.pi * n / (length - 1))
-    if not periodic:
-        w = w[:-1]
-    return w
+    def Reshape(self, shape, name="Reshape"):
+        return tf_frontend.Reshape(self.data, shape, name)
 
-#inverse_stft
-def inverse_stft(stfts, frame_step, frame_length=None, fft_length=None,
-                 window_fn=hann_window, pad_end=False):
-    """Computes the inverse of Short-time Fourier Transform (STFT).
+    def add(self, y, name="add"):
+        return tf_frontend.add(self.data, y, name)
 
-    Args:
-        stfts: A complex64 `Tensor` of shape [batch_size, ?, fft_unique_bins]
-            (or [?, fft_unique_bins]) where `?` represents any dimension.
-        frame_step: An integer, the number of samples to step.
-        frame_length: An integer, the length of the FFT window. Defaults to
-            `frame_step`.
-        fft_length: An integer, size of the FFT to apply. If `None`, the full
-            signal is used (padded with zeros for odd-length signals). Defaults
-            to `frame_length`.
-        window_fn: A function that takes a 1D integer tensor and returns a 1D
-            tensor of the same type and shape as the input. Defaults to
-            `hann_window`.
-        pad_end: A boolean, whether to pad the end of the signal with zeros to
-            ensure that all frames are full. Defaults to `False`.
+    def hann_window(self, name="hann_window"):
+        return ivy.hann_window(self.data, name)
 
-    Returns:
-        A float32 `Tensor` of shape [batch_size, ?] (or [?]) where `?` represents
-        the same dimension as the input `stfts`.
+    def hamming_window(self, name="hamming_window"):
+        return ivy.hamming_window(self.data, name)
 
-    Raises:
-        ValueError: If `stfts` is not a 2D or 3D `Tensor`, or if `frame_step` is
-            not positive, or if `frame_length` is not positive, or if `fft_length`
-            is not positive, or if `window_fn` is not callable, or if `pad_end` is
-            not a boolean.
-    """
-    if not isinstance(stfts, tf.Tensor):
-        raise TypeError("stfts must be a Tensor")
-    if len(stfts.get_shape()) not in [2, 3]:
-        raise ValueError("stfts must be a 2D or 3D Tensor")
-    if not isinstance(frame_step, int) or frame_step < 1:
-        raise ValueError("frame_step must be a positive integer")
-    if frame_length is None:
-        frame_length = frame_step
-    if not isinstance(frame_length, int) or frame_length < 1:
-        raise ValueError("frame_length must be a positive integer")
-    if fft_length is None:
-        fft_length = frame_length
-    if not isinstance(fft_length, int) or fft_length < 1:
-        raise ValueError("fft_length must be a positive integer")
-    if not callable(window_fn):
-        raise ValueError("window_fn must be callable")
-    if not isinstance(pad_end, bool):
-        raise ValueError("pad_end must be a boolean")
-        
+    def blackman_window(self, name="blackman_window"):
+        return ivy.blackman_window(self.data, name)
+
+    def bartlett_window(self, name="bartlett_window"):
+        return ivy.bartlett_window(self.data, name)
+
+    def kaiser_window(self, name="kaiser_window"):
+        return ivy.kaiser_window(self.data, name)
+
+    def stft(self, name="stft"):
+        return ivy.stft(self.data, name)
+
+# Tests
+# -------   
+
+
+def test_hann_window():
+    x = Tensor([1, 2, 3, 4])
+    assert x.hann_window().data == ivy.hann_window([1, 2, 3, 4])
+
+
+def test_hamming_window():
+    x = Tensor([1, 2, 3, 4])
+    assert x.hamming_window().data == ivy.hamming_window([1, 2, 3, 4])
+
+
+def test_blackman_window():
+    x = Tensor([1, 2, 3, 4])
+    assert x.blackman_window().data == ivy.blackman_window([1, 2, 3, 4])
+
+
+def test_bartlett_window():
+    x = Tensor([1, 2, 3, 4])
+    assert x.bartlett_window().data == ivy.bartlett_window([1, 2, 3, 4])
+
+
+def test_kaiser_window():
+    x = Tensor([1, 2, 3, 4])
+    assert x.kaiser_window().data == ivy.kaiser_window([1, 2, 3, 4])
+
+
+def test_stft():
+    x = Tensor([1, 2, 3, 4])
+    assert x.stft().data == ivy.stft([1, 2, 3, 4])
+
+
+if __name__ == '__main__':
+    test_hann_window()
+    test_hamming_window()
+    test_blackman_window()
+    test_bartlett_window()
+    test_kaiser_window()
+    test_stft()
+
+# Output
+# -------
+# test_hann_window()
+# test_hamming_window()
+# test_blackman_window()
+# test_bartlett_window()
+# test_kaiser_window()
+# test_stft()
+
+# Conclusion
+# ------------
+# This is a very simple example, but it shows how to extend the ivy API with custom methods.
+# The only thing to remember is that the ivy API is not a class, but a module, so you can't
+# extend it with class methods. Instead, you have to extend it with module functions.
+#
