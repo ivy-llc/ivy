@@ -62,7 +62,7 @@ class ArrayWithLosses(abc.ABC):
         /,
         *,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "none",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.binary_cross_entropy. This method

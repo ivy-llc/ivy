@@ -84,7 +84,7 @@ def binary_cross_entropy(
     /,
     *,
     epsilon: float = 1e-7,
-    reduction: str = "sum",
+    reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the binary cross entropy loss.
