@@ -17,10 +17,8 @@ def argmax(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.constant(x).numpy().argmax(axis=axis, keepdims=keepdims)
-    ret = tf.convert_to_tensor(ret, dtype=ret.dtype)
-
-    return ret
+    ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
+    return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def argmin(
