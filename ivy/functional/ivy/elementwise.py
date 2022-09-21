@@ -4889,13 +4889,13 @@ def sin(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),\
-                          b=ivy.array([-4., -5., -6., -7.]))
-    >>> y = ivy.sin(x)
+    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
+                          b=ivy.array([3.5, 4.5, 5.5]))
+    >>> y = x.sinc()
     >>> print(y)
     {
-        a: ivy.array([0., 0.841, 0.909, 0.141]),
-        b: ivy.array([0.757, 0.959, 0.279, -0.657])
+        a: ivy.array([0.636, -0.212, 0.127]),
+        b: ivy.array([-0.090, 0.070, -0.057])
     }
     """
     return ivy.current_backend(x).sin(x, out=out)
@@ -4912,7 +4912,67 @@ def sinc(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    # TODO: add docstring
+    """Calculates an implementation-dependent approximation of the principal value of
+    the normalized sinc function, having domain ``(-infinity, +infinity)`` and codomain ``[-0.217234, 1]``, for each element
+    ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+
+    **Special cases**
+
+    For floating-point operands,
+
+    - If x_i is NaN, the result is NaN.
+    - If ``x_i`` is ``0``, the result is ``1``.
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the inverse cosine of each element in x. The returned array
+        must have a floating-point data type determined by :ref:`type-promotion`.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
+    >>> y = x.sinc()
+    >>> print(y)
+    ivy.array([0.636, -0.212, 0.127, -0.090])
+
+    >>> x = ivy.array([1.5, 0.5, -1.5])
+    >>> y = ivy.zeros(3)
+    >>> ivy.sinc(x, out=y) # only PyTorch backend supports out argument for sinc function
+    >>> print(y)
+    ivy.array([-0.2122,  0.6366, -0.2122])
+
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.array([0.5, 1.5, 2.5, 3.5])
+    >>> y = ivy.sinc(x)
+    >>> print(y)
+    ivy.array([0.636, -0.212, 0.127, -0.090])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -1]))
+    >>> y = ivy.acos(x)
+    >>> print(y)
+    {
+        a: ivy.array([1.57, 3.14, 0.]),
+        b: ivy.array([0., 1.57, 3.14])
+    }
+
+
+    """
     return ivy.current_backend(x).sinc(x, out=out)
 
 
