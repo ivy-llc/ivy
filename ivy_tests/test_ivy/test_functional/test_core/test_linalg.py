@@ -664,8 +664,8 @@ def test_outer(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=16,
-        large_abs_safety_factor=16,
+        small_abs_safety_factor=72,
+        large_abs_safety_factor=72,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(
