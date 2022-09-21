@@ -1652,8 +1652,8 @@ def test_frontend_function(
         dictates whether the corresponding input argument should be treated
         as an ivy Variable.
     with_out
-        if True, the function is also tested for inplace update to an array 
-        passed to the optional out argument, should not be True together 
+        if True, the function is also tested for inplace update to an array
+        passed to the optional out argument, should not be True together
         with with_inplace.
     with_inplace
         if True, the function is also tested with direct inplace update back to
@@ -1709,13 +1709,13 @@ def test_frontend_function(
     if len(native_array_flags) < num_arrays:
         native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
-    # update variable flags to be compatible with float dtype and with_out args
+    # update var flags to be compatible with float dtype and with_out args
     as_variable_flags = [
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
-    # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
+    # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
     *frontend_submods, fn_tree = fn_tree.split(".")
 
     # check for unsupported dtypes in backend framework
@@ -1786,7 +1786,9 @@ def test_frontend_function(
     ret = frontend_fn(*args, **kwargs)
     ret = ivy.array(ret) if with_out and not ivy.is_array(ret) else ret
     out = ret
-    assert not with_out or not with_inplace, "only one of with_out or with_inplace can be set as True"
+    assert (
+        not with_out or not with_inplace
+    ), "only one of with_out or with_inplace can be set as True"
     if with_out:
         assert not isinstance(ret, tuple)
         assert ivy.is_array(ret)

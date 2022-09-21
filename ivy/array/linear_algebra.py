@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Union, Optional, Literal, NamedTuple, Tuple, List
+from typing import Union, Optional, Literal, NamedTuple, Tuple, List, Sequence
 
 # local
 import ivy
@@ -119,7 +119,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :code:`ivy.Array` instance inputs:
 
         >>> x = ivy.array([1., 0., 0.])
         >>> y = ivy.array([0., 1., 0.])
@@ -162,6 +162,20 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.inner(self._data, x2, out=out)
 
     def inv(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.inv.
+        This method simply wraps the function, and so the docstring for
+        ivy.inv also applies to this method with minimal changes.
+
+        Examples
+        --------
+        With :code:`ivy.Array` inputs:
+
+        >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
+        >>> y = ivy.inv(x)
+        >>> print(y)
+        ivy.array([[-2., 1.],[1.5, -0.5]])
+        """
         return ivy.inv(self._data, out=out)
 
     def matrix_norm(
@@ -176,8 +190,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def matrix_rank(
         self: ivy.Array,
-        rtol: Optional[Union[float, Tuple[float]]] = None,
+        /,
         *,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -236,7 +251,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(0)
 
         """
-        return ivy.matrix_rank(self._data, rtol, out=out)
+        return ivy.matrix_rank(self._data, rtol=rtol, out=out)
 
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
@@ -356,7 +371,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def vector_norm(
         self: ivy.Array,
         *,
-        axis: Optional[Union[int, Tuple[int]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
         out: Optional[ivy.Array] = None,
