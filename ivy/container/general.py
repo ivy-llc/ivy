@@ -3549,7 +3549,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_stable_pow(x, 3)
         >>> print(y)
         {
-            a: array([1000.00287, 3375.0063], dtype=float32),
+            a: ivy.array([1000.00287, 3375.0063], dtype=float32),
             b: array([8000.011, 15625.018], dtype=float32)
         }
 
@@ -3558,8 +3558,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container.static_stable_pow(x, y)
         >>> print(z)
         {
-            a: array([81.00108001, 243.00405003]),
-            b: array([10000.04000006, 100000.500001])
+            a: ivy.array([81.00108001, 243.00405003]),
+            b: ivy.array([10000.04000006, 100000.500001])
         }
 
         >>> x = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 4.]))
@@ -3567,8 +3567,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container.static_stable_pow(x, y)
         >>> print(z)
         {
-            a: array([2.6457531, 5.656925], dtype=float32),
-            b: array([46.76592, 8.0000305], dtype=float32)
+            a: ivy.array([2.6457531, 5.656925], dtype=float32),
+            b: ivy.array([46.76592, 8.0000305], dtype=float32)
         }
 
         >>> x = ivy.Container(a=ivy.array([[1.5, 2.], [3., 4.]]),\
@@ -3577,9 +3577,9 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container.static_stable_pow(x, y, min_base=2)
         >>> print(z)
         {
-            a: array([[1.8708287, 32.],
+            a: ivy.array([[1.8708287, 32.],
                       [2.236068, 88.18163]], dtype=float32),
-            b: array([[907.4927, 22.627417],
+            b: ivy.array([[907.4927, 22.627417],
                       [2187., 31.622776]], dtype=float32)
         }
 
@@ -3640,8 +3640,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = x.stable_pow(3)
         >>> print(y)
         {
-            a: array([1000.00287, 3375.0063], dtype=float32),
-            b: array([8000.011, 15625.018], dtype=float32)
+            a: ivy.array([1000.00287, 3375.0063], dtype=float32),
+            b: ivy.array([8000.011, 15625.018], dtype=float32)
         }
 
         >>> x = ivy.Container(a=3, b=10)
@@ -3649,8 +3649,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = x.stable_pow(y)
         >>> print(z)
         {
-            a: array([81.00108001, 243.00405003]),
-            b: array([10000.04000006, 100000.500001])
+            a: ivy.array([81.00108001, 243.00405003]),
+            b: ivy.array([10000.04000006, 100000.500001])
         }
 
         >>> x = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 4.]))
@@ -3658,8 +3658,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = x.stable_pow(y)
         >>> print(z)
         {
-            a: array([2.6457531, 5.656925], dtype=float32),
-            b: array([46.76592, 8.0000305], dtype=float32)
+            a: ivy.array([2.6457531, 5.656925], dtype=float32),
+            b: ivy.array([46.76592, 8.0000305], dtype=float32)
         }
 
         >>> x = ivy.Container(a=ivy.array([[1.5, 2.], [3., 4.]]),\
@@ -3668,9 +3668,9 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = x.stable_pow(y, min_base=2)
         >>> print(z)
         {
-            a: array([[1.8708287, 32.],
+            a: ivy.array([[1.8708287, 32.],
                      [2.236068, 88.18163]], dtype=float32),
-            b: array([[907.4927, 22.627417],
+            b: ivy.array([[907.4927, 22.627417],
                      [2187., 31.622776]], dtype=float32)
         }
 
