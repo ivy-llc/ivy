@@ -37,5 +37,5 @@ submodule = submodules[0]
 # print(backend, submodule)
 os.environ["BACKEND"] = str(backend)
 os.environ["SUBMODULE"] = str(submodule)
-print(os.environ["BACKEND"], os.environ["BACKEND"])
+print(os.environ["BACKEND"], os.environ["SUBMODULE"])
 # os.system(f"./run_tests_CLI/test_ivy_core.sh {backend} test_{submodule}")
