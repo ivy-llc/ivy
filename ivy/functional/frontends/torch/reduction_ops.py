@@ -31,3 +31,19 @@ def any(input, dim=None, keepdim=False, *, out=None):
     if ivy.is_uint_dtype(input_dtype):
         ret = ivy.astype(ret, input_dtype, out=out)
     return ret
+
+
+def mean(input, dim, keepdim=False, *, out=None):
+    return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+
+
+def std(input, dim, unbiased, keepdim=False, *, out=None):
+    return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
+
+
+def prod(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
+
+
+def var(input, dim, unbiased, keepdim=False, *, out=None):
+    return ivy.var(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)

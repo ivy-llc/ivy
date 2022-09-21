@@ -51,15 +51,16 @@ def where(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.where(condition, x1, x2)
+    return tf.cast(tf.experimental.numpy.where(condition, x1, x2), x1.dtype)
 
 
 # Extra #
 # ----- #
 
 
-def indices_where(
+def argwhere(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

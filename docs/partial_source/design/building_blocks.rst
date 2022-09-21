@@ -97,7 +97,7 @@ Calling the different backend files explicitly would work okay, but it would mea
     def prod(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,

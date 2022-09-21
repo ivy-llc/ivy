@@ -267,6 +267,7 @@ def add(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
@@ -318,6 +319,8 @@ def add(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have a numeric data type.
+    aplha
+        optional scalar multiplier for ``x2``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -346,6 +349,12 @@ def add(
     >>> print(z)
     ivy.array([5, 7, 9])
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.add(x, y, alpha=2)
+    >>> print(z)
+    ivy.array([9, 12, 15])
+
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.array([[4.8], [5.2], [6.1]])
     >>> z = ivy.zeros((3, 3))
@@ -363,36 +372,8 @@ def add(
                 [5.7],
                 [-4.7]]])
 
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([5, 6, 7]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[5.1, 6.3, 0.4],
-                      [6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4]]),
-        b: ivy.array([[6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4],
-                      [8.1, 9.3, 3.4]])
-    }
     """
-    return ivy.current_backend(x1, x2).add(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).add(x1, x2, alpha=alpha, out=out)
 
 
 @to_native_arrays_and_back
@@ -1140,6 +1121,12 @@ def bitwise_left_shift(
     ret
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    in the standard.
 
     """
     return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
@@ -2007,7 +1994,7 @@ def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates an implementation-dependent approximation to ``exp(x)-1``, having
     domain ``[-infinity, +infinity]`` and codomain ``[-1, +infinity]``, for each element
@@ -2610,7 +2597,7 @@ def multiply(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the product for each element ``x1_i`` of the input array ``x1`` with
     the respective element ``x2_i`` of the input array ``x2``.
@@ -4661,6 +4648,10 @@ def round(
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
+    Note: PyTorch supports an additional argument :code:`decimals` for the
+    `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
+    It has been deliberately omitted here due to the imprecise
+    nature of the argument in :code:`torch.round`.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -5193,6 +5184,7 @@ def subtract(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
@@ -5205,6 +5197,8 @@ def subtract(
     x2
         second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
         Should have a numeric data type.
+    alpha
+        optional scalar multiplier for ``x2``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5214,8 +5208,31 @@ def subtract(
     ret
         an array containing the element-wise differences.
 
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.subtract.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.array([3, 6, 3])
+    >>> y = ivy.array([2, 1, 6])
+    >>> z = ivy.subtract(x, y)
+    >>> print(z)
+    ivy.array([ 1,  5, -3])
+
+    >>> x = ivy.array([3, 6, 3])
+    >>> y = ivy.array([2, 1, 6])
+    >>> z = ivy.subtract(x, y, alpha=2)
+    >>> print(z)
+    ivy.array([-1,  4, -9])
+
     """
-    return ivy.current_backend(x1).subtract(x1, x2, out=out)
+    return ivy.current_backend(x1).subtract(x1, x2, alpha=alpha, out=out)
 
 
 @to_native_arrays_and_back
@@ -5447,8 +5464,8 @@ def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Computes the Gauss error function of ``x`` element-wise.
 
     Parameters
@@ -5477,8 +5494,8 @@ def maximum(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
     Parameters
@@ -5571,8 +5588,8 @@ def minimum(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
     Parameters
@@ -5845,3 +5862,48 @@ def rad2deg(
     }
     """
     return ivy.current_backend(x).rad2deg(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def trunc_divide(
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Performs elementwise integer division of the inputs rounding the
+    results towards zero.
+
+    Parameters
+    ----------
+    x1
+        dividend input array. Should have a numeric data type.
+    x2
+        divisor input array. Must be compatible with x1 (see Broadcasting). Should have
+        a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the element-wise results. The returned array must have a
+        floating-point data type determined by Type Promotion Rules.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([2., 7., 9.])
+    >>> x2 = ivy.array([3., -4., 0.6])
+    >>> y = ivy.trunc_divide(x1, x2)
+    >>> print(y)
+    ivy.array([ 0., -1., 15.])
+
+    """
+    return ivy.trunc(ivy.divide(x1, x2, out=out))

@@ -13,6 +13,13 @@ from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy import default_dtype
 
 
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+)
+
+
 # Array API Standard #
 # ------------------ #
 
@@ -38,6 +45,9 @@ def arange(
     return res
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
     object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
     /,
@@ -54,13 +64,11 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_device(
-                jnp.array(object_in, dtype=dtype, copy=True), device=device
-            )
+            return _to_device(jnp.array(object_in, copy=True), device=device)
         else:
-            return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
+            return _to_device(jnp.asarray(object_in), device=device)
+
     else:
         dtype = default_dtype(dtype=dtype, item=object_in)
 
@@ -168,7 +176,9 @@ def linspace(
         axis = -1
 
     if num < 0:
-        raise ValueError(f"Number of samples, {num}, must be non-negative.")
+        raise ivy.exceptions.IvyException(
+            f"Number of samples, {num}, must be non-negative."
+        )
 
     if dtype is None:
         dtype = ivy.promote_types(start.dtype, stop.dtype)

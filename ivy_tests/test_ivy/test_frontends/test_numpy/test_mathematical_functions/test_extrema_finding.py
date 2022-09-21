@@ -17,11 +17,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.minimum"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_minimum(
     dtype_and_x,

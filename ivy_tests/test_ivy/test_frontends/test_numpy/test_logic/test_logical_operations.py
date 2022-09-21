@@ -18,11 +18,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype=st.sampled_from((ivy.bool, None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_and"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_logical_and(
     dtype_and_x,
@@ -71,11 +69,9 @@ def test_numpy_logical_and(
     ),
     dtype=st.sampled_from((ivy.bool, None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_or"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_logical_or(
     dtype_and_x,
@@ -123,11 +119,9 @@ def test_numpy_logical_or(
     ),
     dtype=st.sampled_from((ivy.bool, None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_not"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_logical_not(
     dtype_and_x,
@@ -176,11 +170,9 @@ def test_numpy_logical_not(
     ),
     dtype=st.sampled_from((ivy.bool, None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_xor"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_logical_xor(
     dtype_and_x,

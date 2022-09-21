@@ -54,18 +54,12 @@ def where(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.where(condition, x1, x2)
+    return torch.where(condition, x1, x2).to(dtype=x1.dtype)
 
 
 # Extra #
 # ----- #
 
 
-def indices_where(
-    x: torch.Tensor, *, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    where_x = torch.where(x)
-    return torch.cat([torch.unsqueeze(item, -1) for item in where_x], -1, out=out)
-
-
-indices_where.support_native_out = True
+def argwhere(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.argwhere(x)
