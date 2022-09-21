@@ -51,12 +51,12 @@ jobs:
          id: tests
          run: |
            cd ivy
-           echo "BACKEND=None" >> $GITHUB_ENV
-           echo "SUBMODULE=None" >> $GITHUB_ENV
+           echo "BACKEND=None" 
+           echo "SUBMODULE=None" 
            python run_tests_CLI/run_ivy_core_test.py ${{ github.run_number }}
            echo ${{ github.workflow }} 
-           echo ${{ env.BACKEND }} 
-           echo ${{ env.SUBMODULE }}
+           echo $BACKEND
+           echo $SUBMODULE
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
