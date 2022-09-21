@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given
 
 # local
@@ -32,7 +31,7 @@ def test_numpy_isfinite(
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
@@ -45,7 +44,7 @@ def test_numpy_isfinite(
         fw=fw,
         frontend="numpy",
         fn_tree="isfinite",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -80,7 +79,7 @@ def test_numpy_isinf(
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
@@ -93,7 +92,7 @@ def test_numpy_isinf(
         fw=fw,
         frontend="numpy",
         fn_tree="isinf",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -128,7 +127,7 @@ def test_numpy_isnan(
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
@@ -141,7 +140,7 @@ def test_numpy_isnan(
         fw=fw,
         frontend="numpy",
         fn_tree="isnan",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",

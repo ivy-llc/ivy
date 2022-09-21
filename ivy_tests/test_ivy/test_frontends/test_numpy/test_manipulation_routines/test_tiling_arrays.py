@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -37,7 +36,7 @@ def test_numpy_tile(
     input_dtype, x = dtype_and_x
     repeats_dtype, repeats = dtype_and_repeats
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, repeats_dtype],
+        input_dtypes=input_dtype + repeats_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -45,8 +44,8 @@ def test_numpy_tile(
         fw=fw,
         frontend="numpy",
         fn_tree="tile",
-        A=np.array(x, dtype=input_dtype),
-        reps=np.array(repeats, dtype=repeats_dtype),
+        A=x[0],
+        reps=repeats[0],
     )
 
 
@@ -83,7 +82,7 @@ def test_numpy_repeat(
         fw=fw,
         frontend="numpy",
         fn_tree="repeat",
-        a=np.array(x, dtype=input_dtype),
+        a=x[0],
         repeats=repeats,
         axis=axis,
     )

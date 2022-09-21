@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given
 
 # local
@@ -47,8 +46,8 @@ def test_numpy_equal(
         fw=fw,
         frontend="numpy",
         fn_tree="equal",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=x[0],
+        x2=x[1],
         where=where,
         casting="same_kind",
         order="K",
