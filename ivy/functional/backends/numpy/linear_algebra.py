@@ -138,7 +138,7 @@ def matrix_rank(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     singular_values = np.linalg.svd(x, compute_uv=False)
-    max_value = np.max(singular_values)
+    max_value = np.max(singular_values, initial=0)
     if rtol:
         num = np.sum(singular_values > max_value * rtol)
     else:
