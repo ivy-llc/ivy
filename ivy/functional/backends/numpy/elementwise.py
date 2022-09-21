@@ -72,10 +72,13 @@ def add(
     x2: Union[float, np.ndarray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.add(x1, x2, out=out)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return np.add(x1, x2)
 
 
 add.support_native_out = True
@@ -624,10 +627,13 @@ def subtract(
     x2: Union[float, np.ndarray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.subtract(x1, x2, out=out)
+    if alpha not in (1, None):
+        x2 = alpha*x2
+    return np.subtract(x1, x2)
 
 
 subtract.support_native_out = True
