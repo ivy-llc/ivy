@@ -130,7 +130,7 @@
   <h1>Source code for ivy.array.linear_algebra</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -249,7 +249,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Array` inputs:</span>
+<span class="sd">        With :code:`ivy.Array` instance inputs:</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1., 0., 0.])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([0., 1., 0.])</span>
@@ -292,6 +292,20 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithLinearAlgebra.inv"><a class="viewcode-back" href="../../../data_classes/array/linear_algebra/ArrayWithLinearAlgebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.inv">[docs]</a>    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.inv.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for</span>
+<span class="sd">        ivy.inv also applies to this method with minimal changes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],[3.0, 4.0]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.inv(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithLinearAlgebra.matrix_norm"><a class="viewcode-back" href="../../../data_classes/array/linear_algebra/ArrayWithLinearAlgebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.matrix_norm">[docs]</a>    <span class="k">def</span> <span class="nf">matrix_norm</span><span class="p">(</span>
@@ -486,7 +500,7 @@
 <div class="viewcode-block" id="ArrayWithLinearAlgebra.vector_norm"><a class="viewcode-back" href="../../../data_classes/array/linear_algebra/ArrayWithLinearAlgebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.vector_norm">[docs]</a>    <span class="k">def</span> <span class="nf">vector_norm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="nb">ord</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

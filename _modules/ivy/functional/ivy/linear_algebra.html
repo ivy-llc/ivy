@@ -129,7 +129,7 @@
              
   <h1>Source code for ivy.functional.ivy.linear_algebra</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -767,19 +767,61 @@
 <span class="sd">        floating-point data type determined by :ref:`type-promotion` and must have the</span>
 <span class="sd">        same shape as ``x``.</span>
 
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/</span>
+<span class="sd">    latest/extensions/generated/signatures.linalg.inv.html&gt;`</span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],[3.0, 4.0]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.inv(x)</span>
+<span class="sd">    With :code:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0], [3.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.inv(x, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[-2., 1.],[1.5, -0.5]])</span>
 
+<span class="sd">    Using inplace</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0], [5.0, 5.0]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.inv(x, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[-1., 0.4],[1., -0.2]])</span>
+
 <span class="sd">    Inverses of several matrices can be computed at once:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],\</span>
+<span class="sd">                       [[1.0, 3.0], [3.0, 5.0]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.inv(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])</span>
+<span class="sd">    ivy.array([[[-2., 1.],[1.5, -0.5]],</span>
+<span class="sd">               [[-1.25, 0.75],[0.75, -0.25]]])</span>
+
+<span class="sd">    Static method for Container</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[11., 100., 10.],\</span>
+<span class="sd">                        [300., 40., 20.], [25., 30, 100.]]),\</span>
+<span class="sd">                        b=ivy.array([[4., 400., 50.], [10., 10., 15.],\</span>
+<span class="sd">                        [50., 5000., 40.]]), c=ivy.array([[25., 22., 100.],\</span>
+<span class="sd">                        [55, 20., 20.], [55., 50., 100.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_inv(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[-0.0012, 0.00342, -0.000565],</span>
+<span class="sd">                      [0.0104, -0.0003, -0.000981],</span>
+<span class="sd">                      [-0.00282, -0.000766, 0.0104]]),</span>
+<span class="sd">        b: ivy.array([[-0.0322, 0.101, 0.00237],</span>
+<span class="sd">                      [0.000151, -0.00101, 0.00019],</span>
+<span class="sd">                      [0.0214, 0., -0.00171]]),</span>
+<span class="sd">        c: ivy.array([[0.0107, 0.03, -0.0167],</span>
+<span class="sd">                      [-0.0472, -0.0322, 0.0536],</span>
+<span class="sd">                      [0.0177, -0.000429, -0.00762]])</span>
+
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -1764,7 +1806,7 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="nb">ord</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
