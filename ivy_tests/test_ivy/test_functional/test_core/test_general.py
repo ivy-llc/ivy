@@ -18,6 +18,7 @@ import ivy.functional.backends.torch
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
 # Helpers #
 # --------#
@@ -1678,20 +1679,30 @@ def _get_valid_numeric_no_unsigned(draw):
 
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
+    dtypes_and_xs=pow_helper(available_dtypes=_get_valid_numeric_no_unsigned()),
+    dtype_and_min_base=helpers.dtype_and_values(
         available_dtypes=_get_valid_numeric_no_unsigned(),
-        num_arrays=3,
-        min_value=0,
+        num_arrays=1,
+        large_abs_safety_factor=72,
+        small_abs_safety_factor=72,
+        safety_factor_scale="log",
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="stable_pow"),
 )
 def test_stable_pow(
-    dtype_and_x, as_variable, num_positional_args, native_array, container, fw
+    dtypes_and_xs,
+    dtype_and_min_base,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    fw,
 ):
-    input_dtype, x = dtype_and_x
+    dtypes, xs = dtypes_and_xs
+    input_dtype_min_base, min_base = dtype_and_min_base
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes + [input_dtype_min_base],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -1700,9 +1711,11 @@ def test_stable_pow(
         instance_method=False,
         fw=fw,
         fn_name="stable_pow",
-        base=np.asarray(x[0], dtype=input_dtype[0]),
-        exponent=np.asarray(x[1], dtype=input_dtype[1]),
-        min_base=np.asarray(x[2], dtype=input_dtype[2]),
+        rtol_=1e-2,
+        atol_=1e-2,
+        base=np.asarray(xs[0], dtype=dtypes[0]),
+        exponent=np.asarray(np.abs(np.asarray(xs[1], dtype=dtypes[1])), dtypes[1]),
+        min_base=np.asarray(min_base, dtype=input_dtype_min_base),
     )
 
 
