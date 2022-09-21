@@ -4963,14 +4963,14 @@ def sinc(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -1]))
-    >>> y = ivy.acos(x)
+    >>> x = ivy.Container(a=ivy.array([0.5, 1.5, 2.5]),\
+                          b=ivy.array([3.5, 4.5, 5.5]))
+    >>> y = x.sinc()
     >>> print(y)
     {
-        a: ivy.array([1.57,3.14,0.]),
-        b: ivy.array([0.,1.57,3.14])
+        a: ivy.array([0.637,-0.212,0.127]),
+        b: ivy.array([-0.0909,0.0707,-0.0579])
     }
-
 
     """
     return ivy.current_backend(x).sinc(x, out=out)
