@@ -11,7 +11,7 @@ class MaskedArray(np_frontend.ndarray):
         mask=nomask,
         dtype=None,
         copy=False,  # TODO
-        ndmin=0,  # TODO
+        ndmin=0,
         fill_value=None,
         keep_mask=True,  # TODO
         hard_mask=None,  # TODO
@@ -22,6 +22,7 @@ class MaskedArray(np_frontend.ndarray):
         self._init_data_and_dtype(data, dtype)
         self._init_mask(mask)
         self._init_fill_value(fill_value)
+        self._init_ndmin(ndmin)
 
     def _init_data_and_dtype(self, data, dtype):
         self._data = (
@@ -52,6 +53,10 @@ class MaskedArray(np_frontend.ndarray):
             self._fill_value = ivy.array(999999, dtype="int64")
         else:
             self._fill_value = ivy.array(1e20, dtype="float64")
+
+    def _init_ndmin(self, ndmin):
+        if ndmin > len(ivy.shape(self._data)):
+            self._data = ivy.expand_dims(self._data, axis=0)
 
     # Properties #
     # ---------- #
