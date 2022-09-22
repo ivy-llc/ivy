@@ -105,7 +105,7 @@ jobs:
                PyGithub
 
        - name: Update Dashboard
-         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
+         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped')  && (github.event_name == 'push')
          env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          run: |
