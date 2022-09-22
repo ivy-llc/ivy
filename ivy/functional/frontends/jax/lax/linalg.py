@@ -1,9 +1,5 @@
 import ivy
-from jax.numpy import linalg
-
-from brainpy.math.jaxarray import JaxArray
-from brainpy.math.numpy_ops import _remove_jaxarray
-
+from typing import Union,Optional
 
 def cholesky(x, /, *, symmetrize_input=True):
     def symmetrize(x):
@@ -16,14 +12,15 @@ def cholesky(x, /, *, symmetrize_input=True):
     return ivy.cholesky(x)
 
 
- #adding a max_power function
 
-def matrix_power(m,n):
-    #m is the input marix that is created by a numpy
-    #n is the output exponential power
-    # return will be n*m which is a ndarray or a matrix object
-    m= _remove_jaxarray(m)
-    return JaxArray(linalg.matrix_power(m,n))
+
+
+def matrix_power(m: Union[ivy.Array, ivy.NativeArray],
+                 n: int,
+                 /,
+                 *,
+                 out: Optional[ivy.Array] = None) -> ivy.Array:
+    return ivy.matrix_power(m, n, out=out)
 
 
 
