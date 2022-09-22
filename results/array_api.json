@@ -1,6 +1,6 @@
 {
       "numpy": {
-            "array_object": " ",
+            "array_object": "success",
             "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
@@ -15,7 +15,7 @@
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "torch": {
             "array_object": " ",
