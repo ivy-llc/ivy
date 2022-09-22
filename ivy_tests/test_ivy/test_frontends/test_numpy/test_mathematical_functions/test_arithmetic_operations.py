@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given
 
 # local
@@ -30,15 +29,15 @@ def test_numpy_add(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, xs = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -46,8 +45,8 @@ def test_numpy_add(
         fw=fw,
         frontend="numpy",
         fn_tree="add",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         dtype=dtype,
@@ -76,15 +75,15 @@ def test_numpy_subtract(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, xs = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -92,8 +91,8 @@ def test_numpy_subtract(
         fw=fw,
         frontend="numpy",
         fn_tree="subtract",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         dtype=dtype,
@@ -117,9 +116,9 @@ def test_numpy_vdot(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -127,8 +126,9 @@ def test_numpy_vdot(
         fw=fw,
         frontend="numpy",
         fn_tree="vdot",
-        a=np.asarray(x[0], dtype=input_dtype[0]),
-        b=np.asarray(x[1], dtype=input_dtype[1]),
+        a=xs[0],
+        b=xs[1],
+        test_values=False,
     )
 
 
@@ -154,15 +154,15 @@ def test_numpy_divide(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, xs = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -170,8 +170,8 @@ def test_numpy_divide(
         fw=fw,
         frontend="numpy",
         fn_tree="divide",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         dtype=dtype,
@@ -200,15 +200,15 @@ def test_numpy_multiply(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtypes, xs = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -216,8 +216,8 @@ def test_numpy_multiply(
         fw=fw,
         frontend="numpy",
         fn_tree="multiply",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         dtype=dtype,
@@ -249,14 +249,14 @@ def test_numpy_positive(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -264,7 +264,8 @@ def test_numpy_positive(
         fw=fw,
         frontend="numpy",
         fn_tree="positive",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        x=x[0],
+        out=None,
         where=where,
         dtype=dtype,
     )
@@ -293,14 +294,14 @@ def test_numpy_negative(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=[input_dtype],
+        input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -308,7 +309,7 @@ def test_numpy_negative(
         fw=fw,
         frontend="numpy",
         fn_tree="negative",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         casting="unsafe",
         where=where,
