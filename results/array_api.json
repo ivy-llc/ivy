@@ -18,7 +18,7 @@
             "utility_functions": " "
       },
       "torch": {
-            "array_object": " ",
+            "array_object": "success",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
@@ -51,10 +51,10 @@
             "special_cases": " ",
             "statistical_functions": "failure",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "jax": {
-            "array_object": " ",
+            "array_object": "failure",
             "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
