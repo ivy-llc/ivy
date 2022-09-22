@@ -65,6 +65,7 @@ def test_jax_lax_cholesky(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
         and x[0] != "float16"
+        and x[0] != "bfloat16"
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.linalg.eigh"
