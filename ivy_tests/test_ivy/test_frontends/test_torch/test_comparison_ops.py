@@ -584,14 +584,13 @@ def test_torch_not_equal(
     )
 
 
-# isin
 @handle_cmd_line_args
 @given(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
     ),
-    num_arrays=2,
-    shared_dtype=True,
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isin"
     ),
@@ -722,8 +721,9 @@ def test_torch_fmin(
         fw=fw,
         frontend="torch",
         fn_tree="fmin",
-        elements=np.asarray(inputs[0], dtype=input_dtype[0]),
-        test_elements=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=np.asarray(inputs[0], dtype=input_dtype[0]),
+        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        out=None,
     )
 
 
