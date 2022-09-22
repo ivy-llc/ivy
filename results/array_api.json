@@ -2,7 +2,7 @@
       "numpy": {
             "array_object": " ",
             "constants": " ",
-            "creation_functions": " ",
+            "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
@@ -19,7 +19,7 @@
       },
       "torch": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
@@ -57,7 +57,7 @@
             "array_object": " ",
             "constants": "success",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": " ",
