@@ -5,9 +5,9 @@ sparse_cross_entropy
 
 .. autofunction:: ivy.array.array_methods.sparse_cross_entropy
 
-.. autofunction:: ivy.container.container_methods.sparse_cross_entropy
-
 .. autofunction:: ivy.container.container_methods.static_sparse_cross_entropy
+
+.. autofunction:: ivy.container.container_methods.sparse_cross_entropy
 |
 | **Supported Frameworks:**
 
