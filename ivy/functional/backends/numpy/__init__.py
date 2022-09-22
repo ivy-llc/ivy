@@ -36,6 +36,9 @@ bfloat16 = ivy.FloatDtype("bfloat16")
 float16 = ivy.FloatDtype("float16")
 float32 = ivy.FloatDtype("float32")
 float64 = ivy.FloatDtype("float64")
+complex64 = ivy.ComplexDtype("complex64")
+complex128 = ivy.ComplexDtype("complex128")
+complex256 = ivy.ComplexDtype("complex256")
 # noinspection PyShadowingBuiltins
 bool = ivy.Dtype("bool")
 
@@ -51,6 +54,9 @@ native_uint64 = np.dtype("uint64")
 native_float16 = np.dtype("float16")
 native_float32 = np.dtype("float32")
 native_float64 = np.dtype("float64")
+native_complex64 = np.dtype("complex64")
+native_complex128 = np.dtype("complex128")
+native_complex256 = np.dtype("complex256")
 # noinspection PyShadowingBuiltins
 native_bool = np.dtype("bool")
 
@@ -67,6 +73,9 @@ valid_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
+    complex256,
     bool,
 )
 valid_numeric_dtypes = (
@@ -81,10 +90,14 @@ valid_numeric_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
+    complex256,
 )
 valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
 valid_float_dtypes = (float16, float32, float64)
 valid_uint_dtypes = (uint8, uint16, uint32, uint64)
+valid_complex_dtypes = (complex64, complex128, complex256)
 
 # invalid data types
 invalid_dtypes = (bfloat16,)
@@ -92,6 +105,7 @@ invalid_numeric_dtypes = (bfloat16,)
 invalid_int_dtypes = ()
 invalid_float_dtypes = (bfloat16,)
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = ()
 
 native_inplace_support = False
 
