@@ -310,7 +310,7 @@ def test_torch_cumprod(
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
     ),
     num_positional_args=helpers.num_positional_args(
