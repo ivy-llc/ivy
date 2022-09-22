@@ -150,42 +150,51 @@ def not_equal(input, other, *, out=None):
 
 ne = not_equal
 
+
 def isin(elements, test_elements, *, assume_unique=False, invert=False):
 
-    input_elements_copy = ivy.reshape(ivy.to_ivy(elements), -1) 
-    test_elements_copy = ivy.reshape(ivy.to_ivy(test_elements), -1) 
+    input_elements_copy = ivy.reshape(ivy.to_ivy(elements), -1)
+    test_elements_copy = ivy.reshape(ivy.to_ivy(test_elements), -1)
 
-    if ivy.shape(test_elements_copy)[0] < 10 * ivy.shape(input_elements_copy)[0] ** 0.145: #contains objects to add:
+    if (
+        ivy.shape(test_elements_copy)[0]
+        < 10 * ivy.shape(input_elements_copy)[0] ** 0.145
+    ):
         if invert:
             mask = ivy.ones(ivy.shape(input_elements_copy)[0], dtype=bool)
             for a in test_elements_copy:
-                mask &= (input_elements_copy != a)
+                mask &= input_elements_copy != a
         else:
             mask = ivy.zeros(ivy.shape(input_elements_copy)[0], dtype=bool)
             for a in test_elements_copy:
-                mask |= (input_elements_copy == a)
+                mask |= input_elements_copy == a
         return ivy.reshape(mask, ivy.shape(elements))
 
     if not assume_unique:
-        input_elements_copy, rev_idx = ivy.unique_inverse(input_elements_copy, return_inverse=True)
-        test_elements_copy = ivy.sort(ivy.unique_values(test_elements_copy))   
-    
+        input_elements_copy, rev_idx = ivy.unique_inverse(
+            input_elements_copy, return_inverse=True
+        )
+        test_elements_copy = ivy.sort(ivy.unique_values(test_elements_copy))
+
     ar = ivy.concat((input_elements_copy, test_elements_copy))
 
-    order = ivy.argsort(ar,stable=True)
+    order = ivy.argsort(ar, stable=True)
     sar = ar[order]
     if invert:
-        bool_ar = (sar[1:] != sar[:-1])
+        bool_ar = sar[1:] != sar[:-1]
     else:
-        bool_ar = (sar[1:] == sar[:-1])
+        bool_ar = sar[1:] == sar[:-1]
     flag = ivy.concat((bool_ar, [invert]))
     ret = ivy.empty(ivy.shape(ar), dtype=bool)
     ret[order] = flag
 
     if assume_unique:
-        return ivy.reshape(ret[:ivy.shape(input_elements_copy)[0]], ivy.shape(elements))
+        return ivy.reshape(
+            ret[: ivy.shape(input_elements_copy)[0]], ivy.shape(elements)
+        )
     else:
         return ivy.reshape(ret[rev_idx], ivy.shape(elements))
+
 
 def minimum(input, other, *, out=None):
     return ivy.minimum(input, other, out=out)
