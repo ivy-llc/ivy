@@ -98,7 +98,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
-invalid_complex_dtypes = ivy.complex256
+invalid_complex_dtypes = (ivy.complex256,)
 
 native_inplace_support = False
 
