@@ -1,11 +1,11 @@
 {
       "numpy": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "failure",
+            "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
@@ -47,7 +47,7 @@
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
-            "sorting_functions": " ",
+            "sorting_functions": "success",
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": "failure",
