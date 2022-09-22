@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy.Container.reciprocal &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="ivy.Container.static_reciprocal" href="static_reciprocal_container.html" />
+    <link rel="prev" title="ivy.Array.reciprocal" href="reciprocal_array.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../elementwise.html">Elementwise</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../abs.html">abs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../acos.html">acos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../acosh.html">acosh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../add.html">add</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asin.html">asin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asinh.html">asinh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atan.html">atan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atan2.html">atan2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../atanh.html">atanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bitwise_and.html">bitwise_and</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bitwise_invert.html">bitwise_invert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bitwise_left_shift.html">bitwise_left_shift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bitwise_or.html">bitwise_or</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bitwise_right_shift.html">bitwise_right_shift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bitwise_xor.html">bitwise_xor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ceil.html">ceil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cos.html">cos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cosh.html">cosh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../divide.html">divide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../equal.html">equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exp.html">exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../expm1.html">expm1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../floor.html">floor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../floor_divide.html">floor_divide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../greater.html">greater</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../greater_equal.html">greater_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../less_equal.html">less_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multiply.html">multiply</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isfinite.html">isfinite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isinf.html">isinf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../isnan.html">isnan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../less.html">less</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../log.html">log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../log10.html">log10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../log1p.html">log1p</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../log2.html">log2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logaddexp.html">logaddexp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logical_and.html">logical_and</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logical_not.html">logical_not</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logical_or.html">logical_or</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logical_xor.html">logical_xor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../negative.html">negative</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../not_equal.html">not_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../positive.html">positive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pow.html">pow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../remainder.html">remainder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../round.html">round</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sign.html">sign</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sin.html">sin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sinh.html">sinh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sqrt.html">sqrt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../square.html">square</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../subtract.html">subtract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tan.html">tan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trunc.html">trunc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../erf.html">erf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../maximum.html">maximum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minimum.html">minimum</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../reciprocal.html">reciprocal</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="reciprocal_functional.html">ivy.reciprocal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reciprocal_array.html">ivy.Array.reciprocal</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.reciprocal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="static_reciprocal_container.html">ivy.Container.static_reciprocal</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../deg2rad.html">deg2rad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rad2deg.html">rad2deg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trunc_divide.html">trunc_divide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+                    <li><a href="../../elementwise.html">Elementwise</a> &raquo;</li>
+          <li><a href="../reciprocal.html">reciprocal</a> &raquo;</li>
+      <li>ivy.Container.reciprocal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/functional/ivy/elementwise/reciprocal/reciprocal_container.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ivy-container-reciprocal">
+<h1>ivy.Container.reciprocal<a class="headerlink" href="#ivy-container-reciprocal" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.reciprocal">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">reciprocal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/elementwise.html#ContainerWithElementwise.reciprocal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.reciprocal" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of <a href="../reciprocal/reciprocal_functional.html">ivy.reciprocal</a>.
+This method simply wraps the function, and so the docstring for
+ivy.reciprocal also applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – input container to compute the element-wise reciprocal for.</p></li>
+<li><p><strong>key_chains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]) – The key-chains to apply or not apply the method to. Default is None. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>to_apply</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the method will be applied to key_chains, otherwise key_chains (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+will be skipped. Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to prune key_chains for which the function was not applied. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also map method to sequences (lists, tuples). Default is False. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. It must have a shape (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – a container with the element-wise recirpocal of <code class="docutils literal notranslate"><span class="pre">x</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../../_images/numpy_logo.png" /></a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reciprocal_array.html" class="btn btn-neutral float-left" title="ivy.Array.reciprocal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="static_reciprocal_container.html" class="btn btn-neutral float-right" title="ivy.Container.static_reciprocal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

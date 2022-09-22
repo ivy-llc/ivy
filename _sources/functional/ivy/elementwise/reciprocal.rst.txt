@@ -2,6 +2,12 @@ reciprocal
 ==========
 
 .. autofunction:: ivy.functional.ivy.elementwise.reciprocal
+
+.. autofunction:: ivy.array.array_methods.reciprocal
+
+.. autofunction:: ivy.container.container_methods.static_reciprocal
+
+.. autofunction:: ivy.container.container_methods.reciprocal
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ reciprocal
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: reciprocal
+
+   reciprocal/reciprocal_functional.rst
+   reciprocal/reciprocal_array.rst
+   reciprocal/reciprocal_container.rst
+   reciprocal/static_reciprocal_container.rst
+
