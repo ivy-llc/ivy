@@ -33,7 +33,7 @@
             "special_cases": " ",
             "statistical_functions": "success",
             "type_promotion": " ",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "tensorflow": {
             "array_object": " ",
