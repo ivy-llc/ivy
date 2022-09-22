@@ -111,8 +111,7 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args,
         fn_name="ivy.functional.frontends.numpy.linalg.tensorinv"
     ),
 )
-def test_numpy_tensorinv(dtype_and_x, as_variable, native_array, num_positional_args,
-    fw):
+def test_numpy_tensorinv(dtype_and_x,as_variable,native_array,num_positional_args,fw):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
