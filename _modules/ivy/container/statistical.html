@@ -274,8 +274,9 @@
 <span class="sd">        }</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -1., 1.]), b=ivy.array([1., 1., 1.]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.mean(x, out=x)</span>
-<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.mean(x, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array(0.),</span>
 <span class="sd">            b: ivy.array(1.)</span>

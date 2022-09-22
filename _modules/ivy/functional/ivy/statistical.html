@@ -418,7 +418,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array(1.)</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1, -2, -3, 0, -1], [1, 2, 3, 0, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 0.])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.mean(x, axis=1, out=y)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -445,12 +445,12 @@
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.mean(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array(0.),</span>
-<span class="sd">        b: ivy.array(0.9)</span>
+<span class="sd">        b: ivy.array(0.90000004)</span>
 <span class="sd">    }</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \</span>
@@ -483,28 +483,6 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([-0.25,  1.05,  2.1])</span>
 
-<span class="sd">    With :code:`ivy.native_array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0.0, 1.1, 2.2])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.mean()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    1.1</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.mean()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    2.5</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.mean(axis=0)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [1.5 2.5 3.5]</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.mean(axis=1)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    [1.0 4.0]</span>
-
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.2, 2.2, 4.2]))</span>
@@ -515,12 +493,12 @@
 <span class="sd">        b: ivy.array(2.2)</span>
 <span class="sd">    }</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 1., 1.], b=ivy.array([0., -1., 1.])))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 1., 1.]), b=ivy.array([0., -1., 1.]))</span>
 <span class="sd">    &gt;&gt;&gt; x.mean(out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array(1.1),</span>
-<span class="sd">        b: ivy.array(0.)</span>
+<span class="sd">        a: ivy.array(0.),</span>
+<span class="sd">        b: ivy.array(1.)</span>
 <span class="sd">    }</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \</span>

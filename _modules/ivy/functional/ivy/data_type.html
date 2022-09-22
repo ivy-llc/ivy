@@ -1280,21 +1280,36 @@
     <span class="n">int_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">IntDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">IntDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Summary.</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input</span>
-<span class="sd">         (Default value = None)</span>
+<span class="sd">       (Default value = None) Number or array for inferring default int dtype.</span>
 <span class="sd">    int_dtype</span>
-
+<span class="sd">       (Default value = None) Uint dtype to be returned as default.</span>
 <span class="sd">    as_native</span>
-<span class="sd">         (Default value = None)</span>
+<span class="sd">       (Default value = None) Whether to return the default int dtype as native dtype.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input int dtype if provided, otherwise return the global default int</span>
-<span class="sd">        dtype.</span>
+<span class="sd">        Return the input int dtype if provided, otherwise return the global default</span>
+<span class="sd">        int dtype.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_int_dtype(ivy.intDtype(&quot;int16&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype()</span>
+<span class="sd">    &#39;int16&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype(input=4294967346)</span>
+<span class="sd">    &#39;int64&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype(int_dtype=ivy.intDtype(&quot;int8&quot;))</span>
+<span class="sd">    &#39;int8&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([9,8], dtype=&quot;int32&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype(input=x)</span>
+<span class="sd">    &#39;int32&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">int_dtype</span><span class="p">):</span>
