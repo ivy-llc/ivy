@@ -68,7 +68,7 @@
             "sorting_functions": "success",
             "special_cases": "success",
             "statistical_functions": "success",
-            "type_promotion": "failure",
+            "type_promotion": " ",
             "utility_functions": " "
       }
 }
