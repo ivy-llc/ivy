@@ -2,10 +2,10 @@
       "numpy": {
             "array_object": " ",
             "constants": " ",
-            "creation_functions": "success",
+            "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "failure",
+            "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
@@ -51,7 +51,7 @@
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "jax": {
             "array_object": " ",
