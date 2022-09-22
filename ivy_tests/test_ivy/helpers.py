@@ -3576,7 +3576,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=x_shape,
             large_abs_safety_factor=3,
             small_abs_safety_factor=4,
@@ -3585,7 +3585,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
     )
     filters = draw(
         array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=filter_shape,
             large_abs_safety_factor=3,
             small_abs_safety_factor=4,
@@ -3603,7 +3603,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             padding,
             output_shape,
         )
-    return [dtype], vals, filters, dilations, data_format, strides, padding
+    return dtype, vals, filters, dilations, data_format, strides, padding
 
 
 #      From array-api repo     #
