@@ -959,24 +959,25 @@ def test_tensorflow_zero_fraction(
         value=np.asarray(x, dtype=input_dtype),
     )
 
+
 # accumulate_n
 @handle_cmd_line_args
 @given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        shape = helpers.get_shape(
+        shape=helpers.get_shape(
             min_dim_size=3,
             min_num_dims=3,
             allow_none=False,
-        )
         ),
-    dtype = helpers.get_dtypes("numeric"),
+    ),
+    dtype=helpers.get_dtypes("numeric"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.accumulate_n"
     ),
 )
 def test_tensorflow_accumulate_n(
-    dtype_and_values,dtype, as_variable, num_positional_args, native_array, fw
+    dtype_and_values, dtype, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, inputs = dtype_and_values
     helpers.test_frontend_function(
@@ -989,5 +990,8 @@ def test_tensorflow_accumulate_n(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.accumulate_n",
-        inputs = [np.asarray(np.asarray(inputs)[i], dtype=input_dtype) for i in range(len(np.asarray(inputs)))],
+        inputs=[
+            np.asarray(np.asarray(inputs)[i], dtype=input_dtype)
+            for i in range(len(np.asarray(inputs)))
+        ],
     )

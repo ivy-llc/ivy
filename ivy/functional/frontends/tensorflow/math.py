@@ -240,6 +240,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 # TODO: Ibeta for Future Release
 
+
 def accumulate_n(inputs, shape=None, tensor_dtype=None, name="accumulate_n"):
     tensor_dtype = tensor_dtype or inputs[0].dtype
     if shape is not None:
