@@ -700,7 +700,7 @@ def maml_step(
     )
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
-    return (cost, grads.sum(axis=0), *rets)
+    return cost, grads.sum(axis=0), *rets
 
 
 maml_step.computes_gradients = True
