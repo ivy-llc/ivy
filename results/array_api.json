@@ -6,7 +6,7 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": "success",
+            "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": "success",
