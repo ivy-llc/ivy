@@ -30,7 +30,7 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
-trace.unsupported_dtypes = ("float16", "bool")
+trace.unsupported_dtypes = ("float16",)
 
 
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
