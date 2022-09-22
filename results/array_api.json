@@ -5,7 +5,7 @@
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "failure",
+            "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
@@ -19,7 +19,7 @@
       },
       "torch": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
@@ -30,7 +30,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": " ",
-            "special_cases": "failure",
+            "special_cases": " ",
             "statistical_functions": "success",
             "type_promotion": " ",
             "utility_functions": "success"
