@@ -10,6 +10,10 @@ def det(input, name=None):
     return ivy.det(input)
 
 
+def eigvals(tensor, name=None):
+    return ivy.eigvals(tensor)
+
+
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
