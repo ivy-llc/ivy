@@ -405,8 +405,8 @@ def log_softmax(
     x
         Input array.
     axis
-        The dimension softmax would be performed on. The default is -1 which indicates
-        the last dimension.
+        The dimension log_softmax would be performed on. The default is -1
+        which indicates the last dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
