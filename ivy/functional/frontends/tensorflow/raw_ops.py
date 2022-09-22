@@ -99,10 +99,6 @@ def LogicalOr(*, x, y, name=None):
     return ivy.logical_or(x, y)
 
 
-def LogicalNot(*, x, name=None):
-    return ivy.logical_not(x)
-
-
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
 
