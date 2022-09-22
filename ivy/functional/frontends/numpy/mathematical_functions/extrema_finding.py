@@ -21,3 +21,17 @@ def minimum(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+def amin(
+    a,
+    /,
+    *,
+    axis=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=True,
+):
+
+    return ivy.min(a, axis=axis, keepdims=keepdims, out=out)
