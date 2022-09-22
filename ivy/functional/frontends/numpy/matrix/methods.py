@@ -81,13 +81,16 @@ class matrix:
     def size(self):
         return self._shape[0] * self._shape[1]
 
+    # Instance Methods #
+    # ---------------- #
 
-@from_zero_dim_arrays_to_float
-def argmax(a, axis=None, out=None, *, keepdims=None):
-    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
+    @from_zero_dim_arrays_to_float
+    def argmax(self, axis=None, out=None):
+        if ivy.exists(axis):
+            return ivy.argmax(self.A, axis=axis, keepdims=True, out=out)
+        return ivy.argmax(self.A, axis=axis, out=out)
 
-
-def any(x, /, axis=None, out=None, keepdims=False, *, where=True):
-    ret = ivy.where(ivy.array(where), ivy.array(x), ivy.zeros_like(x))
-    ret = ivy.any(ret, axis=axis, keepdims=keepdims, out=out)
-    return ret
+    def any(self, axis=None, out=None):
+        if ivy.exists(axis):
+            return ivy.any(self.A, axis=axis, keepdims=True, out=out)
+        return ivy.any(self.A, axis=axis, out=out)
