@@ -923,7 +923,7 @@ def test_torch_hardswish(
         input=np.asarray(input, dtype=input_dtype),
         inplace=False,
     )
-    
+
 
 # hardsigmoid
 # ToDo Test inplace once inplace testing implemented
