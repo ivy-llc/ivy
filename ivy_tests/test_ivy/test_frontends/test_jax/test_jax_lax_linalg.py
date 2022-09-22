@@ -88,7 +88,6 @@ def test_jax_lax_cholesky(
         fw=fw,
         frontend="jax",
         fn_tree="lax.linalg.cholesky",
-        rtol=1e-02,
         test_values=False,
         x=x,
         symmetrize_input=symmetrize_input,
