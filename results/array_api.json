@@ -12,7 +12,7 @@
             "set_functions": "success",
             "signatures": " ",
             "sorting_functions": " ",
-            "special_cases": "success",
+            "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
@@ -61,7 +61,7 @@
             "has_names": " ",
             "linalg": " ",
             "manipulation_functions": " ",
-            "operators_and_elementwise_functions": " ",
+            "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
