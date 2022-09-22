@@ -5,7 +5,7 @@
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "success",
+            "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
@@ -60,7 +60,7 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": " ",
+            "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
@@ -68,7 +68,7 @@
             "sorting_functions": "success",
             "special_cases": "success",
             "statistical_functions": "success",
-            "type_promotion": "failure",
+            "type_promotion": " ",
             "utility_functions": " "
       }
 }
