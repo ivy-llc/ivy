@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def _array_with_dtype_axis_keepdims_and_where(draw):
-    dtypes = draw(helpers.array_dtypes(num_arrays=1))
+    dtypes = draw(helpers.get_dtypes("numeric", full=False))
     shape = draw(
         helpers.get_shape(
             min_num_dims=1,
@@ -24,7 +24,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     x = draw(
         helpers.array_values(
             shape=shape,
-            dtype=dtypes[0],
+            dtype=dtypes,
         )
     )
     where_shape_length = draw(helpers.ints(min_value=0, max_value=len(shape)))
@@ -57,7 +57,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     else:
         where = draw(st.booleans())
     keepdims = draw(st.booleans())
-    return x, dtypes[0], axis, keepdims, where
+    return x, [dtypes], axis, keepdims, where
 
 
 # argmax
