@@ -7,24 +7,47 @@ from ivy.func_wrapper import from_zero_dim_arrays_to_float
 
 class matrix:
     def __init__(self, data, dtype=None, copy=True):
-        pass
+        self._init_data(data, dtype)
 
-    def _init_data(self, data):
+    def _init_data(self, data, dtype):
         if isinstance(data, str):
-            pass
+            self._process_str_data(data, dtype)
         elif isinstance(data, list) or ivy.is_array(data):
-            data = ivy.array(data)
+            data = (
+                ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
+            )
             ivy.assertions.check_equal(len(ivy.shape(data)), 2)
             self._data = data
         else:
             raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
+        self._shape = ivy.shape(self._data)
+        self._dtype = self._data.dtype
+
+    def _process_str_data(self, data, dtype):
+        is_float = "." in data
+        data = data.split(";")
+        ivy.assertions.check_equal(
+            len(data), 2, message="only one semicolon should exist for rows splitting"
+        )
+        for i in range(2):
+            data[i] = data[i].split(",") if "," in data[i] else data[i].split()
+            # TODO: check dtypes
+            data[i] = [
+                float(x.strip()) if is_float else int(x.strip()) for x in data[i]
+            ]
+        ivy.assertions.check_equal(
+            len(data[0]), len(data[1]), message="elements in each row is unequal"
+        )
+        self._data = (
+            ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
+        )
 
     # Properties #
     # ---------- #
 
     @property
-    def A():
-        pass
+    def A(self):
+        return self._data
 
     @property
     def A1():
@@ -34,45 +57,34 @@ class matrix:
     def H():
         pass
 
-    # @property
-    # def I():
-    #     pass
+    # flake8: noqa: E743, E741
+    @property
+    def I(self):
+        return ivy.inv(self._data)
 
     @property
-    def T():
-        pass
+    def T(self):
+        return ivy.matrix_transpose(self._data)
 
     @property
-    def data():
-        pass
+    def data(self):
+        return hex(id(self._data))
 
     @property
-    def dtype():
-        pass
+    def dtype(self):
+        return self._dtype
 
     @property
-    def flat():
-        pass
+    def ndim(self):
+        return len(self._shape)
 
     @property
-    def itemsize():
-        pass
+    def shape(self):
+        return self._shape
 
     @property
-    def nbytes():
-        pass
-
-    @property
-    def ndim():
-        pass
-
-    @property
-    def shape():
-        pass
-
-    @property
-    def size():
-        pass
+    def size(self):
+        return self._shape[0] * self._shape[1]
 
     # Setters #
     # ------- #
