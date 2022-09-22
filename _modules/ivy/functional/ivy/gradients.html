@@ -305,7 +305,7 @@
 <div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../functional/ivy/gradients/variable/variable_functional.html#ivy.functional.ivy.gradients.variable">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Creates a variable, which supports gradient computation.</span>
 
 <span class="sd">    Parameters</span>
@@ -329,7 +329,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 0.3, -4.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.variable(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.variable([ 1. ,  0.3, -4.5])</span>
+<span class="sd">    ivy.array([ 1. ,  0.3, -4.5])</span>
 
 <span class="sd">    With :code:`ivy.Container` input:</span>
 
@@ -337,8 +337,8 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.variable(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.variable([1., 2.]),</span>
-<span class="sd">        b: ivy.variable([-0.2, 4.])</span>
+<span class="sd">        a: ivy.array([1., 2.]),</span>
+<span class="sd">        b: ivy.array([-0.2, 4.])</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
@@ -458,8 +458,8 @@
 <span class="sd">    x</span>
 <span class="sd">        Array for which to stop the gradient.</span>
 <span class="sd">    preserve_type</span>
-<span class="sd">        Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
-<span class="sd">        otherwise an array is always returned. Default is True.</span>
+<span class="sd">        Whether to preserve gradient computation on ivy.Array instances. Default is</span>
+<span class="sd">        True.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -573,7 +573,7 @@
 <span class="sd">    &gt;&gt;&gt; grad_fn = ivy.value_and_grad(func)</span>
 <span class="sd">    &gt;&gt;&gt; value_grad = grad_fn(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(value_grad)</span>
-<span class="sd">    (ivy.variable(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))</span>
+<span class="sd">    (ivy.array(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
@@ -1296,7 +1296,7 @@
         <span class="n">r2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">eff_grads</span> <span class="o">+</span> <span class="n">decay_lambda</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span><span class="n">eff_grads</span><span class="p">)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">),</span> <span class="n">max_trust_ratio</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">max_trust_ratio</span><span class="p">))</span>
     <span class="n">lr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">lr</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">optimizer_update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">eff_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span>

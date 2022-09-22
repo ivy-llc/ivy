@@ -444,8 +444,8 @@ to this method with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Array for which to stop the gradient.</p></li>
-<li><p><strong>preserve_type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to preserve the input type (ivy.Variable or ivy.Array), (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
-otherwise an array is always returned. Default is True.</p></li>
+<li><p><strong>preserve_type</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to preserve gradient computation on ivy.Array instances. Default is (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+True.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 shape that the inputs broadcast to.</p></li>
 </ul>
@@ -477,10 +477,10 @@ method with minimal changes.</p>
 <dd class="field-odd"><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – An ivy array.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – An ivy variable that supports gradient computation.</p>
+<dd class="field-odd"><p><em>ret</em> – An ivy array that supports gradient computation.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

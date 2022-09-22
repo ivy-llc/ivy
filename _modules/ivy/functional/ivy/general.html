@@ -2596,7 +2596,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">supports_inplace_updates</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">]</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether in-place operations are supported for x&#39;s data type,</span>
@@ -2617,8 +2617,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If x isn&#39;t a class instance of ivy.Variable, ivy.Array,</span>
-<span class="sd">        or ivy.NativeArray, an exception will be raised.</span>
+<span class="sd">        If x isn&#39;t a class instance of ivy.Array or ivy.NativeArray, an exception will</span>
+<span class="sd">        be raised.</span>
 
 <span class="sd">    This function is *nestable*, and therefore also accepts :code:&#39;ivy.Container&#39;</span>
 <span class="sd">    instance in place of the argument.</span>
@@ -2635,12 +2635,6 @@
 <span class="sd">    &gt;&gt;&gt; ret = ivy.supports_inplace_updates(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(ret)</span>
 <span class="sd">    True</span>
-
-<span class="sd">    With :code:&#39;ivy.Variable&#39; input and backend set as &#39;jax&#39;:</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.variable(ivy.array(5.5))</span>
-<span class="sd">    &gt;&gt;&gt; ret = ivy.supports_inplace_updates(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(ret)</span>
-<span class="sd">    False</span>
 
 <span class="sd">    With :code:&#39;ivy.Container&#39; input and backend set as &#39;torch&#39;:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))</span>

@@ -139,7 +139,7 @@
 
 
 <div class="viewcode-block" id="ArrayWithGradients"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithGradients</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithGradients.variable"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.variable">[docs]</a>    <span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">:</span>
+<div class="viewcode-block" id="ArrayWithGradients.variable"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.variable">[docs]</a>    <span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.variable. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.variable also applies to this</span>
@@ -153,7 +153,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            An ivy variable that supports gradient computation.</span>
+<span class="sd">            An ivy array that supports gradient computation.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -238,8 +238,8 @@
 <span class="sd">        self</span>
 <span class="sd">            Array for which to stop the gradient.</span>
 <span class="sd">        preserve_type</span>
-<span class="sd">            Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
-<span class="sd">            otherwise an array is always returned. Default is True.</span>
+<span class="sd">            Whether to preserve gradient computation on ivy.Array instances. Default is</span>
+<span class="sd">            True.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to. It must have a</span>
 <span class="sd">            shape that the inputs broadcast to.</span>

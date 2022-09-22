@@ -175,7 +175,7 @@ applied to all nested leafs of tuples, lists and dicts contained within x.</p>
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]) – The input to maybe convert.</p></li>
 <li><p><strong>nested</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to apply the conversion on arguments in a nested manner. If so, all (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 dicts, lists and tuples will be traversed to their lowest leaves in search of
-ivy.Array and ivy.Variable instances. Default is False.</p></li>
+ivy.Array instances. Default is False.</p></li>
 <li><p><strong>include_derived</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]]) – Whether to also recursive for classes derived from tuple, list and dict. Default (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 is False.</p></li>
 </ul>
@@ -184,8 +184,7 @@ is False.</p></li>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – the input in it’s native framework form in the case of ivy.Array or ivy.Variable
-instances.</p>
+<dd class="field-odd"><p><em>ret</em> – the input in it’s native framework form in the case of ivy.Array or instances.</p>
 </dd>
 </dl>
 </dd></dl>
