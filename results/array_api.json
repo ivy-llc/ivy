@@ -19,7 +19,7 @@
       },
       "torch": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
@@ -49,7 +49,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": " ",
+            "statistical_functions": "failure",
             "type_promotion": " ",
             "utility_functions": " "
       },
