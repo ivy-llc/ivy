@@ -1,5 +1,4 @@
 # global
-import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
@@ -13,16 +12,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
-    dtype=st.sampled_from((ivy.bool, None)),
+    dtype=st.sampled_from(("bool", None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_and"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_logical_and(
     dtype_and_x,
@@ -37,12 +34,12 @@ def test_numpy_logical_and(
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=[input_dtype],
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -54,11 +51,7 @@ def test_numpy_logical_and(
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
         dtype=dtype,
-        subok=True,
-        test_values=False,
     )
 
 
@@ -66,16 +59,14 @@ def test_numpy_logical_and(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
-    dtype=st.sampled_from((ivy.bool, None)),
+    dtype=st.sampled_from(("bool", None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_or"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_logical_or(
     dtype_and_x,
@@ -90,12 +81,12 @@ def test_numpy_logical_or(
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=[input_dtype],
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -107,11 +98,7 @@ def test_numpy_logical_or(
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
         dtype=dtype,
-        subok=True,
-        test_values=False,
     )
 
 
@@ -119,15 +106,13 @@ def test_numpy_logical_or(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=("bool",),
     ),
-    dtype=st.sampled_from((ivy.bool, None)),
+    dtype=st.sampled_from(("bool", None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=1),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_not"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
 )
 def test_numpy_logical_not(
     dtype_and_x,
@@ -159,11 +144,7 @@ def test_numpy_logical_not(
         x=np.asarray(x, dtype=input_dtype[0]),
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
         dtype=dtype,
-        subok=True,
-        test_values=False,
     )
 
 
@@ -171,16 +152,14 @@ def test_numpy_logical_not(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
-    dtype=st.sampled_from((ivy.bool, None)),
+    dtype=st.sampled_from(("bool", None)),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(num_arrays=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.logical_xor"
     ),
-    native_array=helpers.array_bools(num_arrays=2),
 )
 def test_numpy_logical_xor(
     dtype_and_x,
@@ -195,12 +174,12 @@ def test_numpy_logical_xor(
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=[input_dtype],
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -212,9 +191,5 @@ def test_numpy_logical_xor(
         x2=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
         dtype=dtype,
-        subok=True,
-        test_values=False,
     )

@@ -6,7 +6,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -68,7 +67,7 @@ def test_native_array(
         allow_inf=False,
         shared_dtype=True,
         large_abs_safety_factor=4,
-        small_abs_safety_factor=1.5,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
     num=helpers.ints(min_value=1, max_value=5),
@@ -95,7 +94,7 @@ def test_linspace(
         instance_method=False,
         fw=fw,
         fn_name="linspace",
-        rtol_=1e-2,
+        rtol_=1e-1,
         atol_=1e-2,
         start=np.asarray(start_stop[0], dtype=dtype[0]),
         stop=np.asarray(start_stop[1], dtype=dtype[1]),
@@ -119,8 +118,8 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=3,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
     ),
     num=helpers.ints(min_value=1, max_value=5),
@@ -537,7 +536,7 @@ def test_full_like(
 @handle_cmd_line_args
 @given(
     dtype_and_arrays=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_numeric_dtypes,
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=st.integers(min_value=2, max_value=5),
         min_num_dims=1,
         max_num_dims=1,

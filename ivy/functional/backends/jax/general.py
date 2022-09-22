@@ -79,15 +79,16 @@ def to_list(x: JaxArray, /) -> list:
 def gather(
     params: JaxArray,
     indices: JaxArray,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.take_along_axis(params, indices, axis))
+    return _to_device(jnp.take(params, indices, axis))
 
 
 def gather_nd(
-    params: JaxArray, indices: JaxArray, *, out: Optional[JaxArray] = None
+    params: JaxArray, indices: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     indices_shape = indices.shape
     params_shape = params.shape

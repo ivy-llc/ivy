@@ -13,3 +13,9 @@ from .lax import linalg
 from ivy.functional.frontends.jax.lax.linalg import *
 from .nn import non_linear_activations
 from ivy.functional.frontends.jax.nn.non_linear_activations import *
+from .numpy import name_space_functions
+from ivy.functional.frontends.jax.numpy.name_space_functions import *
+from .numpy import fft
+from ivy.functional.frontends.jax.numpy.fft import *
+from .numpy import linalg
+from ivy.functional.frontends.jax.numpy.linalg import *

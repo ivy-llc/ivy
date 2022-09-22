@@ -1,5 +1,6 @@
 import ivy
 from ivy.func_wrapper import inputs_to_native_arrays
+from ivy.exceptions import handle_exceptions
 
 
 # helpers
@@ -309,9 +310,7 @@ class SparseArray:
         if self._coo_indices is not None:
             # COO sparse array
             for i in range(self._values.shape[0]):
-                coordinate = ivy.gather(
-                    self._coo_indices, ivy.array([[i]] * self._coo_indices.shape[0])
-                )
+                coordinate = ivy.gather(self._coo_indices, ivy.array([[i]]))
                 coordinate = ivy.reshape(coordinate, (self._coo_indices.shape[0],))
                 all_coordinates.append(coordinate.to_list())
         else:
@@ -327,7 +326,7 @@ class SparseArray:
                 row += 1
         # make dense array
         ret = ivy.scatter_nd(
-            ivy.array(all_coordinates), self._values, ivy.array(self._dense_shape)
+            ivy.array([all_coordinates]), self._values, ivy.array(self._dense_shape)
         )
         return ret.to_native() if native else ret
 
@@ -341,11 +340,13 @@ def is_ivy_sparse_array(x):
 
 
 @inputs_to_native_arrays
+@handle_exceptions
 def is_native_sparse_array(x):
     return ivy.current_backend().is_native_sparse_array(x)
 
 
 @inputs_to_native_arrays
+@handle_exceptions
 def native_sparse_array(
     data=None,
     *,
@@ -365,5 +366,6 @@ def native_sparse_array(
     )
 
 
+@handle_exceptions
 def native_sparse_array_to_indices_values_and_shape(x):
     return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)

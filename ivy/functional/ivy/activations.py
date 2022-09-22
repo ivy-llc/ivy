@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
@@ -20,6 +21,7 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -42,7 +44,7 @@ def relu(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input: 
+    With :code: `ivy.Array` input:
 
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.relu(x)
@@ -86,6 +88,7 @@ def relu(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -113,7 +116,7 @@ def leaky_relu(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input: 
+    With :code: `ivy.Array` input:
 
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
@@ -160,6 +163,7 @@ def leaky_relu(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -192,6 +196,7 @@ def gelu(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -244,6 +249,7 @@ def sigmoid(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -272,7 +278,7 @@ def softmax(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input: 
+    With :code: `ivy.Array` input:
 
     >>> x = ivy.array([1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
@@ -286,8 +292,8 @@ def softmax(
     ivy.array([[0.0768, 0.231 , 0.693 ],
                [0.0768, 0.231 , 0.693 ]])
 
-    
-    With :code: `ivy.NativeArray` input: 
+
+    With :code: `ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1.5, 0.3, 1.2])
     >>> y = ivy.softmax(x)
@@ -311,8 +317,14 @@ def softmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def softplus(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softplus function element-wise.
 
@@ -320,6 +332,10 @@ def softplus(
     ----------
     x
         input array.
+    beta
+        The beta value for the softplus formation. Default: None.
+    threshold
+        values above this revert to a linear function. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -339,6 +355,15 @@ def softplus(
     >>> print(y)
     ivy.array([0.535,0.42])
 
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softplus(x, beta=0.5)
+    >>> print(y)
+    ivy.array([1.22, 1.09])
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.softplus(x, threshold=2)
+    >>> print(y)
+    ivy.array([1.31, 2.13, 3.  ])
 
     With :code: `ivy.NativeArray` input:
 
@@ -359,4 +384,4 @@ def softplus(
     ivy.array([0.535,0.42])
 
     """
-    return current_backend(x).softplus(x, out=out)
+    return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)

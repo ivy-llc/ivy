@@ -56,12 +56,10 @@ def _dtype_n_with_out(draw):
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    as_variable=helpers.array_bools(),
     dtype_n_with_out=_dtype_n_with_out(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.concatenate"
     ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_concatenate(
     xs_n_input_dtypes_n_unique_idx,
