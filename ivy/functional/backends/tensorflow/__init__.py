@@ -67,7 +67,6 @@ valid_numeric_dtypes = (
     ivy.uint16,
     ivy.uint32,
     ivy.uint64,
-    ivy.bfloat16,
     ivy.float16,
     ivy.float32,
     ivy.float64,
