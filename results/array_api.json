@@ -26,9 +26,9 @@
             "linalg": "failure",
             "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "failure",
-            "searching_functions": " ",
+            "searching_functions": "success",
             "set_functions": " ",
-            "signatures": "failure",
+            "signatures": " ",
             "sorting_functions": "success",
             "special_cases": "failure",
             "statistical_functions": "success",
@@ -51,7 +51,7 @@
             "special_cases": " ",
             "statistical_functions": "failure",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "jax": {
             "array_object": "failure",
@@ -67,7 +67,7 @@
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": " ",
             "utility_functions": " "
       }
