@@ -39,7 +39,7 @@ def main():
     repo.update_file(
         file.path,
         f"update {test_name_mappings[workflow_name][0]}",
-        updated_json,
+        json.dumps(updated_json, indent=6),
         file.sha,
         branch="dashboard",
     )
