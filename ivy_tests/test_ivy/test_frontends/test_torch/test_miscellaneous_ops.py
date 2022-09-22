@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st, settings
+from hypothesis import assume, given, strategies as st
 
 # local
 import ivy
@@ -613,12 +613,13 @@ def test_torch_renorm(
 
 
 @handle_cmd_line_args
-@settings(max_examples=10000)
 @given(
     dtype_and_input=helpers.dtype_and_values(
         # Torch version is not implemented for Integer or Bool types
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(), key="shape"),
+        max_value=100,
+        min_value=-100,
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"), force_int=True
@@ -649,6 +650,7 @@ def test_torch_logcumsumexp(
         frontend="torch",
         fn_tree="logcumsumexp",
         atol=1e-2,
+        rtol=1e-2,
         input=input,
         dim=dim,
     )
