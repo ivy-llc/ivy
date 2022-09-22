@@ -15,7 +15,7 @@
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "torch": {
             "array_object": " ",
