@@ -99,7 +99,7 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args,
     )
     
     
-    # tensorinv
+# tensorinv
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -112,7 +112,7 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args,
     ),
 )
 def test_numpy_tensorinv(dtype_and_x, as_variable, native_array, num_positional_args,
-fw):
+    fw):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
