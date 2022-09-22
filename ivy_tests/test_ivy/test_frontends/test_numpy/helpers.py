@@ -9,7 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 @st.composite
 def where(draw):
-    values = draw(st.lists(st.booleans(), min_size=1))
+    _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
     return draw(st.just(values) | st.just(True))
 
 
@@ -83,25 +83,8 @@ def test_frontend_array_instance_method(*args, where=None, **kwargs):
 
 
 # noinspection PyShadowingNames
-def handle_where_and_array_bools(
-    where, input_dtype=None, as_variable=None, native_array=None
-):
-    where_array = isinstance(where, list)
-    if where_array:
-        where = np.asarray(where, dtype=np.bool_)
-        if ivy.exists(input_dtype):
-            try:
-                input_dtype += ["bool"]
-            except TypeError:
-                input_dtype = [input_dtype, "bool"]
-        if ivy.exists(as_variable):
-            try:
-                as_variable += [False]
-            except TypeError:
-                as_variable = [as_variable, False]
-        if ivy.exists(native_array):
-            try:
-                native_array += [False]
-            except TypeError:
-                native_array = [native_array, False]
-    return where
+def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
+    if isinstance(where, list):
+        input_dtype += ["bool"]
+        return where, as_variable + [False], native_array + [False]
+    return where, as_variable, native_array
