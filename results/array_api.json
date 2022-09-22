@@ -46,16 +46,16 @@
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
-            "signatures": " ",
+            "signatures": "failure",
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "jax": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
