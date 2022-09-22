@@ -921,7 +921,7 @@ def test_torch_hardswish(
         frontend="torch",
         fn_tree="nn.functional.hardswish",
         input=np.asarray(input, dtype=input_dtype),
-      inplace=False,
+        inplace=False,
     )
     
 
