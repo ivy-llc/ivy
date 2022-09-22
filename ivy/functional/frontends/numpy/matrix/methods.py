@@ -9,6 +9,16 @@ class matrix:
     def __init__(self, data, dtype=None, copy=True):
         pass
 
+    def _init_data(self, data):
+        if isinstance(data, str):
+            pass
+        elif isinstance(data, list) or ivy.is_array(data):
+            data = ivy.array(data)
+            ivy.assertions.check_equal(len(ivy.shape(data)), 2)
+            self._data = data
+        else:
+            raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
+
     # Properties #
     # ---------- #
 
