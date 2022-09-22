@@ -23,6 +23,16 @@ def cumsum(input, dim, *, dtype=None, out=None):
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
+def trace(input):
+    if "int" in input.dtype:
+        input = input.astype("int64")
+    target_type = "int64" if "int" in input.dtype else input.dtype
+    return ivy.astype(ivy.trace(input), target_type)
+
+
+trace.unsupported_dtypes = ("float16",)
+
+
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
