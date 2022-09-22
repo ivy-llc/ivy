@@ -124,6 +124,6 @@ def test_numpy_tensorinv(dtype_and_x, as_variable, native_array, num_positional_
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.tensorinv",
-        a=np.array(x, dtype=dtype)
-     
+        a=np.array(x, dtype=dtype),
+        ind=2,
     )
