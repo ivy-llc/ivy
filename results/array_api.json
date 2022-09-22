@@ -28,7 +28,7 @@
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
             "set_functions": " ",
-            "signatures": "failure",
+            "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": "success",
@@ -54,7 +54,7 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": "failure",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
