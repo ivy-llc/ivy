@@ -1154,7 +1154,6 @@ def default_int_dtype(
 
     Returns
     -------
-
         Return the input int dtype if provided, otherwise return the global default
         int dtype.
 
