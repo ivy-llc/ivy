@@ -212,9 +212,6 @@ def asarray(
        be the default floating-point data type. Default  ``None``.
     device
        device on which to place the created array. Default: ``None``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------

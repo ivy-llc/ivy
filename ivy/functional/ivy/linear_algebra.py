@@ -633,7 +633,7 @@ def inv(
     /,
     *,
     adjoint: bool = False,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -864,11 +864,8 @@ def matrix_norm(
     ----------
     x
         Input array.
-    p
-        Order of the norm. Default is 2.
-    axes
-        The axes of x along which to compute the matrix norms.
-        Default is None, in which case the last two dimensions are used.
+    ord
+        Order of the norm. Default is "fro".
     keepdims
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
@@ -1280,9 +1277,6 @@ def svd(
         the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``
         and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.
         Default: ``True``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
