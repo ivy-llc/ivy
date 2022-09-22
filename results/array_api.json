@@ -5,7 +5,7 @@
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": " ",
+            "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
@@ -66,7 +66,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": "success",
-            "special_cases": "success",
+            "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
