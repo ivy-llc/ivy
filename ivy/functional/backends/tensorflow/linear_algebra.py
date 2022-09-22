@@ -121,13 +121,21 @@ def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = tf.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = tf.linalg.inv(x)
+            return ret
+        else:
+            cofactor = tf.transpose(tf.linalg.inv(x)) * tf.linalg.det(x)
+            inverse = tf.math.multiply(tf.math.divide(
+                1, tf.linalg.det(x)), tf.transpose(cofactor))
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
