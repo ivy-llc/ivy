@@ -32,7 +32,7 @@
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": " ",
-            "type_promotion": " ",
+            "type_promotion": "failure",
             "utility_functions": " "
       },
       "tensorflow": {
