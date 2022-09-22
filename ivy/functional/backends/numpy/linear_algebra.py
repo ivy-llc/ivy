@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 # local
 import ivy
@@ -32,10 +32,13 @@ def cross(
     x2: np.ndarray,
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.cross(a=x1, b=x2, axis=axis)
+    return np.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
 @_handle_0_dim_output
@@ -67,7 +70,9 @@ def eigh(
 eigh.unsupported_dtypes = ("float16",)
 
 
-def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def eigvalsh(
+    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
 
@@ -82,12 +87,24 @@ def inner(
     return np.inner(x1, x2)
 
 
-def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def inv(
+    x: np.ndarray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     if np.any(np.linalg.det(x.astype("float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = np.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = np.linalg.inv(x)
+            return ret
+        else:
+            cofactor = np.linalg.inv(x).T * np.linalg.det(x)
+            inverse = np.multiply(np.divide(1, np.linalg.det(x)), cofactor.T)
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -139,13 +156,7 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    singular_values = np.linalg.svd(x, compute_uv=False)
-    max_value = np.max(singular_values)
-    if rtol:
-        num = np.sum(singular_values > max_value * rtol)
-    else:
-        num = singular_values.size
-    return np.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
+    return np.linalg.matrix_rank(x, tol=rtol)
 
 
 matrix_rank.unsupported_dtypes = (
@@ -275,7 +286,7 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

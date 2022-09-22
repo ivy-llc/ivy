@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
 # local
@@ -38,10 +38,15 @@ def cross(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.cross(x1, x2, axis=axis)
+    return tf.experimental.numpy.cross(
+        x1, x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis
+    )
 
 
 def det(
@@ -100,9 +105,19 @@ def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    UPLO: Optional[str] = "L",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.linalg.eigvalsh(x)
+
+    if UPLO not in ("L", "U"):
+        raise ValueError("UPLO argument must be 'L' or 'U'")
+
+    if UPLO == "L":
+        return tf.linalg.eigh(x)
+    elif UPLO == "U":
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
+        return ret
 
 
 eigvalsh.unsupported_dtypes = (
@@ -136,13 +151,22 @@ def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = tf.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = tf.linalg.inv(x)
+            return ret
+        else:
+            cofactor = tf.transpose(tf.linalg.inv(x)) * tf.linalg.det(x)
+            inverse = tf.math.multiply(
+                tf.math.divide(1, tf.linalg.det(x)), tf.transpose(cofactor)
+            )
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -530,7 +554,7 @@ vecdot.supported_dtypes = ("bfloat16", "float16", "float32", "float64")
 
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,
