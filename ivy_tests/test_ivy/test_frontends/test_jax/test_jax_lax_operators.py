@@ -2113,6 +2113,7 @@ def test_jax_lax_erf(
         x=np.asarray(x, dtype=input_dtype),
     )
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -2147,5 +2148,5 @@ def test_jax_lax_shift_left(
         frontend="jax",
         fn_tree="lax.shift_left",
         x=np.asarray(x[0], dtype=input_dtype[0]),
-        y=np.asarray(x[1], dtype=input_dtype[1])
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )
