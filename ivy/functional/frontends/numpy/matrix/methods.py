@@ -53,10 +53,6 @@ class matrix:
     def A1(self):
         return ivy.reshape(self._data, (self.size,))
 
-    @property
-    def H():
-        pass
-
     # flake8: noqa: E743, E741
     @property
     def I(self):
