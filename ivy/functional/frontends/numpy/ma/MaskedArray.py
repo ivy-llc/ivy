@@ -28,7 +28,7 @@ class MaskedArray(np_frontend.ndarray):
         ndmin=0,
         fill_value=None,
         keep_mask=True,
-        hard_mask=False,  # TODO: assignments
+        hard_mask=False,
         shrink=True,
         subok=True,
         order=None,
