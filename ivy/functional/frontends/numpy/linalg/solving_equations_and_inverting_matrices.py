@@ -22,4 +22,7 @@ def pinv(a, rtol=1e-15, hermitian=False):
 
 # tensorinv
 def tensorinv(a, ind=2):
-    return ivy.tensorinv(a, )
+    ret = ivy.tensorinv(a, )
+    if reverse:
+        return ivy.tensordot(ret, b, axes=2)
+    return ret
