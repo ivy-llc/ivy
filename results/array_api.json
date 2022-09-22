@@ -5,7 +5,7 @@
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "failure",
+            "linalg": "success",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
@@ -67,7 +67,7 @@
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": " ",
             "utility_functions": " "
       }
