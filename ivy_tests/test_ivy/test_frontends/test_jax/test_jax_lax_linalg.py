@@ -83,6 +83,8 @@ def test_jax_lax_eigh(
 ):
     dtype, x = dtype_and_x
     x = np.array(x, dtype=dtype)
+    # make symmetric positive-definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[dtype],
