@@ -41,7 +41,7 @@
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": " ",
+            "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
