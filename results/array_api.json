@@ -5,7 +5,7 @@
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": " ",
+            "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
@@ -51,7 +51,7 @@
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "jax": {
             "array_object": " ",
@@ -60,7 +60,7 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": " ",
+            "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
