@@ -25,7 +25,7 @@
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
-            "operators_and_elementwise_functions": "failure",
+            "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
@@ -56,7 +56,7 @@
       "jax": {
             "array_object": " ",
             "constants": " ",
-            "creation_functions": " ",
+            "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": " ",
