@@ -616,7 +616,11 @@ def inner(
 @handle_nestable
 @handle_exceptions
 def inv(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -694,7 +698,7 @@ def inv(
     }
 
     """
-    return current_backend(x).inv(x, out=out)
+    return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
 
 @to_native_arrays_and_back

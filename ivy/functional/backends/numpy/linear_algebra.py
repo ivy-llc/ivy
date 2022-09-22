@@ -80,12 +80,18 @@ def inner(
     return np.inner(x1, x2)
 
 
-def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def inv(x: np.ndarray, /, *, adjoint: bool = False, out: Optional[np.ndarray] = None) -> np.ndarray:
     if np.any(np.linalg.det(x.astype("float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = np.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = np.linalg.inv(x)
+            return ret
+        else:
+            cofactor = np.linalg.inv(x).T * np.linalg.det(x)
+            inverse = np.multiply(np.divide(1, np.linalg.det(x)), cofactor.T)
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
