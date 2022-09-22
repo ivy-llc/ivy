@@ -1766,7 +1766,7 @@ def is_float_dtype(
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3, 4, 5]))
     >>> print(x.a.dtype, x.b.dtype)
-    float64 int64
+    float32 int32
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
