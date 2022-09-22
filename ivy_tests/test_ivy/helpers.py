@@ -3603,7 +3603,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             padding,
             output_shape,
         )
-    return dtype, vals, filters, dilations, data_format, strides, padding
+    return [dtype], vals, filters, dilations, data_format, strides, padding
 
 
 #      From array-api repo     #
