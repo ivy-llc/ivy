@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def _array_with_dtype_axis_keepdims_and_where(draw):
-    dtypes = draw(helpers.array_dtypes(num_arrays=1))
+    dtypes = draw(helpers.get_dtypes("numeric", full=False))
     shape = draw(
         helpers.get_shape(
             min_num_dims=1,
@@ -24,7 +24,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     x = draw(
         helpers.array_values(
             shape=shape,
-            dtype=dtypes[0],
+            dtype=dtypes,
         )
     )
     where_shape_length = draw(helpers.ints(min_value=0, max_value=len(shape)))
@@ -57,7 +57,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     else:
         where = draw(st.booleans())
     keepdims = draw(st.booleans())
-    return x, dtypes[0], axis, keepdims, where
+    return x, [dtypes], axis, keepdims, where
 
 
 # argmax
@@ -65,9 +65,8 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
+        min_num_dims=1,
+        min_dim_size=1,
         valid_axis=True,
         force_int_axis=True,
         allow_neg_axes=False,
@@ -75,6 +74,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.argmax"
     ),
+    keep_dims=st.booleans(),
 )
 def test_numpy_argmax(
     dtype_x_axis,
@@ -83,12 +83,13 @@ def test_numpy_argmax(
     num_positional_args,
     native_array,
     fw,
+    keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
     input_dtype = [input_dtype]
-    helpers.test_frontend_function(
+    np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -97,21 +98,21 @@ def test_numpy_argmax(
         fw=fw,
         frontend="numpy",
         fn_tree="argmax",
-        self=np.asarray(x, dtype=input_dtype[0]),
+        a=np.asarray(x, dtype=input_dtype[0]),
         axis=axis,
         out=None,
+        keepdims=keep_dims,
+        test_values=False,
     )
 
 
 # any
+@handle_cmd_line_args
 @given(
     x_dtype_axis_keepdims_where=_array_with_dtype_axis_keepdims_and_where(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.any"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_any(
     x_dtype_axis_keepdims_where,

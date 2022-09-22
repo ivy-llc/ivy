@@ -1,18 +1,21 @@
 """Collection of general Ivy functions."""
 
-# global
-from functools import wraps
 import gc
 import inspect
 import math
+
+# global
+from functools import wraps
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
+
 import einops
 import numpy as np
 
 # local
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
@@ -22,7 +25,6 @@ from ivy.func_wrapper import (
     handle_nestable,
 )
 from ivy.functional.ivy.device import dev
-from ivy.exceptions import handle_exceptions
 
 FN_CACHE = dict()
 INF = float("inf")
@@ -1016,7 +1018,7 @@ def clip_vector_norm(
     *,
     p: float = 2.0,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Clips (limits) the vector p-norm of an array.
 
     Parameters
@@ -1126,7 +1128,7 @@ def clip_matrix_norm(
     *,
     p: float = 2.0,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Clips (limits) the matrix norm of an array.
 
     Parameters
@@ -1987,6 +1989,9 @@ def einops_reduce(
     return ret
 
 
+einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
+
+
 @handle_nestable
 @handle_exceptions
 def einops_repeat(
@@ -2234,7 +2239,6 @@ def stable_divide(
         b: ivy.array([0.857, 10.])
     }
     """
-    # noinspection PyProtectedMember
     return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
 
 
@@ -2267,7 +2271,6 @@ def stable_pow(
 
 
     """
-    # noinspection PyProtectedMember
     return (base + default(min_base, ivy._MIN_BASE)) ** exponent
 
 
@@ -2276,7 +2279,6 @@ def get_all_arrays_in_memory():
     """Gets all arrays which are currently alive."""
     all_arrays = list()
     for obj in gc.get_objects():
-        # noinspection PyBroadException
         try:
             if ivy.is_native_array(obj):
                 all_arrays.append(obj)
@@ -2464,7 +2466,7 @@ def inplace_variables_supported(f=None):
 @handle_nestable
 @handle_exceptions
 def supports_inplace_updates(
-    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
+    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray]
 ) -> bool:
     """
     Determines whether in-place operations are supported for x's data type,
@@ -2485,8 +2487,8 @@ def supports_inplace_updates(
     Raises
     ------
     ValueError
-        If x isn't a class instance of ivy.Variable, ivy.Array,
-        or ivy.NativeArray, an exception will be raised.
+        If x isn't a class instance of ivy.Array or ivy.NativeArray, an exception will
+        be raised.
 
     This function is *nestable*, and therefore also accepts :code:'ivy.Container'
     instance in place of the argument.
@@ -2503,12 +2505,6 @@ def supports_inplace_updates(
     >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
     True
-
-    With :code:'ivy.Variable' input and backend set as 'jax':
-    >>> x = ivy.variable(ivy.array(5.5))
-    >>> ret = ivy.supports_inplace_updates(x)
-    >>> print(ret)
-    False
 
     With :code:'ivy.Container' input and backend set as 'torch':
     >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
@@ -2556,7 +2552,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray]) -> bool:
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     query: Union[ivy.Array, ivy.NativeArray],
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].
 
@@ -2893,8 +2889,8 @@ def gather(
     /,
     *,
     axis: int = -1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Gather slices from params at axis according to indices.
 
     Parameters
@@ -2987,7 +2983,7 @@ def gather_nd(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Gather slices from params into a array with shape specified by indices.
 
     Parameters
@@ -3317,17 +3313,24 @@ def _get_devices_and_dtypes(fn, complement=True):
     for device in supported_devices:
         supported[device] = supported_dtypes
 
-    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             all_comb = _all_dnd_combinations()
             supported = _dnd_dict_difference(all_comb, supported)
         return supported
 
+    backend = ivy.current_backend_str()
+
     # Their values are formatted like either
     # 1. fn.supported_device_and_dtype = {"cpu":("float16",)}
-
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
+
+        if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
+            fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
         ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
         # dict intersection
@@ -3335,6 +3338,9 @@ def _get_devices_and_dtypes(fn, complement=True):
 
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
+
+        if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
+            fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
         ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
         # dict difference
