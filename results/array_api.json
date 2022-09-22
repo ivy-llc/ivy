@@ -10,8 +10,8 @@
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": "success",
-            "signatures": " ",
-            "sorting_functions": "success",
+            "signatures": "failure",
+            "sorting_functions": " ",
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": "failure",
@@ -54,7 +54,7 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": " ",
+            "array_object": "failure",
             "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
