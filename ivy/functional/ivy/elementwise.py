@@ -5907,3 +5907,17 @@ def trunc_divide(
 
     """
     return ivy.trunc(ivy.divide(x1, x2, out=out))
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def isreal(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    return ivy.current_backend(x).isreal(x, out=out)
