@@ -5,9 +5,9 @@ iinfo
 
 .. autofunction:: ivy.array.array_methods.iinfo
 
-.. autofunction:: ivy.container.container_methods.iinfo
-
 .. autofunction:: ivy.container.container_methods.static_iinfo
+
+.. autofunction:: ivy.container.container_methods.iinfo
 |
 | **Supported Frameworks:**
 
