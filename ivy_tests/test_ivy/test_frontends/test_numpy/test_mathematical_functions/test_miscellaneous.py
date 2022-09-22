@@ -30,19 +30,18 @@ def test_numpy_clip(
     native_array,
     fw,
 ):
-    (x_dtype, min_dtype, max_dtype), (x_list, min_val_list, max_val_list) = x_min_n_max
+    input_dtypes, (x_list, min_val_list, max_val_list) = x_min_n_max
     # ToDo should generate the data so we don't have to use assume here
     # same that is done in JAX clamp
-    assume(np.all(np.less(np.asarray(min_val_list), np.asarray(max_val_list))))
-    input_dtype = [x_dtype]
+    assume(np.all(np.less(np.asarray(min_val_list[0]), np.asarray(max_val_list[0]))))
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -50,7 +49,7 @@ def test_numpy_clip(
         fw=fw,
         frontend="numpy",
         fn_tree="clip",
-        x=np.asarray(x_list, dtype=input_dtype[0]),
+        x=x_list,
         a_min=min_val_list,
         a_max=max_val_list,
         out=None,
@@ -85,7 +84,6 @@ def test_numpy_cbrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -101,7 +99,7 @@ def test_numpy_cbrt(
         fw=fw,
         frontend="numpy",
         fn_tree="cbrt",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -134,7 +132,6 @@ def test_numpy_sqrt(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -150,7 +147,7 @@ def test_numpy_sqrt(
         fw=fw,
         frontend="numpy",
         fn_tree="sqrt",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -183,7 +180,6 @@ def test_numpy_square(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
@@ -199,7 +195,7 @@ def test_numpy_square(
         fw=fw,
         frontend="numpy",
         fn_tree="square",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -239,7 +235,7 @@ def test_numpy_absolute(
         fw=fw,
         frontend="numpy",
         fn_tree="absolute",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -279,7 +275,7 @@ def test_numpy_fabs(
         fw=fw,
         frontend="numpy",
         fn_tree="fabs",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         out=None,
         where=where,
         casting="same_kind",
@@ -313,16 +309,15 @@ def test_numpy_heaviside(
     native_array,
     fw,
 ):
-    (x1_dtype, x2_dtype), (x1_list, x2_list) = x1_x2
-    input_dtype = [x1_dtype, x2_dtype]
+    input_dtypes, (x1_list, x2_list) = x1_x2
     where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -330,8 +325,8 @@ def test_numpy_heaviside(
         fw=fw,
         frontend="numpy",
         fn_tree="heaviside",
-        x1=np.asarray(x1_list, dtype=input_dtype[0]),
-        x2=np.asarray(x2_list, dtype=input_dtype[0]),
+        x1=x1_list,
+        x2=x2_list,
         out=None,
         where=where,
         casting="same_kind",
