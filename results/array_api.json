@@ -62,13 +62,13 @@
             "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
-            "searching_functions": " ",
+            "searching_functions": "success",
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": " ",
-            "utility_functions": "success"
+            "utility_functions": " "
       }
 }
