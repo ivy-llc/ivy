@@ -93,16 +93,16 @@ def test_jax_lax_eigh(
         fw=fw,
         frontend="jax",
         fn_tree="lax.linalg.eigh",
-        rtol=1e-02,
         test_values=False,
         x=x,
         lower=lower,
         symmetrize_input=symmetrize_input,
     )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
     Q, L = ret
-    Q, L = ivy.to_numpy(Q), ivy.to_numpy(L)
     frontend_Q, frontend_L = frontend_ret
-    frontend_Q, frontend_L = np.asarray(frontend_Q), np.asarray(frontend_L)
 
     assert_all_close(
         ret_np=Q @ np.diag(L) @ Q.T,
