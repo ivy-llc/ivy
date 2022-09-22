@@ -60,7 +60,7 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": " ",
+            "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
