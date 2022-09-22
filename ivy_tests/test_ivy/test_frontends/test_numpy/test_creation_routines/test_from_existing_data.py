@@ -1,9 +1,11 @@
 # global
 from hypothesis import given
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+
 
 @handle_cmd_line_args
 @given(
@@ -15,12 +17,15 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="ivy.functional.frontends.numpy.asarray"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.asarray"
+    ),
 )
 def test_numpy_asarray(
     dtype_and_a,
     as_variable,
     num_positional_args,
+    native_array,
     fw,
 ):
     dtype, a = dtype_and_a
@@ -28,7 +33,7 @@ def test_numpy_asarray(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         with_out=False,
         fw=fw,
         frontend="numpy",
