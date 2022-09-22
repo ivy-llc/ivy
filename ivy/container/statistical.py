@@ -144,8 +144,9 @@ class ContainerWithStatistical(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([0., -1., 1.]), b=ivy.array([1., 1., 1.]))
-        >>> ivy.mean(x, out=x)
-        >>> print(x)
+        >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
+        >>> ivy.mean(x, out=y)
+        >>> print(y)
         {
             a: ivy.array(0.),
             b: ivy.array(1.)
