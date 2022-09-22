@@ -506,7 +506,7 @@ def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    UPLO="L",
+    UPLO: Optional[str] = "L",
     out: Optional[ivy.Array] = None,
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of

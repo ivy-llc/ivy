@@ -68,7 +68,7 @@ def diagonal(
 
 
 def eigh(
-    x: JaxArray, /, *, UPLO: Optional[str] = None, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.linalg.eigh(x, UPLO=UPLO)
 

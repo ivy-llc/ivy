@@ -78,7 +78,7 @@ def diagonal(
 
 
 def eigh(
-    x: torch.Tensor, /, UPLO: Optional[str] = "L", *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigh(x, UPLO=UPLO, out=out)
 
