@@ -13,7 +13,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": "failure",
             "utility_functions": " "
       },
@@ -54,7 +54,7 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": " ",
+            "array_object": "failure",
             "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
