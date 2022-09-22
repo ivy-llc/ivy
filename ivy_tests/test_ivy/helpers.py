@@ -539,10 +539,11 @@ def assert_all_close(
 
 def assert_same_type_and_shape(values, this_key_chain=None):
     x, y = values
-    assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
     if isinstance(x, np.ndarray):
+        x_dtype = str(x.dtype)
+        y_dtype = str(y.dtype).replace("longlong", "int64")
         assert x.shape == y.shape, "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
-        assert x.dtype == y.dtype, "x.dtype = {}, y.dtype = {}".format(x.dtype, y.dtype)
+        assert x_dtype == y_dtype, "x.dtype = {}, y.dtype = {}".format(x_dtype, y_dtype)
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
@@ -649,6 +650,8 @@ def value_test(
     -------
     None if the value test passes, else marks the test as failed.
     """
+    assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
+
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:
@@ -1036,7 +1039,7 @@ def test_method(
         data types of the input arguments to the constructor in order.
     as_variable_flags_init
         dictates whether the corresponding input argument passed to the constructor
-        should be treated as an ivy.Variable.
+        should be treated as an ivy.Array.
     num_positional_args_init
         number of input arguments that must be passed as positional arguments to the
         constructor.
@@ -1049,7 +1052,7 @@ def test_method(
         data types of the input arguments to the method in order.
     as_variable_flags_method
         dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy.Variable.
+        be treated as an ivy.Array.
     num_positional_args_method
         number of input arguments that must be passed as positional arguments to the
         method.
