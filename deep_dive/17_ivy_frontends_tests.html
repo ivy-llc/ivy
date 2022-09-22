@@ -115,19 +115,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -205,7 +205,9 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 <span class="c1">#tan</span>
 <span class="nd">@handle_cmd_line_args</span>
 <span class="nd">@given</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">ivy_jax</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">),</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+    <span class="p">),</span>
     <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
         <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.jax.lax.tan&quot;</span>
     <span class="p">)</span>
@@ -218,7 +220,6 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
     <span class="n">fw</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
-
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
         <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
@@ -249,15 +250,14 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 <span class="c1">#tan</span>
 <span class="nd">@handle_cmd_line_args</span>
 <span class="nd">@given</span><span class="p">(</span>
-<span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">),</span>
-<span class="n">dtype</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)),</span>
-<span class="n">where</span><span class="o">=</span><span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">where</span><span class="p">(),</span>
-<span class="n">as_variable</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_bools</span><span class="p">(),</span>
-<span class="n">with_out</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
-<span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-    <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.tan&quot;</span>
-<span class="p">),</span>
-<span class="n">native_array</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">array_bools</span><span class="p">(),</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">where</span><span class="o">=</span><span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">where</span><span class="p">(),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.tan&quot;</span>
+    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_numpy_tan</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="p">,</span>
@@ -311,12 +311,10 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 <span class="c1">#tan</span>
 <span class="nd">@handle_cmd_line_args</span>
 <span class="nd">@given</span><span class="p">(</span>
-<span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">ivy_tf</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">),</span>
-<span class="n">as_variable</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
-<span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-    <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.tensorflow.tan&quot;</span>
-<span class="p">),</span>
-<span class="n">native_array</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.tensorflow.tan&quot;</span>
+    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_tensorflow_tan</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="p">,</span> <span class="n">as_variable</span><span class="p">,</span> <span class="n">num_positional_args</span><span class="p">,</span> <span class="n">native_array</span><span class="p">,</span> <span class="n">fw</span>
@@ -344,19 +342,12 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 <span class="c1">#tan</span>
 <span class="nd">@handle_cmd_line_args</span>
 <span class="nd">@given</span><span class="p">(</span>
-<span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
-    <span class="n">available_dtypes</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span>
-        <span class="nb">set</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">ivy_torch</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="p">)</span>
-<span class="p">),</span>
-<span class="n">as_variable</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
-<span class="n">with_out</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
-<span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-    <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;functional.frontends.torch.tan&quot;</span>
-<span class="p">),</span>
-<span class="n">native_array</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
+        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;functional.frontends.torch.tan&quot;</span>
+    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_torch_tan</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="p">,</span>
