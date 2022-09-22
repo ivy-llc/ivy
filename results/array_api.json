@@ -37,7 +37,7 @@
       },
       "tensorflow": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
@@ -57,7 +57,7 @@
             "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": " ",
             "manipulation_functions": " ",
@@ -66,7 +66,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": "success",
-            "special_cases": " ",
+            "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
