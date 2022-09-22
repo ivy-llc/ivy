@@ -1,0 +1,26 @@
+{
+      "numpy": {
+            "activations": " ",
+            "layers": " ",
+            "losses": " ",
+            "norms": " "
+      },
+      "torch": {
+            "activations": " ",
+            "layers": " ",
+            "losses": " ",
+            "norms": " "
+      },
+      "tensorflow": {
+            "activations": " ",
+            "layers": " ",
+            "losses": " ",
+            "norms": " "
+      },
+      "jax": {
+            "activations": " ",
+            "layers": " ",
+            "losses": " ",
+            "norms": " "
+      }
+}

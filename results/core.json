@@ -1,0 +1,62 @@
+{
+      "numpy": {
+            "creation": " ",
+            "device": " ",
+            "dtype": " ",
+            "elementwise": " ",
+            "general": " ",
+            "linalg": " ",
+            "manipulation": " ",
+            "meta": " ",
+            "nest": " ",
+            "random": " ",
+            "searching": " ",
+            "statistical": " ",
+            "utility": " "
+      },
+      "torch": {
+            "creation": " ",
+            "device": " ",
+            "dtype": " ",
+            "elementwise": " ",
+            "general": " ",
+            "linalg": " ",
+            "manipulation": " ",
+            "meta": " ",
+            "nest": " ",
+            "random": " ",
+            "searching": " ",
+            "statistical": " ",
+            "utility": " "
+      },
+      "tensorflow": {
+            "creation": " ",
+            "device": " ",
+            "dtype": " ",
+            "elementwise": " ",
+            "general": " ",
+            "linalg": " ",
+            "manipulation": " ",
+            "meta": " ",
+            "nest": " ",
+            "random": " ",
+            "searching": " ",
+            "statistical": " ",
+            "utility": " "
+      },
+      "jax": {
+            "creation": " ",
+            "device": " ",
+            "dtype": " ",
+            "elementwise": " ",
+            "general": " ",
+            "linalg": " ",
+            "manipulation": " ",
+            "meta": " ",
+            "nest": " ",
+            "random": " ",
+            "searching": " ",
+            "statistical": " ",
+            "utility": " "
+      }
+}

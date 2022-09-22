@@ -1,0 +1,42 @@
+{
+      "numpy": {
+            "activations": " ",
+            "converters": " ",
+            "initializers": " ",
+            "layers": " ",
+            "modules": " ",
+            "norms": " ",
+            "optmizers": " ",
+            "sequential": " "
+      },
+      "torch": {
+            "activations": " ",
+            "converters": " ",
+            "initializers": " ",
+            "layers": " ",
+            "modules": " ",
+            "norms": " ",
+            "optmizers": " ",
+            "sequential": " "
+      },
+      "tensorflow": {
+            "activations": " ",
+            "converters": " ",
+            "initializers": " ",
+            "layers": " ",
+            "modules": " ",
+            "norms": " ",
+            "optmizers": " ",
+            "sequential": " "
+      },
+      "jax": {
+            "activations": " ",
+            "converters": " ",
+            "initializers": " ",
+            "layers": " ",
+            "modules": " ",
+            "norms": " ",
+            "optmizers": " ",
+            "sequential": " "
+      }
+}
