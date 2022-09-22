@@ -125,11 +125,6 @@ class MaskedArray(np_frontend.ndarray):
 
     # TODO (read-only)
     @property
-    def baseclass(self):
-        pass
-
-    # TODO (read-only)
-    @property
     def sharedmask(self):
         pass
 
