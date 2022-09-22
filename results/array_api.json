@@ -13,9 +13,9 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "torch": {
             "array_object": " ",
