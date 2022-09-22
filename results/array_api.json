@@ -5,7 +5,7 @@
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "failure",
+            "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
@@ -25,7 +25,7 @@
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
-            "operators_and_elementwise_functions": " ",
+            "operators_and_elementwise_functions": "failure",
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
@@ -67,7 +67,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": " ",
             "utility_functions": " "
       }
