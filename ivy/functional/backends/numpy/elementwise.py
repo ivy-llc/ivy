@@ -737,3 +737,11 @@ def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 
 rad2deg.support_native_out = True
+
+
+@_handle_0_dim_output
+def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.isreal(x)
+
+
+isreal.support_native_out = False
