@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 # local
 import ivy
@@ -138,7 +138,7 @@ def matrix_rank(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     singular_values = np.linalg.svd(x, compute_uv=False)
-    max_value = np.max(singular_values)
+    max_value = np.max(singular_values, initial=0)
     if rtol:
         num = np.sum(singular_values > max_value * rtol)
     else:
@@ -273,7 +273,7 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

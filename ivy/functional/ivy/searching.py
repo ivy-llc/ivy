@@ -443,7 +443,7 @@ def argwhere(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns indices the indices of all non-zero elements of the input array.
 
     Parameters

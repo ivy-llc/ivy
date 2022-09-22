@@ -3090,7 +3090,7 @@ class ContainerWithGeneral(ContainerBase):
             "stable_divide",
             numerator,
             denominator,
-            min_denominator,
+            min_denominator=min_denominator,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
