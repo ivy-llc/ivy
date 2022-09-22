@@ -6,10 +6,10 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": " ",
-            "manipulation_functions": " ",
+            "manipulation_functions": "success",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
-            "set_functions": " ",
+            "set_functions": "success",
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
@@ -67,7 +67,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": "success",
+            "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
       }
