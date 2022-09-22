@@ -50,8 +50,8 @@ class matrix:
         return self._data
 
     @property
-    def A1():
-        pass
+    def A1(self):
+        return ivy.reshape(self._data, (self.size,))
 
     @property
     def H():
