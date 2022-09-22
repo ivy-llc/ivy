@@ -1,14 +1,14 @@
 {
       "numpy": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
-            "searching_functions": " ",
+            "searching_functions": "success",
             "set_functions": "success",
             "signatures": " ",
             "sorting_functions": " ",
