@@ -522,7 +522,7 @@ def test_torch_flatten(
     dtype_and_values=helpers.dtype_and_values(
         # Min_num_dims is 2 to prevent a Torch crash.
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-        # Setting available types to valid allows Bool
+        # Setting available types to valid allows Bool and integer types
         # which causes a Torch crash.
         available_dtypes=helpers.get_dtypes("float"),
         max_value=1e4,
@@ -538,7 +538,7 @@ def test_torch_flatten(
         max_value=5,
     ),  # Non-positive norms aren't supported in backends.
     # Small positive norms cause issues due to finite-precision.
-    maxnorm=st.floats(min_value=0),  # Norms are positive semidefinite
+    maxnorm=st.floats(min_value=0),  # Norms are positive semi-definite
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.renorm"
     ),
@@ -555,7 +555,6 @@ def test_torch_renorm(
     fw,
 ):
     dtype, values = dtype_and_values
-    assume("float16" not in dtype)
     values = np.asarray(values, dtype=dtype)
 
     helpers.test_frontend_function(
