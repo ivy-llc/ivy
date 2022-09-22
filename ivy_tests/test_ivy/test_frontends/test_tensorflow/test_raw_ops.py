@@ -1063,12 +1063,13 @@ def test_tensorflow_zeros_like(
         x=np.asarray(x, dtype=dtype),
     )
 
+
 # Relu
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"),
-                                         min_num_dims=10,
-                                         max_num_dims=20),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=10, max_num_dims=20
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.raw_ops.Relu"
     ),
