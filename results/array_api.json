@@ -7,7 +7,7 @@
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": " ",
-            "operators_and_elementwise_functions": "failure",
+            "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": "success",
             "signatures": "failure",
@@ -18,7 +18,7 @@
             "utility_functions": " "
       },
       "torch": {
-            "array_object": " ",
+            "array_object": "success",
             "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
