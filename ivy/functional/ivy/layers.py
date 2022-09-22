@@ -114,6 +114,8 @@ def dropout(
         The probability of zeroing out each array element.
     scale
         Whether to scale the output by 1/(1-prob), default is True.
+    dtype
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -124,7 +126,6 @@ def dropout(
         Result array of the linear transformation. *[N,∗,out_features]*
 
     """
-    # noinspection PyUnresolvedReferences
     x = ivy.where(
         ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
         ivy.zeros_like(x),
