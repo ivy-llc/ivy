@@ -8,7 +8,7 @@
             "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
-            "searching_functions": "success",
+            "searching_functions": " ",
             "set_functions": "success",
             "signatures": " ",
             "sorting_functions": " ",
@@ -69,6 +69,6 @@
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": " ",
-            "utility_functions": " "
+            "utility_functions": "success"
       }
 }
