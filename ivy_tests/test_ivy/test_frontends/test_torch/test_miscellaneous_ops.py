@@ -306,6 +306,42 @@ def test_torch_cumprod(
     )
 
 
+# trace
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.trace"
+    ),
+)
+def test_torch_trace(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    fw,
+):
+    dtype, value = dtype_and_values
+
+    value = np.asarray(value, dtype=dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="trace",
+        input=value,
+    )
+
+
 @handle_cmd_line_args
 @given(
     row=st.integers(min_value=0, max_value=10),

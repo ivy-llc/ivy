@@ -267,6 +267,7 @@ def add(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
@@ -318,6 +319,8 @@ def add(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have a numeric data type.
+    aplha
+        optional scalar multiplier for ``x2``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -346,6 +349,12 @@ def add(
     >>> print(z)
     ivy.array([5, 7, 9])
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.add(x, y, alpha=2)
+    >>> print(z)
+    ivy.array([9, 12, 15])
+
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.array([[4.8], [5.2], [6.1]])
     >>> z = ivy.zeros((3, 3))
@@ -363,36 +372,8 @@ def add(
                 [5.7],
                 [-4.7]]])
 
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([5, 6, 7]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[5.1, 6.3, 0.4],
-                      [6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4]]),
-        b: ivy.array([[6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4],
-                      [8.1, 9.3, 3.4]])
-    }
     """
-    return ivy.current_backend(x1, x2).add(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).add(x1, x2, alpha=alpha, out=out)
 
 
 @to_native_arrays_and_back
@@ -5203,6 +5184,7 @@ def subtract(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
@@ -5215,6 +5197,8 @@ def subtract(
     x2
         second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
         Should have a numeric data type.
+    alpha
+        optional scalar multiplier for ``x2``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5223,7 +5207,6 @@ def subtract(
     -------
     ret
         an array containing the element-wise differences.
-
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -5236,60 +5219,20 @@ def subtract(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
+    >>> x = ivy.array([3, 6, 3])
+    >>> y = ivy.array([2, 1, 6])
     >>> z = ivy.subtract(x, y)
     >>> print(z)
-    ivy.array([-3, -3, -3])
+    ivy.array([ 1,  5, -3])
 
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.array([[4.8], [5.2], [6.1]])
-    >>> z = ivy.zeros((3, 3))
-    >>> ivy.subtract(x, y, out=z)
+    >>> x = ivy.array([3, 6, 3])
+    >>> y = ivy.array([2, 1, 6])
+    >>> z = ivy.subtract(x, y, alpha=2)
     >>> print(z)
-    ivy.array([[-3.7, -2.5, -8.4],
-               [-4.1, -2.9, -8.8],
-               [-5. , -3.8, -9.7]])
+    ivy.array([-1,  4, -9])
 
-    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
-    >>> y = ivy.array([[8.4], [2.5], [1.6]])
-    >>> ivy.subtract(x, y, out=x)
-    >>> print(x)
-    ivy.array([[[-7.3],
-                [ 0.7],
-                [-7.9]]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                          b=ivy.array([4, 3, 2]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([6, 5, 4]))
-    >>> z = ivy.subtract(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([-3, -3, -3]),
-        b: ivy.array([-2, -2, -2])
-    }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.subtract(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[-2.9, -1.7, -7.6], 
-                      [-3.9, -2.7, -8.6], 
-                      [-4.9, -3.7, -9.6]]),
-        b: ivy.array([[-3.9, -2.7, -8.6], 
-                      [-4.9, -3.7, -9.6], 
-                      [-5.9, -4.7, -10.6]])
-    }
     """
-    return ivy.current_backend(x1, x2).subtract(x1, x2, out=out)
+    return ivy.current_backend(x1).subtract(x1, x2, alpha=alpha, out=out)
 
 
 @to_native_arrays_and_back
@@ -5522,7 +5465,7 @@ def erf(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Computes the Gauss error function of ``x`` element-wise.
 
     Parameters
@@ -5552,7 +5495,7 @@ def maximum(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
     Parameters
@@ -5646,7 +5589,7 @@ def minimum(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
     Parameters

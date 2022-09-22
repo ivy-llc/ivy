@@ -136,10 +136,12 @@ def test_acos(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
+    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_add(
     *,
     dtype_and_x,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -162,6 +164,7 @@ def test_add(
         fn_name="add",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
+        alpha=alpha,
     )
 
 
@@ -1651,10 +1654,12 @@ def test_positive(
 
 
 @st.composite
-def _pow_helper(draw):
+def pow_helper(draw, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
     dtype1, x1 = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=available_dtypes,
             small_abs_safety_factor=4,
             large_abs_safety_factor=4,
         )
@@ -1667,9 +1672,9 @@ def _pow_helper(draw):
         return False
 
     dtype1, x1, dtype2 = draw(
-        helpers.get_castable_dtype(
-            draw(helpers.get_dtypes("numeric")), dtype1, x1
-        ).filter(cast_filter)
+        helpers.get_castable_dtype(draw(available_dtypes), dtype1, x1).filter(
+            cast_filter
+        )
     )
     if ivy.is_int_dtype(dtype2):
         max_val = ivy.iinfo(dtype2).max
@@ -1699,7 +1704,7 @@ def _pow_helper(draw):
 # pow
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_pow_helper(),
+    dtype_and_x=pow_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="pow"),
 )
 def test_pow(
@@ -2015,10 +2020,12 @@ def test_sqrt(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
+    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_subtract(
     *,
     dtype_and_x,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -2041,6 +2048,7 @@ def test_subtract(
         fn_name="subtract",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
+        alpha=alpha,
     )
 
 
