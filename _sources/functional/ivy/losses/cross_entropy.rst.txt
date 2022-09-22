@@ -5,9 +5,9 @@ cross_entropy
 
 .. autofunction:: ivy.array.array_methods.cross_entropy
 
-.. autofunction:: ivy.container.container_methods.cross_entropy
-
 .. autofunction:: ivy.container.container_methods.static_cross_entropy
+
+.. autofunction:: ivy.container.container_methods.cross_entropy
 |
 | **Supported Frameworks:**
 
