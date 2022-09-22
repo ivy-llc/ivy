@@ -21,7 +21,7 @@
             "array_object": " ",
             "constants": " ",
             "creation_functions": " ",
-            "data_type_functions": " ",
+            "data_type_functions": "success",
             "has_names": " ",
             "linalg": " ",
             "manipulation_functions": " ",
@@ -49,7 +49,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": "failure",
+            "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
       },
