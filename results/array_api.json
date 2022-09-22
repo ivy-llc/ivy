@@ -18,7 +18,7 @@
             "utility_functions": " "
       },
       "torch": {
-            "array_object": "success",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
@@ -36,7 +36,7 @@
             "utility_functions": "success"
       },
       "tensorflow": {
-            "array_object": "success",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
@@ -51,7 +51,7 @@
             "special_cases": " ",
             "statistical_functions": "failure",
             "type_promotion": "failure",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "jax": {
             "array_object": "failure",
