@@ -246,22 +246,18 @@ def test_torch_cartesian_prod(
     fw,
 ):
     dtypes, tensors = dtype_and_tensors
-
     if isinstance(dtypes, list):  # If more than one value was generated
         args = {
             f"x{i}": np.array(tensor, dtype=dtypes[i])
             for i, tensor in enumerate(tensors)
         }
-
     else:  # If exactly one value was generated
         args = {"x0": np.array(tensors, dtype=dtypes)}
-
     num_positional_args = len(tensors)
-
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
