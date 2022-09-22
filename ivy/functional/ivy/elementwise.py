@@ -5919,5 +5919,30 @@ def isreal(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    """Tests each element ``x_i`` of the input array ``x`` to determine whether the
+    element is real number.
+    Returns a bool array, where True if input element is real.
+    If element has complex type with zero complex part, the return value
+    for that element is True.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is
+        real number and ``False`` otherwise. The returned array should have a data type
+        of ``bool``.
+
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :code:`ivy.Container` instances in place of
+    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below."""
 
     return ivy.current_backend(x).isreal(x, out=out)
