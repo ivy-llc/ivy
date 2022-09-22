@@ -55,13 +55,13 @@ class MaskedArray(np_frontend.ndarray):
             )
             self._init_mask(mask)
             if keep_mask:
-                # TODO: check! change to check size
-                try:
-                    self._mask = ivy.bitwise_or(self._mask, data.mask)
-                except Exception:
-                    raise ivy.exceptions.IvyException(
-                        "mask shape of the input data does not match the new mask"
+                if not isinstance(data.mask, bool):
+                    ivy.assertions.check_equal(
+                        ivy.shape(self._mask),
+                        ivy.shape(data.mask),
+                        message="shapes of input mask does not match current mask",
                     )
+                self._mask = ivy.bitwise_or(self._mask, data.mask)
         else:
             self._data = (
                 ivy.array(data, dtype=dtype) if ivy.exists(dtype) else ivy.array(data)
