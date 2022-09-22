@@ -31,16 +31,27 @@ cholesky.unsupported_dtypes = (
 
 
 def cross(
-    x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.cross(a=x1, b=x2, axis=axis)
+    return jnp.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
 def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def diagonal(
@@ -64,18 +75,28 @@ def diagonal(
     return ret
 
 
-def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigh(x)
+def eigh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigh(x, UPLO=UPLO)
 
 
-eigh.unsupported_dtypes = ("float16",)
+eigh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
-def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigvalsh(x)
+def eigvalsh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -83,12 +104,24 @@ def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.inner(x1, x2)
 
 
-def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def inv(
+    x: JaxArray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = jnp.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = jnp.linalg.inv(x)
+            return ret
+        else:
+            cofactor = jnp.linalg.inv(x).T * jnp.linalg.det(x)
+            inverse = jnp.multiply(jnp.divide(1, jnp.linalg.det(x)), cofactor.T)
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -138,18 +171,19 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if x.size == 0:
-        ret = 0
-    elif x.size == 1:
-        ret = jnp.count_nonzero(x)
+    singular_values = jnp.linalg.svd(x, compute_uv=False)
+    max_value = jnp.max(singular_values)
+    if rtol:
+        num = jnp.sum(singular_values > max_value * rtol)
     else:
-        if x.ndim > 2:
-            x = x.reshape([-1])
-        ret = jnp.linalg.matrix_rank(x, rtol)
-    return jnp.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
+        num = singular_values.size
+    return jnp.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
 
 
-matrix_rank.unsupported_dtypes = ("float16",)
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -190,7 +224,10 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     return res(q, r)
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
@@ -234,7 +271,10 @@ def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.asarray(ret, dtype=x1.dtype)
 
 
-solve.unsupported_dtypes = ("float16",)
+solve.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def svd(
@@ -291,7 +331,7 @@ def vector_norm(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[JaxArray] = None,

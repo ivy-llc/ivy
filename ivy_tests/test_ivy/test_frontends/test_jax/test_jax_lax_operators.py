@@ -1527,20 +1527,29 @@ def test_jax_lax_cos(
 
 @st.composite
 def _same_dims_min_x_max(draw):
-    dtypes, xs, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            num_arrays=2,
-            shared_dtype=True,
-            ret_shape=True,
-            min_value=0,
-            max_value=10,
+    dtype = draw(helpers.get_dtypes("numeric", full=False))
+    bound = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=(),
+            large_abs_safety_factor=1.5,
+            small_abs_safety_factor=1.5,
+            safety_factor_scale="log",
         )
     )
-    max_val = draw(
-        helpers.array_values(dtype=dtypes[0], shape=shape, min_value=11, max_value=20)
-    )  # TODO remove hardcoded values.
-    return ([dtypes[0]] * 3), (xs[0], xs[1], max_val)
+    _, x, shape = draw(
+        helpers.dtype_and_values(
+            dtype=[dtype],
+            ret_shape=True,
+        )
+    )
+    min_val = draw(
+        helpers.array_values(
+            dtype=dtype, shape=shape, max_value=bound, exclude_max=False
+        )
+    )
+    max_val = draw(helpers.array_values(dtype=dtype, shape=shape, min_value=bound))
+    return ((dtype,) * 3), (x, min_val, max_val)
 
 
 @st.composite
@@ -1551,11 +1560,16 @@ def _basic_min_x_max(draw):
         )
     )
     min_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=1, max_value=10)
+        helpers.array_values(
+            dtype=dtype,
+            shape=(),
+            large_abs_safety_factor=1.5,
+            small_abs_safety_factor=1.5,
+            safety_factor_scale="log",
+            exclude_max=False,
+        )
     )
-    max_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=11, max_value=20)
-    )  # TODO remove hardcoded values.
+    max_val = draw(helpers.array_values(dtype=dtype, shape=(), min_value=min_val))
     return ([dtype] * 3), (value, min_val, max_val)
 
 
@@ -2067,4 +2081,72 @@ def test_jax_lax_square(
         frontend="jax",
         fn_tree="lax.square",
         x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True)
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.erf"
+    ),
+)
+def test_jax_lax_erf(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.erf",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.jax.lax.shift_left"
+    ),
+)
+def test_jax_lax_shift_left(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="lax.shift_left",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
     )

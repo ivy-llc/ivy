@@ -7,7 +7,6 @@ import numpy as np
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -16,10 +15,11 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
     dtypes, arrays, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes,
+            available_dtypes=helpers.get_dtypes("float"),
             num_arrays=num_arrays,
-            small_value_safety_factor=4.0,
-            large_value_safety_factor=20.0,
+            large_abs_safety_factor=8,
+            small_abs_safety_factor=8,
+            safety_factor_scale="log",
             min_num_dims=1,
             shared_dtype=True,
             ret_shape=True,
@@ -200,7 +200,7 @@ def test_execute_with_gradients(
     fw,
 ):
     def func(xs):
-        array_idxs = ivy.nested_indices_where(xs, ivy.is_ivy_array)
+        array_idxs = ivy.nested_argwhere(xs, ivy.is_ivy_array)
         array_vals = ivy.multi_index_nest(xs, array_idxs)
         final_array = ivy.stack(array_vals)
         ret = ivy.mean(final_array)
@@ -218,8 +218,8 @@ def test_execute_with_gradients(
         fw=fw,
         fn_name="execute_with_gradients",
         func=func,
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         xs=np.asarray(xs, dtype=dtype),
         retain_grads=retain_grads,
     )
@@ -354,6 +354,8 @@ def test_adam_step(
         instance_method=instance_method,
         fw=fw,
         fn_name="adam_step",
+        rtol_=1e-2,
+        atol_=1e-2,
         dcdw=np.asarray(dcdw, dtype=input_dtypes[0]),
         mw=np.asarray(mw, input_dtypes[1]),
         vw=np.asarray(vw, dtype=input_dtypes[2]),
@@ -393,6 +395,8 @@ def test_optimizer_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="optimizer_update",
+        rtol_=1e-2,
+        atol_=1e-2,
         w=np.asarray(w, dtype=input_dtypes[0]),
         effective_grad=np.asarray(effective_grad, dtype=input_dtypes[1]),
         lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
@@ -430,6 +434,8 @@ def test_gradient_descent_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="gradient_descent_update",
+        rtol_=1e-2,
+        atol_=1e-2,
         w=np.asarray(w, dtype=input_dtypes[0]),
         dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
         lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
@@ -469,6 +475,8 @@ def test_lars_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="lars_update",
+        rtol_=1e-2,
+        atol_=1e-2,
         w=np.asarray(w, dtype=input_dtypes[0]),
         dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
         lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
@@ -517,6 +525,8 @@ def test_adam_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="adam_update",
+        rtol_=1e-2,
+        atol_=1e-2,
         w=np.asarray(w, dtype=input_dtypes[0]),
         dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
         lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),
@@ -541,7 +551,8 @@ def test_adam_update(
         max_size=4,
     ),
     mtr=st.one_of(
-        helpers.ints(min_value=1), st.floats(min_value=0, exclude_min=True, width=16)
+        helpers.ints(min_value=1, max_value=10),
+        st.floats(min_value=0, max_value=10, exclude_min=True, width=16),
     ),
     stopgrad=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
@@ -579,6 +590,8 @@ def test_lamb_update(
         instance_method=instance_method,
         fw=fw,
         fn_name="lamb_update",
+        rtol_=1e-2,
+        atol_=1e-2,
         w=np.asarray(w, dtype=input_dtypes[0]),
         dcdw=np.asarray(dcdw, dtype=input_dtypes[1]),
         lr=lr if isinstance(lr, float) else np.asarray(lr, dtype=input_dtypes[0]),

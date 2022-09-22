@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     integer_arrays_to_float,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Extra #
@@ -16,6 +17,7 @@ from ivy.func_wrapper import (
 
 @inputs_to_ivy_arrays
 @integer_arrays_to_float
+@handle_exceptions
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],
@@ -100,9 +102,9 @@ def layer_norm(
     >>> y = ivy.layer_norm(x, normalized_idxs, epsilon=1.25, scale=0.3)
     >>> print(y)
     {
-        a: ivy.array([0.658, 1.04, 1.3]),
-        b: ivy.array([[0.759, 0.759, 0.759],
-                      [1.24, 1.24, 1.24]])
+        a: ivy.array([-0.342, 0.0427, 0.299]),
+        b: ivy.array([[-0.241, -0.241, -0.241], 
+                      [0.241, 0.241, 0.241]])
     }
 
     With multiple :code:`ivy.Container` inputs:
@@ -115,9 +117,9 @@ def layer_norm(
     >>> y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, offset=offset)
     >>> print(y)
     {
-        a: ivy.array([0.772, 1.03, 1.2]),
-        b: ivy.array([[0.796, 1., 1.2],
-                      [0.796, 1., 1.2]])
+        a: ivy.array([-1.42, 0.403, 1.62]),
+        b: ivy.array([[-1.54, 0.3, 2.14], 
+                      [-1.54, 0.3, 2.14]])
     }
 
     Both the description and the type hints above assumes an array input for simplicity,

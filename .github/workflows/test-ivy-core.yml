@@ -26,6 +26,7 @@ jobs:
            fetch-depth: 2
 
        - name: Check Files Changed
+         if: ${{(github.event_name == 'push') || !contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') }}
          shell: pwsh
          id: check_file_changed
          run: |
@@ -40,13 +41,11 @@ jobs:
              -or $_ -match 'ivy/functional/ivy/${{ matrix.submodules }}.py' `
            }
            $HasDiff = $SourceDiff.Length -gt 0
-           $a = Get-Random -Maximum 10
-           $HasDiff = $HasDiff -or ($a -eq 1)
            Write-Host "::set-output name=changed::$HasDiff"
 
        - name: Download artifact
          uses: dawidd6/action-download-artifact@v2
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          with:
            github_token: ${{secrets.GITHUB_TOKEN}}
            workflow: test-ivy-core.yml
@@ -59,7 +58,7 @@ jobs:
 
        - name: Unzip Hypothesis Examples
          id: unzip
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          run: |
            cd ivy/.hypothesis
            unzip examples.zip
@@ -67,7 +66,7 @@ jobs:
          continue-on-error: true
 
        - name: Create Hypothesis Directory
-         if: steps.check_file_changed.outputs.changed == 'True' && steps.unzip.outcome != 'success'
+         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.unzip.outcome != 'success'
          run: |
            cd ivy
            mkdir -p .hypothesis
@@ -77,14 +76,14 @@ jobs:
 
        - name: Run Functional-Core Tests
          id: tests
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          run: |
            cd ivy
            ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          run: |
            cd ivy/.hypothesis
            zip -r examples.zip examples
@@ -92,13 +91,28 @@ jobs:
 
        - name: Upload hypothesis
          uses: actions/upload-artifact@v3
-         if: steps.check_file_changed.outputs.changed == 'True'
+         if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          with:
            name: hypothesis_${{ matrix.backends }}_test_${{ matrix.submodules }}_zip
            path: |
              ivy/.hypothesis/examples.zip
          continue-on-error: true
 
+       - name: Install Libraries
+         uses: BSFishy/pip-action@v1
+         with:
+             packages: |
+               PyGithub
+
+       - name: Update Dashboard
+         if: ((steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped')) && (github.event_name == 'push')
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         run: |
+           cd ivy/automation_tools/dashboard_automation/
+           python3 dashboard_script.py "$GITHUB_TOKEN" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
+         continue-on-error: true
+
        - name: Check on failures
-         if: steps.check_file_changed.outputs.changed == 'True' && steps.tests.outcome != 'success'
+         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.tests.outcome != 'success'
          run: exit 1

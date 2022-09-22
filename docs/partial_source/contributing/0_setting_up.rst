@@ -11,6 +11,8 @@ Setting Up
 .. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
+.. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
+
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started!
@@ -278,6 +280,63 @@ Ubuntu
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
 
+Setting Up Testing
+******************
+There are a couple of options to choose from when running ivy tests in PyCharm. To run a single unit test, e.g. `test_abs`,
+you can avail of the context menu in the PyCharm code editor by pressing the green ▶️ symbol which appears to the left
+of `def test_abs(`.
+
+.. image:: content/pycharm_test_run_1.png
+  :width: 420
+
+You can then click 'Run pytest for...' or 'Debug pytest for...'. Keyboard shortcuts for running the rest are displayed
+also. These screenshots are from a Mac, hence the shortcut for running a test is :code:`ctrl - shift - R`.
+
+.. image:: content/pycharm_test_run_2.png
+  :width: 420
+
+The test run should pop up in a window at the bottom of the screen (or elsewhere, depending on your settings).
+
+.. image:: content/pycharm_test_run_3.png
+  :width: 420
+
+To run all the tests in a file, press :code:`ctrl` - right click (on Mac) on the :code:`test_elementwise.py` open tab.
+A menu will appear in which you can find 'Run pytest in test_elementwise.py...'
+
+.. image:: content/pycharm_run_all_1.png
+  :width: 420
+
+Click this and you should see a progress bar of all the tests running in the file.
+
+.. image:: content/pycharm_run_all_2.png
+  :width: 420
+
+It is also possible to run the entire set of ivy tests or the array api test suite using pre-written shell scripts that
+can be run from the 'Terminal' tab in PyCharm. There are a number of such shell scripts in `ivy/run_tests_CLI`_:
+
+.. code-block:: bash
+    :emphasize-lines: 4,5,8,9,10
+
+    run_ivy_core_test.py
+    run_ivy_nn_test.py
+    run_ivy_stateful_test.py
+    run_tests.sh
+    test_array_api.sh
+    test_dependencies.py
+    test_dependencies.sh
+    test_ivy_core.sh
+    test_ivy_nn.sh
+    test_ivy_stateful.sh
+
+* :code:`run_tests.sh` - is run by typing :code:`./run_tests.sh` in the :code:`run_tests_CLI`. This runs all tests in
+:code:`ivy/ivy_tests`.
+* :code:`test_array_api.sh` - is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`. This runs all
+array-api tests for a certain submodule in a certain backend.
+* :code:`test_ivy_core.sh` - is run by typing :code:`./test_ivy_core.sh [backend] test_[submodule]`. This runs all
+ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
+* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`.
+
+
 More Detailed Hypothesis Logs
 ****
 For testing, we use the `Hypothesis <https://hypothesis.readthedocs.io/en/latest/#>`_ module for data generation.
@@ -344,7 +403,7 @@ Log of container being built would look like below:
 
 5. That's it, you have just setup GitHub codespaces and can start developing Ivy. The configuration files installs all the required packages, extensions for you to get started quickly.
 
-**Opening an existing Codespaces**
+**Opening an existing Codespace**
 
 If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.
 
