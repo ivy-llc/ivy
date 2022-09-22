@@ -1,0 +1,7 @@
+spec/_build/
+build/
+.vscode/
+node_modules/
+__pycache__/
+*.pyc
+spec/**/generated

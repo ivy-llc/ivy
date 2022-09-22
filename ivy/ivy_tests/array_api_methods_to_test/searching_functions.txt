@@ -1,0 +1,4 @@
+argmax
+argmin
+nonzero
+where
