@@ -5,9 +5,9 @@ sqrt
 
 .. autofunction:: ivy.array.array_methods.sqrt
 
-.. autofunction:: ivy.container.container_methods.sqrt
-
 .. autofunction:: ivy.container.container_methods.static_sqrt
+
+.. autofunction:: ivy.container.container_methods.sqrt
 |
 | **Supported Frameworks:**
 
