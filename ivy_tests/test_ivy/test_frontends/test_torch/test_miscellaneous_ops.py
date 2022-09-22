@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, given, strategies as st, settings
 
 # local
 import ivy
@@ -609,4 +609,46 @@ def test_torch_renorm(
         atol=1e-02,  # It appears that ivy.vector_norm induces a slight error
         # Also at time of writing, the test for ivy.vector_norm has an atol
         # of 1e-02
+    )
+
+
+@handle_cmd_line_args
+@settings(max_examples=10000)
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        # Torch version is not implemented for Integer or Bool types
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"), force_int=True
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.logcumsumexp"
+    ),
+)
+def test_torch_logcumsumexp(
+    dtype_and_input,
+    dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, input = dtype_and_input
+    input = np.asarray(input, dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="logcumsumexp",
+        atol=1e-2,
+        input=input,
+        dim=dim,
     )
