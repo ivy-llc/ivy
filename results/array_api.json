@@ -29,9 +29,9 @@
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
-            "sorting_functions": "success",
+            "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": " ",
             "utility_functions": " "
       },
