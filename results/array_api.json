@@ -10,7 +10,7 @@
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
             "set_functions": "success",
-            "signatures": " ",
+            "signatures": "failure",
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": " ",
@@ -55,7 +55,7 @@
       },
       "jax": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
