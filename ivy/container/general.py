@@ -3539,7 +3539,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_supports_inplace_updates(
-        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable],
+        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -3579,8 +3579,8 @@ class ContainerWithGeneral(ContainerBase):
         Raises
         ------
         ValueError
-            If a node(s) of the container isn't a class instance of ivy.Variable,
-            ivy.Array, or ivy.NativeArray, an exception will be raised.
+            If a node(s) of the container isn't a class instance of ivy.Array or
+            ivy.NativeArray, an exception will be raised.
 
         Examples
         --------
