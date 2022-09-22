@@ -103,7 +103,6 @@ jobs:
          with:
              packages: |
                PyGithub
-               urllib
 
        - name: Update Dashboard
          if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped')
