@@ -13,7 +13,7 @@
             "signatures": "failure",
             "sorting_functions": " ",
             "special_cases": "success",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": "failure",
             "utility_functions": "success"
       },
@@ -44,7 +44,7 @@
             "linalg": "failure",
             "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "success",
-            "searching_functions": "success",
+            "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": " ",
