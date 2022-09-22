@@ -67,7 +67,7 @@
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": " ",
             "utility_functions": " "
       }
