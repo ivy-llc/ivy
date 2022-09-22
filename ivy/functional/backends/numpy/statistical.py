@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -10,11 +10,26 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
+
+
+min.support_native_out = True
+
+
 def max(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -40,21 +55,6 @@ def mean(
 mean.support_native_out = True
 
 
-def min(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
-
-
-min.support_native_out = True
-
-
 def _infer_dtype(dtype: np.dtype):
     default_dtype = ivy.infer_default_dtype(dtype)
     if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
@@ -66,7 +66,7 @@ def prod(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
@@ -85,7 +85,7 @@ def std(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,

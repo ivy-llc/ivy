@@ -12,7 +12,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # relu
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="relu"),
 )
 def test_relu(
@@ -94,8 +99,9 @@ def test_leaky_relu(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=4,
-        safety_factor_scale="linear",
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     approximate=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="gelu"),
@@ -133,7 +139,12 @@ def test_gelu(
 # sigmoid
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
     num_positional_args=helpers.num_positional_args(fn_name="sigmoid"),
 )
 def test_sigmoid(
@@ -168,7 +179,11 @@ def test_sigmoid(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
     num_positional_args=helpers.num_positional_args(fn_name="softmax"),
@@ -207,13 +222,23 @@ def test_softmax(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="softplus"),
+    beta=st.one_of([helpers.ints_or_floats(min_value=0.1, max_value=10), st.none()]),
+    threshold=st.one_of(
+        [helpers.ints_or_floats(min_value=0.1, max_value=30), st.none()]
+    ),
 )
 def test_softplus(
     *,
     dtype_and_x,
+    beta,
+    threshold,
     as_variable,
     with_out,
     num_positional_args,
@@ -236,4 +261,6 @@ def test_softplus(
         rtol_=1e-02,
         atol_=1e-02,
         x=np.asarray(x, dtype=dtype),
+        beta=beta,
+        threshold=threshold,
     )

@@ -325,6 +325,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -349,6 +350,8 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        alpha
+            scalar multiplier for ``x2``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -390,6 +393,17 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([5, 7, 9]),
             b: ivy.array([7, 9, 11])
         }
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                            b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                            b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_add(x, y, alpha=2)
+        >>> print(z)
+        {
+            a: ivy.array([9, 12, 15]),
+            b: ivy.array([12, 15, 18])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "add",
@@ -399,6 +413,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            alpha=alpha,
             out=out,
         )
 
@@ -470,6 +485,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -494,6 +510,8 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        alpha
+            scalar multiplier for ``x2``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -518,6 +536,13 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([5, 7, 9]),
             b: ivy.array([7, 9, 11])
         }
+
+        >>> z = x.add(y, alpha=3)
+        >>> print(z)
+        {
+            a: ivy.array([13, 17, 21]),
+            b: ivy.array([17, 21, 25])
+        }
         """
         return self.static_add(
             self,
@@ -526,6 +551,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            alpha=alpha,
             out=out,
         )
 
@@ -6510,6 +6536,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -6534,6 +6561,8 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        alpha
+            optional scalar multiplier for ``x2``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6544,6 +6573,27 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                       b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
+                       b=ivy.array([1, -1, 0]))
+        >>> z = ivy.Container.static_subtract(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, 1, 0]),
+            b: ivy.array([1, 4, 4])
+        }
+
+        >>> z = ivy.Container.static_subtract(x, y, alpha=3)
+        >>> print(z)
+        {
+            a: ivy.array([-11, -1, -6]),
+            b: ivy.array([-1, 6, 4])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "subtract",
@@ -6553,6 +6603,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            alpha=alpha,
             out=out,
         )
 
@@ -6564,6 +6615,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -6588,6 +6640,8 @@ class ContainerWithElementwise(ContainerBase):
             Default is False.
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
+        alpha
+            optional scalar multiplier for ``x2``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -6598,6 +6652,27 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                       b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 1, 3]), \
+                       b=ivy.array([1, -1, 0]))
+        >>> z = x.subtract(y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, 1, 0]),
+            b: ivy.array([1, 4, 4])
+        }
+
+        >>> z = x.subtract(y, alpha=3)
+        >>> print(z)
+        {
+            a: ivy.array([-11, -1, -6]),
+            b: ivy.array([-1, 6, 4])
+        }
+
         """
         return self.static_subtract(
             self,
@@ -6606,6 +6681,7 @@ class ContainerWithElementwise(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            alpha=alpha,
             out=out,
         )
 
@@ -7244,6 +7320,102 @@ class ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
+    def static_reciprocal(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.reciprocal.
+        This method simply wraps the function, and so the docstring for
+        ivy.reciprocal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the element-wise recirpocal of ``x``
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "reciprocal",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def reciprocal(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.reciprocal.
+        This method simply wraps the function, and so the docstring for
+        ivy.reciprocal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container to compute the element-wise reciprocal for.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the element-wise recirpocal of ``x``
+
+        """
+        return self.static_reciprocal(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_deg2rad(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -7478,6 +7650,145 @@ class ContainerWithElementwise(ContainerBase):
         """
         return self.static_rad2deg(
             self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_trunc_divide(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trunc_divide. This method simply
+        wraps the function, and so the docstring for ivy.trunc_divide also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            dividend input array or container. Should have a real-valued data type.
+        x2
+            divisor input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
+        >>> y = ivy.Container.static_divide(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([12., 1., -2.]),
+            b: ivy.array([1., 0., -4.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "trunc_divide",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def trunc_divide(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.trunc_divide.
+        This method simply wraps the function, and so the docstring for
+        ivy.trunc_divide also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            dividend input array or container. Should have a real-valued
+            data type.
+        x2
+            divisor input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
+        >>> y = x1.trunc_divide(x2)
+        >>> print(y)
+        {
+            a: ivy.array([12., 1., -2.]),
+            b: ivy.array([1., 0., -4.])
+        }
+        """
+        return self.static_trunc_divide(
+            self,
+            x2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

@@ -40,7 +40,10 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-det.unsupported_dtypes = ("float16",)
+det.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def diagonal(
@@ -68,14 +71,20 @@ def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigh(x)
 
 
-eigh.unsupported_dtypes = ("float16",)
+eigh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.eigvalsh(x)
 
 
-eigvalsh.unsupported_dtypes = ("float16",)
+eigvalsh.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -83,12 +92,24 @@ def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.inner(x1, x2)
 
 
-def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def inv(
+    x: JaxArray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = jnp.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = jnp.linalg.inv(x)
+            return ret
+        else:
+            cofactor = jnp.linalg.inv(x).T * jnp.linalg.det(x)
+            inverse = jnp.multiply(jnp.divide(1, jnp.linalg.det(x)), cofactor.T)
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -191,7 +212,10 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
     return res(q, r)
 
 
-qr.unsupported_dtypes = ("float16",)
+qr.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def slogdet(x: JaxArray, /) -> Tuple[JaxArray, JaxArray]:
@@ -235,7 +259,10 @@ def solve(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.asarray(ret, dtype=x1.dtype)
 
 
-solve.unsupported_dtypes = ("float16",)
+solve.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def svd(
@@ -292,7 +319,7 @@ def vector_norm(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[JaxArray] = None,

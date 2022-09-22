@@ -136,10 +136,12 @@ def test_acos(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="add"),
+    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_add(
     *,
     dtype_and_x,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -162,6 +164,7 @@ def test_add(
         fn_name="add",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
+        alpha=alpha,
     )
 
 
@@ -396,8 +399,6 @@ def test_bitwise_and(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_left_shift"),
@@ -415,7 +416,9 @@ def test_bitwise_left_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    x[1] = np.abs(x[1])
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -509,8 +512,6 @@ def test_bitwise_or(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         shared_dtype=True,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_right_shift"),
@@ -528,7 +529,9 @@ def test_bitwise_right_shift(
 ):
     input_dtype, x = dtype_and_x
 
-    x[1] = np.abs(x[1])
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -1651,10 +1654,12 @@ def test_positive(
 
 
 @st.composite
-def _pow_helper(draw):
+def pow_helper(draw, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
     dtype1, x1 = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=available_dtypes,
             small_abs_safety_factor=4,
             large_abs_safety_factor=4,
         )
@@ -1667,9 +1672,9 @@ def _pow_helper(draw):
         return False
 
     dtype1, x1, dtype2 = draw(
-        helpers.get_castable_dtype(
-            draw(helpers.get_dtypes("numeric")), dtype1, x1
-        ).filter(cast_filter)
+        helpers.get_castable_dtype(draw(available_dtypes), dtype1, x1).filter(
+            cast_filter
+        )
     )
     if ivy.is_int_dtype(dtype2):
         max_val = ivy.iinfo(dtype2).max
@@ -1699,7 +1704,7 @@ def _pow_helper(draw):
 # pow
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_pow_helper(),
+    dtype_and_x=pow_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="pow"),
 )
 def test_pow(
@@ -2015,10 +2020,12 @@ def test_sqrt(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     num_positional_args=helpers.num_positional_args(fn_name="subtract"),
+    alpha=st.integers(min_value=1, max_value=5),
 )
 def test_subtract(
     *,
     dtype_and_x,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -2041,6 +2048,7 @@ def test_subtract(
         fn_name="subtract",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
+        alpha=alpha,
     )
 
 
@@ -2349,4 +2357,46 @@ def test_rad2deg(
         fw=fw,
         fn_name="rad2deg",
         x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# trunc_divide
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="trunc_divide"),
+)
+def test_trunc_divide(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+
+    x1 = np.asarray(x[0], dtype=input_dtype[0])
+    x2 = np.asarray(x[1], dtype=input_dtype[1])
+
+    # prevent too close to zero
+    assume(not np.any(np.isclose(x2, 0)))
+
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="trunc_divide",
+        x1=x1,
+        x2=x2,
     )

@@ -2455,7 +2455,7 @@ class ContainerWithGeneral(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.value_is_nan. This method simply
-        wrapsthe function, and so the docstring for ivy.value_is_nan also applies to
+        wraps the function, and so the docstring for ivy.value_is_nan also applies to
         this method with minimal changes.
 
         Parameters
@@ -2480,6 +2480,35 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             Boolean as to whether the input value is a nan or not.
+
+        Examples
+        --------
+        With :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([452]), b=ivy.array([float('inf')]))
+        >>> y = ivy.Container.static_value_is_nan(x)
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
+        With :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([float('nan')]), b=ivy.array([0]))
+        >>> y = ivy.Container.static_value_is_nan(x)
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        With :code:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
+        >>> y = ivy.Container.static_value_is_nan(x, include_infs=False)
+        >>> print(y)
+        {
+            a: false,
+            b: false
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "value_is_nan",
@@ -2529,6 +2558,31 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean as to whether the input value is a nan or not.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([425]), b=ivy.array([float('nan')]))
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        {
+            a: false,
+            b: true
+        }
+
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([0]))
+        >>> y = x.value_is_nan()
+        >>> print(y)
+        {
+            a: true,
+            b: false
+        }
+
+        >>> x = ivy.Container(a=ivy.array([float('inf')]), b=ivy.array([22]))
+        >>> y = x.value_is_nan(include_infs=False)
+        >>> print(y)
+        {
+            a: false,
+            b: false
+        }
         """
         return self.static_value_is_nan(
             self,
@@ -3036,7 +3090,7 @@ class ContainerWithGeneral(ContainerBase):
             "stable_divide",
             numerator,
             denominator,
-            min_denominator,
+            min_denominator=min_denominator,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -3485,7 +3539,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_supports_inplace_updates(
-        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable],
+        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -3525,8 +3579,8 @@ class ContainerWithGeneral(ContainerBase):
         Raises
         ------
         ValueError
-            If a node(s) of the container isn't a class instance of ivy.Variable,
-            ivy.Array, or ivy.NativeArray, an exception will be raised.
+            If a node(s) of the container isn't a class instance of ivy.Array or
+            ivy.NativeArray, an exception will be raised.
 
         Examples
         --------

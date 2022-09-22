@@ -393,10 +393,82 @@ class Array(
 
     @_native_wrapper
     def __sub__(self, other):
+        """
+        ivy.Array special method variant of ivy.subtract. This method simply wraps the
+        function, and so the docstring for ivy.subtract also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        other
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise differences. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Array` instances only:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x - y
+        >>> print(z)
+        ivy.array([-3, -3, -3])
+
+        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                            b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: ivy.array([[-2.9, -1.7, -7.6], 
+                          [-3.9, -2.7, -8.6], 
+                          [-4.9, -3.7, -9.6]]),
+            b: ivy.array([[-3.9, -2.7, -8.6], 
+                          [-4.9, -3.7, -9.6], 
+                          [-5.9, -4.7, -10.6]])
+        }
+        """
         return ivy.subtract(self._data, other)
 
     @_native_wrapper
     def __rsub__(self, other):
+        """
+        ivy.Array reverse special method variant of ivy.subtract. This method simply wraps
+        the function, and so the docstring for ivy.subtract also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        other
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise differences. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = 1
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x - y
+        >>> print(z)
+        ivy.array([-3, -4, -5])
+        """
         return ivy.subtract(other, self._data)
 
     @_native_wrapper
@@ -671,13 +743,3 @@ class Array(
     @_native_wrapper
     def __iter__(self):
         return iter([to_ivy(i) for i in self._data])
-
-
-# noinspection PyRedeclaration
-class Variable(Array):
-    def __init__(self, data):
-        ivy.assertions.check_true(ivy.is_variable(data), "data must be a variable")
-        super().__init__(data)
-
-    def __repr__(self):
-        return super().__repr__().replace("array", "variable")
