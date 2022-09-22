@@ -13,7 +13,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": "success",
+            "statistical_functions": " ",
             "type_promotion": "failure",
             "utility_functions": " "
       },
@@ -37,7 +37,7 @@
       },
       "tensorflow": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
