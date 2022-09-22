@@ -2014,7 +2014,6 @@ def unset_default_dtype():
 
     Examples
     --------
-
     >>> ivy.set_default_dtype('float64')
     >>> ivy.default_dtype_stack
         ['float64']
