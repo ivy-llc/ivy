@@ -18,6 +18,7 @@ def update_job_status(file, fw, submod, result):
     with urllib.request.urlopen(file.download_url) as f:
         data = json.load(f)
         data[fw][submod] = result
+        print(data)
         return data
 
 
