@@ -449,7 +449,7 @@
 <span class="sd">    x2</span>
 <span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).</span>
 <span class="sd">        Should have a numeric data type.</span>
-<span class="sd">    aplha</span>
+<span class="sd">    alpha</span>
 <span class="sd">        optional scalar multiplier for ``x2``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
@@ -457,7 +457,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">     ret</span>
+<span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise sums. The returned array must have a data</span>
 <span class="sd">        type determined by :ref:`type-promotion`.</span>
 
@@ -501,7 +501,6 @@
 <span class="sd">    ivy.array([[[9.5],</span>
 <span class="sd">                [5.7],</span>
 <span class="sd">                [-4.7]]])</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
