@@ -30,7 +30,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": " ",
-            "special_cases": "failure",
+            "special_cases": " ",
             "statistical_functions": "success",
             "type_promotion": " ",
             "utility_functions": "success"
