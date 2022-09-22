@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
@@ -86,7 +86,9 @@ class ArrayWithSearching(abc.ABC):
         """
         return ivy.argmin(self._data, axis=axis, keepdims=keepdims, out=out)
 
-    def nonzero(self: ivy.Array, /) -> ivy.Array:
+    def nonzero(
+        self: ivy.Array, /, *, as_tuple=True
+    ) -> Union[Tuple[ivy.Array], ivy.Array]:
         """
         ivy.Array instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -96,6 +98,13 @@ class ArrayWithSearching(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        as_tuple
+            If True, the result is returned as a tuple of arrays, one for each
+            dimension of the input, containing the indices of the non-zero elements in
+            that dimension. If False, the result is a single array of shape (N, ndim),
+            where N is the number of non-zero elements in a, and each row in the result
+            contains the indices of the corresponding non-zero element in the input.
+            Default True.
 
         Returns
         -------
@@ -103,7 +112,7 @@ class ArrayWithSearching(abc.ABC):
             Array containing the indices of the non-zero values.
 
         """
-        return ivy.nonzero(self._data)
+        return ivy.nonzero(self._data, as_tuple=as_tuple)
 
     def where(
         self: ivy.Array,

@@ -38,8 +38,13 @@ def argmin(
 def nonzero(
     x: Union[tf.Tensor, tf.Variable],
     /,
+    *,
+    as_tuple: bool = True,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
-    return tuple(tf.experimental.numpy.nonzero(x))
+    if as_tuple:
+        return tuple(tf.experimental.numpy.nonzero(x))
+    else:
+        return tf.stack(tf.experimental.numpy.nonzero(x), axis=1)
 
 
 def where(

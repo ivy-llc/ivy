@@ -167,6 +167,8 @@ class ContainerWithSearching(ContainerBase):
     def static_nonzero(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
+        *,
+        as_tuple: bool = True,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nonzero. This method simply
@@ -177,6 +179,11 @@ class ContainerWithSearching(ContainerBase):
         ----------
         x
             input array or container. Should have a numeric data type.
+        as_tuple
+            if True, the output is returned as a tuple of indices, one for each
+            dimension of the input, containing the indices of the true elements in that
+            dimension. If False, the coordinates are returned in a (N, ndim) array,
+            where N is the number of true elements. Default = True.
 
         Returns
         -------
@@ -184,9 +191,9 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return ContainerBase.multi_map_in_static_method("nonzero", x)
+        return ContainerBase.multi_map_in_static_method("nonzero", x, as_tuple=as_tuple)
 
-    def nonzero(self: ivy.Container, /) -> ivy.Container:
+    def nonzero(self: ivy.Container, /, *, as_tuple: bool = True) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.nonzero. This method simply
         wraps the function, and so the docstring for ivy.nonzero also applies
@@ -196,6 +203,11 @@ class ContainerWithSearching(ContainerBase):
         ----------
         self
             input array or container. Should have a numeric data type.
+        as_tuple
+            if True, the output is returned as a tuple of indices, one for each
+            dimension of the input, containing the indices of the true elements in that
+            dimension. If False, the coordinates are returned in a (N, ndim) array,
+            where N is the number of true elements. Default = True.
 
         Returns
         -------
@@ -203,7 +215,7 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return self.static_nonzero(self)
+        return self.static_nonzero(self, as_tuple=as_tuple)
 
     @staticmethod
     def static_where(

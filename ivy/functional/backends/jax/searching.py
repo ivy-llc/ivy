@@ -1,8 +1,8 @@
 from typing import Optional, Tuple
 
-import ivy
 import jax.numpy as jnp
 
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -35,8 +35,13 @@ def argmin(
 def nonzero(
     x: JaxArray,
     /,
+    *,
+    as_tuple: bool = True,
 ) -> Tuple[JaxArray]:
-    return jnp.nonzero(x)
+    if as_tuple:
+        return jnp.nonzero(x)
+    else:
+        return jnp.stack(jnp.nonzero(x), axis=1)
 
 
 def where(

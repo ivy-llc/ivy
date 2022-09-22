@@ -1,7 +1,8 @@
 from typing import Optional, Tuple
 
-import ivy
 import torch
+
+import ivy
 
 
 # Array API Standard #
@@ -41,8 +42,10 @@ argmin.support_native_out = True
 def nonzero(
     x: torch.Tensor,
     /,
+    *,
+    as_tuple: bool = True,
 ) -> Tuple[torch.Tensor]:
-    return torch.nonzero(x, as_tuple=True)
+    return torch.nonzero(x, as_tuple=as_tuple)
 
 
 def where(

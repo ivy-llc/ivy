@@ -41,8 +41,13 @@ argmin.support_native_out = True
 def nonzero(
     x: np.ndarray,
     /,
+    *,
+    as_tuple: bool = True,
 ) -> Tuple[np.ndarray]:
-    return np.nonzero(x)
+    if as_tuple:
+        return np.nonzero(x)
+    else:
+        return np.stack(np.nonzero(x), axis=1)
 
 
 def where(

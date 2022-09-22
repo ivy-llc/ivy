@@ -4,12 +4,12 @@ from typing import Union, Optional, Tuple
 # local
 import ivy
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -223,7 +223,9 @@ def argmin(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
+def nonzero(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, as_tuple: bool = True
+) -> Union[Tuple[ivy.Array], ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
@@ -231,6 +233,12 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     x
         input array. Must have a positive rank. If `x` is zero-dimensional, the function
         must raise an exception.
+    as_tuple
+        if True, the function must return a tuple of arrays, one for each dimension of
+        the input array, containing the indices of the non-zero elements in that
+        dimension. If False, the function must return a single array of shape (N, ndim)
+        where N is the number of non-zero elements and each row in the array contains
+        the indices of the corresponding non-zero element. Default = True.
 
     Returns
     -------
@@ -255,6 +263,11 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> y = ivy.nonzero(x)
     >>> print(y)
     (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
+
+    >>> x = ivy.array([[0, 2], [-1, -2]])
+    >>> y = ivy.nonzero(x, as_tuple=False)
+    >>> print(y)
+    ivy.array([[0, 1], [1, 0], [1, 1]])
 
     With :code:`ivy.NativeArray` input:
 
@@ -317,7 +330,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return current_backend(x).nonzero(x)
+    return current_backend(x).nonzero(x, as_tuple=as_tuple)
 
 
 @to_native_arrays_and_back
