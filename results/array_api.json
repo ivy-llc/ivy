@@ -57,7 +57,7 @@
             "array_object": " ",
             "constants": "success",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": " ",
@@ -69,6 +69,6 @@
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": " ",
-            "utility_functions": "success"
+            "utility_functions": " "
       }
 }
