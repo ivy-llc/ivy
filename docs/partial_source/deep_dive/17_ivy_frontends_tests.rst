@@ -63,7 +63,9 @@ ivy.tan()
     #tan
     @handle_cmd_line_args
     @given(
-        dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_jax.valid_float_dtypes),
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float")
+        ),
         num_positional_args=helpers.num_positional_args(
             fn_name="ivy.functional.frontends.jax.lax.tan"
         )
@@ -76,7 +78,6 @@ ivy.tan()
         fw,
     ):
         input_dtype, x = dtype_and_x
-
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
@@ -108,15 +109,14 @@ ivy.tan()
     #tan
     @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_np.valid_float_dtypes),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
-    where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.tan"
-    ),
-    native_array=helpers.array_bools(),
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric")
+        ),
+        dtype=helpers.get_dtypes("numeric", none=True),
+        where=np_frontend_helpers.where(),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.numpy.tan"
+        ),
     )
     def test_numpy_tan(
         dtype_and_x,
@@ -171,12 +171,10 @@ ivy.tan()
     #tan
     @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=ivy_tf.valid_float_dtypes),
-    as_variable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.tan"
-    ),
-    native_array=st.booleans(),
+        dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float"),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.tensorflow.tan"
+        ),
     )
     def test_tensorflow_tan(
         dtype_and_x, as_variable, num_positional_args, native_array, fw
@@ -206,19 +204,12 @@ ivy.tan()
     #tan
     @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        )
-    ),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.tan"
-    ),
-    native_array=st.booleans(),
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+        ),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="functional.frontends.torch.tan"
+        ),
     )
     def test_torch_tan(
         dtype_and_x,
