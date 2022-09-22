@@ -306,6 +306,42 @@ def test_torch_cumprod(
     )
 
 
+# trace
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.trace"
+    ),
+)
+def test_torch_trace(
+    dtype_and_values,
+    as_variable,
+    num_positional_args,
+    with_out,
+    native_array,
+    fw,
+):
+    dtype, value = dtype_and_values
+
+    value = np.asarray(value, dtype=dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="trace",
+        input=value,
+    )
+
+
 @handle_cmd_line_args
 @given(
     row=st.integers(min_value=0, max_value=10),
@@ -514,4 +550,63 @@ def test_torch_flatten(
         input=input,
         start_dim=start_dim,
         end_dim=end_dim,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_values=helpers.dtype_and_values(
+        # Min_num_dims is 2 to prevent a Torch crash.
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+        # Setting available types to valid allows Bool and integer types
+        # which causes a Torch crash.
+        available_dtypes=helpers.get_dtypes("float"),
+        max_value=1e4,
+        min_value=-1e4,
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        force_int=True,
+    ),
+    p=st.floats(
+        min_value=0.5,
+        exclude_min=True,
+        max_value=5,
+    ),  # Non-positive norms aren't supported in backends.
+    # Small positive norms cause issues due to finite-precision.
+    maxnorm=st.floats(min_value=0),  # Norms are positive semi-definite
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.renorm"
+    ),
+)
+def test_torch_renorm(
+    dtype_and_values,
+    p,
+    dim,
+    maxnorm,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    dtype, values = dtype_and_values
+    values = np.asarray(values, dtype=dtype)
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="renorm",
+        input=values,
+        p=p,
+        dim=dim,
+        maxnorm=maxnorm,
+        atol=1e-02,  # It appears that ivy.vector_norm induces a slight error
+        # Also at time of writing, the test for ivy.vector_norm has an atol
+        # of 1e-02
     )
