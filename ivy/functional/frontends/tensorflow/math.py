@@ -17,8 +17,18 @@ def asinh(x, name="asinh"):
 def confusion_matrix(
     labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
 ):
-    labels = ivy.astype(ivy.squeeze(ivy.array(labels)), ivy.int64, copy=False)
-    predictions = ivy.astype(ivy.squeeze(ivy.array(predictions)), ivy.int64, copy=False)
+    labels = ivy.astype(
+        ivy.squeeze(ivy.array(labels), axis=None), ivy.int64, copy=False
+    )
+    predictions = ivy.astype(
+        ivy.squeeze(ivy.array(predictions), axis=None), ivy.int64, copy=False
+    )
+    # failsafe for (1,) array will be squeeze to 0-dim
+    labels = ivy.expand_dims(labels, axis=-1) if labels.ndim == 0 else labels
+    predictions = (
+        ivy.expand_dims(predictions, axis=-1) if predictions.ndim == 0 else predictions
+    )
+
     # Sanity check (potential optimization)
     ivy.assertions.check_greater(
         labels, 0, allow_equal=True, message="labels contains negative values"
@@ -31,10 +41,12 @@ def confusion_matrix(
         num_classes = max(ivy.max(labels), ivy.max(predictions)) + 1
     else:
         num_classes_int64 = ivy.astype(ivy.array(num_classes), ivy.int64, copy=False)
-    ivy.assertions.check_less(labels, num_classes_int64, message="labels out of bound")
-    ivy.assertions.check_less(
-        predictions, num_classes_int64, message="predictions out of bound"
-    )
+        ivy.assertions.check_less(
+            labels, num_classes_int64, message="labels out of bound"
+        )
+        ivy.assertions.check_less(
+            predictions, num_classes_int64, message="predictions out of bound"
+        )
 
     if weights is not None:
         weights = ivy.array(weights)
