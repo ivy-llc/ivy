@@ -4,8 +4,9 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, assert_all_close
 
 
 # svd
@@ -78,7 +79,7 @@ def test_jax_lax_cholesky(
     x = np.array(x, dtype=dtype)
     # make symmetric positive-definite beforehand
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    helpers.test_frontend_function(
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
@@ -88,6 +89,17 @@ def test_jax_lax_cholesky(
         frontend="jax",
         fn_tree="lax.linalg.cholesky",
         rtol=1e-02,
+        test_values=False,
         x=x,
         symmetrize_input=symmetrize_input,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    u, s, v = ret
+    frontend_u, frontend_s, frontend_v = frontend_ret
+
+    assert_all_close(
+        ret_np=u @ np.diag(s) @ v.T,
+        ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
     )
