@@ -81,6 +81,8 @@ class matrix:
     def size(self):
         return self._shape[0] * self._shape[1]
 
+    # TODO: check setters
+
     # Instance Methods #
     # ---------------- #
 
