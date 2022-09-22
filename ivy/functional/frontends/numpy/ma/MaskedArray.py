@@ -158,6 +158,11 @@ class MaskedArray(np_frontend.ndarray):
     def __getitem__(self, query):
         return self._data[query]
 
+    def __setitem__(self, query, val):
+        self._data[query] = val
+        if not self._hard_mask and ivy.any(self._mask):
+            self._mask[query] = False
+
 
 # masked_array (alias)
 masked_array = MaskedArray
