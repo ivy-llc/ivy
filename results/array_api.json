@@ -32,7 +32,7 @@
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": " ",
-            "type_promotion": "failure",
+            "type_promotion": " ",
             "utility_functions": " "
       },
       "tensorflow": {
@@ -48,7 +48,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": " ",
-            "special_cases": " ",
+            "special_cases": "failure",
             "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
@@ -61,7 +61,7 @@
             "has_names": " ",
             "linalg": " ",
             "manipulation_functions": " ",
-            "operators_and_elementwise_functions": " ",
+            "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
