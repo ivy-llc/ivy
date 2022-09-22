@@ -227,50 +227,15 @@ def test_torch_diagonal(
     )
 
 
-@st.composite
-def _generate_cartesian_prod_dtype_and_tensors(
-    draw,
-    *,
-    available_dtypes,
-    min_num_arrays,
-    max_num_arrays,
-    min_num_dims,
-    max_num_dims,
-    max_dim_size,
-):
-
-    num_arrays = draw(st.integers(min_value=min_num_arrays, max_value=max_num_arrays))
-    # We must avoid a case where a single value is generated
-    # As this is an invalid input for the Torch function.
-    min_dim_size = 1 if num_arrays != 1 else 2
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-        )
-    )
-
-    return draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            shape=shape,
-            num_arrays=num_arrays,
-            shared_dtype=True,
-        )
-    )
-
-
 @handle_cmd_line_args
 @given(
-    dtype_and_tensors=_generate_cartesian_prod_dtype_and_tensors(
+    dtype_and_tensors=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_arrays=1,
-        max_num_arrays=5,
+        num_arrays=st.integers(min_value=1, max_value=5),
         min_num_dims=1,
         max_num_dims=1,
-        max_dim_size=10,
+        max_dim_size=5,
+        shared_dtype=True,
     )
 )
 def test_torch_cartesian_prod(
