@@ -19,9 +19,9 @@
       },
       "torch": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": "success",
-            "data_type_functions": " ",
+            "data_type_functions": "success",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
