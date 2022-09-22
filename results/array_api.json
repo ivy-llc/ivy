@@ -32,7 +32,7 @@
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": "success",
-            "type_promotion": " ",
+            "type_promotion": "failure",
             "utility_functions": "success"
       },
       "tensorflow": {
@@ -54,12 +54,12 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": "failure",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "failure",
+            "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
