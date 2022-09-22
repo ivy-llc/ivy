@@ -76,11 +76,9 @@ def _get_shared_dtype(draw):
 @handle_cmd_line_args
 @given(
     array_and_shape=helpers.array_and_broadcastable_shape(_get_shared_dtype()),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.BroadcastTo"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_BroadcastTo(
     array_and_shape, as_variable, num_positional_args, native_array, fw

@@ -61,10 +61,6 @@ class Array:
     pass
 
 
-class Variable:
-    pass
-
-
 class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
@@ -413,7 +409,7 @@ extra_promotion_table = {
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
-from .array import Array, Variable, add_ivy_array_instance_methods
+from .array import Array, add_ivy_array_instance_methods
 from .array.conversions import *
 from .array import conversions as arr_conversions
 from .container import conversions as cont_conversions
