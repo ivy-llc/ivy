@@ -7,7 +7,7 @@
             "has_names": " ",
             "linalg": " ",
             "manipulation_functions": " ",
-            "operators_and_elementwise_functions": " ",
+            "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": "success",
             "signatures": " ",
@@ -36,7 +36,7 @@
             "utility_functions": "success"
       },
       "tensorflow": {
-            "array_object": "success",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
