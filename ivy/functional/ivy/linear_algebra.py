@@ -158,7 +158,10 @@ def cross(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
@@ -229,7 +232,9 @@ def cross(
         b: ivy.array([0., -6., 0.])
     }
     """
-    return current_backend(x1).cross(x1, x2, axis=axis, out=out)
+    return current_backend(x1).cross(
+        x1, x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -503,7 +508,11 @@ def diagonal(
 @handle_nestable
 @handle_exceptions
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[ivy.Array] = None,
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -543,7 +552,7 @@ def eigh(
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
     """
-    return current_backend(x).eigh(x, out=out)
+    return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
 
 @to_native_arrays_and_back
@@ -551,7 +560,11 @@ def eigh(
 @handle_nestable
 @handle_exceptions
 def eigvalsh(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
@@ -572,7 +585,7 @@ def eigvalsh(
         (..., M) and have the same data type as x.
 
     """
-    return current_backend(x).eigvalsh(x, out=out)
+    return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
 
 
 @to_native_arrays_and_back
@@ -616,7 +629,11 @@ def inner(
 @handle_nestable
 @handle_exceptions
 def inv(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -694,7 +711,7 @@ def inv(
     }
 
     """
-    return current_backend(x).inv(x, out=out)
+    return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
 
 @to_native_arrays_and_back
@@ -847,11 +864,8 @@ def matrix_norm(
     ----------
     x
         Input array.
-    p
-        Order of the norm. Default is 2.
-    axes
-        The axes of x along which to compute the matrix norms.
-        Default is None, in which case the last two dimensions are used.
+    ord
+        Order of the norm. Default is "fro".
     keepdims
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
@@ -1263,9 +1277,6 @@ def svd(
         the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``
         and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.
         Default: ``True``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
