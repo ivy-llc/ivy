@@ -31,7 +31,6 @@ class matrix:
         )
         for i in range(2):
             data[i] = data[i].split(",") if "," in data[i] else data[i].split()
-            # TODO: check dtypes
             data[i] = [
                 float(x.strip()) if is_float else int(x.strip()) for x in data[i]
             ]
