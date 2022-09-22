@@ -1,7 +1,7 @@
 # global
 torch_scatter = None
 import torch
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -11,11 +11,32 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if axis == ():
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
+        else:
+            return x
+    if not keepdims and not axis and axis != 0:
+        return torch.amin(input=x, out=out)
+    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+
+
+min.support_native_out = True
+
+
 def max(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -54,27 +75,6 @@ def mean(
 mean.support_native_out = True
 
 
-def min(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if axis == ():
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        else:
-            return x
-    if not keepdims and not axis and axis != 0:
-        return torch.amin(input=x, out=out)
-    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
-
-
-min.support_native_out = True
-
-
 def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
     default_dtype = ivy.infer_default_dtype(dtype)
     if default_dtype in ivy.valid_dtypes:
@@ -87,7 +87,7 @@ def prod(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[torch.dtype] = None,
     keepdims: bool = False,
 ) -> torch.Tensor:
@@ -114,7 +114,7 @@ def std(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0,
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
@@ -234,6 +234,7 @@ cumprod.support_native_out = True
 cumprod.unsupported_dtypes = (
     "uint8",
     "bfloat16",
+    "float16",
 )  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 
@@ -274,6 +275,7 @@ cumsum.support_native_out = True
 cumsum.unsupported_dtypes = (
     "uint8",
     "bfloat16",
+    "float16",
 )  # TODO: bfloat16 support is added in PyTorch 1.12.1
 
 

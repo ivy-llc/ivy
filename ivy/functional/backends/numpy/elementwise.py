@@ -13,29 +13,6 @@ except (ImportError, ModuleNotFoundError):
     _erf = None
 
 
-def _cast_for_binary_op(x1, x2):
-    if isinstance(x1, np.ndarray):
-        if isinstance(x2, np.ndarray):
-            promoted_type = np.promote_types(x1.dtype, x2.dtype)
-            x1 = x1.astype(promoted_type)
-            x2 = x2.astype(promoted_type)
-        else:
-            x2 = np.asarray(x2, dtype=x1.dtype)
-    elif isinstance(x2, np.ndarray):
-        x1 = np.asarray(x1, dtype=x2.dtype)
-    return x1, x2
-
-
-def _clamp_bits(x1, x2):
-    x2 = np.clip(
-        x2,
-        np.array(0, dtype=x2.dtype),
-        np.array(np.dtype(x1.dtype).itemsize * 8 - 1),
-        dtype=x2.dtype,
-    )
-    return x1, x2
-
-
 # when inputs are 0 dimensional, numpy's functions return scalars
 # so we use this wrapper to ensure outputs are always numpy arrays
 
@@ -72,10 +49,13 @@ def add(
     x2: Union[float, np.ndarray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.add(x1, x2, out=out)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return np.add(x1, x2)
 
 
 add.support_native_out = True
@@ -158,8 +138,8 @@ def bitwise_left_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
-    return np.left_shift(x1, x2, out=out)
+    ivy.assertions.check_all(x2 > 0, message="shifts must be non-negative")
+    return np.left_shift(x1, x2)
 
 
 bitwise_left_shift.support_native_out = True
@@ -189,8 +169,8 @@ def bitwise_right_shift(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
-    return np.right_shift(x1, x2, out=out)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
+    return np.right_shift(x1, x2)
 
 
 bitwise_right_shift.support_native_out = True
@@ -624,10 +604,13 @@ def subtract(
     x2: Union[float, np.ndarray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.subtract(x1, x2, out=out)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return np.subtract(x1, x2)
 
 
 subtract.support_native_out = True
@@ -669,10 +652,11 @@ trunc.support_native_out = True
 
 @_handle_0_dim_output
 def erf(x, /, *, out: Optional[np.ndarray] = None):
-    if _erf is None:
-        raise Exception(
-            "scipy must be installed in order to call ivy.erf with a numpy backend."
-        )
+    ivy.assertions.check_exists(
+        _erf,
+        message="scipy must be installed in order to call ivy.erf with a \
+        numpy backend.",
+    )
     ret = _erf(x, out=out)
     if hasattr(x, "dtype"):
         ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
@@ -714,3 +698,19 @@ def reciprocal(
 
 
 reciprocal.support_native_out = True
+
+
+@_handle_0_dim_output
+def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.deg2rad(x, out=out)
+
+
+deg2rad.support_native_out = True
+
+
+@_handle_0_dim_output
+def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.rad2deg(x, out=out)
+
+
+rad2deg.support_native_out = True

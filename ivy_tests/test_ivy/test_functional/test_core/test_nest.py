@@ -156,24 +156,24 @@ def test_map_nest_at_indices(nest, indices, fn, device):
     assert nest == nest_copy
 
 
-# nested_indices_where
+# nested_argwhere
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
 )
-def test_nested_indices_where(nest, device):
-    indices = ivy.nested_indices_where(nest, lambda x: x < 5)
+def test_nested_argwhere(nest, device):
+    indices = ivy.nested_argwhere(nest, lambda x: x < 5)
     assert indices[0] == ["a", 0, 0]
     assert indices[1] == ["a", 1, 0]
     assert indices[2] == ["b", "c", 0, 0, 0]
     assert indices[3] == ["b", "c", 0, 1, 0]
 
 
-# nested_indices_where_w_nest_checks
+# nested_argwhere_w_nest_checks
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
 )
-def test_nested_indices_where_w_nest_checks(nest, device):
-    indices = ivy.nested_indices_where(
+def test_nested_argwhere_w_nest_checks(nest, device):
+    indices = ivy.nested_argwhere(
         nest, lambda x: isinstance(x, list) or (isinstance(x, int) and x < 5), True
     )
     assert indices[0] == ["a", 0, 0]
