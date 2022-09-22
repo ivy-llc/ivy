@@ -157,3 +157,75 @@ def rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
 
 def rrelu_(input, lower=1.0 / 8, upper=1.0 / 3, training=False):
     return _rrelu(input, lower, upper, training, inplace=True)
+
+
+def hardshrink(input, lambd=0.5):
+    mask = ivy.logical_or(ivy.greater(input, lambd), ivy.less(input, -lambd))
+    return ivy.where(mask, input, 0.0)
+
+
+def softsign(input):
+    return ivy.divide(input, ivy.add(1, ivy.abs(input)))
+
+
+def softshrink(input, lambd=0.5):
+    low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
+    up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
+    return ivy.add(low, up)
+
+
+def silu(input, inplace=False):
+    ret = ivy.multiply(input, ivy.sigmoid(input))
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+def glu(input, dim=-1):
+    a, b = ivy.split(input, num_or_size_splits=2, axis=dim)
+    return ivy.multiply(a, ivy.sigmoid(b))
+
+
+# ToDo Implement log_softmax in ivy functional API
+# for it to be faster than ivy.log(ivy.softmax) and more mathematical stable
+def log_softmax(input, dim=None, dtype=None):
+    if dtype:
+        input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
+    if dim is None:
+        dim = -1
+    return ivy.log(ivy.softmax(input, axis=dim))
+
+
+def tanhshrink(input):
+    return ivy.subtract(input, ivy.tanh(input))
+
+
+def leaky_relu_(input, negative_slope=0.01):
+    ret = ivy.leaky_relu(input, alpha=negative_slope)
+    ivy.inplace_update(input, ret)
+    return input
+
+
+def hardsigmoid(input, inplace=False):
+    ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+def hardtanh(input, min_val=-1.0, max_val=1.0, inplace=False):
+    less = ivy.where(ivy.less(input, min_val), min_val, input)
+    ret = ivy.where(ivy.greater(input, max_val), max_val, less)
+    if inplace:
+        input = ivy.asarray(input, dtype=input.dtype)
+        return ivy.inplace_update(ivy.asarray(input), ret)
+    return ret
+
+
+def hardtanh_(input, min_val=-1.0, max_val=1.0):
+    less = ivy.where(ivy.less(input, min_val), min_val, input)
+    ret = ivy.where(ivy.greater(input, max_val), max_val, less)
+    input = ivy.asarray(input, dtype=input.dtype)
+    return ivy.inplace_update(input, ret)

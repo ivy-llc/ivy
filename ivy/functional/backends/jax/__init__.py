@@ -48,6 +48,13 @@ NativeShape = tuple
 
 NativeSparseArray = None
 
+
+# devices
+valid_devices = ("cpu", "gpu", "tpu")
+
+invalid_devices = ()
+
+
 # native data types
 native_int8 = jnp.dtype("int8")
 native_int16 = jnp.dtype("int16")

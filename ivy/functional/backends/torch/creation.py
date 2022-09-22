@@ -15,6 +15,12 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_an
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 from . import version
 
+# noinspection PyProtectedMember
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+)
 
 # Array API Standard #
 # -------------------#
@@ -70,6 +76,9 @@ def arange(
 arange.support_native_out = True
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
     object_in: Union[torch.Tensor, np.ndarray, List[float], Tuple[float]],
     /,
@@ -86,11 +95,12 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
+            return torch.as_tensor(object_in).clone().detach().to(device)
         else:
-            return torch.as_tensor(object_in, dtype=dtype).to(device)
+            return torch.as_tensor(object_in).to(device)
+
+        dtype = default_dtype(item=object_in, as_native=True)
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))

@@ -40,7 +40,7 @@ def conv1d(
     pad_w = ivy.handle_padding(x_shape, strides, f_w_after_dilation, padding)
     x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0)
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -87,7 +87,7 @@ def conv1d_transpose(
         pad_w = pad_w // 2
         padding_list = [pad_w]
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -109,7 +109,7 @@ def conv1d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16",)}, version)
 # noinspection PyUnresolvedReferences
 def conv2d(
     x: torch.Tensor,
@@ -149,7 +149,7 @@ def conv2d(
         x, [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2], value=0
     )
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -157,6 +157,7 @@ def conv2d(
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
+
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, version)
@@ -210,7 +211,7 @@ def conv2d_transpose(
         padding_list = [pad_h, pad_w]
 
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -238,7 +239,7 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
 # noinspection PyUnresolvedReferences
 def depthwise_conv2d(
     x: torch.Tensor,
@@ -274,7 +275,7 @@ def depthwise_conv2d(
     )
 
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -285,6 +286,7 @@ def depthwise_conv2d(
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
+
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
@@ -332,7 +334,7 @@ def conv3d(
         value=0,
     )
     if padding != "VALID" and padding != "SAME":
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -408,7 +410,7 @@ def conv3d_transpose(
         padding_list = [pad_d, pad_h, pad_w]
 
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Invalid padding arg {}\n"
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
@@ -438,3 +440,75 @@ def conv3d_transpose(
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
     return res
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, version)
+def conv_general_dilated(
+    x: torch.Tensor,
+    filters: torch.Tensor,
+    strides: Union[int, Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+    out: Optional[torch.Tensor] = None,
+):
+    strides = [strides] * dims if isinstance(strides, int) else strides
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+
+    filter_shape = [
+        filters.shape[i] + (filters.shape[i] - 1) * (dilations[i] - 1)
+        for i in range(dims)
+    ]
+    filters = filters.permute(-1, -2, *range(dims))
+    if data_format == "channel_last":
+        x = x.permute(0, -1, *range(1, dims + 1))
+    x_shape = list(x.shape[2:])
+    pad_specific = [
+        ivy.handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+        for i in range(dims - 1, -1, -1)
+    ]
+    pad_list_top = [pad_specific[i] // 2 for i in range(dims)]
+    pad_list_bot = [pad_specific[i] - pad_specific[i] // 2 for i in range(dims)]
+    pad_list = [None] * len(pad_list_top) * 2
+    pad_list[::2] = pad_list_top
+    pad_list[1::2] = pad_list_bot
+    x = torch.nn.functional.pad(
+        x,
+        pad_list,
+        value=0,
+    )
+    if dims == 1:
+        res = torch.nn.functional.conv1d(
+            x,
+            filters,
+            None,
+            strides,
+            "valid",
+            dilation=dilations,
+        )
+    elif dims == 2:
+        res = torch.nn.functional.conv2d(
+            x,
+            filters,
+            None,
+            strides,
+            "valid",
+            dilation=dilations,
+        )
+    else:
+        res = torch.nn.functional.conv3d(
+            x,
+            filters,
+            None,
+            strides,
+            "valid",
+            dilation=dilations,
+        )
+    if data_format == "channel_last":
+        return res.permute(0, *range(2, dims + 2), 1)
+    return res
+
+

@@ -68,8 +68,9 @@ def multinomial(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not replace:
-        raise Exception("TensorFlow does not support multinomial without replacement")
+    ivy.assertions.check_true(
+        replace, message="TensorFlow does not support multinomial without replacement"
+    )
     with tf.device(device):
         if probs is None:
             probs = (

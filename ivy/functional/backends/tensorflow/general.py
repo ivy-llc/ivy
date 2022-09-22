@@ -60,6 +60,23 @@ def current_backend_str():
     return "tensorflow"
 
 
+def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+    if not ivy.is_array(query):
+        return x.__getitem__(query)
+    dtype = ivy.dtype(query, as_native=True)
+    if dtype is tf.bool:
+        return tf.boolean_mask(x, query)
+    # ToDo tf.int16 is listed as supported, but it fails
+    # temporary fix till issue is fixed by TensorFlow
+    if dtype in [tf.int8, tf.int16]:
+        query = tf.cast(query, tf.int32)
+    return tf.gather(x, query)
+
+
+# tensorflow does not support uint indexing
+get_item.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
+
+
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if (
@@ -89,25 +106,27 @@ def to_list(x: Union[tf.Tensor, tf.Variable], /) -> list:
 def gather(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
-    axis: Optional[int] = -1,
+    /,
     *,
+    axis: Optional[int] = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(indices.shape)
-    return tf.gather(params, indices, axis=axis, batch_dims=axis)
+    return tf.gather(params, indices, axis=axis, batch_dims=None)
 
 
 def gather_nd(
     params: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.gather_nd(params, indices)
 
 
-def get_num_dims(x, as_tensor=False):
-    return tf.shape(tf.shape(x))[0] if as_tensor else int(tf.shape(tf.shape(x)))
+def get_num_dims(x, /, *, as_array=False):
+    return tf.shape(tf.shape(x))[0] if as_array else int(tf.shape(tf.shape(x)))
 
 
 def inplace_arrays_supported():
@@ -164,13 +183,13 @@ def inplace_update(
             else:
                 x = ivy.Array(x_native)
         elif ensure_in_backend:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         return x
@@ -191,9 +210,10 @@ def multiprocessing(context=None):
 def scatter_flat(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if indices.dtype != tf.int32 or indices.dtype != tf.int64:
@@ -204,7 +224,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        assert len(target.shape) == 1 and target.shape[0] == size
+        ivy.assertions.check_equal(len(target.shape), 1)
+        ivy.assertions.check_equal(target.shape[0], size)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
@@ -232,7 +253,7 @@ def scatter_flat(
                 updates,
             )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -243,9 +264,10 @@ def scatter_flat(
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
+    /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    reduction: str = "sum",
     *,
+    reduction: str = "sum",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.exists(out) and not isinstance(updates, Number):
@@ -314,7 +336,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -374,7 +396,7 @@ def scatter_nd(
                 tf.zeros(shape, dtype=dtype), indices, updates
             )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -450,6 +472,8 @@ def indices_where(
 
 def shape(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     as_array: bool = False,
 ) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
@@ -471,14 +495,13 @@ def vmap(
 
         # if in_axis is a non-integer, its length should be equal to pos args.
         if isinstance(in_axes, (list, tuple)):
-            try:
-                assert (len(args)) == len(in_axes)
-            except AssertionError:
-                raise Exception(
-                    """The in_axes should have length equivalent to the 
-                number of positional arguments to the function being vectorized
-                or it should be an integer."""
-                )
+            ivy.assertions.check_equal(
+                len(args),
+                len(in_axes),
+                message="""in_axes should have a length equivalent to the number
+                of positional arguments to the function being vectorized or it
+                should be an integer""",
+            )
 
         # checking axis_size consistency
         axis_size = set()
@@ -492,17 +515,20 @@ def vmap(
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 """Inconsistent sizes. All mapped axes should have the same size"""
             )
 
         # Making sure not all in_axes are None
         if isinstance(in_axes, (list, tuple)):
-            assert not all(
-                ax is None for ax in in_axes
-            ), "At least one of the axes should be specified (not None)."
+            ivy.assertions.check_any(
+                [ivy.exists(ax) for ax in in_axes],
+                message="At least one of the axes should be specified (not None)",
+            )
         else:
-            assert not (in_axes is None), "single value in_axes should not be None."
+            ivy.assertions.check_exists(
+                in_axes, message="single value in_axes should not be None"
+            )
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:

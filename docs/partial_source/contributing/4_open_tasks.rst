@@ -8,6 +8,9 @@ Open Tasks
 .. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
 .. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
+.. _`issue description`: https://github.com/unifyai/ivy/issues/1526
+.. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
+.. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -153,6 +156,7 @@ for this task.
 
 The general workflow for this task is:
 
+#. find the correct location for the function by following the *Where to place a frontend function* subsection below
 #. implement the function by following the `Ivy Frontends`_ guide
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
@@ -210,6 +214,68 @@ issue to request for the function to be added to Ivy. Meanwhile, you can select
 another frontend function to work on from the ToDo list! If you're stuck on a
 function which requires complex compositions, you're allowed to reselect a function
 too!
+
+Where to place a frontend function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The placement of new frontend functions for a given backend should follow the categorisation of the backend API as
+faithfully as possible. In each `issue description`_, there will be a link to the relevant `reference API`_. Check
+where the function you're working on is located, e.g. :code:`numpy.inner` falls under :code:`numpy.linalg`. Then, in the
+Ivy source code, check :code:`ivy/functional/frontends/[backend]` for pre-existing files which best match the function's
+category in the backend reference API.
+
+Taking :code:`numpy.inner` as an example, we can see that there are a few :code:`ivy/functional/frontends/numpy`
+sub-directories to choose from:
+
+.. code-block:: bash
+    :emphasize-lines: 4
+
+    creation_routines
+    fft
+    indexing_routines
+    linalg
+    logic
+    ma
+    manipulation_routines
+    mathematical_functions
+    matrix
+    ndarray
+    random
+    sorting_searching_counting
+    statistics
+    ufunc
+
+There is a :code:`linalg` sub-directory, so we choose this. Then we need to choose
+from the files at this hierarchy:
+
+.. code-block:: bash
+    :emphasize-lines: 3
+
+    __init__.py
+    decompositions.py
+    matrix_and_vector_products.py
+    matrix_eigenvalues.py
+    norms_and_other_numbers.py
+    solving_equations_and_inverting_matrices.py
+
+
+This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
+:code:`matrix_and_vector_products.py` seems like the most appropriate option. It is important to note that some functions
+require the :code:`np.linalg.[func]` namespace, as can gleamed from the numpy `reference API`_.
+These functions are listed out under the :code:`functional/frontends/numpy/__init__.py` `imports`_. There are some
+functions which have not been implemented yet, and are therefore commented out. Once you have finished the implementation of
+one of these functions, uncomment it from the list.
+
+
+The location of
+:code:`test_numpy_inner` should mirror the location of its corresponding function, this time in
+:code:`ivy_tests/test_ivy/test_frontends/[backend]`.
+
+If you're unsure about where to put the function you're working on, explore the content of these files to see if you
+can find a similar function. In :code:`matrix_and_vector_products.py`, we can see other functions such as :code:`outer`
+that are similar to :code:`inner`. This is confirmation that we've found the correct place! If many of the files are
+empty and you're unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.
+
 
 Ivy API Extensions
 ------------------

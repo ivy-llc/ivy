@@ -72,6 +72,21 @@ class Finfo:
         return float(self._tf_finfo.tiny)
 
 
+class Bfloat16Finfo:
+    def __init__(self):
+        self.resolution = 0.01
+        self.bits = 16
+        self.eps = 0.0078125
+        self.max = 3.38953e38
+        self.min = -3.38953e38
+        self.tiny = 1.17549e-38
+
+    def __repr__(self):
+        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
+            self.resolution, self.min, self.max, "bfloat16"
+        )
+
+
 # Array API Standard #
 # -------------------#
 
@@ -152,7 +167,7 @@ def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     if isinstance(type, tf.Tensor):
         type = type.dtype
     if ivy.as_native_dtype(type) == tf.bfloat16:
-        return Finfo(tf.experimental.numpy.finfo(tf.float32))
+        return Finfo(Bfloat16Finfo())
     return Finfo(tf.experimental.numpy.finfo(ivy.as_native_dtype(type)))
 
 

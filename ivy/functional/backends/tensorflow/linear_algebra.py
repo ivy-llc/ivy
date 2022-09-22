@@ -1,4 +1,7 @@
 # global
+
+import tensorflow as tf
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
@@ -42,7 +45,7 @@ def cross(
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.cross(x1, x2, axis=axis)
 
-
+@with_unsupported_dtypes({"2.9.1 and below": ("float16","bfloat16",)}, version)
 def det(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -50,6 +53,7 @@ def det(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.det(x)
+
 
 
 def diagonal(
@@ -69,7 +73,8 @@ def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.eigh(x)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, version)
+
+@with_unsupported_dtypes({"2.9.1 and below": ("float16","bfloat16")}, version)
 def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -132,7 +137,7 @@ def matmul(
         or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
         or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
     ):
-        raise Exception("Error,shapes not compatible")
+        raise ivy.exceptions.IvyException("Error,shapes not compatible")
 
     x1_padded = False
     x1_padded_2 = False
@@ -248,20 +253,13 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if rtol is None:
-        ret = tf.linalg.matrix_rank(x)
-    elif tf.size(x) == 0:
-        ret = 0
-    elif tf.size(x) == 1:
-        ret = tf.math.count_nonzero(x)
+    singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    max_value = tf.math.reduce_max(singular_values)
+    if rtol:
+        num = tf.experimental.numpy.sum(singular_values > max_value * rtol)
     else:
-        rtol = tf.convert_to_tensor([rtol], dtype=tf.float32)
-        rtol = tf.reshape(rtol, [-1])
-        if len(rtol) > 1:
-            rtol = rtol[0]
-        x, rtol = ivy.promote_types_of_inputs(x, rtol)
-        ret = tf.linalg.matrix_rank(x, rtol)
-    return tf.cast(ret, ivy.default_int_dtype(as_native=True))
+        num = tf.size(singular_values)
+    return tf.cast(num, ivy.default_int_dtype(as_native=True))
 
 
 @with_unsupported_dtypes(
@@ -301,7 +299,7 @@ def pinv(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16")}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16","bfloat16")}, version)
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -311,11 +309,12 @@ def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
         q, r = tf.linalg.qr(x, full_matrices=True)
         ret = res(q, r)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed "
             "for the tensorflow backend."
         )
     return ret
+
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
@@ -329,7 +328,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16","bfloat16")}, version)
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -365,6 +364,7 @@ def solve(
     return ret
 
 
+
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, version)
 def svd(
     x: Union[tf.Tensor, tf.Variable],
@@ -398,7 +398,7 @@ def tensordot(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # find type to promote to
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
 
     # type casting to float32 which is acceptable for tf.tensordot
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
@@ -428,19 +428,16 @@ def vecdot(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = tf.experimental.numpy.promote_types(x1.dtype, x2.dtype)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
         x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
-    else:
-        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
-    ret = tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
-    return ret
+    return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, version)
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

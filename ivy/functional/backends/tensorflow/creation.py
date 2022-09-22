@@ -11,8 +11,16 @@ from ivy import (
     as_ivy_dtype,
 )
 
+
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import version
+
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+)
+
 
 
 # Array API Standard #
@@ -56,6 +64,10 @@ def arange(
             else:
                 return tf.range(start, stop, delta=step, dtype=dtype)
 
+
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 
 def asarray(
     object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],

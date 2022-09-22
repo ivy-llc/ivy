@@ -46,7 +46,7 @@ def conv1d_transpose(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if not ivy.gpu_is_available() and dilations > 1:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     filters = tf.transpose(filters, (0, 2, 1))
@@ -113,7 +113,7 @@ def conv2d_transpose(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.transpose(filters, (0, 1, 3, 2))
     if not ivy.gpu_is_available() and (dilations[0] > 1 or dilations[1] > 1):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "conv2d_transpose does not support dilations greater than 1 when device"
             "is cpu for tensorflow"
         )
@@ -156,7 +156,7 @@ def depthwise_conv2d(
         and (dilations[0] > 1 or dilations[1] > 1)
         and (strides[0] > 1 or strides[1] > 1)
     ):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "depthwise_conv2d does not support dilations greater than 1 and"
             "strides greater than 1 when device is cpu for tensorflow"
         )
@@ -215,7 +215,7 @@ def conv3d_transpose(
     if not ivy.gpu_is_available() and (
         dilations[1] > 1 or dilations[2] > 1 or dilations[3] > 1
     ):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "conv3d_transpose does not support dilations greater than 1 when"
             "device is cpu for tensorflow"
         )
@@ -247,3 +247,53 @@ def conv3d_transpose(
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
+
+
+@with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, version)
+def conv_general_dilated(
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    dilations: int = 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    data_format = ivy.get_x_data_format(dims, data_format)
+    if dims == 1:
+        return conv1d(
+            x,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
+        )
+    elif dims == 2:
+        return conv2d(
+            x,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
+        )
+    else:
+        return conv3d(
+            x,
+            filters,
+            strides,
+            padding,
+            data_format=data_format,
+            dilations=dilations,
+            out=out,
+        )
+
+
+
+

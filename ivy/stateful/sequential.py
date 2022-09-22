@@ -38,13 +38,13 @@ class Sequential(Module):
                     submod.v = v["submodules"]["v" + str(i)]
                 except KeyError:
                     if submod.v:
-                        raise Exception(
+                        raise ivy.exceptions.IvyException(
                             "variables v passed to Sequential class must have key "
                             "chains in the form of "
                             '"submodules/v{}", where {} is an idx'
                         )
         self._submodules = list(sub_modules)
-        Module.__init__(self, device, v, dtype=dtype)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _forward(self, inputs):
         """
@@ -67,7 +67,7 @@ class Sequential(Module):
                 x = submod(x, v=self.v.submodules["v" + str(i)])
             except KeyError:
                 if submod.v:
-                    raise Exception(
+                    raise ivy.exceptions.IvyException(
                         "variables v passed to Sequential class must have key chains "
                         "in the form of "
                         '"submodules/v{}", where {} is an idx'

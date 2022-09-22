@@ -167,7 +167,7 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
     if dtype_in in native_dtype_dict.keys():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise TypeError(
+        raise ivy.exceptions.IvyException(
             f"Cannot convert to PyTorch dtype. {dtype_in} is not supported by PyTorch."
         )
 

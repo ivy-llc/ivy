@@ -18,6 +18,13 @@ NativeShape = tuple
 
 NativeSparseArray = None
 
+
+# devices
+valid_devices = ("cpu",)
+
+invalid_devices = ("gpu", "tpu")
+
+
 # data types (preventing cyclic imports)
 int8 = ivy.IntDtype("int8")
 int16 = ivy.IntDtype("int16")

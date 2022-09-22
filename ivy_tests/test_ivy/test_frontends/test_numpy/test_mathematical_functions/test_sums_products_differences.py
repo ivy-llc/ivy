@@ -3,30 +3,17 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-@st.composite
-def _dtype_x_axis(draw, **kwargs):
-    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(
-        st.one_of(
-            helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)), st.none()
-        )
-    )
-    where = draw(
-        st.one_of(helpers.array_values(dtype=ivy.bool, shape=shape), st.none())
-    )
-    return (dtype, x, axis), where
-
-
 # sum
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
@@ -45,7 +32,7 @@ def test_numpy_sum(
     with_out,
     fw,
 ):
-    (input_dtype, x, axis), where = dtype_x_axis
+    input_dtype, x, axis = dtype_x_axis
     if initial is None:
         where = True
     helpers.test_frontend_function(
@@ -69,7 +56,9 @@ def test_numpy_sum(
 # prod
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float")
+    ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
@@ -270,7 +259,8 @@ def test_numpy_nancumsum(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
-        large_value_safety_factor=1.2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(
@@ -322,7 +312,8 @@ def test_numpy_nanprod(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
-        large_value_safety_factor=1.2,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     num_positional_args=helpers.num_positional_args(

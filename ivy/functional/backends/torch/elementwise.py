@@ -20,9 +20,12 @@ def add(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        return torch.add(x1, x2, alpha=alpha, out=out)
     return torch.add(x1, x2, out=out)
 
 
@@ -560,9 +563,12 @@ def subtract(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        return torch.subtract(x1, x2, alpha=alpha, out=out)
     return torch.subtract(x1, x2, out=out)
 
 
@@ -608,7 +614,7 @@ def bitwise_right_shift(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return torch.bitwise_right_shift(x1, x2, out=out)
 
 
@@ -623,7 +629,7 @@ def bitwise_left_shift(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x2 = torch.clamp(x2, max=torch.iinfo(x1.dtype).bits - 1)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return torch.bitwise_left_shift(x1, x2, out=out)
 
 
@@ -693,3 +699,19 @@ def rad2deg(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 
 
 rad2deg.support_native_out = True
+
+
+def trunc_divide(
+    x1: Union[float, torch.Tensor],
+    x2: Union[float, torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret = torch.div(x1, x2, rounding_mode="trunc")
+    if ivy.is_float_dtype(x1.dtype):
+        ret = ret.to(x1.dtype)
+    else:
+        ret = ret.to(ivy.default_float_dtype(as_native=True))
+    return ret

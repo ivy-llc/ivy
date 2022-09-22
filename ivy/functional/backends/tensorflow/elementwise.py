@@ -9,15 +9,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import version
 
 
-def _clamp_bits(x1, x2):
-    x2 = tf.clip_by_value(
-        x2,
-        tf.constant(0, dtype=x2.dtype),
-        tf.constant(x1.dtype.size * 8 - 1, dtype=x2.dtype),
-    )
-    return x1, x2
-
-
 def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -53,10 +44,13 @@ def add(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.add(x1, x2)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return tf.add(x1, x2)
 
 
 def asin(
@@ -140,7 +134,7 @@ def bitwise_left_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -166,7 +160,7 @@ def bitwise_right_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = _clamp_bits(x1, x2)
+    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -605,10 +599,13 @@ def subtract(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.subtract(x1, x2)
+    if alpha not in (1, None):
+        x2 = x2 * alpha
+    return tf.experimental.numpy.subtract(x1, x2)
 
 
 def tan(
@@ -637,7 +634,7 @@ def trunc(
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x
     if not ivy.is_array(x):
-        raise Exception("Input must be array")
+        raise ivy.exceptions.IvyException("Input must be array")
     elif not ("int" in str(x.dtype)):
         if not ret.get_shape().ndims == 0:
             ret = tf.tensor_scatter_nd_update(

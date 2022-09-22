@@ -1,8 +1,11 @@
 # global
-from collections import namedtuple
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
 
 import torch
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+
+from collections import namedtuple
+
+
 
 # local
 import ivy
@@ -77,7 +80,7 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
 def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.eigh(x, out=out)
 
@@ -85,9 +88,10 @@ def eigh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 eigh.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
 def eigvalsh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, out=out)
+
 
 
 eigvalsh.support_native_out = True
@@ -154,7 +158,7 @@ def matrix_power(
 matrix_power.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
 def matrix_rank(
     x: torch.Tensor,
     /,
@@ -163,8 +167,9 @@ def matrix_rank(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
-    ret = torch.linalg.matrix_rank(x, atol=rtol, out=out)
+    ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
     return torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
+
 
 
 matrix_rank.support_native_out = True
@@ -201,7 +206,7 @@ def pinv(
 pinv.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
 def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
 ) -> NamedTuple:
@@ -213,10 +218,11 @@ def qr(
         q, r = torch.qr(x, some=False, out=out)
         ret = res(q, r)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed for the torch backend."
         )
     return ret
+
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
@@ -231,7 +237,7 @@ def slogdet(
 slogdet.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
 def solve(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -261,6 +267,7 @@ def solve(
     if expanded_last:
         ret = torch.squeeze(ret, dim=-1)
     return ret
+
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
@@ -320,10 +327,10 @@ def vecdot(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    dtype = torch.promote_types(x1.dtype, x2.dtype)
-    if x1.dtype != x2.dtype:
-        x1, x2 = x1.type(dtype), x2.type(dtype)
-    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out)
+    dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
+    if dtype != "float64":
+        x1, x2 = x1.to(dtype=torch.float32), x2.to(dtype=torch.float32)
+    return torch.tensordot(x1, x2, dims=([axis], [axis]), out=out).to(dtype=dtype)
 
 
 vecdot.support_native_out = True
@@ -331,7 +338,7 @@ vecdot.support_native_out = True
 
 def vector_norm(
     x: torch.Tensor,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,
