@@ -2,7 +2,7 @@
 signature.
 """
 
-from typing import Optional
+from typing import Optional, Union
 
 # global
 import tensorflow as tf
@@ -12,20 +12,20 @@ from tensorflow.python.types.core import Tensor
 import ivy
 
 
-def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
-    return tf.nn.relu(x)
+def gelu(
+    x: Tensor, /, *, approximate: bool = True, out: Optional[Tensor] = None
+) -> Tensor:
+    return tf.nn.gelu(x, approximate)
 
 
 def leaky_relu(
-    x: Tensor, /, *, alpha: Optional[float] = 0.2, out: Optional[Tensor] = None
+    x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.leaky_relu(x, alpha)
 
 
-def gelu(
-    x: Tensor, /, *, approximate: Optional[bool] = True, out: Optional[Tensor] = None
-) -> Tensor:
-    return tf.nn.gelu(x, approximate)
+def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.relu(x)
 
 
 def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
@@ -40,5 +40,21 @@ def softmax(
     return tf.nn.softmax(x, axis)
 
 
-def softplus(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
-    return tf.nn.softplus(x)
+def softplus(
+    x: Tensor,
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+
+    if beta is not None and beta != 1:
+        x_beta = x * beta
+        res = (tf.nn.softplus(x_beta)) / beta
+    else:
+        x_beta = x
+        res = tf.nn.softplus(x)
+    if threshold is not None:
+        return tf.where(x_beta > threshold, x, res)
+    return res

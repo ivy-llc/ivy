@@ -182,7 +182,8 @@ def x_and_scaled_attention(draw, dtypes):
             shape=mask_shape,
             min_value=0,
             max_value=1,
-            large_value_safety_factor=1,
+            large_abs_safety_factor=2,
+            safety_factor_scale="linear",
         )
     )
     return dtype, q, k, v, mask, scale
@@ -282,12 +283,14 @@ def x_and_mha(draw, dtypes):
     dtype_mha=x_and_mha(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="multi_head_attention"),
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -304,7 +307,7 @@ def test_multi_head_attention(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=3,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
@@ -344,7 +347,11 @@ def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+def x_and_filters(
+    draw, dim: int = 2, transpose: bool = False, depthwise=False, general=False
+):
+    if not isinstance(dim, int):
+        dim = draw(dim)
     strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
     batch_size = draw(st.integers(1, 5))
@@ -387,24 +394,26 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         filter_shape = filter_shape + (input_channels, output_channels)
     else:
         filter_shape = filter_shape + (input_channels,)
+    channel_first = True
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = (batch_size,) + x_dim + (input_channels,)
+        channel_first = False
     else:
         x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         helpers.array_values(
             dtype=dtype,
             shape=x_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     filters = draw(
         helpers.array_values(
             dtype=dtype,
             shape=filter_shape,
-            large_value_safety_factor=10,
-            small_value_safety_factor=0.1,
+            min_value=0.0,
+            max_value=1.0,
         )
     )
     if transpose:
@@ -418,6 +427,9 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             padding,
             output_shape,
         )
+    if general:
+        data_format = "channel_first" if channel_first else "channel_last"
+
     return dtype, vals, filters, dilations, data_format, strides, padding
 
 
@@ -454,9 +466,11 @@ def test_conv1d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv1d",
+        rtol_=1e-02,
+        atol_=1e-02,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        filters=np.asarray(filters, dtype[1]),
         strides=stride,
         padding=pad,
         data_format=data_format,
@@ -498,9 +512,11 @@ def test_conv1d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv1d_transpose",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
-        filters=np.asarray(filters, dtype[0]),
+        filters=np.asarray(filters, dtype[1]),
         strides=stride,
         padding=pad,
         output_shape=output_shape,
@@ -540,6 +556,8 @@ def test_conv2d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
@@ -587,6 +605,8 @@ def test_conv2d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv2d_transpose",
+        rtol_=1e-2,
+        atol_=1e-2,
         device_=device,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
@@ -636,6 +656,8 @@ def test_depthwise_conv2d(
         instance_method=instance_method,
         fw=fw,
         fn_name="depthwise_conv2d",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
@@ -677,11 +699,58 @@ def test_conv3d(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
         strides=stride,
         padding=pad,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dims=st.shared(st.integers(1, 3), key="dims"),
+    x_f_d_df=x_and_filters(dim=st.shared(st.integers(1, 3), key="dims"), general=True),
+    num_positional_args=helpers.num_positional_args(fn_name="conv_general_dilated"),
+)
+def test_conv_general_dilated(
+    *,
+    dims,
+    x_f_d_df,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+    device,
+):
+    dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dtype = [dtype] * 2
+    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=False,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="conv_general_dilated",
+        rtol_=1e-2,
+        atol_=1e-2,
+        ground_truth_backend="jax",
+        x=np.asarray(x, dtype[0]),
+        filters=np.asarray(filters, dtype[0]),
+        strides=stride,
+        padding=pad,
+        dims=dims,
         data_format=data_format,
         dilations=dilations,
     )
@@ -722,6 +791,8 @@ def test_conv3d_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="conv3d_transpose",
+        rtol_=1e-2,
+        atol_=1e-2,
         ground_truth_backend="jax",
         x=np.asarray(x, dtype[0]),
         filters=np.asarray(filters, dtype[0]),
@@ -803,11 +874,13 @@ def x_and_lstm(draw, dtypes):
     dtype_lstm=x_and_lstm(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
+    num_positional_args=helpers.num_positional_args(fn_name="lstm_update"),
 )
 def test_lstm_update(
     *,
     dtype_lstm,
     as_variable,
+    num_positional_args,
     native_array,
     container,
     instance_method,
@@ -832,14 +905,14 @@ def test_lstm_update(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=5,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="lstm_update",
-        rtol_=1e-02,
-        atol_=1e-02,
+        rtol_=1e-01,
+        atol_=1e-01,
         x=np.asarray(x_lstm, dtype=dtype),
         init_h=np.asarray(init_h, dtype=dtype),
         init_c=np.asarray(init_c, dtype=dtype),

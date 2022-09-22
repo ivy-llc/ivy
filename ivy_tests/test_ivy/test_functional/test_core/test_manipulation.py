@@ -9,7 +9,6 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -35,7 +34,9 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes())
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
+    )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
@@ -52,11 +53,9 @@ def _arrays_idx_n_dtypes(draw):
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     num_positional_args=helpers.num_positional_args(fn_name="concat"),
-    data=st.data(),
 )
 def test_concat(
     *,
-    data,
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
     with_out,
@@ -98,11 +97,9 @@ def test_concat(
         force_int=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="expand_dims"),
-    data=st.data(),
 )
 def test_expand_dims(
     *,
-    data,
     dtype_value,
     axis,
     as_variable,
@@ -145,11 +142,9 @@ def test_expand_dims(
         force_int=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="flip"),
-    data=st.data(),
 )
 def test_flip(
     *,
-    data,
     dtype_value,
     axis,
     as_variable,
@@ -195,11 +190,9 @@ def _permute_dims_helper(draw):
     ),
     permutation=_permute_dims_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="permute_dims"),
-    data=st.data(),
 )
 def test_permute_dims(
     *,
-    data,
     dtype_value,
     permutation,
     as_variable,
@@ -238,11 +231,9 @@ def test_permute_dims(
         shape=st.shared(helpers.get_shape(), key="value_shape")
     ),
     num_positional_args=helpers.num_positional_args(fn_name="reshape"),
-    data=st.data(),
 )
 def test_reshape(
     *,
-    data,
     dtype_value,
     reshape,
     as_variable,
@@ -301,11 +292,11 @@ def test_reshape(
         available_dtypes=[ivy.int32],
         max_num_dims=1,
         min_dim_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
         max_dim_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
     ),
@@ -314,20 +305,18 @@ def test_reshape(
         force_tuple=True,
         unique=False,
         min_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
         max_size=st.shared(
-            helpers.array_values(dtype="int32", shape=(), min_value=1),
+            helpers.array_values(dtype="int32", shape=(), min_value=1, max_value=10),
             key="shift_len",
         ),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="roll"),
-    data=st.data(),
 )
 def test_roll(
     *,
-    data,
     dtype_value,
     shift,
     axis,
@@ -385,11 +374,9 @@ def _squeeze_helper(draw):
     ),
     axis=_squeeze_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="squeeze"),
-    data=st.data(),
 )
 def test_squeeze(
     *,
-    data,
     dtype_value,
     axis,
     as_variable,
@@ -424,7 +411,7 @@ def _stack_helper(draw):
     num_arrays = draw(
         st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
     )
-    dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
 
@@ -443,11 +430,9 @@ def _stack_helper(draw):
         force_int=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="stack"),
-    data=st.data(),
 )
 def test_stack(
     *,
-    data,
     dtypes_arrays,
     axis,
     as_variable,
@@ -487,12 +472,10 @@ def _basic_min_x_max(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
         )
     )
-    min_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=1, max_value=10)
-    )
+    min_val = draw(helpers.array_values(dtype=dtype, shape=()))
     max_val = draw(
-        helpers.array_values(dtype=dtype, shape=(), min_value=11, max_value=20)
-    )  # TODO remove hardcoded values.
+        helpers.array_values(dtype=dtype, shape=()).filter(lambda x: x > min_val)
+    )
     return ([dtype] * 3), (value, min_val, max_val)
 
 
@@ -501,11 +484,9 @@ def _basic_min_x_max(draw):
 @given(
     dtype_x_min_max=_basic_min_x_max(),
     num_positional_args=helpers.num_positional_args(fn_name="clip"),
-    data=st.data(),
 )
 def test_clip(
     *,
-    data,
     dtype_x_min_max,
     as_variable,
     with_out,
@@ -537,15 +518,15 @@ def test_clip(
 def _pad_helper(draw):
     dtype, value, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_dtypes, ret_shape=True, min_num_dims=1
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True, min_num_dims=1
         )
     )
     pad_width = tuple(
         draw(
             st.lists(
                 st.tuples(
-                    helpers.ints(min_value=0, max_value=100),
-                    helpers.ints(min_value=0, max_value=100),
+                    helpers.ints(min_value=0, max_value=5),
+                    helpers.ints(min_value=0, max_value=5),
                 ),
                 min_size=len(shape),
                 max_size=len(shape),
@@ -561,11 +542,9 @@ def _pad_helper(draw):
 @given(
     dtype_value_pad_width_constant=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
-    data=st.data(),
 )
 def test_constant_pad(
     *,
-    data,
     dtype_value_pad_width_constant,
     as_variable,
     with_out,
@@ -612,10 +591,10 @@ def _repeat_helper(draw):
     )
     repeat = draw(
         helpers.dtype_and_values(
-            available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+            available_dtypes=helpers.get_dtypes("integer"),
             shape=repeat_shape,
             min_value=0,
-            max_value=100,
+            max_value=10,
         )
     )
     return repeat
@@ -638,13 +617,11 @@ def _repeat_helper(draw):
         ),
         key="axis",
     ),
-    repeat=st.one_of(st.integers(1, 100), _repeat_helper()),
+    repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
     num_positional_args=helpers.num_positional_args(fn_name="repeat"),
-    data=st.data(),
 )
 def test_repeat(
     *,
-    data,
     dtype_value,
     axis,
     repeat,
@@ -719,7 +696,7 @@ def _split_helper(draw):
     If noss is a tuple, then the sum of the values in the tuple must equal the size of
     the dimension chosen from the shape of the array generated.
     """
-    noss_dtype = draw(st.sampled_from(ivy_np.valid_int_dtypes))
+    noss_dtype = draw(st.sampled_from(draw(helpers.get_dtypes("integer"))))
     num_or_size_splits = []
     while sum(num_or_size_splits) < shape[axis]:
         split_value = draw(
@@ -728,6 +705,8 @@ def _split_helper(draw):
                 shape=(),
                 min_value=0,
                 max_value=shape[axis] - sum(num_or_size_splits),
+                exclude_min=False,
+                exclude_max=False,
             )
         )
         num_or_size_splits.append(split_value)
@@ -751,11 +730,9 @@ def _split_helper(draw):
     with_remainder=st.booleans(),
     num_or_size_splits=_split_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="split"),
-    data=st.data(),
 )
 def test_split(
     *,
-    data,
     dtype_value,
     num_or_size_splits,
     axis,
@@ -802,11 +779,9 @@ def test_split(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
     ),
     num_positional_args=helpers.num_positional_args(fn_name="swapaxes"),
-    data=st.data(),
 )
 def test_swapaxes(
     *,
-    data,
     dtype_value,
     axis0,
     axis1,
@@ -857,7 +832,7 @@ def test_swapaxes(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     repeat=helpers.dtype_and_values(
-        available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+        available_dtypes=helpers.get_dtypes("signed_integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
             lambda rep: (len(rep),)
         ),
@@ -865,11 +840,9 @@ def test_swapaxes(
         max_value=10,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="tile"),
-    data=st.data(),
 )
 def test_tile(
     *,
-    data,
     dtype_value,
     repeat,
     as_variable,
@@ -910,11 +883,9 @@ def test_tile(
 @given(
     dtype_value_pad_width=_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="zero_pad"),
-    data=st.data(),
 )
 def test_zero_pad(
     *,
-    data,
     dtype_value_pad_width,
     as_variable,
     with_out,
@@ -926,7 +897,6 @@ def test_zero_pad(
 ):
     # Drop the generated constant as only 0 is used
     dtype, value, pad_width, _ = dtype_value_pad_width
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -939,4 +909,47 @@ def test_zero_pad(
         fn_name="zero_pad",
         x=np.asarray(value, dtype=dtype),
         pad_width=pad_width,
+    )
+
+
+# unstack
+@handle_cmd_line_args
+@given(
+    x_n_dtype_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=5,
+        min_axis=1,
+        max_axis=4,
+    ),
+    keepdims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="unstack"),
+)
+def test_unstack(
+    x_n_dtype_axis,
+    keepdims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    device,
+    fw,
+):
+    # smoke test
+    dtype, x, axis = x_n_dtype_axis
+    if axis >= len(np.asarray(x, dtype=dtype).shape):
+        axis = len(np.asarray(x, dtype=dtype).shape) - 1
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="unstack",
+        x=np.asarray(x, dtype=dtype),
+        axis=axis,
+        keepdims=keepdims,
     )

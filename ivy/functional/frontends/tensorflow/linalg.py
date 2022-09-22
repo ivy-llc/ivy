@@ -33,3 +33,13 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 
 def tensordot(x, y, axes, name=None):
     return ivy.tensordot(x, y, axes)
+
+
+tensordot.supported_dtypes = ("float32", "float64")
+
+
+def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
+    return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
+
+
+eye.unsupported_dtypes = {"torch": ("float16", "bfloat16")}

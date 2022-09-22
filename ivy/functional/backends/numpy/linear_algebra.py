@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 # local
 import ivy
@@ -32,10 +32,13 @@ def cross(
     x2: np.ndarray,
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.cross(a=x1, b=x2, axis=axis)
+    return np.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
 @_handle_0_dim_output
@@ -58,22 +61,50 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-def eigh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.linalg.eigh(x)
+def eigh(
+    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.linalg.eigh(x, UPLO=UPLO)
 
 
 eigh.unsupported_dtypes = ("float16",)
 
 
-def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def eigvalsh(
+    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.linalg.eigvalsh(x)
 
 
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
-def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.linalg.inv(x)
+@_handle_0_dim_output
+def inner(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return np.inner(x1, x2)
+
+
+def inv(
+    x: np.ndarray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if np.any(np.linalg.det(x.astype("float64")) == 0):
+        return x
+    else:
+        if adjoint is False:
+            ret = np.linalg.inv(x)
+            return ret
+        else:
+            cofactor = np.linalg.inv(x).T * np.linalg.det(x)
+            inverse = np.multiply(np.divide(1, np.linalg.det(x)), cofactor.T)
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -125,11 +156,13 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if rtol is None:
-        ret = np.linalg.matrix_rank(x)
-    else:
-        ret = np.linalg.matrix_rank(x, rtol)
-    return np.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
+    return np.linalg.matrix_rank(x, tol=rtol)
+
+
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -253,7 +286,7 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,
