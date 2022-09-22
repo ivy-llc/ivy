@@ -1,6 +1,6 @@
 {
       "numpy": {
-            "array_object": " ",
+            "array_object": "success",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
@@ -11,7 +11,7 @@
             "searching_functions": " ",
             "set_functions": "success",
             "signatures": " ",
-            "sorting_functions": "success",
+            "sorting_functions": " ",
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": "failure",
