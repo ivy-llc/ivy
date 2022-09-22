@@ -5,7 +5,7 @@ def asarray(
     a,
     dtype=None,
     order=None,
-    /,
+    *,
     like=None,
 ):
     if dtype:
