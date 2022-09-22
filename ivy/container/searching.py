@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -14,7 +14,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -53,7 +53,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -91,7 +91,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -130,7 +130,7 @@ class ContainerWithSearching(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -275,3 +275,96 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_where(self, x1, x2, out=out)
+
+    # Extra #
+    # ----- #
+
+    @staticmethod
+    def static_argwhere(
+        x: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Boolean array, for which indices are desired.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "argwhere",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def argwhere(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.argwhere. This method
+        simply wraps the function, and so the docstring for ivy.argwhere
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Boolean array, for which indices are desired.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains will
+            be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied. Default
+            is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+
+        Returns
+        -------
+        ret
+            Indices for where the boolean array is True.
+        """
+        return self.static_argwhere(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

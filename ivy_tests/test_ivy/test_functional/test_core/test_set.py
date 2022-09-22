@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, assume, settings
+from hypothesis import given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -19,7 +19,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
 )
-@settings(max_examples=1, deadline=None)
 def test_unique_values(
     *,
     dtype_and_x,

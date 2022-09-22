@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 # local
 import ivy
@@ -72,8 +72,32 @@ def eigvalsh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarra
 eigvalsh.unsupported_dtypes = ("float16",)
 
 
-def inv(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.linalg.inv(x)
+@_handle_0_dim_output
+def inner(
+    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return np.inner(x1, x2)
+
+
+def inv(
+    x: np.ndarray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if np.any(np.linalg.det(x.astype("float64")) == 0):
+        return x
+    else:
+        if adjoint is False:
+            ret = np.linalg.inv(x)
+            return ret
+        else:
+            cofactor = np.linalg.inv(x).T * np.linalg.det(x)
+            inverse = np.multiply(np.divide(1, np.linalg.det(x)), cofactor.T)
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -125,11 +149,19 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if rtol is None:
-        ret = np.linalg.matrix_rank(x)
+    singular_values = np.linalg.svd(x, compute_uv=False)
+    max_value = np.max(singular_values, initial=0)
+    if rtol:
+        num = np.sum(singular_values > max_value * rtol)
     else:
-        ret = np.linalg.matrix_rank(x, rtol)
-    return np.asarray(ret, dtype=ivy.default_int_dtype(as_native=True))
+        num = singular_values.size
+    return np.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
+
+
+matrix_rank.unsupported_dtypes = (
+    "float16",
+    "bfloat16",
+)
 
 
 def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -253,7 +285,7 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     *,

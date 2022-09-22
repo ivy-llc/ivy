@@ -74,9 +74,9 @@ single line of code like so:
 
 .. code-block:: python
 
-    def indices_where(
-        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    def argwhere(
+        x: Union[ivy.Array, ivy.NativeArray], *, out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
 
 When a commit is attempted, `pre-commit` would detect this error by running the lint
 check, and it would then reformat the arguments automatically.
@@ -101,11 +101,11 @@ and committed accordingly.
 
 .. code-block:: python
 
-    def indices_where(
+    def argwhere(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
-        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
 
 
 If the code is all formatted correctly, then in this case `pre-commit` will not modify
