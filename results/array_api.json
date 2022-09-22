@@ -3,7 +3,7 @@
             "array_object": "success",
             "constants": " ",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": " ",
@@ -11,7 +11,7 @@
             "searching_functions": " ",
             "set_functions": "success",
             "signatures": "failure",
-            "sorting_functions": " ",
+            "sorting_functions": "success",
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": "failure",
@@ -68,7 +68,7 @@
             "sorting_functions": "success",
             "special_cases": "success",
             "statistical_functions": "success",
-            "type_promotion": " ",
+            "type_promotion": "failure",
             "utility_functions": " "
       }
 }
