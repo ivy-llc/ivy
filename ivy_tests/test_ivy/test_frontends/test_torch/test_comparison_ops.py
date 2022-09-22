@@ -272,12 +272,11 @@ def test_torch_isclose(
     )
 
 
-# isifinite
+# isfinite
 @handle_cmd_line_args
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isfinite"
@@ -309,7 +308,6 @@ def test_torch_isfinite(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isinf"
@@ -341,7 +339,6 @@ def test_torch_isinf(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isposinf"
@@ -373,7 +370,6 @@ def test_torch_isposinf(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isneginf"
@@ -449,7 +445,6 @@ def test_torch_sort(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        allow_inf=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isnan"
@@ -626,7 +621,6 @@ def test_torch_minimum(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        allow_inf=True,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -663,7 +657,6 @@ def test_torch_fmax(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        allow_inf=True,
         shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(

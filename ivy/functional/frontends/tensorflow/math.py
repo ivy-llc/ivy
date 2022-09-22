@@ -98,14 +98,6 @@ def divide_no_nan(x, y, name="divide_no_nan"):
     )
 
 
-def multiply_no_nan(x, y, name="multiply_no_nan"):
-    return ivy.where(
-        y == 0,
-        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
-        x * y,
-    )
-
-
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
 
@@ -140,6 +132,14 @@ def logical_xor(x, y, name="LogicalXor"):
 
 def multiply(x, y, name=None):
     return ivy.multiply(x, y)
+
+
+def multiply_no_nan(x, y, name="multiply_no_nan"):
+    return ivy.where(
+        y == 0,
+        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
+        x * y,
+    )
 
 
 def negative(x, name=None):
@@ -201,6 +201,10 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
     return ivy.max(input_tensor, axis=axis, keepdims=keepdims)
 
 
+def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
+
+
 def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
     return ivy.min(input_tensor, axis=axis, keepdims=keepdims)
 
@@ -219,10 +223,6 @@ def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )
-
-
-def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
-    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
 def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
