@@ -6,7 +6,7 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": "success",
+            "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
             "set_functions": "success",
@@ -51,11 +51,11 @@
             "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "jax": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
