@@ -1,0 +1,3 @@
+include versioneer.py
+include array_api_tests/_version.py}
+include array_api_tests/_version.py
