@@ -5,7 +5,7 @@
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": " ",
+            "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
@@ -18,10 +18,10 @@
             "utility_functions": " "
       },
       "torch": {
-            "array_object": " ",
+            "array_object": "success",
             "constants": " ",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
