@@ -11,11 +11,11 @@
             "searching_functions": " ",
             "set_functions": "success",
             "signatures": "failure",
-            "sorting_functions": "success",
+            "sorting_functions": " ",
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "torch": {
             "array_object": " ",
@@ -37,7 +37,7 @@
       },
       "tensorflow": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
