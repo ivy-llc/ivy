@@ -850,7 +850,7 @@ def test_function_unsupported_dtypes(func, expected):
 
 @pytest.mark.parametrize(
     "func_and_version", [
-        {"torch": {"cumsum": {"1.11.0": {"bfloat16", "uint8"}, "1.12.1": {""}}}},
+        {"torch": {"cumsum": {"1.11.0": {"bfloat16", "uint8"}, "1.12.1": set()}}},
     ]
 )
 def test_function_dtype_versioning(func_and_version, fw):
@@ -865,7 +865,10 @@ def test_function_dtype_versioning(func_and_version, fw):
                 fn = getattr(ivy.get_backend(), key1)
                 expected = func_and_version[key][key1][key2]
                 res = fn.unsupported_dtypes
-                if set(res) != expected:
+                if res is None:
+                    res=set()
+                else: res=set(res)
+                if res != expected:
                     print(res, expected)
                     raise Exception
         return True
