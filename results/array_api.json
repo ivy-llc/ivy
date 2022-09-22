@@ -10,12 +10,12 @@
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": "success",
-            "signatures": "failure",
+            "signatures": " ",
             "sorting_functions": " ",
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "torch": {
             "array_object": " ",
