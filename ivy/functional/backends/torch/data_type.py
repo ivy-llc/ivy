@@ -16,6 +16,8 @@ native_dtype_dict = {
     "float16": torch.float16,
     "float32": torch.float32,
     "float64": torch.float64,
+    "complex64": torch.complex64,
+    "complex128": torch.complex128,
     "bool": torch.bool,
 }
 
@@ -104,6 +106,9 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
     return True
 
 
+can_cast.unsupported_dtypes = ("complex64", "complex128")
+
+
 @_handle_nestable_dtype_info
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
     if isinstance(type, torch.Tensor):
@@ -151,6 +156,8 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
             torch.float16: "float16",
             torch.float32: "float32",
             torch.float64: "float64",
+            torch.complex64: "complex64",
+            torch.complex128: "complex128",
             torch.bool: "bool",
         }[dtype_in]
     )
@@ -183,4 +190,9 @@ def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )
+
+
+# ToDo:
+# 1. can_cast : Add support for complex64, complex128
