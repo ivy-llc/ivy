@@ -3579,7 +3579,7 @@ class ContainerWithGeneral(ContainerBase):
         Raises
         ------
         ValueError
-            If a node(s) of the container isn't a class instance of ivy.Array, or
+            If a node(s) of the container isn't a class instance of ivy.Array or
             ivy.NativeArray, an exception will be raised.
 
         Examples
