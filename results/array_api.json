@@ -29,7 +29,7 @@
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
-            "sorting_functions": "success",
+            "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": "success",
             "type_promotion": "failure",
@@ -66,7 +66,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": "success",
-            "special_cases": "success",
+            "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
