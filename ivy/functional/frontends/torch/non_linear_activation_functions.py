@@ -207,6 +207,14 @@ def leaky_relu_(input, negative_slope=0.01):
     return input
 
 
+def hardsigmoid(input, inplace=False):
+    ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
 def hardtanh(input, min_val=-1.0, max_val=1.0, inplace=False):
     less = ivy.where(ivy.less(input, min_val), min_val, input)
     ret = ivy.where(ivy.greater(input, max_val), max_val, less)
