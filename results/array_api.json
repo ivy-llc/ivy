@@ -46,7 +46,7 @@
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
-            "signatures": "failure",
+            "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": "failure",
@@ -54,7 +54,7 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": " ",
+            "array_object": "failure",
             "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
