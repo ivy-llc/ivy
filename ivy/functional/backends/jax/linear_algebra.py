@@ -31,9 +31,17 @@ cholesky.unsupported_dtypes = (
 
 
 def cross(
-    x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.cross(a=x1, b=x2, axis=axis)
+    return jnp.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
 def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -67,8 +75,10 @@ def diagonal(
     return ret
 
 
-def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigh(x)
+def eigh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigh(x, UPLO=UPLO)
 
 
 eigh.unsupported_dtypes = (
@@ -77,8 +87,10 @@ eigh.unsupported_dtypes = (
 )
 
 
-def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigvalsh(x)
+def eigvalsh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
 
 eigvalsh.unsupported_dtypes = (

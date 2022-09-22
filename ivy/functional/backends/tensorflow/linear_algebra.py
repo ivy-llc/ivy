@@ -38,10 +38,15 @@ def cross(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.cross(x1, x2, axis=axis)
+    return tf.experimental.numpy.cross(
+        x1, x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis
+    )
 
 
 def det(
@@ -71,8 +76,23 @@ def diagonal(
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-def eigh(x: Union[tf.Tensor, tf.Variable]) -> Union[tf.Tensor, tf.Variable]:
-    return tf.linalg.eigh(x)
+def eigh(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+
+    if UPLO not in ("L", "U"):
+        raise ValueError("UPLO argument must be 'L' or 'U'")
+
+    if UPLO == "L":
+        return tf.linalg.eigh(x)
+    elif UPLO == "U":
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
+        return ret
 
 
 eigh.unsupported_dtypes = (
@@ -85,9 +105,19 @@ def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    UPLO: Optional[str] = "L",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.linalg.eigvalsh(x)
+
+    if UPLO not in ("L", "U"):
+        raise ValueError("UPLO argument must be 'L' or 'U'")
+
+    if UPLO == "L":
+        return tf.linalg.eigh(x)
+    elif UPLO == "U":
+        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
+        ret = tf.linalg.eigh(tf.transpose(x, perm=axes))
+        return ret
 
 
 eigvalsh.unsupported_dtypes = (
