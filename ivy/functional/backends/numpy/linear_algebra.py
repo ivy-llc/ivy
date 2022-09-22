@@ -149,13 +149,7 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    singular_values = np.linalg.svd(x, compute_uv=False)
-    max_value = np.max(singular_values, initial=0)
-    if rtol:
-        num = np.sum(singular_values > max_value * rtol)
-    else:
-        num = singular_values.size
-    return np.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
+    return np.linalg.matrix_rank(x, tol=rtol)
 
 
 matrix_rank.unsupported_dtypes = (
