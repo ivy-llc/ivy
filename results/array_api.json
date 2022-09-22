@@ -31,9 +31,9 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": " ",
-            "type_promotion": "failure",
-            "utility_functions": " "
+            "statistical_functions": "success",
+            "type_promotion": " ",
+            "utility_functions": "success"
       },
       "tensorflow": {
             "array_object": " ",
@@ -46,9 +46,9 @@
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
             "set_functions": " ",
-            "signatures": "failure",
+            "signatures": " ",
             "sorting_functions": " ",
-            "special_cases": " ",
+            "special_cases": "failure",
             "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
