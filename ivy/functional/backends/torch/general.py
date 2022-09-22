@@ -194,17 +194,16 @@ def inplace_update(
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
-        if ivy.is_ivy_array(x):
-            x.data = x_native
-        else:
-            x = ivy.to_ivy(x_native)
-        if ensure_in_backend:
-            x._data = val_native
+        val = ivy.add(x, val, out=val)
+        x = ivy.subtract(val, x, out=x)
         return x
     else:
-        return val
+        val = ivy.asarray(val, dtype=val.dtype)
+        x = ivy.asarray(x, dtype=x.dtype)
+        val = ivy.add(x, val, out=val)
+        x = ivy.subtract(val, x, out=x)
+        return x
+
 
 
 def inplace_variables_supported():
