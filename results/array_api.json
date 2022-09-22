@@ -25,7 +25,7 @@
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
-            "operators_and_elementwise_functions": "failure",
+            "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
@@ -65,9 +65,9 @@
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
-            "sorting_functions": " ",
+            "sorting_functions": "success",
             "special_cases": " ",
-            "statistical_functions": "success",
+            "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
       }
