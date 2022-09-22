@@ -1,7 +1,7 @@
 """Collection of PyTorch activation functions, wrapped to fit Ivy syntax and
 signature.
 """
-from typing import Optional
+from typing import Optional, Union
 
 # global
 import numpy as np
@@ -70,8 +70,16 @@ def softmax(
 softmax.unsupported_dtypes = ("float16",)
 
 
-def softplus(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.nn.functional.softplus(x)
+def softplus(x: torch.Tensor,
+             /,
+             *,
+             beta: Optional[Union[int, float]] = None,
+             threshold: Optional[Union[int, float]] = None,
+             out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    kwargs = {k: v for k, v in {"beta": beta,
+                                "threshold": threshold}.items()
+              if v is not None}
+    return torch.nn.functional.softplus(x, **kwargs)
 
 
 softplus.unsupported_dtypes = ("float16", "bfloat16")

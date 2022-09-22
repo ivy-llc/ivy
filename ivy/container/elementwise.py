@@ -6544,6 +6544,37 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With one :code:`ivy.Container` input:
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
+                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> z = ivy.Container.static_subtract(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[-2.9, -1.7, -7.6], 
+                          [-3.9, -2.7, -8.6], 
+                          [-4.9, -3.7, -9.6]]),
+            b: ivy.array([[-3.9, -2.7, -8.6], 
+                          [-4.9, -3.7, -9.6], 
+                          [-5.9, -4.7, -10.6]])
+        }
+
+        With multiple :code:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                              b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([6, 5, 4]))
+        >>> z = ivy.Container.static_subtract(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, -3, -3]),
+            b: ivy.array([-2, -2, -2])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "subtract",
@@ -6598,6 +6629,19 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise sums.
             The returned container must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                              b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
+                              b=ivy.array([6, 5, 4]))
+        >>> z = x.subtract(y)
+        >>> print(z)
+        {
+            a: ivy.array([-3, -3, -3]),
+            b: ivy.array([-2, -2, -2])
+        }
         """
         return self.static_subtract(
             self,
@@ -7478,6 +7522,145 @@ class ContainerWithElementwise(ContainerBase):
         """
         return self.static_rad2deg(
             self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_trunc_divide(
+            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trunc_divide. This method simply
+        wraps the function, and so the docstring for ivy.trunc_divide also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            dividend input array or container. Should have a real-valued data type.
+        x2
+            divisor input array or container. Must be compatible with ``x1``
+            (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
+        >>> y = ivy.Container.static_divide(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([12., 1., -2.]),
+            b: ivy.array([1., 0., -4.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "trunc_divide",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def trunc_divide(
+            self: ivy.Container,
+            x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.trunc_divide.
+        This method simply wraps the function, and so the docstring for
+        ivy.trunc_divide also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            dividend input array or container. Should have a real-valued
+            data type.
+        x2
+            divisor input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`).
+            Should have a real-valued data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
+        >>> y = x1.trunc_divide(x2)
+        >>> print(y)
+        {
+            a: ivy.array([12., 1., -2.]),
+            b: ivy.array([1., 0., -4.])
+        }
+        """
+        return self.static_trunc_divide(
+            self,
+            x2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
