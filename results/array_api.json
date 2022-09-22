@@ -49,9 +49,9 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": "failure",
+            "statistical_functions": " ",
             "type_promotion": " ",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "jax": {
             "array_object": " ",
