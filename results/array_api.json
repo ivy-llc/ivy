@@ -67,8 +67,8 @@
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": "success",
+            "statistical_functions": " ",
             "type_promotion": " ",
-            "utility_functions": " "
+            "utility_functions": "success"
       }
 }
