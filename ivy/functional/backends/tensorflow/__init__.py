@@ -39,6 +39,8 @@ native_bfloat16 = tf.bfloat16
 native_float16 = tf.float16
 native_float32 = tf.float32
 native_float64 = tf.float64
+native_complex64 = tf.complex64
+native_complex128 = tf.complex128
 # noinspection PyShadowingBuiltins
 native_bool = tf.bool
 
@@ -56,6 +58,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -71,6 +75,8 @@ valid_numeric_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
 )
 valid_int_dtypes = (
     ivy.int8,
@@ -84,6 +90,7 @@ valid_int_dtypes = (
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
 invalid_dtypes = ()
@@ -91,6 +98,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = ivy.complex256
 
 native_inplace_support = False
 
