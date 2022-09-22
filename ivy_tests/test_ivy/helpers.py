@@ -1036,7 +1036,7 @@ def test_method(
         data types of the input arguments to the constructor in order.
     as_variable_flags_init
         dictates whether the corresponding input argument passed to the constructor
-        should be treated as an ivy.Variable.
+        should be treated as an ivy.Array.
     num_positional_args_init
         number of input arguments that must be passed as positional arguments to the
         constructor.
@@ -1049,7 +1049,7 @@ def test_method(
         data types of the input arguments to the method in order.
     as_variable_flags_method
         dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy.Variable.
+        be treated as an ivy.Array.
     num_positional_args_method
         number of input arguments that must be passed as positional arguments to the
         method.

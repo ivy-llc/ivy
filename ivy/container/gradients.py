@@ -389,8 +389,8 @@ class ContainerWithGradients(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
+            Whether to preserve gradient computation on ivy.Array instances. Default is
+            True.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -467,8 +467,8 @@ class ContainerWithGradients(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
+            Whether to preserve gradient computation on ivy.Array instances. Default is
+            True.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
