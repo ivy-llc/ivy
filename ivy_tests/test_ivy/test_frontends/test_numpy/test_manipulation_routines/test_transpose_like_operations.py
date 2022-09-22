@@ -64,7 +64,6 @@ def test_numpy_swapaxes(
         frontend="numpy",
         fn_tree="swapaxes",
         a=np.asarray(x, dtype=input_dtype),
-        # torch: uint8 is not supported --> set valid_types!!
         axis1=axis1,
         axis2=axis2,
     )
