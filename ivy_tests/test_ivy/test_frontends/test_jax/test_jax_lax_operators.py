@@ -219,14 +219,16 @@ def test_jax_lax_full(
     fill_value,
     dtypes,
     num_positional_args,
+    as_variable,
+    native_array,
     fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        as_variable_flags=False,
+        as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         fw=fw,
         frontend="jax",
         fn_tree="lax.full",
@@ -1119,8 +1121,8 @@ def _reshape_helper(draw):
 
     reshape_shape = draw(helpers.reshape_shapes(shape=shape))
 
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    x = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    x = draw(helpers.array_values(dtype=dtype[0], shape=shape))
 
     is_dim = draw(st.booleans())
     if is_dim:
