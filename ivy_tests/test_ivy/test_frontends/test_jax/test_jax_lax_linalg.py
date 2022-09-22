@@ -4,8 +4,9 @@ import numpy as np
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, assert_all_close
 
 
 # cholesky
@@ -63,11 +64,13 @@ def test_jax_lax_cholesky(
     ).filter(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
+        and x[0] != "float16"
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.linalg.eigh"
     ),
     lower=st.booleans(),
+    symmetrize_input=st.booleans(),
 )
 def test_jax_lax_eigh(
     dtype_and_x,
@@ -76,12 +79,12 @@ def test_jax_lax_eigh(
     num_positional_args,
     fw,
     lower,
+    symmetrize_input,
 ):
     dtype, x = dtype_and_x
     x = np.array(x, dtype=dtype)
-    # make symmetric positive-definite beforehand
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    helpers.test_frontend_function(
+
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
@@ -91,7 +94,18 @@ def test_jax_lax_eigh(
         frontend="jax",
         fn_tree="lax.linalg.eigh",
         rtol=1e-02,
+        test_values=False,
         x=x,
         lower=lower,
-        symmetrize_input=False,
+        symmetrize_input=symmetrize_input,
+    )
+    Q, L = ret
+    Q, L = ivy.to_numpy(Q), ivy.to_numpy(L)
+    frontend_Q, frontend_L = frontend_ret
+    frontend_Q, frontend_L = np.asarray(frontend_Q), np.asarray(frontend_L)
+
+    assert_all_close(
+        ret_np=Q @ np.diag(L) @ Q.T,
+        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+        atol=1e-05,
     )
