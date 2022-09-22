@@ -37,7 +37,7 @@
       },
       "tensorflow": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
@@ -45,7 +45,7 @@
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
-            "set_functions": " ",
+            "set_functions": "success",
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
@@ -54,7 +54,7 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": "failure",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
