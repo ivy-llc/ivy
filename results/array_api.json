@@ -7,7 +7,7 @@
             "has_names": " ",
             "linalg": " ",
             "manipulation_functions": " ",
-            "operators_and_elementwise_functions": " ",
+            "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
@@ -31,7 +31,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
-            "statistical_functions": "success",
+            "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
       },
