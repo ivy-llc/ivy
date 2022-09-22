@@ -1994,6 +1994,32 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.erf(self._data, out=out)
 
+    def reciprocal(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.reciprocal.This method simply wraps the
+        function, and so the docstring for ivy.reciprocal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to compute the element-wise reciprocal for.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise reciprocal of ``self``.
+        """
+        return ivy.reciprocal(self._data, out=out)
+
     def deg2rad(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.deg2rad.
