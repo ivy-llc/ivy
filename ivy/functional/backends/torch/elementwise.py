@@ -718,3 +718,7 @@ def trunc_divide(
     else:
         ret = ret.to(ivy.default_float_dtype(as_native=True))
     return ret
+
+
+def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.isreal(x)
