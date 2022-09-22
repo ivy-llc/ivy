@@ -13,7 +13,7 @@
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": "success",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": "failure",
             "utility_functions": " "
       },
@@ -48,14 +48,14 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": " ",
-            "special_cases": "failure",
+            "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": "failure",
             "utility_functions": " "
       },
       "jax": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
