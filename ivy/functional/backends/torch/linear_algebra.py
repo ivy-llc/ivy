@@ -112,7 +112,13 @@ inner.unsupported_dtypes = ("uint8", "int8", "int16", "int32")
 inner.support_native_out = True
 
 
-def inv(x: torch.Tensor, /, *, adjoint: bool = False, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def inv(
+    x: torch.Tensor,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     if torch.linalg.det == 0:
         ret = x
         if ivy.exists(out):
