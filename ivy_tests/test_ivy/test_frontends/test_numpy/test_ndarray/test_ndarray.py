@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 # local
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -56,7 +55,7 @@ def test_numpy_instance_reshape(
         frontend="numpy",
         frontend_class=ndarray,
         fn_tree="ndarray.reshape",
-        self=x,
+        self=x[0],
         newshape=shape,
         copy=copy,
     )
@@ -66,9 +65,9 @@ def test_numpy_instance_reshape(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.add"
@@ -84,8 +83,8 @@ def test_numpy_instance_add(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtype, xs = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -101,13 +100,13 @@ def test_numpy_instance_add(
         frontend="numpy",
         frontend_class=ndarray,
         fn_tree="ndarray.add",
-        self=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        self=xs[0],
+        other=xs[1],
         out=None,
         where=where,
         casting="same_kind",
         order="k",
-        dtype=dtype,
+        dtype=dtype[0],
         subok=True,
         test_values=False,
     )

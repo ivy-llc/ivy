@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def _array_with_dtype_axis_keepdims_and_where(draw):
-    dtypes = draw(helpers.array_dtypes(num_arrays=1))
+    dtypes = draw(helpers.get_dtypes("numeric", full=False))
     shape = draw(
         helpers.get_shape(
             min_num_dims=1,
@@ -57,7 +57,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     else:
         where = draw(st.booleans())
     keepdims = draw(st.booleans())
-    return x, dtypes[0], axis, keepdims, where
+    return x, dtypes, axis, keepdims, where
 
 
 # argmax
@@ -88,7 +88,6 @@ def test_numpy_argmax(
     input_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    input_dtype = [input_dtype]
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -98,7 +97,7 @@ def test_numpy_argmax(
         fw=fw,
         frontend="numpy",
         fn_tree="argmax",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
         out=None,
         keepdims=keep_dims,
@@ -122,12 +121,7 @@ def test_numpy_any(
     native_array,
     fw,
 ):
-    x, input_dtype, axis, keepdims, where = x_dtype_axis_keepdims_where
-    x = np.asarray(x, dtype=input_dtype)
-    num_positional_args = num_positional_args
-    input_dtypes = [input_dtype]
-    as_variable = [as_variable]
-    native_array = [native_array]
+    x, input_dtypes, axis, keepdims, where = x_dtype_axis_keepdims_where
     if keepdims:
         out = (
             ivy.zeros(
@@ -153,13 +147,12 @@ def test_numpy_any(
             if with_out
             else None
         )
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
-
     if fw == "torch":
         keepdims = True
     ret, ret_gt = helpers.test_frontend_function(

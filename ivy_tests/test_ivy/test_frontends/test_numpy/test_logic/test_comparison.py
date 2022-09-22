@@ -31,7 +31,7 @@ def test_numpy_equal(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,

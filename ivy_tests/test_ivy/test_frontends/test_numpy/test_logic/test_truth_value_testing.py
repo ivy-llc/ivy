@@ -38,8 +38,8 @@ def test_numpy_all(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where[0] if isinstance(where, list) else where,
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
@@ -93,8 +93,8 @@ def test_numpy_any(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where[0] if isinstance(where, list) else where,
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
         native_array=native_array,
