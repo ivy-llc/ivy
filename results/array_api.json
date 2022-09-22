@@ -54,10 +54,10 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": " ",
+            "array_object": "failure",
             "constants": "success",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": " ",
@@ -68,7 +68,7 @@
             "sorting_functions": "success",
             "special_cases": "success",
             "statistical_functions": " ",
-            "type_promotion": " ",
+            "type_promotion": "failure",
             "utility_functions": " "
       }
 }
