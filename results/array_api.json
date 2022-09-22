@@ -18,7 +18,7 @@
             "utility_functions": " "
       },
       "torch": {
-            "array_object": "success",
+            "array_object": " ",
             "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
@@ -39,7 +39,7 @@
             "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
-            "data_type_functions": " ",
+            "data_type_functions": "success",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
@@ -57,7 +57,7 @@
             "array_object": "failure",
             "constants": "success",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": " ",
