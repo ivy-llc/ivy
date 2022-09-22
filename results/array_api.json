@@ -1,7 +1,7 @@
 {
       "numpy": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
@@ -54,12 +54,12 @@
             "utility_functions": " "
       },
       "jax": {
-            "array_object": " ",
+            "array_object": "failure",
             "constants": " ",
             "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": "failure",
+            "linalg": " ",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
