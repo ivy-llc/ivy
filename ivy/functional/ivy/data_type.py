@@ -1151,10 +1151,13 @@ def default_int_dtype(
        (Default value = None) Uint dtype to be returned as default.
     as_native
        (Default value = None) Whether to return the default int dtype as native dtype.
+
     Returns
     -------
+
         Return the input int dtype if provided, otherwise return the global default
         int dtype.
+
     Examples
     --------
     >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
@@ -1170,7 +1173,7 @@ def default_int_dtype(
     >>> x = ivy.array([9,8], dtype="int32")
     >>> ivy.default_int_dtype(input=x)
     'int32'
-    
+
     """
     if ivy.exists(int_dtype):
         if as_native is True:
