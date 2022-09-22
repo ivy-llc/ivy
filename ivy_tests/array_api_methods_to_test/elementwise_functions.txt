@@ -54,3 +54,4 @@ subtract
 tan
 tanh
 trunc
+isreal
