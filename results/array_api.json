@@ -6,7 +6,7 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": " ",
+            "manipulation_functions": "success",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
             "set_functions": "success",
@@ -55,7 +55,7 @@
       },
       "jax": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
@@ -67,7 +67,7 @@
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": " ",
-            "statistical_functions": "success",
+            "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
       }
