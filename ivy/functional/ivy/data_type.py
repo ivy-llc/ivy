@@ -1160,13 +1160,17 @@ def default_int_dtype(
     >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
     >>> ivy.default_int_dtype()
     'int16'
+
     >>> ivy.default_int_dtype(input=4294967346)
     'int64'
+
     >>> ivy.default_int_dtype(int_dtype=ivy.intDtype("int8"))
     'int8'
+
     >>> x = ivy.array([9,8], dtype="int32")
     >>> ivy.default_int_dtype(input=x)
     'int32'
+    
     """
     if ivy.exists(int_dtype):
         if as_native is True:
