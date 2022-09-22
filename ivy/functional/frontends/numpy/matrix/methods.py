@@ -82,13 +82,6 @@ class matrix:
     def size(self):
         return self._shape[0] * self._shape[1]
 
-    # Setters #
-    # ------- #
-
-    @data.setter
-    def data():
-        pass
-
 
 @from_zero_dim_arrays_to_float
 def argmax(a, axis=None, out=None, *, keepdims=None):
