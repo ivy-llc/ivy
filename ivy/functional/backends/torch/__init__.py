@@ -33,6 +33,8 @@ native_bfloat16 = torch.bfloat16
 native_float16 = torch.float16
 native_float32 = torch.float32
 native_float64 = torch.float64
+native_complex64 = torch.complex64
+native_complex128 = torch.complex128
 # noinspection PyShadowingBuiltins
 native_bool = torch.bool
 
@@ -47,6 +49,8 @@ valid_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
     ivy.bool,
 )
 valid_numeric_dtypes = (
@@ -59,10 +63,13 @@ valid_numeric_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
 )
 valid_int_dtypes = (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8,)
+valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
 invalid_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
@@ -70,6 +77,7 @@ invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = ()
 invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_complex_dtypes = (ivy.complex256,)
 
 native_inplace_support = True
 
