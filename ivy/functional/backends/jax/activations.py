@@ -43,3 +43,11 @@ def softmax(
 
 def softplus(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.log1p(jnp.exp(-jnp.abs(x))) + jnp.maximum(x, 0)
+
+
+def log_softmax(
+    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+):
+    if axis is None:
+        axis = -1
+    return jax.nn.log_softmax(x, axis)

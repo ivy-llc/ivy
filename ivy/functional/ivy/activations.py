@@ -367,3 +367,35 @@ def softplus(
 
     """
     return current_backend(x).softplus(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def log_softmax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the log_softmax function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        The dimension softmax would be performed on. The default is -1 which indicates
+        the last dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The output array with log_softmax applied element-wise to input.
+    """
+    return current_backend(x).log_softmax(x, axis=axis, out=out)
