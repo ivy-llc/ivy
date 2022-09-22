@@ -210,7 +210,7 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     if full:
         return valid_dtypes[index:]
     if key is None:
-        return draw(st.sampled_from(valid_dtypes[index:]))
+        return [draw(st.sampled_from(valid_dtypes[index:]))]
     return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]
 
 
