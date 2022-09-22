@@ -215,11 +215,8 @@ def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
 ) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
-    if mode == "reduced":
-        q, r = torch.qr(x, some=True, out=out)
-        ret = res(q, r)
-    elif mode == "complete":
-        q, r = torch.qr(x, some=False, out=out)
+    if mode in ("reduced", "complete"):
+        q, r = torch.linalg.qr(x, mode=mode, out=out)
         ret = res(q, r)
     else:
         raise Exception(
