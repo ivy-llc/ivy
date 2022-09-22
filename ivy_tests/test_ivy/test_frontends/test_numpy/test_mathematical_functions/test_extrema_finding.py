@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -86,6 +86,9 @@ def test_numpy_amin(
     initial,
     fw,
 ):
+
+    if initial is None and np.all(where) is not True:
+        assume(initial is np.NINF)
 
     input_dtype, x, axis = dtype_and_x
     input_dtype = [input_dtype]
