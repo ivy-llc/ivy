@@ -47,14 +47,14 @@
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
-            "sorting_functions": "success",
+            "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": "failure",
             "type_promotion": "failure",
-            "utility_functions": " "
+            "utility_functions": "success"
       },
       "jax": {
-            "array_object": "failure",
+            "array_object": " ",
             "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
