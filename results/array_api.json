@@ -64,7 +64,7 @@
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
-            "signatures": " ",
+            "signatures": "failure",
             "sorting_functions": "success",
             "special_cases": " ",
             "statistical_functions": " ",
