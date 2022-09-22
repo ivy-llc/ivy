@@ -24,7 +24,7 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
     x = draw(
         helpers.array_values(
             shape=shape,
-            dtype=dtypes[0],
+            dtype=dtypes,
         )
     )
     where_shape_length = draw(helpers.ints(min_value=0, max_value=len(shape)))

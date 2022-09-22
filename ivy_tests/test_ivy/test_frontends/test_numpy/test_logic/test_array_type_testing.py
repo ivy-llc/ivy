@@ -47,11 +47,7 @@ def test_numpy_isfinite(
         x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
         dtype=dtype,
-        subok=True,
-        test_values=False,
     )
 
 

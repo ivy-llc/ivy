@@ -540,10 +540,11 @@ def assert_all_close(
 
 def assert_same_type_and_shape(values, this_key_chain=None):
     x, y = values
-    assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
     if isinstance(x, np.ndarray):
+        x_dtype = str(x.dtype)
+        y_dtype = str(y.dtype).replace("longlong", "int64")
         assert x.shape == y.shape, "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
-        assert x.dtype == y.dtype, "x.dtype = {}, y.dtype = {}".format(x.dtype, y.dtype)
+        assert x_dtype == y_dtype, "x.dtype = {}, y.dtype = {}".format(x_dtype, y_dtype)
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
@@ -650,6 +651,8 @@ def value_test(
     -------
     None if the value test passes, else marks the test as failed.
     """
+    assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
+
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:
@@ -1037,7 +1040,7 @@ def test_method(
         data types of the input arguments to the constructor in order.
     as_variable_flags_init
         dictates whether the corresponding input argument passed to the constructor
-        should be treated as an ivy.Variable.
+        should be treated as an ivy.Array.
     num_positional_args_init
         number of input arguments that must be passed as positional arguments to the
         constructor.
@@ -1050,7 +1053,7 @@ def test_method(
         data types of the input arguments to the method in order.
     as_variable_flags_method
         dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy.Variable.
+        be treated as an ivy.Array.
     num_positional_args_method
         number of input arguments that must be passed as positional arguments to the
         method.
@@ -1681,13 +1684,13 @@ def test_frontend_function(
     if len(native_array_flags) < num_arrays:
         native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
 
-    # update variable flags to be compatible with float dtype and with_out args
+    # update var flags to be compatible with float dtype and with_out args
     as_variable_flags = [
         v if ivy.is_float_dtype(d) and not with_out else False
         for v, d in zip(as_variable_flags, input_dtypes)
     ]
 
-    # parse function name and frontend submodules (i.e. jax.lax, jax.numpy etc.)
+    # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
     *frontend_submods, fn_tree = fn_tree.split(".")
 
     # check for unsupported dtypes in backend framework

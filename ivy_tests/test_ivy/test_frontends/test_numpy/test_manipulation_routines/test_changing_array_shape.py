@@ -28,14 +28,12 @@ def dtypes_x_reshape(draw):
 @handle_cmd_line_args
 @given(
     dtypes_x_shape=dtypes_x_reshape(),
-    copy=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.reshape"
     ),
 )
 def test_numpy_reshape(
     dtypes_x_shape,
-    copy,
     with_out,
     as_variable,
     num_positional_args,
@@ -53,5 +51,5 @@ def test_numpy_reshape(
         frontend="numpy",
         fn_tree="reshape",
         x=x[0],
-        shape=shape,
+        newshape=shape,
     )
