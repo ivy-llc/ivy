@@ -539,10 +539,11 @@ def assert_all_close(
 
 def assert_same_type_and_shape(values, this_key_chain=None):
     x, y = values
-    assert type(x) is type(y), "type(x) = {}, type(y) = {}".format(type(x), type(y))
     if isinstance(x, np.ndarray):
+        x_dtype = str(x.dtype)
+        y_dtype = str(y.dtype).replace("longlong", "int64")
         assert x.shape == y.shape, "x.shape = {}, y.shape = {}".format(x.shape, y.shape)
-        assert x.dtype == y.dtype, "x.dtype = {}, y.dtype = {}".format(x.dtype, y.dtype)
+        assert x_dtype == y_dtype, "x.dtype = {}, y.dtype = {}".format(x_dtype, y_dtype)
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
@@ -649,6 +650,8 @@ def value_test(
     -------
     None if the value test passes, else marks the test as failed.
     """
+    assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
+
     if type(ret_np_flat) != list:
         ret_np_flat = [ret_np_flat]
     if type(ret_np_from_gt_flat) != list:
