@@ -36,7 +36,7 @@
             "utility_functions": "success"
       },
       "tensorflow": {
-            "array_object": "success",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
@@ -45,7 +45,7 @@
             "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
-            "set_functions": " ",
+            "set_functions": "success",
             "signatures": " ",
             "sorting_functions": " ",
             "special_cases": " ",
@@ -68,7 +68,7 @@
             "sorting_functions": "success",
             "special_cases": "success",
             "statistical_functions": "success",
-            "type_promotion": " ",
+            "type_promotion": "failure",
             "utility_functions": " "
       }
 }
