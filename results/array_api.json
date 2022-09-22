@@ -19,7 +19,7 @@
       },
       "torch": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
@@ -48,7 +48,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": " ",
-            "special_cases": " ",
+            "special_cases": "failure",
             "statistical_functions": "failure",
             "type_promotion": "failure",
             "utility_functions": " "
@@ -66,7 +66,7 @@
             "set_functions": " ",
             "signatures": " ",
             "sorting_functions": "success",
-            "special_cases": "success",
+            "special_cases": " ",
             "statistical_functions": " ",
             "type_promotion": " ",
             "utility_functions": " "
