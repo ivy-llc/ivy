@@ -38,7 +38,7 @@
       "tensorflow": {
             "array_object": " ",
             "constants": " ",
-            "creation_functions": " ",
+            "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
