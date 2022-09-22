@@ -36,8 +36,8 @@
             "utility_functions": "success"
       },
       "tensorflow": {
-            "array_object": " ",
-            "constants": "success",
+            "array_object": "success",
+            "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
