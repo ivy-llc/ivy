@@ -71,12 +71,9 @@ def _array_with_dtype_axis_keepdims_and_where(draw):
         force_int_axis=True,
         allow_neg_axes=False,
     ),
-    as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.argmax"
     ),
-    native_array=helpers.array_bools(num_arrays=1),
     keep_dims=st.booleans(),
 )
 def test_numpy_argmax(
@@ -110,14 +107,12 @@ def test_numpy_argmax(
 
 
 # any
+@handle_cmd_line_args
 @given(
     x_dtype_axis_keepdims_where=_array_with_dtype_axis_keepdims_and_where(),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.any"
     ),
-    native_array=st.booleans(),
 )
 def test_numpy_any(
     x_dtype_axis_keepdims_where,

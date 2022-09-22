@@ -664,8 +664,8 @@ def test_outer(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=16,
-        large_abs_safety_factor=16,
+        small_abs_safety_factor=72,
+        large_abs_safety_factor=72,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(
@@ -881,8 +881,8 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        large_abs_safety_factor=40,
+        small_abs_safety_factor=40,
         safety_factor_scale="log",
         min_num_dims=2,
     ),
@@ -924,8 +924,8 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=72,
-        small_abs_safety_factor=72,
+        large_abs_safety_factor=100,
+        small_abs_safety_factor=100,
         safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
@@ -1279,7 +1279,7 @@ def test_matrix_rank(
         fw=fw,
         fn_name="matrix_rank",
         x=np.asarray(x, dtype=dtype),
-        rtol=rtol,
+        rtol_=rtol,
     )
 
 

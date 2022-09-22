@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Sequence
+from typing import Optional, Union, List, Dict, Sequence
 
 # local
 import ivy
@@ -13,7 +13,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -38,7 +38,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -187,7 +187,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -307,7 +307,7 @@ class ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -380,7 +380,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -407,7 +407,7 @@ class ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -433,7 +433,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -458,7 +458,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Tuple[int]] = None,
+        axis: Union[int, Sequence[int]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
