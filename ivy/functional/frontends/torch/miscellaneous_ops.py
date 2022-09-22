@@ -127,12 +127,16 @@ def renorm(input, p, dim, maxnorm, *, out=None):
 
 
 def logcumsumexp(input, dim, *, out=None):
-    if len(input.shape) <= 1:
+    if len(input.shape) == 0:  # or \
+        # int(ivy.prod(tuple(input.shape), dtype=ivy.as_native_dtype("int32"))) <= 1:
         ret = input
     else:
-        exp_input = ivy.exp(input)
+        # For numerical stability, cast to float64
+        original_dtype = input.dtype
+        exp_input = ivy.exp(input.astype("float64"))
+        # print(exp_input.dtype)
         summed_exp_input = ivy.cumsum(exp_input, axis=dim)
-        ret = ivy.log(summed_exp_input)
+        ret = ivy.log(summed_exp_input).astype(original_dtype)
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
     return ret
