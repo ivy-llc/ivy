@@ -1,7 +1,7 @@
 {
       "numpy": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
@@ -64,7 +64,7 @@
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
-            "signatures": "failure",
+            "signatures": " ",
             "sorting_functions": "success",
             "special_cases": " ",
             "statistical_functions": " ",
