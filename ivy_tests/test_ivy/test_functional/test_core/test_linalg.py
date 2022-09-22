@@ -396,11 +396,13 @@ def test_det(
 @handle_cmd_line_args
 @given(
     dtype_x=_get_dtype_and_matrix(symmetric=True),
+    UPLO=st.sampled_from(("L", "U")),
     num_positional_args=helpers.num_positional_args(fn_name="eigh"),
 )
 def test_eigh(
     *,
     dtype_x,
+    UPLO,
     as_variable,
     with_out,
     num_positional_args,
@@ -422,6 +424,7 @@ def test_eigh(
         fw=fw,
         fn_name="eigh",
         x=x,
+        UPLO=UPLO,
         test_values=False,
         return_flat_np_arrays=True,
     )
@@ -460,11 +463,13 @@ def test_eigh(
 @handle_cmd_line_args
 @given(
     dtype_x=_get_dtype_and_matrix(symmetric=True),
+    UPLO=st.sampled_from(("L", "U")),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
 )
 def test_eigvalsh(
     *,
     dtype_x,
+    UPLO,
     as_variable,
     with_out,
     num_positional_args,
@@ -487,6 +492,7 @@ def test_eigvalsh(
         rtol_=1e-3,
         test_values=False,
         x=np.asarray(x, dtype=input_dtype),
+        UPLO=UPLO,
     )
 
 
@@ -1056,6 +1062,8 @@ def test_pinv(
         instance_method=instance_method,
         fw=fw,
         fn_name="pinv",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         rtol=rtol,
     )
