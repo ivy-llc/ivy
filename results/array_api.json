@@ -19,7 +19,7 @@
       },
       "torch": {
             "array_object": " ",
-            "constants": "success",
+            "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
@@ -36,7 +36,7 @@
             "utility_functions": "success"
       },
       "tensorflow": {
-            "array_object": " ",
+            "array_object": "success",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
