@@ -1,7 +1,8 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
+
+import numpy as np
 
 import ivy
-import numpy as np
 
 
 # Array API Standard #
@@ -43,11 +44,21 @@ def nonzero(
     /,
     *,
     as_tuple: bool = True,
-) -> Tuple[np.ndarray]:
+    size: Optional[int] = None,
+    fill_value: int = 0,
+) -> Union[np.ndarray, Tuple[np.ndarray]]:
+    res = np.nonzero(x)
+
+    if size is not None:
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = np.pad(res, ((0, 0), (0, diff)), constant_values=fill_value)
+        elif diff < 0:
+            res = np.array(res)[:, :size]
+
     if as_tuple:
-        return np.nonzero(x)
-    else:
-        return np.stack(np.nonzero(x), axis=1)
+        return tuple(res)
+    return np.stack(res, axis=1)
 
 
 def where(

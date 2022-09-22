@@ -1,6 +1,7 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import torch
+import torch.nn.functional as tnf
 
 import ivy
 
@@ -44,8 +45,21 @@ def nonzero(
     /,
     *,
     as_tuple: bool = True,
-) -> Tuple[torch.Tensor]:
-    return torch.nonzero(x, as_tuple=as_tuple)
+    size: Optional[int] = None,
+    fill_value: int = 0,
+) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
+    res = torch.stack(torch.nonzero(x, as_tuple=True))
+    if size is not None:
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = tnf.pad(res, (0, diff), value=fill_value)
+        elif diff < 0:
+            res = res[:, :size]
+
+    res = tuple(res)
+    if as_tuple:
+        return res
+    return torch.stack(res, dim=1)
 
 
 def where(

@@ -1,8 +1,9 @@
 # global
 from typing import Optional, Union, Tuple
 
-import ivy
 import tensorflow as tf
+
+import ivy
 
 
 # Array API Standard #
@@ -40,11 +41,21 @@ def nonzero(
     /,
     *,
     as_tuple: bool = True,
-) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+    size: Optional[int] = None,
+    fill_value: int = 0,
+) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable]]]:
+    res = tf.experimental.numpy.nonzero(x)
+
+    if size is not None:
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = tf.pad(res, [[0, 0], [0, diff]], constant_values=fill_value)
+        elif diff < 0:
+            res = tf.slice(res, [0, 0], [-1, size])
+
     if as_tuple:
-        return tuple(tf.experimental.numpy.nonzero(x))
-    else:
-        return tf.stack(tf.experimental.numpy.nonzero(x), axis=1)
+        return tuple(res)
+    return tf.stack(res, axis=1)
 
 
 def where(

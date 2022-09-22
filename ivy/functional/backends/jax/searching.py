@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import jax.numpy as jnp
 
@@ -37,11 +37,15 @@ def nonzero(
     /,
     *,
     as_tuple: bool = True,
-) -> Tuple[JaxArray]:
+    size: Optional[int] = None,
+    fill_value: int = 0,
+) -> Union[JaxArray, Tuple[JaxArray]]:
+    res = jnp.nonzero(x, size=size, fill_value=fill_value)
+
     if as_tuple:
-        return jnp.nonzero(x)
-    else:
-        return jnp.stack(jnp.nonzero(x), axis=1)
+        return tuple(res)
+
+    return jnp.stack(res, axis=1)
 
 
 def where(

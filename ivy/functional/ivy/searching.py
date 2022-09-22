@@ -224,7 +224,12 @@ def argmin(
 @handle_nestable
 @handle_exceptions
 def nonzero(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, as_tuple: bool = True
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    as_tuple: bool = True,
+    size: int = None,
+    fill_value: int = 0,
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -234,11 +239,18 @@ def nonzero(
         input array. Must have a positive rank. If `x` is zero-dimensional, the function
         must raise an exception.
     as_tuple
-        if True, the function must return a tuple of arrays, one for each dimension of
-        the input array, containing the indices of the non-zero elements in that
-        dimension. If False, the function must return a single array of shape (N, ndim)
-        where N is the number of non-zero elements and each row in the array contains
-        the indices of the corresponding non-zero element. Default = True.
+        if True, the output is returned as a tuple of indices, one for each
+        dimension of the input, containing the indices of the true elements in that
+        dimension. If False, the coordinates are returned in a (N, ndim) array,
+        where N is the number of true elements. Default = True.
+    size
+        if specified, the function will return an array of shape (size, ndim).
+        If the number of non-zero elements is fewer than size, the remaining elements
+        will be filled with fill_value. Default = None.
+    fill_value
+        when size is specified and there are fewer than size number of elements,
+        the remaining elements in the output array will be filled with fill_value.
+        Default = 0.
 
     Returns
     -------
@@ -268,6 +280,11 @@ def nonzero(
     >>> y = ivy.nonzero(x, as_tuple=False)
     >>> print(y)
     ivy.array([[0, 1], [1, 0], [1, 1]])
+
+    >>> x = ivy.array([0, 1], size=2, fill_value=4)
+    >>> y = ivy.nonzero(x)
+    >>> print(y)
+    (ivy.array([1, 4]),)
 
     With :code:`ivy.NativeArray` input:
 
@@ -330,7 +347,9 @@ def nonzero(
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return current_backend(x).nonzero(x, as_tuple=as_tuple)
+    return current_backend(x).nonzero(
+        x, as_tuple=as_tuple, size=size, fill_value=fill_value
+    )
 
 
 @to_native_arrays_and_back
