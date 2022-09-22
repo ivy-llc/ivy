@@ -930,7 +930,7 @@ def test_torch_hardsigmoid(
         input=np.asarray(input, dtype=input_dtype),
         inplace=False,
     )
-    
+
 
 # hardtanh
 @handle_cmd_line_args
@@ -967,6 +967,7 @@ def test_torch_hardtanh(
         min_val=max_min[1],
         max_val=max_min[0],
     )
+
 
 # hardtanh_
 # ToDo test for value test once inplace testing is fixed
