@@ -84,7 +84,6 @@ def flatten(input, start_dim=0, end_dim=-1):
     return input
 
 
-
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
     epsilon = 1e-07
