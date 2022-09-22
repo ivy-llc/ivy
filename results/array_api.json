@@ -15,13 +15,13 @@
             "special_cases": "success",
             "statistical_functions": " ",
             "type_promotion": "failure",
-            "utility_functions": "success"
+            "utility_functions": " "
       },
       "torch": {
             "array_object": " ",
             "constants": "success",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
@@ -60,7 +60,7 @@
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": " ",
+            "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
             "set_functions": " ",
