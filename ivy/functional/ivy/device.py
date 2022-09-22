@@ -309,8 +309,24 @@ def print_all_ivy_arrays_on_dev(
     ----------
     device
         The device on which to print the arrays
+
     attr_only
         Whether or not to only print the `shape` and `dtype` attributes of the array
+
+    Examples
+    --------
+    >>> x = ivy.array([[1,0,2], [3,2,1]])
+    >>> y = ivy.dev(x)
+    >>> ivy.print_all_ivy_arrays_on_dev(y)
+    ((3,), 'int32')
+    ((3,), 'int32')
+
+
+    >>> x = ivy.array([[1,0,2], [3,2,1]])
+    >>> y = ivy.dev(x)
+    >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
+    [1,0,2]
+    [3,2,1]
 
     """
     arrs = ivy.get_all_ivy_arrays_on_dev(device).values()
@@ -549,7 +565,7 @@ def used_mem_on_dev(
         return info.used / 1e9
     elif device == "cpu":
         if process_specific:
-            return psutil.Process(os.getpid()).memory_info().rss
+            return psutil.Process(os.getpid()).memory_info().rss / 1e9
         vm = psutil.virtual_memory()
         return (vm.total - vm.available) / 1e9
     else:
@@ -881,8 +897,8 @@ def to_device(
     /,
     *,
     stream: Optional[Union[int, Any]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Move the input array x to the desired device, specified by device string.
 
     Parameters
@@ -1066,11 +1082,11 @@ def split_func_call(
             max_chunk_size = max_dim
     chunk_size = ivy.default(
         chunk_size,
-        lambda: 1
+        default_val=lambda: 1
         + int(
             round((max_chunk_size - 1) * ivy.split_factor(ivy.default_device(device)))
         ),
-        True,
+        with_callable=True,
     )
     dim_size = inputs[0].shape[input_axes[0]]
     if chunk_size >= dim_size:
@@ -1159,7 +1175,10 @@ def _get_devices(fn, complement=True):
 
     supported = set(VALID_DEVICES)
 
-    if "backend" not in fn.__module__:
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(ALL_DEVICES).difference(supported)
         return supported
@@ -1174,6 +1193,8 @@ def _get_devices(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
+            if "einops" in fn.__name__ and isinstance(v, dict):
+                v = v.get(ivy.current_backend_str(), base)
             ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 

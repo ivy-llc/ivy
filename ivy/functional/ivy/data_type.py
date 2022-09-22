@@ -97,11 +97,16 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         visited.add(fn)
 
-        # Assuming that it's set in backend
+        # if it's in the backend, we can get the dtypes directly
+        # if it's in the front end, we need to recurse
+        # if it's einops, we need to recurse
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
             continue
+        elif "frontend" in fn.__module__ or "einops" in fn.__name__:
+            f_supported = wrapper(get_fn(fn, False))
+            out = merge_fn(f_supported, out)
 
         # skip if it's not a function
         if not inspect.isfunction(fn):
@@ -122,7 +127,10 @@ def _get_dtypes(fn, complement=True):
     # We only care about getting dtype info from the base function
     # if we do need to at some point use dtype information from the parent function
     # we can comment out the following condition
-    if "backend" not in fn.__module__:
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported
@@ -137,6 +145,10 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
+            # only einops allowed to be a dictionary
+            if "einops" in fn.__name__ and isinstance(v, dict):
+                v = v.get(ivy.current_backend_str(), base)
+
             ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
@@ -907,19 +919,11 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
     return current_backend(None).as_native_dtype(dtype_in)
 
 
-# len(get_binary_from_float(x)) >24 and int(get_binary_from_float(x)[24:])>0)
 # noinspection PyShadowingBuiltins
 def _check_float64(input) -> bool:
     if math.isfinite(input):
-        tmp = str(input).replace("-", "").split(".")
-        exponent = int(math.floor(math.log10(abs(input)))) if input != 0 else 0
-        mant = bin(int(float(tmp[0]))).replace("0b", "")
-        return (
-            (input > 3.4028235 * 10**38)
-            or (len(mant) > 24 and int(mant[24:]) > 0)
-            or (exponent < -126)
-            or (exponent > 127)
-        )
+        m, e = math.frexp(input)
+        return (abs(input) > 3.4028235e38) or (e < -126) or (e > 128)
     return False
 
 
@@ -1013,7 +1017,7 @@ def default_float_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(input, lambda x: _check_float64(x)):
+            if ivy.nested_argwhere(input, lambda x: _check_float64(x)):
                 ret = ivy.float64
             else:
                 def_dtype = default_dtype()
@@ -1146,21 +1150,36 @@ def default_int_dtype(
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
     as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
-    """Summary.
-
+    """
     Parameters
     ----------
     input
-         (Default value = None)
+       (Default value = None) Number or array for inferring default int dtype.
     int_dtype
-
+       (Default value = None) Uint dtype to be returned as default.
     as_native
-         (Default value = None)
+       (Default value = None) Whether to return the default int dtype as native dtype.
 
     Returns
     -------
-        Return the input int dtype if provided, otherwise return the global default int
-        dtype.
+        Return the input int dtype if provided, otherwise return the global default
+        int dtype.
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
+    >>> ivy.default_int_dtype()
+    'int16'
+
+    >>> ivy.default_int_dtype(input=4294967346)
+    'int64'
+
+    >>> ivy.default_int_dtype(int_dtype=ivy.intDtype("int8"))
+    'int8'
+
+    >>> x = ivy.array([9,8], dtype="int32")
+    >>> ivy.default_int_dtype(input=x)
+    'int32'
 
     """
     if ivy.exists(int_dtype):
@@ -1176,13 +1195,11 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 input, lambda x: x > 9223372036854775807 and x != ivy.inf
             ):
                 ret = ivy.uint64
-            elif ivy.nested_indices_where(
-                input, lambda x: x > 2147483647 and x != ivy.inf
-            ):
+            elif ivy.nested_argwhere(input, lambda x: x > 2147483647 and x != ivy.inf):
                 ret = ivy.int64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1271,9 +1288,7 @@ def default_uint_dtype(
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_indices_where(
-                input, lambda x: x > 4294967295 and x != ivy.inf
-            ):
+            if ivy.nested_argwhere(input, lambda x: x > 4294967295 and x != ivy.inf):
                 ret = ivy.uint64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1576,7 +1591,7 @@ def is_bool_dtype(
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
             True
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (bool, np.bool)) and not type(x) == int,
             )
@@ -1685,7 +1700,7 @@ def is_int_dtype(
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
             True
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
             )
@@ -1770,7 +1785,7 @@ def is_float_dtype(
     elif isinstance(dtype_in, (list, tuple, dict)):
         return (
             True
-            if ivy.nested_indices_where(
+            if ivy.nested_argwhere(
                 dtype_in, lambda x: isinstance(x, (float, np.floating))
             )
             else False
@@ -1815,7 +1830,7 @@ def is_uint_dtype(
     elif isinstance(dtype_in, Number):
         return isinstance(dtype_in, np.unsignedinteger)
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return ivy.nested_indices_where(
+        return ivy.nested_argwhere(
             dtype_in, lambda x: isinstance(x, np.unsignedinteger)
         )
     return "uint" in as_ivy_dtype(dtype_in)

@@ -5,7 +5,7 @@ import ivy
 def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
     if operand is not None:
         if operands:
-            raise TypeError(
+            raise ivy.exceptions.IvyException(
                 "if `operand` is passed, positional `operands` should not be passed"
             )
         operands = (operand,)
@@ -22,7 +22,7 @@ def map(f, xs):
 def switch(index, branches, *operands, operand=None):
     if operand is not None:
         if operands:
-            raise TypeError(
+            raise ivy.exceptions.IvyException(
                 "if `operand` is passed, positional `operands` should not be passed"
             )
         operands = (operand,)

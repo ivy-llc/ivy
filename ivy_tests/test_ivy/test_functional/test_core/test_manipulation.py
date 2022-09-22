@@ -9,7 +9,6 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -35,7 +34,9 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
-    input_dtypes = draw(helpers.array_dtypes())
+    input_dtypes = draw(
+        helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
+    )
     for ud, dt in zip(unique_dims, input_dtypes):
         x = draw(
             helpers.array_values(
@@ -410,7 +411,7 @@ def _stack_helper(draw):
     num_arrays = draw(
         st.shared(helpers.ints(min_value=1, max_value=3), key="num_arrays")
     )
-    dtype = draw(st.sampled_from(ivy_np.valid_dtypes))
+    dtype = draw(st.sampled_from(draw(helpers.get_dtypes("valid"))))
     arrays = []
     dtypes = [dtype for _ in range(num_arrays)]
 
@@ -704,6 +705,8 @@ def _split_helper(draw):
                 shape=(),
                 min_value=0,
                 max_value=shape[axis] - sum(num_or_size_splits),
+                exclude_min=False,
+                exclude_max=False,
             )
         )
         num_or_size_splits.append(split_value)
@@ -829,7 +832,7 @@ def test_swapaxes(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     repeat=helpers.dtype_and_values(
-        available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+        available_dtypes=helpers.get_dtypes("signed_integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
             lambda rep: (len(rep),)
         ),

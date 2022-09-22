@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple
+from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 
 # local
 import ivy
@@ -158,7 +158,10 @@ def cross(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int = -1,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """The cross product of 3-element vectors. If x1 and x2 are multi- dimensional
@@ -229,7 +232,9 @@ def cross(
         b: ivy.array([0., -6., 0.])
     }
     """
-    return current_backend(x1).cross(x1, x2, axis=axis, out=out)
+    return current_backend(x1).cross(
+        x1, x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -440,7 +445,7 @@ def diagonal(
                         [3., 4.]],\
                        [[5., 6.],\
                         [7., 8.]]])
-    >>> d = ivy.diagonal(x, 1, 0, 1)
+    >>> d = ivy.diagonal(x, offset=1, axis1=0, axis2=1)
     >>> print(d)
     ivy.array([[3.],
                [4.]])
@@ -503,7 +508,11 @@ def diagonal(
 @handle_nestable
 @handle_exceptions
 def eigh(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[ivy.Array] = None,
 ) -> NamedTuple:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
@@ -543,7 +552,7 @@ def eigh(
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
     """
-    return current_backend(x).eigh(x, out=out)
+    return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
 
 @to_native_arrays_and_back
@@ -551,7 +560,11 @@ def eigh(
 @handle_nestable
 @handle_exceptions
 def eigvalsh(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices)
     x.
@@ -572,7 +585,7 @@ def eigvalsh(
         (..., M) and have the same data type as x.
 
     """
-    return current_backend(x).eigvalsh(x, out=out)
+    return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
 
 
 @to_native_arrays_and_back
@@ -616,7 +629,11 @@ def inner(
 @handle_nestable
 @handle_exceptions
 def inv(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -637,22 +654,64 @@ def inv(
         floating-point data type determined by :ref:`type-promotion` and must have the
         same shape as ``x``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/
+    latest/extensions/generated/signatures.linalg.inv.html>`
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-    >>> x = ivy.array([[1.0, 2.0],[3.0, 4.0]])
-    >>> y = ivy.inv(x)
+    With :code:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
+    >>> y = ivy.zeros(3)
+    >>> ivy.inv(x, out=y)
     >>> print(y)
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
+    Using inplace
+    >>> x = ivy.array([[1.0, 2.0], [5.0, 5.0]])
+    >>> ivy.inv(x, out=x)
+    >>> print(x)
+    ivy.array([[-1., 0.4],[1., -0.2]])
+
     Inverses of several matrices can be computed at once:
 
-    >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]], [[1.0, 3.0], [3.0, 5.0]]])
+    >>> x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],\
+                       [[1.0, 3.0], [3.0, 5.0]]])
     >>> y = ivy.inv(x)
     >>> print(y)
-    ivy.array([[[-2., 1.],[1.5, -0.5]],[[-1.25, 0.75],[0.75, -0.25]]])
+    ivy.array([[[-2., 1.],[1.5, -0.5]],
+               [[-1.25, 0.75],[0.75, -0.25]]])
+
+    Static method for Container
+    >>> x = ivy.Container(a=ivy.array([[11., 100., 10.],\
+                        [300., 40., 20.], [25., 30, 100.]]),\
+                        b=ivy.array([[4., 400., 50.], [10., 10., 15.],\
+                        [50., 5000., 40.]]), c=ivy.array([[25., 22., 100.],\
+                        [55, 20., 20.], [55., 50., 100.]]))
+    >>> y = ivy.Container.static_inv(x)
+    >>> print(y)
+    {
+        a: ivy.array([[-0.0012, 0.00342, -0.000565],
+                      [0.0104, -0.0003, -0.000981],
+                      [-0.00282, -0.000766, 0.0104]]),
+        b: ivy.array([[-0.0322, 0.101, 0.00237],
+                      [0.000151, -0.00101, 0.00019],
+                      [0.0214, 0., -0.00171]]),
+        c: ivy.array([[0.0107, 0.03, -0.0167],
+                      [-0.0472, -0.0322, 0.0536],
+                      [0.0177, -0.000429, -0.00762]])
+
+    }
 
     """
-    return current_backend(x).inv(x, out=out)
+    return current_backend(x).inv(x, adjoint=adjoint, out=out)
 
 
 @to_native_arrays_and_back
@@ -805,11 +864,8 @@ def matrix_norm(
     ----------
     x
         Input array.
-    p
-        Order of the norm. Default is 2.
-    axes
-        The axes of x along which to compute the matrix norms.
-        Default is None, in which case the last two dimensions are used.
+    ord
+        Order of the norm. Default is "fro".
     keepdims
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
@@ -1221,9 +1277,6 @@ def svd(
         the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``
         and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.
         Default: ``True``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
@@ -1634,7 +1687,7 @@ def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[ivy.Array] = None,
