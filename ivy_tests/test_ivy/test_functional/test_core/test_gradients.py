@@ -551,7 +551,8 @@ def test_adam_update(
         max_size=4,
     ),
     mtr=st.one_of(
-        helpers.ints(min_value=1), st.floats(min_value=0, exclude_min=True, width=16)
+        helpers.ints(min_value=1, max_value=10),
+        st.floats(min_value=0, max_value=10, exclude_min=True, width=16),
     ),
     stopgrad=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
