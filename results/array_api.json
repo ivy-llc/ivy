@@ -32,7 +32,7 @@
             "sorting_functions": " ",
             "special_cases": " ",
             "statistical_functions": "success",
-            "type_promotion": "failure",
+            "type_promotion": " ",
             "utility_functions": "success"
       },
       "tensorflow": {
@@ -59,11 +59,11 @@
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": " ",
+            "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
             "searching_functions": " ",
-            "set_functions": "success",
+            "set_functions": " ",
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": " ",
