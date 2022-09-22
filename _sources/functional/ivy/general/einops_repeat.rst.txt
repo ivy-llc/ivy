@@ -5,9 +5,9 @@ einops_repeat
 
 .. autofunction:: ivy.array.array_methods.einops_repeat
 
-.. autofunction:: ivy.container.container_methods.einops_repeat
-
 .. autofunction:: ivy.container.container_methods.static_einops_repeat
+
+.. autofunction:: ivy.container.container_methods.einops_repeat
 |
 | **Supported Frameworks:**
 
