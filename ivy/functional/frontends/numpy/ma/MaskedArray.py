@@ -28,7 +28,7 @@ class MaskedArray(np_frontend.ndarray):
         ndmin=0,
         fill_value=None,
         keep_mask=True,
-        hard_mask=None,  # TODO: assignments
+        hard_mask=False,  # TODO: assignments
         shrink=True,
         subok=True,
         order=None,
@@ -151,6 +151,12 @@ class MaskedArray(np_frontend.ndarray):
     def dtype(self, mask):
         # TODO: check type casting
         pass
+
+    # Built-ins #
+    # --------- #
+
+    def __getitem__(self, query):
+        return self._data[query]
 
 
 # masked_array (alias)
