@@ -99,11 +99,12 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
 
         # if it's in the backend, we can get the dtypes directly
         # if it's in the front end, we need to recurse
+        # if it's einops, we need to recurse
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
             continue
-        elif "frontend" in fn.__module__:
+        elif "frontend" in fn.__module__ or "einops" in fn.__name__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
 
@@ -126,7 +127,10 @@ def _get_dtypes(fn, complement=True):
     # We only care about getting dtype info from the base function
     # if we do need to at some point use dtype information from the parent function
     # we can comment out the following condition
-    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported
@@ -141,6 +145,10 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
+            # only einops allowed to be a dictionary
+            if "einops" in fn.__name__ and isinstance(v, dict):
+                v = v.get(ivy.current_backend_str(), base)
+
             ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
