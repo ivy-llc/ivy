@@ -1,11 +1,11 @@
 {
       "numpy": {
             "array_object": " ",
-            "constants": "success",
-            "creation_functions": "success",
+            "constants": " ",
+            "creation_functions": " ",
             "data_type_functions": " ",
             "has_names": " ",
-            "linalg": " ",
+            "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": " ",
             "searching_functions": " ",
