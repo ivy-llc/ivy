@@ -25,7 +25,7 @@
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
-            "operators_and_elementwise_functions": " ",
+            "operators_and_elementwise_functions": "failure",
             "searching_functions": " ",
             "set_functions": " ",
             "signatures": " ",
