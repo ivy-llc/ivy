@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 # local
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -66,9 +65,9 @@ def test_numpy_instance_reshape(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, num_arrays=2
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
     ),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes + (None,)),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.add"
