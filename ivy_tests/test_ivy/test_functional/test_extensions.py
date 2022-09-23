@@ -62,11 +62,11 @@ def _sparse_csr_indices_values_shape(draw):
 @handle_cmd_line_args
 @given(sparse_data=_sparse_coo_indices_values_shape())
 def test_sparse_coo(
-    sparse_data,
-    as_variable,
-    with_out,
-    native_array,
-    fw,
+        sparse_data,
+        as_variable,
+        with_out,
+        native_array,
+        fw,
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(
@@ -95,11 +95,11 @@ def test_sparse_coo(
 @handle_cmd_line_args
 @given(sparse_data=_sparse_csr_indices_values_shape())
 def test_sparse_csr(
-    sparse_data,
-    as_variable,
-    with_out,
-    native_array,
-    fw,
+        sparse_data,
+        as_variable,
+        with_out,
+        native_array,
+        fw,
 ):
     crow_indices, col_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
@@ -122,4 +122,52 @@ def test_sparse_csr(
         fw=fw,
         class_name="SparseArray",
         method_name="to_dense_array",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        min_dim_size=2,
+        valid_axis=True,
+        max_axes_size=1,
+        allow_neg_axes=False,
+        force_int_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="ifft"),
+    n=helpers.ints(min_value=1, max_value=10),
+    norm=st.sampled_from(["backward", "ortho", "forward", None])
+)
+def test_ifft(
+        dtype_x_axis,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container,
+        n,
+        norm,
+        instance_method,
+        fw,
+):
+    dtype, x, axis = dtype_x_axis
+    norm = norm
+
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        instance_method=instance_method,
+        fw=fw,
+        container_flags=container,
+        fn_name="ifft",
+        input=np.asarray(x, dtype=dtype),
+        n=n,
+        norm=norm,
+        axis=axis,
+        dim=axis
     )
