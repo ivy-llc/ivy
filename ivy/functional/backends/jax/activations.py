@@ -66,3 +66,11 @@ def softplus(
     if threshold is not None:
         return jnp.where(x_beta > threshold, x, res)
     return res
+
+
+def log_softmax(
+    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+):
+    if axis is None:
+        axis = -1
+    return jax.nn.log_softmax(x, axis)
