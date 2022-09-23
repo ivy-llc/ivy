@@ -25,3 +25,11 @@ class ndarray:
             self.data,
             value,
         )
+
+    def squeeze(
+        self, 
+        axis=None
+    ):
+        return np_frontend.squeeze(
+            self.data, 
+            axis=None)
