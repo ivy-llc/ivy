@@ -963,19 +963,21 @@ def test_tensorflow_zero_fraction(
 # abs
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-5,
-        max_value=5
+    dtype=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    x=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 10), min_value=-5, max_value=0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.abs"
     ),
 )
 def test_tensorflow_abs(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype, x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype = dtype
+    x = x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -985,5 +987,5 @@ def test_tensorflow_abs(
         fw=fw,
         frontend="tensorflow",
         fn_tree="abs",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x
     )
