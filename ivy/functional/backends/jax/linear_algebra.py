@@ -31,9 +31,17 @@ cholesky.unsupported_dtypes = (
 
 
 def cross(
-    x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.cross(a=x1, b=x2, axis=axis)
+    return jnp.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
 def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -67,8 +75,10 @@ def diagonal(
     return ret
 
 
-def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigh(x)
+def eigh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigh(x, UPLO=UPLO)
 
 
 eigh.unsupported_dtypes = (
@@ -77,8 +87,10 @@ eigh.unsupported_dtypes = (
 )
 
 
-def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigvalsh(x)
+def eigvalsh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
 
 eigvalsh.unsupported_dtypes = (
@@ -159,13 +171,27 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    singular_values = jnp.linalg.svd(x, compute_uv=False)
-    max_value = jnp.max(singular_values)
-    if rtol:
-        num = jnp.sum(singular_values > max_value * rtol)
+    axis = None
+    ret_shape = x.shape[:-2]
+    if len(x.shape) > 2:
+        y = x.reshape((-1, *x.shape[-2:]))
+        singular_values = jnp.asarray(
+            [
+                jnp.linalg.svd(split[0], compute_uv=False)
+                for split in jnp.split(y, y.shape[0], axis=0)
+            ]
+        )
+        axis = 1
     else:
-        num = singular_values.size
-    return jnp.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
+        singular_values = jnp.linalg.svd(x, compute_uv=False)
+    max_values = jnp.max(singular_values, axis=axis)
+    if rtol:
+        ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
+    else:
+        ret = jnp.sum(singular_values != 0, axis=axis)
+    if len(ret_shape):
+        ret = ret.reshape(ret_shape)
+    return ret.astype(x.dtype)
 
 
 matrix_rank.unsupported_dtypes = (
