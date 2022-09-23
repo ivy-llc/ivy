@@ -8,7 +8,7 @@
             "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "failure",
-            "searching_functions": "success",
+            "searching_functions": " ",
             "set_functions": "success",
             "signatures": "failure",
             "sorting_functions": " ",
@@ -69,6 +69,6 @@
             "special_cases": "success",
             "statistical_functions": "success",
             "type_promotion": "failure",
-            "utility_functions": " "
+            "utility_functions": "success"
       }
 }
