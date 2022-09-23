@@ -41,7 +41,7 @@ def test_torch_flip(
         fw=fw,
         frontend="torch",
         fn_tree="flip",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         dims=axis,
     )
 
@@ -89,7 +89,7 @@ def test_torch_roll(
         fw=fw,
         frontend="torch",
         fn_tree="roll",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
         shifts=shift,
         dims=axis,
     )
@@ -123,7 +123,7 @@ def test_torch_fliplr(
         fw=fw,
         frontend="torch",
         fn_tree="fliplr",
-        input=np.asarray(value, dtype=input_dtype),
+        input=value[0],
     )
 
 
@@ -163,7 +163,7 @@ def test_torch_cumsum(
         fw=fw,
         frontend="torch",
         fn_tree="cumsum",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         dtype=dtype,
         out=None,
@@ -204,7 +204,7 @@ def test_torch_diagonal(
 ):
     input_dtype, value = dtype_and_values
     dim1, dim2, offset = dims_and_offset
-    input = np.asarray(value, dtype=input_dtype)
+    input = value[0]
     num_dims = len(np.shape(input))
     assume(dim1 != dim2)
     if dim1 < 0:
@@ -248,7 +248,6 @@ def test_torch_triu(
     native_array,
 ):
     dtype, values = dtype_and_values
-    values = np.asarray(values, dtype=dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -258,7 +257,7 @@ def test_torch_triu(
         fw=fw,
         frontend="torch",
         fn_tree="triu",
-        input=values,
+        input=values[0],
         diagonal=diagonal,
     )
 
@@ -299,7 +298,7 @@ def test_torch_cumprod(
         fw=fw,
         frontend="torch",
         fn_tree="cumprod",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         dim=axis,
         dtype=dtype,
         out=None,
@@ -326,9 +325,6 @@ def test_torch_trace(
     fw,
 ):
     dtype, value = dtype_and_values
-
-    value = np.asarray(value, dtype=dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -338,7 +334,7 @@ def test_torch_trace(
         fw=fw,
         frontend="torch",
         fn_tree="trace",
-        input=value,
+        input=value[0],
     )
 
 
@@ -434,7 +430,6 @@ def test_torch_tril(
     native_array,
 ):
     dtype, values = dtype_and_values
-    values = np.asarray(values, dtype=dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -444,7 +439,7 @@ def test_torch_tril(
         fw=fw,
         frontend="torch",
         fn_tree="tril",
-        input=values,
+        input=values[0],
         diagonal=diagonal,
     )
 
@@ -535,9 +530,6 @@ def test_torch_flatten(
     fw,
 ):
     dtype, input, start_dim, end_dim = dtype_and_input_and_start_end_dim
-
-    input = np.asarray(input, dtype=dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         with_out=with_out,
@@ -547,7 +539,7 @@ def test_torch_flatten(
         fw=fw,
         frontend="torch",
         fn_tree="flatten",
-        input=input,
+        input=input[0],
         start_dim=start_dim,
         end_dim=end_dim,
     )

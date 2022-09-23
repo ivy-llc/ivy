@@ -1,4 +1,3 @@
-import numpy as np
 from hypothesis import given
 
 # local
@@ -30,5 +29,5 @@ def test_torch_is_tensor(
         fw=fw,
         frontend="torch",
         fn_tree="is_tensor",
-        obj=np.asarray(x, dtype=input_dtype),
+        obj=x[0],
     )
