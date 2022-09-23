@@ -13,6 +13,59 @@ inf = float("inf")
 
 # noinspection PyMissingConstructor,PyMethodParameters
 class ContainerWithLinearAlgebra(ContainerBase):
+    @staticmethod
+    def static_matmul(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.matmul. This method simply wraps
+        the function, and so the docstring for ivy.matul also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input array
+        x2
+            second input array
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            the matrix multiplication result of x1 and x2
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "matmul",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def matmul(
         self: ivy.Container,
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -21,43 +74,48 @@ class ContainerWithLinearAlgebra(ContainerBase):
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
-        map_nests: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Examples
-        --------
 
-        With :code:`ivy.Container` instance inputs:
-
-        >>> x = ivy.Container(a=ivy.array([5., 2.]), b=ivy.array([2., 1.]))
-        >>> y = ivy.Container(a=ivy.array([7., 2.]), b=ivy.array([3., 2.]))
-        >>> z = x.matmul(y)
-        >>> print(z)
-        {
-            a: ivy.array(39.),
-            b: ivy.array(8.)
-        }
         """
-        kw = {}
-        conts = {"x1": self}
-        if ivy.is_array(x2):
-            kw["x2"] = x2
-        else:
-            conts["x2"] = x2
-        cont_keys = conts.keys()
-        return ContainerBase.handle_inplace(
-            ContainerBase.multi_map(
-                lambda xs, _: ivy.matmul(**dict(zip(cont_keys, xs)), **kw)
-                if ivy.is_array(xs[0])
-                else xs,
-                list(conts.values()),
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_nests=map_nests,
-            ),
-            out,
+        ivy.Container instance method variant of ivy.matmul. This method simply wraps
+        the function, and so the docstring for ivy.matmul also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array
+        x2
+            second input array
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            the matrix multiplication result of self and x2
+        """
+        return self.static_matmul(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     @staticmethod
