@@ -81,47 +81,59 @@ def test_torch_conv2d_2(input, weight, bias, stride, dilation, padding, fw):
 
 
 @st.composite
-def int_or_tuple(draw):
-    key_st = st.sampled_from(
-        [
-            st.integers(min_value=1),
-            st.tuples(st.integers(min_value=1)),
-            st.tuples(st.integers(min_value=1), st.integers(min_value=1)),
-        ]
+def _int_or_tuple(draw):
+    val = draw(
+        random.choice(
+            [
+                st.integers(min_value=0, max_value=255),
+                st.tuples(st.integers(min_value=0, max_value=255)),
+                st.tuples(
+                    st.integers(min_value=0, max_value=255),
+                    st.integers(min_value=0, max_value=255),
+                ),
+            ]
+        )
     )
-    return draw(key_st)
+    return val
 
 
 @handle_cmd_line_args
 @given(
-    dtype_and_input=helpers.dtype_and_values(
+    dtype_and_input_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=4,
+        min_dim_size=0,
+        ret_shape=True,
     ),
+    kernel_size=_int_or_tuple(),
+    dilation=_int_or_tuple(),
+    padding=_int_or_tuple(),
+    stride=_int_or_tuple(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.unfold"
     ),
 )
 def test_torch_unfold(
-    dtype_and_input,
+    dtype_and_input_shape,
+    kernel_size,
+    dilation,
+    padding,
+    stride,
     as_variable,
     num_positional_args,
     native_array,
     fw,
 ):
-    x_dtype, x = dtype_and_input
-    kernel_size = int_or_tuple()
-    dilation = int_or_tuple()
-    padding = int_or_tuple()
-    stride = int_or_tuple()
-    arg_dtypes = x_dtype + [int, int, int, int]
-    if x.ndim() == 3:
-        assume(x.shape()[0] and x.shape()[1] and x.shape()[2])
-    elif x.ndim() == 4:
-        assume(x.shape()[1] and x.shape()[2] and x.shape()[3])
+    args_dtypes = list([dtype_and_input_shape[0]] + ["uint8"] * 4)
+    input_shape = dtype_and_input_shape[2]
+    input_ndims = len(input_shape)
+    if input_ndims == 3:
+        assume(input_shape[0] and input_shape[1] and input_shape[2])
+    elif input_ndims == 4:
+        assume(input_shape[1] and input_shape[2] and input_shape[3])
     helpers.test_frontend_function(
-        input_dtypes=arg_dtypes,
+        input_dtypes=args_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -129,7 +141,7 @@ def test_torch_unfold(
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.unfold",
-        input=x,
+        input=dtype_and_input_shape[1],
         kernel_size=kernel_size,
         dilation=dilation,
         padding=padding,
