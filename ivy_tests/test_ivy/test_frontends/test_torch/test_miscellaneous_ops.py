@@ -654,3 +654,56 @@ def test_torch_logcumsumexp(
         input=input,
         dim=dim,
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_input_and_dim=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+    ),
+    dtype_and_repeats=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        # Torch requires this.
+        max_num_dims=1,
+        min_num_dims=0,
+    ),
+    # Generating the output size as a strategy would be much more
+    # complicated than necessary.
+    use_output_size=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.repeat_interleave",
+    ),
+)
+def test_torch_repeat_interleave(
+    dtype_and_input_and_dim,
+    dtype_and_repeats,
+    use_output_size,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input, dim = dtype_and_input_and_dim
+    repeat_dtype, repeats = dtype_and_repeats
+
+    input = np.asarray(input, dtype=input_dtype)
+    repeats = np.asarray(repeats, dtype=repeat_dtype)
+
+    output_size = np.sum(repeats) if use_output_size else None
+
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, repeat_dtype],
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="repeat_interleave",
+        input=input,
+        repeats=repeats,
+        dim=dim,
+        output_size=output_size,
+    )
