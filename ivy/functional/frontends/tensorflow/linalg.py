@@ -31,8 +31,8 @@ def pinv(a, rcond=None, validate_args=False, name=None):
     return ivy.pinv(a, rcond)
 
 
-def tensordot(x, y, axes, name=None):
-    return ivy.tensordot(x, y, axes)
+def tensordot(a, b, axes, name=None):
+    return ivy.tensordot(a, b, axes)
 
 
 tensordot.supported_dtypes = ("float32", "float64")
