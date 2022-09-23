@@ -654,7 +654,6 @@ def to_numpy(
 
     Examples
     --------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
