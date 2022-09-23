@@ -136,7 +136,6 @@ def test_numpy_greater(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -186,7 +185,6 @@ def test_numpy_greater_equal(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -236,7 +234,6 @@ def test_numpy_less(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -286,7 +283,6 @@ def test_numpy_less_equal(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -336,7 +332,6 @@ def test_numpy_not_equal(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
