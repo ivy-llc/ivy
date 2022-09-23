@@ -1,13 +1,13 @@
 # local
 import ivy
-import ivy.functional.frontends as frontends
+from ... import versions
 from ivy.func_wrapper import with_unsupported_dtypes
 
-versions = frontends.versions["numpy"]
+version = versions["numpy"]
 
 
 # solve
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, versions)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def solve(a, b):
     return ivy.solve(a, b)
 

@@ -2,6 +2,7 @@
 
 # global
 import numpy as np
+import importlib
 import pytest
 from hypothesis import given, assume, strategies as st
 
@@ -864,7 +865,7 @@ def test_function_unsupported_dtypes(func, expected):
 
 @pytest.mark.parametrize(
     "func_and_version", [
-        {"torch": {"cumsum": {"1.11.0": {"bfloat16", "uint8"}, "1.12.1": set()}}},
+        {"torch": {"cumsum": {"1.11.0": {"bfloat16", "uint8","float16"}, "1.12.1": set()}}},
     ]
 )
 def test_function_dtype_versioning(func_and_version, fw):
@@ -888,6 +889,35 @@ def test_function_dtype_versioning(func_and_version, fw):
                     raise Exception
         return True
 
+@pytest.mark.parametrize(
+    "func_and_version", [
+        {"torch": {"cumsum": {"1.11.0": {"bfloat16", "uint8","float16"}, "1.12.1": set()}}},
+    ]
+)
+def test_function_dtype_versioning_frontend(func_and_version, fw):
+    for key in func_and_version:
+        if key != fw:
+            continue
+        frontend=importlib.import_module('ivy.functional.frontends.'+fw)
+        var = frontend.versions
+
+        for key1 in func_and_version[key]:
+            for key2 in func_and_version[key][key1]:
+                var[fw] = key2
+                print(key2)
+                fn = getattr(frontend, key1)
+                expected = func_and_version[key][key1][key2]
+                print(fn,key2)
+                print(help(fn))
+                res = fn.unsupported_dtypes
+                if res is None:
+                    res = set()
+                else:
+                    res = set(res)
+                if res != expected:
+                    print(res, expected)
+                    raise Exception
+        return True
 
 # invalid_dtype
 @handle_cmd_line_args

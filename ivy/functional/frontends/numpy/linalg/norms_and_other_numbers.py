@@ -1,13 +1,12 @@
 # local
 import ivy
-import ivy.functional.frontends as frontends
+from ... import versions
 from ivy.func_wrapper import with_unsupported_dtypes
 
-versions = frontends.versions["numpy"]
 
 
 # solve
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, versions)
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, versions["numpy"])
 def norm(x, ord=None, axis=None, keepdims=False):
     ret = ivy.vector_norm(x, axis, keepdims, ord)
     if axis is None:
