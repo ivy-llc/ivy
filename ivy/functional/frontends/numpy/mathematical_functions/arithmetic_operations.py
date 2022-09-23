@@ -64,6 +64,7 @@ def divide(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
+true_divide = divide
 
 def multiply(
     x1,
