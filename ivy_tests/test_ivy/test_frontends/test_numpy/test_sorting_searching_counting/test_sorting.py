@@ -1,9 +1,7 @@
 # global
-import numpy as np
 from hypothesis import given
 
 # local
-# import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -29,7 +27,6 @@ def test_numpy_argsort(
     fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -39,6 +36,6 @@ def test_numpy_argsort(
         fw=fw,
         frontend="numpy",
         fn_tree="argsort",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
     )
