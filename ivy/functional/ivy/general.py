@@ -654,7 +654,6 @@ def to_numpy(
 
     Functional Method Examples
     --------------------------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -727,7 +726,6 @@ def to_numpy(
 
     Instance Method Example
     -----------------------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -1410,7 +1408,7 @@ def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True) ->
     >>> print(y)
     False
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1, 2, 3, float('nan')])
     >>> y = ivy.has_nans(x)
@@ -1684,14 +1682,16 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
 
     Examples
     --------
-    with: if the function is executed without any exception
+    with: if the function is executed without any exception:
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.try_else_none(ivy.add,x, y)
     >>> print(z.__name__)
     add
 
-    with: if the function is executed with an exception
+    with: if the function is executed with an exception:
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = 'hemant'
     >>> z = ivy.try_else_none(ivy.add,x, y)
@@ -1803,6 +1803,7 @@ def cache_fn(func: Callable) -> Callable:
     Examples
     --------
     With positional arguments only:
+
     >>> def my_sum(val1:float, val2:float)->float: return val1 + val2
     >>> cached_sum = ivy.cache_fn(my_sum)
     >>> print(cached_sum(3, 5)) # Compute the output
@@ -1876,7 +1877,7 @@ def current_backend_str() -> Union[str, None]:
     >>> print(ivy.current_backend_str())
 
 
-    With setting default backend as 'torch':
+    With setting default backend as `torch`:
 
     >>> ivy.set_backend('torch')
     >>> print(ivy.current_backend_str())
@@ -1962,6 +1963,7 @@ def einops_reduce(
     Examples
     --------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([[-4.47, 0.93, -3.34],\
                       [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
@@ -1969,6 +1971,7 @@ def einops_reduce(
     ivy.array([-0.405, 12.6  ,  0.15 ])
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],\
                                       [3.66, 24.29, 3.64]]),\
                         b=ivy.array([[4.96, 1.52, -10.67],\
@@ -2024,6 +2027,7 @@ def einops_repeat(
     Examples
     --------
     With :code:`ivy.array` input:
+
     >>> x = ivy.array([1, 2, 3, 4])
     >>> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
     >>> print(repeated)
@@ -2031,6 +2035,7 @@ def einops_repeat(
                [1, 2, 3, 4]])
 
     With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([[4,5],\
                                     [1, 3]]),\
                         b=ivy.array([[9, 10],\
@@ -2180,6 +2185,7 @@ def stable_divide(
     Examples
     --------
     With :code:`int` input:
+
     >>> x = ivy.stable_divide(1, 2)
     >>> print(x)
     0.49999999999975
@@ -2189,16 +2195,19 @@ def stable_divide(
     0.2
 
     With :code:`float` input:
+
     >>> x = ivy.stable_divide(5.0, 3.33)
     >>> print(x)
     1.5015015015010504
 
     With :code:`complex` input:
+
     >>> x = ivy.stable_divide(1+1j, 1-1j)
     >>> print(x)
     (5.000444502911705e-13+0.9999999999995j)
 
     With :code:`ivy.Array` input:
+
     >>> x = ivy.asarray([[10., 20., 30.],\
                         [40., 50., 60.]])
     >>> y = ivy.stable_divide(x, 10.)
@@ -2220,7 +2229,8 @@ def stable_divide(
     >>> print(w)
     ivy.array([ 0.99,  3.85, 14.3 ])
 
-    With :code:`ivy.Container` input
+    With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.asarray([10., 15.]), b=ivy.asarray([20., 25.]))
     >>> y = ivy.stable_divide(x, 0.5)
     >>> print(y)
@@ -2495,18 +2505,19 @@ def supports_inplace_updates(
 
     Examples
     --------
-    With :code:'ivy.DType("bool")' input:
+    With :code:`ivy.DType("bool")` input:
+
     >>> x = True
     >>> ivy.supports_inplace_updates(x)
     ValueError: Input x must be either a variable or an array.
 
-    With :code:'ivy.Array' input and default backend set as 'numpy':
+    With :code:`ivy.Array` input and default backend set as `numpy`:
     >>> x = ivy.array([0, 1, 2])
     >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
     True
 
-    With :code:'ivy.Container' input and backend set as 'torch':
+    With :code:`ivy.Container` input and backend set as `torch`:
     >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
     >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
@@ -2651,6 +2662,7 @@ def inplace_decrement(
     Examples
     --------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([[5.3, 7., 0.],\
                         [6.8, 8, 3.9],\
                         [0., 10., 6.3]])
@@ -2661,13 +2673,15 @@ def inplace_decrement(
        [-1.25,  8.75,  5.05]])
 
     With :code:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([-10, 24, -3])
     >>> val = ivy.native_array([1, 2, 3])
     >>> y = ivy.inplace_decrement(x, val)
     >>> print(y)
     ivy.array([-11,  22,  -6])
 
-    With :code:`ivy.Container` input
+    With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), b=ivy.array([0., -25., 50.]))
     >>> y = ivy.inplace_decrement(x, 1.5)
     >>> print(y)
@@ -2721,6 +2735,7 @@ def inplace_increment(
     Examples
     --------
     With :code:`ivy.Array` input:
+
     >>> x = ivy.array([[5.3, 7., 0.],\
                         [6.8, 8, 3.9],\
                         [0., 10., 6.3]])
@@ -2731,13 +2746,15 @@ def inplace_increment(
        [ 3., 13.,  9.3]])
 
      With :code:`ivy.NativeArray` input:
+
      >>> x = ivy.native_array([10, 20, 30])
      >>> val = ivy.native_array([1, 2, 3])
      >>> y = ivy.inplace_increment(x, val)
      >>> print(y)
      ivy.array([11, 22, 33])
 
-    With :code:`ivy.Container` input
+    With :code:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> y = ivy.inplace_increment(x, 2.5)
     >>> print(y)
@@ -2845,7 +2862,7 @@ def scatter_nd(
     >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
-    scatter into an empty array, With: `ivy.Container` input:
+    scatter into an empty array, With:`ivy.Container` input:
 
     >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\
                         b=ivy.array([[5],[1],[2]]))
@@ -2860,7 +2877,7 @@ def scatter_nd(
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
     }
 
-    scatter into an array, With : `ivy.Container` and `ivy.Array` input:
+    scatter into an array, With :code:`ivy.Container` and :code:`ivy.Array` input:
 
     >>> indices = ivy.array([[4],[3],[1]])
     >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),\
@@ -3472,6 +3489,7 @@ def vmap(
     Examples
     --------
     With :code:`ivy.matmul` func and :code:`ivy.Array` input:
+
     >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
     >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
     >>> z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)
