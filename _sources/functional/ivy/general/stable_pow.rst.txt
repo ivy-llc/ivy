@@ -5,9 +5,9 @@ stable_pow
 
 .. autofunction:: ivy.array.array_methods.stable_pow
 
-.. autofunction:: ivy.container.container_methods.static_stable_pow
-
 .. autofunction:: ivy.container.container_methods.stable_pow
+
+.. autofunction:: ivy.container.container_methods.static_stable_pow
 |
 | **Supported Frameworks:**
 
