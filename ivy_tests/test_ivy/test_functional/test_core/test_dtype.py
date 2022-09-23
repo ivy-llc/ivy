@@ -907,8 +907,6 @@ def test_function_dtype_versioning_frontend(func_and_version, fw):
                 print(key2)
                 fn = getattr(frontend, key1)
                 expected = func_and_version[key][key1][key2]
-                print(fn,key2)
-                print(help(fn))
                 res = fn.unsupported_dtypes
                 if res is None:
                     res = set()
