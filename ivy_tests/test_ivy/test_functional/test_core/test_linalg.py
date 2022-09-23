@@ -118,14 +118,12 @@ def _get_dtype_value1_value2_axis_for_tensordot(
         )
 
     value1, value2 = values[0], values[1]
-    value1 = np.asarray(value1, dtype=dtype)
-    value2 = np.asarray(value2, dtype=dtype)
     if not isinstance(axis, list):
         value2 = value2.transpose(
             [k for k in range(len(shape) - axis, len(shape))]
             + [k for k in range(0, len(shape) - axis)]
         )
-    return dtype, value1, value2, axis
+    return [dtype], value1, value2, axis
 
 
 @st.composite
