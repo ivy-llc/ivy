@@ -2842,7 +2842,7 @@ def isinf(
     >>> x.isinf()
     ivy.array([[[False],[True],[False]]])
 
-    >>> x = ivy.array([[-float('inf'), float(inf), 0.0]])
+    >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
     >>> x.isinf()
     ivy.array([[ True, True, False]])
 
