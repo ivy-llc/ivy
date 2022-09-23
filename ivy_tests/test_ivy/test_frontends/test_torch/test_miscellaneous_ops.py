@@ -660,7 +660,6 @@ def test_torch_logcumsumexp(
 @given(
     dtype_and_input_and_dim=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        # force_int_axis=True,
         valid_axis=True,
     ),
     dtype_and_repeats=helpers.dtype_and_values(
@@ -669,7 +668,6 @@ def test_torch_logcumsumexp(
         max_num_dims=1,
         min_num_dims=0,
     ),
-    # output_size=st.one_of(st.integers(), st.none()),
     # Generating the output size as a strategy would be much more
     # complicated than necessary.
     use_output_size=st.booleans(),
@@ -680,7 +678,6 @@ def test_torch_logcumsumexp(
 def test_torch_repeat_interleave(
     dtype_and_input_and_dim,
     dtype_and_repeats,
-    # output_size,
     use_output_size,
     as_variable,
     with_out,
