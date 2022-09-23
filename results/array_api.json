@@ -37,7 +37,7 @@
       },
       "tensorflow": {
             "array_object": " ",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
