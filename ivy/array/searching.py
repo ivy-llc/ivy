@@ -90,7 +90,7 @@ class ArrayWithSearching(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        as_tuple=True,
+        as_tuple: bool = True,
         size: Optional[int] = None,
         fill_value: int = 0,
     ) -> Union[Tuple[ivy.Array], ivy.Array]:
