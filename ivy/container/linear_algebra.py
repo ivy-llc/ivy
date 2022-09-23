@@ -564,7 +564,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
     
         Examples
         --------
-        An example without tolerance specified and out array
         x = ivy.Container(a= ivy.array([[1., 2.],\
                   [3., 4.]]))
         y = pinv(x, None, None)
@@ -574,7 +573,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
                [1.5, -0.5]])
         }
     
-        An example with tolerance = 0.5 and out array
         x = ivy.Container(a=ivy.array([[1., 2.],\
                   [3., 4.]]))
         out = ivy.Container(a=ivy.array())
@@ -627,7 +625,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
     
         Examples
         --------
-        An example without tolerance specified and out array
         x = ivy.Container(a= ivy.array([[1., 2.],\
                   [3., 4.]]))
         y = pinv(x, None, None)
@@ -637,7 +634,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
                [1.5, -0.5]])
         }
     
-        An example with tolerance = 0.5 and out array
         x = ivy.Container(a=ivy.array([[1., 2.],\
                   [3., 4.]]))
         out = ivy.Container(a=ivy.array())

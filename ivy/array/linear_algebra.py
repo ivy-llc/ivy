@@ -252,7 +252,6 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         Examples
         --------
-        An example without tolerance specified and out array
         x = ivy.array([[1., 2.],\
                   [3., 4.]])
         y = pinv(x, None, None)
@@ -260,7 +259,6 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.array([[-2., 1.],\
                [1.5, -0.5]])
     
-        An example with tolerance = 0.5 and out array
         x = ivy.array([[1., 2.],\
                       [3., 4.]])
         out = ivy.array()
