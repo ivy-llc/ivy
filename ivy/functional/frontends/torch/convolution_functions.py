@@ -89,10 +89,11 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     ndim = input.dim()
 
     valid_dims = input.shape[1] != 0 and input.shape[2] != 0
-    ivy.assertions.check_true((ndim == 3 and input.shape[0] != 0 and valid_dims) or
-                              (ndim == 4 and valid_dims and input.shape[3] != 0),
+    ivy.assertions.check_true((ndim == 3 and input.shape[0] != 0 and valid_dims)
+                              or (ndim == 4 and valid_dims and input.shape[3] != 0),
                               message="expected 3D or 4D (batch mode) tensor "
-                              "with possibly 0 batch size and other non-zero dimensions for input")
+                              "with possibly 0 batch size "
+                              "and other non-zero dimensions for input")
 
     dim_batch = 0
     if ndim == 3:
@@ -100,13 +101,20 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
 
     input_height = input.shape[dim_batch + 2]
     input_width = input.shape[dim_batch + 3]
-    output_height = int(_div_rtn(input_height + 2 * pad_height - (dilation_height * (kernel_height - 1) + 1),
-                                 stride_height) + 1)
-    output_width = int(_div_rtn(input_width + 2 * pad_width - (dilation_width * (kernel_width - 1) + 1),
-                                stride_width) + 1)
+    output_height = int(
+        _div_rtn(
+            input_height + 2 * pad_height
+            - (dilation_height * (kernel_height - 1) + 1),
+            stride_height) + 1)
+    output_width = int(
+        _div_rtn(
+            input_width + 2 * pad_width
+            - (dilation_width * (kernel_width - 1) + 1),
+            stride_width) + 1)
 
     ivy.assertions.check_true(output_width < 1 and output_height < 1,
-                              message="calculated shape of the array of sliding blocks is non-positive")
+                              message="calculated shape of the array "
+                                      "of sliding blocks is non-positive")
 
     batched_input = True
     if input.dim() == 3:
@@ -117,10 +125,12 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     n_input_channels = input.shape[1]
     input_height = input.shape[2]
     input_width = input.shape[3]
-    output_height = int((input_height + 2 * pad_height - (dilation_height * (kernel_height - 1) + 1))
-                        / stride_height + 1)
-    output_width = int((input_width + 2 * pad_width - (dilation_width * (kernel_width - 1) + 1))
-                       / stride_width + 1)
+    output_height = int(
+        (input_height + 2 * pad_height - (dilation_height * (kernel_height - 1) + 1))
+        / stride_height + 1)
+    output_width = int(
+        (input_width + 2 * pad_width - (dilation_width * (kernel_width - 1) + 1))
+        / stride_width + 1)
     n_output_channels = n_input_channels * kernel_width * kernel_height
     output_length = output_height * output_width
 
@@ -145,7 +155,8 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
                 for w_col in range(width_col):
                     w_im = w_col * stride_width - pad_width + w_offset * dilation_width
 
-                    if (h_im >= 0 and w_im >= 0) and (h_im < input_height and w_im < input_width):
+                    if (h_im >= 0 and h_im < input_height) \
+                            and (w_im >= 0 and w_im < input_width):
                         data_col[(c_col * height_col + h_col) * width_col + w_col] = \
                             data_im[(c_im * input_height + h_im) * input_width + w_im]
 
@@ -180,10 +191,11 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
 
     ndim = input.dim()
 
-    ivy.assertions.check_true((ndim == 2 and input.shape[0] != 0 and input.shape[1] != 0) or
-                              (ndim == 3 and input.shape[1] != 0 and input.shape[2] != 0),
+    ivy.assertions.check_true((ndim == 2 and input.shape[0] and input.shape[1])
+                              or (ndim == 3 and input.shape[1] and input.shape[2]),
                               message="expected 2D or 3D (batch mode) tensor "
-                                      "for input with possibly 0 batch size and non-zero dimensions for input")
+                                      "with possibly 0 batch size and "
+                                      "non-zero dimensions for input")
 
     dim_batch = 0
     if ndim == 3:
@@ -197,10 +209,16 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
 
     input_length = input.shape[dim_batch + 2]
 
-    blocks_height = int(_div_rtn(output_height + 2 * pad_height - (dilation_height * (kernel_height - 1) - 1),
-                        stride_height) + 1)
-    blocks_width = int(_div_rtn(output_width + 2 * pad_width - (dilation_width * (kernel_width - 1) - 1),
-                       stride_width) + 1)
+    blocks_height = int(
+        _div_rtn(
+            output_height + 2 * pad_height
+            - (dilation_height * (kernel_height - 1) - 1),
+            stride_height) + 1)
+    blocks_width = int(
+        _div_rtn(
+            output_width + 2 * pad_width
+            - (dilation_width * (kernel_width - 1) - 1),
+            stride_width) + 1)
 
     ivy.assertions.check_true(input_length != (blocks_height * blocks_width),
                               message="expected size of input's dimension 2 to "
@@ -216,8 +234,12 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
 
     output = ivy.zeros({batch_size, n_output_channels, output_height, output_width})
 
-    height_col = int((output_height + 2 * pad_height - (dilation_height * (kernel_height - 1) + 1)) / stride_height + 1)
-    width_col = int((output_width + 2 * pad_width - (dilation_width * (kernel_width - 1) + 1)) / stride_width + 1)
+    height_col = int(
+        (output_height + 2 * pad_height - (dilation_height * (kernel_height - 1) + 1))
+        / stride_height + 1)
+    width_col = int(
+        (output_width + 2 * pad_width - (dilation_width * (kernel_width - 1) + 1))
+        / stride_width + 1)
     channels_col = n_output_channels * kernel_height * kernel_width
 
     for elt in range(batch_size):
@@ -235,8 +257,10 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
                 for w_col in range(width_col):
                     w_im = w_col * stride_width - pad_width + w_offset * dilation_width
 
-                    if (h_im >= 0 and w_im >= 0) and (h_im < output_height and w_im < output_width):
-                        data_im[(c_im * output_height + h_im) * output_width + w_im] += \
+                    if (h_im >= 0 and h_im < output_height) \
+                            and (w_im >= 0 and w_im < output_width):
+                        data_im[(c_im * output_height + h_im) * output_width + w_im] \
+                            += \
                             data_col[(c_col * height_col + h_col) * width_col + w_col]
 
     if not batched_input:
