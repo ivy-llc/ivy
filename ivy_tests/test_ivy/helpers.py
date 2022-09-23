@@ -1627,7 +1627,6 @@ def test_function(
     )
 
 
-# TODO: update!
 def test_frontend_method(
     *,
     input_dtypes_init: Union[ivy.Dtype, List[ivy.Dtype]] = None,
