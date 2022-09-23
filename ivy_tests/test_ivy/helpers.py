@@ -1641,6 +1641,7 @@ def test_frontend_method(
     native_array_flags_method: Union[bool, List[bool]],
     all_as_kwargs_np_method: dict,
     fw: str,
+    frontend: str,
     class_name: str,
     method_name: str = "__init__",
     rtol_: float = None,
@@ -1678,23 +1679,16 @@ def test_frontend_method(
     native_array_flags_method
         dictates whether the corresponding input argument passed to the method should
         be treated as a native array.
-    container_flags_method
-        dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy Container.
     all_as_kwargs_np_method:
         input arguments to the method as keyword arguments.
     fw
         current backend (framework).
+    frontend
+        current frontend (framework).
     class_name
         name of the class to test.
     method_name
         name of the method to test.
-    init_with_v
-        if the class being tested is an ivy.Module, then setting this flag as True will
-        call the constructor with the variables v passed explicitly.
-    method_with_v
-        if the class being tested is an ivy.Module, then setting this flag as True will
-        call the method with the variables v passed explicitly.
     rtol_
         relative tolerance value.
     atol_
@@ -1828,8 +1822,11 @@ def test_frontend_method(
     # End Method #
 
     # Run testing
-    ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
-    v_np = None
+    class_name = class_name.split(".")
+    ins_class = ivy.functional.frontends.__dict__[frontend]
+    for c_n in class_name:
+        ins_class = getattr(ins_class, c_n)
+    ins = ins_class(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
@@ -1858,12 +1855,7 @@ def test_frontend_method(
         as_variable_flags=as_variable_flags_method,
         native_array_flags=native_array_flags_method,
     )
-    ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
-    if isinstance(ins_gt, ivy.Module):
-        v_gt = v_np.map(
-            lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
-        )
-        kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
+    ins_gt = ins_class(*args_gt_constructor, **kwargs_gt_constructor)
     ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
         ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
     )
