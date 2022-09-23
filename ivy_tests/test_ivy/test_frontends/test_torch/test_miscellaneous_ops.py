@@ -229,6 +229,46 @@ def test_torch_diagonal(
 
 @handle_cmd_line_args
 @given(
+    dtype_and_tensors=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=st.integers(min_value=1, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        max_dim_size=5,
+        shared_dtype=True,
+    )
+)
+def test_torch_cartesian_prod(
+    dtype_and_tensors,
+    as_variable,
+    native_array,
+    with_out,
+    fw,
+):
+    dtypes, tensors = dtype_and_tensors
+    if isinstance(dtypes, list):  # If more than one value was generated
+        args = {
+            f"x{i}": np.array(tensor, dtype=dtypes[i])
+            for i, tensor in enumerate(tensors)
+        }
+    else:  # If exactly one value was generated
+        args = {"x0": np.array(tensors, dtype=dtypes)}
+    num_positional_args = len(tensors)
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="cartesian_prod",
+        **args,
+    )
+
+
+@handle_cmd_line_args
+@given(
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,  # Torch requires this.
