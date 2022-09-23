@@ -1082,7 +1082,7 @@ def test_tensorflow_Relu(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        num_positional_args=num_positional_args,
+        num_positional_args=0,
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
