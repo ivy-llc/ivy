@@ -91,7 +91,7 @@ class ArrayWithSearching(abc.ABC):
         /,
         *,
         as_tuple=True,
-        size: int = None,
+        size: Optional[int] = None,
         fill_value: int = 0,
     ) -> Union[Tuple[ivy.Array], ivy.Array]:
         """
