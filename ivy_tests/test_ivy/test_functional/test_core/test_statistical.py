@@ -30,8 +30,8 @@ def statistical_dtype_values(draw, *, function):
             min_axes_size=1,
         )
     )
-    shape = np.asarray(values, dtype=dtype).shape
-    size = np.asarray(values, dtype=dtype).size
+    shape = values[0].shape
+    size = values[0].size
     max_correction = np.min(shape)
     if function == "var" or function == "std":
         if size == 1:
