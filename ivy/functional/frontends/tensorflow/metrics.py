@@ -212,6 +212,7 @@ def cosine_similarity(y_true, y_pred):
         cosine = numerator / denominator
 
     else:
-        cosine = ivy.vecdot(y_true, y_pred) / (ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred))
+        cosine = ivy.vecdot(y_true, y_pred) / \
+                 (ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred))
     
     return cosine
