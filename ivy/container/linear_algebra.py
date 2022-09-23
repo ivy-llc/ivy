@@ -77,7 +77,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-
         """
         ivy.Container instance method variant of ivy.matmul. This method simply wraps
         the function, and so the docstring for ivy.matmul also applies to this method
