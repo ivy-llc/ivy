@@ -136,7 +136,7 @@ def broadcast_to(
     return tf.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType) -> bool:
+def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
     if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = from_.dtype
     from_str = str(from_)
