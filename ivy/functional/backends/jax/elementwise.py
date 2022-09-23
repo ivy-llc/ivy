@@ -447,3 +447,6 @@ def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
+
+def lgamma(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.lgamma(x)
