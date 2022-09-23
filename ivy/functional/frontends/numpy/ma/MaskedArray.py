@@ -46,7 +46,6 @@ class MaskedArray(np_frontend.ndarray):
         if copy:
             self._data = ivy.copy_array(self._data)
             self._mask = ivy.copy_array(self._mask)
-        # TODO: init super class ndarray once it's fixed
 
     def _init_data(self, data, dtype, mask, keep_mask):
         if _is_masked_array(data):
@@ -116,19 +115,9 @@ class MaskedArray(np_frontend.ndarray):
     def mask(self):
         return self._mask
 
-    # TODO: impl and check read-only?
-    @property
-    def recordmask(self):
-        pass
-
     @property
     def fill_value(self):
         return self._fill_value
-
-    # TODO (read-only)
-    @property
-    def sharedmask(self):
-        pass
 
     @property
     def hardmask(self):
@@ -148,11 +137,6 @@ class MaskedArray(np_frontend.ndarray):
     @fill_value.setter
     def fill_value(self, fill_value):
         self._init_fill_value(fill_value)
-
-    @dtype.setter
-    def dtype(self, mask):
-        # TODO: check type casting
-        pass
 
     # Built-ins #
     # --------- #
