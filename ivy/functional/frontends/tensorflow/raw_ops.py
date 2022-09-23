@@ -146,3 +146,7 @@ def Transpose(*, x, perm, name="Transpose"):
 
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
+
+
+def Relu6(features, name="Relu6"):
+    return ivy.clip(features, 0, 6)
