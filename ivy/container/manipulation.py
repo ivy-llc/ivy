@@ -881,7 +881,7 @@ class ContainerWithManipulation(ContainerBase):
         self
             input array.
         axis
-            axis is the axiis(int) to stack along
+            axis is the axis(int) to stack along
             Default ``0`` wich means the first dimension.
         out
             optional output array, for writing the result to. It must have a shape that
@@ -890,7 +890,7 @@ class ContainerWithManipulation(ContainerBase):
         Returns
         -------
         ret
-            An array with the elements of self.
+            An array with the stacked elements.
 
         Examples
         --------
@@ -935,12 +935,24 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+            b=ivy.array([3., 4., 5.]))
         >>> y = ivy.stack(x)
         >>> y
         {
             a: ivy.array([0., 1., 2.]),
             b: ivy.array([3., 4., 5.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+            b=ivy.array([3., 4., 5.]), \
+            c=ivy.array([6.,7.,8.]))
+        >>> y = ivy.stack(x)
+        >>> y
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., 5.]),
+            c: ivy.array([6., 7., 8.])
         }
         """
         new_xs = xs.copy()
@@ -975,7 +987,8 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+            b=ivy.array([3., 4., 5.]))
         >>> y = ivy.Container.static_repeat(2)
         >>> print(y)
         {
@@ -1014,7 +1027,8 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),\
+            b=ivy.array([3., 4., 5.]))
         >>> y = x.repeat(2)
         >>> print(y)
         {
