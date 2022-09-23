@@ -18,7 +18,7 @@
             "utility_functions": "success"
       },
       "torch": {
-            "array_object": " ",
+            "array_object": "success",
             "constants": "success",
             "creation_functions": "success",
             "data_type_functions": " ",
@@ -26,7 +26,7 @@
             "linalg": "failure",
             "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "failure",
-            "searching_functions": "success",
+            "searching_functions": " ",
             "set_functions": " ",
             "signatures": "failure",
             "sorting_functions": "success",
