@@ -111,8 +111,12 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-def Reshape(tensor, shape, name="reshape"):
+def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
+
+
+def Shape(*, input, output_type=ivy.int32, name="Shape"):
+    return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
 
 def Sin(*, x, name="Sin"):
