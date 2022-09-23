@@ -651,7 +651,7 @@ def to_numpy(
     -------
     ret
         a numpy array copying all the element of the array ``x``.
-    
+
     Examples
     --------
 
