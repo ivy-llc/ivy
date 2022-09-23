@@ -19,6 +19,7 @@ Activations
    activations/sigmoid.rst
    activations/softmax.rst
    activations/softplus.rst
+   activations/log_softmax.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`Activations discussion`: https://github.com/unifyai/ivy/discussions/2183
