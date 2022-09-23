@@ -5,27 +5,13 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
-@st.composite
-def _array_and_axes_permute_helper(draw, *, min_num_dims, max_num_dims,
-    min_dim_size, max_dim_size):
-    shape = draw(helpers.get_shape(
-        allow_none=False, min_num_dims=min_num_dims,
-        max_num_dims=max_num_dims, min_dim_size=min_dim_size,
-        max_dim_size=max_dim_size))
-    array = draw(helpers.array_values(dtype="int8", shape=shape))
-    axes = draw(st.one_of(st.none(), helpers.get_axis(
-        shape=shape, allow_neg=False, allow_none=False,
-        sorted=False, unique=True, min_size=len(shape), max_size=len(shape),
-        force_tuple=True, force_int=False,
-    )).filter(lambda x: x != tuple(range(len(shape)))))
-    return (array, axes)
-
-
+# transpose
 @handle_cmd_line_args
 @given(
-    array_and_axes=_array_and_axes_permute_helper(
+    array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
         min_num_dims=2, max_num_dims=5,
         min_dim_size=1, max_dim_size=10,
     ),
