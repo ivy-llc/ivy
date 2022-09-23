@@ -1,4 +1,3 @@
-# For Review
 # global
 from typing import Union, Optional, Tuple, List, Sequence
 
@@ -13,12 +12,16 @@ from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy import default_dtype
 
-# noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+)
 
 
 # Array API Standard #
-# -------------------#
+# ------------------ #
 
 
 def arange(
@@ -42,6 +45,9 @@ def arange(
     return res
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
     object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
     /,
@@ -58,13 +64,11 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        dtype = default_dtype(item=object_in, as_native=True)
         if copy is True:
-            return _to_device(
-                jnp.array(object_in, dtype=dtype, copy=True), device=device
-            )
+            return _to_device(jnp.array(object_in, copy=True), device=device)
         else:
-            return _to_device(jnp.asarray(object_in, dtype=dtype), device=device)
+            return _to_device(jnp.asarray(object_in), device=device)
+
     else:
         dtype = default_dtype(dtype=dtype, item=object_in)
 
@@ -100,7 +104,7 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
@@ -117,7 +121,6 @@ def eye(
     return _to_device(return_mat, device=device)
 
 
-# noinspection PyShadowingNames
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     capsule = jax.dlpack.to_dlpack(x)
     return jax.dlpack.from_dlpack(capsule)
@@ -132,7 +135,7 @@ def full(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         jnp.full(shape, fill_value, dtype),
         device=device,
@@ -148,7 +151,7 @@ def full_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         jnp.full_like(x, fill_value, dtype=dtype),
         device=device,
@@ -173,7 +176,9 @@ def linspace(
         axis = -1
 
     if num < 0:
-        raise ValueError(f"Number of samples, {num}, must be non-negative.")
+        raise ivy.exceptions.IvyException(
+            f"Number of samples, {num}, must be non-negative."
+        )
 
     if dtype is None:
         dtype = ivy.promote_types(start.dtype, stop.dtype)
@@ -289,6 +294,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: JaxArray, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.array(x)
+
+
 def logspace(
     start: Union[JaxArray, int],
     stop: Union[JaxArray, int],
@@ -306,3 +315,16 @@ def logspace(
     return _to_device(
         jnp.logspace(start, stop, num, base=base, dtype=dtype, axis=axis), device=device
     )
+
+
+def one_hot(
+    indices: JaxArray,
+    depth: int,
+    *,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    res = jnp.eye(depth, dtype=indices.dtype)[
+        jnp.array(indices, dtype="int64").reshape(-1)
+    ]
+    return _to_device(res.reshape(list(indices.shape) + [depth]), device)

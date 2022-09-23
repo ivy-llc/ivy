@@ -7,17 +7,14 @@ on:
 
 jobs:
   run-array-api-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
+    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Array API')}}
     strategy:
       matrix:
         backends: [numpy, torch, jax, tensorflow]
-        submodules: [test_array_object, test_constants, test_creation_functions, test_data_type_functions,
-                    test_linalg, test_manipulation_functions, test_operators_and_elementwise_functions,
-                    test_searching_functions, test_set_functions, test_signatures, test_sorting_functions,
-                    test_special_cases, test_statistical_functions, test_type_promotion, test_utility_functions,
-                     meta/test_array_helpers, meta/test_broadcasting, meta/test_equality_mapping,
-                     meta/test_hypothesis_helpers, meta/test_partial_adopters, meta/test_pytest_helpers,
-                     meta/test_signatures, meta/test_special_cases, meta/test_utils]
+        submodules: [array_object, constants, creation_functions, data_type_functions,
+                    linalg, manipulation_functions, operators_and_elementwise_functions,
+                    searching_functions, set_functions, signatures, sorting_functions,
+                    special_cases, statistical_functions, type_promotion, utility_functions]
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +56,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          ./test_array_api.sh ${{matrix.backends}} ${{matrix.submodules}}
+          ./run_tests_CLI/test_array_api.sh ${{matrix.backends}} test_${{matrix.submodules}}
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
@@ -74,6 +71,21 @@ jobs:
           name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
           path: |
             ivy/.hypothesis/examples.zip
+        continue-on-error: true
+
+      - name: Install Libraries
+        uses: BSFishy/pip-action@v1
+        with:
+            packages: |
+              PyGithub
+
+      - name: Update Dashboard
+        if: github.event_name == 'push'
+        env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+           cd ivy/automation_tools/dashboard_automation/
+           python3 dashboard_script.py "$GITHUB_TOKEN" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
         continue-on-error: true
 
       - name: Check on failures

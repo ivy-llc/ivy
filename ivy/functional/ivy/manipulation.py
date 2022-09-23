@@ -12,10 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
-
-
-# Helpers #
-# --------#
+from ivy.exceptions import handle_exceptions
 
 
 def _calculate_out_shape(axis, array_shape):
@@ -38,6 +35,7 @@ def _calculate_out_shape(axis, array_shape):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray]],
@@ -93,11 +91,12 @@ def concat(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]],
+    axis: Union[int, Sequence[int]],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expands the shape of an array by inserting a new axis (dimension) of size one
@@ -215,11 +214,12 @@ def expand_dims(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Reverses the order of elements in an array along the given axis. The shape of the
@@ -329,6 +329,7 @@ def flip(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -421,6 +422,7 @@ def permute_dims(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -521,19 +523,20 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape, copy=copy, out=out)
+    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
     shift: Union[int, Sequence[int]],
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
     """Rolls array elements along a specified axis. Array elements that roll beyond the
     last position are re-introduced at the first position. Array elements that roll
@@ -650,10 +653,11 @@ def roll(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -690,7 +694,7 @@ def squeeze(
     With :code:`ivy.Array` input:
 
     >>> x = ivy.array([[[0, 1], [2, 3]]])
-    >>> print(ivy.squeeze(x))
+    >>> print(ivy.squeeze(x, axis=0))
     ivy.array([[0, 1], [2, 3]])
 
     >>> x = ivy.array([[[[1, 2, 3]], [[4, 5, 6]]]])
@@ -698,7 +702,7 @@ def squeeze(
     ivy.array([[[1, 2, 3], [4, 5, 6]]])
 
     >>> x = ivy.array([[[0], [1], [2]]])
-    >>> print(ivy.squeeze(x))
+    >>> print(ivy.squeeze(x, axis=None))
     ivy.array([0, 1, 2])
 
     >>> print(ivy.squeeze(x, axis=0))
@@ -716,7 +720,7 @@ def squeeze(
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
                           b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.squeeze(x)
+    >>> y = ivy.squeeze(x, axis=None)
     >>> print(y)
     {
         a: ivy.array([0., 1., 2.]),
@@ -729,13 +733,15 @@ def squeeze(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def stack(
     arrays: Union[
-        Tuple[ivy.Array], List[ivy.Array], Tuple[ivy.NativeArray], List[ivy.NativeArray]
+        Tuple[Union[ivy.Array, ivy.NativeArray], ...],
+        List[Union[ivy.Array, ivy.NativeArray]],
     ],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along a new axis.
@@ -790,6 +796,7 @@ def stack(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -912,6 +919,7 @@ def clip(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -952,6 +960,7 @@ def constant_pad(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1019,6 +1028,7 @@ def repeat(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1095,14 +1105,15 @@ def split(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
     axis1: int,
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Interchange two axes of an array.
 
     Parameters
@@ -1216,6 +1227,7 @@ def swapaxes(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1239,12 +1251,12 @@ def tile(
     -------
     retwaitin
         The tiled output array.
-    
+
 
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
-    
+
     >>> x = ivy.array([1,2,3,4])
     >>> y = ivy.tile(x,(3))
     >>> print(y)
@@ -1260,7 +1272,7 @@ def tile(
                [4,5,6,4,5,6,4,5,6]])
 
     With :code:`ivy.NativeArray` input:
-    
+
     >>> x = ivy.native_array([[[0], \
                                [1]]])
     >>> y = ivy.tile(x,(2,2,3))
@@ -1275,7 +1287,7 @@ def tile(
                 [1,1,1]]])
 
     With :code:`ivy.Container` input:
-    
+
     >>> x = ivy.Container( a = ivy.array([0,1,2]), b = ivy.array([[3],[4]]))
     >>> y = ivy.tile(x, (1,2))
     >>> print(y)
@@ -1294,15 +1306,91 @@ def tile(
 
 
 @to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def unstack(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, axis: int = 0, keepdims: bool = False
+) -> List[ivy.Array]:
+    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
+
+    Parameters
+    ----------
+    x
+        Input array to unstack.
+    axis
+        Axis for which to unpack the array.
+    keepdims
+        Whether to keep dimension 1 in the unstack dimensions. Default is False.
+
+    Returns
+    -------
+    ret
+        List of arrays, unpacked along specified dimensions.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=0)
+    >>> print(y)
+    [ivy.array([[1, 2],
+                [3, 4]]), ivy.array([[5, 6],
+                [7, 8]])]
+
+    >>> x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+    >>> y = ivy.unstack(x, axis=1, keepdims=True)
+    >>> print(y)
+    [ivy.array([[[1, 2]],
+                [[5, 6]]]), ivy.array([[[3, 4]],
+                [[7, 8]]])]
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=0)
+    [{
+        a: ivy.array([[1, 2],
+                      [3, 4]]),
+        b: ivy.array([[9, 10],
+                      [11, 12]])
+    }, {
+        a: ivy.array([[5, 6],
+                      [7, 8]]),
+        b: ivy.array([[13, 14],
+                      [15, 16]])
+    }]
+
+    >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+    ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+    >>> ivy.unstack(x, axis=1, keepdims=True)
+    [{
+        a: ivy.array([[[1, 2]],
+                      [[5, 6]]]),
+        b: ivy.array([[[9, 10]],
+                      [[13, 14]]])
+    }, {
+        a: ivy.array([[[3, 4]],
+                      [[7, 8]]]),
+        b: ivy.array([[[11, 12]],
+                      [[15, 16]]])
+    }]
+    """
+    return current_backend(x).unstack(x, axis=axis, keepdims=keepdims)
+
+
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     pad_width: Iterable[Tuple[int]],
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Pads an array with zeros.
 
     Parameters

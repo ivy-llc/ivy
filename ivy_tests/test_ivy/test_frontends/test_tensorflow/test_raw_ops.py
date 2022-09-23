@@ -3,6 +3,7 @@ import ivy
 import numpy as np
 from hypothesis import given, strategies as st
 
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -62,6 +63,41 @@ def test_tensorflow_Acosh(
     )
 
 
+# for data generation
+dtype_shared = st.shared(st.sampled_from(helpers.get_dtypes("numeric")), key="dtype")
+
+
+@st.composite
+def _get_shared_dtype(draw):
+    return st.shared(st.sampled_from(draw(helpers.get_dtypes("numeric"))), key="dtype")
+
+
+# BroadcastTo
+@handle_cmd_line_args
+@given(
+    array_and_shape=helpers.array_and_broadcastable_shape(_get_shared_dtype()),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.BroadcastTo"
+    ),
+)
+def test_tensorflow_BroadcastTo(
+    array_and_shape, as_variable, num_positional_args, native_array, fw
+):
+    x, to_shape = array_and_shape
+    helpers.test_frontend_function(
+        input_dtypes=x.dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.BroadcastTo",
+        input=x,
+        shape=to_shape,
+    )
+
+
 # noinspection DuplicatedCode
 @st.composite
 def _arrays_idx_n_dtypes(draw):
@@ -101,15 +137,15 @@ def _arrays_idx_n_dtypes(draw):
     return xs, input_dtypes, unique_idx
 
 
-# concat
+# Concat
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.concat"
+        fn_name="ivy.functional.frontends.tensorflow.Concat"
     ),
 )
-def test_tensorflow_concat(
+def test_tensorflow_Concat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
     num_positional_args,
@@ -126,9 +162,9 @@ def test_tensorflow_concat(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="concat",
+        fn_tree="raw_ops.Concat",
+        concat_dim=unique_idx,
         values=xs,
-        axis=unique_idx,
     )
 
 
@@ -221,10 +257,10 @@ def _fill_value(draw):
     fill_value=_fill_value(),
     dtypes=_dtypes(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.fill"
+        fn_name="ivy.functional.frontends.tensorflow.Fill"
     ),
 )
-def test_tensorflow_fill(
+def test_tensorflow_Fill(
     shape,
     fill_value,
     dtypes,
@@ -242,7 +278,7 @@ def test_tensorflow_fill(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
-        fn_tree="fill",
+        fn_tree="raw_ops.Fill",
         dims=shape,
         value=fill_value,
         rtol=1e-05,
@@ -612,6 +648,44 @@ def test_tensorflow_Tanh(
     )
 
 
+@st.composite
+def _permute_dims_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="shape"))
+    dims = [x for x in range(len(shape))]
+    permutation = draw(st.permutations(dims))
+    return permutation
+
+
+# Transpose
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    perm=_permute_dims_helper(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Transpose"
+    ),
+)
+def test_tensorflow_transpose(
+    dtype_and_x, perm, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Transpose",
+        x=np.asarray(x, dtype=dtype),
+        perm=perm,
+    )
+
+
 # Maximum
 @handle_cmd_line_args
 @given(
@@ -960,4 +1034,88 @@ def test_tensorflow_Reshape(
         fn_tree="raw_ops.Reshape",
         tensor=np.asarray(x, dtype=dtype),
         shape=shape,
+    )
+
+
+# ZerosLike
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.ZerosLike"
+    ),
+)
+def test_tensorflow_zeros_like(
+    dtype_and_x, as_variable, num_positional_args, fw, native_array
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.ZerosLike",
+        x=np.asarray(x, dtype=dtype),
+    )
+
+
+# LogicalOr
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        dtype=["bool", "bool"],
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.LogicalOr"
+    ),
+)
+def test_tensorflow_LogicalOr(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.LogicalOr",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# LogicalNot
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        dtype=["bool"],
+        num_arrays=1,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.LogicalNot"
+    ),
+)
+def test_tensorflow_LogicalNot(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.LogicalNot",
+        x=np.asarray(x, dtype=input_dtype),
     )

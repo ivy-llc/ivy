@@ -144,7 +144,6 @@ def test_torch_tanh(
         frontend="torch",
         fn_tree="tanh",
         input=np.asarray(x, dtype=input_dtype),
-        out=None,
     )
 
 
@@ -760,12 +759,9 @@ def test_torch_square(
         num_arrays=2,
         shared_dtype=True,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.atan2"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_atan2(
     dtype_and_x,
@@ -828,17 +824,12 @@ def test_torch_negative(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
     ),
-    as_variable=helpers.list_of_length(x=st.booleans(), length=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_and"
     ),
-    native_array=helpers.list_of_length(x=st.booleans(), length=2),
 )
 def test_torch_bitwise_and(
     dtype_and_x,
@@ -859,6 +850,187 @@ def test_torch_bitwise_and(
         frontend="torch",
         fn_tree="bitwise_and",
         rtol=1e-04,
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_not"
+    ),
+)
+def test_torch_bitwise_not(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_not",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_xor"
+    ),
+)
+def test_torch_bitwise_xor(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_xor",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_or"
+    ),
+)
+def test_torch_bitwise_or(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_or",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_left_shift"
+    ),
+)
+def test_torch_bitwise_left_shift(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_left_shift",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.bitwise_right_shift"
+    ),
+)
+def test_torch_bitwise_right_shift(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    # negative shifts will throw an exception
+    # shifts >= dtype witdth produce backend-defined behavior
+    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="bitwise_right_shift",
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
@@ -934,9 +1106,7 @@ def test_torch_trunc(
 # sqrt
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.sqrt"
     ),
@@ -1026,5 +1196,136 @@ def test_torch_absolute(
         frontend="torch",
         fn_tree="absolute",
         input=np.asarray(input, dtype=input_dtype),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.logical_not"
+    ),
+)
+def test_torch_logical_not(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="logical_not",
+        input=np.asarray(x, dtype=input_dtype),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.logical_and"
+    ),
+)
+def test_torch_logical_and(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="logical_and",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.logical_or"
+    ),
+)
+def test_torch_logical_or(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="logical_or",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        out=None,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.logical_xor"
+    ),
+)
+def test_torch_logical_xor(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="logical_xor",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
         out=None,
     )

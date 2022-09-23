@@ -33,7 +33,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
    # ivy/functional/backends/numpy/manipulation.py:
     def stack(
         x: Union[Tuple[np.ndarray], List[np.ndarray]],
-        axis: Optional[int] = 0,
+        axis: int =0,
         *,
         out: Optional[np.ndarray] = None,
     ) -> np.ndarray:
@@ -44,7 +44,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
    # ivy/functional/backends/tensorflow/manipulation.py:
     def stack(
         x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
-        axis: Optional[int] = 0,
+        axis: int =0,
     ) -> Union[tf.Tensor, tf.Variable]:
         ret = tf.experimental.numpy.stack(x, axis)
         return ret
@@ -54,7 +54,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
    # ivy/functional/backends/torch/manipulation.py:
     def stack(
         x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-        axis: Optional[int] = 0,
+        axis: int =0,
         *,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
@@ -97,7 +97,7 @@ Calling the different backend files explicitly would work okay, but it would mea
     def prod(
         x: Union[ivy.Array, ivy.NativeArray],
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,

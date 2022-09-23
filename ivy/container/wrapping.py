@@ -79,7 +79,7 @@ def add_ivy_container_instance_methods(
     cls: Type[ivy.Container],
     modules: List[ModuleType],
     static: bool = False,
-    to_ignore: Optional[Iterable] = (),
+    to_ignore: Iterable = (),
 ):
     """Loop over all ivy modules such as activations, general, etc. and add
     the module functions to ivy container as instance methods using _wrap_function.
