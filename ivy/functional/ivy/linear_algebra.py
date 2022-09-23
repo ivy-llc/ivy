@@ -798,14 +798,11 @@ def matmul(
 
     With :code:`ivy.NativeArray` inputs:
 
-    >>> x = ivy.native_array([[1., 2.],  \
-                            [0., 1.]])
-    >>> y = ivy.native_array([[2., 0.],  \
-                            [0., 3.]])
+    >>> x = ivy.native_array([[1., 2.], [0., 1.]])
+    >>> y = ivy.native_array([[2., 0.], [0., 3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
-    ivy.array([[2., 6.],
-                [0., 3.]])
+    ivy.array([[2., 6.],[0., 3.]])
 
     With :code:`ivy.Container` inputs:
 
@@ -833,14 +830,11 @@ def matmul(
     With a combination of :code:`ivy.NativeArray`
     and :code:`ivy.Array` inputs:
 
-    >>> x = ivy.native_array([[1., 2.], \
-                            [0., 3.]])
-    >>> y = ivy.array([[1.], \
-                        [3.]])
+    >>> x = ivy.native_array([[1., 2.], [0., 3.]])
+    >>> y = ivy.array([[1.], [3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
-    ivy.array([[7.],
-               [9.]])
+    ivy.array([[7.],[9.]])
 
     """
     return current_backend(x1).matmul(x1, x2, out=out)
