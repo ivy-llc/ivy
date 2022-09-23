@@ -196,6 +196,11 @@ default floating-point data type.
 </p>
 </dd>
 </dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.mean.html">docstring</a> in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for
+simplicity, but this function is <em>nestable</em>, and therefore also accepts
+<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
 <p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">])</span>
@@ -308,11 +313,6 @@ default floating-point data type.
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
-<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.mean.html">docstring</a> in the standard.</p>
-<p>Both the description and the type hints above assumes an array input for
-simplicity, but this function is <em>nestable</em>, and therefore also accepts
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of any of the arguments.</p>
 </dd></dl>
 
 <div class="line-block">

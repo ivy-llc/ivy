@@ -318,6 +318,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    If no global backend is set, then the backend is inferred from the arguments:</span>
+
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.current_backend(x))</span>
@@ -325,6 +326,7 @@
 
 <span class="sd">    The global backend set in set_backend has priority over any arguments</span>
 <span class="sd">    passed to current_backend:</span>
+
 <span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;jax&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; x = np.array([2.0])</span>
