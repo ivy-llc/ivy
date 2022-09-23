@@ -651,9 +651,10 @@ def to_numpy(
     -------
     ret
         a numpy array copying all the element of the array ``x``.
+    
+    Examples
+    --------
 
-    Functional Method Examples
-    --------------------------
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([-1, 0, 1])
@@ -2512,12 +2513,14 @@ def supports_inplace_updates(
     ValueError: Input x must be either a variable or an array.
 
     With :code:`ivy.Array` input and default backend set as `numpy`:
+
     >>> x = ivy.array([0, 1, 2])
     >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
     True
 
     With :code:`ivy.Container` input and backend set as `torch`:
+
     >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
     >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
@@ -2862,7 +2865,7 @@ def scatter_nd(
     >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
-    scatter into an empty array, With:`ivy.Container` input:
+    scatter into an empty array, With :code:`ivy.Container` input:
 
     >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),\
                         b=ivy.array([[5],[1],[2]]))
