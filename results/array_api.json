@@ -8,7 +8,7 @@
             "linalg": "failure",
             "manipulation_functions": " ",
             "operators_and_elementwise_functions": "success",
-            "searching_functions": " ",
+            "searching_functions": "success",
             "set_functions": "success",
             "signatures": "failure",
             "sorting_functions": " ",
@@ -36,7 +36,7 @@
             "utility_functions": "success"
       },
       "tensorflow": {
-            "array_object": "success",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
