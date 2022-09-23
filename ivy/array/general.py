@@ -365,8 +365,8 @@ class ArrayWithGeneral(abc.ABC):
                        [11, 2]],
                       [[3, 5],
                        [9, 7]]])
-        >>> reduced = x.einops_reduce('a b c -> b c', 'max')
-        >>> print(reduced)
+        >>> y = x.einops_reduce('a b c -> b c', 'max')
+        >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
@@ -374,8 +374,8 @@ class ArrayWithGeneral(abc.ABC):
                         [11, 2, 9]],
                        [[3, 5, 7],
                         [9, 7, 1]]])
-        >>> reduced = x.einops_reduce('a b c -> a () c', 'min')
-        >>> print(reduced)
+        >>> y = x.einops_reduce('a b c -> a () c', 'min')
+        >>> print(y)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
 
@@ -417,16 +417,16 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([5,4])
-        >>> repeated = x.einops_repeat('a -> a c', c=3)
-        >>> print(repeated)
+        >>> y = x.einops_repeat('a -> a c', c=3)
+        >>> print(y)
         ivy.array([[5, 4],
                    [5, 4],
                   [5, 4]])
 
         >>> x = ivy.array([[5,4],
                     [2, 3]])
-        >>> repeated = x.einops_repeat('a b ->  a b c', c=3)
-        >>> print(repeated)
+        >>> y = x.einops_repeat('a b ->  a b c', c=3)
+        >>> print(y)
         ivy.array([[[5, 5, 5],
                     [4, 4, 4]],
                    [[2, 2, 2],
