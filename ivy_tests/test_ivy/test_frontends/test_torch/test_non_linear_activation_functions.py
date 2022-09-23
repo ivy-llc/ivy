@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -204,7 +204,6 @@ def test_torch_logsigmoid(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -241,7 +240,6 @@ def test_torch_softmin(
     fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -275,7 +273,6 @@ def test_torch_threshold(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -310,7 +307,6 @@ def test_torch_threshold_(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -345,7 +341,6 @@ def test_torch_relu6(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -380,7 +375,6 @@ def test_torch_elu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -417,7 +411,6 @@ def test_torch_elu_(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -454,7 +447,6 @@ def test_torch_celu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -488,7 +480,6 @@ def test_torch_selu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -520,7 +511,6 @@ def test_torch_prelu(
 ):
     dtype, inputs = dtype_input_and_weight
     input, weight = inputs
-    assume("float16" not in dtype)
     helpers.test_frontend_function(
         input_dtypes=[dtype, dtype],
         as_variable_flags=as_variable,
@@ -557,7 +547,6 @@ def test_torch_rrelu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -597,7 +586,6 @@ def test_torch_rrelu_(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -634,7 +622,6 @@ def test_torch_hardshrink(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -700,7 +687,6 @@ def test_torch_softshrink(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -733,7 +719,6 @@ def test_torch_silu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -774,7 +759,6 @@ def test_torch_glu(
     fw,
 ):
     input_dtype, input, dim = dtype_input_dim
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -910,7 +894,6 @@ def test_torch_hardswish(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -947,7 +930,6 @@ def test_torch_hardsigmoid(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -983,7 +965,6 @@ def test_torch_hardtanh(
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1021,7 +1002,6 @@ def test_torch_hardtanh_(
 ):
     input_dtype, x = dtype_and_x
     max_min = max_val, -max_val
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
