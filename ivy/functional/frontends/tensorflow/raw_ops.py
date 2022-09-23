@@ -23,7 +23,6 @@ def ArgMin(*, input, dimension, output_type=None, name=None):
     return ivy.astype(ivy.argmin(input, axis=dimension), "int64")
 
 
-
 def Cos(*, x, name="Cos"):
     return ivy.cos(x)
 
@@ -34,7 +33,6 @@ def Cosh(*, x, name="cosh"):
 
 def fill(dims, value, name="full"):
     return ivy.full(dims, value)
-
 
 
 def Asin(*, x, name="asin"):
@@ -65,8 +63,14 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
-def Concat(*, concat_dim, values, name="Concat"):
-    return ivy.concat(values, axis=concat_dim)
+def Softmax(*, x, axis=None, name="Softmax"):
+    if x.dtype not in ["half", "float32", "float64"]:
+        x = ivy.astype(x, "float64")
+    return ivy.softmax(x, axis)
+
+
+def Tan(*, x, name="Tan"):
+    return ivy.tan(x)
 
 
 def Cos(*, x, name="Cos"):
