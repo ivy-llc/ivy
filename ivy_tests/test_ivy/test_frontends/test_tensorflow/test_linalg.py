@@ -72,7 +72,7 @@ def test_tensorflow_eigvalsh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eigvalsh",
-        input=np.asarray(x, dtype=input_dtype),
+        tensor=np.asarray(x, dtype=input_dtype),
     )
 
 
@@ -351,8 +351,8 @@ def test_tensorflow_tensordot(
         fw=fw,
         frontend="tensorflow",
         fn_tree="tensordot",
-        x=np.asarray(x, dtype=dtype),
-        y=np.asarray(y, dtype=dtype),
+        a=np.asarray(x, dtype=dtype),
+        b=np.asarray(y, dtype=dtype),
         axes=axes,
     )
 
