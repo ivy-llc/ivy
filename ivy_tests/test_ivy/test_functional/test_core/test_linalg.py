@@ -337,9 +337,6 @@ def test_matmul(
     input_dtype1, x_1 = x
     input_dtype2, y_1 = y
     input_dtype = [input_dtype1, input_dtype2]
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
 
     helpers.test_function(
         input_dtypes=input_dtype,
