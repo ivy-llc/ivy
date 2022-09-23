@@ -319,7 +319,7 @@ def add(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have a numeric data type.
-    aplha
+    alpha
         optional scalar multiplier for ``x2``.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -327,7 +327,7 @@ def add(
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise sums. The returned array must have a data
         type determined by :ref:`type-promotion`.
 
@@ -371,7 +371,6 @@ def add(
     ivy.array([[[9.5],
                 [5.7],
                 [-4.7]]])
-
     """
     return ivy.current_backend(x1, x2).add(x1, x2, alpha=alpha, out=out)
 
