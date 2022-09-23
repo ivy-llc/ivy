@@ -70,7 +70,6 @@ def test_numpy_minimum(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
-    with_out=st.booleans(),
     where=np_frontend_helpers.where(),
     initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
