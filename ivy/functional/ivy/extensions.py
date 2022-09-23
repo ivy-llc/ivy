@@ -150,7 +150,8 @@ class SparseArray:
             dense_shape=None
     ):
         if _is_data_not_indices_values_and_shape(
-                data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
+                data, coo_indices, csr_crow_indices, csr_col_indices,
+                values, dense_shape
         ):
             self._init_data(data)
         elif _is_coo_not_csr(
