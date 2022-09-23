@@ -17,8 +17,18 @@ def asinh(x, name="asinh"):
 def confusion_matrix(
     labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
 ):
-    labels = ivy.astype(ivy.squeeze(ivy.array(labels)), ivy.int64, copy=False)
-    predictions = ivy.astype(ivy.squeeze(ivy.array(predictions)), ivy.int64, copy=False)
+    labels = ivy.astype(
+        ivy.squeeze(ivy.array(labels), axis=None), ivy.int64, copy=False
+    )
+    predictions = ivy.astype(
+        ivy.squeeze(ivy.array(predictions), axis=None), ivy.int64, copy=False
+    )
+    # failsafe for (1,) array will be squeeze to 0-dim
+    labels = ivy.expand_dims(labels, axis=-1) if labels.ndim == 0 else labels
+    predictions = (
+        ivy.expand_dims(predictions, axis=-1) if predictions.ndim == 0 else predictions
+    )
+
     # Sanity check (potential optimization)
     ivy.assertions.check_greater(
         labels, 0, allow_equal=True, message="labels contains negative values"
@@ -31,10 +41,12 @@ def confusion_matrix(
         num_classes = max(ivy.max(labels), ivy.max(predictions)) + 1
     else:
         num_classes_int64 = ivy.astype(ivy.array(num_classes), ivy.int64, copy=False)
-    ivy.assertions.check_less(labels, num_classes_int64, message="labels out of bound")
-    ivy.assertions.check_less(
-        predictions, num_classes_int64, message="predictions out of bound"
-    )
+        ivy.assertions.check_less(
+            labels, num_classes_int64, message="labels out of bound"
+        )
+        ivy.assertions.check_less(
+            predictions, num_classes_int64, message="predictions out of bound"
+        )
 
     if weights is not None:
         weights = ivy.array(weights)
@@ -122,6 +134,14 @@ def multiply(x, y, name=None):
     return ivy.multiply(x, y)
 
 
+def multiply_no_nan(x, y, name="multiply_no_nan"):
+    return ivy.where(
+        y == 0,
+        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
+        x * y,
+    )
+
+
 def negative(x, name=None):
     return ivy.negative(x)
 
@@ -163,11 +183,26 @@ def reduce_euclidean_norm(
 
 
 def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
-    return ivy.exp(input_tensor).sum(axis=axis, keepdims=keepdims).log()
+    # stable logsumexp trick
+    max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
+    return (
+        ivy.log(
+            ivy.sum(
+                ivy.exp(input_tensor - max_input_tensor),
+                axis=axis,
+                keepdims=keepdims,
+            )
+        )
+        + max_input_tensor
+    ).astype(input_tensor.dtype)
 
 
 def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
     return ivy.max(input_tensor, axis=axis, keepdims=keepdims)
+
+
+def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
 def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
@@ -175,7 +210,9 @@ def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
 
 
 def reduce_prod(input_tensor, axis=None, keepdims=False, name="reduce_prod"):
-    return ivy.prod(input_tensor, axis=axis, keepdims=keepdims)
+    return ivy.prod(input_tensor, axis=axis, keepdims=keepdims).astype(
+        input_tensor.dtype
+    )
 
 
 def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
@@ -183,7 +220,9 @@ def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
 
 
 def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
-    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims)
+    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
+        input_tensor.dtype
+    )
 
 
 def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
@@ -191,7 +230,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 
 def scalar_mul(scalar, x, name="scalar_mul"):
-    return ivy.multiply(x, ivy.array([scalar]))
+    return ivy.multiply(x, ivy.array([scalar])).astype(x.dtype)
 
 
 def subtract(x, y, name=None):

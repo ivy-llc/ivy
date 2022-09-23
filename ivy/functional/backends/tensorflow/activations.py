@@ -2,7 +2,7 @@
 signature.
 """
 
-from typing import Optional
+from typing import Optional, Union
 
 # global
 import tensorflow as tf
@@ -40,5 +40,21 @@ def softmax(
     return tf.nn.softmax(x, axis)
 
 
-def softplus(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
-    return tf.nn.softplus(x)
+def softplus(
+    x: Tensor,
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+
+    if beta is not None and beta != 1:
+        x_beta = x * beta
+        res = (tf.nn.softplus(x_beta)) / beta
+    else:
+        x_beta = x
+        res = tf.nn.softplus(x)
+    if threshold is not None:
+        return tf.where(x_beta > threshold, x, res)
+    return res

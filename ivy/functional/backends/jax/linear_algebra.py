@@ -31,9 +31,17 @@ cholesky.unsupported_dtypes = (
 
 
 def cross(
-    x1: JaxArray, x2: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axisa: int = -1,
+    axisb: int = -1,
+    axisc: int = -1,
+    axis: int = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.cross(a=x1, b=x2, axis=axis)
+    return jnp.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
 def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -67,8 +75,10 @@ def diagonal(
     return ret
 
 
-def eigh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigh(x)
+def eigh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigh(x, UPLO=UPLO)
 
 
 eigh.unsupported_dtypes = (
@@ -77,8 +87,10 @@ eigh.unsupported_dtypes = (
 )
 
 
-def eigvalsh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.linalg.eigvalsh(x)
+def eigvalsh(
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
 
 eigvalsh.unsupported_dtypes = (
@@ -92,12 +104,24 @@ def inner(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> J
     return jnp.inner(x1, x2)
 
 
-def inv(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def inv(
+    x: JaxArray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
-        ret = x
+        return x
     else:
-        ret = jnp.linalg.inv(x)
-    return ret
+        if adjoint is False:
+            ret = jnp.linalg.inv(x)
+            return ret
+        else:
+            cofactor = jnp.linalg.inv(x).T * jnp.linalg.det(x)
+            inverse = jnp.multiply(jnp.divide(1, jnp.linalg.det(x)), cofactor.T)
+            ret = inverse
+            return ret
 
 
 inv.unsupported_dtypes = (
@@ -307,7 +331,7 @@ def vector_norm(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
     out: Optional[JaxArray] = None,

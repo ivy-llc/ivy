@@ -1,5 +1,5 @@
 # global
-from typing import Union, Tuple, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -15,6 +15,7 @@ from ivy.exceptions import handle_exceptions
 # Array API Standard #
 # -------------------#
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -22,7 +23,7 @@ def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -287,7 +288,7 @@ def mean(
     >>> print(y)
     ivy.array(1.)
 
-    >>> x = ivy.array([[-1, -2, -3, 0, -1], [1, 2, 3, 0, 1]])
+    >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
     >>> y = ivy.array([0., 0.])
     >>> ivy.mean(x, axis=1, out=y)
     >>> print(y)
@@ -314,12 +315,12 @@ def mean(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+    >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
     >>> y = ivy.mean(x)
     >>> print(y)
     {
         a: ivy.array(0.),
-        b: ivy.array(0.9)
+        b: ivy.array(0.90000004)
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
@@ -352,28 +353,6 @@ def mean(
     >>> print(y)
     ivy.array([-0.25,  1.05,  2.1])
 
-    With :code:`ivy.native_array` input:
-
-    >>> x = ivy.native_array([0.0, 1.1, 2.2])
-    >>> y = x.mean()
-    >>> print(y)
-    1.1
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean()
-    >>> print(y)
-    2.5
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean(axis=0)
-    >>> print(y)
-    [1.5 2.5 3.5]
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean(axis=1)
-    >>> print(y)
-    [1.0 4.0]
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.2, 2.2, 4.2]))
@@ -384,12 +363,12 @@ def mean(
         b: ivy.array(2.2)
     }
 
-    >>> x = ivy.Container(a=ivy.array([1., 1., 1.], b=ivy.array([0., -1., 1.])))
+    >>> x = ivy.Container(a=ivy.array([1., 1., 1.]), b=ivy.array([0., -1., 1.]))
     >>> x.mean(out=x)
     >>> print(x)
     {
-        a: ivy.array(1.1),
-        b: ivy.array(0.)
+        a: ivy.array(0.),
+        b: ivy.array(1.)
     }
 
     >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
@@ -421,7 +400,7 @@ def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -489,7 +468,7 @@ def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -860,7 +839,7 @@ def cumsum(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the cumulative sum of the elements along a given axis.
 
     Parameters
@@ -1003,7 +982,7 @@ def cumprod(
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the cumulative product of the elements along a given axis.
 
     Parameters
