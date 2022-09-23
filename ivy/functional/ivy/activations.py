@@ -319,7 +319,12 @@ def softmax(
 @handle_nestable
 @handle_exceptions
 def softplus(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softplus function element-wise.
 
@@ -327,6 +332,10 @@ def softplus(
     ----------
     x
         input array.
+    beta
+        The beta value for the softplus formation. Default: None.
+    threshold
+        values above this revert to a linear function. Default: None.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -346,6 +355,15 @@ def softplus(
     >>> print(y)
     ivy.array([0.535,0.42])
 
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softplus(x, beta=0.5)
+    >>> print(y)
+    ivy.array([1.22, 1.09])
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.softplus(x, threshold=2)
+    >>> print(y)
+    ivy.array([1.31, 2.13, 3.  ])
 
     With :code: `ivy.NativeArray` input:
 
@@ -366,4 +384,4 @@ def softplus(
     ivy.array([0.535,0.42])
 
     """
-    return current_backend(x).softplus(x, out=out)
+    return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)

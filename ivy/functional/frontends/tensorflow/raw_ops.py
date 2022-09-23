@@ -95,6 +95,10 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
+def LogicalOr(*, x, y, name=None):
+    return ivy.logical_or(x, y)
+
+
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
 
