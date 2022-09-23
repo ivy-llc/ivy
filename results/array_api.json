@@ -27,7 +27,7 @@
             "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "failure",
             "searching_functions": " ",
-            "set_functions": "success",
+            "set_functions": " ",
             "signatures": " ",
             "sorting_functions": "success",
             "special_cases": "failure",
@@ -36,7 +36,7 @@
             "utility_functions": "success"
       },
       "tensorflow": {
-            "array_object": "success",
+            "array_object": " ",
             "constants": " ",
             "creation_functions": "success",
             "data_type_functions": " ",
