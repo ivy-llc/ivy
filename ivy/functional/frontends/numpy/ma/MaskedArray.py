@@ -1,6 +1,8 @@
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 import numpy as np
+from functools import reduce
+from operator import mul
 
 masked = True
 nomask = False
@@ -162,6 +164,14 @@ class MaskedArray(np_frontend.ndarray):
         self._data[query] = val
         if not self._hard_mask and ivy.any(self._mask):
             self._mask[query] = False
+
+    # Instance Methods #
+    # ---------------- #
+
+    def flatten(self, order="C"):
+        # TODO: return view or MA
+        size = reduce(mul, ivy.shape(self._data))
+        return ivy.reshape(self._data, (size,))
 
 
 # masked_array (alias)
