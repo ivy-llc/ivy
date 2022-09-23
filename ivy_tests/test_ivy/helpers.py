@@ -1715,7 +1715,6 @@ def test_frontend_method(
         optional, return value from the Ground Truth function
     """
     # TODO: to remove!
-    container_flags_method = None
     init_with_v = None
     method_with_v = None
     # split the arguments into their positional and keyword components
@@ -1732,12 +1731,10 @@ def test_frontend_method(
         input_dtypes_method,
         as_variable_flags_method,
         native_array_flags_method,
-        container_flags_method,
     ) = as_lists(
         input_dtypes_method,
         as_variable_flags_method,
         native_array_flags_method,
-        container_flags_method,
     )
 
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
@@ -1813,10 +1810,6 @@ def test_frontend_method(
         native_array_flags_method = [
             native_array_flags_method[0] for _ in range(num_arrays_method)
         ]
-    if len(container_flags_method) < num_arrays_method:
-        container_flags_method = [
-            container_flags_method[0] for _ in range(num_arrays_method)
-        ]
 
     as_variable_flags_method = [
         v if ivy.is_float_dtype(d) else False
@@ -1834,7 +1827,6 @@ def test_frontend_method(
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
         native_array_flags=native_array_flags_method,
-        container_flags=container_flags_method,
     )
     # End Method #
 
@@ -1879,7 +1871,6 @@ def test_frontend_method(
         input_dtypes=input_dtypes_method,
         as_variable_flags=as_variable_flags_method,
         native_array_flags=native_array_flags_method,
-        container_flags=container_flags_method,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     if isinstance(ins_gt, ivy.Module):
