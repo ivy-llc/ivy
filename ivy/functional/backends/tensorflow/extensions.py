@@ -1,5 +1,5 @@
 import ivy
-from typing import Optional
+from typing import Optional, Union
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
     _verify_csr_components,
