@@ -344,7 +344,7 @@ def test_empty_like(
     batch_shape=st.lists(
         helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
     ),
-    dtype=helpers.get_dtypes("integer", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="eye"),
 )
 def test_eye(
