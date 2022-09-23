@@ -436,14 +436,16 @@ test_dependencies.sh
 </span></pre></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">run_tests.sh</span></code> - is run by typing <code class="code docutils literal notranslate"><span class="pre">./run_tests.sh</span></code> in the <code class="code docutils literal notranslate"><span class="pre">run_tests_CLI</span></code>. This runs all tests in</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">run_tests.sh</span></code> is run by typing <code class="code docutils literal notranslate"><span class="pre">./run_tests_CLI/run_tests.sh</span></code> in the <code class="code docutils literal notranslate"><span class="pre">/ivy</span></code> directory. This runs all tests in <code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests</span></code>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">test_array_api.sh</span></code> is run by typing <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code>. This runs all </p></li>
 </ul>
-<p><code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests</span></code>.
-* <code class="code docutils literal notranslate"><span class="pre">test_array_api.sh</span></code> - is run by typing <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code>. This runs all
-array-api tests for a certain submodule in a certain backend.
-* <code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code> - is run by typing <code class="code docutils literal notranslate"><span class="pre">./test_ivy_core.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code>. This runs all
-ivy tests for a certain submodule in a certain backend in <code class="code docutils literal notranslate"><span class="pre">test_ivy/test_functional/test_core</span></code>.
-* <code class="code docutils literal notranslate"><span class="pre">test_ivy_nn.sh</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_ivy_stateful.sh</span></code> are run in a similar manner to <code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code>.</p>
+<p>array-api tests for a certain submodule in a certain backend.
+* <code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code> is run by typing <code class="code docutils literal notranslate"><span class="pre">./run_tests_CLI/test_ivy_core.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code> in the ivy directory. This runs all ivy tests for a certain submodule in a certain backend in <code class="code docutils literal notranslate"><span class="pre">test_ivy/test_functional/test_core</span></code>.
+* <code class="code docutils literal notranslate"><span class="pre">test_ivy_nn.sh</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_ivy_stateful.sh</span></code> are run in a similar manner to <code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code>. Make sure to check the submodule names in the source code before running.</p>
+<a class="reference internal image-reference" href="../_images/pycharm_run_array_api_tests.png"><img alt="../_images/pycharm_run_array_api_tests.png" src="../_images/pycharm_run_array_api_tests.png" style="width: 420px;" /></a>
+<p>If you wish to run tests of all submodules of <cite>ivy_core</cite>, <cite>ivy_nn</cite> or <cite>ivy_stateful</cite>, there are <code class="code docutils literal notranslate"><span class="pre">.py</span></code> available
+in <code class="code docutils literal notranslate"><span class="pre">run_tests_CLI</span></code>. All are run like:
+<code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">run_tests_CLI/run_ivy_nn_test.py</span> <span class="pre">1</span></code>, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.</p>
 </section>
 <section id="more-detailed-hypothesis-logs">
 <h3>More Detailed Hypothesis Logs<a class="headerlink" href="#more-detailed-hypothesis-logs" title="Permalink to this heading"></a></h3>
