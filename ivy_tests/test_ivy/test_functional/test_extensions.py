@@ -1,18 +1,16 @@
 # global
 from hypothesis import given, strategies as st
 
-# import ivy
-
 # local
-# import numpy as np
+import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
-
-# import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # Helpers #
 # ------- #
+
+
 @st.composite
 def _sparse_coo_indices_values_shape(draw):
     num_elem = draw(helpers.ints(min_value=2, max_value=8))
@@ -44,12 +42,12 @@ def test_sparse_coo(
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(
         input_dtypes_init=["int64", val_dtype],
-        as_variable_flags_init=[],
+        as_variable_flags_init=as_variable,
         num_positional_args_init=0,
-        native_array_flags_init=[],
+        native_array_flags_init=native_array,
         all_as_kwargs_np_init={
             "coo_indices": coo_ind,
-            "values": val,
+            "values": np.array(val, dtype=val_dtype),
             "dense_shape": shp,
         },
         input_dtypes_method=[],
@@ -61,8 +59,4 @@ def test_sparse_coo(
         fw=fw,
         class_name="SparseArray",
         method_name="to_dense_array",
-        # test_values=False,
-        # ground_truth_backend="numpy",
-        # init_with_v=init_with_v,
-        # method_with_v=method_with_v,
     )
