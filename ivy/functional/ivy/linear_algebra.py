@@ -633,7 +633,7 @@ def inv(
     /,
     *,
     adjoint: bool = False,
-    out: Optional[ivy.Array] = None
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the multiplicative inverse of a square matrix (or a stack of square
     matrices) ``x``.
@@ -798,14 +798,11 @@ def matmul(
 
     With :code:`ivy.NativeArray` inputs:
 
-    >>> x = ivy.native_array([[1., 2.],  \
-                            [0., 1.]])
-    >>> y = ivy.native_array([[2., 0.],  \
-                            [0., 3.]])
+    >>> x = ivy.native_array([[1., 2.], [0., 1.]])
+    >>> y = ivy.native_array([[2., 0.], [0., 3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
-    ivy.array([[2., 6.],
-                [0., 3.]])
+    ivy.array([[2., 6.],[0., 3.]])
 
     With :code:`ivy.Container` inputs:
 
@@ -833,14 +830,11 @@ def matmul(
     With a combination of :code:`ivy.NativeArray`
     and :code:`ivy.Array` inputs:
 
-    >>> x = ivy.native_array([[1., 2.], \
-                            [0., 3.]])
-    >>> y = ivy.array([[1.], \
-                        [3.]])
+    >>> x = ivy.native_array([[1., 2.], [0., 3.]])
+    >>> y = ivy.array([[1.], [3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
-    ivy.array([[7.],
-               [9.]])
+    ivy.array([[7.],[9.]])
 
     """
     return current_backend(x1).matmul(x1, x2, out=out)
@@ -864,11 +858,8 @@ def matrix_norm(
     ----------
     x
         Input array.
-    p
-        Order of the norm. Default is 2.
-    axes
-        The axes of x along which to compute the matrix norms.
-        Default is None, in which case the last two dimensions are used.
+    ord
+        Order of the norm. Default is "fro".
     keepdims
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
@@ -1280,9 +1271,6 @@ def svd(
         the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``
         and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.
         Default: ``True``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------

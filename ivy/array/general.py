@@ -378,6 +378,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(reduced)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
+
         """
         return ivy.einops_reduce(
             self._data, pattern, reduction, out=out, **axes_lengths
@@ -1024,7 +1025,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([[0.   , 0.894, 1.79 ]])
 
         """
-        return ivy.clip_matrix_norm(self, max_norm, p, out=out)
+        return ivy.clip_matrix_norm(self, max_norm, p=p, out=out)
 
     def scatter_flat(
         self: ivy.Array,
