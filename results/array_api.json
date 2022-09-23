@@ -1,12 +1,12 @@
 {
       "numpy": {
             "array_object": "success",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": "success",
             "has_names": " ",
             "linalg": "failure",
-            "manipulation_functions": "success",
+            "manipulation_functions": " ",
             "operators_and_elementwise_functions": "failure",
             "searching_functions": " ",
             "set_functions": "success",
