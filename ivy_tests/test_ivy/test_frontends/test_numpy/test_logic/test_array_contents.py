@@ -12,18 +12,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-np.inf,
-        max_value=np.inf
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isneginf"
     ),
 )
 def test_numpy_isneginf(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_and_x, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -44,18 +40,14 @@ def test_numpy_isneginf(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-np.inf,
-        max_value=np.inf
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isposinf"
     ),
 )
 def test_numpy_isposinf(
-    dtype_and_x,
-    as_variable,
-    native_array,
-    num_positional_args,
-    fw
+    dtype_and_x, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
