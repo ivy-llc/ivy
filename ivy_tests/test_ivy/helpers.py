@@ -1714,9 +1714,6 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    # TODO: to remove!
-    init_with_v = None
-    method_with_v = None
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
@@ -1833,17 +1830,6 @@ def test_frontend_method(
     # Run testing
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     v_np = None
-    if isinstance(ins, ivy.Module):
-        if init_with_v:
-            v = ivy.Container(
-                ins._create_variables(device=device_, dtype=input_dtypes_method[0])
-            )
-            ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
-        else:
-            v = ins.__getattribute__("v")
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
-        if method_with_v:
-            kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
