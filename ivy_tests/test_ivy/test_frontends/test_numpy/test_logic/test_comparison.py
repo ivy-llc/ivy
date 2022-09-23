@@ -352,7 +352,14 @@ def test_numpy_not_equal(
         fn_name="ivy.functional.frontends.numpy.array_equiv"
     )
 )
-def test_numpy_array_equiv(dtype_and_x, factor, as_variable, native_array, num_positional_args, fw):
+def test_numpy_array_equiv(
+    dtype_and_x,
+    factor,
+    as_variable,
+    native_array,
+    num_positional_args,
+    fw
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=[dtype, dtype],
@@ -364,5 +371,5 @@ def test_numpy_array_equiv(dtype_and_x, factor, as_variable, native_array, num_p
         frontend="numpy",
         fn_tree="array_equiv",
         a1=np.asarray(x, dtype=dtype),
-        a2=np.asarray(factor*[x], dtype=dtype)
+        a2=np.asarray(factor * [x], dtype=dtype)
     )

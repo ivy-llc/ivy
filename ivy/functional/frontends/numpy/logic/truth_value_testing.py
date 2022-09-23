@@ -31,4 +31,5 @@ def any(
 
 
 def isscalar(element):
-    return isinstance(element, int) or isinstance(element, bool) or isinstance(element, float)
+    return isinstance(element, int) or isinstance(element, bool) \
+           or isinstance(element, float)
