@@ -36,7 +36,7 @@ def _verify_coo_components(*, indices=None, values=None, dense_shape=None):
 
 
 def _verify_csr_components(
-    *, crow_indices=None, col_indices=None, values=None, dense_shape=None
+        *, crow_indices=None, col_indices=None, values=None, dense_shape=None
 ):
     ivy.assertions.check_all_or_any_fn(
         crow_indices,
@@ -82,12 +82,12 @@ def _verify_csr_components(
 
 
 def _is_data_not_indices_values_and_shape(
-    data=None,
-    coo_indices=None,
-    csr_crow_indices=None,
-    csr_col_indices=None,
-    values=None,
-    dense_shape=None,
+        data=None,
+        coo_indices=None,
+        csr_crow_indices=None,
+        csr_col_indices=None,
+        values=None,
+        dense_shape=None,
 ):
     if data is not None:
         ivy.assertions.check_all_or_any_fn(
@@ -108,26 +108,26 @@ def _is_data_not_indices_values_and_shape(
 
 
 def _is_coo_not_csr(
-    coo_indices=None,
-    csr_crow_indices=None,
-    csr_col_indices=None,
-    values=None,
-    dense_shape=None,
+        coo_indices=None,
+        csr_crow_indices=None,
+        csr_col_indices=None,
+        values=None,
+        dense_shape=None,
 ):
     if (
-        ivy.exists(coo_indices)
-        and ivy.exists(values)
-        and ivy.exists(dense_shape)
-        and csr_crow_indices is None
-        and csr_col_indices is None
+            ivy.exists(coo_indices)
+            and ivy.exists(values)
+            and ivy.exists(dense_shape)
+            and csr_crow_indices is None
+            and csr_col_indices is None
     ):
         return True
     elif (
-        ivy.exists(csr_crow_indices)
-        and ivy.exists(csr_col_indices)
-        and ivy.exists(values)
-        and ivy.exists(dense_shape)
-        and coo_indices is None
+            ivy.exists(csr_crow_indices)
+            and ivy.exists(csr_col_indices)
+            and ivy.exists(values)
+            and ivy.exists(dense_shape)
+            and coo_indices is None
     ):
         return False
     else:
@@ -140,21 +140,21 @@ def _is_coo_not_csr(
 
 class SparseArray:
     def __init__(
-        self,
-        data=None,
-        *,
-        coo_indices=None,
-        csr_crow_indices=None,
-        csr_col_indices=None,
-        values=None,
-        dense_shape=None
+            self,
+            data=None,
+            *,
+            coo_indices=None,
+            csr_crow_indices=None,
+            csr_col_indices=None,
+            values=None,
+            dense_shape=None
     ):
         if _is_data_not_indices_values_and_shape(
-            data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
+                data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
         ):
             self._init_data(data)
         elif _is_coo_not_csr(
-            coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
+                coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
         ):
             self._init_coo_components(coo_indices, values, dense_shape)
         else:
@@ -320,7 +320,7 @@ class SparseArray:
             all_cols = self._csr_col_indices.to_list()
             all_rows = self._csr_crow_indices.to_list()
             while row < total_rows:
-                cols = all_cols[all_rows[row] : all_rows[row + 1]]
+                cols = all_cols[all_rows[row]: all_rows[row + 1]]
                 for col in cols:
                     all_coordinates.append([row, col])
                 row += 1
@@ -348,13 +348,13 @@ def is_native_sparse_array(x):
 @inputs_to_native_arrays
 @handle_exceptions
 def native_sparse_array(
-    data=None,
-    *,
-    coo_indices=None,
-    csr_crow_indices=None,
-    csr_col_indices=None,
-    values=None,
-    dense_shape=None
+        data=None,
+        *,
+        coo_indices=None,
+        csr_crow_indices=None,
+        csr_col_indices=None,
+        values=None,
+        dense_shape=None
 ):
     return ivy.current_backend().native_sparse_array(
         data,
@@ -369,3 +369,8 @@ def native_sparse_array(
 @handle_exceptions
 def native_sparse_array_to_indices_values_and_shape(x):
     return ivy.current_backend().native_sparse_array_to_indices_values_and_shape(x)
+
+
+@handle_exceptions
+def ifft(input, n, dim, axis, norm, name):
+    return ivy.current_backend().ifft(input, n, dim, axis, norm, name)
