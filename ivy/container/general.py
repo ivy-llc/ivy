@@ -2638,8 +2638,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
-            a: array([1, 0, 1, 1], dtype=int32),
-            b: array([1, -1, 0, 0], dtype=int32)
+            a: array([1, 0, 1, 1]),
+            b: array([1, -1, 0, 0])
         }
 
         >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
@@ -2648,7 +2648,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
             a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0], dtype=int32)
+            b: array([1, 1, -1, 0])
         }
 
         Examples
@@ -2720,10 +2720,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
+                      [1, 0, -1]]),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
+                      [1, 1, 1]])
         }
 
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
@@ -2733,10 +2733,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
+                      [1, 0, -1]]),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
+                      [1, 1, 1]])
         }
 
         Examples
