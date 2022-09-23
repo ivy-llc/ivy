@@ -269,3 +269,6 @@ def tan(x):
 
 def transpose(operand, permutation):
     return ivy.permute_dims(operand, permutation)
+
+def lgamma(x):
+    return ivy.lgamma(x)
