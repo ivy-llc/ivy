@@ -1309,7 +1309,7 @@ def tile(
 @handle_nestable
 @handle_exceptions
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], axis: int, /, *, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, axis: int = 0, keepdims: bool = False
 ) -> List[ivy.Array]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -1377,7 +1377,7 @@ def unstack(
                       [[15, 16]]])
     }]
     """
-    return current_backend(x).unstack(x, axis, keepdims)
+    return current_backend(x).unstack(x, axis=axis, keepdims=keepdims)
 
 
 @to_native_arrays_and_back
