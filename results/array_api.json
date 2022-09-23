@@ -11,9 +11,9 @@
             "searching_functions": " ",
             "set_functions": "success",
             "signatures": "failure",
-            "sorting_functions": "success",
+            "sorting_functions": " ",
             "special_cases": "success",
-            "statistical_functions": " ",
+            "statistical_functions": "success",
             "type_promotion": "failure",
             "utility_functions": "success"
       },
