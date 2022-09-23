@@ -688,7 +688,7 @@ def to_numpy(
     >>> y = ivy.to_numpy(x)
     >>> print(y)
     {
-        a: array([-1, 0, 1], dtype=int32)
+        a: array([-1, 0, 1])
     }
 
     >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
@@ -698,10 +698,10 @@ def to_numpy(
     {
         a: array([[-1, 0, 1],
                   [-1, 0, 1],
-                  [1, 0, -1]], dtype=int32),
+                  [1, 0, -1]]),
         b: array([[-1, 0, 0],
                   [1, 0, 1],
-                  [1, 1, 1]], dtype=int32)
+                  [1, 1, 1]])
     }
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` inputs:
@@ -709,7 +709,7 @@ def to_numpy(
     >>> x = ivy.Container(x=ivy.array([-1, 0, 1]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {x:array([-1,0,1],dtype=int32)}
+    {x:array([-1,0,1)}
 
     >>> x = ivy.Container(a=ivy.array([[-1.0, 0., 1.], [-1, 0, 1], [1, 0, -1]]),\
                       b=ivy.array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
@@ -721,7 +721,7 @@ def to_numpy(
                   [1., 0., -1.]], dtype=float32),
         b: array([[-1, 0, 0],
                   [1, 0, 1],
-                  [1, 1, 1]], dtype=int32)
+                  [1, 1, 1]])
     }
 
     Instance Method Example
@@ -2514,15 +2514,15 @@ def supports_inplace_updates(
     With :code:`ivy.Array` input and default backend set as `numpy`:
 
     >>> x = ivy.array([0, 1, 2])
-    >>> ret = ivy.supports_inplace_updates(x)
-    >>> print(ret)
+    >>> y = ivy.supports_inplace_updates(x)
+    >>> print(y)
     True
 
     With :code:`ivy.Container` input and backend set as `torch`:
 
     >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
-    >>> ret = ivy.supports_inplace_updates(x)
-    >>> print(ret)
+    >>> y = ivy.supports_inplace_updates(x)
+    >>> print(y)
     {
         a: true,
         b: true
