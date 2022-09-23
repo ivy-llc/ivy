@@ -28,3 +28,7 @@ def any(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+def isscalar(element):
+    return isinstance(element, int) or isinstance(element, bool) or isinstance(element, float)
