@@ -6,6 +6,8 @@ matmul
 .. autofunction:: ivy.array.array_methods.matmul
 
 .. autofunction:: ivy.container.container_methods.matmul
+
+.. autofunction:: ivy.container.container_methods.static_matmul
 |
 | **Supported Frameworks:**
 
@@ -35,4 +37,5 @@ matmul
    matmul/matmul_functional.rst
    matmul/matmul_array.rst
    matmul/matmul_container.rst
+   matmul/static_matmul_container.rst
 
