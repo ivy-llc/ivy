@@ -568,25 +568,30 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     )
 
 
+# Cosine Similarity
 @handle_cmd_line_args
 @given(
-    y_true_dtype_y_pred=helpers.dtype_and_values(
+    d_type=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=1,
-        max_value=10,
-        shape=(2, 3),
         shared_dtype=True,
+        num_arrays=2
+    ),
+    y_true=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=1, max_value=5
+    ),
+    y_pred=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=5, max_value=10
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.cosine_similarity"
     ),
 )
 def test_cosine_similarity(
-    y_true_dtype_y_pred, as_variable, num_positional_args, native_array, fw, with_out
+    d_type, y_true, y_pred, as_variable, num_positional_args, native_array, fw, with_out
 ):
-    dtype, y_true_y_pred = y_true_dtype_y_pred
-    y_true_y_pred = ivy.array(y_true_y_pred, dtype=dtype)
-    y_true, y_pred = y_true_y_pred
+    dtype = d_type
+    y_true = y_true
+    y_pred = y_pred
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
