@@ -1,7 +1,7 @@
 {
       "numpy": {
             "array_object": "success",
-            "constants": " ",
+            "constants": "success",
             "creation_functions": "success",
             "data_type_functions": "success",
             "has_names": " ",
@@ -21,7 +21,7 @@
             "array_object": " ",
             "constants": "success",
             "creation_functions": "success",
-            "data_type_functions": "success",
+            "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
