@@ -228,7 +228,7 @@ def nonzero(
     /,
     *,
     as_tuple: bool = True,
-    size: int = None,
+    size: Optional[int] = None,
     fill_value: int = 0,
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
