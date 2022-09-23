@@ -55,8 +55,8 @@ jobs:
       - name: Run Array Api Tests
         id: tests
         run: |
-          cd ivy/run_tests_CLI
-          ./test_array_api.sh ${{matrix.backends}} test_${{matrix.submodules}}
+          cd ivy
+          ./run_tests_CLI/test_array_api.sh ${{matrix.backends}} test_${{matrix.submodules}}
         continue-on-error: true
 
       - name: Zip Hypothesis Examples
