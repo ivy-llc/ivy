@@ -1132,7 +1132,7 @@ def test_tensorflow_LogicalNot(
         fn_name="ivy.functional.frontends.tensorflow.Shape"
     ),
 )
-def test_tensorflow_instance_Shape(
+def test_tensorflow_Shape(
     dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = dtype_and_x
