@@ -5,9 +5,9 @@ linear
 
 .. autofunction:: ivy.array.array_methods.linear
 
-.. autofunction:: ivy.container.container_methods.linear
-
 .. autofunction:: ivy.container.container_methods.static_linear
+
+.. autofunction:: ivy.container.container_methods.linear
 |
 | **Supported Frameworks:**
 
