@@ -171,13 +171,27 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    singular_values = jnp.linalg.svd(x, compute_uv=False)
-    max_value = jnp.max(singular_values)
-    if rtol:
-        num = jnp.sum(singular_values > max_value * rtol)
+    axis = None
+    ret_shape = x.shape[:-2]
+    if len(x.shape) > 2:
+        y = x.reshape((-1, *x.shape[-2:]))
+        singular_values = jnp.asarray(
+            [
+                jnp.linalg.svd(split[0], compute_uv=False)
+                for split in jnp.split(y, y.shape[0], axis=0)
+            ]
+        )
+        axis = 1
     else:
-        num = singular_values.size
-    return jnp.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
+        singular_values = jnp.linalg.svd(x, compute_uv=False)
+    max_values = jnp.max(singular_values, axis=axis)
+    if rtol:
+        ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
+    else:
+        ret = jnp.sum(singular_values != 0, axis=axis)
+    if len(ret_shape):
+        ret = ret.reshape(ret_shape)
+    return ret.astype(x.dtype)
 
 
 matrix_rank.unsupported_dtypes = (
