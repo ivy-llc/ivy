@@ -556,7 +556,9 @@ def _versioned_attribute_factory(attribute_function, base):
 def _dtype_device_wrapper_creator(attrib, t):
     def _wrapper_outer(version_dict, version):
         def _wrapped(func):
-            val = _versioned_attribute_factory(lambda: _dtype_from_version(version_dict, version), t)
+            val = _versioned_attribute_factory(
+                lambda: _dtype_from_version(version_dict, version), t
+            )
             setattr(func, attrib, val)
             return func
 
@@ -570,5 +572,8 @@ with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tu
 with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
 with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
 with_supported_devices = _dtype_device_wrapper_creator("supported_devices", tuple)
-with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator("unsupported_device_and_dtype", dict)
-with_supported_device_and_dtypes = _dtype_device_wrapper_creator("supported_device_and_dtype", dict)
+with_unsupported_device_and_dtypes = (
+    _dtype_device_wrapper_creator("unsupported_device_and_dtype", dict))
+with_supported_device_and_dtypes = (
+    _dtype_device_wrapper_creator("supported_device_and_dtype", dict)
+)

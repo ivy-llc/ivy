@@ -118,6 +118,7 @@ def matrix_power(
     return np.linalg.matrix_power(x, n)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16",)}, version)
 def matrix_rank(
     x: np.ndarray,
     /,
@@ -132,12 +133,6 @@ def matrix_rank(
     else:
         num = singular_values.size
     return np.asarray(num, dtype=ivy.default_int_dtype(as_native=True))
-
-
-matrix_rank.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
 
 
 def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:

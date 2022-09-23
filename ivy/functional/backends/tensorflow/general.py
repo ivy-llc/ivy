@@ -60,6 +60,10 @@ def current_backend_str():
     return "tensorflow"
 
 
+# tensorflow does not support uint indexing
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, version
+)
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query):
         return x.__getitem__(query)
@@ -71,10 +75,6 @@ def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
     if dtype in [tf.int8, tf.int16]:
         query = tf.cast(query, tf.int32)
     return tf.gather(x, query)
-
-
-# tensorflow does not support uint indexing
-get_item.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -429,7 +429,9 @@ def gather_nd(
     return tf.gather_nd(params, indices)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("int8", "int16", "uint16", "uint32", "uint64")}, version
+)
 def one_hot(
     indices: Union[tf.Tensor, tf.Variable],
     depth: int,

@@ -1989,6 +1989,7 @@ def einops_reduce(
     return ret
 
 
+# IMPORTANT: assign attribute directly to function instead of wrapper here
 einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 

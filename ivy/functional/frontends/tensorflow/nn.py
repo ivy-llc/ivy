@@ -74,9 +74,6 @@ def conv2d_transpose(
     )
 
 
-conv2d_transpose.unsupported_dtypes = {"torch": ("float16",)}
-
-
 def conv3d(
     input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
 ):

@@ -1,4 +1,8 @@
 import ivy
+import ivy.functional.frontends as frontends
+from ivy.func_wrapper import with_unsupported_dtypes
+
+versions = frontends.versions["torch"]
 
 
 def flip(input, dims):
@@ -23,14 +27,12 @@ def cumsum(input, dim, *, dtype=None, out=None):
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, versions)
 def trace(input):
     if "int" in input.dtype:
         input = input.astype("int64")
     target_type = "int64" if "int" in input.dtype else input.dtype
     return ivy.astype(ivy.trace(input), target_type)
-
-
-trace.unsupported_dtypes = ("float16",)
 
 
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
@@ -61,7 +63,6 @@ def tril(input, diagonal=0, *, out=None):
 
 
 def flatten(input, start_dim=0, end_dim=-1):
-
     # This loop is to work out the new shape
     # It is a map f: Z^n -> Z^(n-1) where
     # (...., a,b, ....)

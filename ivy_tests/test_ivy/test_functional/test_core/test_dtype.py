@@ -880,8 +880,9 @@ def test_function_dtype_versioning(func_and_version, fw):
                 expected = func_and_version[key][key1][key2]
                 res = fn.unsupported_dtypes
                 if res is None:
-                    res=set()
-                else: res=set(res)
+                    res = set()
+                else:
+                    res = set(res)
                 if res != expected:
                     print(res, expected)
                     raise Exception

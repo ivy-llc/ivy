@@ -43,14 +43,12 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     dtype = torch.promote_types(x0.dtype, x1.dtype)
     x0 = x0.type(dtype=dtype)
     x1 = x1.type(dtype=dtype)
     return torch.equal(x0, x1)
-
-
-array_equal.unsupported_dtypes = ("bfloat16",)
 
 
 def container_types():
@@ -133,7 +131,8 @@ def gather_nd(
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-                                reduce(mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)
+                                reduce(mul, params_shape[i + 1:], 1) for i in
+                                range(len(params_shape) - 1)
                             ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -200,7 +199,8 @@ def _infer_dtype(x_dtype: torch.dtype):
     return dtype
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version)  # TODO Fixed in PyTorch 1.12.1
+# TODO Fixed in PyTorch 1.12.1
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, version)
 def cumsum(
     x: torch.Tensor,
     axis: int = 0,
@@ -235,7 +235,8 @@ def cumsum(
 cumsum.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version)  # TODO Fixed in PyTorch 1.12.1
+@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version
+)  # TODO Fixed in PyTorch 1.12.1
 def cumprod(
     x: torch.Tensor,
     axis: int = 0,
@@ -283,6 +284,7 @@ def multiprocessing(context=None):
     if context is None:
         return torch.multiprocessing
     return torch.multiprocessing.get_context(context)
+
 
 @with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version)
 def scatter_flat(
@@ -338,7 +340,6 @@ def scatter_flat(
             res,
         )
     return res
-
 
 
 @with_unsupported_dtypes({"1.11.0 and below": "float16", }, version)
@@ -416,7 +417,8 @@ def scatter_nd(
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-                                reduce(mul, shape[i + 1:], 1) for i in range(len(shape) - 1)
+                                reduce(mul, shape[i + 1:], 1) for i in
+                                range(len(shape) - 1)
                             ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
