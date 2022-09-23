@@ -774,7 +774,9 @@ def to_numpy(
 @handle_exceptions
 def to_scalar(
     x: Union[ivy.Array, ivy.NativeArray],
-    /
+    /,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
 ) -> Number:
     """Converts an array with a single element into a scalar.
 
