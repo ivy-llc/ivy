@@ -122,7 +122,7 @@ def broadcast_to(
 
 
 # ToDo : Find correct casting options for complex dtype
-def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
+def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /) -> bool:
     if isinstance(from_, np.ndarray):
         from_ = str(from_.dtype)
     from_ = str(from_)
