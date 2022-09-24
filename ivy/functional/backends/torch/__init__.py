@@ -70,7 +70,12 @@ valid_uint_dtypes = (ivy.uint8,)
 valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
-invalid_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_dtypes = (
+    ivy.uint16,
+    ivy.uint32,
+    ivy.uint64,
+    ivy.complex256,
+)
 invalid_num_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_float_dtypes = ()

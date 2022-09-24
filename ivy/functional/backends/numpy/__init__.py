@@ -94,7 +94,10 @@ valid_uint_dtypes = (uint8, uint16, uint32, uint64)
 valid_complex_dtypes = (complex64, complex128)
 
 # invalid data types
-invalid_dtypes = (bfloat16,)
+invalid_dtypes = (
+    bfloat16,
+    ivy.complex256,
+)
 invalid_numeric_dtypes = (bfloat16,)
 invalid_int_dtypes = ()
 invalid_float_dtypes = (bfloat16,)
