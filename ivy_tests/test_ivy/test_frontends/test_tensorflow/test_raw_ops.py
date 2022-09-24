@@ -84,7 +84,7 @@ def test_tensorflow_BroadcastTo(
 ):
     x, to_shape = array_and_shape
     helpers.test_frontend_function(
-        input_dtypes=x.dtype,
+        input_dtypes=[x.dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -1001,8 +1001,8 @@ def _reshape_helper(draw):
     # generate a shape s.t len(shape) > 0
     shape = draw(helpers.get_shape(min_num_dims=1))
     reshape_shape = draw(helpers.reshape_shapes(shape=shape))
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    x = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    x = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     return x, dtype, reshape_shape
 
 
