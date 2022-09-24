@@ -83,7 +83,7 @@ jobs:
          env:
             MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
          run: |
-            echo ${{ secrets.GITHUB_TOKEN }}
+            echo ${{ secrets.PYPI_PASSWORD }}
             cd ivy/automation_tools/dashboard_automation/
             python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
          continue-on-error: true
