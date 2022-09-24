@@ -5,9 +5,9 @@ log_softmax
 
 .. autofunction:: ivy.array.array_methods.log_softmax
 
-.. autofunction:: ivy.container.container_methods.static_log_softmax
-
 .. autofunction:: ivy.container.container_methods.log_softmax
+
+.. autofunction:: ivy.container.container_methods.static_log_softmax
 |
 | **Supported Frameworks:**
 

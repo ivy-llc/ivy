@@ -5,9 +5,9 @@ trunc
 
 .. autofunction:: ivy.array.array_methods.trunc
 
-.. autofunction:: ivy.container.container_methods.trunc
-
 .. autofunction:: ivy.container.container_methods.static_trunc
+
+.. autofunction:: ivy.container.container_methods.trunc
 |
 | **Supported Frameworks:**
 

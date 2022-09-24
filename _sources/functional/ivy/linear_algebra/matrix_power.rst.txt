@@ -3,9 +3,9 @@ matrix_power
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_power
 
-.. autofunction:: ivy.container.container_methods.static_matrix_power
-
 .. autofunction:: ivy.container.container_methods.matrix_power
+
+.. autofunction:: ivy.container.container_methods.static_matrix_power
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ isinf
 
 .. autofunction:: ivy.array.array_methods.isinf
 
-.. autofunction:: ivy.container.container_methods.static_isinf
-
 .. autofunction:: ivy.container.container_methods.isinf
+
+.. autofunction:: ivy.container.container_methods.static_isinf
 |
 | **Supported Frameworks:**
 

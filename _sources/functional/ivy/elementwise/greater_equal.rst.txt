@@ -5,9 +5,9 @@ greater_equal
 
 .. autofunction:: ivy.array.array_methods.greater_equal
 
-.. autofunction:: ivy.container.container_methods.greater_equal
-
 .. autofunction:: ivy.container.container_methods.static_greater_equal
+
+.. autofunction:: ivy.container.container_methods.greater_equal
 |
 | **Supported Frameworks:**
 
