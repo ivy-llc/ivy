@@ -5,9 +5,9 @@ cosh
 
 .. autofunction:: ivy.array.array_methods.cosh
 
-.. autofunction:: ivy.container.container_methods.static_cosh
-
 .. autofunction:: ivy.container.container_methods.cosh
+
+.. autofunction:: ivy.container.container_methods.static_cosh
 
 .. list-table:: Device Support
    :widths: 20 20 20 20 20
