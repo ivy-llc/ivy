@@ -17,11 +17,7 @@ class ndarray:
     def reshape(self, newshape, copy=None):
         return np_frontend.reshape(self.data, newshape, copy=copy)
 
-    def transpose(self, *axes):
-        if len(axes) == 0:
-            axes = None
-        elif isinstance(axes[0], tuple):
-            axes = axes[0]
+    def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
 
     def add(

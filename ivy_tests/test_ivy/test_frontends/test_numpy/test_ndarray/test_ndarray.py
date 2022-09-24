@@ -114,3 +114,36 @@ def test_numpy_instance_add(
 
 
 # transpose
+@handle_cmd_line_args
+@given(
+    array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
+        min_num_dims=2, max_num_dims=5,
+        min_dim_size=1, max_dim_size=10,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.transpose"
+    ),
+)
+def test_numpy_instance_transpose(
+    array_and_axes,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    array, axes = array_and_axes
+    helpers.test_frontend_array_instance_method(
+        input_dtypes=["int8"],
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        with_out=with_out,
+        frontend="numpy",
+        frontend_class=ndarray,
+        fn_tree="ndarray.transpose",
+        self=np.array(array),
+        axes=axes,
+        test_values=False,
+    )
