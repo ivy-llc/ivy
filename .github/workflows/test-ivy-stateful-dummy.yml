@@ -1,0 +1,92 @@
+name: test-stateful-ivy
+on:
+  push:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened, review_requested]
+permissions:
+  actions: read
+jobs:
+   run-nightly-tests:
+     if: contains(github.event.pull_request.labels.*.name, 'Ivy Stateful API')}}
+     strategy:
+       matrix:
+         backends :  [numpy, torch, jax, tensorflow]
+         submodules: [activations, converters, layers, modules, norms, optimizers,
+                      sequential]
+     continue-on-error: true
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout 🛎️Ivy
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 2
+
+       - name: Download artifact
+         uses: dawidd6/action-download-artifact@v2
+         with:
+           github_token: ${{secrets.GITHUB_TOKEN}}
+           workflow: test-ivy-stateful.yml
+           workflow_conclusion: ""
+           search_artifacts: true
+           name: hypothesis_${{ matrix.backends }}_test_${{ matrix.submodules }}_zip
+           path: |
+             ivy/.hypothesis/
+         continue-on-error: true
+
+       - name: Unzip Hypothesis Examples
+         id: unzip
+         run: |
+           cd ivy/.hypothesis
+           unzip examples.zip
+           rm examples.zip
+         continue-on-error: true
+
+       - name: Create Hypothesis Directory
+         run: |
+           cd ivy
+           mkdir -p .hypothesis
+           cd .hypothesis
+           mkdir -p examples
+         continue-on-error: true
+
+       - name: Run Stateful Tests
+         id: tests
+         run: |
+           cd ivy
+           ./run_tests_CLI/test_ivy_stateful.sh ${{ matrix.backends }} test_${{ matrix.submodules }}
+         continue-on-error: true
+
+       - name: Zip Hypothesis Examples
+         run: |
+           cd ivy/.hypothesis
+           zip -r examples.zip examples
+         continue-on-error: true
+
+       - name: Upload hypothesis
+         uses: actions/upload-artifact@v3
+         with:
+           name: hypothesis_${{ matrix.backends }}_test_${{ matrix.submodules }}_zip
+           path: |
+             ivy/.hypothesis/examples.zip
+         continue-on-error: true
+
+       - name: Install Libraries
+         uses: BSFishy/pip-action@v1
+         with:
+             packages: |
+               pymongo
+
+       - name: Update Database
+         env:
+            MONGO_PWD: ${{ secrets.MONGODB_PASSWORD }}
+         run: |
+            cd ivy/automation_tools/dashboard_automation/
+            python3 update_db.py "$MONGO_PWD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
