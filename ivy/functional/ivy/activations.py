@@ -385,3 +385,73 @@ def softplus(
 
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def log_softmax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the log_softmax function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        The dimension log_softmax would be performed on. The default is -1
+        which indicates the last dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The output array with log_softmax applied element-wise to input.
+
+    Examples
+    --------
+    With :code: `ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, -0.98])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-0.703, -0.683])
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-2.41, -1.41, -0.408])
+
+    With :code: `ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1.5, 0.5, 1.0])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-0.68, -1.68, -1.18])
+
+    With :code: `ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.5, 0.5, 1.0]))
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0.68, -1.68, -1.18])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0]), b=ivy.array([0.4, -0.2]))
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1.31, -0.313]),
+        b: ivy.array([-0.437, -1.04])
+    }
+    """
+    return current_backend(x).log_softmax(x, axis=axis, out=out)

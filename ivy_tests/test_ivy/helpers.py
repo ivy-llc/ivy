@@ -1627,6 +1627,250 @@ def test_function(
     )
 
 
+def test_frontend_method(
+    *,
+    input_dtypes_init: Union[ivy.Dtype, List[ivy.Dtype]] = None,
+    as_variable_flags_init: Union[bool, List[bool]] = None,
+    num_positional_args_init: int = 0,
+    native_array_flags_init: Union[bool, List[bool]] = None,
+    all_as_kwargs_np_init: dict = None,
+    input_dtypes_method: Union[ivy.Dtype, List[ivy.Dtype]],
+    as_variable_flags_method: Union[bool, List[bool]],
+    num_positional_args_method: int,
+    native_array_flags_method: Union[bool, List[bool]],
+    all_as_kwargs_np_method: dict,
+    fw: str,
+    frontend: str,
+    class_name: str,
+    method_name: str = "__init__",
+    rtol_: float = None,
+    atol_: float = 1e-06,
+    test_values: Union[bool, str] = True,
+    ground_truth_backend: str = "tensorflow",
+    device_: str = "cpu",
+):
+    """Tests a class-method that consumes (or returns) arrays for the current backend
+    by comparing the result with numpy.
+
+    Parameters
+    ----------
+    input_dtypes_init
+        data types of the input arguments to the constructor in order.
+    as_variable_flags_init
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as an ivy.Variable.
+    num_positional_args_init
+        number of input arguments that must be passed as positional arguments to the
+        constructor.
+    native_array_flags_init
+        dictates whether the corresponding input argument passed to the constructor
+        should be treated as a native array.
+    all_as_kwargs_np_init:
+        input arguments to the constructor as keyword arguments.
+    input_dtypes_method
+        data types of the input arguments to the method in order.
+    as_variable_flags_method
+        dictates whether the corresponding input argument passed to the method should
+        be treated as an ivy.Variable.
+    num_positional_args_method
+        number of input arguments that must be passed as positional arguments to the
+        method.
+    native_array_flags_method
+        dictates whether the corresponding input argument passed to the method should
+        be treated as a native array.
+    all_as_kwargs_np_method:
+        input arguments to the method as keyword arguments.
+    fw
+        current backend (framework).
+    frontend
+        current frontend (framework).
+    class_name
+        name of the class to test.
+    method_name
+        name of the method to test.
+    rtol_
+        relative tolerance value.
+    atol_
+        absolute tolerance value.
+    test_values
+        can be a bool or a string to indicate whether correctness of values should be
+        tested. If the value is `with_v`, shapes are tested but not values.
+    ground_truth_backend
+        Ground Truth Backend to compare the result-values.
+    device_
+        The device on which to create arrays.
+
+    Returns
+    -------
+    ret
+        optional, return value from the function
+    ret_gt
+        optional, return value from the Ground Truth function
+    """
+    # split the arguments into their positional and keyword components
+
+    # Constructor arguments #
+    # convert single values to length 1 lists
+    (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = as_lists(
+        ivy.default(input_dtypes_init, []),
+        ivy.default(as_variable_flags_init, []),
+        ivy.default(native_array_flags_init, []),
+    )
+    all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
+    (
+        input_dtypes_method,
+        as_variable_flags_method,
+        native_array_flags_method,
+    ) = as_lists(
+        input_dtypes_method,
+        as_variable_flags_method,
+        native_array_flags_method,
+    )
+
+    args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_init,
+        kwargs=all_as_kwargs_np_init,
+    )
+
+    # extract all arrays from the arguments and keyword arguments
+    con_arg_np_vals, con_args_idxs, con_c_arg_vals = _get_nested_np_arrays(
+        args_np_constructor
+    )
+    con_kwarg_np_vals, con_kwargs_idxs, con_c_kwarg_vals = _get_nested_np_arrays(
+        kwargs_np_constructor
+    )
+
+    # make all lists equal in length
+    num_arrays_constructor = con_c_arg_vals + con_c_kwarg_vals
+    if len(input_dtypes_init) < num_arrays_constructor:
+        input_dtypes_init = [
+            input_dtypes_init[0] for _ in range(num_arrays_constructor)
+        ]
+    if len(as_variable_flags_init) < num_arrays_constructor:
+        as_variable_flags_init = [
+            as_variable_flags_init[0] for _ in range(num_arrays_constructor)
+        ]
+    if len(native_array_flags_init) < num_arrays_constructor:
+        native_array_flags_init = [
+            native_array_flags_init[0] for _ in range(num_arrays_constructor)
+        ]
+
+    # update variable flags to be compatible with float dtype
+    as_variable_flags_init = [
+        v if ivy.is_float_dtype(d) else False
+        for v, d in zip(as_variable_flags_init, input_dtypes_init)
+    ]
+
+    # Create Args
+    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+        args_np=args_np_constructor,
+        arg_np_vals=con_arg_np_vals,
+        args_idxs=con_args_idxs,
+        kwargs_np=kwargs_np_constructor,
+        kwarg_np_vals=con_kwarg_np_vals,
+        kwargs_idxs=con_kwargs_idxs,
+        input_dtypes=input_dtypes_init,
+        as_variable_flags=as_variable_flags_init,
+        native_array_flags=native_array_flags_init,
+    )
+    # End constructor #
+
+    # Method arguments #
+    args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
+        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
+    )
+
+    # extract all arrays from the arguments and keyword arguments
+    met_arg_np_vals, met_args_idxs, met_c_arg_vals = _get_nested_np_arrays(
+        args_np_method
+    )
+    met_kwarg_np_vals, met_kwargs_idxs, met_c_kwarg_vals = _get_nested_np_arrays(
+        kwargs_np_method
+    )
+
+    # make all lists equal in length
+    num_arrays_method = met_c_arg_vals + met_c_kwarg_vals
+    if len(input_dtypes_method) < num_arrays_method:
+        input_dtypes_method = [input_dtypes_method[0] for _ in range(num_arrays_method)]
+    if len(as_variable_flags_method) < num_arrays_method:
+        as_variable_flags_method = [
+            as_variable_flags_method[0] for _ in range(num_arrays_method)
+        ]
+    if len(native_array_flags_method) < num_arrays_method:
+        native_array_flags_method = [
+            native_array_flags_method[0] for _ in range(num_arrays_method)
+        ]
+
+    as_variable_flags_method = [
+        v if ivy.is_float_dtype(d) else False
+        for v, d in zip(as_variable_flags_method, input_dtypes_method)
+    ]
+
+    # Create Args
+    args_method, kwargs_method, _, _, _ = create_args_kwargs(
+        args_np=args_np_method,
+        arg_np_vals=met_arg_np_vals,
+        args_idxs=met_args_idxs,
+        kwargs_np=kwargs_np_method,
+        kwarg_np_vals=met_kwarg_np_vals,
+        kwargs_idxs=met_kwargs_idxs,
+        input_dtypes=input_dtypes_method,
+        as_variable_flags=as_variable_flags_method,
+        native_array_flags=native_array_flags_method,
+    )
+    # End Method #
+
+    # Run testing
+    class_name = class_name.split(".")
+    ins_class = ivy.functional.frontends.__dict__[frontend]
+    for c_n in class_name:
+        ins_class = getattr(ins_class, c_n)
+    ins = ins_class(*args_constructor, **kwargs_constructor)
+    ret, ret_np_flat = get_ret_and_flattened_np_array(
+        ins.__getattribute__(method_name), *args_method, **kwargs_method
+    )
+
+    # Compute the return with a Ground Truth backend
+    ivy.set_backend(ground_truth_backend)
+    args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
+        args_np=args_np_constructor,
+        arg_np_vals=con_arg_np_vals,
+        args_idxs=con_args_idxs,
+        kwargs_np=kwargs_np_constructor,
+        kwarg_np_vals=con_kwarg_np_vals,
+        kwargs_idxs=con_kwargs_idxs,
+        input_dtypes=input_dtypes_init,
+        as_variable_flags=as_variable_flags_init,
+        native_array_flags=native_array_flags_init,
+    )
+    args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
+        args_np=args_np_method,
+        arg_np_vals=met_arg_np_vals,
+        args_idxs=met_args_idxs,
+        kwargs_np=kwargs_np_method,
+        kwarg_np_vals=met_kwarg_np_vals,
+        kwargs_idxs=met_kwargs_idxs,
+        input_dtypes=input_dtypes_method,
+        as_variable_flags=as_variable_flags_method,
+        native_array_flags=native_array_flags_method,
+    )
+    ins_gt = ins_class(*args_gt_constructor, **kwargs_gt_constructor)
+    ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+        ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
+    )
+    ivy.unset_backend()
+    # assuming value test will be handled manually in the test function
+    if not test_values:
+        return ret, ret_from_gt
+    # value test
+    value_test(
+        ret_np_flat=ret_np_flat,
+        ret_np_from_gt_flat=ret_np_from_gt_flat,
+        rtol=rtol_,
+        atol=atol_,
+    )
+
+
 def test_frontend_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],

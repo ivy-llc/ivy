@@ -1250,9 +1250,9 @@ class ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_unstack(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: int,
         /,
         *,
+        axis: int = 0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1328,7 +1328,7 @@ class ContainerWithManipulation(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "unstack",
             x,
-            axis,
+            axis=axis,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1338,9 +1338,9 @@ class ContainerWithManipulation(ContainerBase):
 
     def unstack(
         self: ivy.Container,
-        axis: int,
         /,
         *,
+        axis: int = 0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1397,7 +1397,7 @@ class ContainerWithManipulation(ContainerBase):
         """
         return self.static_unstack(
             self,
-            axis,
+            axis=axis,
             keepdims=keepdims,
             key_chains=key_chains,
             to_apply=to_apply,

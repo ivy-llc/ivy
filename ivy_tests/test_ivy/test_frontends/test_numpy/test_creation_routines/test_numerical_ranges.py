@@ -49,7 +49,7 @@ def _get_dtype_and_range(draw):
     start=helpers.ints(min_value=-50, max_value=0),
     stop=helpers.ints(min_value=1, max_value=50),
     step=helpers.ints(min_value=1, max_value=5),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arange"
     ),

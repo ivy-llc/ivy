@@ -111,7 +111,7 @@ def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> J
     return jnp.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
+def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype, /) -> bool:
     if type(from_) in [
         jax.interpreters.xla._DeviceArray,
         jaxlib.xla_extension.DeviceArray,
