@@ -395,7 +395,7 @@ def test_torch_triu_indices(
     fw,
 ):
     helpers.test_frontend_function(
-        input_dtypes="int32",
+        input_dtypes=["int32"],
         with_out=with_out,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
