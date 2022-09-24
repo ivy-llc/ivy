@@ -79,14 +79,13 @@ jobs:
             packages: |
               PyGithub
 
-      - name: Update Dashboard
-        if: github.event_name == 'push'
+      - name: Update Database
+        if: (github.event_name == 'push')
         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         run: |
-           cd ivy/automation_tools/dashboard_automation/
-           python3 dashboard_script.py "$GITHUB_TOKEN" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
-        continue-on-error: true
+            cd ivy/automation_tools/dashboard_automation/
+            python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
