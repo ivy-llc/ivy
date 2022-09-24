@@ -76,19 +76,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="data_classes/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_classes/container.html">Container</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -3996,11 +3996,13 @@
       <li><a href="functional/ivy/linear_algebra/pinv.html#ivy.array.array_methods.pinv">pinv() (in module ivy.array.array_methods)</a>, <a href="functional/ivy/linear_algebra/pinv/pinv_array.html#ivy.array.array_methods.pinv">[1]</a>
 
       <ul>
+        <li><a href="functional/ivy/linear_algebra/pinv.html#ivy.container.container_methods.pinv">(in module ivy.container.container_methods)</a>, <a href="functional/ivy/linear_algebra/pinv/pinv_container.html#ivy.container.container_methods.pinv">[1]</a>
+</li>
         <li><a href="functional/ivy/linear_algebra.html#ivy.functional.ivy.linear_algebra.pinv">(in module ivy.functional.ivy.linear_algebra)</a>, <a href="functional/ivy/linear_algebra/pinv.html#ivy.functional.ivy.linear_algebra.pinv">[1]</a>, <a href="functional/ivy/linear_algebra/pinv/pinv_functional.html#ivy.functional.ivy.linear_algebra.pinv">[2]</a>
 </li>
         <li><a href="data_classes/array/linear_algebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.pinv">(ivy.array.linear_algebra.ArrayWithLinearAlgebra method)</a>, <a href="data_classes/array/linear_algebra/ArrayWithLinearAlgebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.pinv">[1]</a>
 </li>
-        <li><a href="data_classes/container.html#ivy.container.container.Container.pinv">(ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.pinv">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.pinv">[2]</a>
+        <li><a href="data_classes/container/linear_algebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra.pinv">(ivy.container.linear_algebra.ContainerWithLinearAlgebra method)</a>, <a href="data_classes/container/linear_algebra/ContainerWithLinearAlgebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra.pinv">[1]</a>
 </li>
       </ul></li>
       <li><a href="glossary.html#term-Pipeline"><strong>Pipeline</strong></a>
@@ -5783,8 +5785,12 @@
         <li><a href="data_classes/container/manipulation.html#ivy.container.manipulation.ContainerWithManipulation.static_permute_dims">(ivy.container.manipulation.ContainerWithManipulation static method)</a>, <a href="data_classes/container/manipulation/ContainerWithManipulation.html#ivy.container.manipulation.ContainerWithManipulation.static_permute_dims">[1]</a>
 </li>
       </ul></li>
-      <li><a href="data_classes/container.html#ivy.container.container.Container.static_pinv">static_pinv() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_pinv">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_pinv">[2]</a>
+      <li><a href="functional/ivy/linear_algebra/pinv.html#ivy.container.container_methods.static_pinv">static_pinv() (in module ivy.container.container_methods)</a>, <a href="functional/ivy/linear_algebra/pinv/static_pinv_container.html#ivy.container.container_methods.static_pinv">[1]</a>
+
+      <ul>
+        <li><a href="data_classes/container/linear_algebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra.static_pinv">(ivy.container.linear_algebra.ContainerWithLinearAlgebra static method)</a>, <a href="data_classes/container/linear_algebra/ContainerWithLinearAlgebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra.static_pinv">[1]</a>
 </li>
+      </ul></li>
       <li><a href="functional/ivy/elementwise/positive.html#ivy.container.container_methods.static_positive">static_positive() (in module ivy.container.container_methods)</a>, <a href="functional/ivy/elementwise/positive/static_positive_container.html#ivy.container.container_methods.static_positive">[1]</a>
 
       <ul>

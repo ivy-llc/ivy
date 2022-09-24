@@ -4,6 +4,10 @@ pinv
 .. autofunction:: ivy.functional.ivy.linear_algebra.pinv
 
 .. autofunction:: ivy.array.array_methods.pinv
+
+.. autofunction:: ivy.container.container_methods.pinv
+
+.. autofunction:: ivy.container.container_methods.static_pinv
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ pinv
 
    pinv/pinv_functional.rst
    pinv/pinv_array.rst
+   pinv/pinv_container.rst
+   pinv/static_pinv_container.rst
 

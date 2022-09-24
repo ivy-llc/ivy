@@ -79,6 +79,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../array.html">Array</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../container.html">Container</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../base.html">Base</a></li>
@@ -107,18 +108,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../wrapping.html">Wrapping</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -495,6 +495,56 @@ b: ivy.array(1)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.linear_algebra.ContainerWithLinearAlgebra.pinv">
+<span class="sig-name descname"><span class="pre">pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/linear_algebra.html#ContainerWithLinearAlgebra.pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.linear_algebra.ContainerWithLinearAlgebra.pinv" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.pinv.
+This method simply wraps the function, and so the docstring
+for ivy.pinv also applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>``</strong><strong>(</strong><strong>...</strong> (<em>input array having shape</em>) – <p><code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p>
+</p></li>
+<li><p><strong>M</strong> – <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>form</strong> (<em>N</em><em>)</em><em>`` and whose innermost two dimensions</em>) – <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>to</strong> (<em>relative tolerance for small singular values approximately less than</em><em> or </em><em>equal</em>) – <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+It must have a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the pseudo-inverses. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and
+must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as
+<code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost two dimensions must be transposed).</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>x = ivy.Container(a= ivy.array([[1., 2.],                  [3., 4.]]))
+y = pinv(x, None, None)
+print(y)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[-2., 1.],               [1.5, -0.5]])</p>
+</div></blockquote>
+<p>}</p>
+<p>x = ivy.Container(a=ivy.array([[1., 2.],                  [3., 4.]]))
+out = ivy.Container(a=ivy.array())
+pinv(x, 0, out)
+print(out)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[0.0426, 0.0964],               [0.0605, 0.1368]])</p>
+</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.linear_algebra.ContainerWithLinearAlgebra.qr">
 <span class="sig-name descname"><span class="pre">qr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'reduced'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/linear_algebra.html#ContainerWithLinearAlgebra.qr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.linear_algebra.ContainerWithLinearAlgebra.qr" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -840,6 +890,56 @@ shape <code class="docutils literal notranslate"><span class="pre">(...)</span><
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.linear_algebra.ContainerWithLinearAlgebra.static_pinv">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/linear_algebra.html#ContainerWithLinearAlgebra.static_pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.linear_algebra.ContainerWithLinearAlgebra.static_pinv" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container special method variant of ivy.pinv.
+This method simply wraps the function, and so the docstring
+for ivy.pinv also applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – </p></li>
+<li><p><strong>``</strong><strong>(</strong><strong>...</strong> (<em>input array having shape</em>) – </p></li>
+<li><p><strong>M</strong> – </p></li>
+<li><p><strong>form</strong> (<em>N</em><em>)</em><em>`` and whose innermost two dimensions</em>) – </p></li>
+<li><p><strong>type.</strong> (<em>MxN matrices. Should have a floating-point data</em>) – </p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values approximately less (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+It must have a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the pseudo-inverses. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and
+must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as
+<code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost two dimensions must be transposed).</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>x = ivy.Container(a= ivy.array([[1., 2.],                  [3., 4.]]))
+y = pinv(x, None, None)
+print(y)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[-2., 1.],               [1.5, -0.5]])</p>
+</div></blockquote>
+<p>}</p>
+<p>x = ivy.Container(a=ivy.array([[1., 2.],                  [3., 4.]]))
+out = ivy.Container(a=ivy.array())
+pinv(x, 0, out)
+print(out)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[0.0426, 0.0964],               [0.0605, 0.1368]])</p>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <dl class="py method">

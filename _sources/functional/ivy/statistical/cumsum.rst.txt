@@ -5,9 +5,9 @@ cumsum
 
 .. autofunction:: ivy.array.array_methods.cumsum
 
-.. autofunction:: ivy.container.container_methods.cumsum
-
 .. autofunction:: ivy.container.container_methods.static_cumsum
+
+.. autofunction:: ivy.container.container_methods.cumsum
 |
 | **Supported Frameworks:**
 
