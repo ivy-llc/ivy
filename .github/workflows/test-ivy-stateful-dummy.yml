@@ -83,6 +83,8 @@ jobs:
          env:
             MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
          run: |
+            echo "The GitHub Action Secret will be masked:  "
+            echo ${{ secrets.MONGODB_PASSWORD }}
             cd ivy/automation_tools/dashboard_automation/
             python3 update_db.py "$MONGO_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
          continue-on-error: true
