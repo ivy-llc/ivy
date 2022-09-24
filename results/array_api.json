@@ -56,7 +56,7 @@
       "jax": {
             "array_object": "failure",
             "constants": "success",
-            "creation_functions": "failure",
+            "creation_functions": "success",
             "data_type_functions": " ",
             "has_names": " ",
             "linalg": "failure",
@@ -67,7 +67,7 @@
             "signatures": "failure",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": "success",
+            "statistical_functions": "failure",
             "type_promotion": "failure",
             "utility_functions": " "
       }
