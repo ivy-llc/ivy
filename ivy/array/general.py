@@ -233,19 +233,21 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         scatter values into an array
+
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
         >>> scatter = indices.scatter_nd(updates, reduction='replace', out=arr)
-        >>> scatter
+        >>> print(scatter)
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
         scatter values into an empty array
+
         >>> shape = ivy.array([2, 5])
         >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
         >>> updates = ivy.array([25, 40, 21, 22])
         >>> scatter = indices.scatter_nd(updates, shape=shape)
-        >>> scatter
+        >>> print(scatter)
         ivy.array([[ 0,  0, 22, 40,  0],
                     [ 0, 21,  0,  0, 25]])
         """
@@ -366,7 +368,7 @@ class ArrayWithGeneral(abc.ABC):
                       [[3, 5],
                        [9, 7]]])
         >>> y = x.einops_reduce('a b c -> b c', 'max')
-        >>> y
+        >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
@@ -375,7 +377,7 @@ class ArrayWithGeneral(abc.ABC):
                        [[3, 5, 7],
                         [9, 7, 1]]])
         >>> y = x.einops_reduce('a b c -> a () c', 'min')
-        >>> y
+        >>> print(y)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
 
@@ -418,7 +420,7 @@ class ArrayWithGeneral(abc.ABC):
         --------
         >>> x = ivy.array([5,4])
         >>> y = x.einops_repeat('a -> a c', c=3)
-        >>> y
+        >>> print(y)
         ivy.array([[5, 4],
                    [5, 4],
                   [5, 4]])
@@ -426,7 +428,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([[5,4],
                     [2, 3]])
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
-        >>> y
+        >>> print(y)
         ivy.array([[[5, 5, 5],
                     [4, 4, 4]],
                    [[2, 2, 2],
@@ -503,7 +505,7 @@ class ArrayWithGeneral(abc.ABC):
         With `ivy.Array` input and backend set as "tensorflow":
         >>> x = ivy.array([1., 4.2, 2.2])
         >>> ret = x.supports_inplace()
-        >>> ret
+        >>> print(ret)
         False
         """
         return ivy.supports_inplace_updates(self)
@@ -973,15 +975,13 @@ class ArrayWithGeneral(abc.ABC):
         With :code:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
-        >>> val = ivy.array(1.)
-        >>> y = x.inplace_increment(val)
-        >>> y
+        >>> y = x.inplace_increment(1)
+        >>> print(y)
         ivy.array([6.7, 5.3, 3.5, 2.9])
 
         >>> x = ivy.asarray([4., 5., 6.])
-        >>> val = ivy.array(2.5)
-        >>> y = x.inplace_increment()
-        >>> y
+        >>> y = x.inplace_increment(2.5)
+        >>> print(y)
         ivy.array([6.5, 7.5, 8.5])
 
         """

@@ -1762,13 +1762,13 @@ def match_kwargs(
     >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
-    >>> x
+    >>> print(x)
     [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
 
     >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
-    >>> x
+    >>> print(x)
     [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
@@ -1960,7 +1960,7 @@ def einops_reduce(
     >>> x = ivy.array([[-4.47, 0.93, -3.34],\
                       [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
-    >>> reduced
+    >>> print(reduced)
     ivy.array([-0.405, 12.6  ,  0.15 ])
 
     With :code:`ivy.Container` input:
@@ -1970,7 +1970,7 @@ def einops_reduce(
                         b=ivy.array([[4.96, 1.52, -10.67],\
                                      [4.36, 13.96, 0.3]]))
     >>> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
-    >>> reduced
+    >>> print(reduced)
     {
         a: ivy.array([-2.29, 10.5]),
         b: ivy.array([-1.4, 6.21])
@@ -2023,7 +2023,7 @@ def einops_repeat(
 
     >>> x = ivy.array([1, 2, 3, 4])
     >>> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
-    >>> repeated
+    >>> print(repeated)
     ivy.array([[1, 2, 3, 4],
                [1, 2, 3, 4]])
 
@@ -2034,7 +2034,7 @@ def einops_repeat(
                         b=ivy.array([[9, 10],\
                                     [4, 2]]))
     >>> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
-    >>> repeated
+    >>> print(repeated)
     {
         a: ivy.array([[4, 5, 4, 5],
                       [1, 3, 1, 3]]),
@@ -2321,7 +2321,7 @@ def set_queue_timeout(timeout: float):
 
     Examples
     --------
-    >>> x = ivy.set_queue_timeout(20)
+    >>> x = ivy.set_queue_timeout(10)
     >>> x = ivy.get_queue_timeout()
     >>> print(x)
     10.0
@@ -2503,7 +2503,7 @@ def supports_inplace_updates(
 
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
-    >>> y
+    >>> print(y)
     True
 
     With :code:`ivy.Container` input and backend set as `torch`:
@@ -2658,7 +2658,7 @@ def inplace_decrement(
                         [6.8, 8, 3.9],\
                         [0., 10., 6.3]])
     >>> y = ivy.inplace_decrement(x, 1.25)
-    >>> y
+    >>> print(y)
     ivy.array([[ 4.05,  5.75, -1.25],
        [ 5.55,  6.75,  2.65],
        [-1.25,  8.75,  5.05]])
@@ -2668,14 +2668,14 @@ def inplace_decrement(
     >>> x = ivy.native_array([-10, 24, -3])
     >>> val = ivy.native_array([1, 2, 3])
     >>> y = ivy.inplace_decrement(x, val)
-    >>> y
+    >>> print(y)
     ivy.array([-11,  22,  -6])
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), b=ivy.array([0., -25., 50.]))
     >>> y = ivy.inplace_decrement(x, 1.5)
-    >>> y
+    >>> print(y)
     {
         a: ivy.array([-1., -6.5, 28.5]),
         b: ivy.array([-1.5, -26.5, 48.5])
@@ -2684,7 +2684,7 @@ def inplace_decrement(
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> z = ivy.inplace_decrement(x, y)
-    >>> z
+    >>> print(z)
     {
         a: ivy.array([0., 0., 0.]),
         b: ivy.array([0., 0., 0.])
@@ -2731,9 +2731,8 @@ def inplace_increment(
     >>> x = ivy.array([[5.3, 7., 0.],\
                         [6.8, 8, 3.9],\
                         [0., 10., 6.3]])
-    >>> y = ivy.array([3.])
-    >>> z = ivy.inplace_increment(x, y)
-    >>> z
+    >>> y = ivy.inplace_increment(x, 3.)
+    >>> print(y)
     ivy.array([[ 8.3, 10.,  3.],
        [ 9.8, 11.,  6.9],
        [ 3., 13.,  9.3]])
@@ -2743,15 +2742,14 @@ def inplace_increment(
      >>> x = ivy.native_array([10, 20, 30])
      >>> val = ivy.native_array([1, 2, 3])
      >>> y = ivy.inplace_increment(x, val)
-     >>> y
+     >>> print(y)
      ivy.array([11, 22, 33])
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
-    >>> y = ivy.array([2.5])
-    >>> y = ivy.inplace_increment(x, y)
-    >>> y
+    >>> y = ivy.inplace_increment(x, 2.5)
+    >>> print(y)
     {
         a: ivy.array([2.5, 17.5, 32.5]),
         b: ivy.array([2.5, 27.5, 52.5])
@@ -2761,7 +2759,7 @@ def inplace_increment(
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> z = ivy.inplace_increment(x, y)
-    >>> z
+    >>> print(z)
     {
         a: ivy.array([0., 30., 60.]),
         b: ivy.array([0., 50., 100.])
@@ -2853,7 +2851,7 @@ def scatter_nd(
     >>> updates = ivy.array([9, 10, 11, 12])
     >>> shape = ivy.array([8])
     >>> scatter = ivy.scatter_nd(indices, updates, shape)
-    >>> scatter
+    >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
     scatter into an empty array, With :code:`ivy.Container` input:
@@ -2865,7 +2863,7 @@ def scatter_nd(
     >>> shape = ivy.Container(a=ivy.array([10]),\
                         b = ivy.array([10]))
     >>> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
-    >>> z
+    >>> print(z)
     {
         a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
@@ -2879,7 +2877,7 @@ def scatter_nd(
     >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),\
                             b = ivy.array([10, 20, 30, 40, 50]))
     >>> ivy.scatter_nd(indices, updates, reduction='replace', out=z)
-    >>> z
+    >>> print(z)
     {
         a: ivy.array([1, 30, 3, 20, 10]),
         b: ivy.array([10, 400, 30, 300, 200])
@@ -3487,7 +3485,7 @@ def vmap(
     >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
     >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
     >>> z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)
-    >>> z.shape
+    >>> print(z.shape)
     (3, 5, 2)
     """
     # TODO: optimize in the numpy and tensorflow backends and extend functionality
