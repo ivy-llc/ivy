@@ -973,15 +973,15 @@ class ArrayWithGeneral(abc.ABC):
         With :code:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
-        >>> val = ivy.array(1)
+        >>> val = ivy.array(1.)
         >>> y = x.inplace_increment(val)
-        >>> print(y)
+        >>> y
         ivy.array([6.7, 5.3, 3.5, 2.9])
 
         >>> x = ivy.asarray([4., 5., 6.])
         >>> val = ivy.array(2.5)
         >>> y = x.inplace_increment()
-        >>> print(y)
+        >>> y
         ivy.array([6.5, 7.5, 8.5])
 
         """
