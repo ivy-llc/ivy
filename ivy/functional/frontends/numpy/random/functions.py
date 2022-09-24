@@ -13,8 +13,10 @@ def dirichlet(alpha, size=None):
 
     if type(alpha) in [int, float]:
         assert False, f"object of type {type(alpha)} has no len()"
-    if any(x <= 0 for x in alpha.flat):
-        assert False, "alpha<=0"
+    if any(x<=0 for x in alpha.flat):
+        raise ValueError("alpha<=0")
+    if any(x<0 for x in size):
+        raise ValueError("negative dimensions are not allowed")
 
     if type(size) == int:
         lst = []
