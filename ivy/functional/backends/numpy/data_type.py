@@ -131,8 +131,6 @@ def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype) -> bool:
         return False
     if "int" in from_ and "float" in to:
         return False
-    if "complex" in from_ or "complex" in to:
-        return False
     return np.can_cast(from_, to)
 
 
