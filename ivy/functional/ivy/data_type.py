@@ -99,11 +99,12 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
 
         # if it's in the backend, we can get the dtypes directly
         # if it's in the front end, we need to recurse
+        # if it's einops, we need to recurse
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
             continue
-        elif "frontend" in fn.__module__:
+        elif "frontend" in fn.__module__ or "einops" in fn.__name__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
 
@@ -126,7 +127,10 @@ def _get_dtypes(fn, complement=True):
     # We only care about getting dtype info from the base function
     # if we do need to at some point use dtype information from the parent function
     # we can comment out the following condition
-    if "backend" not in fn.__module__ and "frontend" not in fn.__module__:
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported
@@ -141,6 +145,10 @@ def _get_dtypes(fn, complement=True):
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
+            # only einops allowed to be a dictionary
+            if "einops" in fn.__name__ and isinstance(v, dict):
+                v = v.get(ivy.current_backend_str(), base)
+
             ivy.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
@@ -1142,21 +1150,36 @@ def default_int_dtype(
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
     as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
-    """Summary.
-
+    """
     Parameters
     ----------
     input
-         (Default value = None)
+       (Default value = None) Number or array for inferring default int dtype.
     int_dtype
-
+       (Default value = None) Uint dtype to be returned as default.
     as_native
-         (Default value = None)
+       (Default value = None) Whether to return the default int dtype as native dtype.
 
     Returns
     -------
-        Return the input int dtype if provided, otherwise return the global default int
-        dtype.
+        Return the input int dtype if provided, otherwise return the global default
+        int dtype.
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
+    >>> ivy.default_int_dtype()
+    'int16'
+
+    >>> ivy.default_int_dtype(input=4294967346)
+    'int64'
+
+    >>> ivy.default_int_dtype(int_dtype=ivy.intDtype("int8"))
+    'int8'
+
+    >>> x = ivy.array([9,8], dtype="int32")
+    >>> ivy.default_int_dtype(input=x)
+    'int32'
 
     """
     if ivy.exists(int_dtype):
@@ -1982,7 +2005,34 @@ def type_promote_arrays(
 
 @handle_exceptions
 def unset_default_dtype():
-    """"""
+    """
+    Unsets the datatype dtype from default data type.
+
+    Parameters
+    ----------
+    None
+
+    Examples
+    --------
+    >>> ivy.set_default_dtype('float64')
+    >>> ivy.default_dtype_stack
+        ['float64']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+
+    >>> ivy.set_default_dtype(ivy.int32)
+    >>> ivy.set_default_dtype(ivy.bool)
+    >>> ivy.default_dtype_stack
+        ['int32', 'bool']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        ['int32']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+        
+    """
     global default_dtype_stack
     if default_dtype_stack:
         default_dtype_stack.pop(-1)
