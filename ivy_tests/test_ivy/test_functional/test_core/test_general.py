@@ -1538,6 +1538,9 @@ def _composition_2():
                     "float16",
                     "float32",
                     "float64",
+                    "complex64",
+                    "complex128",
+                    "complex256",
                 )
             },
         ),
@@ -1558,6 +1561,9 @@ def _composition_2():
                     "float16",
                     "float32",
                     "float64",
+                    "complex64",
+                    "complex128",
+                    "complex256",
                 )
             },
         ),
