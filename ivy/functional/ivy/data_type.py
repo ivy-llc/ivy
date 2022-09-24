@@ -2031,7 +2031,6 @@ def unset_default_dtype():
     >>> ivy.unset_default_dtype()
     >>> ivy.default_dtype_stack
         []
-
     """
     global default_dtype_stack
     if default_dtype_stack:
