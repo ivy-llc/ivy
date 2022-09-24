@@ -8,16 +8,20 @@ def random(size=None):
 
 def dirichlet(alpha, size=None):
     size = size if size is not None else 1
-    n = min(alpha)
-    alpha = ivy.array(alpha)
 
+    if any(isinstance(x, str) for x in alpha):
+        x = next(x for x in alpha if type(x) == str)
+        raise ValueError(f"could not convert string to float: '{x}'")
     if type(alpha) in [int, float]:
-        assert False, f"object of type {type(alpha)} has no len()"
-    if any(x<=0 for x in alpha.flat):
+        raise TypeError(f"object of type {type(alpha)} has no len()")
+    if any(x <= 0 for x in alpha):
         raise ValueError("alpha<=0")
-    if any(x<0 for x in size):
+    if any(x < 0 for x in size):
         raise ValueError("negative dimensions are not allowed")
 
+    n = min(alpha)
+    alpha = ivy.array(alpha)
+    
     if type(size) == int:
         lst = []
         for i in range(0, size):
