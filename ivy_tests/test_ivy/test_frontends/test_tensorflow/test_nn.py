@@ -652,23 +652,20 @@ def test_tensorflow_batch_normalization(
         min_value=0,
         shape=(3, 5),
     ),
-    rate=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
-    noise_shape=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
-    seed=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
+    prob=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
+    scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.dropout"
     ),
 )
 def test_tensorflow_dropout(
     dtype_and_x,
-    rate,
-    noise_shape,
-    seed,
+    prob, 
+    scale, 
     as_variable,
     num_positional_args,
     native_array,
     fw,
-    approximate,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -681,8 +678,7 @@ def test_tensorflow_dropout(
         frontend="tensorflow",
         fn_tree="nn.dropout",
         x=np.asarray(x, dtype=input_dtype),
-        rate=np.asarray(rate, dtype=input_dtype),
-        noise_shape=np.asarray(noise_shape, dtype=input_dtype),
-        seed=np.asarray(seed, dtype=input_dtype),,
+        prob=prob,
+        scale=scale,
     )
     
