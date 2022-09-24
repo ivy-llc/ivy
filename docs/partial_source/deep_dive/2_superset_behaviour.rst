@@ -42,6 +42,24 @@ fully compositional function, but :code:`torch.nn.functional.linear` also exists
 We should therefore make sure the compositional :code:`ivy.linear` function includes all
 behaviours supported by :code:`torch.nn.functional.linear`.
 
+A Non-Duplicate Superset
+------------------------
+
+It would be easy to assume that implementing the superset simply means adding all
+arguments from all related functions into the Ivy function. However, this is **not** the
+case for a few reasons. Firstly, different functions might have different argument names
+for the same behaviour. Looking at the functions
+`numpy.concatenate <https://numpy.org/doc/stable/reference/generated/numpy.concatenate.html>`_
+and
+`torch.cat <https://pytorch.org/docs/stable/generated/torch.cat.html>`_,
+we of course do not want to add both of the arguments :code:`axis` and :code:`dim` to
+:code:`ivy.concat`, as these both represent exactly the same thing: the dimemsion/axis
+along which to concatenate. In this case, the argument is
+`covered <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_
+in the `Array API Standard`_ and so we opt for :code:`axis`. In cases where there are
+differences between the backend argument names, and the function or argument is not in
+the standard, then it is up to us to determine which argument name to use.
+
 When the Superset is Too Much
 -----------------------------
 
