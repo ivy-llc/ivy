@@ -1,7 +1,6 @@
 """Collection of tests for unified neural network activation functions."""
 
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -42,7 +41,7 @@ def test_relu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="relu",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -89,7 +88,7 @@ def test_leaky_relu(
         fn_name="leaky_relu",
         rtol_=1e-2,
         atol_=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         alpha=alpha,
     )
 
@@ -131,7 +130,7 @@ def test_gelu(
         fn_name="gelu",
         atol_=1e-2,
         rtol_=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         approximate=approximate,
     )
 
@@ -171,7 +170,7 @@ def test_sigmoid(
         fn_name="sigmoid",
         rtol_=1e-2,
         atol_=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -213,7 +212,7 @@ def test_softmax(
         fn_name="softmax",
         rtol_=1e-02,
         atol_=1e-02,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         axis=axis,
     )
 
@@ -260,7 +259,7 @@ def test_softplus(
         fn_name="softplus",
         rtol_=1e-02,
         atol_=1e-02,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         beta=beta,
         threshold=threshold,
     )
@@ -304,6 +303,6 @@ def test_log_softmax(
         fn_name="log_softmax",
         rtol_=1e-02,
         atol_=1e-02,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         axis=axis,
     )
