@@ -2908,8 +2908,8 @@ def gather(
     batch_dims
         optional int, lets you gather different items from each element of a batch.
     out
-        An array for writing the result to. It must have a shape 
-        that the inputs broadcast to. (Optional)
+        optional array, for writing the result to. It must have a shape 
+        that the inputs broadcast to.
 
     Returns
     -------

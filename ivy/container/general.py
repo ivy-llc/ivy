@@ -1482,8 +1482,8 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples). Default is False.
         out
-            A container for writing the result to. It must have a shapethat the inputs 
-            broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
 
         Returns
@@ -1572,8 +1572,8 @@ class ContainerWithGeneral(ContainerBase):
             Whether to also map method to sequences (lists, tuples). Default is
             False.
         out
-            A container for writing the result to. It must have a shape
-            that the inputs broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape 
+            that the inputs broadcast to.
 
         Returns
         -------
