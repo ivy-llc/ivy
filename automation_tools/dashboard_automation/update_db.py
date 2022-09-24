@@ -12,11 +12,11 @@ test_configs = {
 
 def update_test_results():
     key, workflow, backend, submodule, result = (
-        sys.argv[1],
-        sys.argv[2],
-        sys.argv[3],
-        sys.argv[4],
-        sys.argv[5],
+        str(sys.argv[1]),
+        str(sys.argv[2]),
+        str(sys.argv[3]),
+        str(sys.argv[4]),
+        str(sys.argv[5]),
     )
     print(workflow, backend, submodule, result)
     cluster = MongoClient(
