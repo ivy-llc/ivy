@@ -3657,8 +3657,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
-            a: false,
-            b: false
+            a: True,
+            b: True
         }
 
         With an `ivy.Container` instance and backend set as 'tensorflow':
@@ -3667,8 +3667,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         {
-            a: false,
-            b: false
+            a: True,
+            b: True
         }
         """
         return ContainerWithGeneral.static_supports_inplace_updates(
