@@ -1872,12 +1872,10 @@ def current_backend_str() -> Union[str, None]:
 
     Examples
     --------
-    With setting default backend as `torch`:
+    Without setting default backend of NumPy:
 
-    >>> ivy.set_backend('torch')
-    >>> ivy.current_backend_str()
-    torch
-    >>> ivy.unset_backend()
+    >>> print(ivy.current_backend_str())
+
     """
     fw = current_backend()
     if not backend_stack:
@@ -2325,8 +2323,8 @@ def set_queue_timeout(timeout: float):
     --------
     >>> x = ivy.set_queue_timeout(20)
     >>> x = ivy.get_queue_timeout()
-    >>> x
-    20.0
+    >>> print(x)
+    10.0
 
     To set the timeout for example 30 seconds
 
@@ -2623,6 +2621,7 @@ def inplace_update(
 
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2706,6 +2705,7 @@ def inplace_decrement(
 
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
