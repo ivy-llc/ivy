@@ -23,7 +23,7 @@ def update_test_results():
         f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"
     )
     db = cluster["Ivy_tests"]
-    collection = db[test_configs[workflow]]
+    collection = db[test_configs[workflow][0]]
     collection.update_one(
         {"_id": test_configs[workflow][1]},
         {"$set": {backend + "." + submodule: result}},
