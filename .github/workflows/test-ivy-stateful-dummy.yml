@@ -77,7 +77,7 @@ jobs:
          uses: BSFishy/pip-action@v1
          with:
              packages: |
-               pymongo
+                pymongo[srv]
 
        - name: Update Database
          env:
