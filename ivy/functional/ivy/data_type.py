@@ -1150,21 +1150,36 @@ def default_int_dtype(
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
     as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
-    """Summary.
-
+    """
     Parameters
     ----------
     input
-         (Default value = None)
+       (Default value = None) Number or array for inferring default int dtype.
     int_dtype
-
+       (Default value = None) Uint dtype to be returned as default.
     as_native
-         (Default value = None)
+       (Default value = None) Whether to return the default int dtype as native dtype.
 
     Returns
     -------
-        Return the input int dtype if provided, otherwise return the global default int
-        dtype.
+        Return the input int dtype if provided, otherwise return the global default
+        int dtype.
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
+    >>> ivy.default_int_dtype()
+    'int16'
+
+    >>> ivy.default_int_dtype(input=4294967346)
+    'int64'
+
+    >>> ivy.default_int_dtype(int_dtype=ivy.intDtype("int8"))
+    'int8'
+
+    >>> x = ivy.array([9,8], dtype="int32")
+    >>> ivy.default_int_dtype(input=x)
+    'int32'
 
     """
     if ivy.exists(int_dtype):
@@ -1990,7 +2005,34 @@ def type_promote_arrays(
 
 @handle_exceptions
 def unset_default_dtype():
-    """"""
+    """
+    Unsets the datatype dtype from default data type.
+
+    Parameters
+    ----------
+    None
+
+    Examples
+    --------
+    >>> ivy.set_default_dtype('float64')
+    >>> ivy.default_dtype_stack
+        ['float64']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+
+    >>> ivy.set_default_dtype(ivy.int32)
+    >>> ivy.set_default_dtype(ivy.bool)
+    >>> ivy.default_dtype_stack
+        ['int32', 'bool']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        ['int32']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+        
+    """
     global default_dtype_stack
     if default_dtype_stack:
         default_dtype_stack.pop(-1)

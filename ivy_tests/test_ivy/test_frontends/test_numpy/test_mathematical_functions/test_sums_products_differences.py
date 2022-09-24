@@ -107,7 +107,7 @@ def test_numpy_prod(
         valid_axis=True,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cumsum"
     ),
@@ -146,7 +146,7 @@ def test_numpy_cumsum(
         valid_axis=True,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.cumprod"
     ),
@@ -184,7 +184,7 @@ def test_numpy_cumprod(
         valid_axis=True,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nancumprod"
     ),
@@ -222,7 +222,7 @@ def test_numpy_nancumprod(
         valid_axis=True,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nancumsum"
     ),
@@ -262,7 +262,7 @@ def test_numpy_nancumsum(
         large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nanprod"
     ),
@@ -315,7 +315,7 @@ def test_numpy_nanprod(
         large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nansum"
     ),

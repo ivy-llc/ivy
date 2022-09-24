@@ -76,11 +76,9 @@ def _get_shared_dtype(draw):
 @handle_cmd_line_args
 @given(
     array_and_shape=helpers.array_and_broadcastable_shape(_get_shared_dtype()),
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.BroadcastTo"
     ),
-    native_array=st.booleans(),
 )
 def test_tensorflow_BroadcastTo(
     array_and_shape, as_variable, num_positional_args, native_array, fw
@@ -1061,4 +1059,214 @@ def test_tensorflow_zeros_like(
         frontend="tensorflow",
         fn_tree="raw_ops.ZerosLike",
         x=np.asarray(x, dtype=dtype),
+    )
+
+
+# LogicalOr
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        dtype=["bool", "bool"],
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.LogicalOr"
+    ),
+)
+def test_tensorflow_LogicalOr(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.LogicalOr",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# LogicalNot
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        dtype=["bool"],
+        num_arrays=1,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.LogicalNot"
+    ),
+)
+def test_tensorflow_LogicalNot(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.LogicalNot",
+        x=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# Shape
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Shape"
+    ),
+)
+def test_tensorflow_Shape(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Shape",
+        input=np.asarray(x, dtype=input_dtype),
+    )
+
+
+# AddN
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.AddN"
+    ),
+)
+def test_tensorflow_AddN(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.AddN",
+        inputs=x,
+    )
+
+
+# Neg
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "bfloat16",
+            "float32",
+            "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        ],
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Neg"
+    ),
+)
+def test_tensorflow_Neg(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Neg",
+        x=x,
+    )
+
+
+# Equal
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Equal"
+    ),
+)
+def test_tensorflow_Equal(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Equal",
+        x=np.array(x[0], dtype=input_dtype[0]),
+        y=np.array(x[1], dtype=input_dtype[1]),
+    )
+
+
+# NotEqual
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.NotEqual"
+    ),
+)
+def test_tensorflow_NotEqual(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.NotEqual",
+        x=np.array(x[0], dtype=input_dtype[0]),
+        y=np.array(x[1], dtype=input_dtype[1]),
     )
