@@ -2613,6 +2613,7 @@ def inplace_update(
 
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2693,6 +2694,7 @@ def inplace_decrement(
 
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
