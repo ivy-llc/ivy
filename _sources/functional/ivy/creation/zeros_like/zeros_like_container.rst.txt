@@ -1,6 +1,27 @@
 ivy.Container.zeros_like
 ========================
 .. autofunction:: ivy.container.container_methods.zeros_like
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

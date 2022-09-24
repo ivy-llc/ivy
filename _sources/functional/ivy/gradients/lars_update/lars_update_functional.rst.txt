@@ -1,6 +1,27 @@
 ivy.lars_update
 ===============
 .. autofunction:: ivy.functional.ivy.gradients.lars_update
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

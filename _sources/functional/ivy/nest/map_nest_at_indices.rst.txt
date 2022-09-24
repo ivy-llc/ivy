@@ -2,6 +2,27 @@ map_nest_at_indices
 ===================
 
 .. autofunction:: ivy.functional.ivy.nest.map_nest_at_indices
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

@@ -2,6 +2,7 @@ cprint
 ======
 
 .. autofunction:: ivy.verbosity.cprint
+
 |
 | **Supported Frameworks:**
 

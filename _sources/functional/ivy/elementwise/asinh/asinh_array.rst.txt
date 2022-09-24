@@ -1,6 +1,27 @@
 ivy.Array.asinh
 ===============
 .. autofunction:: ivy.array.array_methods.asinh
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

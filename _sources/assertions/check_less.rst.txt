@@ -2,6 +2,7 @@ check_less
 ==========
 
 .. autofunction:: ivy.assertions.check_less
+
 |
 | **Supported Frameworks:**
 

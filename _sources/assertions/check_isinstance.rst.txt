@@ -2,6 +2,7 @@ check_isinstance
 ================
 
 .. autofunction:: ivy.assertions.check_isinstance
+
 |
 | **Supported Frameworks:**
 

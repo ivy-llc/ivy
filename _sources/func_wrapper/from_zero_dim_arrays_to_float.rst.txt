@@ -2,6 +2,7 @@ from_zero_dim_arrays_to_float
 =============================
 
 .. autofunction:: ivy.func_wrapper.from_zero_dim_arrays_to_float
+
 |
 | **Supported Frameworks:**
 

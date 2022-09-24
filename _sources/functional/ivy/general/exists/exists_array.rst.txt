@@ -1,6 +1,27 @@
 ivy.Array.exists
 ================
 .. autofunction:: ivy.array.array_methods.exists
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

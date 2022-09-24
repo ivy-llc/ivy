@@ -8,6 +8,27 @@ rad2deg
 .. autofunction:: ivy.container.container_methods.static_rad2deg
 
 .. autofunction:: ivy.container.container_methods.rad2deg
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

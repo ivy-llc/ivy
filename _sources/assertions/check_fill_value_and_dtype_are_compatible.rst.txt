@@ -2,6 +2,7 @@ check_fill_value_and_dtype_are_compatible
 =========================================
 
 .. autofunction:: ivy.assertions.check_fill_value_and_dtype_are_compatible
+
 |
 | **Supported Frameworks:**
 

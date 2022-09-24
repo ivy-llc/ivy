@@ -2,6 +2,7 @@ set_backend_to_specific_version
 ===============================
 
 .. autofunction:: ivy.backend_handler.set_backend_to_specific_version
+
 |
 | **Supported Frameworks:**
 

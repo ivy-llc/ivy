@@ -2,6 +2,27 @@ outputs_to_ivy_arrays
 =====================
 
 .. autofunction:: ivy.func_wrapper.outputs_to_ivy_arrays
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

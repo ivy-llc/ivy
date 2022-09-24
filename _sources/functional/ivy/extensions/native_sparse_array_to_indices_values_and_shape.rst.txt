@@ -2,6 +2,27 @@ native_sparse_array_to_indices_values_and_shape
 ===============================================
 
 .. autofunction:: ivy.functional.ivy.extensions.native_sparse_array_to_indices_values_and_shape
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

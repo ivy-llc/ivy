@@ -2,6 +2,7 @@ check_any
 =========
 
 .. autofunction:: ivy.assertions.check_any
+
 |
 | **Supported Frameworks:**
 

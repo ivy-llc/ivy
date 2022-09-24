@@ -8,6 +8,27 @@ value_is_nan
 .. autofunction:: ivy.container.container_methods.value_is_nan
 
 .. autofunction:: ivy.container.container_methods.static_value_is_nan
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

@@ -8,6 +8,27 @@ stop_gradient
 .. autofunction:: ivy.container.container_methods.stop_gradient
 
 .. autofunction:: ivy.container.container_methods.static_stop_gradient
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 

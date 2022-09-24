@@ -2,6 +2,27 @@ print_all_ivy_arrays_on_dev
 ===========================
 
 .. autofunction:: ivy.functional.ivy.device.print_all_ivy_arrays_on_dev
+
+.. list-table:: Device Support
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+
+   * - Device
+     - JAX
+     - NumPy
+     - TensorFlow
+     - PyTorch
+   * - CPU
+     - ✅
+     - ✅
+     - ✅
+     - ✅
+   * - GPU
+     - ❌
+     - ❌
+     - ❌
+     - ❌
+
 |
 | **Supported Frameworks:**
 
