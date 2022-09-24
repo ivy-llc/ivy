@@ -5943,6 +5943,108 @@ def isreal(
     The descriptions above assume an array input for simplicity, but
     the method also accepts :code:`ivy.Container` instances in place of
     :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below."""
+    and also the examples below.
 
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1,2,3])
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([True, True, True])
+
+    >>> x = ivy.array([1.1,2.3,-3.6]) 
+    >>> z = ivy.isreal(x)
+    >>> print(z)               
+    ivy.array([True, True, True])
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([[[True],
+                [True],
+                [True]]])
+
+    >>> x = ivy.array([1-0j,3j,7+5j])    
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([ True, False, False])
+
+    >>> x = ivy.array([[[1.1], [1.15 + 6.78j], [-6.3j]]]) 
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([[[ True],
+            [False],
+            [False]]])
+
+    >>> x = ivy.zeros((3, 3))
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([[True, True, True],
+       [True, True, True],
+       [True, True, True]])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[1], [5+6.9j], [-5.5]])
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([[True],
+        [False],
+        [True]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]), \
+                          b=ivy.array([5j, 5-6j, 3]))
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, True]),
+        b: ivy.array([False, False, True])
+    }
+
+
+    Instance Method Examples
+    ------------------------
+    With :code:`ivy.Array` inputs:
+    >>> x = ivy.array([1j, 2+5j, 3.7-6j])
+    >>> x.isreal()
+    ivy.array([False, False, False])
+
+    >>> x = ivy.array([[1.1, 2.3, -3.6]])
+    >>> x.isreal()
+    ivy.array([[True, True, True]])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[1], [5j], [2.5 + 2j]])
+    >>> x.isreal()
+    ivy.array([[True],
+        [False],
+        [False]])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1j, -np.inf, 1.23+7j]), \
+        b=ivy.array([0.0, 3.3j, 1+0j]))
+    >>> x.isreal()
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, True])
+    }
+
+    Container Static Method Examples
+    ------------------------
+    With :code:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]), \
+                          b=ivy.array([7.9, 3.3j, -4.2-5.9j]))
+    >>> z = ivy.Container.static_isreal(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([True, False, False])
+    }
+
+    """
     return ivy.current_backend(x).isreal(x, out=out)
