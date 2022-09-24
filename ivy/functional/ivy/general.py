@@ -1870,12 +1870,6 @@ def current_backend_str() -> Union[str, None]:
     ret
         The framework string.
 
-    Examples
-    --------
-    Without setting default backend of NumPy:
-
-    >>> print(ivy.current_backend_str())
-
     """
     fw = current_backend()
     if not backend_stack:
