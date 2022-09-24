@@ -60,6 +60,44 @@ in the `Array API Standard`_ and so we opt for :code:`axis`. In cases where ther
 differences between the backend argument names, and the function or argument is not in
 the standard, then it is up to us to determine which argument name to use.
 
+What is not the Superset?
+-------------------------
+
+We've already explained that we should not duplicate arguments in the Ivy function when
+striving for the superset. Does this mean, provided that the proposed argument is not a
+duplicate, that we should always add this backend-specific argument to the Ivy function?
+The answer is **no**. When determining the superset, we are only concerned with the
+pure **mathematics** of the function, and nothing else. For example, the :code:`name`
+argument is common to many TensorFlow functions, such as
+`tf.concat <https://www.tensorflow.org/api_docs/python/tf/concat>`_,
+and is used for uniquely identifying parts of the compiled computation graph during
+logging and debugging. This has nothing to do with the mathematics of the function, and
+so is *not* included in the superset considerations when implementing Ivy functions.
+Similarly, in NumPy the argument :code:`subok` controls whether subclasses of the
+:code:`numpy.ndarray` class should be permitted, and :code:`order` controls the
+low-level memory layout of the array, both of which are included for many functions,
+such as `numpy.ndarray.astype <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html>`_.
+Finally, in JAX the argument :code:`precision` is quite common, which controls the
+precision of the return values, as used in
+`jax.lax.conv <https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.conv.html>`_
+for example. Similarly, the functions :code:`jacfwd` and :code:`jacrev` in JAX are
+actually mathematically identical, and these functions differ *only* in their underlying
+algorithm, either forward mode or reverse mode.
+
+None of the above arguments or function variants are included in our superset
+considerations, as again they are not relating to the pure mathematics, and instead
+relate to framework, hardware or algorithmic specifics. Given the abstraction layer that
+Ivy operates at, Ivy is fundamentally unable to control under-the-hood specifics such as
+those mentioned above. However, this is by design, and the central benefit of Ivy is the
+ability to abstract many different runtimes and algorithms under the same banner,
+unified by their shared fundamental mathematics.
+
+Regarding the **only mathematics** rule regarding the superset considerations, there are
+two exceptions to this, which are the handling of data type and device arguments.
+Neither of these relate to the pure mathematics of the function. However, as is
+discussed below, we always strive to implement Ivy functions such that they support as
+many data types and devices as possible.
+
 When the Superset is Too Much
 -----------------------------
 
