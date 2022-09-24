@@ -14,7 +14,6 @@ def _dtype_pred_and_labels(
     *,
     dtype=None,
     available_dtypes=helpers.get_dtypes("numeric"),
-    shared_dtype=False,
     min_pred_val=0,
     max_pred_val=1,  # predication array output as probabilities
     label_set=None,

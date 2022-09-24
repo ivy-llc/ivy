@@ -932,7 +932,6 @@ def test_unstack(
     native_array,
     container,
     instance_method,
-    device,
     fw,
 ):
     # smoke test

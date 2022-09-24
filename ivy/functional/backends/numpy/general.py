@@ -21,7 +21,7 @@ def container_types():
     return []
 
 
-def current_backend_str():
+def current_backend_str() -> str:
     return "numpy"
 
 

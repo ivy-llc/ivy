@@ -215,14 +215,14 @@ def hardswish(input, inplace=False):
         return input
     return ret
 
-    
+
 def hardsigmoid(input, inplace=False):
     ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
     if inplace:
         ivy.inplace_update(input, ret)
         return input
     return ret
-    
+
 
 def hardtanh(input, min_val=-1.0, max_val=1.0, inplace=False):
     less = ivy.where(ivy.less(input, min_val), min_val, input)

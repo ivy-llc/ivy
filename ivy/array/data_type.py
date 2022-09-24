@@ -170,7 +170,7 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(x.can_cast(ivy.float64))
         True
         """
-        return ivy.can_cast(from_=self._data, to=to)
+        return ivy.can_cast(self._data, to)
 
     def dtype(self: ivy.Array, as_native: bool = False) -> ivy.Dtype:
         return ivy.dtype(self._data, as_native)
