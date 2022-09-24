@@ -5,9 +5,9 @@ depthwise_conv2d
 
 .. autofunction:: ivy.array.array_methods.depthwise_conv2d
 
-.. autofunction:: ivy.container.container_methods.static_depthwise_conv2d
-
 .. autofunction:: ivy.container.container_methods.depthwise_conv2d
+
+.. autofunction:: ivy.container.container_methods.static_depthwise_conv2d
 |
 | **Supported Frameworks:**
 

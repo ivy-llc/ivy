@@ -5,9 +5,9 @@ full_like
 
 .. autofunction:: ivy.array.array_methods.full_like
 
-.. autofunction:: ivy.container.container_methods.static_full_like
-
 .. autofunction:: ivy.container.container_methods.full_like
+
+.. autofunction:: ivy.container.container_methods.static_full_like
 |
 | **Supported Frameworks:**
 
