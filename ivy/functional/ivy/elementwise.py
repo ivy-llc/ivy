@@ -267,6 +267,7 @@ def add(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the sum for each element ``x1_i`` of the input array ``x1`` with the
@@ -318,13 +319,15 @@ def add(
     x2
         second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
         Should have a numeric data type.
+    alpha
+        optional scalar multiplier for ``x2``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
     -------
-     ret
+    ret
         an array containing the element-wise sums. The returned array must have a data
         type determined by :ref:`type-promotion`.
 
@@ -346,6 +349,12 @@ def add(
     >>> print(z)
     ivy.array([5, 7, 9])
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([4, 5, 6])
+    >>> z = ivy.add(x, y, alpha=2)
+    >>> print(z)
+    ivy.array([9, 12, 15])
+
     >>> x = ivy.array([[1.1, 2.3, -3.6]])
     >>> y = ivy.array([[4.8], [5.2], [6.1]])
     >>> z = ivy.zeros((3, 3))
@@ -362,37 +371,8 @@ def add(
     ivy.array([[[9.5],
                 [5.7],
                 [-4.7]]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                          b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([5, 6, 7]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([5, 7, 9]),
-        b: ivy.array([7, 9, 11])
-    }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.add(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[5.1, 6.3, 0.4],
-                      [6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4]]),
-        b: ivy.array([[6.1, 7.3, 1.4],
-                      [7.1, 8.3, 2.4],
-                      [8.1, 9.3, 3.4]])
-    }
     """
-    return ivy.current_backend(x1, x2).add(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).add(x1, x2, alpha=alpha, out=out)
 
 
 @to_native_arrays_and_back
@@ -969,14 +949,11 @@ def bitwise_and(
     >>> print(z)
     ivy.array([2, 1, 7])
 
-    >>> x = ivy.array([[True], \
-                       [False]])
-    >>> y = ivy.array([[True], \
-                       [True]])
+    >>> x = ivy.array([[True], [False]])
+    >>> y = ivy.array([[True], [True]])
     >>> ivy.bitwise_and(x, y, out=x)
     >>> print(x)
-    ivy.array([[ True],
-               [False]])
+    ivy.array([[ True],[False]])
 
     >>> x = ivy.array([1])
     >>> y = ivy.array([3])
@@ -986,30 +963,19 @@ def bitwise_and(
 
     With :code:`ivy.NativeArray` inputs:
 
-    >>> x = ivy.native_array([True, True, False, False])
-    >>> y = ivy.native_array([True, False, True, False])
-    >>> ivy.bitwise_and(x, y, out=y)
-    >>> print(y)
-    tensor([True,False,False,False])
-
     >>> x = ivy.native_array([[True, False]])
-    >>> y = ivy.native_array([[True], \
-                              [False]])
+    >>> y = ivy.native_array([[True], [False]])
     >>> z = ivy.bitwise_and(x, y)
     >>> print(z)
-    ivy.array([[ True, False],
-               [False, False]])
+    ivy.array([[True, False],[False, False]])
 
     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
-    >>> x = ivy.array([[6, 5], \
-                       [3, 7]])
-    >>> y = ivy.native_array([[2, 11], \
-                              [9, 13]])
+    >>> x = ivy.array([[6, 5], [3, 7]])
+    >>> y = ivy.native_array([[2, 11], [9, 13]])
     >>> z = ivy.bitwise_and(x, y)
     >>> print(z)
-    ivy.array([[2, 1],
-               [1, 5]])
+    ivy.array([[2, 1],[1, 5]])
 
     With :code:`ivy.Container` input:
 
@@ -1044,17 +1010,11 @@ def bitwise_and(
     >>> print(y)
     ivy.array([ True, False])
 
-    >>> x = ivy.array([[7], \
-                       [8], \
-                       [9]])
-    >>> y = ivy.native_array([[10], \
-                              [11], \
-                              [12]])
+    >>> x = ivy.array([[7],[8],[9]])
+    >>> y = ivy.native_array([[10],[11],[12]])
     >>> z = x.bitwise_and(y)
     >>> print(z)
-    ivy.array([[2],
-               [8],
-               [8]])
+    ivy.array([[2],[8],[8]])
 
     Using :code:`ivy.Container` instance method:
 
@@ -2836,7 +2796,7 @@ def isinf(
             [True],
             [False]]])
 
-    >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
+    >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
     >>> z = ivy.isinf(x)
     >>> print(z)
     ivy.array([[ True,  True, False]])
@@ -2853,15 +2813,12 @@ def isinf(
     >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
     >>> z = ivy.isinf(x)
     >>> print(z)
-    ivy.array([[False],
-        [False],
-        [True]])
-
+    ivy.array([[False],[False],[True]])
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
-                          b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]), \
+                          b=ivy.array([float('inf'), 3.3, -4.2]))
     >>> z = ivy.isinf(x)
     >>> print(z)
     {
@@ -2883,11 +2840,9 @@ def isinf(
 
     >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
     >>> x.isinf()
-    ivy.array([[[False],
-            [True],
-            [False]]])
+    ivy.array([[[False],[True],[False]]])
 
-    >>> x = ivy.array([[-math.inf, np.inf, 0.0]])
+    >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
     >>> x.isinf()
     ivy.array([[ True, True, False]])
 
@@ -2901,13 +2856,11 @@ def isinf(
 
     >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
     >>> x.isinf()
-    ivy.array([[False],
-        [False],
-        [True]])
+    ivy.array([[False],[False],[True]])
 
     With :code:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
-        b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]), \
+        b=ivy.array([float('inf'), 3.3, -4.2]))
     >>> x.isinf()
     {
         a: ivy.array([False, True, False]),
@@ -2919,8 +2872,8 @@ def isinf(
     ------------------------
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([-1, -np.inf, 1.23]), \
-                          b=ivy.array([math.inf, 3.3, -4.2]))
+    >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]), \
+                          b=ivy.array([float('inf'), 3.3, -4.2]))
     >>> z = ivy.Container.static_isinf(x)
     >>> print(z)
     {
@@ -2989,12 +2942,12 @@ def isnan(
                 [False],
                 [False]]])
 
-    >>> x = ivy.array([[-math.nan, np.nan, 0.0]])
+    >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
     >>> z = ivy.isnan(x)
     >>> print(z)
     ivy.array([[ True,  True, False]])
 
-    >>> x = ivy.array([[-math.nan, np.inf, np.nan, 0.0]])
+    >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
     >>> z = ivy.isnan(x)
     >>> print(z)
     ivy.array([[ True, False,  True, False]])
@@ -3017,8 +2970,8 @@ def isnan(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
-                          b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]), \
+                          b=ivy.array([float('nan'), 3.3, -4.2]))
     >>> z = ivy.isnan(x)
     >>> print(z)
     {
@@ -3044,11 +2997,11 @@ def isnan(
             [False],
             [False]]])
 
-    >>> x = ivy.array([[-math.nan, np.nan, 0.0]])
+    >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
     >>> x.isnan()
     ivy.array([[ True, True, False]])
 
-    >>> x = ivy.array([[-math.nan, np.inf, np.nan, 0.0]])
+    >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
     >>> x.isnan()
     ivy.array([[ True, False,  True, False]])
 
@@ -3068,8 +3021,8 @@ def isnan(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
-        b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]), \
+        b=ivy.array([float('nan'), 3.3, -4.2]))
     >>> x.isnan()
     {
         a: ivy.array([False, True, False]),
@@ -3079,8 +3032,8 @@ def isnan(
     Container Static Method Examples
     ------------------------
     With :code:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([-1, -np.nan, 1.23]), \
-                          b=ivy.array([math.nan, 3.3, -4.2]))
+    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]), \
+                          b=ivy.array([float('nan'), 3.3, -4.2]))
     >>> z = ivy.Container.static_isnan(x)
     >>> print(z)
     {
@@ -3334,7 +3287,9 @@ def log1p(
     Calculates an implementation-dependent approximation to log(1+x), where log
     refers to the natural (base e) logarithm.
     .. note::
-       The purpose of this function is to calculate ``log(1+x)`` more accurately when `x` is close to zero. Accordingly, conforming implementations should avoid implementing this function as simply ``log(1+x)``. See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+       The purpose of this function is to calculate ``log(1+x)`` more accurately when `x` is close to zero.
+       Accordingly, conforming implementations should avoid implementing this function as simply ``log(1+x)``.
+       See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
 
     **Special cases**
 
@@ -3362,6 +3317,7 @@ def log1p(
         ``x``. The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
@@ -3386,12 +3342,10 @@ def log1p(
     >>> print(y)
     ivy.array([0.   , 0.693])
 
-    >>> x = ivy.array([[1.1, 2.2, 3.3], \
-                   [4.4, 5.5, 6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],[4.4, 5.5, 6.6]])
     >>> ivy.log1p(x , out = x)
     >>> print(x)
-    ivy.array([[0.742, 1.16 , 1.46 ],
-           [1.69 , 1.87 , 2.03 ]])
+    ivy.array([[0.742, 1.16 , 1.46 ],[1.69 , 1.87 , 2.03 ]])
 
     >>> x = ivy.array([1e-9] , dtype = ivy.float32)
     >>> y = x.log1p()
@@ -3600,6 +3554,7 @@ def logical_and(
 
     Examples
     --------
+    With :code:`ivy.Array` input:
     >>> x = ivy.array([True, True, False])
     >>> y = ivy.array([True, False, True])
     >>> print(ivy.logical_and(x, y))
@@ -3609,31 +3564,39 @@ def logical_and(
     >>> print(y)
     ivy.array([True,False,False])
 
+    With :code:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
     >>> y = ivy.Container(a=ivy.array([True, True, False]), \
         b=ivy.array([False, False, True]))
     >>> print(ivy.logical_and(y, x))
-    {a:ivy.array([False,True,False]),b:ivy.array([False,False,False])}
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
 
     >>> ivy.logical_and(y, x, out=y)
     >>> print(y)
-    {a:ivy.array([False,True,False]),b:ivy.array([False,False,False])}
+    {
+        a: ivy.array([False, True, False]),
+        b: ivy.array([False, False, False])
+    }
 
+    With :code:`ivy.NativeArray` input:
     >>> x = ivy.native_array([True, True, False])
     >>> y = ivy.native_array([True, False, True])
     >>> print(ivy.logical_and(x, y))
     ivy.array([True,False,False])
 
-    >>> ivy.logical_and(x, y, out=y)
-    >>> print(y)
-    tensor([True,False,False])
 
     >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
     >>> y = ivy.array([True, False, True])
     >>> print(ivy.logical_and(y, x))
-    {a:ivy.array([False,False,True]),b:ivy.array([True,False,False])}
+    {
+        a: ivy.array([False, False, True]),
+        b: ivy.array([True, False, False])
+    }
 
     >>> x = ivy.Container(a=ivy.array([False, True, True]), \
         b=ivy.array([True, False, False]))
@@ -5203,6 +5166,7 @@ def subtract(
     x2: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculates the difference for each element ``x1_i`` of the input array ``x1``
@@ -5215,6 +5179,8 @@ def subtract(
     x2
         second input array. Must be compatible with ``x1`` (see  ref:`broadcasting`).
         Should have a numeric data type.
+    alpha
+        optional scalar multiplier for ``x2``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5223,7 +5189,6 @@ def subtract(
     -------
     ret
         an array containing the element-wise differences.
-
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -5236,60 +5201,20 @@ def subtract(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
+    >>> x = ivy.array([3, 6, 3])
+    >>> y = ivy.array([2, 1, 6])
     >>> z = ivy.subtract(x, y)
     >>> print(z)
-    ivy.array([-3, -3, -3])
+    ivy.array([ 1,  5, -3])
 
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.array([[4.8], [5.2], [6.1]])
-    >>> z = ivy.zeros((3, 3))
-    >>> ivy.subtract(x, y, out=z)
+    >>> x = ivy.array([3, 6, 3])
+    >>> y = ivy.array([2, 1, 6])
+    >>> z = ivy.subtract(x, y, alpha=2)
     >>> print(z)
-    ivy.array([[-3.7, -2.5, -8.4],
-               [-4.1, -2.9, -8.8],
-               [-5. , -3.8, -9.7]])
+    ivy.array([-1,  4, -9])
 
-    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
-    >>> y = ivy.array([[8.4], [2.5], [1.6]])
-    >>> ivy.subtract(x, y, out=x)
-    >>> print(x)
-    ivy.array([[[-7.3],
-                [ 0.7],
-                [-7.9]]])
-
-    With :code:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
-                          b=ivy.array([4, 3, 2]))
-    >>> y = ivy.Container(a=ivy.array([4, 5, 6]),\
-                          b=ivy.array([6, 5, 4]))
-    >>> z = ivy.subtract(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([-3, -3, -3]),
-        b: ivy.array([-2, -2, -2])
-    }
-
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                          b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = ivy.subtract(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([[-2.9, -1.7, -7.6], 
-                      [-3.9, -2.7, -8.6], 
-                      [-4.9, -3.7, -9.6]]),
-        b: ivy.array([[-3.9, -2.7, -8.6], 
-                      [-4.9, -3.7, -9.6], 
-                      [-5.9, -4.7, -10.6]])
-    }
     """
-    return ivy.current_backend(x1, x2).subtract(x1, x2, out=out)
+    return ivy.current_backend(x1).subtract(x1, x2, alpha=alpha, out=out)
 
 
 @to_native_arrays_and_back
@@ -5522,7 +5447,7 @@ def erf(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Computes the Gauss error function of ``x`` element-wise.
 
     Parameters
@@ -5552,7 +5477,7 @@ def maximum(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
 
     Parameters
@@ -5646,7 +5571,7 @@ def minimum(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
 
     Parameters

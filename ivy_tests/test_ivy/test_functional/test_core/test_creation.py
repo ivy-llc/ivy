@@ -118,8 +118,8 @@ def test_linspace(
         min_dim_size=1,
         max_dim_size=5,
         shared_dtype=True,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=3,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
     ),
     num=helpers.ints(min_value=1, max_value=5),
@@ -344,7 +344,7 @@ def test_empty_like(
     batch_shape=st.lists(
         helpers.ints(min_value=1, max_value=10), min_size=1, max_size=2
     ),
-    dtype=helpers.get_dtypes("integer", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     num_positional_args=helpers.num_positional_args(fn_name="eye"),
 )
 def test_eye(

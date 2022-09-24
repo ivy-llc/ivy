@@ -337,9 +337,6 @@ def test_matmul(
     input_dtype1, x_1 = x
     input_dtype2, y_1 = y
     input_dtype = [input_dtype1, input_dtype2]
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
 
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -396,11 +393,13 @@ def test_det(
 @handle_cmd_line_args
 @given(
     dtype_x=_get_dtype_and_matrix(symmetric=True),
+    UPLO=st.sampled_from(("L", "U")),
     num_positional_args=helpers.num_positional_args(fn_name="eigh"),
 )
 def test_eigh(
     *,
     dtype_x,
+    UPLO,
     as_variable,
     with_out,
     num_positional_args,
@@ -422,6 +421,7 @@ def test_eigh(
         fw=fw,
         fn_name="eigh",
         x=x,
+        UPLO=UPLO,
         test_values=False,
         return_flat_np_arrays=True,
     )
@@ -460,11 +460,13 @@ def test_eigh(
 @handle_cmd_line_args
 @given(
     dtype_x=_get_dtype_and_matrix(symmetric=True),
+    UPLO=st.sampled_from(("L", "U")),
     num_positional_args=helpers.num_positional_args(fn_name="eigvalsh"),
 )
 def test_eigvalsh(
     *,
     dtype_x,
+    UPLO,
     as_variable,
     with_out,
     num_positional_args,
@@ -487,6 +489,7 @@ def test_eigvalsh(
         rtol_=1e-3,
         test_values=False,
         x=np.asarray(x, dtype=input_dtype),
+        UPLO=UPLO,
     )
 
 
@@ -664,8 +667,8 @@ def test_outer(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=16,
-        large_abs_safety_factor=16,
+        small_abs_safety_factor=72,
+        large_abs_safety_factor=72,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
     ).filter(
@@ -881,8 +884,8 @@ def test_tensordot(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        large_abs_safety_factor=40,
+        small_abs_safety_factor=40,
         safety_factor_scale="log",
         min_num_dims=2,
     ),
@@ -924,8 +927,8 @@ def test_trace(
 @given(
     dtype_x1_x2_axis=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=72,
-        small_abs_safety_factor=72,
+        large_abs_safety_factor=100,
+        small_abs_safety_factor=100,
         safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
@@ -1056,6 +1059,8 @@ def test_pinv(
         instance_method=instance_method,
         fw=fw,
         fn_name="pinv",
+        rtol_=1e-2,
+        atol_=1e-2,
         x=np.asarray(x, dtype=dtype),
         rtol=rtol,
     )
@@ -1279,7 +1284,7 @@ def test_matrix_rank(
         fw=fw,
         fn_name="matrix_rank",
         x=np.asarray(x, dtype=dtype),
-        rtol=rtol,
+        rtol_=rtol,
     )
 
 
@@ -1360,9 +1365,6 @@ def test_cross(
     fw,
 ):
     dtype, x1, x2, axis = dtype_x1_x2_axis
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-    container = [container, container]
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,

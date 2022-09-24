@@ -9,7 +9,6 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -833,7 +832,7 @@ def test_swapaxes(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     repeat=helpers.dtype_and_values(
-        available_dtypes=(ivy_np.int8, ivy_np.int16, ivy_np.int32, ivy_np.int64),
+        available_dtypes=helpers.get_dtypes("signed_integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
             lambda rep: (len(rep),)
         ),
@@ -933,7 +932,6 @@ def test_unstack(
     native_array,
     container,
     instance_method,
-    device,
     fw,
 ):
     # smoke test
