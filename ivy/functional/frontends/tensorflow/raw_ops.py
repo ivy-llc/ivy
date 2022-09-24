@@ -56,6 +56,10 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
+def Ceil(*, x, name="ceil"):
+    return ivy.ceil(x)
+
+
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
