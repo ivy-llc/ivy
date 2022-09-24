@@ -688,7 +688,7 @@ def to_numpy(
     >>> y = ivy.to_numpy(x)
     >>> print(y)
     {
-        a: array([-1, 0, 1])
+        a: array([-1, 0, 1], dtype=int32)
     }
 
     >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
@@ -698,10 +698,10 @@ def to_numpy(
     {
         a: array([[-1, 0, 1],
                   [-1, 0, 1],
-                  [1, 0, -1]]),
+                  [1, 0, -1]], dtype=int32),
         b: array([[-1, 0, 0],
                   [1, 0, 1],
-                  [1, 1, 1]])
+                  [1, 1, 1]], dtype=int32)
     }
 
     With a mix of :code:`ivy.Container` and :code:`ivy.Array` inputs:
@@ -709,7 +709,7 @@ def to_numpy(
     >>> x = ivy.Container(x=ivy.array([-1, 0, 1]))
     >>> y = ivy.to_numpy(x)
     >>> print(y)
-    {x:array([-1,0,1)}
+    {x:array([-1,0,1], dtype=int32)}
 
     >>> x = ivy.Container(a=ivy.array([[-1.0, 0., 1.], [-1, 0, 1], [1, 0, -1]]),\
                       b=ivy.array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
@@ -721,7 +721,7 @@ def to_numpy(
                   [1., 0., -1.]], dtype=float32),
         b: array([[-1, 0, 0],
                   [1, 0, 1],
-                  [1, 1, 1]])
+                  [1, 1, 1]], dtype=int32)
     }
 
     Instance Method Example
@@ -1762,13 +1762,13 @@ def match_kwargs(
     >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.add, ivy.linear)
-    >>> print(x)
+    >>> x
     [{'out': ivy.array([0, 0, 0])}, {'bias': ivy.array([0, 1, 2])}]
 
     >>> o = ivy.zeros(3, dtype=int)
     >>> kwargs = {'out': o, 'bias': ivy.arange(3)}
     >>> x = ivy.match_kwargs(kwargs, ivy.linear, ivy.add)
-    >>> print(x)
+    >>> x
     [{'out': ivy.array([0, 0, 0]), 'bias': ivy.array([0, 1, 2])}, {}]
 
     """
@@ -1872,17 +1872,12 @@ def current_backend_str() -> Union[str, None]:
 
     Examples
     --------
-    Without setting default backend of NumPy:
-
-    >>> print(ivy.current_backend_str())
-
-
     With setting default backend as `torch`:
 
     >>> ivy.set_backend('torch')
-    >>> print(ivy.current_backend_str())
+    >>> ivy.current_backend_str()
     torch
-
+    >>> ivy.unset_backend()
     """
     fw = current_backend()
     if not backend_stack:
@@ -1967,7 +1962,7 @@ def einops_reduce(
     >>> x = ivy.array([[-4.47, 0.93, -3.34],\
                       [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
-    >>> print(reduced)
+    >>> reduced
     ivy.array([-0.405, 12.6  ,  0.15 ])
 
     With :code:`ivy.Container` input:
@@ -1977,7 +1972,7 @@ def einops_reduce(
                         b=ivy.array([[4.96, 1.52, -10.67],\
                                      [4.36, 13.96, 0.3]]))
     >>> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
-    >>> print(reduced)
+    >>> reduced
     {
         a: ivy.array([-2.29, 10.5]),
         b: ivy.array([-1.4, 6.21])
@@ -2030,7 +2025,7 @@ def einops_repeat(
 
     >>> x = ivy.array([1, 2, 3, 4])
     >>> repeated = ivy.einops_repeat(x, 'a -> b a', b=2)
-    >>> print(repeated)
+    >>> repeated
     ivy.array([[1, 2, 3, 4],
                [1, 2, 3, 4]])
 
@@ -2041,7 +2036,7 @@ def einops_repeat(
                         b=ivy.array([[9, 10],\
                                     [4, 2]]))
     >>> repeated = ivy.einops_repeat(x, 'h w -> h (c w)', c=2)
-    >>> print(repeated)
+    >>> repeated
     {
         a: ivy.array([[4, 5, 4, 5],
                       [1, 3, 1, 3]]),
@@ -2328,9 +2323,10 @@ def set_queue_timeout(timeout: float):
 
     Examples
     --------
+    >>> x = ivy.set_queue_timeout(20)
     >>> x = ivy.get_queue_timeout()
-    >>> print(x)
-    15.0
+    >>> x
+    20.0
 
     To set the timeout for example 30 seconds
 
@@ -2505,17 +2501,11 @@ def supports_inplace_updates(
 
     Examples
     --------
-    With :code:`ivy.DType("bool")` input:
-
-    >>> x = True
-    >>> ivy.supports_inplace_updates(x)
-    ValueError: Input x must be either a variable or an array.
-
     With :code:`ivy.Array` input and default backend set as `numpy`:
 
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
-    >>> print(y)
+    >>> y
     True
 
     With :code:`ivy.Container` input and backend set as `torch`:
@@ -2669,7 +2659,7 @@ def inplace_decrement(
                         [6.8, 8, 3.9],\
                         [0., 10., 6.3]])
     >>> y = ivy.inplace_decrement(x, 1.25)
-    >>> print(y)
+    >>> y
     ivy.array([[ 4.05,  5.75, -1.25],
        [ 5.55,  6.75,  2.65],
        [-1.25,  8.75,  5.05]])
@@ -2679,14 +2669,14 @@ def inplace_decrement(
     >>> x = ivy.native_array([-10, 24, -3])
     >>> val = ivy.native_array([1, 2, 3])
     >>> y = ivy.inplace_decrement(x, val)
-    >>> print(y)
+    >>> y
     ivy.array([-11,  22,  -6])
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), b=ivy.array([0., -25., 50.]))
     >>> y = ivy.inplace_decrement(x, 1.5)
-    >>> print(y)
+    >>> y
     {
         a: ivy.array([-1., -6.5, 28.5]),
         b: ivy.array([-1.5, -26.5, 48.5])
@@ -2695,7 +2685,7 @@ def inplace_decrement(
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> z = ivy.inplace_decrement(x, y)
-    >>> print(z)
+    >>> z
     {
         a: ivy.array([0., 0., 0.]),
         b: ivy.array([0., 0., 0.])
@@ -2741,8 +2731,9 @@ def inplace_increment(
     >>> x = ivy.array([[5.3, 7., 0.],\
                         [6.8, 8, 3.9],\
                         [0., 10., 6.3]])
-    >>> y = ivy.inplace_increment(x, 3.)
-    >>> print(y)
+    >>> y = ivy.array([3.])
+    >>> z = ivy.inplace_increment(x, y)
+    >>> z
     ivy.array([[ 8.3, 10.,  3.],
        [ 9.8, 11.,  6.9],
        [ 3., 13.,  9.3]])
@@ -2752,14 +2743,15 @@ def inplace_increment(
      >>> x = ivy.native_array([10, 20, 30])
      >>> val = ivy.native_array([1, 2, 3])
      >>> y = ivy.inplace_increment(x, val)
-     >>> print(y)
+     >>> y
      ivy.array([11, 22, 33])
 
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
-    >>> y = ivy.inplace_increment(x, 2.5)
-    >>> print(y)
+    >>> y = ivy.array([2.5])
+    >>> y = ivy.inplace_increment(x, y)
+    >>> y
     {
         a: ivy.array([2.5, 17.5, 32.5]),
         b: ivy.array([2.5, 27.5, 52.5])
@@ -2769,7 +2761,7 @@ def inplace_increment(
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> y = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
     >>> z = ivy.inplace_increment(x, y)
-    >>> print(z)
+    >>> z
     {
         a: ivy.array([0., 30., 60.]),
         b: ivy.array([0., 50., 100.])
@@ -2861,7 +2853,7 @@ def scatter_nd(
     >>> updates = ivy.array([9, 10, 11, 12])
     >>> shape = ivy.array([8])
     >>> scatter = ivy.scatter_nd(indices, updates, shape)
-    >>> print(scatter)
+    >>> scatter
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
     scatter into an empty array, With :code:`ivy.Container` input:
@@ -2873,7 +2865,7 @@ def scatter_nd(
     >>> shape = ivy.Container(a=ivy.array([10]),\
                         b = ivy.array([10]))
     >>> z = ivy.scatter_nd(indices, updates, shape=shape, reduction='replace')
-    >>> print(z)
+    >>> z
     {
         a: ivy.array([0, 0, 0, 200, 100, 0, 200, 0, 0, 0]),
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
@@ -2887,7 +2879,7 @@ def scatter_nd(
     >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5]),\
                             b = ivy.array([10, 20, 30, 40, 50]))
     >>> ivy.scatter_nd(indices, updates, reduction='replace', out=z)
-    >>> print(z)
+    >>> z
     {
         a: ivy.array([1, 30, 3, 20, 10]),
         b: ivy.array([10, 400, 30, 300, 200])
@@ -3495,7 +3487,7 @@ def vmap(
     >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
     >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
     >>> z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)
-    >>> print(z.shape)
+    >>> z.shape
     (3, 5, 2)
     """
     # TODO: optimize in the numpy and tensorflow backends and extend functionality

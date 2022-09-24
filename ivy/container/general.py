@@ -2202,7 +2202,7 @@ class ContainerWithGeneral(ContainerBase):
                         b=ivy.array([[4.96, 1.52, -10.67],\
                                      [4.36, 13.96, 0.3]]))
         >>> reduced = ivy.Container.static_einops_reduce(x, 'a b -> a', 'mean')
-        >>> print(reduced)
+        >>> reduced
         {
             a: ivy.array([-2.29, 10.5]),
             b: ivy.array([-1.4, 6.21])
@@ -2283,7 +2283,7 @@ class ContainerWithGeneral(ContainerBase):
                                         [[1, 9, 6],\
                                          [0, 2, 1]]]))
         >>> reduced = x.einops_reduce('a b c -> a b', 'sum')
-        >>> print(reduced)
+        >>> reduced
         {
             a: ivy.array([[12, 22],
                         [15, 17]]),
@@ -2348,7 +2348,7 @@ class ContainerWithGeneral(ContainerBase):
                             b=ivy.array([[1, 2], [4, 5]]))
         >>> repeated = ivy.Container.static_einops_repeat(\
             x, 'h w -> (tile h) w', tile=2)
-        >>> print(repeated)
+        >>> repeated
         {
             a: ivy.array([[30, 40],
                         [50, 75],
@@ -3587,7 +3587,7 @@ class ContainerWithGeneral(ContainerBase):
         With `ivy.Container` input and backend set as 'numpy':
         >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
-        >>> print(ret)
+        >>> ret
         {
             a: true,
             b: true
@@ -3597,7 +3597,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
                               b=ivy.array([0., 5.5, -8]))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
-        >>> print(ret)
+        >>> ret
         {
             a: true,
             b: false
@@ -3655,7 +3655,7 @@ class ContainerWithGeneral(ContainerBase):
         With an `ivy.Container` instance and backend set as 'numpy':
         >>> x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))
         >>> ret = x.supports_inplace_updates()
-        >>> print(ret)
+        >>> ret
         {
             a: true,
             b: true
@@ -3665,7 +3665,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),\
                               b=ivy.array([0., 5.5, -8]))
         >>> ret = x.supports_inplace_updates()
-        >>> print(ret)
+        >>> ret
         {
             a: true,
             b: true

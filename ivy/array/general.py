@@ -366,7 +366,7 @@ class ArrayWithGeneral(abc.ABC):
                       [[3, 5],
                        [9, 7]]])
         >>> y = x.einops_reduce('a b c -> b c', 'max')
-        >>> print(y)
+        >>> y
         ivy.array([[ 5,  5],
                    [11,  7]])
 
@@ -375,7 +375,7 @@ class ArrayWithGeneral(abc.ABC):
                        [[3, 5, 7],
                         [9, 7, 1]]])
         >>> y = x.einops_reduce('a b c -> a () c', 'min')
-        >>> print(y)
+        >>> y
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
 
@@ -418,7 +418,7 @@ class ArrayWithGeneral(abc.ABC):
         --------
         >>> x = ivy.array([5,4])
         >>> y = x.einops_repeat('a -> a c', c=3)
-        >>> print(y)
+        >>> y
         ivy.array([[5, 4],
                    [5, 4],
                   [5, 4]])
@@ -426,7 +426,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([[5,4],
                     [2, 3]])
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
-        >>> print(y)
+        >>> y
         ivy.array([[[5, 5, 5],
                     [4, 4, 4]],
                    [[2, 2, 2],
@@ -503,7 +503,7 @@ class ArrayWithGeneral(abc.ABC):
         With `ivy.Array` input and backend set as "tensorflow":
         >>> x = ivy.array([1., 4.2, 2.2])
         >>> ret = x.supports_inplace()
-        >>> print(ret)
+        >>> ret
         False
         """
         return ivy.supports_inplace_updates(self)
