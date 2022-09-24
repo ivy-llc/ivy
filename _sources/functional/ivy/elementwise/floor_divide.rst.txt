@@ -5,9 +5,9 @@ floor_divide
 
 .. autofunction:: ivy.array.array_methods.floor_divide
 
-.. autofunction:: ivy.container.container_methods.static_floor_divide
-
 .. autofunction:: ivy.container.container_methods.floor_divide
+
+.. autofunction:: ivy.container.container_methods.static_floor_divide
 |
 | **Supported Frameworks:**
 

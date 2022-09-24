@@ -5,9 +5,9 @@ dtype
 
 .. autofunction:: ivy.array.array_methods.dtype
 
-.. autofunction:: ivy.container.container_methods.dtype
-
 .. autofunction:: ivy.container.container_methods.static_dtype
+
+.. autofunction:: ivy.container.container_methods.dtype
 |
 | **Supported Frameworks:**
 
