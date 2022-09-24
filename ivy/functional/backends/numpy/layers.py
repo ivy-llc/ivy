@@ -515,7 +515,7 @@ def conv_general_dilated(
     input_dim = filters.shape[-2]
     output_dim = filters.shape[-1]
     new_shape = [
-        x_shape[i + 1] - filter_shape[i] // strides[i] + 1 for i in range(dims)
+        (x_shape[i + 1] - filter_shape[i]) // strides[i] + 1 for i in range(dims)
     ]
     new_shape = [x_shape[0], *new_shape] + filter_shape + [input_dim]
     normal_strides = [x.strides[i] for i in range(1, dims + 2)]

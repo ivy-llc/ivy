@@ -212,9 +212,6 @@ def asarray(
        be the default floating-point data type. Default  ``None``.
     device
        device on which to place the created array. Default: ``None``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
 
     Returns
     -------
@@ -902,7 +899,7 @@ def linspace(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
 
@@ -1353,7 +1350,7 @@ def one_hot(
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns a one-hot array.
 
     Parameters
@@ -1396,7 +1393,7 @@ def logspace(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
 

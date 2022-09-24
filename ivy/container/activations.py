@@ -758,3 +758,141 @@ class ContainerWithActivations(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_log_softmax(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.log_softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.log_softmax also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        axis
+            the axis or axes along which the log_softmax should be computed
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the log_softmax unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
+        >>> y = ivy.Container.static_log_softmax(x)
+        >>> print(y)
+        {
+            a: ivy.array([-3.37, -3.35, -0.0719])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.4]), b=ivy.array([-0.2, -1.0]))
+        >>> y = ivy.Container.static_log_softmax(x)
+        >>> print(y)
+        {
+            a: ivy.array([-1.62, -0.22]),
+            b: ivy.array([-0.371, -1.17])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "log_softmax",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def log_softmax(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.log_softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.log_softmax also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            the axis or axes along which the log_softmax should be computed
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the log_softmax unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
+        >>> y = x.log_softmax()
+        >>> print(y)
+        {
+            a: ivy.array([-3.37, -3.35, -0.0719])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.4]), b=ivy.array([-0.2, -1.0]))
+        >>> y = x.log_softmax()
+        >>> print(y)
+        {
+            a: ivy.array([-1.62, -0.22]),
+            b: ivy.array([-0.371, -1.17])
+        }
+        """
+        return self.static_log_softmax(
+            self,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

@@ -9,7 +9,7 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
-    def variable(self: ivy.Array) -> ivy.Variable:
+    def variable(self: ivy.Array) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.variable. This method simply wraps
         the function, and so the docstring for ivy.variable also applies to this
@@ -23,7 +23,7 @@ class ArrayWithGradients(abc.ABC):
         Returns
         -------
         ret
-            An ivy variable that supports gradient computation.
+            An ivy array that supports gradient computation.
 
         Examples
         --------
@@ -108,8 +108,8 @@ class ArrayWithGradients(abc.ABC):
         self
             Array for which to stop the gradient.
         preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
+            Whether to preserve gradient computation on ivy.Array instances. Default is
+            True.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
