@@ -261,7 +261,7 @@ def test_prod(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
 )
 def test_sum(
     *,
@@ -349,7 +349,7 @@ def test_std(
     num_positional_args=helpers.num_positional_args(fn_name="cumsum"),
     exclusive=st.booleans(),
     reverse=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
 )
 def test_cumsum(
     dtype_x_axis,
@@ -397,7 +397,7 @@ def test_cumsum(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
     exclusive=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
 )
 def test_cumprod(
     dtype_x_axis,
@@ -444,8 +444,6 @@ def test_cumprod(
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in dtype))
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
     operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
@@ -468,8 +466,6 @@ def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
     # out test
     if with_out:
         assert ret is out
-
         # these backends do not support native inplace updates
         assume(not (fw in ["tensorflow", "jax"]))
-
         assert ret.data is out.data
