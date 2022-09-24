@@ -17,9 +17,12 @@ def add(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        return torch.add(x1, x2, alpha=alpha, out=out)
     return torch.add(x1, x2, out=out)
 
 
@@ -562,9 +565,12 @@ def subtract(
     x2: Union[float, torch.Tensor],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        return torch.subtract(x1, x2, alpha=alpha, out=out)
     return torch.subtract(x1, x2, out=out)
 
 

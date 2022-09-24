@@ -81,7 +81,7 @@ def broadcast_to(
     return torch.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype) -> bool:
+def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> bool:
     if isinstance(from_, torch.Tensor):
         from_ = from_.dtype
     from_str = str(from_)

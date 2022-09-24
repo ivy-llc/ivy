@@ -95,6 +95,14 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
+def LogicalOr(*, x, y, name=None):
+    return ivy.logical_or(x, y)
+
+
+def LogicalNot(*, x, name=None):
+    return ivy.logical_not(x)
+
+
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
 
@@ -103,8 +111,12 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-def Reshape(tensor, shape, name="reshape"):
+def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
+
+
+def Shape(*, input, output_type=ivy.int32, name="Shape"):
+    return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
 
 def Sin(*, x, name="Sin"):
