@@ -2668,7 +2668,7 @@ def dtype_and_values(
         num_arrays = draw(num_arrays)
     if not allow_complex:
         available_dtypes = tuple(
-            x for x in available_dtypes if not isinstance(x, ivy.ComplexDtype)
+            set(available_dtypes).difference(ivy_np.valid_complex_dtypes)
         )
     if dtype is None:
         dtype = draw(
@@ -3148,7 +3148,7 @@ def array_values(
             f" only integers, floats and booleans are allowed."
         )
 
-    if kind_dtype != "bool" or "complex":
+    if kind_dtype != "bool" and kind_dtype != "complex":
         if min_value is None:
             min_value = dtype_info.min
             b_scale_min = True
