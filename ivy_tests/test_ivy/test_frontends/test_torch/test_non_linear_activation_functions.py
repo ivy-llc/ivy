@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -204,7 +204,6 @@ def test_torch_logsigmoid(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -241,7 +240,6 @@ def test_torch_softmin(
     fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -275,7 +273,6 @@ def test_torch_threshold(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -310,7 +307,6 @@ def test_torch_threshold_(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -345,7 +341,6 @@ def test_torch_relu6(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -380,7 +375,6 @@ def test_torch_elu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -417,7 +411,6 @@ def test_torch_elu_(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -454,7 +447,6 @@ def test_torch_celu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -488,7 +480,6 @@ def test_torch_selu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -520,7 +511,6 @@ def test_torch_prelu(
 ):
     dtype, inputs = dtype_input_and_weight
     input, weight = inputs
-    assume("float16" not in dtype)
     helpers.test_frontend_function(
         input_dtypes=[dtype, dtype],
         as_variable_flags=as_variable,
@@ -557,7 +547,6 @@ def test_torch_rrelu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -597,7 +586,6 @@ def test_torch_rrelu_(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -634,7 +622,6 @@ def test_torch_hardshrink(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -700,7 +687,6 @@ def test_torch_softshrink(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -733,7 +719,6 @@ def test_torch_silu(
     fw,
 ):
     input_dtype, input = dtype_and_input
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -774,7 +759,6 @@ def test_torch_glu(
     fw,
 ):
     input_dtype, input, dim = dtype_input_dim
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -891,5 +875,144 @@ def test_torch_leaky_relu_(
         fn_tree="nn.functional.leaky_relu_",
         input=np.asarray(x, dtype=input_dtype),
         negative_slope=alpha,
+        test_values=False,
+    )
+
+
+# hardswish
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_hardswish(
+    dtype_and_input,
+    as_variable,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=1,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.hardswish",
+        input=np.asarray(input, dtype=input_dtype),
+        inplace=False,
+    )
+
+
+# hardsigmoid
+# ToDo Test inplace once inplace testing implemented
+# It was validated to work outside of the testing framework,
+# but causes errors in the testing framework.
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.hardsigmoid"
+    ),
+)
+def test_torch_hardsigmoid(
+    dtype_and_input,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.hardsigmoid",
+        input=np.asarray(input, dtype=input_dtype),
+        inplace=False,
+    )
+
+
+# hardtanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.hardtanh"
+    ),
+    max_val=st.floats(min_value=0, max_value=1, exclude_min=True),
+)
+def test_torch_hardtanh(
+    dtype_and_x,
+    max_val,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    max_min = max_val, -max_val
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.hardtanh",
+        input=np.asarray(x, dtype=input_dtype),
+        min_val=max_min[1],
+        max_val=max_min[0],
+    )
+
+
+# hardtanh_
+# ToDo test for value test once inplace testing is fixed
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.hardtanh_"
+    ),
+    max_val=st.floats(min_value=0, max_value=1, exclude_min=True),
+)
+def test_torch_hardtanh_(
+    dtype_and_x,
+    max_val,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    max_min = max_val, -max_val
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="nn.functional.hardtanh_",
+        input=np.asarray(x, dtype=input_dtype),
+        min_val=max_min[1],
+        max_val=max_min[0],
         test_values=False,
     )

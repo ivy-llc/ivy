@@ -144,7 +144,6 @@ def test_torch_tanh(
         frontend="torch",
         fn_tree="tanh",
         input=np.asarray(x, dtype=input_dtype),
-        out=None,
     )
 
 

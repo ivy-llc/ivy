@@ -408,6 +408,49 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.conv2d. This method simply
+        wraps the function, and so the docstring for ivy.conv2d also applies
+        to this method with minimal changes.
+        
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        filters
+            Convolution filters *[fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \
+                              b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
+        >>> filters = ivy.array([[2., 0., 1.], \
+                                [1., 3., 1.], \
+                                [0., 1., 1.]]).reshape((3, 3, 1, 1))
+        >>> result = ivy.Container.static_conv2d(x, filters, (2,), 'SAME')
+        >>> print(result)
+        {
+            a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
+            b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "conv2d",
             x,
@@ -438,7 +481,50 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_conv1d(
+        """
+        ivy.Container instance method variant of `ivy.conv2d`. This method simply
+        wraps the function, and so the docstring for `ivy.conv2d` also applies
+        to this method with minimal changes.
+        
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        filters
+            Convolution filters *[fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+        
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+        
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \
+                              b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
+        >>> filters = ivy.array([[2, 0, 1], \
+                                 [1, 3, 1], \
+                                 [0, 1, 1]], dtype= ivy.float32).reshape((3, 3, 1, 1))
+        >>> result = x.conv2d(filters, 2, 'SAME')
+        >>> print(result)
+        {
+            a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
+            b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
+        }
+        """
+        return self.static_conv2d(
             self,
             filters,
             strides,
