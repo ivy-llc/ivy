@@ -21,7 +21,7 @@
             "array_object": "success",
             "constants": "success",
             "creation_functions": "success",
-            "data_type_functions": " ",
+            "data_type_functions": "success",
             "has_names": " ",
             "linalg": "failure",
             "manipulation_functions": "failure",
@@ -67,7 +67,7 @@
             "signatures": "failure",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": "success",
+            "statistical_functions": "failure",
             "type_promotion": "failure",
             "utility_functions": " "
       }
