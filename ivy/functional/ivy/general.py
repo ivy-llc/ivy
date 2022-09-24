@@ -1875,13 +1875,6 @@ def current_backend_str() -> Union[str, None]:
 
     >>> print(ivy.current_backend_str())
 
-
-    With setting default backend as 'torch':
-
-    >>> ivy.set_backend('torch')
-    >>> print(ivy.current_backend_str())
-    torch
-
     """
     fw = current_backend()
     if not backend_stack:
