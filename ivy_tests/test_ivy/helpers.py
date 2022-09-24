@@ -1099,6 +1099,25 @@ def test_method(
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
+    (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = (
+        ivy.default(input_dtypes_init, []),
+        ivy.default(as_variable_flags_init, []),
+        ivy.default(native_array_flags_init, []),
+    )
+
+    all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
+    (
+        input_dtypes_method,
+        as_variable_flags_method,
+        native_array_flags_method,
+        container_flags_method,
+    ) = as_lists(
+        input_dtypes_method,
+        as_variable_flags_method,
+        native_array_flags_method,
+        container_flags_method,
+    )
+
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args_init,
         kwargs=all_as_kwargs_np_init,
