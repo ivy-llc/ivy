@@ -44,7 +44,7 @@ def relu(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.relu(x)
@@ -64,7 +64,7 @@ def relu(
     ivy.array([[1.1, 2.2, 3.3],
                [0., 0., 0.]])
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., -1., 2.])
     >>> y = ivy.relu(x)
@@ -74,7 +74,7 @@ def relu(
     Instance Method Examples
     ------------------------
 
-    Using :code: `ivy.Array` instance method:
+    Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-0.5, 1., -2.5])
     >>> y = x.relu()
@@ -116,7 +116,7 @@ def leaky_relu(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.leaky_relu(x)
@@ -137,7 +137,7 @@ def leaky_relu(
        [-0.88, -1.1 , -1.32]])
 
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., -1., 2.])
     >>> y = ivy.leaky_relu(x)
@@ -148,7 +148,7 @@ def leaky_relu(
     Instance Method Examples
     ------------------------
 
-    Using :code: `ivy.Array` instance method:
+    Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-0.5, 1., -2.5])
     >>> y = x.leaky_relu()
@@ -188,6 +188,31 @@ def gelu(
     ret
         The input array with gelu applied element-wise.
 
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.2, -0.6, 1.5])
+    >>> y = ivy.gelu(x)
+    >>> y
+    ivy.array([-0.138, -0.165, 1.4])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([-1.3, 3.8, 2.1])
+    >>> y = ivy.gelu(x)
+    >>> y
+    ivy.array([-0.126, 3.8, 2.06])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))
+    >>> y = ivy.gelu(x)
+    >>> y
+    {
+        a: ivy.array([0.841, 1.95]),
+        b: ivy.array([-0.166, -0.159])
+    }
     """
     return current_backend(x).gelu(x, approximate=approximate, out=out)
 
@@ -218,14 +243,14 @@ def sigmoid(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-1.3, 3.8, 2.1])
     >>> y = ivy.sigmoid(x)
@@ -235,7 +260,7 @@ def sigmoid(
     Instance Method Example
     -----------------------
 
-    Using :code: `ivy.Array` instance method:
+    Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-1., 1., 2.])
     >>> y = x.sigmoid()
@@ -278,7 +303,7 @@ def softmax(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1.0, 0, 1.0])
     >>> y = ivy.softmax(x)
@@ -293,7 +318,7 @@ def softmax(
                [0.0768, 0.231 , 0.693 ]])
 
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1.5, 0.3, 1.2])
     >>> y = ivy.softmax(x)
@@ -303,7 +328,7 @@ def softmax(
     Instance Method Example
     ------------------------
 
-    Using :code: `ivy.Array` instance method:
+    Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([1.0, 0, 1.0])
     >>> y = x.softmax()
@@ -348,7 +373,7 @@ def softplus(
     Functional Examples
     -------------------
 
-    With :code: `ivy.Array` input:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
@@ -365,7 +390,7 @@ def softplus(
     >>> print(y)
     ivy.array([1.31, 2.13, 3.  ])
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-0.3461, -0.6491])
     >>> y = ivy.softplus(x)
@@ -376,7 +401,7 @@ def softplus(
     Instance Method Example
     ------------------------
 
-    Using :code: `ivy.Array` instance method:
+    Using :code:`ivy.Array` instance method:
 
     >>> x = ivy.array([-0.3461, -0.6491])
     >>> y = x.softplus()
@@ -385,3 +410,73 @@ def softplus(
 
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def log_softmax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the log_softmax function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        The dimension log_softmax would be performed on. The default is -1
+        which indicates the last dimension.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The output array with log_softmax applied element-wise to input.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, -0.98])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-0.703, -0.683])
+
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-2.41, -1.41, -0.408])
+
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([1.5, 0.5, 1.0])
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    ivy.array([-0.68, -1.68, -1.18])
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.5, 0.5, 1.0]))
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0.68, -1.68, -1.18])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1.0, 2.0]), b=ivy.array([0.4, -0.2]))
+    >>> y = ivy.log_softmax(x)
+    >>> print(y)
+    {
+        a: ivy.array([-1.31, -0.313]),
+        b: ivy.array([-0.437, -1.04])
+    }
+    """
+    return current_backend(x).log_softmax(x, axis=axis, out=out)

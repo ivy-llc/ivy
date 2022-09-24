@@ -58,3 +58,9 @@ def softplus(
     if threshold is not None:
         return tf.where(x_beta > threshold, x, res)
     return res
+
+
+def log_softmax(
+    x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
+):
+    return tf.nn.log_softmax(x, axis)

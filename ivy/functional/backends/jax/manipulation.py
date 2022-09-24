@@ -225,7 +225,7 @@ def constant_pad(
 constant_pad.unsupported_dtypes = ("uint64",)
 
 
-def unstack(x: JaxArray, axis: int, keepdims: bool = False) -> List[JaxArray]:
+def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]

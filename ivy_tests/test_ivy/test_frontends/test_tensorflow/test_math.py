@@ -96,6 +96,36 @@ def test_tensorflow_multiply(
     )
 
 
+# maximum
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.maximum"
+    ),
+)
+def test_tensorflow_maximum(
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="maximum",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
 # subtract
 @handle_cmd_line_args
 @given(
@@ -873,20 +903,26 @@ def test_tensorflow_count_nonzero(
 # confusion_matrix
 @handle_cmd_line_args
 @given(
-    predictions=helpers.array_values(
-        dtype=ivy.int32, shape=(3,), min_value=0, max_value=3
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=0,
+        max_value=4,
+        shared_dtype=True,
     ),
-    labels=helpers.array_values(dtype=ivy.int32, shape=(3,), min_value=0, max_value=3),
-    num_classes=st.integers(min_value=4, max_value=10),
+    num_classes=st.integers(min_value=5, max_value=10),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.confusion_matrix"
     ),
 )
 def test_tensorflow_confusion_matrix(
-    labels, predictions, num_classes, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, num_classes, as_variable, num_positional_args, native_array, fw
 ):
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=ivy.int32,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -894,8 +930,8 @@ def test_tensorflow_confusion_matrix(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.confusion_matrix",
-        labels=labels,
-        predictions=predictions,
+        labels=x[0],
+        predictions=x[1],
         num_classes=num_classes,
     )
 
@@ -903,17 +939,21 @@ def test_tensorflow_confusion_matrix(
 # polyval
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    x=helpers.array_values(shape=(3,), dtype=ivy.int32),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=2,
+        max_num_dims=2,
+        shared_dtype=True,
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.polyval"
     ),
 )
 def test_tensorflow_polyval(
-    dtype_and_x, x, as_variable, num_positional_args, native_array, fw
+    dtype_and_x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, coeffs = dtype_and_x
-    coeffs = [coeffs]
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -923,8 +963,8 @@ def test_tensorflow_polyval(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.polyval",
-        coeffs=coeffs,
-        x=x,
+        coeffs=x[0],
+        x=x[1],
     )
 
 

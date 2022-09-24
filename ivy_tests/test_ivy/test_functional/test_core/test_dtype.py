@@ -4,7 +4,7 @@
 # global
 import numpy as np
 import pytest
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy
@@ -433,7 +433,6 @@ def test_default_dtype(
     input_dtype,
     as_native,
 ):
-    assume(input_dtype in ivy.valid_dtypes)
 
     res = ivy.default_dtype(dtype=input_dtype, as_native=as_native)
     assert (
@@ -531,11 +530,7 @@ def test_dtype_bits(
         ),
     ),
     input_dtype=dtype_shared,
-    as_variable=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="is_bool_dtype"),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_is_bool_dtype(
     array,
