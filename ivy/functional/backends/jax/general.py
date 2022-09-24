@@ -23,7 +23,7 @@ def container_types():
     return [FlatMapping]
 
 
-def current_backend_str():
+def current_backend_str() -> str:
     return "jax"
 
 

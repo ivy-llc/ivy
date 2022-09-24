@@ -1,5 +1,5 @@
 # global
-from hypothesis import assume, given, strategies as st
+from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -203,7 +203,6 @@ def test_torch_logsigmoid(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    assume("float16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

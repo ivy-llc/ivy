@@ -71,7 +71,6 @@ def test_min(
     keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-    assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -108,7 +107,6 @@ def test_max(
     keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
-    assume(x)
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
