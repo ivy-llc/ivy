@@ -3148,7 +3148,7 @@ def array_values(
             f" only integers, floats and booleans are allowed."
         )
 
-    if kind_dtype != "bool":
+    if kind_dtype != "bool" or "complex":
         if min_value is None:
             min_value = dtype_info.min
             b_scale_min = True
@@ -3991,3 +3991,6 @@ def array_and_broadcastable_shape(draw, dtype):
         label="shape",
     )
     return x, to_shape
+
+
+# ToDo: 1) Add boundary and scaling support for complex number in `array_values()`
