@@ -237,7 +237,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
         >>> scatter = indices.scatter_nd(updates, reduction='replace', out=arr)
-        >>> print(scatter)
+        >>> scatter
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
         scatter values into an empty array
@@ -245,7 +245,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
         >>> updates = ivy.array([25, 40, 21, 22])
         >>> scatter = indices.scatter_nd(updates, shape=shape)
-        >>> print(scatter)
+        >>> scatter
         ivy.array([[ 0,  0, 22, 40,  0],
                     [ 0, 21,  0,  0, 25]])
         """

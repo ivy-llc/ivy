@@ -941,7 +941,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
                                b=ivy.array([1.5, -0.3, 0]),\
                                c=ivy.array([-4.7, -5.4, 7.5]))
-        >>> val = ivy.array(2)
+        >>> val = ivy.array(2.)
         >>> y = x.inplace_increment(val)
         >>> print(y)
         {
@@ -1778,7 +1778,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> shape = ivy.Container(a=ivy.array([10]),\
                                 b = ivy.array([10]))
         >>> z = ivy.Container.static_scatter_nd(indices, updates, shape=shape)
-        >>> print(z)
+        >>> z
         {
             a: ivy.array([0, 0, 0, 0, 0, 50, 60, 70, 0, 0]),
             b: ivy.array([0, 0, 20, 30, 40, 0, 0, 0, 0, 0])
@@ -1793,7 +1793,7 @@ class ContainerWithGeneral(ContainerBase):
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
         >>> ivy.Container.static_scatter_nd(indices, updates,\
                                             reduction='replace', out = z)
-        >>> print(z)
+        >>> z
         {
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
@@ -1887,7 +1887,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> z = ivy.Container(a=ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),\
                                 b = ivy.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
         >>> indices.scatter_nd(updates,reduction='replace', out = z)
-        >>> print(z)
+        >>> z
         {
             a: ivy.array([1, 2, 3, 4, 5, 50, 60, 70, 9, 10]),
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
