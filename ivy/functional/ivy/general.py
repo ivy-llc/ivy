@@ -2320,7 +2320,7 @@ def set_queue_timeout(timeout: float):
     --------
     >>> x = ivy.get_queue_timeout()
     >>> print(x)
-    15.0
+    10.0
 
     To set the timeout for example 30 seconds
 
