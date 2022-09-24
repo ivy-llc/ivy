@@ -200,41 +200,44 @@ ivy.tan()
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py
-    #tan
+    # ivy_tests/test_ivy/test_frontends/test_torch/test_non_linear_activation_functions.py
+    # threshold
     @handle_cmd_line_args
     @given(
-        dtype_and_x=helpers.dtype_and_values(
+        dtype_and_input=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
         ),
         num_positional_args=helpers.num_positional_args(
-            fn_name="functional.frontends.torch.tan"
+            fn_name="ivy.functional.frontends.torch.threshold"
         ),
     )
-    def test_torch_tan(
-        dtype_and_x,
+    def test_torch_threshold(
+        dtype_and_input,
         as_variable,
-        with_out,
         num_positional_args,
         native_array,
         fw,
     ):
-        input_dtype, x = dtype_and_x
+        input_dtype, input = dtype_and_input
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
-            with_out=with_out,
+            with_out=False,
+            with_inplace=True,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
             fw=fw,
             frontend="torch",
-            fn_tree="tan",
-            input=np.asarray(x, dtype=input_dtype),
-            out=None,
+            fn_tree="nn.functional.threshold",
+            input=np.asarray(input, dtype=input_dtype),
+            threshold=0.5,
+            value=20,
         )
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for PyTorch.
 * We set :code:`fn_tree` to :code:`tan` which is the path to the function in the PyTorch namespace.
+* We set :code:`with_inplace` to :code:`True` and :code:`with_out` to :code:`False` as the function supports direct inplace in a special way: updating the :code:`input` argument according to the :code:`inplace` argument.
+* We also set :code:`with_inplace` to :code:`True` and :code:`with_out` to :code:`False` when we deal with the special In-place versions of PyTorch functions that always do inplace update.
 
 ivy.full()
 ^^^^^^^^^^
