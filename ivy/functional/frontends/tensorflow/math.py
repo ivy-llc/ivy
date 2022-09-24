@@ -105,14 +105,6 @@ def maximum(a, b):
     return ivy.maximum(a, b)
 
 
-def multiply_no_nan(x, y, name="multiply_no_nan"):
-    return ivy.where(
-        y == 0,
-        ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
-        x * y,
-    )
-
-
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
 
