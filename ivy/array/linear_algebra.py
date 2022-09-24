@@ -272,6 +272,24 @@ class ArrayWithLinearAlgebra(abc.ABC):
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        Examples
+        --------
+        x = ivy.array([[1., 2.],\
+                  [3., 4.]])
+        y = pinv(x, None, None)
+        print(y)
+        ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+    
+        x = ivy.array([[1., 2.],\
+                      [3., 4.]])
+        out = ivy.array()
+        pinv(x, 0, out)
+        print(out)
+        ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+        """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
     def qr(
