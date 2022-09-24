@@ -2503,7 +2503,7 @@ def supports_inplace_updates(
 
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
-    >>> y
+    >>> print(y)
     True
 
     With :code:`ivy.Container` input and backend set as `torch`:
