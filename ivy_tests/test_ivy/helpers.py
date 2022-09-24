@@ -2577,6 +2577,7 @@ def dtype_and_values(
     safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
+    allow_complex=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=0,
@@ -2630,6 +2631,8 @@ def dtype_and_values(
         if True, allow inf in the arrays.
     allow_nan
         if True, allow Nans in the arrays.
+    allow_complex
+        if True, allow complex numbers in the arrays.
     exclude_min
         if True, exclude the minimum limit.
     exclude_max
@@ -2663,6 +2666,10 @@ def dtype_and_values(
         available_dtypes = draw(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
+    if not allow_complex:
+        available_dtypes = tuple(
+            x for x in available_dtypes if not isinstance(x, ivy.ComplexDtype)
+        )
     if dtype is None:
         dtype = draw(
             array_dtypes(
