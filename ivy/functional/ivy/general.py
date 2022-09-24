@@ -2717,7 +2717,8 @@ def inplace_increment(
     >>> x = ivy.array([[5.3, 7., 0.],\
                         [6.8, 8, 3.9],\
                         [0., 10., 6.3]])
-    >>> y = ivy.inplace_increment(x, 3.)
+    >>> val = ivy.array(3.)
+    >>> y = ivy.inplace_increment(x, val)
     >>> print(y)
     ivy.array([[ 8.3, 10.,  3.],
        [ 9.8, 11.,  6.9],
@@ -2732,7 +2733,8 @@ def inplace_increment(
 
     With :code:`ivy.Container` input
     >>> x = ivy.Container(a=ivy.array([0., 15., 30.]), b=ivy.array([0., 25., 50.]))
-    >>> y = ivy.inplace_increment(x, 2.5)
+    >>> val = ivy.array(2.5)
+    >>> y = ivy.inplace_increment(x, val)
     >>> print(y)
     {
         a: ivy.array([2.5, 17.5, 32.5]),

@@ -860,7 +860,8 @@ class ContainerWithGeneral(ContainerBase):
         Increment by a value
         >>> x = ivy.Container(a=ivy.array([0.5, -5., 30.]), \
                               b=ivy.array([0., -25., 50.]))
-        >>> y = ivy.inplace_increment(x, 1.5)
+        >>> val = ivy.array(1.5)
+        >>> y = ivy.inplace_increment(x, val)
         >>> print(y)
         {
             a: ivy.array([2., -3.5, 31.5]),
@@ -940,7 +941,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([-6.7, 2.4, -8.5]),\
                                b=ivy.array([1.5, -0.3, 0]),\
                                c=ivy.array([-4.7, -5.4, 7.5]))
-        >>> y = x.inplace_increment(2)
+        >>> val = ivy.array(2)
+        >>> y = x.inplace_increment(val)
         >>> print(y)
         {
             a: ivy.array([-4.7, 4.4, -6.5]),
