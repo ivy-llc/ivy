@@ -79,6 +79,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../array.html">Array</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../container.html">Container</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.html">Base</a></li>
@@ -107,18 +108,17 @@
 <li class="toctree-l2"><a class="reference internal" href="wrapping.html">Wrapping</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -2116,8 +2116,8 @@ Default is False.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: array([1, 0, 1, 1], dtype=int32),</span>
-<span class="go">    b: array([1, -1, 0, 0], dtype=int32)</span>
+<span class="go">    a: array([1, 0, 1, 1]),</span>
+<span class="go">    b: array([1, -1, 0, 0])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -2126,7 +2126,7 @@ Default is False.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
 <span class="go">    a: array([1., 0., 0., 1.], dtype=float32),</span>
-<span class="go">    b: array([1, 1, -1, 0], dtype=int32)</span>
+<span class="go">    b: array([1, 1, -1, 0])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -2397,10 +2397,10 @@ Default is False.</p></li>
 <span class="go">{</span>
 <span class="go">    a: array([[-1, 0, 1],</span>
 <span class="go">              [-1, 0, 1],</span>
-<span class="go">              [1, 0, -1]], dtype=int32),</span>
+<span class="go">              [1, 0, -1]]),</span>
 <span class="go">    b: array([[-1, 0, 0],</span>
 <span class="go">              [1, 0, 1],</span>
-<span class="go">              [1, 1, 1]], dtype=int32)</span>
+<span class="go">              [1, 1, 1]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -2410,10 +2410,10 @@ Default is False.</p></li>
 <span class="go">{</span>
 <span class="go">    a: array([[-1, 0, 1],</span>
 <span class="go">              [-1, 0, 1],</span>
-<span class="go">              [1, 0, -1]], dtype=int32),</span>
+<span class="go">              [1, 0, -1]]),</span>
 <span class="go">    b: array([[-1, 0, 0],</span>
 <span class="go">              [1, 0, 1],</span>
-<span class="go">              [1, 1, 1]], dtype=int32)</span>
+<span class="go">              [1, 1, 1]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>

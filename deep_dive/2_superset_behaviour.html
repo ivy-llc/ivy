@@ -53,6 +53,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Superset Behaviour</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#extending-the-standard">Extending the Standard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#what-is-the-superset">What is the Superset?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-non-duplicate-superset">A Non-Duplicate Superset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#when-the-superset-is-too-much">When the Superset is Too Much</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#balancing-generalization-with-efficiency">Balancing Generalization with Efficiency</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#more-examples">More Examples</a></li>
@@ -107,19 +108,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -193,6 +194,23 @@ functions, but this is not always the case. For example, <code class="code docut
 fully compositional function, but <code class="code docutils literal notranslate"><span class="pre">torch.nn.functional.linear</span></code> also exists.
 We should therefore make sure the compositional <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> function includes all
 behaviours supported by <code class="code docutils literal notranslate"><span class="pre">torch.nn.functional.linear</span></code>.</p>
+</section>
+<section id="a-non-duplicate-superset">
+<h2>A Non-Duplicate Superset<a class="headerlink" href="#a-non-duplicate-superset" title="Permalink to this heading"></a></h2>
+<p>It would be easy to assume that implementing the superset simply means adding all
+arguments from all related functions into the Ivy function. However, this is <strong>not</strong> the
+case for a few reasons. Firstly, different functions might have different argument names
+for the same behaviour. Looking at the functions
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.concatenate.html">numpy.concatenate</a>
+and
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.cat.html">torch.cat</a>,
+we of course do not want to add both of the arguments <code class="code docutils literal notranslate"><span class="pre">axis</span></code> and <code class="code docutils literal notranslate"><span class="pre">dim</span></code> to
+<code class="code docutils literal notranslate"><span class="pre">ivy.concat</span></code>, as these both represent exactly the same thing: the dimemsion/axis
+along which to concatenate. In this case, the argument is
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html">covered</a>
+in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> and so we opt for <code class="code docutils literal notranslate"><span class="pre">axis</span></code>. In cases where there are
+differences between the backend argument names, and the function or argument is not in
+the standard, then it is up to us to determine which argument name to use.</p>
 </section>
 <section id="when-the-superset-is-too-much">
 <h2>When the Superset is Too Much<a class="headerlink" href="#when-the-superset-is-too-much" title="Permalink to this heading"></a></h2>
