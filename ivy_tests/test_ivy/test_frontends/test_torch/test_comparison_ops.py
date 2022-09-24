@@ -277,6 +277,8 @@ def test_torch_isclose(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isfinite"
@@ -308,6 +310,8 @@ def test_torch_isfinite(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isinf"
@@ -339,6 +343,8 @@ def test_torch_isinf(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isposinf"
@@ -370,6 +376,8 @@ def test_torch_isposinf(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isneginf"
@@ -408,9 +416,6 @@ def test_torch_isneginf(
     ),
     descending=st.booleans(),
     stable=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.sort"
-    ),
 )
 def test_torch_sort(
     dtype_input_axis,
@@ -418,7 +423,6 @@ def test_torch_sort(
     stable,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     fw,
 ):
@@ -445,6 +449,8 @@ def test_torch_sort(
 @given(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.isnan"
@@ -622,6 +628,8 @@ def test_torch_minimum(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.fmax"
@@ -658,6 +666,8 @@ def test_torch_fmax(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        min_value=-np.inf,
+        max_value=np.inf,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.fmin"
