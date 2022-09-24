@@ -787,7 +787,6 @@ def stack(
 
     Examples
     --------
-
     With :code: `ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
@@ -804,6 +803,24 @@ def stack(
     >>> x
     ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
 
+     With :code: `ivy.Array` & `ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
+            b=ivy.array([3., 4., 5.]), \
+            c=ivy.array([6.,7.,8.]))
+    >>> y = ivy.stack(x)
+    >>> y
+    {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., 5.]),
+        c: ivy.array([6., 7., 8.])
+    }
+    With :code: `ivy.native_array  ` input:
+     >>> ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    >>> x = ivy.native_array([0., 1., 2., 3.])
+    >>> y = ivy.stack(x)
+    >>> y
+    ivy.array([0., 1., 2., 3.])
     """
     res = current_backend(arrays).stack(arrays, axis=axis, out=out)
     if ivy.exists(out):
