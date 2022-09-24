@@ -67,7 +67,7 @@
             "signatures": "failure",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": "success",
+            "statistical_functions": "failure",
             "type_promotion": "failure",
             "utility_functions": " "
       }
