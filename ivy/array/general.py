@@ -160,6 +160,7 @@ class ArrayWithGeneral(abc.ABC):
         /,
         *,
         axis: int = -1,
+        batch_dims: int = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -176,6 +177,8 @@ class ArrayWithGeneral(abc.ABC):
             the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         out
             An array for writing the result to. It must have a shape
             that the inputs broadcast to. (Optional)

@@ -50,6 +50,7 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: int = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return _to_device(np.take(params, indices, axis))

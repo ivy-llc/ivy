@@ -112,6 +112,7 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     sl = [slice(None)] * params.ndim

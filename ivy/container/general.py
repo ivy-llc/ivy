@@ -1448,6 +1448,7 @@ class ContainerWithGeneral(ContainerBase):
         /,
         *,
         axis: int = -1,
+        batch_dims: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1468,6 +1469,8 @@ class ContainerWithGeneral(ContainerBase):
             gathered along the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1520,6 +1523,7 @@ class ContainerWithGeneral(ContainerBase):
             params,
             indices,
             axis=axis,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1533,6 +1537,7 @@ class ContainerWithGeneral(ContainerBase):
         /,
         *,
         axis: int = -1,
+        batch_dims: int = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1553,6 +1558,8 @@ class ContainerWithGeneral(ContainerBase):
             gathered along the specified axis.
         axis
             The axis from which the indices will be gathered. Default is -1.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1591,6 +1598,7 @@ class ContainerWithGeneral(ContainerBase):
             self,
             indices,
             axis=axis,
+            batch_dims=batch_dims,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

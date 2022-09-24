@@ -82,6 +82,7 @@ def gather(
     /,
     *,
     axis: int = -1,
+    batch_dims: int = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return _to_device(jnp.take(params, indices, axis))
