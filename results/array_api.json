@@ -27,7 +27,7 @@
             "manipulation_functions": "failure",
             "operators_and_elementwise_functions": "failure",
             "searching_functions": " ",
-            "set_functions": " ",
+            "set_functions": "success",
             "signatures": "failure",
             "sorting_functions": "success",
             "special_cases": "failure",
@@ -67,7 +67,7 @@
             "signatures": "failure",
             "sorting_functions": "success",
             "special_cases": "success",
-            "statistical_functions": "success",
+            "statistical_functions": "failure",
             "type_promotion": "failure",
             "utility_functions": " "
       }
