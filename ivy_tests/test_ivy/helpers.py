@@ -2732,6 +2732,7 @@ def dtype_values_axis(
     safety_factor_scale="linear",
     allow_inf=False,
     allow_nan=False,
+    allow_complex=False,
     exclude_min=False,
     exclude_max=False,
     min_num_dims=0,
@@ -2790,6 +2791,8 @@ def dtype_values_axis(
         if True, allow inf in the array.
     allow_nan
         if True, allow Nans in the arrays.
+    allow_complex
+        if True, allow complex numbers in the arrays.
     exclude_min
         if True, exclude the minimum limit.
     exclude_max
@@ -2837,6 +2840,7 @@ def dtype_values_axis(
             safety_factor_scale=safety_factor_scale,
             allow_inf=allow_inf,
             allow_nan=allow_nan,
+            allow_complex=allow_complex,
             exclude_min=exclude_min,
             exclude_max=exclude_max,
             min_num_dims=min_num_dims,
@@ -3136,6 +3140,8 @@ def array_values(
         dtype_info = ivy.iinfo(dtype)
     elif "bool" in dtype:
         kind_dtype = "bool"
+    elif "complex" in dtype:
+        kind_dtype = "complex"
     else:
         raise TypeError(
             f"{dtype} is not a valid data type that can be generated,"
