@@ -516,7 +516,9 @@ def test_tensorflow_conv3d(
         frontend="tensorflow",
         fn_tree="nn.conv3d",
         input=x,
-        filters=filters.reshape(filters.shape[:-2] + x.shape[-1] + filters.shape[-1]),
+        filters=filters.reshape(
+            filters.shape[:-2] + (x.shape[-1],) + (filters.shape[-1],)
+        ),
         strides=stride,
         padding=padding,
         data_format=data_format,
