@@ -249,9 +249,6 @@ all_numeric_dtypes = (
     float16,
     float32,
     float64,
-    complex64,
-    complex128,
-    complex256,
 )
 all_int_dtypes = (
     int8,

@@ -75,8 +75,6 @@ valid_numeric_dtypes = (
     ivy.float16,
     ivy.float32,
     ivy.float64,
-    ivy.complex64,
-    ivy.complex128,
 )
 valid_int_dtypes = (
     ivy.int8,

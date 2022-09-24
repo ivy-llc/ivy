@@ -87,16 +87,11 @@ valid_numeric_dtypes = (
     float16,
     float32,
     float64,
-    complex64,
-    complex128,
 )
 valid_int_dtypes = (int8, int16, int32, int64, uint8, uint16, uint32, uint64)
 valid_float_dtypes = (float16, float32, float64)
 valid_uint_dtypes = (uint8, uint16, uint32, uint64)
-valid_complex_dtypes = (
-    complex64,
-    complex128,
-)
+valid_complex_dtypes = (complex64, complex128)
 
 # invalid data types
 invalid_dtypes = (bfloat16,)
