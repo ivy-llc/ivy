@@ -7,7 +7,7 @@ permissions:
   actions: read
 jobs:
    run-nightly-tests:
-     if: contains(github.event.pull_request.labels.*.name, 'Ivy Stateful API')}}
+     if: contains(github.event.pull_request.labels.*.name, 'Ivy Stateful API')
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
