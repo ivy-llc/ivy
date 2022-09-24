@@ -159,10 +159,11 @@ def inplace_increment(
         else:
             x = ivy.Array(x_native)
     else:
+        x_native += val_native
         if ivy.is_ivy_array(x):
-            x.data = val_native
+            x.data = x_native
         else:
-            x = ivy.Array(val_native)
+            x = ivy.Array(x_native)
     return x
 
 
