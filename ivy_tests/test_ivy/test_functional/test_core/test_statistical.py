@@ -81,7 +81,7 @@ def test_min(
         instance_method=instance_method,
         fw=fw,
         fn_name="min",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
@@ -117,7 +117,7 @@ def test_max(
         instance_method=instance_method,
         fw=fw,
         fn_name="max",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
@@ -155,7 +155,7 @@ def test_mean(
         fn_name="mean",
         rtol_=1e-1,
         atol_=1e-1,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
@@ -193,7 +193,7 @@ def test_var(
         fn_name="var",
         rtol_=1e-1,
         atol_=1e-2,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         correction=correction,
         keepdims=keep_dims,
@@ -240,7 +240,7 @@ def test_prod(
         instance_method=instance_method,
         fw=fw,
         fn_name="prod",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
         dtype=dtype,
@@ -261,7 +261,7 @@ def test_prod(
     ),
     num_positional_args=helpers.num_positional_args(fn_name="sum"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
 )
 def test_sum(
     *,
@@ -289,10 +289,10 @@ def test_sum(
         fn_name="sum",
         rtol_=1e-1,
         atol_=1e-2,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -328,7 +328,7 @@ def test_std(
         fn_name="std",
         rtol_=1e-2,
         atol_=1e-2,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         correction=correction,
         keepdims=keep_dims,
@@ -375,11 +375,11 @@ def test_cumsum(
         instance_method=instance_method,
         fw=fw,
         fn_name="cumsum",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         exclusive=exclusive,
         reverse=reverse,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -422,10 +422,10 @@ def test_cumprod(
         instance_method=instance_method,
         fw=fw,
         fn_name="cumprod",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         exclusive=exclusive,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -444,13 +444,11 @@ def test_cumprod(
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in dtype))
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
-    operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
+    operands = [tensor_fn(op, dtype=dtype[0], device=device) for op in operands]
     if with_out:
-        out = ivy.zeros(true_shape, dtype=dtype)
+        out = ivy.zeros(true_shape, dtype=dtype[0])
         ret = ivy.einsum(eq, *operands, out=out)
     else:
         ret = ivy.einsum(eq, *operands)
