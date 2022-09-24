@@ -209,6 +209,7 @@ def eye(
 
 
 eye.support_native_out = True
+eye.unsupported_dtypes = ("bfloat16",)
 
 
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
