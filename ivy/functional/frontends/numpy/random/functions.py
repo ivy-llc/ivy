@@ -41,6 +41,19 @@ def dirichlet(alpha, size=None):
             s = ivy.sum(alpha)
             lst.append((alpha / s).tolist())
         ret = ivy.array(lst, dtype="float64").reshape(shape)
+    elif type(size) == list:
+        shape = tuple(size)
+        shape = shape + (alpha.size,)
+        uniform = ivy.random_uniform(low=n, shape=shape)
+        flat = uniform.flatten().tolist()
+        arr = ivy.array([flat[i:i + alpha.size] 
+                        for i in range(0, len(flat), alpha.size)])
+        lst = []
+        for i in range(0, arr.shape[0]):
+            alpha /= arr[i]
+            s = ivy.sum(alpha)
+            lst.append((alpha / s).tolist())
+        ret = ivy.array(lst, dtype="float64").reshape(shape) 
     else:
         assert False, f"{type(size)} object is not iterable"
     return ret
