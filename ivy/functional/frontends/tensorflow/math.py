@@ -97,6 +97,7 @@ def divide_no_nan(x, y, name="divide_no_nan"):
         x / y,
     )
 
+
 def maximum(a, b):
     # Cast inputs to ivy array
     a = ivy.array(a)
@@ -110,6 +111,7 @@ def multiply_no_nan(x, y, name="multiply_no_nan"):
         ivy.array(0.0, dtype=ivy.promote_types(x.dtype, y.dtype)),
         x * y,
     )
+
 
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
