@@ -18,6 +18,7 @@ def update_test_results():
         sys.argv[4],
         sys.argv[5],
     )
+    print(key, workflow, backend, submodule, result)
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"
     )
