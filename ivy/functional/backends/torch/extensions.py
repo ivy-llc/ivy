@@ -63,8 +63,8 @@ def native_sparse_array_to_indices_values_and_shape(x):
 
 
 def ifft(input: torch.Tensor, n: Optional[int] = None,
-         dim: Optional[int] = None, axis: Optional[int] = None,
-         norm: Optional[str] = None, name: Optional[str] = None):
-    if dim is None:
-        dim = -1
-    return torch.fft.ifft(a=input, n=n, dim=dim, norm=norm)
+         axis: Optional[int] = None,
+         norm: Optional[str] = None):
+    if axis is None:
+        axis = -1
+    return torch.fft.ifft(a=input, n=n, dim=axis, norm=norm)

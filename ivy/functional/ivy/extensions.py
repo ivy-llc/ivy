@@ -373,6 +373,6 @@ def native_sparse_array_to_indices_values_and_shape(x):
 
 
 @handle_exceptions
-def ifft(input, n, dim, axis, norm, name):
-    return ivy.current_backend().ifft(input, n, dim,
-                                      axis, norm, name)
+def ifft(input, n, axis, norm):
+    return ivy.current_backend().ifft(input, n, axis,
+                                      axis, norm)

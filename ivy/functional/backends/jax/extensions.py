@@ -55,8 +55,8 @@ def native_sparse_array_to_indices_values_and_shape(x):
 
 
 def ifft(input: JaxArray, n: Optional[int] = None,
-         dim: Optional[int] = None, axis: Optional[int] = None,
-         norm: Optional[str] = None, name: Optional[str] = None):
+         axis: Optional[int] = None,
+         norm: Optional[str] = None):
     if axis is None:
         axis = -1
     return jax.numpy.ifft(a=input, n=n, axis=axis, norm=norm)

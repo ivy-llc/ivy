@@ -129,10 +129,10 @@ def test_sparse_csr(
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
+        min_num_dims=4,
         min_dim_size=2,
         valid_axis=True,
-        max_axes_size=1,
+        max_axes_size=2,
         allow_neg_axes=False,
         force_int_axis=True,
     ),
@@ -165,9 +165,8 @@ def test_ifft(
         fw=fw,
         container_flags=container,
         fn_name="ifft",
-        input=np.asarray(x, dtype=dtype),
+        input=x,#np.asarray(x, dtype=dtype),
         n=n,
-        norm=norm,
         axis=axis,
-        dim=axis
+        norm=norm,
     )

@@ -97,9 +97,9 @@ def _handle_axis_ifft(axis, input, n, inv_norm):
 
 
 def ifft(input: Union[tf.Tensor, tf.Variable], n: Optional[int] = None,
-         dim: Optional[int] = None, axis: Optional[int] = None,
-         norm: Optional[str] = None, name: Optional[str] = None):
+         axis: Optional[int] = None,
+         norm: Optional[str] = None):
     if not isinstance(ivy.backend(), ivy.get_backend("tensorflow")):
         inv_norm = _get_backward_norm(n, norm)
         input = _handle_axis_ifft(axis, input, n, inv_norm)
-    return tf.signal.ifft(input, name=name)
+    return tf.signal.ifft(input)
