@@ -33,7 +33,7 @@ def update_test_results():
     )
     print(workflow, backend, submodule, result, run_id)
     cluster = MongoClient(
-        f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"
+        f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
     db = cluster["Ivy_tests"]
     collection = db[test_configs[workflow][0]]
