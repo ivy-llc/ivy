@@ -36,6 +36,7 @@ Creation
    creation/native_array.rst
    creation/one_hot.rst
    creation/logspace.rst
+   creation/NestedSequence.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`Creation discussion`: https://github.com/unifyai/ivy/discussions/2186

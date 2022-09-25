@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ones &mdash; Ivy 1.0 documentation</title>
+  <title>NestedSequence &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ivy.ones" href="ones/ones_functional.html" />
-    <link rel="prev" title="ivy.Container.static_zeros" href="zeros/static_zeros_container.html" /> 
+    <link rel="next" title="Data type" href="../data_type.html" />
+    <link rel="prev" title="ivy.Container.static_logspace" href="logspace/static_logspace_container.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,11 +63,7 @@
 <li class="toctree-l2"><a class="reference internal" href="arange.html">arange</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asarray.html">asarray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ones</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ones/ones_functional.html">ivy.ones</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ones/static_ones_container.html">ivy.Container.static_ones</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="full_like.html">full_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
@@ -84,7 +80,7 @@
 <li class="toctree-l2"><a class="reference internal" href="native_array.html">native_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logspace.html">logspace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="NestedSequence.html">NestedSequence</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NestedSequence</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
@@ -151,9 +147,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../creation.html">Creation</a> &raquo;</li>
-      <li>ones</li>
+      <li>NestedSequence</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/creation/ones.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/creation/NestedSequence.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -161,107 +157,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ones">
-<h1>ones<a class="headerlink" href="#ones" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.creation.ones">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">ones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#ones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.ones" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a new array having a specified <code class="docutils literal notranslate"><span class="pre">shape</span></code> and filled with ones.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">Size</span></code>]) – output array shape.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DType</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – output array data type. If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the output array data type (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-must be the default floating-point data type. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">device</span></code>]]) – device on which to place the created array. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-inputs broadcast to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>ret</em> – an array containing ones.</p></li>
-<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
-<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
-<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones.html&gt;`_ )</p></li>
-<li><p><em>in the standard.</em></p></li>
-<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
-<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
-<li><p><em>instances in place of any of the arguments.</em></p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[1., 1.],</span>
-<span class="go">       [1., 1.]])</span>
-</pre></div>
-</div>
+  <section id="nestedsequence">
+<h1>NestedSequence<a class="headerlink" href="#nestedsequence" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.functional.ivy.creation.NestedSequence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">NestedSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/creation.html#NestedSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.creation.NestedSequence" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">_T_co</span></code>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.functional.ivy.creation.NestedSequence.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.ivy.creation.NestedSequence.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_ones">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_ones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/creation.html#ContainerWithCreation.static_ones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_ones" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<table class="colwidths-given docutils align-default" id="id3">
-<caption><span class="caption-text">Device Support</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
-<colgroup>
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Device</p></th>
-<th class="head"><p>JAX</p></th>
-<th class="head"><p>NumPy</p></th>
-<th class="head"><p>TensorFlow</p></th>
-<th class="head"><p>PyTorch</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>CPU</p></td>
-<td><p>✅</p></td>
-<td><p>✅</p></td>
-<td><p>✅</p></td>
-<td><p>✅</p></td>
-</tr>
-<tr class="row-odd"><td><p>GPU</p></td>
-<td><p>❌</p></td>
-<td><p>❌</p></td>
-<td><p>❌</p></td>
-<td><p>❌</p></td>
-</tr>
-</tbody>
-</table>
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="zeros/static_zeros_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_zeros" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ones/ones_functional.html" class="btn btn-neutral float-right" title="ivy.ones" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="logspace/static_logspace_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_logspace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../data_type.html" class="btn btn-neutral float-right" title="Data type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
