@@ -87,7 +87,7 @@ ivy.tan()
             fw=fw,
             frontend="jax",
             fn_tree="lax.tan",
-            x=x,
+            x=x[0],
         )
 
 * As you can see we generate almost everything we need to test a frontend function within the :code:`@given` and :code:`@handle_cmd_line_args` decorators.
@@ -143,7 +143,7 @@ ivy.tan()
             fw=fw,
             frontend="numpy",
             fn_tree="tan",
-            x=x,
+            x=x[0],
             where=where,
             casting="same_kind",
             order="k",
@@ -186,7 +186,7 @@ ivy.tan()
             fw=fw,
             frontend="tensorflow",
             fn_tree="tan",
-            x=x,
+            x=x[0],
         )
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for TensorFlow.
@@ -226,7 +226,7 @@ ivy.tan()
             fw=fw,
             frontend="torch",
             fn_tree="nn.functional.threshold",
-            input=input,
+            input=input[0],
             threshold=0.5,
             value=20,
         )
