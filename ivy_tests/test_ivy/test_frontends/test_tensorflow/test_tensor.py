@@ -2,6 +2,7 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
+import ivy
 # local
 from ivy.functional.frontends.tensorflow import Tensor
 import ivy_tests.test_ivy.helpers as helpers
@@ -94,20 +95,23 @@ def test_tensorflow_instance_Reshape(
 # abs
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-3,
-        max_value=3,
+    dtype=helpers.dtype_and_values(
+        available_dtypes=helpers.get_valid_numeric_dtypes(),
+        shared_dtype=True
+    ),
+    x=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=-5, max_value=0
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Tensor.abs"
+        fn_name="ivy.functional.frontends.tensorflow.Tensor.abs",
     ),
 )
 def test_tensorflow_instance_abs(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    dtype, x, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    input_dtype = dtype
+    x = x
+    helpers.test_frontend_array_instance_method(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -115,6 +119,7 @@ def test_tensorflow_instance_abs(
         native_array_flags=native_array,
         fw=fw,
         frontend="tensorflow",
+        frontend_class=Tensor,
         fn_tree="Tensor.abs",
-        self=np.asarray(x, dtype=input_dtype),
+        self=x
     )
