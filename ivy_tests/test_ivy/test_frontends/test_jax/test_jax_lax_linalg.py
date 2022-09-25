@@ -69,7 +69,7 @@ def test_jax_lax_cholesky(
     ),
     full_matrices=st.booleans(),
 )
-def test_jax_qr(
+def test_jax_lax_qr(
     dtype_and_x,
     full_matrices,
     as_variable,
@@ -79,7 +79,7 @@ def test_jax_qr(
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -88,6 +88,6 @@ def test_jax_qr(
         frontend="jax",
         fn_tree="lax.linalg.qr",
         rtol=1e-02,
-        x=np.array(x, dtype=dtype),
+        x=np.asarray(x[0], dtype=dtype[0]),
         full_matrices=full_matrices,
     )
