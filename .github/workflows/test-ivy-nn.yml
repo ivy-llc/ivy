@@ -96,22 +96,24 @@ jobs:
              ivy/.hypothesis/examples.zip
          continue-on-error: true
 
-       - name: Install Libraries
+       - name: Install Mongo Python Client
+         if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push')
          uses: BSFishy/pip-action@v1
          with:
              packages: |
-               PyGithub
+               pymongo[srv]
 
-       - name: Update Dashboard
-         if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && (github.event_name == 'push')
+       - name: Update Database
+         if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push')
          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+             MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
          run: |
-            cd ivy/automation_tools/dashboard_automation/
-            python3 dashboard_script.py "$GITHUB_TOKEN" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
+             cd ivy/automation_tools/dashboard_automation/
+             python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }} ${{ github.run_id }}
          continue-on-error: true
 
 
        - name: Check on failures
          if: (steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped') && steps.tests.outcome != 'success'
          run: exit 1
+

@@ -273,6 +273,17 @@ def mean(
            array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.statistical_functions.mean.html>`_ in the standard.
+
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :code:`ivy.Container` instances in place of any of the arguments.
+
+    
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
@@ -379,15 +390,6 @@ def mean(
         a: ivy.array([1., 2.]),
         b: ivy.array([3., 4.])
     }
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.statistical_functions.mean.html>`_ in the standard.
-
-    Both the description and the type hints above assumes an array input for
-    simplicity, but this function is *nestable*, and therefore also accepts
-    :code:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 

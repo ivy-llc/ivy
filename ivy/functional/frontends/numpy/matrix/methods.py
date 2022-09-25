@@ -81,7 +81,13 @@ class matrix:
     def size(self):
         return self._shape[0] * self._shape[1]
 
-    # TODO: check setters
+    # Setters #
+    # ------- #
+
+    @dtype.setter
+    def dtype(self, dtype):
+        self._data = ivy.astype(self._data, dtype)
+        self._dtype = self._data.dtype
 
     # Instance Methods #
     # ---------------- #

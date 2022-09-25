@@ -30,7 +30,7 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
-trace.unsupported_dtypes = ("float16",)
+trace.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
@@ -44,6 +44,17 @@ def cumprod(input, dim, *, dtype=None, out=None):
 
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
+
+
+def cartesian_prod(*tensors):
+    if len(tensors) == 1:
+        return tensors
+
+    ret = ivy.meshgrid(*tensors, indexing="ij")
+    ret = ivy.stack(ret, axis=-1)
+    ret = ivy.reshape(ret, shape=(-1, len(tensors)))
+
+    return ret
 
 
 def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
@@ -139,3 +150,7 @@ def logcumsumexp(input, dim, *, out=None):
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
     return ret
+
+
+def repeat_interleave(input, repeats, dim=None, *, output_size=None):
+    return ivy.repeat(input, repeats, axis=dim)
