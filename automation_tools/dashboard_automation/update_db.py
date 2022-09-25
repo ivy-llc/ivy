@@ -27,7 +27,7 @@ def update_test_results():
     collection = db[test_configs[workflow][0]]
     collection.update_one(
         {"_id": test_configs[workflow][1]},
-        {"$set": {backend + "." + submodule: [result, run_id]}},
+        {"$set": {backend + "." + submodule: result + '-' + run_id}},
     )
     return
 
