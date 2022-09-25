@@ -104,6 +104,7 @@ jobs:
          with:
              packages: |
                pymongo[srv]
+               emoji
 
        - name: Update Database
          if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push')
