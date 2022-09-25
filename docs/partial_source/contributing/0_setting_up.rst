@@ -328,13 +328,20 @@ can be run from the 'Terminal' tab in PyCharm. There are a number of such shell 
     test_ivy_nn.sh
     test_ivy_stateful.sh
 
-* :code:`run_tests.sh` - is run by typing :code:`./run_tests.sh` in the :code:`run_tests_CLI`. This runs all tests in
-:code:`ivy/ivy_tests`.
-* :code:`test_array_api.sh` - is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`. This runs all
+* :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory. This runs all tests in :code:`ivy/ivy_tests`.
+* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`. This runs all \
 array-api tests for a certain submodule in a certain backend.
-* :code:`test_ivy_core.sh` - is run by typing :code:`./test_ivy_core.sh [backend] test_[submodule]`. This runs all
-ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
-* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`.
+* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory. \
+This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
+* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`. Make sure to \
+check the submodule names in the source code before running.
+
+.. image:: content/pycharm_run_array_api_tests.png
+  :width: 420
+
+If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available
+in :code:`run_tests_CLI`. All are run like:
+:code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
 
 
 More Detailed Hypothesis Logs

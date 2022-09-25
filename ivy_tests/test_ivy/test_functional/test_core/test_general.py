@@ -361,11 +361,6 @@ def test_get_num_dims(x0_n_x1_n_res, as_tensor, tensor_fn, device, fw):
         shape=(),
     ),
     num_positional_args=helpers.num_positional_args(fn_name="clip_vector_norm"),
-    as_variable=st.booleans(),
-    with_out=st.booleans(),
-    native_array=st.booleans(),
-    container=st.booleans(),
-    instance_method=st.booleans(),
 )
 def test_clip_vector_norm(
     x,

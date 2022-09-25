@@ -73,6 +73,7 @@ def test_tensorflow_eigvalsh(
         frontend="tensorflow",
         fn_tree="linalg.eigvalsh",
         input=np.asarray(x, dtype=input_dtype),
+        test_values=False,
     )
 
 
@@ -339,9 +340,6 @@ def test_tensorflow_tensordot(
         axes,
     ) = dtype_x_y_axes
 
-    as_variable = [as_variable, as_variable]
-    native_array = [native_array, native_array]
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -351,8 +349,8 @@ def test_tensorflow_tensordot(
         fw=fw,
         frontend="tensorflow",
         fn_tree="tensordot",
-        x=np.asarray(x, dtype=dtype),
-        y=np.asarray(y, dtype=dtype),
+        a=np.asarray(x, dtype=dtype),
+        b=np.asarray(y, dtype=dtype),
         axes=axes,
     )
 

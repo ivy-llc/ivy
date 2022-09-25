@@ -95,11 +95,11 @@ class ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array(1.1)
 
-        >>> x = ivy.array([1, 2, 3, 0, -1])
+        >>> x = ivy.array([1., 2., 3., 0., -1.])
         >>> y = ivy.array(0.)
         >>> ivy.mean(x, out=y)
         >>> print(y)
-        ivy.array(0.)
+        ivy.array(1.)
 
         >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
         >>> y = ivy.array([0., 0., 0.])

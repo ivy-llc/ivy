@@ -213,7 +213,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
 
     @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.ints(min_value=0, max_value=2),
     alpha=helpers.floats(),
     )
