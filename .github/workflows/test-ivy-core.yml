@@ -99,6 +99,7 @@ jobs:
          continue-on-error: true
 
        - name: Install Libraries
+         if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push')
          uses: BSFishy/pip-action@v1
          with:
              packages: |
