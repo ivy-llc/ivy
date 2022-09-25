@@ -14,12 +14,12 @@ def dirichlet(alpha, size=None):
         raise ValueError(f"could not convert string to float: '{x}'")
     if type(alpha) in [int, float]:
         raise TypeError(f"object of type {type(alpha)} has no len()")
+    if type(alpha[0]) in [list, tuple]:
+        raise ValueError("object too deep for desired array")
     if any(x <= 0 for x in alpha):
         raise ValueError("alpha <= 0")
-    
     n = min(alpha)
     alpha = ivy.array(alpha)
-    
     if type(size) == int:
         if size < 0:
             raise ValueError("negative dimensions are not allowed")
@@ -28,13 +28,13 @@ def dirichlet(alpha, size=None):
             alpha /= ivy.random_uniform(shape=alpha.shape)
             s = ivy.sum(alpha)
             lst.append((alpha / s).tolist())
-        ret = ivy.array(lst, dtype="float64")        
-    elif type(size) in [tuple,list]:
+        ret = ivy.array(lst, dtype="float64")
+    elif type(size) in [tuple, list]:
         if any(x < 0 for x in size):
             raise ValueError("negative dimensions are not allowed")
         else:
             shape = tuple(size)
-            shape = shape + (alpha.size, )  
+            shape = shape + (alpha.size, )
             uniform = ivy.random_uniform(low=n, shape=shape)
             flat = uniform.flatten().tolist()
             arr = ivy.array([flat[i:i + alpha.size]
