@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -8,7 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
-# transpose
+# transpose
 @handle_cmd_line_args
 @given(
     array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
@@ -39,4 +39,3 @@ def test_numpy_transpose(
         array=np.array(array),
         axes=axes,
     )
-

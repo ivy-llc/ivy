@@ -5,6 +5,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
 # reshape
@@ -107,26 +108,31 @@ def test_numpy_ndarray_add(
         fn_name="ivy.functional.frontends.numpy.ndarray.transpose"
     ),
 )
-def test_numpy_instance_transpose(
+def test_numpy_ndarray_transpose(
     array_and_axes,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     fw,
 ):
     array, axes = array_and_axes
-    helpers.test_frontend_array_instance_method(
-        input_dtypes=["int8"],
-        as_variable_flags=as_variable,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+    helpers.test_frontend_method(
+        input_dtypes_init=["int8"],
+        input_dtypes_method=["int8"],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=num_positional_args,
+        num_positional_args_method=num_positional_args,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": np.array(array),
+        },
+        all_as_kwargs_np_method={
+            "axes": axes,
+        },
         fw=fw,
-        with_out=with_out,
         frontend="numpy",
-        frontend_class=ndarray,
-        fn_tree="ndarray.transpose",
-        self=np.array(array),
-        axes=axes,
-        test_values=False,
+        class_name="ndarray",
+        method_name="transpose",
     )

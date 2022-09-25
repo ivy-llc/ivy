@@ -21,8 +21,9 @@ def dtype_x_bounded_axis(draw, **kwargs):
 
 
 @st.composite
-def _array_and_axes_permute_helper(draw, *, min_num_dims, max_num_dims,
-    min_dim_size, max_dim_size):
+def _array_and_axes_permute_helper(
+    draw, *, min_num_dims, max_num_dims, min_dim_size, max_dim_size,
+):
     """Returns array and either the random permutation of its axes or None.
 
     Parameters
