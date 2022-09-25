@@ -78,6 +78,7 @@ jobs:
         with:
             packages: |
                 pymongo[srv]
+                emoji
 
       - name: Update Database
         if: (github.event_name == 'push')
