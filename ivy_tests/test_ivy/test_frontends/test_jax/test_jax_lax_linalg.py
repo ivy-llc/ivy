@@ -62,7 +62,7 @@ def test_jax_lax_cholesky(
         ),
         n=helpers.ints(min_value=1, max_value=8),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.lax.linalg.matrix_power"
+            fn_name="ivy.functional.frontends.jax.lax.linalg.matrix_power"
         ),
     )
     def test_jax_lax_matrix_power(
@@ -78,6 +78,6 @@ def test_jax_lax_cholesky(
             fw=fw,
             frontend="jax",
             fn_tree="lax.linalg.matrix_power",
-            a=np.array(x, dtype=dtype),
+            m=np.array(x, dtype=dtype),
             n=n,
         )
