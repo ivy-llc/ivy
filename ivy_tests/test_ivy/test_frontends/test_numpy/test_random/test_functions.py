@@ -16,13 +16,18 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args, given
     ),
     size=helpers.get_shape(allow_none=True),
 )
-def test_numpy_random(input_dtypes, num_positional_args, size, fw, native_array):
+def test_numpy_random(
+    input_dtypes,
+    num_positional_args,
+    size,
+    fw,
+):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=[False],
+        as_variable_flags=False,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        native_array_flags=False,
         test_values=False,
         fw=fw,
         frontend="numpy",
@@ -38,6 +43,8 @@ def test_numpy_random(input_dtypes, num_positional_args, size, fw, native_array)
         available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=1,
         max_num_dims=1,
+        min_value=0,
+        exclude_min=True,
 
     ),
     as_variable=helpers.array_bools(),
