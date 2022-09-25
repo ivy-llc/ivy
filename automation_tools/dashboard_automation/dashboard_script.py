@@ -16,7 +16,7 @@ def update_dashboard():
     g = Github(token)
     repo = g.get_repo("unifyai/ivy")
     cluster = MongoClient(
-        f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"
+        f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
     db = cluster["Ivy_tests"]
     collection = db[dashboard_config[workflow][0]]
