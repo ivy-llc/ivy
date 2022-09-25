@@ -237,7 +237,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_variable</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
     <span class="c1"># Properties #</span>
-    <span class="c1"># -----------#</span>
+    <span class="c1"># ---------- #</span>
 
     <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">mT</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -458,29 +458,11 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        With :code:`ivy.Array` instances only:</span>
-
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
 <span class="sd">        &gt;&gt;&gt; z = x + y</span>
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        ivy.array([5, 7, 9])</span>
-
-<span class="sd">        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                            b=ivy.array([[5.], [6.], [7.]]))</span>
-<span class="sd">        &gt;&gt;&gt; z = x + y</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[5.1, 6.3, 0.4],</span>
-<span class="sd">                          [6.1, 7.3, 1.4],</span>
-<span class="sd">                          [7.1, 8.3, 2.4]]),</span>
-<span class="sd">            b: ivy.array([[6.1, 7.3, 1.4],</span>
-<span class="sd">                          [7.1, 8.3, 2.4],</span>
-<span class="sd">                          [8.1, 9.3, 3.4]])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
@@ -549,22 +531,6 @@
 <span class="sd">        &gt;&gt;&gt; z = x - y</span>
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        ivy.array([-3, -3, -3])</span>
-
-<span class="sd">        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                            b=ivy.array([[5.], [6.], [7.]]))</span>
-<span class="sd">        &gt;&gt;&gt; z = x - y</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[-2.9, -1.7, -7.6], </span>
-<span class="sd">                          [-3.9, -2.7, -8.6], </span>
-<span class="sd">                          [-4.9, -3.7, -9.6]]),</span>
-<span class="sd">            b: ivy.array([[-3.9, -2.7, -8.6], </span>
-<span class="sd">                          [-4.9, -3.7, -9.6], </span>
-<span class="sd">                          [-5.9, -4.7, -10.6]])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
@@ -600,6 +566,10 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
     <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
@@ -616,8 +586,20 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__rmod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__imod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__divmod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">divmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__rdivmod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -642,6 +624,18 @@
     <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__ifloordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__matmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__rmatmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__imatmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -682,45 +676,13 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of bool.</span>
 
-<span class="sd">        Operator Examples</span>
-<span class="sd">        -----------------</span>
-
-<span class="sd">        With :code:`ivy.Array` instances:</span>
-
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([6, 2, 3])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
 <span class="sd">        &gt;&gt;&gt; z = x &lt;= y</span>
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        ivy.array([ False, True, True])</span>
-
-<span class="sd">        With :code:`ivy.Container` instances:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                      b=ivy.array([2, 3, 4]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                          b=ivy.array([5, 6, 7]))</span>
-<span class="sd">        &gt;&gt;&gt; z = x &lt;= y</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([False, False, False]),</span>
-<span class="sd">            b: ivy.array([True, True, True])</span>
-<span class="sd">        }</span>
-
-<span class="sd">        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                              b=ivy.array([[5.], [6.], [7.]]))</span>
-<span class="sd">        &gt;&gt;&gt; z = x &lt;= y</span>
-<span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[False, True, True],</span>
-<span class="sd">                          [False, True, True],</span>
-<span class="sd">                          [True, True, True]]),</span>
-<span class="sd">            b: ivy.array([[False, True, True],</span>
-<span class="sd">                          [True, True, True],</span>
-<span class="sd">                          [True, True, True]])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
@@ -749,12 +711,20 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__iand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__ror__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__ior__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -769,12 +739,20 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__ixor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rlshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__ilshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Array.__rshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rshift__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -807,17 +785,6 @@
 <span class="sd">        &gt;&gt;&gt; y = a &gt;&gt; b</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([2, 1, 1])</span>
-
-<span class="sd">        With mix of :code:`ivy.Array` and :code:`ivy.Container` instances:</span>
-
-<span class="sd">        &gt;&gt;&gt; a = ivy.array([5, 10, 64])</span>
-<span class="sd">        &gt;&gt;&gt; b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([3]))</span>
-<span class="sd">        &gt;&gt;&gt; y = a &gt;&gt; b</span>
-<span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([5, 5, 16]),</span>
-<span class="sd">            b: ivy.array([0, 1, 8])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
@@ -854,6 +821,10 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
     <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__irshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memodict</span><span class="o">=</span><span class="p">{}):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">(</span><span class="n">memodict</span><span class="p">))</span>
@@ -867,8 +838,16 @@
             <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">))</span>
 
     <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">])</span>
+
+    <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
