@@ -139,6 +139,7 @@ jobs:
              packages: |
                PyGithub
                pymongo[srv]
+               tabulate
                pandas
 
        - name: "${{ github.workflow }} dashboard update"
