@@ -43,3 +43,10 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 
 
 eye.unsupported_dtypes = ("float16", "bfloat16")
+
+
+eye.unsupported_dtypes = ("float16", "bfloat16")
+
+
+def cholesky(input, name=None):
+    return ivy.cholesky(input)
