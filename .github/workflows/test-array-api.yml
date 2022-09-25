@@ -12,7 +12,7 @@ jobs:
       matrix:
         backends: [numpy, torch, jax, tensorflow]
         submodules: [array_object, constants, creation_functions, data_type_functions,
-                    linalg, manipulation_functions, operators_and_elementwise_functions,
+                    has_names, linalg, manipulation_functions, operators_and_elementwise_functions,
                     searching_functions, set_functions, signatures, sorting_functions,
                     special_cases, statistical_functions, type_promotion, utility_functions]
     continue-on-error: true
@@ -73,11 +73,12 @@ jobs:
             ivy/.hypothesis/examples.zip
         continue-on-error: true
 
-      - name: Install Libraries
+      - name: Install Python Clients
         uses: BSFishy/pip-action@v1
         with:
             packages: |
-              PyGithub
+                pymongo[srv]
+                emoji
 
       - name: Update Database
         if: (github.event_name == 'push')
@@ -85,8 +86,40 @@ jobs:
             MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         run: |
             cd ivy/automation_tools/dashboard_automation/
-            python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
+            python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }} ${{ github.run_id }}
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
         run: exit 1
+
+  update-tests-dashboard:
+    needs: run-array-api-tests
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      MONGODB_CREDENTIALS: ${{ secrets.MONGODB_PASSWORD }}
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+            path: ivy
+            persist-credentials: false
+            submodules: "recursive"
+            fetch-depth: 2
+
+      - name: Install Python Clients
+        uses: BSFishy/pip-action@v1
+        with:
+            packages: |
+              PyGithub
+              pymongo[srv]
+              tabulate
+              pandas
+
+      - name: "${{ github.workflow }} dashboard update"
+        run: |
+          cd ivy/automation_tools/dashboard_automation/
+          python3 dashboard_script.py $MONGODB_CREDENTIALS $GITHUB_TOKEN ${{ github.workflow }}
+
+
+

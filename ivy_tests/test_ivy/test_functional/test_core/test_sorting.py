@@ -2,7 +2,6 @@
 
 # global
 from hypothesis import given, strategies as st
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -37,7 +36,6 @@ def test_argsort(
     fw,
 ):
     dtype, x, axis = dtype_x_axis
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -48,7 +46,7 @@ def test_argsort(
         instance_method=instance_method,
         fw=fw,
         fn_name="argsort",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         axis=axis,
         descending=descending,
         stable=stable,
@@ -83,7 +81,6 @@ def test_sort(
     fw,
 ):
     dtype, x, axis = dtype_x_axis
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -94,7 +91,7 @@ def test_sort(
         instance_method=instance_method,
         fw=fw,
         fn_name="sort",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         axis=axis,
         descending=descending,
         stable=stable,
@@ -157,7 +154,7 @@ def test_searchsorted(
         instance_method=instance_method,
         fw=fw,
         fn_name="searchsorted",
-        x=np.asarray(xs[0], dtype=dtypes[0]),
-        v=np.asarray(xs[1], dtype=dtypes[1]),
+        x=xs[0],
+        v=xs[1],
         side=side,
     )
