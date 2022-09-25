@@ -17,6 +17,7 @@ class ArrayWithCreation(abc.ABC):
         copy: Optional[bool] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.asarray. This method simply wraps the
@@ -29,6 +30,8 @@ class ArrayWithCreation(abc.ABC):
             input data, in any form that can be converted to an array. This includes
             lists, lists of tuples, tuples, tuples of tuples, tuples of lists and
             ndarrays.
+        copy
+            boolean, indicating whether or not to copy the input. Default: ``None``.
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device
@@ -41,9 +44,8 @@ class ArrayWithCreation(abc.ABC):
         -------
         ret
             An array interpretation of ``self``.
-
         """
-        return ivy.asarray(self._data, copy=copy, dtype=dtype, device=device)
+        return ivy.asarray(self._data, copy=copy, dtype=dtype, device=device, out=out)
 
     def full_like(
         self: ivy.Array,

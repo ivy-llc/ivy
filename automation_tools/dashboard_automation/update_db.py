@@ -1,5 +1,4 @@
 import sys
-import emoji
 from pymongo import MongoClient
 
 action_url = "https://github.com/unifyai/ivy/actions/runs/"
@@ -11,13 +10,13 @@ test_configs = {
     "test-stateful-ivy": ["ivy_stateful", 3],
 }
 result_config = {
-    "success": emoji.emojize(":white_check_mark:", language="alias"),
-    "failure": emoji.emojize(":x:", language="alias"),
+    "success": "https://img.shields.io/badge/-success-success",
+    "failure": "https://img.shields.io/badge/-failure-red",
 }
 
 
 def make_clickable(url, name):
-    return '<a href="{}" rel="noopener noreferrer" target="_blank">{}</a>'.format(
+    return '<a href="{}" rel="noopener noreferrer" target="_blank"><img src={}></a>'.format(
         url, name
     )
 
