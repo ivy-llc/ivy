@@ -18,6 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
         and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
         and np.linalg.det(x[1][0]) != 0
     ),
