@@ -62,10 +62,10 @@ def test_jax_lax_cholesky(
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
-        lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1])) != 0
-        and x[0] != "float16"
-        and x[0] != "bfloat16"
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.lax.linalg.eigh"
@@ -83,12 +83,12 @@ def test_jax_lax_eigh(
     symmetrize_input,
 ):
     dtype, x = dtype_and_x
-    x = np.array(x, dtype=dtype)
+    x = np.array(x[0], dtype=dtype[0])
     # make symmetric positive-definite beforehand
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -104,11 +104,11 @@ def test_jax_lax_eigh(
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
-    Q, L = ret
+    L, Q = ret
     frontend_Q, frontend_L = frontend_ret
 
     assert_all_close(
         ret_np=Q @ np.diag(L) @ Q.T,
         ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
-        atol=1e-05,
+        atol=1e-2,
     )
