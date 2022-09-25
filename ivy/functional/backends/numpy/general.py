@@ -225,6 +225,24 @@ def scatter_nd(
     if ivy.exists(shape) and target_given:
         ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
+    if indices is not Ellipsis and (
+        isinstance(indices, (tuple, list)) and not (Ellipsis in indices)
+    ):
+        indices = [[indices]] if isinstance(indices, Number) else indices
+        indices = np.array(indices)
+        if len(indices.shape) < 2:
+            indices = np.expand_dims(indices, -1)
+        expected_shape = (
+            indices.shape[:-1] + out.shape[indices.shape[-1] :]
+            if ivy.exists(out)
+            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+        )
+        if sum(updates.shape) < sum(expected_shape):
+            updates = ivy.broadcast_to(updates, expected_shape)._data
+        elif sum(updates.shape) > sum(expected_shape):
+            indices = ivy.broadcast_to(
+                indices, updates.shape[:1] + (indices.shape[-1],)
+            )._data
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == "sum":
