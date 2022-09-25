@@ -598,7 +598,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        
+
         return ContainerBase.multi_map_in_static_method(
             "inv",
             x,
@@ -675,10 +675,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def static_pinv(
-        x : Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         rtol: Optional[Union[float, Tuple[float]]] = None,
@@ -736,12 +736,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
             rtol=rtol,
             out=out,
         )
-    
+
     def pinv(
         self: ivy.Container,
         /,
         *,
-        rtol : Optional[Union[float, Tuple[float]]] = None,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -792,8 +792,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
     
         """
-        return self.static_pinv(self, rtol=rtol, out=out,)
-    
+        return self.static_pinv(
+            self,
+            rtol=rtol,
+            out=out,
+        )
+
     @staticmethod
     def static_matrix_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
