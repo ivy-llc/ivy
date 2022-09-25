@@ -620,19 +620,19 @@ and a variety performance details are supported. Let’s look at the function `t
 This test runs for every backend, and the output is shown below-:
 
 * **Jax**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/Jax_data_gen.png
    :width: 600
 
 * **Numpy**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/numpy_data_gen.png
    :width: 600
 
 * **Tensorflow**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/tensorflow_data_gen.png
    :width: 600
 
 * **Torch**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/torch_data_gen.png
    :width: 600
 
 
@@ -645,7 +645,7 @@ examples from previous runs are displayed.
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**. Let’s look at
 the newer output, for the same example -:
 
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/test_run_data_gen.png
    :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.
