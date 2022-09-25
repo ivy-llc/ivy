@@ -34,11 +34,11 @@ def test_jax_lax_cholesky(
     symmetrize_input,
 ):
     dtype, x = dtype_and_x
-    x = np.array(x, dtype=dtype)
+    x = x[0]
     # make symmetric positive-definite beforehand
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,

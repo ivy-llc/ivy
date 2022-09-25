@@ -149,6 +149,7 @@ def matrix_power(
     return np.linalg.matrix_power(x, n)
 
 
+@_handle_0_dim_output
 def matrix_rank(
     x: np.ndarray,
     /,
@@ -156,7 +157,7 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.linalg.matrix_rank(x, tol=rtol)
+    return np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
 
 
 matrix_rank.unsupported_dtypes = (
