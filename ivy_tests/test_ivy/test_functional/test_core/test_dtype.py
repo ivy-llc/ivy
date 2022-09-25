@@ -70,7 +70,7 @@ def _astype_helper(draw):
     )
 
     cast_dtype = draw(
-        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype, x)
+        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype[0], x)
     )
     return dtype, x, cast_dtype
 
@@ -104,7 +104,7 @@ def test_astype(
         fn_name="astype",
         rtol_=1e-3,
         atol_=1e-3,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         dtype=cast_dtype,
     )
 
@@ -173,7 +173,7 @@ def test_broadcast_to(
 ):
     array, to_shape = array_and_shape
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -217,8 +217,8 @@ def test_can_cast(
         instance_method=instance_method,
         fw=fw,
         fn_name="can_cast",
-        from_=np.array(x, dtype=input_dtype),
-        to=to_dtype,
+        from_=x[0],
+        to=to_dtype[0],
     )
 
 
@@ -254,17 +254,17 @@ def test_finfo(
     fw,
 ):
     if isinstance(type, str):
-        input_dtype = type
+        input_dtype = [type]
     else:
         input_dtype, x = type
-        type = np.array(x, dtype=input_dtype)
+        type = x[0]
     ret = helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        container_flags=False,
+        native_array_flags=[False],
+        container_flags=[False],
         instance_method=False,
         fw=fw,
         fn_name="finfo",
@@ -292,17 +292,17 @@ def test_iinfo(
     fw,
 ):
     if isinstance(type, str):
-        input_dtype = type
+        input_dtype = [type]
     else:
         input_dtype, x = type
-        type = np.array(x, dtype=input_dtype)
+        type = x[0]
     ret = helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
-        container_flags=False,
+        native_array_flags=[False],
+        container_flags=[False],
         instance_method=False,
         fw=fw,
         fn_name="iinfo",
@@ -339,7 +339,7 @@ def test_result_type(
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
-        kw["x{}".format(i)] = np.asarray(x_, dtype=dtype_)
+        kw["x{}".format(i)] = x_
     num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=dtype,
@@ -433,7 +433,7 @@ def test_default_dtype(
     input_dtype,
     as_native,
 ):
-
+    input_dtype = input_dtype[0]
     res = ivy.default_dtype(dtype=input_dtype, as_native=as_native)
     assert (
         isinstance(input_dtype, ivy.Dtype)
@@ -472,7 +472,7 @@ def test_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -500,15 +500,15 @@ def test_dtype_bits(
 ):
     ret = helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=True,
-        container_flags=False,
+        native_array_flags=[True],
+        container_flags=[False],
         instance_method=False,
         fw=fw,
         fn_name="dtype_bits",
-        dtype_in=input_dtype,
+        dtype_in=input_dtype[0],
         test_values=False,
     )
     if not ivy.exists(ret):
@@ -543,7 +543,7 @@ def test_is_bool_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -583,7 +583,7 @@ def test_is_float_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -622,7 +622,7 @@ def test_is_int_dtype(
     fw,
 ):
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -690,21 +690,18 @@ def test_type_promote_arrays(
     fw,
 ):
     types, arrays = dtype_and_values
-    type1, type2 = types
-    x1, x2 = arrays
-    input_dtype = [type1, type2]
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=types,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=False,
+        container_flags=[False],
         instance_method=False,
         fw=fw,
         fn_name="type_promote_arrays",
-        x1=np.array(x1),
-        x2=np.array(x2),
+        x1=arrays[0],
+        x2=arrays[1],
         test_values=True,
     )
 
