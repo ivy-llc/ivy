@@ -471,6 +471,7 @@ def test_numpy_interp(
         large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
+    initial=st.one_of(st.floats(), st.none()),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.nanmin"
     ),
@@ -479,13 +480,13 @@ def test_numpy_interp(
 )
 def test_numpy_nanmin(
     dtype_and_x,
-    dtype,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
     where,
+    initial,
     keepdims,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -508,4 +509,5 @@ def test_numpy_nanmin(
         axis=axis,
         where=where,
         keepdims=keepdims,
+        initial=initial,
     )
