@@ -42,7 +42,7 @@ def test_gelu(
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"x": np.asarray(x, dtype=input_dtype)},
+        all_as_kwargs_np_method={"x": x[0]},
         fw=fw,
         class_name="GELU",
     )
