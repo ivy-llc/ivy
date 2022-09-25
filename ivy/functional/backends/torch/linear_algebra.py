@@ -399,7 +399,11 @@ def vector_norm(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
+    if ord == None:
+        py_normalized_vector = torch.linalg.vector_norm(x, dim=axis, keepdim=keepdims, out=out)
+    else:
+        py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
+
     if py_normalized_vector.shape == ():
         ret = torch.unsqueeze(py_normalized_vector, 0)
     else:

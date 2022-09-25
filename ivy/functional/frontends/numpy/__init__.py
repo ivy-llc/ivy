@@ -39,4 +39,10 @@ from .linalg.matrix_and_vector_products import (
     # kron,
 )
 
-# from .linalg.norms_and_other_numbers import trace
+
+from .linalg.norms_and_other_numbers import (
+    norm,
+    matrix_rank,
+    det,
+    slogdet
+)

@@ -576,7 +576,9 @@ def vector_norm(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ord == -float("inf"):
+    if ord == None:
+        tn_normalized_vector = tf.linalg.norm(tensor=x, axis=axis, keepdims=keepdims)
+    elif ord == -float("inf"):
         tn_normalized_vector = tf.reduce_min(tf.abs(x), axis, keepdims)
     elif ord == -2:
         tn_normalized_vector = 1.0 / tf.sqrt(

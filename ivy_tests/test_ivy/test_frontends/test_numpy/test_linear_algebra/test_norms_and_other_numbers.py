@@ -21,13 +21,14 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         min_axis=-2,
         max_axis=1,
     ),
+    ord=helpers.ints(min_value=1, max_value=2) | st.none(),
     keepdims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.norm"
     ),
 )
-def test_numpy_norm(
-    dtype_values_axis, keepdims, as_variable, native_array, num_positional_args, fw
+def test_numpy_linalg_norm(
+    dtype_values_axis, ord, keepdims, as_variable, native_array, num_positional_args, fw
 ):
     dtype, x, axis = dtype_values_axis
     if len(np.shape(x)) == 1:
@@ -42,7 +43,7 @@ def test_numpy_norm(
         frontend="numpy",
         fn_tree="linalg.norm",
         x=x[0],
-        ord=None,
+        ord=ord,
         axis=axis,
         keepdims=keepdims,
     )

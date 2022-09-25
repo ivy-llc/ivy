@@ -3,7 +3,7 @@ import ivy
 
 
 def norm(x, ord=None, axis=None, keepdims=False):
-    ret = ivy.vector_norm(x, axis, keepdims, ord)
+    ret = ivy.vector_norm(x, axis=axis, keepdims=keepdims, ord=ord)
     if axis is None:
         return ret[0]
     return ret
