@@ -5,9 +5,9 @@ unstack
 
 .. autofunction:: ivy.array.array_methods.unstack
 
-.. autofunction:: ivy.container.container_methods.static_unstack
-
 .. autofunction:: ivy.container.container_methods.unstack
+
+.. autofunction:: ivy.container.container_methods.static_unstack
 
 .. list-table:: Device Support
    :widths: 20 20 20 20 20
