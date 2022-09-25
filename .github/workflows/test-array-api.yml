@@ -82,7 +82,7 @@ jobs:
                 emoji
 
       - name: Update Database
-        id: database
+        id: db
         if: (github.event_name == 'push')
         env:
             MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
@@ -97,7 +97,7 @@ jobs:
   update-dashboard:
     needs: run-array-api-tests
     runs-on: ubuntu-latest
-    if: needs.run-array-api-tests.database.conclusion == "success"
+    if: needs.run-array-api-tests.steps.db.outcome == 'success'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       MONGODB_CREDENTIALS: ${{ secrets.MONGODB_PASSWORD }}
