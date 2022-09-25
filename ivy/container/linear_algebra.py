@@ -598,6 +598,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        
         return ContainerBase.multi_map_in_static_method(
             "inv",
             x,
@@ -674,7 +675,125 @@ class ContainerWithLinearAlgebra(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+    
+    @staticmethod
+    def static_pinv(
+        x : Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        rtol: Optional[Union[float, Tuple[float]]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container special method variant of ivy.pinv.
+        This method simply wraps the function, and so the docstring
+        for ivy.pinv also applies to this method with minimal changes.
 
+        Parameters
+        ----------
+        x
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
+        ``MxN`` matrices. Should have a floating-point data type.
+        rtol
+            relative tolerance for small singular values approximately less
+            than or equal to ``rtol * largest_singular_value`` are set to zero. 
+        out
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the pseudo-inverses. The returned array must have a
+            floating-point data type determined by :ref:`type-promotion` and 
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            ``x``, except the innermost two dimensions must be transposed).
+    
+        Examples
+        --------
+        x = ivy.Container(a= ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        y = pinv(x, None, None)
+        print(y)
+        {
+            a: ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+        }
+    
+        x = ivy.Container(a=ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        out = ivy.Container(a=ivy.array())
+        pinv(x, 0, out)
+        print(out)
+        {
+            a: ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "pinv",
+            x,
+            rtol=rtol,
+            out=out,
+        )
+    
+    def pinv(
+        self: ivy.Container,
+        /,
+        *,
+        rtol : Optional[Union[float, Tuple[float]]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.pinv.
+        This method simply wraps the function, and so the docstring
+        for ivy.pinv also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
+            ``MxN`` matrices. Should have a floating-point data type.
+        rtol
+        relative tolerance for small singular values approximately less than or equal to 
+            ``rtol * largest_singular_value`` are set to zero. 
+        out
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the pseudo-inverses. The returned array must have a
+            floating-point data type determined by :ref:`type-promotion` and 
+            must have shape ``(..., N, M)`` (i.e., must have the same shape as 
+            ``x``, except the innermost two dimensions must be transposed).
+    
+    
+        Examples
+        --------
+        x = ivy.Container(a= ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        y = pinv(x, None, None)
+        print(y)
+        {
+            a: ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+        }
+    
+        x = ivy.Container(a=ivy.array([[1., 2.],\
+                  [3., 4.]]))
+        out = ivy.Container(a=ivy.array())
+        pinv(x, 0, out)
+        print(out)
+        {
+            a: ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+        }
+    
+        """
+        return self.static_pinv(self, rtol=rtol, out=out,)
+    
     @staticmethod
     def static_matrix_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

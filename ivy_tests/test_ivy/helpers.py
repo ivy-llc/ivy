@@ -2383,7 +2383,8 @@ def test_frontend_array_instance_method(
 
         # change out argument to ivy array
         if "out" in kwargs_frontend:
-            kwargs_frontend["out"] = ivy.asarray(kwargs_frontend["out"])
+            if kwargs_frontend["out"] is not None:
+                kwargs_frontend["out"] = ivy.asarray(kwargs_frontend["out"])
 
         # get instance array
         if args_frontend == () or args_frontend == []:
