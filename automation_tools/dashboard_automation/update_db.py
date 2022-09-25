@@ -4,9 +4,9 @@ from pymongo import MongoClient
 
 test_configs = {
     "test-array-api": ["array_api", 0],
-    "test-ivy-core": ["ivy_core", 1],
-    "test-ivy_nn": ["ivy_nn", 2],
-    "test_ivy_stateful": ["ivy_stateful", 3],
+    "test-core-ivy": ["ivy_core", 1],
+    "test-nn-ivy": ["ivy_nn", 2],
+    "test-stateful-ivy": ["ivy_stateful", 3],
 }
 
 
