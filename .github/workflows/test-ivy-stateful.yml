@@ -137,10 +137,11 @@ jobs:
        - name: Install Python Clients
          uses: BSFishy/pip-action@v1
          with:
-              packages: |
-              PyGithub
-              pymongo[srv]
-              pandas
+             packages: |
+               PyGithub
+               pymongo[srv]
+               tabulate
+               pandas
 
        - name: "${{ github.workflow }} dashboard update"
          run: |
