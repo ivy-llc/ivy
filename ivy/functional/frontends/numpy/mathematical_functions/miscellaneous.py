@@ -265,3 +265,29 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret[0]), "float64")
     else:
         return ivy.astype(ivy.array(ret), "float64")
+
+
+def nanmin(
+    a,
+    axis=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=True,
+):
+    bound_max = ivy.finfo(a).max
+    # select only the specified elements
+    if ivy.is_array(where):
+        a = ivy.where(where, a, a.full_like(bound_max))
+    nan_mask = ivy.isnan(a)
+    x = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(bound_max))
+    if initial is not None:
+        s = ivy.shape(x, as_array=True)
+        if axis is not None:
+            s[axis] = 1
+        header = ivy.full(ivy.Shape(s.to_list()), initial)
+        if axis:
+            x = ivy.concat([x, header], axis=axis)
+        else:
+            x = ivy.concat([x, header])
+    return ivy.min(x, axis=axis, out=out, keepdims=keepdims)
