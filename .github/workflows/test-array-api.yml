@@ -94,13 +94,21 @@ jobs:
         if: steps.tests.outcome != 'success'
         run: exit 1
 
-  update-dashboard:
+  update-tests-dashboard:
     needs: run-array-api-tests
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       MONGODB_CREDENTIALS: ${{ secrets.MONGODB_PASSWORD }}
     steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+            path: ivy
+            persist-credentials: false
+            submodules: "recursive"
+            fetch-depth: 2
+
       - name: "${{ github.workflow }} dashboard update"
         run: |
           cd ivy/automation_tools/dashboard_automation/
