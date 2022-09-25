@@ -92,12 +92,11 @@ def asarray(
         and len(object_in) != 0
         and dtype is None
     ):
-        if copy is True:
-            return torch.as_tensor(object_in).clone().detach().to(device)
-        else:
-            return torch.as_tensor(object_in).to(device)
-
         dtype = default_dtype(item=object_in, as_native=True)
+        if copy is True:
+            return torch.as_tensor(object_in, dtype=dtype).clone().detach().to(device)
+        else:
+            return torch.as_tensor(object_in, dtype=dtype).to(device)
 
     elif isinstance(object_in, np.ndarray) and dtype is None:
         dtype = as_native_dtype(as_ivy_dtype(object_in.dtype))
@@ -209,6 +208,7 @@ def eye(
 
 
 eye.support_native_out = True
+eye.unsupported_dtypes = ("bfloat16",)
 
 
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):

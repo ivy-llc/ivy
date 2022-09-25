@@ -35,12 +35,14 @@ import ivy.func_wrapper
 
 TOLERANCE_DICT = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
 cmd_line_args = (
-    "as_variable",
-    "native_array",
     "with_out",
-    "container",
     "instance_method",
     "test_gradients",
+)
+cmd_line_args_lists = (
+    "as_variable",
+    "native_array",
+    "container",
 )
 frontend_fw = None
 
@@ -208,9 +210,8 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
     if full:
         return valid_dtypes[index:]
     if key is None:
-        return draw(st.sampled_from(valid_dtypes[index:]))
-    ret = draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))
-    return [ret]
+        return [draw(st.sampled_from(valid_dtypes[index:]))]
+    return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]
 
 
 @st.composite
@@ -1098,12 +1099,12 @@ def test_method(
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
-    # convert single values to length 1 lists
-    (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = as_lists(
+    (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = (
         ivy.default(input_dtypes_init, []),
         ivy.default(as_variable_flags_init, []),
         ivy.default(native_array_flags_init, []),
     )
+
     all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
     (
         input_dtypes_method,
@@ -1385,11 +1386,6 @@ def test_function(
                              container_flags, instance_method,\
                               fw, fn_name, x1=x1, x2=x2)
     """
-    # convert single values to length 1 lists
-    input_dtypes, as_variable_flags, native_array_flags, container_flags = as_lists(
-        input_dtypes, as_variable_flags, native_array_flags, container_flags
-    )
-
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
@@ -1933,11 +1929,6 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
-    # convert single values to length 1 lists
-    input_dtypes, as_variable_flags, native_array_flags = as_lists(
-        input_dtypes, as_variable_flags, native_array_flags
-    )
-
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
@@ -2008,7 +1999,9 @@ def test_frontend_function(
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
         )
-        args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+        args_ivy, kwargs_ivy = ivy.args_to_ivy(
+            *args, **kwargs
+        )  # ToDo, probably redundant?
 
     # frontend function
     frontend_fn = ivy.functional.frontends.__dict__[frontend].__dict__[fn_tree]
@@ -2221,11 +2214,6 @@ def test_frontend_array_instance_method(
     # num_positional_args ignores self, which we need to compensate for
     num_positional_args += 1
 
-    # convert single values to length 1 lists
-    input_dtypes, as_variable_flags, native_array_flags = as_lists(
-        input_dtypes, as_variable_flags, native_array_flags
-    )
-
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=num_positional_args, kwargs=all_as_kwargs_np
@@ -2395,7 +2383,8 @@ def test_frontend_array_instance_method(
 
         # change out argument to ivy array
         if "out" in kwargs_frontend:
-            kwargs_frontend["out"] = ivy.asarray(kwargs_frontend["out"])
+            if kwargs_frontend["out"] is not None:
+                kwargs_frontend["out"] = ivy.asarray(kwargs_frontend["out"])
 
         # get instance array
         if args_frontend == () or args_frontend == []:
@@ -2704,9 +2693,6 @@ def dtype_and_values(
                 )
             )
         )
-    if num_arrays == 1:
-        dtype = dtype[0] if isinstance(dtype, list) else dtype
-        values = values[0]
     if ret_shape:
         return dtype, values, shape
     return dtype, values
@@ -2842,7 +2828,7 @@ def dtype_values_axis(
     )
     dtype, values, arr_shape = results
     if valid_axis or shape:
-        if not isinstance(values, list):
+        if values[0].ndim == 0:
             axis = None
         else:
             axis = draw(
@@ -3250,10 +3236,10 @@ def array_values(
     else:
         values = draw(list_of_length(x=st.booleans(), length=size))
 
-    array = np.array(values)
+    array = np.array(values, dtype=dtype)
     if isinstance(shape, (tuple, list)):
-        array = array.reshape(shape)
-    return array.tolist()
+        return array.reshape(shape)
+    return array
 
 
 @st.composite
@@ -3489,7 +3475,7 @@ def get_bounds(draw, *, dtype):
             low, high = values[0], values[1]
         if ivy.default(low, 0.0) >= ivy.default(high, 1.0):
             return draw(get_bounds(dtype=dtype))
-    return low, high
+    return [low, high]
 
 
 @st.composite
@@ -3744,6 +3730,10 @@ def handle_cmd_line_args(test_fn):
                     kwargs[param.name] = data.draw(
                         bool_val_flags(get_command_line_flags[param.name])
                     )
+                elif param.name in cmd_line_args_lists:
+                    kwargs[param.name] = [
+                        data.draw(bool_val_flags(get_command_line_flags[param.name]))
+                    ]
                 elif param.name == "fw":
                     kwargs["fw"] = fw if flag else backend_string
                 elif param.name == "device":
@@ -3853,7 +3843,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         x_shape = (batch_size, input_channels) + x_dim
     vals = draw(
         array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=x_shape,
             large_abs_safety_factor=3,
             small_abs_safety_factor=4,
@@ -3862,7 +3852,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
     )
     filters = draw(
         array_values(
-            dtype=dtype,
+            dtype=dtype[0],
             shape=filter_shape,
             large_abs_safety_factor=3,
             small_abs_safety_factor=4,

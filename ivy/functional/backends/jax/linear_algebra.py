@@ -173,7 +173,9 @@ def matrix_rank(
 ) -> JaxArray:
     axis = None
     ret_shape = x.shape[:-2]
-    if len(x.shape) > 2:
+    if len(x.shape) == 2:
+        singular_values = jnp.linalg.svd(x, compute_uv=False)
+    elif len(x.shape) > 2:
         y = x.reshape((-1, *x.shape[-2:]))
         singular_values = jnp.asarray(
             [
@@ -182,8 +184,8 @@ def matrix_rank(
             ]
         )
         axis = 1
-    else:
-        singular_values = jnp.linalg.svd(x, compute_uv=False)
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return jnp.array(0, dtype=x.dtype)
     max_values = jnp.max(singular_values, axis=axis)
     if rtol:
         ret = jnp.sum(singular_values > max_values * rtol, axis=axis)

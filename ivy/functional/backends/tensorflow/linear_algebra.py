@@ -326,7 +326,9 @@ def matrix_rank(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = None
     ret_shape = x.shape[:-2]
-    if len(x.shape) > 2:
+    if len(x.shape) == 2:
+        singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    elif len(x.shape) > 2:
         y = tf.reshape(x, (-1, *x.shape[-2:]))
         singular_values = tf.stack(
             [
@@ -335,8 +337,8 @@ def matrix_rank(
             ]
         )
         axis = 1
-    else:
-        singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return tf.constant(0, dtype=x.dtype)
     max_values = tf.math.reduce_max(singular_values, axis=axis)
     if rtol:
         ret = tf.experimental.numpy.sum(singular_values > max_values * rtol, axis=axis)
