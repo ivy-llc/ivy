@@ -1,10 +1,10 @@
 # global
 import sys
+import numpy as np
+from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import numpy as np
-from hypothesis import given
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
