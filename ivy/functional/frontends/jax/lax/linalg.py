@@ -13,4 +13,4 @@ def cholesky(x, /, *, symmetrize_input=True):
 
 
 def matrix_power(a, n):
-    return ivy.matrix_power(a, n)
+    return ivy.matrix_power(a**n)
