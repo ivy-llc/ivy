@@ -23,7 +23,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         and np.linalg.det(x[1][0]) != 0
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.cholesky"
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.cholesky"
     ),
 )
 def test_jax_numpy_cholesky(
