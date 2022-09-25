@@ -8,21 +8,15 @@ def random(size=None):
 
 def dirichlet(alpha, size=None):
     size = size if size is not None else 1
-
-    if any(isinstance(x, str) for x in alpha):
-        x = next(x for x in alpha if type(x) == str)
-        raise ValueError(f"could not convert string to float: '{x}'")
-    if type(alpha) in [int, float]:
-        raise TypeError(f"object of type {type(alpha)} has no len()")
-    if type(alpha[0]) in [list, tuple]:
-        raise ValueError("object too deep for desired array")
-    if any(x <= 0 for x in alpha):
-        raise ValueError("alpha <= 0")
+    ivy.assertions.check_true(type(alpha) not in [int, float],
+                              f"object of type {type(alpha)} has no len()")
+    ivy.assertions.check_true(all(x > 0 for x in alpha), "alpha <= 0")
     n = min(alpha)
     alpha = ivy.array(alpha)
     if type(size) == int:
-        if size < 0:
-            raise ValueError("negative dimensions are not allowed")
+        ivy.assertions.check_greater(
+            size, 0, allow_equal=False,
+            message="negative dimensions are not allowed")
         lst = []
         for i in range(0, size):
             alpha /= ivy.random_uniform(shape=alpha.shape)
@@ -30,21 +24,21 @@ def dirichlet(alpha, size=None):
             lst.append((alpha / s).tolist())
         ret = ivy.array(lst, dtype="float64")
     elif type(size) in [tuple, list]:
-        if any(x < 0 for x in size):
-            raise ValueError("negative dimensions are not allowed")
-        else:
-            shape = tuple(size)
-            shape = shape + (alpha.size, )
-            uniform = ivy.random_uniform(low=n, shape=shape)
-            flat = uniform.flatten().tolist()
-            arr = ivy.array([flat[i:i + alpha.size]
-                            for i in range(0, len(flat), alpha.size)])
-            lst = []
-            for i in range(0, arr.shape[0]):
-                alpha /= arr[i]
-                s = ivy.sum(alpha)
-                lst.append((alpha / s).tolist())
-            ret = ivy.array(lst, dtype="float64").reshape(shape)
+        ivy.assertions.check_true(
+            all(x >= 0 for x in size), "negative dimensions are not allowed")
+        shape = tuple(size)
+        shape = shape + (alpha.size, )
+        uniform = ivy.random_uniform(low=n, shape=shape)
+        flat = uniform.flatten().tolist()
+        arr = ivy.array([flat[i:i + alpha.size]
+                        for i in range(0, len(flat), alpha.size)])
+        lst = []
+        for i in range(0, arr.shape[0]):
+            alpha /= arr[i]
+            s = ivy.sum(alpha)
+            lst.append((alpha / s).tolist())
+        ret = ivy.array(lst, dtype="float64").reshape(shape)
     else:
-        assert False, f"{type(size)} object is not iterable"
+        raise ivy.exceptions.IvyException(
+            f"{type(size)} object is not iterable")
     return ret
