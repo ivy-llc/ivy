@@ -1,50 +1,40 @@
 from github import Github
+from pymongo import MongoClient
 import sys
-import urllib
-import json
+import pandas as pd
 
-test_name_mappings = {
-    "test-ivy-core": ["core.json", "functional_core_dashboard.md"],
-    "test-ivy-core-cron": ["core.json", "functional_core_dashboard.md"],
-    "test-ivy-nn": ["nn.json", "functional_nn_dashboard.md"],
-    "test-ivy-nn-cron": ["nn.json", "functional_nn_dashboard.md"],
-    "test-ivy-stateful": ["stateful.json", "stateful_dashboard.md"],
-    "test-ivy-stateful-cron": ["stateful.json", "stateful_dashboard.md"],
-    "test-array-api": ["array_api.json", "array_api_dashboard.md"],
+dashboard_config = {
+    "test-array-api": ["array_api", "array_api_dashboard.md"],
+    "test-core-ivy": ["ivy_core", "functional_core_dashboard.md"],
+    "test-nn-ivy": ["ivy_nn", "functional_nn_dashboard.md"],
+    "test-stateful-ivy": ["ivy_stateful", "stateful_dashboard.md"],
 }
 
 
-def update_job_status(file, fw, submod, result):
-    with urllib.request.urlopen(file.download_url) as f:
-        data = json.load(f)
-        data[fw][submod] = result
-        print(data)
-        return data
-
-
-def main():
-    token, workflow_name, backend, submodule, result = (
-        sys.argv[1],
-        sys.argv[2],
-        sys.argv[3],
-        sys.argv[4],
-        sys.argv[5],
-    )
-    print(workflow_name, backend, submodule, result)
+def update_dashboard():
+    key, token, workflow = sys.argv[1], sys.argv[2], sys.argv[3]
     g = Github(token)
     repo = g.get_repo("unifyai/ivy")
-    file = repo.get_contents(
-        f"results/{test_name_mappings[workflow_name][0]}", ref="dashboard"
+    cluster = MongoClient(
+        f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"
     )
-    updated_json = update_job_status(file, backend, submodule, result)
+    db = cluster["Ivy_tests"]
+    collection = db[dashboard_config[workflow][0]]
+    cursor = list(collection.find())
+    workflow_dict = cursor[0]
+    workflow_dict.pop("_id")
+    module_df = pd.DataFrame.from_dict(workflow_dict)
+    file = repo.get_contents(
+        f"test_dashboards/{dashboard_config[workflow][1]}", ref="dashboard"
+    )
     repo.update_file(
         file.path,
-        f"update {test_name_mappings[workflow_name][0]}",
-        json.dumps(updated_json, indent=6),
+        f"update {dashboard_config[workflow][1]}",
+        module_df.to_markdown(),
         file.sha,
         branch="dashboard",
     )
 
 
 if __name__ == "__main__":
-    main()
+    update_dashboard()
