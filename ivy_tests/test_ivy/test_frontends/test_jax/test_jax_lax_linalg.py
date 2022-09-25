@@ -40,14 +40,14 @@ def test_jax_lax_svd(
     fw,
 ):
     dtype, x = dtype_and_x
-    x = np.array(x, dtype=dtype)
+    x = np.asarray(x, dtype=dtype)
     # make symmetric positive-definite beforehand
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     frontend = "jax"
 
     ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -72,6 +72,7 @@ def test_jax_lax_svd(
             ret_np=u @ np.diag(s) @ vh,
             ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
             rtol=1e-2,
+            atol=1e-2,
             ground_truth_backend=frontend,
         )
     else:
@@ -79,6 +80,7 @@ def test_jax_lax_svd(
             ret_np=ivy.to_numpy(ret),
             ret_from_gt_np=np.asarray(frontend_ret[0]),
             rtol=1e-2,
+            atol=1e-2,
             ground_truth_backend=frontend,
         )
 
