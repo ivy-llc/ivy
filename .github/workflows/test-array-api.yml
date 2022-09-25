@@ -103,7 +103,7 @@ jobs:
       MONGODB_CREDENTIALS: ${{ secrets.MONGODB_PASSWORD }}
     steps:
       - name: "${{ github.workflow }} dashboard update"
-        run:|
+        run: |
           cd ivy/automation_tools/dashboard_automation/
           python3 dashboard_script.py $MONGODB_CREDENTIALS $GITHUB_TOKEN ${{ github.workflow }}
 
