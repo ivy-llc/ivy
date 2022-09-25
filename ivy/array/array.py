@@ -109,7 +109,6 @@ class Array(
     # Properties #
     # -----------#
 
-    # noinspection PyPep8Naming
     @property
     def mT(self):
         ivy.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
@@ -143,7 +142,6 @@ class Array(
     def device(self):
         return self._device
 
-    # noinspection PyPep8Naming
     @property
     def T(self):
         ivy.assertions.check_equal(len(self._data.shape), 2)
@@ -531,7 +529,6 @@ class Array(
         if hasattr(self._data, "__int__"):
             res = self._data.__int__()
         else:
-            # noinspection PyTypeChecker
             res = int(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
@@ -726,7 +723,6 @@ class Array(
         """
         return ivy.bitwise_right_shift(other, self._data)
 
-    # noinspection PyDefaultArgument
     @_native_wrapper
     def __deepcopy__(self, memodict={}):
         try:
