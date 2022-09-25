@@ -134,12 +134,12 @@ jobs:
              fetch-depth: 2
 
        - name: Install Python Clients
-         if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push')
          uses: BSFishy/pip-action@v1
          with:
              packages: |
                PyGithub
                pymongo[srv]
+               pandas
 
        - name: "${{ github.workflow }} dashboard update"
          run: |
