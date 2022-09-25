@@ -191,7 +191,7 @@ def arange(
 @handle_out_argument
 @handle_exceptions
 def asarray(
-    x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
     /,
     *,
     copy: Optional[bool] = None,
