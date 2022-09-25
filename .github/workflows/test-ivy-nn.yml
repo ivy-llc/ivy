@@ -140,6 +140,7 @@ jobs:
              packages: |
                PyGithub
                pymongo[srv]
+               pandas
 
        - name: "${{ github.workflow }} dashboard update"
          run: |
