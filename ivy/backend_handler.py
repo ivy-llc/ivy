@@ -188,6 +188,7 @@ def current_backend(*args, **kwargs):
     Examples
     --------
     If no global backend is set, then the backend is inferred from the arguments:
+
     >>> import numpy as np
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
@@ -195,6 +196,7 @@ def current_backend(*args, **kwargs):
 
     The global backend set in set_backend has priority over any arguments
     passed to current_backend:
+
     >>> import numpy as np
     >>> ivy.set_backend("jax")
     >>> x = np.array([2.0])

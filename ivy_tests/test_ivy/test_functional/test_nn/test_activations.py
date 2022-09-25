@@ -1,7 +1,6 @@
 """Collection of tests for unified neural network activation functions."""
 
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -42,7 +41,7 @@ def test_relu(
         container_flags=container,
         instance_method=instance_method,
         fn_name="relu",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -89,7 +88,7 @@ def test_leaky_relu(
         fn_name="leaky_relu",
         rtol_=1e-2,
         atol_=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         alpha=alpha,
     )
 
@@ -131,7 +130,7 @@ def test_gelu(
         fn_name="gelu",
         atol_=1e-2,
         rtol_=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         approximate=approximate,
     )
 
@@ -171,7 +170,7 @@ def test_sigmoid(
         fn_name="sigmoid",
         rtol_=1e-2,
         atol_=1e-2,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -213,7 +212,7 @@ def test_softmax(
         fn_name="softmax",
         rtol_=1e-02,
         atol_=1e-02,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         axis=axis,
     )
 
@@ -260,7 +259,50 @@ def test_softplus(
         fn_name="softplus",
         rtol_=1e-02,
         atol_=1e-02,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         beta=beta,
         threshold=threshold,
+    )
+
+
+# log_softmax
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    num_positional_args=helpers.num_positional_args(fn_name="log_softmax"),
+)
+def test_log_softmax(
+    *,
+    dtype_and_x,
+    as_variable,
+    axis,
+    with_out,
+    num_positional_args,
+    container,
+    instance_method,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="log_softmax",
+        rtol_=1e-02,
+        atol_=1e-02,
+        x=x[0],
+        axis=axis,
     )
