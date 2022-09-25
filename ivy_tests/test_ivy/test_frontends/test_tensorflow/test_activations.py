@@ -1,5 +1,3 @@
-# global
-import numpy as np
 from hypothesis import given
 
 # local
@@ -27,7 +25,7 @@ def test_tensorflow_hard_sigmoid(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.activations.hard_sigmoid",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
 
 
@@ -51,5 +49,5 @@ def test_tensorflow_linear(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.activations.linear",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
     )
