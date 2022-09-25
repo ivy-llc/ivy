@@ -1,4 +1,5 @@
 # global
+import sys
 import numpy as np
 from hypothesis import given
 
@@ -12,14 +13,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_dim_size=6,
-        max_dim_size=6,
-        min_num_dims=2,
-        max_num_dims=2,
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
-        and np.linalg.det(x[1][0]) != 0
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.inv"
