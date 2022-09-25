@@ -1,3 +1,4 @@
+from typing import NamedTuple
 import ivy
 
 
@@ -22,4 +23,4 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
     if symmetrize_input:
         x = symmetrize(x)
 
-    return ivy.eigh(x, UPLO=UPLO)[::-1]
+    return ivy.eigh(x, UPLO=UPLO)
