@@ -13,7 +13,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 @given(
     array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
         min_num_dims=2, max_num_dims=5,
-        min_dim_size=1, max_dim_size=10,
+        min_dim_size=2, max_dim_size=10,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.transpose"
