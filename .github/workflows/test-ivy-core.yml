@@ -105,12 +105,12 @@ jobs:
                pymongo[srv]
 
        - name: Update Database
-         if: ((steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped')) && (github.event_name == 'push')
+         if: (steps.check_file_changed.outputs.changed == 'True' && github.event_name == 'push')
          env:
             MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
          run: |
             cd ivy/automation_tools/dashboard_automation/
-            python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }}
+            python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ matrix.backends }} ${{ matrix.submodules }} ${{ steps.tests.outcome }} ${{ github.run_id }}
          continue-on-error: true
 
 

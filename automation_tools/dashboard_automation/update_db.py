@@ -11,12 +11,13 @@ test_configs = {
 
 
 def update_test_results():
-    key, workflow, backend, submodule, result = (
+    key, workflow, backend, submodule, result, run_id = (
         str(sys.argv[1]),
         str(sys.argv[2]),
         str(sys.argv[3]),
         str(sys.argv[4]),
         str(sys.argv[5]),
+        str(sys.argv[6]),
     )
     print(workflow, backend, submodule, result)
     cluster = MongoClient(
@@ -26,7 +27,7 @@ def update_test_results():
     collection = db[test_configs[workflow][0]]
     collection.update_one(
         {"_id": test_configs[workflow][1]},
-        {"$set": {backend + "." + submodule: result}},
+        {"$set": {backend + "." + submodule: (result, run_id)}},
     )
     return
 
