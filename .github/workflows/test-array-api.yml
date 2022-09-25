@@ -97,7 +97,6 @@ jobs:
   update-dashboard:
     needs: run-array-api-tests
     runs-on: ubuntu-latest
-    if: needs.run-array-api-tests.steps.db.outcome == 'success'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       MONGODB_CREDENTIALS: ${{ secrets.MONGODB_PASSWORD }}
