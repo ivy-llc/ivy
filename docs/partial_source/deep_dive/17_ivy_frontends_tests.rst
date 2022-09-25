@@ -87,7 +87,7 @@ ivy.tan()
             fw=fw,
             frontend="jax",
             fn_tree="lax.tan",
-            x=np.asarray(x, dtype=input_dtype),
+            x=x,
         )
 
 * As you can see we generate almost everything we need to test a frontend function within the :code:`@given` and :code:`@handle_cmd_line_args` decorators.
@@ -98,7 +98,6 @@ ivy.tan()
 * We then pass the generated values to :code:`helpers.test_frontend_function` which tests the frontend function.
 * We set :code:`fn_tree` to :code:`lax.tan` which is the path to the function in the Jax namespace.
 * :code:`jax.lax.tan` does not support :code:`out` arguments so we set :code:`with_out` to :code:`False`.
-* We cast :code:`x` as a NumPy array with :code:`np.asarray(x, dtype=input_dtype)` whenever the frontend function requires an array as an input. This is because :code:`x` is generated as type :code:`list`.
 * One last important note is that all helper functions are designed to take keyword arguments only.
 
 **NumPy**
@@ -123,7 +122,6 @@ ivy.tan()
         dtype,
         where,
         as_variable,
-        with_out,
         num_positional_args,
         native_array,
         fw,
@@ -139,14 +137,13 @@ ivy.tan()
         np_frontend_helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
-            with_out=with_out,
+            with_out=True,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
             fw=fw,
             frontend="numpy",
             fn_tree="tan",
-            x=np.asarray(x, dtype=input_dtype[0]),
-            out=None,
+            x=x,
             where=where,
             casting="same_kind",
             order="k",
@@ -189,7 +186,7 @@ ivy.tan()
             fw=fw,
             frontend="tensorflow",
             fn_tree="tan",
-            x=np.asarray(x, dtype=input_dtype),
+            x=x,
         )
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for TensorFlow.
@@ -229,7 +226,7 @@ ivy.tan()
             fw=fw,
             frontend="torch",
             fn_tree="nn.functional.threshold",
-            input=np.asarray(input, dtype=input_dtype),
+            input=input,
             threshold=0.5,
             value=20,
         )
@@ -293,15 +290,17 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         fill_value,
         dtypes,
+        native_array,
+        as_variable,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="jax",
             fn_tree="lax.full",
@@ -363,15 +362,17 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         fill_value,
         dtypes,
+        as_variable,
+        native_array,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="numpy",
             fn_tree="full",
@@ -429,15 +430,17 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         fill_value,
         dtypes,
+        as_variable,
+        native_array,
         num_positional_args,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="tensorflow",
             fn_tree="fill",
@@ -511,15 +514,17 @@ This function requires us to create extra functions for generating :code:`shape`
         dtypes,
         requires_grad,
         device,
+        as_variable,
         num_positional_args,
+        native_array,
         fw,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
-            as_variable_flags=False,
+            as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
-            native_array_flags=False,
+            native_array_flags=native_array,
             fw=fw,
             frontend="torch",
             fn_tree="full",
