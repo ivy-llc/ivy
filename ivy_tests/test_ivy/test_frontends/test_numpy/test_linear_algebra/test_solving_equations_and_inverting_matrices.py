@@ -33,8 +33,8 @@ def test_numpy_solve(x, y, as_variable, native_array, num_positional_args, fw):
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.solve",
-        a=np.array(x1, dtype=dtype1),
-        b=np.array(x2, dtype=dtype2),
+        a=x1,
+        b=x2,
     )
 
 
@@ -49,7 +49,7 @@ def test_numpy_solve(x, y, as_variable, native_array, num_positional_args, fw):
         max_dim_size=6,
         min_num_dims=2,
         max_num_dims=2,
-    ).filter(lambda x: np.linalg.det(x[1]) != 0),
+    ).filter(lambda x: np.linalg.det(x[1][0]) != 0),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.inv"
     ),
@@ -65,7 +65,7 @@ def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args, 
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.inv",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
     )
 
 
@@ -94,6 +94,6 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args,
         fw=fw,
         frontend="numpy",
         fn_tree="linalg.pinv",
-        a=np.array(x, dtype=dtype),
+        a=x[0],
         rtol=1e-15,
     )

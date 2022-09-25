@@ -38,8 +38,8 @@ def test_torch_allclose(
         fw=fw,
         frontend="torch",
         fn_tree="allclose",
-        input=np.asarray(input[0], dtype=input_dtype[0]),
-        other=np.asarray(input[1], dtype=input_dtype[1]),
+        input=input[0],
+        other=input[1],
         rtol=1e-05,
         atol=1e-08,
         equal_nan=equal_nan,
@@ -76,8 +76,8 @@ def test_torch_equal(
         fw=fw,
         frontend="torch",
         fn_tree="equal",
-        input=np.asarray(inputs[0], dtype=inputs_dtypes[0]),
-        other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
+        input=inputs[0],
+        other=inputs[1],
     )
 
 
@@ -112,8 +112,8 @@ def test_torch_eq(
         fw=fw,
         frontend="torch",
         fn_tree="eq",
-        input=np.asarray(inputs[0], dtype=inputs_dtypes[0]),
-        other=np.asarray(inputs[1], dtype=inputs_dtypes[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -153,7 +153,7 @@ def test_torch_argsort(
         fw=fw,
         frontend="torch",
         fn_tree="argsort",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         dim=axis,
         descending=descending,
     )
@@ -190,8 +190,8 @@ def test_torch_greater_equal(
         fw=fw,
         frontend="torch",
         fn_tree="greater_equal",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -227,8 +227,8 @@ def test_torch_greater(
         fw=fw,
         frontend="torch",
         fn_tree="greater",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -264,8 +264,8 @@ def test_torch_isclose(
         fw=fw,
         frontend="torch",
         fn_tree="isclose",
-        input=np.asarray(input[0], dtype=input_dtype[0]),
-        other=np.asarray(input[1], dtype=input_dtype[1]),
+        input=input[0],
+        other=input[1],
         rtol=1e-05,
         atol=1e-08,
         equal_nan=equal_nan,
@@ -301,7 +301,7 @@ def test_torch_isfinite(
         fw=fw,
         frontend="torch",
         fn_tree="isfinite",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -334,7 +334,7 @@ def test_torch_isinf(
         fw=fw,
         frontend="torch",
         fn_tree="isinf",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -367,7 +367,7 @@ def test_torch_isposinf(
         fw=fw,
         frontend="torch",
         fn_tree="isposinf",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -400,7 +400,7 @@ def test_torch_isneginf(
         fw=fw,
         frontend="torch",
         fn_tree="isneginf",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -436,7 +436,7 @@ def test_torch_sort(
         fw=fw,
         frontend="torch",
         fn_tree="sort",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         dim=axis,
         descending=descending,
         stable=stable,
@@ -473,7 +473,7 @@ def test_torch_isnan(
         fw=fw,
         frontend="torch",
         fn_tree="isnan",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
 
 
@@ -507,8 +507,8 @@ def test_torch_less_equal(
         fw=fw,
         frontend="torch",
         fn_tree="less_equal",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -543,8 +543,8 @@ def test_torch_less(
         fw=fw,
         frontend="torch",
         fn_tree="less",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -579,8 +579,8 @@ def test_torch_not_equal(
         fw=fw,
         frontend="torch",
         fn_tree="not_equal",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -615,8 +615,8 @@ def test_torch_minimum(
         fw=fw,
         frontend="torch",
         fn_tree="minimum",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -653,8 +653,8 @@ def test_torch_fmax(
         fw=fw,
         frontend="torch",
         fn_tree="fmax",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -691,8 +691,8 @@ def test_torch_fmin(
         fw=fw,
         frontend="torch",
         fn_tree="fmin",
-        input=np.asarray(inputs[0], dtype=input_dtype[0]),
-        other=np.asarray(inputs[1], dtype=input_dtype[1]),
+        input=inputs[0],
+        other=inputs[1],
         out=None,
     )
 
@@ -727,5 +727,5 @@ def test_torch_msort(
         fw=fw,
         frontend="torch",
         fn_tree="msort",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
     )
