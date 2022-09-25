@@ -329,12 +329,9 @@ can be run from the 'Terminal' tab in PyCharm. There are a number of such shell 
     test_ivy_stateful.sh
 
 * :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory. This runs all tests in :code:`ivy/ivy_tests`.
-* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`. This runs all \
-array-api tests for a certain submodule in a certain backend.
-* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory. \
-This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
-* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`. Make sure to \
-check the submodule names in the source code before running.
+* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`. This runs all array-api tests for a certain submodule in a certain backend.
+* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory. This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
+* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`. Make sure to check the submodule names in the source code before running.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
   :width: 420
