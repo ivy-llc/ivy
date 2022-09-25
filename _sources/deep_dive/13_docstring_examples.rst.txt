@@ -968,7 +968,7 @@ execution of the examples that are documented match exactly with the ones shown 
 make a commit, you must ensure that the :code:`test-docstrings / run-docstring-tests` are working correctly at least for the
 function you are making changes to. To check whether the docstring tests are passing you need to check the logs for :code:`test-docstrings / run-docstring-tests`:
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/docstring_examples/docstring_failing_test_logs.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/13_docstring_examples/docstring_failing_test_logs.png?raw=true
            :width: 420
 
 You will need to go through the logs and see if the list of functions for which the docstring tests are
@@ -979,7 +979,7 @@ If the docstring tests are failing the  logs show a list of functions having iss
 :code:`output in docs: ........`
 as shown below:
 
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docstring_examples/docstring_log.png
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/13_docstring_examples/docstring_log.png
            :width: 420
 
 It can be quite tedious to go through the output diffs and spot the exact error, so you can

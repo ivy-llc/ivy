@@ -89,19 +89,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -149,7 +149,7 @@ backend handler and the graph compiler. These parts are labelled (a) in the imag
 between different ML frameworks. This part is labelled as (b) in the image below.</p>
 <p>The code conversion tools described on this page are works in progress, as indicated by the the construction signs 🚧.
 This is in keeping with the rest of the documentation.</p>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
 <section id="frontend-functional-apis">
 <h2>Frontend Functional APIs 🚧<a class="headerlink" href="#frontend-functional-apis" title="Permalink to this heading"></a></h2>
 <p>While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not,
@@ -176,12 +176,12 @@ for example, enable PyTorch code to be framework agnostic. But with frontend API
 </pre></div>
 </div>
 <p>combined, we have the following situation:</p>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_backends_n_frontends.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_backends_n_frontends.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_backends_n_frontends.png?raw=true" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_backends_n_frontends.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_backends_n_frontends.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_backends_n_frontends.png?raw=true" style="width: 100%;" /></a>
 <p>Importantly, we can select the backend and frontend <strong>independently</strong> from one another. For example, this means we can
 select a JAX backend, but also select the PyTorch frontend and write Ivy code which fully adheres to the PyTorch
 functional API. In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function
 with the equivalent function using Ivy’s PyTorch frontend, and then run this PyTorch code using JAX:</p>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/clip_conversion.png?raw=true" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true" style="width: 100%;" /></a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>

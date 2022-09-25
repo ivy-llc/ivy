@@ -90,19 +90,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -145,7 +145,7 @@
   <section id="building-blocks">
 <h1>Building Blocks<a class="headerlink" href="#building-blocks" title="Permalink to this heading"></a></h1>
 <p>Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework. These are the 4 parts labelled as (a) in the image below:</p>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
 <section id="backend-functional-apis">
 <h2>Backend Functional APIs ✅<a class="headerlink" href="#backend-functional-apis" title="Permalink to this heading"></a></h2>
 <p>The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy <strong>wraps</strong> the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function <code class="code docutils literal notranslate"><span class="pre">ivy.stack</span></code> as an example.</p>
@@ -216,9 +216,9 @@
 <p>Calling the different backend files explicitly would work okay, but it would mean we need to <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.torch</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a PyTorch backend or <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(‘torch’)</span></code> for example.</p>
 <p><code class="code docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function <code class="code docutils literal notranslate"><span class="pre">prod</span></code>  is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/elementwise.py:</span>
- <span class="nd">@to_native_arrays_and_back</span>
- <span class="nd">@handle_out_argument</span>
- <span class="nd">@handle_nestable</span>
+ <span class="nd">to_native_arrays_and_back</span>
+ <span class="nd">handle_out_argument</span>
+ <span class="nd">handle_nestable</span>
  <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
      <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
      <span class="o">*</span><span class="p">,</span>
@@ -372,8 +372,8 @@ until the user explicitly sets a different backend. The examples can be seen bel
 </div>
 <p>The functions implemented by the backend-specific backend such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is <code class="code docutils literal notranslate"><span class="pre">ivy.lstm_update</span></code>, as shown:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/layers.py</span>
-<span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_nestable</span>
+<span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_nestable</span>
 <span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">init_h</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -468,7 +468,7 @@ Generally, we have made decisions so that Ivy is as stable and scalable as possi
 <p>“What about performance?” I hear you ask. This is a great point to raise!</p>
 <p>With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping. One reason we created the graph compiler was to address this issue.</p>
 <p>The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:</p>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler_dependency_graph.png?raw=true" style="width: 75%;" /></a>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true" style="width: 75%;" /></a>
 <p>As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -546,7 +546,7 @@ Generally, we have made decisions so that Ivy is as stable and scalable as possi
 </tr>
 </tbody>
 </table>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_a.png?raw=true" style="width: 75%;" /></a>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true" style="width: 75%;" /></a>
 <p>For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -627,7 +627,7 @@ Generally, we have made decisions so that Ivy is as stable and scalable as possi
 </tr>
 </tbody>
 </table>
-<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiled_graph_b.png?raw=true" style="width: 75%;" /></a>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true" style="width: 75%;" /></a>
 <p>The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via <code class="code docutils literal notranslate"><span class="pre">ivy.compile()</span></code>, which wraps backend-specific compilation code, for example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/compilation.py</span>
 <span class="nb">compile</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">fn</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">example_inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\

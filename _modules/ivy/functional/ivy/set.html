@@ -76,19 +76,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -145,9 +145,9 @@
 <span class="c1"># -------------------#</span>
 
 
-<div class="viewcode-block" id="unique_all"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_all/unique_all_functional.html#ivy.functional.ivy.set.unique_all">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="unique_all"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_all/unique_all_functional.html#ivy.functional.ivy.set.unique_all">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_nestable</span>
+<span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, the first occurring indices</span>
 <span class="sd">    for each unique element in ``x``, the indices from the set of unique elements that</span>
@@ -380,9 +380,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_all</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_inverse"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_inverse/unique_inverse_functional.html#ivy.functional.ivy.set.unique_inverse">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="unique_inverse"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_inverse/unique_inverse_functional.html#ivy.functional.ivy.set.unique_inverse">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_nestable</span>
+<span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array ``x``, and the indices from the</span>
 <span class="sd">     set of unique elements that reconstruct ``x``.</span>
@@ -479,10 +479,10 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_inverse</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_values"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_values/unique_values_functional.html#ivy.functional.ivy.set.unique_values">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="unique_values"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_values/unique_values_functional.html#ivy.functional.ivy.set.unique_values">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_out_argument</span>
+<span class="nd">handle_nestable</span>
+<span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_values</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -535,9 +535,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">unique_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unique_counts"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_counts/unique_counts_functional.html#ivy.functional.ivy.set.unique_counts">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="unique_counts"><a class="viewcode-back" href="../../../../functional/ivy/set/unique_counts/unique_counts_functional.html#ivy.functional.ivy.set.unique_counts">[docs]</a><span class="nd">to_native_arrays_and_back</span>
+<span class="nd">handle_nestable</span>
+<span class="nd">handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unique_counts</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the unique elements of an input array ``x`` and the corresponding counts for</span>

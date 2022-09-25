@@ -76,19 +76,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/array.html">Array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -161,7 +161,7 @@
 
 
 <span class="k">def</span> <span class="nf">_native_wrapper</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="nd">functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">decor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Array</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -240,20 +240,20 @@
     <span class="c1"># -----------#</span>
 
     <span class="c1"># noinspection PyPep8Naming</span>
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">mT</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_greater</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Number of array dimensions (axes).</span>
 
@@ -265,21 +265,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
 
     <span class="c1"># noinspection PyPep8Naming</span>
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Number of elements in an array.</span>
 
@@ -300,7 +300,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">property</span>
     <span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determines whether the array is a variable or not.</span>
 
@@ -314,7 +314,7 @@
     <span class="c1"># Setters #</span>
     <span class="c1"># --------#</span>
 
-    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">data</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;data must be native array&quot;</span>
@@ -324,27 +324,27 @@
     <span class="c1"># Built-ins #</span>
     <span class="c1"># ----------#</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__array__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__array_prepare__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__array_prepare__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__array_ufunc__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__array_ufunc__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__array_wrap__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__array_wrap__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sig_fig</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_significant_figures</span><span class="p">()</span>
         <span class="n">dec_vals</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_decimal_values</span><span class="p">()</span>
@@ -360,11 +360,11 @@
                 <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_repr</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">())</span>
             <span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">()</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -372,11 +372,11 @@
             <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
@@ -384,11 +384,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">data_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
@@ -401,7 +401,7 @@
 
         <span class="k">return</span> <span class="n">data_dict</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="c1"># we can construct other details of ivy.Array</span>
         <span class="c1"># just by re-creating the ivy.Array using the native array</span>
@@ -417,27 +417,27 @@
         <span class="c1"># device = backend.as_native_dev(state[&quot;device_str&quot;])</span>
         <span class="c1"># backend.to_device(self, device)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__pos__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">positive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rpow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__rpow__</span><span class="p">(</span><span class="n">power</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__ipow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Array.__add__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__add__">[docs]</a>    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__add__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__add__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.add. This method simply wraps the</span>
@@ -486,7 +486,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Array.__radd__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__radd__">[docs]</a>    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__radd__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__radd__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array reverse special method variant of ivy.add. This method simply wraps</span>
@@ -517,11 +517,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Array.__sub__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__sub__">[docs]</a>    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__sub__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__sub__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.subtract. This method simply wraps the</span>
@@ -570,7 +570,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Array.__rsub__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rsub__">[docs]</a>    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__rsub__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rsub__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array reverse special method variant of ivy.subtract. This method simply wraps</span>
@@ -601,62 +601,62 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__mod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__imod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__itruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__floordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rfloordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__ifloordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__float__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__float__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">res</span>
         <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="s2">&quot;__int__&quot;</span><span class="p">):</span>
             <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__int__</span><span class="p">()</span>
@@ -667,15 +667,15 @@
             <span class="k">return</span> <span class="n">res</span>
         <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="fm">__bool__</span><span class="p">()</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Array.__le__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__le__">[docs]</a>    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__le__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__le__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Less than or equal to</span>
@@ -727,59 +727,59 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__ror__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_invert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rlshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_left_shift</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Array.__rshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rshift__">[docs]</a>    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__rshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rshift__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array special method variant of ivy.bitwise_right_shift. This method</span>
@@ -824,7 +824,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Array.__rrshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rrshift__">[docs]</a>    <span class="nd">@_native_wrapper</span>
+<div class="viewcode-block" id="Array.__rrshift__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__rrshift__">[docs]</a>    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__rrshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array reverse special method variant of ivy.bitwise_right_shift.</span>
@@ -857,7 +857,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_right_shift</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
     <span class="c1"># noinspection PyDefaultArgument</span>
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memodict</span><span class="o">=</span><span class="p">{}):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">(</span><span class="n">memodict</span><span class="p">))</span>
@@ -870,7 +870,7 @@
                 <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">jax_array</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">to_ivy</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">))</span>
 
-    <span class="nd">@_native_wrapper</span>
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">])</span></div>
 </pre></div>

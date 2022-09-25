@@ -114,19 +114,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -305,8 +305,8 @@ form our own strategies for describing data by composing Hypothesis’ built-in 
 <h3>Integration of Strategies into Ivy Tests<a class="headerlink" href="#integration-of-strategies-into-ivy-tests" title="Permalink to this heading"></a></h3>
 <p>Once a strategy is initialised the <strong>given</strong> decorator is added to the test function for drawing values from the strategy
 and passing them as inputs to the test. For example, in this code snippet here -:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">handle_cmd_line_args</span>
+<span class="nd">given</span><span class="p">(</span>
 <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)),</span>
 <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
 <span class="n">alpha</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(),</span>
@@ -604,7 +604,7 @@ in such cases, and other similar scenarios you may encounter.</p></li>
 <h3>Bonus: Hypothesis’ Extended Features<a class="headerlink" href="#bonus-hypothesis-extended-features" title="Permalink to this heading"></a></h3>
 <p>1. <strong>Hypothesis</strong> performs <strong>Automated Test-Case Reduction</strong>. That is, the <strong>given</strong> decorator strives to report the simplest
 set of input values that produce a given error. For the code block below-:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@given</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">given</span><span class="p">(</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span>
 <span class="n">input_dtype</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">ivy_np</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">),</span>
 <span class="n">as_variable</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
@@ -660,19 +660,19 @@ and a variety performance details are supported. Let’s look at the function <a
 <ul class="simple">
 <li><p><strong>Jax</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/Jax_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/Jax_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/Jax_data_gen.png" style="width: 600px;" /></a>
 <ul class="simple">
 <li><p><strong>Numpy</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/numpy_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/numpy_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/numpy_data_gen.png" style="width: 600px;" /></a>
 <ul class="simple">
 <li><p><strong>Tensorflow</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/tensorflow_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/tensorflow_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/tensorflow_data_gen.png" style="width: 600px;" /></a>
 <ul class="simple">
 <li><p><strong>Torch</strong></p></li>
 </ul>
-<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/torch_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/torch_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/torch_data_gen.png" style="width: 600px;" /></a>
 <p>It can be seen that the function doesn’t fail for <strong>Jax</strong>, <strong>Numpy</strong> and <strong>Torch</strong>, which is clearly not the case with
 <strong>Tensorflow</strong>, wherein 7 examples failed the test. One important thing to note is the number of values for which
 <a href="#id4"><span class="problematic" id="id5">**</span></a>Shrinking**(discussed in brief above) happened. Statistics for both <em>generate phase</em>, and <em>shrink phase</em> if the test
@@ -680,7 +680,7 @@ fails are printed in the output. If the tests are re-run, <em>reuse phase</em> s
 examples from previous runs are displayed.</p>
 <p>Another argument which can be specified for a more detailed output is <strong>hypothesis-verbosity = verbose</strong>. Let’s look at
 the newer output, for the same example -:</p>
-<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/test_run_data_gen.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/test_run_data_gen.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/test_run_data_gen.png" style="width: 600px;" /></a>
 <p>Like the output above, Hypothesis will print all the examples for which the test failed, when <strong>verbosity</strong> is set.</p>
 <ol class="arabic simple" start="3">
 <li><p>Some performance related settings which might be helpful to know are-:</p></li>
@@ -759,7 +759,7 @@ For example, in the <code class="code docutils literal notranslate"><span class=
 In order to achieve this functionality, we can use the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> Hypothesis decorator.
 The <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator ensures that a specific example is always tested, on running a particular test. The decorator requires the test arguments as parameters.
 For the <code class="code docutils literal notranslate"><span class="pre">test_result_type</span></code> Test, we can add the decorator as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@example</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">example</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="p">([</span><span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span> <span class="s1">&#39;int16&#39;</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.9090909090909091</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
     <span class="n">as_variable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
