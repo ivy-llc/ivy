@@ -49,7 +49,7 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    object_in: Union[JaxArray, jnp.ndarray, List[float], Tuple[float]],
+    object_in: Union[JaxArray, List[float], Tuple[float]],
     /,
     *,
     copy: Optional[bool] = None,
