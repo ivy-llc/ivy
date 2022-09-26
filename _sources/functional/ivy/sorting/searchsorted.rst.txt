@@ -5,9 +5,9 @@ searchsorted
 
 .. autofunction:: ivy.array.array_methods.searchsorted
 
-.. autofunction:: ivy.container.container_methods.searchsorted
-
 .. autofunction:: ivy.container.container_methods.static_searchsorted
+
+.. autofunction:: ivy.container.container_methods.searchsorted
 
 .. list-table:: Device Support
    :widths: 20 20 20 20 20

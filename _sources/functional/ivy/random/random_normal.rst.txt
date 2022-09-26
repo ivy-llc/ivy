@@ -5,9 +5,9 @@ random_normal
 
 .. autofunction:: ivy.array.array_methods.random_normal
 
-.. autofunction:: ivy.container.container_methods.random_normal
-
 .. autofunction:: ivy.container.container_methods.static_random_normal
+
+.. autofunction:: ivy.container.container_methods.random_normal
 
 .. list-table:: Device Support
    :widths: 20 20 20 20 20
