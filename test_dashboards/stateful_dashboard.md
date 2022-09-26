@@ -8,3 +8,4 @@
 | norms        |         | <a href="https://github.com/unifyai/ivy/actions/runs/3128698143" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |              |       |
 | optmizers    |         |                                                                                                                                                                        |              |       |
 | sequential   |         |                                                                                                                                                                        |              |       |
+| optimizers   | nan     | <a href="https://github.com/unifyai/ivy/actions/runs/3129121421" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> | nan          | nan   |
