@@ -43,7 +43,7 @@ def nonzero(
     as_tuple: bool = True,
     size: Optional[int] = None,
     fill_value: int = 0,
-) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable]]]:
+) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable]]]:
     res = tf.experimental.numpy.nonzero(x)
 
     if size is not None:
