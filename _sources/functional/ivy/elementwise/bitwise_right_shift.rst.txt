@@ -5,9 +5,9 @@ bitwise_right_shift
 
 .. autofunction:: ivy.array.array_methods.bitwise_right_shift
 
-.. autofunction:: ivy.container.container_methods.static_bitwise_right_shift
-
 .. autofunction:: ivy.container.container_methods.bitwise_right_shift
+
+.. autofunction:: ivy.container.container_methods.static_bitwise_right_shift
 
 .. list-table:: Device Support
    :widths: 20 20 20 20 20
