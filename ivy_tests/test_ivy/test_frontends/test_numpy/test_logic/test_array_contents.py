@@ -31,7 +31,7 @@ def test_numpy_isneginf(
         fw=fw,
         frontend="numpy",
         fn_tree="isneginf",
-        x=np.array(x, dtype=dtype),
+        x=x[0],
     )
 
 
@@ -59,5 +59,5 @@ def test_numpy_isposinf(
         fw=fw,
         frontend="numpy",
         fn_tree="isposinf",
-        x=np.array(x, dtype=dtype),
+        x=x[0],
     )
