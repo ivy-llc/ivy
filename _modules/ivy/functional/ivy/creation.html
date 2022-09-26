@@ -76,19 +76,19 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -550,7 +550,7 @@
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-<span class="sd">    With int datatype:</span>
+<span class="sd">    With :code:`int` datatype:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 4, 5, 6])</span>
 <span class="sd">    &gt;&gt;&gt; fill_value = 1</span>
@@ -564,7 +564,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])</span>
 
-<span class="sd">    With float datatype:</span>
+<span class="sd">    With :code:`float` datatype:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])</span>
 <span class="sd">    &gt;&gt;&gt; fill_value = 0.000123</span>
@@ -572,7 +572,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])</span>
 
-<span class="sd">    With ivy.NativeArray input:</span>
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([3.0, 8.0])</span>
 <span class="sd">    &gt;&gt;&gt; fill_value = 0.000123</span>
@@ -586,7 +586,7 @@
 <span class="sd">    ivy.array([[0.000123, 0.000123, 0.000123],</span>
 <span class="sd">           [0.000123, 0.000123, 0.000123]])</span>
 
-<span class="sd">    With ivy.Container input:</span>
+<span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \</span>
 <span class="sd">                           b=ivy.array([4.123,5.23,6.23]))</span>
@@ -601,7 +601,7 @@
 <span class="sd">    Instance Method Examples:</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    With ivy.Array input:</span>
+<span class="sd">    With :code:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 4, 5, 6])</span>
 <span class="sd">    &gt;&gt;&gt; fill_value = 1</span>
@@ -609,7 +609,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1, 1, 1, 1, 1, 1])</span>
 
-<span class="sd">    With ivy.Container input:</span>
+<span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,2,3]), \</span>
 <span class="sd">                           b=ivy.array([4,5,6]))</span>
@@ -1290,7 +1290,7 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0.68, 0.68]])</span>
 
-<span class="sd">    With :code:&#39;ivy.Container&#39; input:</span>
+<span class="sd">    With :code:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))</span>
 <span class="sd">    &gt;&gt;&gt; fill_value = ivy.Container(a=0.99, b=False)</span>
