@@ -1,7 +1,7 @@
 # global
 import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable
+from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
 
 import numpy as np
 
@@ -115,6 +115,21 @@ def asarray_infer_device(fn: Callable) -> Callable:
     return new_fn
 
 
+# Type hints #
+# -----------#
+
+SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
+_T_co = TypeVar("_T_co", covariant=True)
+
+
+class NestedSequence(Protocol[_T_co]):
+    def __getitem__(self, key: int, /) -> _T_co:
+        ...
+
+    def __len__(self, /) -> int:
+        ...
+
+
 # Array API Standard #
 # -------------------#
 
@@ -191,18 +206,27 @@ def arange(
 @handle_out_argument
 @handle_exceptions
 def asarray(
-    x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    obj: Union[
+        ivy.Array,
+        ivy.NativeArray,
+        bool,
+        int,
+        float,
+        NestedSequence,
+        SupportsBufferProtocol,
+    ],
     /,
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
 
     Parameters
     ----------
-    x
+    obj
         input data, in any form that can be converted to an array. This includes lists,
         lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
     copy
@@ -230,7 +254,9 @@ def asarray(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
+    return current_backend().asarray(
+        obj, copy=copy, dtype=dtype, device=device, out=out
+    )
 
 
 @outputs_to_ivy_arrays
@@ -902,7 +928,7 @@ def linspace(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in an interval along a given
     axis.
 
@@ -1353,7 +1379,7 @@ def one_hot(
     *,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns a one-hot array.
 
     Parameters
@@ -1396,7 +1422,7 @@ def logspace(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in log space, in an interval
     along a given axis.
 

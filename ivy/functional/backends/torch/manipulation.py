@@ -106,7 +106,7 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     /,
-    axis: Union[int, Sequence[int]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -285,7 +285,9 @@ clip.support_native_out = True
 clip.unsupported_dtypes = ("float16",)
 
 
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(
+    x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
+) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))

@@ -1,7 +1,6 @@
 """Collection of tests for searching functions."""
 
 # Global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -44,7 +43,7 @@ def _broadcastable_trio(draw):
             safety_factor_scale="log",
         )
     )
-    return cond, xs[0], xs[1], dtypes[0], dtypes[1]
+    return cond, xs, dtypes
 
 
 # Functions #
@@ -80,7 +79,7 @@ def test_argmax(
         instance_method=instance_method,
         fw=fw,
         fn_name="argmax",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
     )
@@ -115,7 +114,7 @@ def test_argmin(
         instance_method=instance_method,
         fw=fw,
         fn_name="argmin",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
     )
@@ -159,7 +158,7 @@ def test_nonzero(
         instance_method=instance_method,
         fw=fw,
         fn_name="nonzero",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         as_tuple=as_tuple,
         size=size,
         fill_value=fill_value,
@@ -182,10 +181,10 @@ def test_where(
     instance_method,
     fw,
 ):
-    cond, x1, x2, dtype1, dtype2 = broadcastables
+    cond, xs, dtypes = broadcastables
 
     helpers.test_function(
-        input_dtypes=["bool", dtype1, dtype2],
+        input_dtypes=["bool"] + dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -194,9 +193,9 @@ def test_where(
         instance_method=instance_method,
         fw=fw,
         fn_name="where",
-        condition=np.asarray(cond, dtype="bool"),
-        x1=np.asarray(x1, dtype=dtype1),
-        x2=np.asarray(x2, dtype=dtype2),
+        condition=cond,
+        x1=xs[0],
+        x2=xs[1],
     )
 
 
@@ -228,5 +227,5 @@ def test_argwhere(
         instance_method=instance_method,
         fw=fw,
         fn_name="argwhere",
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
     )

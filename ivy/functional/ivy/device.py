@@ -898,7 +898,7 @@ def to_device(
     *,
     stream: Optional[Union[int, Any]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Move the input array x to the desired device, specified by device string.
 
     Parameters

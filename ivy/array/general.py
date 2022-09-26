@@ -233,6 +233,7 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         scatter values into an array
+
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
@@ -241,6 +242,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
         scatter values into an empty array
+
         >>> shape = ivy.array([2, 5])
         >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
         >>> updates = ivy.array([25, 40, 21, 22])
@@ -257,7 +259,7 @@ class ArrayWithGeneral(abc.ABC):
         /,
         *,
         out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.gather_nd. This method simply wraps the
         function, and so the docstring for ivy.gather_nd also applies to this method
@@ -365,8 +367,8 @@ class ArrayWithGeneral(abc.ABC):
                        [11, 2]],
                       [[3, 5],
                        [9, 7]]])
-        >>> reduced = x.einops_reduce('a b c -> b c', 'max')
-        >>> print(reduced)
+        >>> y = x.einops_reduce('a b c -> b c', 'max')
+        >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
@@ -374,10 +376,11 @@ class ArrayWithGeneral(abc.ABC):
                         [11, 2, 9]],
                        [[3, 5, 7],
                         [9, 7, 1]]])
-        >>> reduced = x.einops_reduce('a b c -> a () c', 'min')
-        >>> print(reduced)
+        >>> y = x.einops_reduce('a b c -> a () c', 'min')
+        >>> print(y)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
+
         """
         return ivy.einops_reduce(
             self._data, pattern, reduction, out=out, **axes_lengths
@@ -390,7 +393,7 @@ class ArrayWithGeneral(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
         **axes_lengths: Dict[str, int],
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.einops_repeat. This method simply
         wraps the function, and so the docstring for ivy.einops_repeat also applies
@@ -416,16 +419,16 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([5,4])
-        >>> repeated = x.einops_repeat('a -> a c', c=3)
-        >>> print(repeated)
+        >>> y = x.einops_repeat('a -> a c', c=3)
+        >>> print(y)
         ivy.array([[5, 4],
                    [5, 4],
                   [5, 4]])
 
         >>> x = ivy.array([[5,4],
                     [2, 3]])
-        >>> repeated = x.einops_repeat('a b ->  a b c', c=3)
-        >>> print(repeated)
+        >>> y = x.einops_repeat('a b ->  a b c', c=3)
+        >>> print(y)
         ivy.array([[[5, 5, 5],
                     [4, 4, 4]],
                    [[2, 2, 2],
@@ -826,7 +829,6 @@ class ArrayWithGeneral(abc.ABC):
         >>> y = x.value_is_nan(include_infs=False)
         >>> print(y)
         False
-
         """
         return ivy.value_is_nan(self, include_infs=include_infs)
 
@@ -845,19 +847,18 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             True if x is not None, else False.
-
         """
         return ivy.exists(self)
 
     def default(
         self: ivy.Array,
         /,
-        default_val: Union[ivy.Array, ivy.NativeArray],
+        default_val: Any,
         *,
         catch_exceptions: bool = False,
         rev: bool = False,
         with_callable: bool = False,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> Any:
         """
         ivy.Array instance method variant of ivy.default. This method simply wraps the
         function, and so the docstring for ivy.default also applies to this method
@@ -897,7 +898,7 @@ class ArrayWithGeneral(abc.ABC):
         /,
         *,
         min_base: float = None,
-    ) -> Union[ivy.Array, ivy.NativeArray]:
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
         the function, and so the docstring for ivy.stable_pow also applies to this
@@ -1026,7 +1027,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([[0.   , 0.894, 1.79 ]])
 
         """
-        return ivy.clip_matrix_norm(self, max_norm, p, out=out)
+        return ivy.clip_matrix_norm(self, max_norm, p=p, out=out)
 
     def scatter_flat(
         self: ivy.Array,
@@ -1053,9 +1054,6 @@ class ArrayWithGeneral(abc.ABC):
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max' or
             'replace'
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            updates if None.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1064,7 +1062,6 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array of given shape, with the values scattered at the indices.
-
         """
         return ivy.scatter_flat(self, updates, size=size, reduction=reduction, out=out)
 

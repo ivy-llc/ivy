@@ -114,6 +114,8 @@ def dropout(
         The probability of zeroing out each array element.
     scale
         Whether to scale the output by 1/(1-prob), default is True.
+    dtype
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -124,7 +126,6 @@ def dropout(
         Result array of the linear transformation. *[N,∗,out_features]*
 
     """
-    # noinspection PyUnresolvedReferences
     x = ivy.where(
         ivy.random_uniform(shape=x.shape, device=ivy.dev(x), dtype=dtype) < prob,
         ivy.zeros_like(x),
@@ -150,7 +151,7 @@ def scaled_dot_product_attention(
     *,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Applies scaled dot product attention to inputs x using optional mask.
 
     Parameters
@@ -595,7 +596,7 @@ def conv1d_transpose(
     data_format: str = "NWC",
     dilations: int = 1,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
     Parameters
@@ -762,7 +763,7 @@ def conv2d_transpose(
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
     Parameters

@@ -324,13 +324,6 @@ def nonzero(
     >>> print(y)
     (ivy.array([3, 4, 5]),)
 
-    Using :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
-    >>> y = x.nonzero()
-    >>> print(y)
-    tensor([[0,0],[0,1],[2,0],[2,1]])
-
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
@@ -475,7 +468,7 @@ def argwhere(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Returns indices the indices of all non-zero elements of the input array.
 
     Parameters
