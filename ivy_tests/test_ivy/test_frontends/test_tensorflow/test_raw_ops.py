@@ -1291,3 +1291,53 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, fw, native_array):
         fn_tree="raw_ops.Relu",
         features=x[0],
     )
+
+
+# MatMul
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "bfloat16",
+            "float32",
+            "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        ],
+        shape=(3, 3),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    transpose_a=st.booleans(),
+    transpose_b=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.MatMul"
+    ),
+)
+def test_tensroflow_MatMul(
+    dtype_and_x,
+    transpose_a,
+    transpose_b,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    print(ivy.matmul(x[0], x[1], transpose_a=transpose_a, transpose_b=transpose_b))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.MatMul",
+        a=x[0],
+        b=x[1],
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+    )
