@@ -19,7 +19,6 @@ from ivy.func_wrapper import (
 )
 from ivy.exceptions import handle_exceptions
 
-
 # Helpers #
 # --------#
 
@@ -69,6 +68,22 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         specifically for the backend implementations of asarray.
         """
         if isinstance(args[0], list):
+
+            # This is a really dirty hack to get around the fact that
+            # ivy.NativeArray is a Union object And repeating its
+            # definition here is going to drive someone mad when the
+            # real definition changes.
+
+            # TODO: When / if Ivy updates to Python3.10, change this
+            #  to pass a type union into isinstance and use the fact
+            #  that Union objects are "self-flattening" to make this
+            #  really elegant
+            if isinstance(args[0][0], ivy.Array) or type(args[0][0]).__name__ in str(
+                ivy.NativeArray
+            ):
+                return to_ivy(ivy.stack(to_native(args[0]), *(args[1:])))
+                # return to_ivy(ivy.stack((*(args[0]),), *(args[1:])))
+                # return to_ivy(fn())
             return to_ivy(fn(*args, dtype=dtype, **kwargs))
 
         # args is a tuple and therefore is immutable.
