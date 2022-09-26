@@ -48,7 +48,6 @@ jobs:
          shell: pwsh
          run: |
            cd ivy
-           pwd
            python ./run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}
            Write-Host "::set-output name=backend::$(cat fw.txt)\n"
            Write-Host "::set-output name=submodule::$(cat submodule.txt)\n"
@@ -56,7 +55,7 @@ jobs:
 
        - name: Zip Hypothesis Examples
          run: |
-           echo $steps.tests.outputs.backend
+           echo ${{ steps.tests.outputs.backend }}
            cd ivy/.hypothesis
            zip -r examples.zip examples
          continue-on-error: true
