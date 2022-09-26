@@ -134,7 +134,7 @@ celu.unsupported_dtypes = ("float16",)
 
 def hardtanh(input, min_val=-1., max_val=1., inplace=False):
     import torch
-    assert max_val > min_val
+    assert ivy.all(ivy.greater(max_val,min_val))
     if inplace:
         result = torch._C._nn.hardtanh_(input, min_val, max_val)
     else:
