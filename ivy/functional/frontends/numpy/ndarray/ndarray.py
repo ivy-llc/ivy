@@ -1,6 +1,7 @@
 # global
 
 # local
+from tkinter.messagebox import NO
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 
@@ -13,6 +14,23 @@ class ndarray:
 
     # Instance Methoods #
     # -------------------#
+
+    # Add argmax #
+    def argmax(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        
+        return np_frontend.argmax(
+            self.data, 
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+        )
 
     def reshape(self, newshape, copy=None):
         return np_frontend.reshape(self.data, newshape, copy=copy)
