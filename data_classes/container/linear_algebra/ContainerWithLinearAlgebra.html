@@ -463,7 +463,7 @@ shape <code class="docutils literal notranslate"><span class="pre">(...)</span><
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :code: <cite>ivy.Container</cite> input:
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0.], [0., 1.]]),                                 b=ivy.array([[1., 0.], [0., 0.]]))
 &gt;&gt;&gt; y = x.matrix_rank()
 &gt;&gt;&gt; print(y)
@@ -861,7 +861,7 @@ shape <code class="docutils literal notranslate"><span class="pre">(...)</span><
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :code: <cite>ivy.Container</cite> input:</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]),</span>                               <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -1040,7 +1040,7 @@ then an output array has rank <code class="docutils literal notranslate"><span c
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :code: <cite>ivy.Container</cite> input:
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
 &gt;&gt;&gt; x = ivy.Container(            a = ivy.array([[7, 1, 2],                           [1, 3, 5],                           [0, 7, 4]]),            b = ivy.array([[4, 3, 2],                           [1, 9, 5],                           [7, 0, 6]])        )
 &gt;&gt;&gt; y = x.Container.static_trace(x)
 &gt;&gt;&gt; print(y)
@@ -1219,7 +1219,7 @@ then an output array has rank <code class="docutils literal notranslate"><span c
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :code: <cite>ivy.Container</cite> input:
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
 &gt;&gt;&gt; x = ivy.Container(            a = ivy.array([[7, 1, 2],                           [1, 3, 5],                           [0, 7, 4]]),            b = ivy.array([[4, 3, 2],                           [1, 9, 5],                           [7, 0, 6]])        )
 &gt;&gt;&gt; y = x.trace()
 &gt;&gt;&gt; print(y)

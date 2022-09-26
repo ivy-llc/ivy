@@ -25,6 +25,8 @@ Layers
    layers/conv3d.rst
    layers/conv3d_transpose.rst
    layers/conv_general_dilated.rst
+   layers/conv_general_transpose.rst
+   layers/conv.rst
    layers/lstm_update.rst
    layers/handle_padding.rst
    layers/deconv_length.rst
