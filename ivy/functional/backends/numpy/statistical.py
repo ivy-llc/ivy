@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -14,7 +14,7 @@ def min(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -29,7 +29,7 @@ def max(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -66,7 +66,7 @@ def prod(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
@@ -85,7 +85,7 @@ def std(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,

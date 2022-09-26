@@ -1,4 +1,5 @@
 FROM ubuntu:20.04
+WORKDIR /ivy
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
@@ -25,14 +26,14 @@ RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
     pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
-COPY requirements/requirements.txt /
+COPY requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
-COPY requirements/optional.txt /
+COPY requirements/optional.txt .
 RUN pip3 install --no-cache-dir -r optional.txt
 
-COPY run_tests_CLI/test_dependencies.py /
+COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf requirements.txt && \
     rm -rf optional.txt

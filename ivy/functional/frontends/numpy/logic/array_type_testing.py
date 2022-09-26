@@ -8,10 +8,10 @@ def isfinite(
     out=None,
     *,
     where=True,
-    casting='same_kind',
-    order='K',
+    casting="same_kind",
+    order="K",
     dtype=None,
-    subok=True
+    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
@@ -27,10 +27,10 @@ def isinf(
     out=None,
     *,
     where=True,
-    casting='same_kind',
-    order='K',
+    casting="same_kind",
+    order="K",
     dtype=None,
-    subok=True
+    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
@@ -46,10 +46,10 @@ def isnan(
     out=None,
     *,
     where=True,
-    casting='same_kind',
-    order='K',
+    casting="same_kind",
+    order="K",
     dtype=None,
-    subok=True
+    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))

@@ -322,7 +322,7 @@ The PyTorch-specific implementation is as follows:
 .. code-block:: python
 
     def full(
-        shape: Union[int, Tuple[int]],
+        shape: Union[int, Sequence[int]],
         fill_value: Union[int, float],
         *,
         dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,

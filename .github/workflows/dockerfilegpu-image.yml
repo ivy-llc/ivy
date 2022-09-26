@@ -16,4 +16,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build DockerfileGPU
-      run: docker build . --file DockerfileGPU --tag unifyai/ivy:gpu$(date +%s)
+      run: |
+      cd docker
+      docker build . --file DockerfileGPU --tag unifyai/ivy:gpu$(date +%s)

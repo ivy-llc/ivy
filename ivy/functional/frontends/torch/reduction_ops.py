@@ -1,6 +1,10 @@
 import ivy
 
 
+def dist(input, other, p=2):
+    return ivy.vector_norm(ivy.subtract(input, other), ord=p)
+
+
 def argmax(input, dim=None, keepdim=False):
     return ivy.argmax(input, axis=dim, keepdims=keepdim)
 
@@ -43,3 +47,7 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
 
 def prod(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
+
+
+def var(input, dim, unbiased, keepdim=False, *, out=None):
+    return ivy.var(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
