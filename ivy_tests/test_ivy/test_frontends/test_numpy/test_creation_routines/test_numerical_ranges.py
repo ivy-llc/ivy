@@ -186,12 +186,13 @@ def test_numpy_meshgrid(
         kw["x{}".format(i)] = x_
         i += 1
     num_positional_args = len(arrays)
-    helpers.test_frontend_function(
+    ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        test_values=False,
         fw=fw,
         frontend="numpy",
         fn_tree="meshgrid",
@@ -200,6 +201,8 @@ def test_numpy_meshgrid(
         sparse=sparse,
         indexing=indexing,
     )
+    for u, v in zip(ret, ret_gt):
+        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v)
 
 
 # mgrid
