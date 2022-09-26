@@ -19,3 +19,6 @@ class Tensor:
 
     def add(self, other, *, alpha=1, out=None):
         return torch_frontend.add(self.data, other * alpha, out=out)
+
+    def sub(self, other, *, alpha=1, out=None):
+        return torch_frontend.subtract(self.data, other * alpha, out=out)
