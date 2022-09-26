@@ -431,7 +431,7 @@ def test_bitwise_left_shift(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer")
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer"))
     ),
     num_positional_args=helpers.num_positional_args(fn_name="bitwise_invert"),
 )
