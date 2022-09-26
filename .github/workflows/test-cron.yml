@@ -46,12 +46,15 @@ jobs:
        - name: Run Stateful Tests
          id: tests
          run: |
-           cd ivy
-           python run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}
+           cd ivy/run_tests_CLI/
+           python run_ivy_stateful_test.py ${{ github.run_number }}
+           "::set-output name=backend::$(BACKEND)\n"
+           "::set-output name=submodule::$(SUBMODULE)\n"
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
          run: |
+           echo $steps.tests.outputs.backend
            cd ivy/.hypothesis
            zip -r examples.zip examples
          continue-on-error: true
