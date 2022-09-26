@@ -575,11 +575,6 @@ sin.support_native_out = True
 
 
 @_handle_0_dim_output
-def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinc(x).astype(x.dtype)
-
-
-@_handle_0_dim_output
 def sinh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinh(x, out=out)
 

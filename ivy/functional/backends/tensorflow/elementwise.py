@@ -566,16 +566,6 @@ def sin(
     return tf.sin(x)
 
 
-def sinc(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    tf.experimental.numpy.experimental_enable_numpy_behavior()
-    return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
-
-
 def sinh(
     x: Union[tf.Tensor, tf.Variable],
     /,

@@ -424,15 +424,6 @@ def bitwise_or(
 bitwise_or.support_native_out = True
 
 
-def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    x = _cast_for_unary_op(x)
-    return torch.sinc(x, out=out)
-
-
-sinc.support_native_out = True
-sinc.unsupported_dtypes = ("float16",)
-
-
 def sinh(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinh(x, out=out)

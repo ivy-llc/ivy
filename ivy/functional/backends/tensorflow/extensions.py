@@ -1,3 +1,4 @@
+from typing import Union, Optional
 import ivy
 from ivy.functional.ivy.extensions import (
     _verify_coo_components,
@@ -60,3 +61,13 @@ def native_sparse_array_to_indices_values_and_shape(x):
     if isinstance(x, tf.SparseTensor):
         return x.indices, x.values, x.dense_shape
     raise ivy.exceptions.IvyException("not a SparseTensor")
+
+
+def sinc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
