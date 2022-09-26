@@ -83,23 +83,25 @@ class ArrayWithCreation(abc.ABC):
             an array having the same shape as ``self`` and where every element is equal
             to ``fill_value``.
 
-        Instance Method Examples:
-        ------------------------
+        Examples
+        --------
+        With :code:`int` datatype:
 
-        With int datatype:
         >>> x = ivy.array([1,2,3])
         >>> fill_value = 0
         >>> x.full_like(fill_value)
         ivy.array([0, 0, 0])
 
-        With float datatype:
+        With :code:`float` datatype:
+
         >>> fill_value = 0.000123
         >>> x = ivy.array(ivy.ones(5))
         >>> y = x.full_like(fill_value)
         >>> print(y)
         ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-        With ivy.Array input:
+        With :code:`ivy.Array` input:
+
         >>> x = ivy.array([1, 2, 3, 4, 5, 6])
         >>> fill_value = 1
         >>> y = x.full_like(fill_value)
