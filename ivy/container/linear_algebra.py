@@ -1127,10 +1127,10 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_slogdet(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
