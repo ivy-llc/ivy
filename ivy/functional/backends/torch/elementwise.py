@@ -404,10 +404,11 @@ def floor_divide(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.div(x1, x2, rounding_mode="floor", out=out)
+    return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
 
 
 floor_divide.support_native_out = True
+floor_divide.unsupported_dtypes = ("float16",)
 
 
 def bitwise_or(
