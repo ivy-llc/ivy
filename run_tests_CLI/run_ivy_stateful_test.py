@@ -28,10 +28,10 @@ backend = backends[i]
 submodule = submodules[j]
 
 print(os.getcwd())
-with open("./fw.txt") as outfile:
+with open("./fw.txt", "w") as outfile:
     outfile.write(backend)
 
-with open("./submodule.txt") as outfile:
+with open("./submodule.txt", "w") as outfile:
     outfile.write(submodule)
 
 
