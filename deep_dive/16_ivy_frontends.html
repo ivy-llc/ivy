@@ -209,7 +209,7 @@ We start with the function <code class="code docutils literal notranslate"><span
 </div>
 <p><code class="code docutils literal notranslate"><span class="pre">lax.add</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">operators</span></code> as shown in the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.lax.html">jax.lax</a>
 package directory. We organize the functions using the same categorizations as the
-original framework, and also mimick the importing behaviour regarding modules and
+original framework, and also mimic the importing behaviour regarding modules and
 namespaces etc.</p>
 <p>For the function arguments, these must be identical to the original function in
 Jax. In this case, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html">jax.lax.add</a> has two arguments,
@@ -341,7 +341,7 @@ and we therefore use the same for our PyTorch frontend <code class="code docutil
 We wrap <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> as usual, but the arguments work slightly different in this
 example. Looking at the PyTorch <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> documentation,
 we can see that <code class="code docutils literal notranslate"><span class="pre">alpha</span></code> acts as a scale for the <code class="code docutils literal notranslate"><span class="pre">other</span></code> argument.
-Thus, we can mimick the original behaviour by simply passing <code class="code docutils literal notranslate"><span class="pre">other</span> <span class="pre">*</span> <span class="pre">alpha</span></code>
+Thus, we can mimic the original behaviour by simply passing <code class="code docutils literal notranslate"><span class="pre">other</span> <span class="pre">*</span> <span class="pre">alpha</span></code>
 into <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -349,7 +349,7 @@ into <code class="code docutils literal notranslate"><span class="pre">ivy.add</
 </pre></div>
 </div>
 <p><code class="code docutils literal notranslate"><span class="pre">tan</span></code> is also placed under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a>
-framework. Looking at the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation, we can mimick the same arguments,
+framework. Looking at the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation, we can mimic the same arguments,
 and again simply wrap <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>,
 also making use of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in this case.</p>
 </section>
@@ -419,7 +419,7 @@ the backend <code class="code docutils literal notranslate"><span class="pre">iv
 </pre></div>
 </div>
 <p>To enable this behaviour, we need to incorporate other Ivy functions which are
-compositionally able to mimick the required behaviour.
+compositionally able to mimic the required behaviour.
 For example, we can simply reverse the result by calling <code class="code docutils literal notranslate"><span class="pre">ivy.flip()</span></code> on the
 result of <code class="code docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
 <p><strong>TensorFlow Frontend</strong></p>
@@ -452,7 +452,7 @@ to be timely and sensible, then we will add this function to the
 “Extend Ivy Functional API”
 <a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>.
 At this point in time, you can reserve the function for yourself and get it implemented
-in a unique PR. Once merged, you can then resume working on the frontned function,
+in a unique PR. Once merged, you can then resume working on the frontend function,
 which will now be a much easier task with the new addition to Ivy.</p>
 </section>
 <section id="temporary-compositions">
@@ -580,7 +580,7 @@ in <code class="code docutils literal notranslate"><span class="pre">test_fronte
 placeholder class to represent the framework-specific class and its counterpart.
 It has only one attribute, <code class="code docutils literal notranslate"><span class="pre">_native_class</span></code>, which holds the reference to the
 special class being used by the targeted framework.
-Then, in order to pass the key and value to the orignal and frontend functions
+Then, in order to pass the key and value to the original and frontend functions
 respectively, <code class="code docutils literal notranslate"><span class="pre">test_frontend_function</span></code> detects all <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> instances
 in the arguments, makes use of <code class="code docutils literal notranslate"><span class="pre">&lt;framework&gt;_classes_to_ivy_classes</span></code> internally
 to find the corresponding value to the key wrapped inside the <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code>
