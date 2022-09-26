@@ -7,7 +7,7 @@ import ivy
 from ivy_tests.test_ivy import helpers
 
 
-FW_STRS = ["numpy", "jax", "tensorflow", "torch", "mxnet"]
+FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
 
 
 TEST_FRAMEWORKS: Dict[str, callable] = {
@@ -15,7 +15,6 @@ TEST_FRAMEWORKS: Dict[str, callable] = {
     "jax": lambda: helpers.get_ivy_jax(),
     "tensorflow": lambda: helpers.get_ivy_tensorflow(),
     "torch": lambda: helpers.get_ivy_torch(),
-    "mxnet": lambda: helpers.get_ivy_mxnet(),
 }
 
 
