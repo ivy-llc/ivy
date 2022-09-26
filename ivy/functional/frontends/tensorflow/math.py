@@ -157,7 +157,7 @@ def polyval(coeffs, x, name=None):
     ivy.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
-        return ivy.zeros_like(x)
+        return ivy.zeros_like(x, dtype=x.dtype)
     coeffs = [ivy.array(_) for _ in coeffs]
     p = coeffs[0]
     for c in coeffs[1:]:
