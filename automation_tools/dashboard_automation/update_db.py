@@ -26,8 +26,8 @@ def update_test_results():
         str(sys.argv[1]),
         str(sys.argv[2]),
         str(sys.argv[3]),
+        str(sys.argv[4]),
         str(sys.argv[5]),
-        str(sys.argv[6]),
     )
     backend = fw_submod.split("-")[0]
     submodule = fw_submod.split("-")[1]
