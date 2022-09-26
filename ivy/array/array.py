@@ -213,6 +213,10 @@ class Array(
         return self._data.__array_wrap__(*args, **kwargs)
 
     @_native_wrapper
+    def __array_namespace__(self, api_version=None):
+        return ivy
+
+    @_native_wrapper
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
