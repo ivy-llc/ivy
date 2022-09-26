@@ -45,7 +45,7 @@ We require a unit test table📄 which show the output of various tests related 
 corresponding backend. Github Actions only allow a single badge per workflow, which is a shortcoming
 since we are defining multiple jobs inside a workflow file using Grid Search across the matrix.
 
-We solve that issue by maintaining a database📊, to which the job output is pushed right after the workflow runs. We then pull the data from the database🔑, do some wrangling in a script and push a dashboard result for each of these submodules. The rows consist of each functional and stateful submodule, and the columns consist of each backend framework. There are 4 * 30 ~ 120 unique GitHub actions jobs in total, for running the Ivy tests.⏯ 
+We solve that issue by maintaining a database📊, to which the job output is pushed right after the workflow runs. We then pull the data from the database🔑, do some wrangling in a script and push a table result for each of these submodules in this branch. The rows consist of each functional and stateful submodule, and the columns consist of each backend framework. There are 4 * 30 ~ 120 unique GitHub actions jobs in total, for running the Ivy tests.⏯ 
 
 The dashboard script is triggered every 20 mins and  is deployed on cloud. The `script <https://github.com/unifyai/ivy/blob/4695422471eb820e4d8f5146878deadd6ba47a44/automation_tools/dashboard_automation/update_db.py>`_  used for updating the database is added as a step into the action workflows.
 
