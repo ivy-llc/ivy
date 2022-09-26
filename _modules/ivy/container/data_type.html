@@ -467,6 +467,7 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With :code:`ivy.Container` static method:</span>
+
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]),\</span>
 <span class="sd">            b=ivy.array([2]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_broadcast_to(x,(3, 1))</span>
@@ -523,7 +524,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        With :code: &#39;ivy.Container&#39; instance method:</span>
+<span class="sd">        With :code:`ivy.Container` instance method:</span>
+<span class="sd">        </span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 0.5]),\</span>
 <span class="sd">            b=ivy.array([4, 5]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.broadcast_to((3,2))</span>

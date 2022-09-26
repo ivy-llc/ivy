@@ -258,7 +258,7 @@ method with minimal changes.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :code: <cite>ivy.Array</cite> instance method:</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -292,22 +292,20 @@ method with minimal changes.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]),        b=ivy.array([2]))
-&gt;&gt;&gt; y = ivy.Container.static_broadcast_to(x,(3, 1))
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([1],</dt><dd><p>[1],
-[1]),</p>
-</dd>
-<dt>b: ivy.array([2],</dt><dd><p>[2],
-[2])</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>        <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([1],</span>
+<span class="go">                 [1],</span>
+<span class="go">                 [1]),</span>
+<span class="go">    b: ivy.array([2],</span>
+<span class="go">                 [2],</span>
+<span class="go">                 [2])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -333,22 +331,20 @@ method with minimal changes.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With :code: ‘ivy.Container’ instance method:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 0.5]),        b=ivy.array([4, 5]))
-&gt;&gt;&gt; y = x.broadcast_to((3,2))
-&gt;&gt;&gt; print(y)
-{</p>
-<blockquote>
-<div><dl class="simple">
-<dt>a: ivy.array([[0., 0.5],</dt><dd><p>[0., 0.5],
-[0., 0.5]]),</p>
-</dd>
-<dt>b: ivy.array([[4, 5],</dt><dd><p>[4, 5],
-[4, 5]])</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>}</p>
+<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span>        <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[0., 0.5],</span>
+<span class="go">                  [0., 0.5],</span>
+<span class="go">                  [0., 0.5]]),</span>
+<span class="go">    b: ivy.array([[4, 5],</span>
+<span class="go">                  [4, 5],</span>
+<span class="go">                  [4, 5]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <table class="colwidths-given docutils align-default" id="id1">
