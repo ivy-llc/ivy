@@ -2,8 +2,8 @@
 import ivy
 
 
-def add(input, other, *, alpha=1, out=None):
-    return ivy.add(input, other * alpha, out=out)
+def add(input, other, *, alpha=None, out=None):
+    return ivy.add(input, other, alpha=alpha, out=out)
 
 
 def tan(input, *, out=None):
