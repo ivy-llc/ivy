@@ -586,7 +586,7 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         fn_name="ivy.functional.frontends.tensorflow.cosine_similarity"
     ),
 )
-def test_cosine_similarity(
+def test_tensorflow_cosine_similarity(
     d_type, y_true, y_pred, as_variable, num_positional_args, native_array, fw, with_out  # noqa: E501
 ):
     dtype = d_type
