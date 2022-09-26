@@ -2,11 +2,6 @@
 import sys
 import numpy as np
 
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-
-
 from hypothesis import given, strategies as st
 
 # local
