@@ -27,7 +27,7 @@ def cron_job():
 
     backend = backends[i]
     submodule = submodules[j]
-    os.system(f"source ./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
+    os.system(f". ./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
 
 
 if __name__ == "__main__":
