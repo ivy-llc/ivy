@@ -839,7 +839,9 @@ def matmul(
     ivy.array([[7.],[9.]])
 
     """
-    return current_backend(x1).matmul(x1, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out)
+    return current_backend(x1).matmul(
+        x1, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+    )
 
 
 @to_native_arrays_and_back
