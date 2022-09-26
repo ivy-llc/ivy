@@ -67,7 +67,7 @@ def sigmoid(input):
     return ivy.sigmoid(input)
 
 
-def leaky_relu(input, negative_slope=0.01):
+def leaky_relu(input, negative_slope=0.01, inplace=False):
     return ivy.leaky_relu(input, alpha=negative_slope)
 
 
