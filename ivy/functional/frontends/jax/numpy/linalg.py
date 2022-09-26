@@ -1,6 +1,11 @@
 import ivy
 
 
+# inv
+def inv(a):
+    return ivy.inv(a)
+
+
 def det(a):
     return ivy.det(a)
 
@@ -14,3 +19,4 @@ def eigh(a, UPLO="L", symmetrize_input=True):
         a = symmetrize(a)
 
     return ivy.eigh(a, UPLO=UPLO)
+    
