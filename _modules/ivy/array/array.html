@@ -343,6 +343,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">__array_wrap__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">_native_wrapper</span>
+    <span class="k">def</span> <span class="nf">__array_namespace__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span>
+
+    <span class="nd">_native_wrapper</span>
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sig_fig</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_significant_figures</span><span class="p">()</span>
         <span class="n">dec_vals</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_decimal_values</span><span class="p">()</span>
