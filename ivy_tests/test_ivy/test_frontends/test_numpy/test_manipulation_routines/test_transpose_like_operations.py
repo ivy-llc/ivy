@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 @st.composite
 def st_dtype_arr_and_axes(draw):
-    dtype, x, x_shape = draw(
+    dtypes, xs, x_shape = draw(
         helpers.dtype_and_values(
             num_arrays=1,
             available_dtypes=helpers.get_dtypes("numeric"),
@@ -35,7 +35,7 @@ def st_dtype_arr_and_axes(draw):
             force_tuple=True,
         )
     )
-    return dtype, x, axis1, axis2
+    return dtypes[0], xs[0], axis1, axis2
 
 
 @handle_cmd_line_args
