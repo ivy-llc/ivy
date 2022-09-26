@@ -1362,7 +1362,7 @@ def test_torch_ceil(
         fw=fw,
         frontend="torch",
         fn_tree="ceil",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
