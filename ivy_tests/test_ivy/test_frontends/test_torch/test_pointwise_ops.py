@@ -1362,7 +1362,7 @@ def test_torch_ceil(
         fw=fw,
         frontend="torch",
         fn_tree="ceil",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -1374,8 +1374,7 @@ def test_torch_ceil(
         available_dtypes=("float32", "float64"),
         num_arrays=3,
         shared_dtype=True,
-        allow_inf=True,
-        shape=(5,)
+        shape=(5,),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.clamp"
@@ -1413,8 +1412,7 @@ def test_torch_clamp(
         available_dtypes=("float32", "float64"),
         num_arrays=3,
         shared_dtype=True,
-        allow_inf=True,
-        shape=(5,)
+        shape=(5,),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.clip"
