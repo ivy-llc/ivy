@@ -24,7 +24,9 @@ def native_sparse_array(
     if _is_data_not_indices_values_and_shape(
         data, coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
     ):
-        assert ivy.is_native_sparse_array(data), "not a sparse array"
+        ivy.assertions.check_true(
+            ivy.is_native_sparse_array(data), message="not a sparse array"
+        )
         return data
     elif _is_coo_not_csr(
         coo_indices, csr_crow_indices, csr_col_indices, values, dense_shape
@@ -56,4 +58,4 @@ def native_sparse_array_to_indices_values_and_shape(x):
         return x.indices(), x.values(), x.size()
     elif x.layout == torch.sparse_csr:
         return [x.crow_indices(), x.col_indices()], x.values(), x.size()
-    raise Exception("not a sparse COO/CSR Tensor")
+    raise ivy.exceptions.IvyException("not a sparse COO/CSR Tensor")

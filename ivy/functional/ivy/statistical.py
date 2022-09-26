@@ -1,5 +1,5 @@
 # global
-from typing import Union, Tuple, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -18,6 +19,103 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def min(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculates the minimum value of the input array x.
+
+    .. note::
+    When the number of elements over which to compute the minimum value is zero, the
+    minimum value is implementation-defined. Specification-compliant libraries may
+    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
+    input array, return NaN), or return the maximum possible value for the input array x
+    data type (e.g., if x is a floating-point array, return +infinity).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
+
+    Parameters
+    ----------
+    x
+        Input array containing elements to min.
+    axis
+         axis or axes along which minimum values must be computed. By default, the
+         minimum value must be computed over the entire array. If a tuple of integers,
+         minimum values must be computed over multiple axes. Default: None.
+    keepdims
+        optional boolean, if True, the reduced axes (dimensions) must be included in the
+        result as singleton dimensions, and, accordingly, the result must be compatible
+        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+        (dimensions) must not be included in the result. Default: False.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the minimum value was computed over the entire array, a zero-dimensional
+        array containing the minimum value; otherwise, a non-zero-dimensional array
+        containing the minimum values. The returned array must have the same data type
+        as x.
+
+    Examples
+    --------
+    With :code:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = x.min()
+    >>> print(z)
+    ivy.array(1)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0, 0, 0])
+    >>> y = ivy.min(x, out=z)
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[0, 1, 2]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x)
+    >>> print(y)
+    ivy.array(0)
+
+    With :code:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = ivy.min(x)
+    >>> print(y)
+    {
+        a: ivy.array(0.),
+        b: ivy.array(3.)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+    >>> z = x.min()
+    >>> print(z)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
+    """
+    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -126,6 +224,7 @@ def max(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -174,6 +273,17 @@ def mean(
            array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.statistical_functions.mean.html>`_ in the standard.
+
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :code:`ivy.Container` instances in place of any of the arguments.
+
+    
     Functional Examples
     -------------------
     With :code:`ivy.Array` input:
@@ -189,7 +299,7 @@ def mean(
     >>> print(y)
     ivy.array(1.)
 
-    >>> x = ivy.array([[-1, -2, -3, 0, -1], [1, 2, 3, 0, 1]])
+    >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
     >>> y = ivy.array([0., 0.])
     >>> ivy.mean(x, axis=1, out=y)
     >>> print(y)
@@ -216,12 +326,12 @@ def mean(
 
     With :code:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+    >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
     >>> y = ivy.mean(x)
     >>> print(y)
     {
         a: ivy.array(0.),
-        b: ivy.array(0.9)
+        b: ivy.array(0.90000004)
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
@@ -254,28 +364,6 @@ def mean(
     >>> print(y)
     ivy.array([-0.25,  1.05,  2.1])
 
-    With :code:`ivy.native_array` input:
-
-    >>> x = ivy.native_array([0.0, 1.1, 2.2])
-    >>> y = x.mean()
-    >>> print(y)
-    1.1
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean()
-    >>> print(y)
-    2.5
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean(axis=0)
-    >>> print(y)
-    [1.5 2.5 3.5]
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean(axis=1)
-    >>> print(y)
-    [1.0 4.0]
-
     With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.2, 2.2, 4.2]))
@@ -286,12 +374,12 @@ def mean(
         b: ivy.array(2.2)
     }
 
-    >>> x = ivy.Container(a=ivy.array([1., 1., 1.], b=ivy.array([0., -1., 1.])))
+    >>> x = ivy.Container(a=ivy.array([1., 1., 1.]), b=ivy.array([0., -1., 1.]))
     >>> x.mean(out=x)
     >>> print(x)
     {
-        a: ivy.array(1.1),
-        b: ivy.array(0.)
+        a: ivy.array(0.),
+        b: ivy.array(1.)
     }
 
     >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
@@ -302,15 +390,6 @@ def mean(
         a: ivy.array([1., 2.]),
         b: ivy.array([3., 4.])
     }
-    
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.statistical_functions.mean.html>`_ in the standard.
-
-    Both the description and the type hints above assumes an array input for
-    simplicity, but this function is *nestable*, and therefore also accepts
-    :code:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
@@ -318,65 +397,12 @@ def mean(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def min(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Calculates the minimum value of the input array x.
-
-    .. note::
-    When the number of elements over which to compute the minimum value is zero, the
-    minimum value is implementation-defined. Specification-compliant libraries may
-    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
-    input array, return NaN), or return the maximum possible value for the input array x
-    data type (e.g., if x is a floating-point array, return +infinity).
-
-    **Special Cases**
-
-    For floating-point operands,
-
-    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
-
-    Parameters
-    ----------
-    x
-        Input array containing elements to min.
-    axis
-         axis or axes along which minimum values must be computed. By default, the
-         minimum value must be computed over the entire array. If a tuple of integers,
-         minimum values must be computed over multiple axes. Default: None.
-    keepdims
-        optional boolean, if True, the reduced axes (dimensions) must be included in the
-        result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
-        (dimensions) must not be included in the result. Default: False.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        if the minimum value was computed over the entire array, a zero-dimensional
-        array containing the minimum value; otherwise, a non-zero-dimensional array
-        containing the minimum values. The returned array must have the same data type
-        as x.
-
-    """
-    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
+@handle_exceptions
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -439,11 +465,12 @@ def prod(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -513,6 +540,7 @@ def std(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -633,6 +661,7 @@ def sum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -803,6 +832,7 @@ def var(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -810,8 +840,8 @@ def cumsum(
     reverse: bool = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns the cumulative sum of the elements along a given axis.
 
     Parameters
@@ -946,14 +976,15 @@ def cumsum(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
     exclusive: bool = False,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
     """Returns the cumulative product of the elements along a given axis.
 
     Parameters
@@ -1086,6 +1117,7 @@ def cumprod(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -18,6 +19,7 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -115,6 +117,7 @@ def argmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -219,6 +222,7 @@ def argmin(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -290,13 +294,6 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y)
     (ivy.array([3, 4, 5]),)
 
-    Using :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
-    >>> y = x.nonzero()
-    >>> print(y)
-    tensor([[0,0],[0,1],[2,0],[2,1]])
-
     Using :code:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
@@ -319,6 +316,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -432,18 +430,19 @@ def where(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def indices_where(
+@handle_exceptions
+def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Returns indices or true elements in an input boolean array.
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns indices the indices of all non-zero elements of the input array.
 
     Parameters
     ----------
     x
-        Boolean array, for which indices are desired.
+        input array, for which indices are desired.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -451,7 +450,7 @@ def indices_where(
     Returns
     -------
     ret
-        Indices for where the boolean array is True.
+        Indices of non-zero elements.
 
     """
-    return current_backend(x).indices_where(x, out=out)
+    return current_backend(x).argwhere(x, out=out)

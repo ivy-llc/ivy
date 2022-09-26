@@ -23,7 +23,7 @@ def container_types():
     return [FlatMapping]
 
 
-def current_backend_str():
+def current_backend_str() -> str:
     return "jax"
 
 
@@ -48,6 +48,10 @@ def is_native_array(x, /, *, exclusive=False):
             jax.interpreters.partial_eval.DynamicJaxprTracer,
         ),
     )
+
+
+def get_item(x: JaxArray, query: JaxArray) -> JaxArray:
+    return x.__getitem__(query)
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
@@ -75,15 +79,16 @@ def to_list(x: JaxArray, /) -> list:
 def gather(
     params: JaxArray,
     indices: JaxArray,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.take_along_axis(params, indices, axis))
+    return _to_device(jnp.take(params, indices, axis))
 
 
 def gather_nd(
-    params: JaxArray, indices: JaxArray, *, out: Optional[JaxArray] = None
+    params: JaxArray, indices: JaxArray, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     indices_shape = indices.shape
     params_shape = params.shape
@@ -112,8 +117,8 @@ def gather_nd(
     return _to_device(ret)
 
 
-def get_num_dims(x: JaxArray, as_tensor: bool = False) -> Union[JaxArray, int]:
-    return jnp.asarray(len(jnp.shape(x))) if as_tensor else len(x.shape)
+def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, int]:
+    return jnp.asarray(len(jnp.shape(x))) if as_array else len(x.shape)
 
 
 def inplace_arrays_supported():
@@ -149,12 +154,16 @@ def inplace_update(
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         if ensure_in_backend:
-            raise Exception("JAX does not natively support inplace updates")
+            raise ivy.exceptions.IvyException(
+                "JAX does not natively support inplace updates"
+            )
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            raise Exception("JAX does not natively support inplace updates")
+            raise ivy.exceptions.IvyException(
+                "JAX does not natively support inplace updates"
+            )
         return x
     else:
         return val
@@ -173,15 +182,17 @@ def multiprocessing(context=None):
 def scatter_flat(
     indices: JaxArray,
     updates: JaxArray,
+    /,
+    *,
     size: Optional[int] = None,
     reduction: str = "sum",
-    *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        assert len(target.shape) == 1 and target.shape[0] == size
+        ivy.assertions.check_equal(len(target.shape), 1)
+        ivy.assertions.check_equal(target.shape[0], size)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
@@ -203,7 +214,7 @@ def scatter_flat(
         if not target_given:
             target = jnp.where(target == -1e12, 0.0, target)
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -214,9 +225,10 @@ def scatter_flat(
 def scatter_nd(
     indices: JaxArray,
     updates: JaxArray,
+    /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    reduction="sum",
     *,
+    reduction="sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -227,8 +239,7 @@ def scatter_nd(
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
         if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, -1)
-
+            indices = jnp.expand_dims(indices, 0)
     # keep below commented out, array API tests are passing without this
     # updates = [updates] if isinstance(updates, Number) else updates
 
@@ -238,6 +249,17 @@ def scatter_nd(
         if ivy.exists(out)
         else ivy.default_dtype(item=updates),
     )
+    expected_shape = (
+        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        if ivy.exists(out)
+        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+    )
+    if sum(updates.shape) < sum(expected_shape):
+        updates = ivy.broadcast_to(updates, expected_shape)._data
+    elif sum(updates.shape) > sum(expected_shape):
+        indices = ivy.broadcast_to(
+            indices, updates.shape[:1] + (indices.shape[-1],)
+        )._data
 
     # handle Ellipsis
     if isinstance(indices, tuple) or indices is Ellipsis:
@@ -250,7 +272,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        assert ivy.Shape(target.shape) == ivy.Shape(shape)
+        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
@@ -265,15 +287,19 @@ def scatter_nd(
             target = jnp.ones(shape, dtype=updates.dtype) * 1e12
         target = target.at[indices_tuple].min(updates)
         if not target_given:
-            target = jnp.where(target == 1e12, 0.0, target)
+            target = jnp.asarray(
+                jnp.where(target == 1e12, 0.0, target), dtype=updates.dtype
+            )
     elif reduction == "max":
         if not target_given:
             target = jnp.ones(shape, dtype=updates.dtype) * -1e12
         target = target.at[indices_tuple].max(updates)
         if not target_given:
-            target = jnp.where(target == -1e12, 0.0, target)
+            target = jnp.asarray(
+                jnp.where(target == -1e12, 0.0, target), dtype=updates.dtype
+            )
     else:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -286,7 +312,7 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def shape(x: JaxArray, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(x: JaxArray, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:

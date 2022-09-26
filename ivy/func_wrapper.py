@@ -30,6 +30,14 @@ NATIVE_KEYS_TO_SKIP = {
         "unsafe_buffer_pointer",
         "xla_dynamic_shape",
         "xla_shape",
+        "default_prng_impl",
+        "flattened_fun_in_tree",
+        "flatten_fun",
+        "flatten_fun_nokwargs",
+        "get_aval",
+        "concrete_aval",
+        "function transformation_with_aux",
+        "flatten_fun_for_vmap",
     ],
     "tensorflow": [],
     "torch": [
@@ -46,6 +54,19 @@ NATIVE_KEYS_TO_SKIP = {
     ],
 }
 
+# for wrapping (sequence matters)
+FN_DECORATORS = [
+    "infer_device",
+    "infer_dtype",
+    "integer_arrays_to_float",
+    "outputs_to_ivy_arrays",
+    "inputs_to_native_arrays",
+    "inputs_to_ivy_arrays",
+    "handle_out_argument",
+    "handle_nestable",
+    "handle_exceptions",
+]
+
 # Helpers #
 # --------#
 
@@ -55,17 +76,15 @@ def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
     arr = None
     if args:
-        arr_idxs = ivy.nested_indices_where(args, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(args, arr_idxs[0])
         else:
-            arr_idxs = ivy.nested_indices_where(
-                kwargs, ivy.is_array, stop_after_n_found=1
-            )
+            arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
             if arr_idxs:
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_indices_where(kwargs, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
@@ -473,17 +492,8 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         docstring_attr = ["__annotations__", "__doc__"]
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
-        # wrap decorators (sequence matters)
-        for attr in [
-            "infer_device",
-            "infer_dtype",
-            "integer_arrays_to_float",
-            "outputs_to_ivy_arrays",
-            "inputs_to_native_arrays",
-            "inputs_to_ivy_arrays",
-            "handle_out_argument",
-            "handle_nestable",
-        ]:
+        # wrap decorators
+        for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
