@@ -12,7 +12,10 @@ import ivy
 
 class ArrayWithGeneral(abc.ABC):
     def is_native_array(
-        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        /,
+        *,
+        exclusive: bool = False,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
@@ -32,7 +35,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_native_array(self._data, exclusive=exclusive)
 
     def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
@@ -169,7 +172,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Parameters
         ----------
-        params
+        self
             The array from which to gather values.
         indices
             The array which indicates the indices that will be gathered along
@@ -211,9 +214,7 @@ class ArrayWithGeneral(abc.ABC):
         Parameters
         ----------
         self
-            The tensor in which to scatter the results
-        indices
-            Tensor of indices
+            array of indices
         updates
             values to update input tensor with
         shape
@@ -271,9 +272,6 @@ class ArrayWithGeneral(abc.ABC):
             The array from which to gather values.
         indices
             Index array.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            ``x`` if None.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -380,7 +378,6 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(y)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
-
         """
         return ivy.einops_reduce(
             self._data, pattern, reduction, out=out, **axes_lengths
