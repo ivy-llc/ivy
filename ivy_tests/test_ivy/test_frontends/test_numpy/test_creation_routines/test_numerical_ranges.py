@@ -198,7 +198,7 @@ def test_numpy_meshgrid(
         frontend="numpy",
         fn_tree="meshgrid",
         **kw,
-        copy=False,
+        copy=copy,
         sparse=sparse,
         indexing=indexing,
     )
