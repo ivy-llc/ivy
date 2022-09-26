@@ -1,6 +1,10 @@
 import ivy
 
 
+def det(a):
+    return ivy.det(a)
+
+
 def eigh(a, UPLO="L", symmetrize_input=True):
     def symmetrize(x):
         # TODO : Take Hermitian transpose after complex numbers added
