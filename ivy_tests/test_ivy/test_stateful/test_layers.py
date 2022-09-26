@@ -172,59 +172,70 @@ def test_dropout_layer(
 # ----------#
 @st.composite
 def x_and_mha(draw):
-    dtype = draw(helpers.get_dtypes("float"))
+    dtype = draw(helpers.get_dtypes("float", full=False))
+    with_to_q_fn = draw(st.booleans())
+    with_to_kv_fn = draw(st.booleans())
+    with_to_out_fn = draw(st.booleans())
     query_dim = draw(st.integers(min_value=1, max_value=3))
     num_heads = draw(st.integers(min_value=1, max_value=3))
     head_dim = draw(st.integers(min_value=1, max_value=3))
-    dropout_rate = draw(st.floats(min_value=0.0, max_value=3.0))
+    dropout_rate = draw(st.floats(min_value=0.0, max_value=0.9))
     context_dim = draw(st.integers(min_value=1, max_value=3))
     scale = draw(st.integers(min_value=1, max_value=3))
 
     batch_shape = draw(st.integers(min_value=1, max_value=3))
     num_queries = draw(st.integers(min_value=1, max_value=3))
-    x_feats = draw(st.integers(min_value=1, max_value=3))
+    # x_feats = draw(st.integers(min_value=1, max_value=3))
     num_values = draw(st.integers(min_value=1, max_value=3))
     # cont_feats = draw(st.integers(min_value=1, max_value=3))
     num_keys = draw(st.integers(min_value=1, max_value=3))
-
-    inputs_shape = [batch_shape] + [num_queries] + [x_feats]
-    context_shape = [batch_shape] + [num_values] + [context_dim]
-    mask_shape = [num_queries] + [num_keys]
+    if with_to_q_fn:
+        inputs_shape = (num_queries, query_dim)
+    else:
+        inputs_shape = (num_queries, num_heads * head_dim)
+    if with_to_kv_fn:
+        context_shape = (num_keys, context_dim)
+    else:
+        context_shape = (num_keys, num_heads * head_dim * 2)
+    mask_shape = (num_queries, num_keys)
     x_mha = draw(
         helpers.array_values(
-            dtype=dtype, shape=inputs_shape
+            dtype=dtype,
+            shape=inputs_shape,
+            min_value=0.0999755859375,
+            max_value=1,
         )
     )
     context = draw(
         helpers.array_values(
-            dtype=dtype, shape=context_shape
+            dtype=dtype,
+            shape=context_shape,
+            min_value=0.0999755859375,
+            max_value=1,
         )
     )
     mask = draw(
         helpers.array_values(
-            dtype=dtype, shape=mask_shape
+            dtype=dtype,
+            shape=mask_shape,
+            min_value=0.0999755859375,
+            max_value=1,
         )
     )
-    return dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim
+    return dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim, with_to_q_fn, with_to_kv_fn, with_to_out_fn
 
 # multi_head_attention
 @handle_cmd_line_args
 @given(
     dtype_mha=x_and_mha(),
-    with_to_q_fn=st.booleans(),
-    with_to_kv_fn=st.booleans(),
-    with_to_out_fn=st.booleans(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
     num_positional_args_init=helpers.num_positional_args(fn_name="MultiHeadAttention.__init__"),
     num_positional_args_method=helpers.num_positional_args(fn_name="MultiHeadAttention._forward"),
-    build_mode=st.sampled_from(["on_init", "explicit", "on_call"]),
+    build_mode=st.sampled_from(["on_init"]),
 )
 def test_multi_head_attention_layer(
     dtype_mha,
-    with_to_q_fn,
-    with_to_kv_fn,
-    with_to_out_fn,
     init_with_v,
     method_with_v,
     num_positional_args_init,
@@ -236,11 +247,7 @@ def test_multi_head_attention_layer(
     fw,
     device,
 ):
-    input_dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim = dtype_mha
-    with_to_q_fn = with_to_q_fn
-    with_to_kv_fn = with_to_kv_fn
-    with_to_out_fn = with_to_out_fn
-    build_mode = build_mode
+    input_dtype, x_mha, scale, num_heads, context, mask, query_dim, head_dim, dropout_rate, context_dim, with_to_q_fn, with_to_kv_fn, with_to_out_fn = dtype_mha
     input_dtype = [input_dtype] * 3
     as_variable = [as_variable] * 3
     native_array = [native_array] * 3
@@ -276,6 +283,8 @@ def test_multi_head_attention_layer(
         class_name="MultiHeadAttention",
         init_with_v=init_with_v,
         method_with_v=method_with_v,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 # Convolutions #
