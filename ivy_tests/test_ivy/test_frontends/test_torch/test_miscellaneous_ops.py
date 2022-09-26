@@ -623,8 +623,6 @@ def test_torch_renorm(
     fw,
 ):
     dtype, values = dtype_and_values
-    values = np.asarray(values, dtype=dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         with_out=with_out,
@@ -634,7 +632,7 @@ def test_torch_renorm(
         fw=fw,
         frontend="torch",
         fn_tree="renorm",
-        input=values,
+        input=values[0],
         p=p,
         dim=dim,
         maxnorm=maxnorm,
@@ -670,8 +668,6 @@ def test_torch_logcumsumexp(
     fw,
 ):
     dtype, input = dtype_and_input
-    input = np.asarray(input, dtype)
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         with_out=with_out,
@@ -683,7 +679,7 @@ def test_torch_logcumsumexp(
         fn_tree="logcumsumexp",
         atol=1e-2,
         rtol=1e-2,
-        input=input,
+        input=input[0],
         dim=dim,
     )
 
@@ -719,14 +715,9 @@ def test_torch_repeat_interleave(
 ):
     input_dtype, input, dim = dtype_and_input_and_dim
     repeat_dtype, repeats = dtype_and_repeats
-
-    input = np.asarray(input, dtype=input_dtype)
-    repeats = np.asarray(repeats, dtype=repeat_dtype)
-
     output_size = np.sum(repeats) if use_output_size else None
-
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, repeat_dtype],
+        input_dtypes=input_dtype + repeat_dtype,
         with_out=with_out,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -734,8 +725,8 @@ def test_torch_repeat_interleave(
         fw=fw,
         frontend="torch",
         fn_tree="repeat_interleave",
-        input=input,
-        repeats=repeats,
+        input=input[0],
+        repeats=repeats[0],
         dim=dim,
         output_size=output_size,
     )
