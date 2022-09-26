@@ -120,7 +120,8 @@ def inv(
         else:
             cofactor = jnp.transpose(jnp.linalg.inv(x)) * jnp.linalg.det(x)
             inverse = jnp.multiply(
-                jnp.divide(1, jnp.linalg.det(x)), jnp.transpose(cofactor))
+                jnp.divide(1, jnp.linalg.det(x)), jnp.transpose(cofactor)
+            )
             ret = inverse
             return ret
 
@@ -138,7 +139,7 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
-    out: Optional[JaxArray] = None
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if transpose_a is True:
         x1 = jnp.transpose(x1)
