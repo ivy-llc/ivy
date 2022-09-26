@@ -954,9 +954,8 @@ def test_tensorflow_polyval(
 ):
     dtype_x, x = dtype_and_x
     dtype_coeffs, coeffs = dtype_and_coeffs
-    coeffs = [np.asarray(c) for c, d in zip(coeffs, dtype_coeffs)]
     helpers.test_frontend_function(
-        input_dtypes=[dtype_coeffs, dtype_x],
+        input_dtypes=dtype_coeffs + dtype_x,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -964,8 +963,8 @@ def test_tensorflow_polyval(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.polyval",
-        coeffs=coeffs,
-        x=np.asarray(x, dtype=dtype_x),
+        coeffs=coeffs[0],
+        x=x[0],
     )
 
 

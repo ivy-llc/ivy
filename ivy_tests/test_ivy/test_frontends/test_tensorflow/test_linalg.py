@@ -70,7 +70,7 @@ def test_tensorflow_eigh(
         fw=fw,
         frontend="tensorflow",
         fn_tree="linalg.eigh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
     )
 
 
