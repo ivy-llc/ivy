@@ -14,28 +14,14 @@ class ndarray:
     # Instance Methoods #
     # -------------------#
 
-    def reshape(self, newshape, copy=None):
-        return np_frontend.reshape(self.data, newshape, copy=copy)
+    def reshape(self, shape, order="C"):
+        return np_frontend.reshape(self.data, shape)
 
     def add(
         self,
-        other,
-        /,
-        out=None,
-        *,
-        where=True,
-        casting="same_kind",
-        order="k",
-        dtype=None,
-        subok=True,
+        value,
     ):
         return np_frontend.add(
             self.data,
-            other,
-            out=out,
-            where=where,
-            casting=casting,
-            order=order,
-            dtype=dtype,
-            subok=subok,
+            value,
         )

@@ -213,7 +213,7 @@ and passing them as inputs to the test. For example, in this code snippet here -
 
     @handle_cmd_line_args
     @given(
-    dtype_and_x=helpers.dtype_and_values(ivy_np.valid_float_dtypes),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     num_positional_args=helpers.ints(min_value=0, max_value=2),
     alpha=helpers.floats(),
     )
@@ -620,19 +620,19 @@ and a variety performance details are supported. Let’s look at the function `t
 This test runs for every backend, and the output is shown below-:
 
 * **Jax**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/Jax_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/Jax_data_gen.png
    :width: 600
 
 * **Numpy**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/numpy_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/numpy_data_gen.png
    :width: 600
 
 * **Tensorflow**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/tensorflow_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/tensorflow_data_gen.png
    :width: 600
 
 * **Torch**
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/torch_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/torch_data_gen.png
    :width: 600
 
 
@@ -645,7 +645,7 @@ examples from previous runs are displayed.
 Another argument which can be specified for a more detailed output is **hypothesis-verbosity = verbose**. Let’s look at
 the newer output, for the same example -:
 
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/test_run_data_gen.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/15_ivy_tests/test_run_data_gen.png
    :width: 600
 
 Like the output above, Hypothesis will print all the examples for which the test failed, when **verbosity** is set.

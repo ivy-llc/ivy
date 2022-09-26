@@ -421,7 +421,9 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.tile(self._data, reps=reps, out=out)
 
-    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
+    def unstack(
+        self: ivy.Array, /, *, axis: int = 0, keepdims: bool = False
+    ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
         this method with minimal changes.
@@ -454,7 +456,7 @@ class ArrayWithManipulation(abc.ABC):
                 [3]]), ivy.array([[2],
                 [4]])]
         """
-        return ivy.unstack(self._data, axis, keepdims=keepdims)
+        return ivy.unstack(self._data, axis=axis, keepdims=keepdims)
 
     def zero_pad(
         self: ivy.Array,

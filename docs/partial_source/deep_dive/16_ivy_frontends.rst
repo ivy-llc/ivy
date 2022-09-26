@@ -528,10 +528,8 @@ As an example, we show how :code:`NativeClass` is used in the frontend test for 
     Novalue = NativeClass(numpy._NoValue)
     @handle_cmd_line_args
     @given(
-        dtype_x_axis=_dtype_x_axis(
-            available_dtypes=ivy_np.valid_float_dtypes),
-        dtype=st.sampled_from(
-            ivy_np.valid_float_dtypes + (None,)),
+        dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+        dtype=helpers.get_dtypes("float", full=False, none=True),
         keep_dims= st.one_of (st.booleans(), Novalue),
         initial=st.one_of(st.floats(), Novalue),
         num_positional_args=helpers.num_positional_args(
