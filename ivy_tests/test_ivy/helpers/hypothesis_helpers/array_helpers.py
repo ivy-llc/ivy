@@ -9,14 +9,74 @@ from operator import mul
 # local
 import ivy
 from . import general_helpers as gh
-from . import dtype_helpers
-from . import number_helpers as nh
+from . import dtype_helpers, number_helpers
 import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
+
+
+@st.composite
+def array_bools(
+    draw,
+    *,
+    num_arrays=st.shared(
+        number_helpers.ints(min_value=1, max_value=4), key="num_arrays"
+    ),
+):
+    """Draws a boolean list of a given size.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    num_arrays
+        size of the list.
+
+    Returns
+    -------
+    A strategy that draws a list.
+    """
+    size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
+    return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
 def list_of_length(*, x, length):
     """Returns a random list of the given length from elements in x."""
     return st.lists(x, min_size=length, max_size=length)
+
+
+@st.composite
+def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
+    """Draws a list from the dataset arg.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    arg
+        dataset of elements.
+    min_size
+        least size of the list.
+    max_size
+        max size of the list.
+    size_bounds
+        if min_size or max_size is None, draw them randomly from the range
+        [size_bounds[0], size_bounds[1]].
+
+    Returns
+    -------
+    A strategy that draws a list.
+    """
+    integers = (
+        number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
+        if size_bounds
+        else number_helpers.ints()
+    )
+    if isinstance(min_size, str):
+        min_size = draw(st.shared(integers, key=min_size))
+    if isinstance(max_size, str):
+        max_size = draw(st.shared(integers, key=max_size))
+    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
 
 
 @st.composite
@@ -308,7 +368,7 @@ def dtype_values_axis(
                 )
             )
     else:
-        axis = draw(nh.ints(min_value=min_axis, max_value=max_axis))
+        axis = draw(number_helpers.ints(min_value=min_axis, max_value=max_axis))
     if ret_shape:
         return dtype, values, axis, shape
     return dtype, values, axis
@@ -386,7 +446,7 @@ def array_n_indices_n_axis(
         axis = -1
     else:
         axis = draw(
-            nh.ints(
+            number_helpers.ints(
                 min_value=-1 * len(x_shape),
                 max_value=len(x_shape) - 1,
             )

@@ -7,67 +7,6 @@ import ivy
 from . import array_helpers, number_helpers, dtype_helpers
 
 
-@st.composite
-def array_bools(
-    draw,
-    *,
-    num_arrays=st.shared(
-        number_helpers.ints(min_value=1, max_value=4), key="num_arrays"
-    ),
-):
-    """Draws a boolean list of a given size.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    num_arrays
-        size of the list.
-
-    Returns
-    -------
-    A strategy that draws a list.
-    """
-    size = num_arrays if isinstance(num_arrays, int) else draw(num_arrays)
-    return draw(st.lists(st.booleans(), min_size=size, max_size=size))
-
-
-@st.composite
-def lists(draw, *, arg, min_size=None, max_size=None, size_bounds=None):
-    """Draws a list from the dataset arg.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    arg
-        dataset of elements.
-    min_size
-        least size of the list.
-    max_size
-        max size of the list.
-    size_bounds
-        if min_size or max_size is None, draw them randomly from the range
-        [size_bounds[0], size_bounds[1]].
-
-    Returns
-    -------
-    A strategy that draws a list.
-    """
-    integers = (
-        number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
-        if size_bounds
-        else number_helpers.ints()
-    )
-    if isinstance(min_size, str):
-        min_size = draw(st.shared(integers, key=min_size))
-    if isinstance(max_size, str):
-        max_size = draw(st.shared(integers, key=max_size))
-    return draw(st.lists(arg, min_size=min_size, max_size=max_size))
-
-
 # Hypothesis #
 # -----------#
 
