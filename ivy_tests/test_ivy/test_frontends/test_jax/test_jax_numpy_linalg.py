@@ -13,9 +13,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        min_value=-100,
+        max_value=100,
+        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
