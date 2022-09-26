@@ -38,7 +38,6 @@ bfloat16 = ivy.FloatDtype("bfloat16")
 float16 = ivy.FloatDtype("float16")
 float32 = ivy.FloatDtype("float32")
 float64 = ivy.FloatDtype("float64")
-# noinspection PyShadowingBuiltins
 bool = ivy.Dtype("bool")
 
 # native data types
@@ -53,7 +52,7 @@ native_uint64 = np.dtype("uint64")
 native_float16 = np.dtype("float16")
 native_float32 = np.dtype("float32")
 native_float64 = np.dtype("float64")
-# noinspection PyShadowingBuiltins
+native_double = native_float64
 native_bool = np.dtype("bool")
 
 # valid data types

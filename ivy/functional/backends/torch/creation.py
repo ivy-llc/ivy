@@ -15,6 +15,7 @@ from ivy import (
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 from ivy.functional.backends.numpy.data_type import as_ivy_dtype
 
+
 from . import version
 
 # noinspection PyProtectedMember

@@ -1,7 +1,7 @@
 # global
 
-from typing import Union, Tuple, List, Optional, Sequence
 
+from typing import Union, Tuple, List, Optional, Sequence
 import tensorflow as tf
 
 # local
@@ -11,6 +11,7 @@ from ivy import (
     default_dtype,
     as_ivy_dtype,
 )
+
 
 
 from ivy.func_wrapper import with_unsupported_dtypes

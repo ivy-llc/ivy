@@ -493,7 +493,9 @@ def scatter_nd(
 
 
 
+
 scatter_nd.support_native_out = True
+
 
 
 
