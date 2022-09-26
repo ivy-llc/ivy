@@ -164,21 +164,21 @@ def ceil(input, *, out=None):
 
 def clamp(input, min=None, max=None, *, out=None):
     input = ivy.array(input)
-    if min.all() == None:
+    if min.all() is None:
         return ivy.minimum(input, max, out=out)
-    if max.all() == None:
+    if max.all() is None:
         return ivy.maximum(input, min, out=out)
-    if min.all() == None and max.all() == None:
+    if min.all() is None and max.all() is None:
         return input
     return ivy.minimum(ivy.maximum(input, min), max, out=out)
 
 
 def clip(input, min=None, max=None, *, out=None):
     input = ivy.array(input)
-    if min.all() == None:
+    if min.all() is None:
         return ivy.minimum(input, max, out=out)
-    if max.all() == None:
+    if max.all() is None:
         return ivy.maximum(input, min, out=out)
-    if min.all() == None and max.all() == None:
+    if min.all() is None and max.all() is None:
         return input
     return ivy.minimum(ivy.maximum(input, min), max, out=out)
