@@ -47,8 +47,7 @@ jobs:
          id: tests
          run: |
            cd ivy
-           out = $(python run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }})
-           echo $out
+           python run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}
          continue-on-error: true
 
        - name: Zip Hypothesis Examples

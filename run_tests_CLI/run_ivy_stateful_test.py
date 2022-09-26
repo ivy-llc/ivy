@@ -28,7 +28,6 @@ def cron_job():
     submodule = submodules[j]
     os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
     print(backend, submodule)
-    return backend, submodule
 
 
 if __name__ == "__main__":
