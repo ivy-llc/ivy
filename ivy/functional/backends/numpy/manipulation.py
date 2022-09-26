@@ -98,7 +98,7 @@ def roll(
 def squeeze(
     x: np.ndarray,
     /,
-    axis: Union[int, Sequence[int]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -204,7 +204,9 @@ def swapaxes(
     return np.swapaxes(x, axis0, axis1)
 
 
-def unstack(x: np.ndarray, axis: int, keepdims: bool = False) -> List[np.ndarray]:
+def unstack(
+    x: np.ndarray, /, *, axis: int = 0, keepdims: bool = False
+) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)

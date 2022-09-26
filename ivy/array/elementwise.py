@@ -1866,6 +1866,7 @@ class ArrayWithElementwise(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -1885,7 +1886,6 @@ class ArrayWithElementwise(abc.ABC):
         >>> z = x.subtract(y, alpha=2)
         >>> print(z)
         ivy.array([-3., -5., -9.])
-
         """
         return ivy.subtract(self._data, x2, alpha=alpha, out=out)
 
@@ -1993,6 +1993,32 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the Gauss error of ``self``.
         """
         return ivy.erf(self._data, out=out)
+
+    def reciprocal(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.reciprocal.This method simply wraps the
+        function, and so the docstring for ivy.reciprocal also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array to compute the element-wise reciprocal for.
+        out
+            optional output, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise reciprocal of ``self``.
+        """
+        return ivy.reciprocal(self._data, out=out)
 
     def deg2rad(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

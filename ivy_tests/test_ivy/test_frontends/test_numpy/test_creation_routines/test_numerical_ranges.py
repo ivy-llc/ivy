@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from numpy import mgrid as np_mgrid, ogrid as np_ogrid
 from hypothesis import given, strategies as st
 
@@ -35,12 +34,12 @@ def _get_dtype_and_range(draw):
     dim = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     start = draw(
-        helpers.array_values(dtype=dtype, shape=(dim,), min_value=-50, max_value=0)
+        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
     )
     stop = draw(
-        helpers.array_values(dtype=dtype, shape=(dim,), min_value=1, max_value=50)
+        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=1, max_value=50)
     )
-    return dtype, start, stop
+    return dtype * 2, start, stop
 
 
 # arange
@@ -49,7 +48,7 @@ def _get_dtype_and_range(draw):
     start=helpers.ints(min_value=-50, max_value=0),
     stop=helpers.ints(min_value=1, max_value=50),
     step=helpers.ints(min_value=1, max_value=5),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.arange"
     ),
@@ -61,13 +60,14 @@ def test_numpy_arange(
     dtype,
     num_positional_args,
     fw,
+    native_array,
 ):
     helpers.test_frontend_function(
         input_dtypes=[dtype],
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
         fn_tree="arange",
@@ -94,23 +94,24 @@ def test_numpy_linspace(
     axis,
     num_positional_args,
     fw,
+    native_array,
 ):
-    dtype, start, stop = dtype_start_stop
+    input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
-        input_dtypes=[dtype, dtype],
-        as_variable_flags=False,
+        input_dtypes=input_dtypes,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
         fn_tree="linspace",
-        start=np.asarray(start, dtype=dtype),
-        stop=np.asarray(stop, dtype=dtype),
+        start=start,
+        stop=stop,
         num=num,
         endpoint=True,
         retstep=False,
-        dtype=dtype,
+        dtype=input_dtypes[0],
         axis=axis,
     )
 
@@ -133,20 +134,21 @@ def test_numpy_logspace(
     axis,
     num_positional_args,
     fw,
+    native_array,
 ):
     dtype, start, stop = dtype_start_stop
     helpers.test_frontend_function(
         input_dtypes=[dtype, dtype],
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
         fw=fw,
         frontend="numpy",
         fn_tree="logspace",
         rtol=1e-01,
-        start=np.asarray(start, dtype=dtype),
-        stop=np.asarray(stop, dtype=dtype),
+        start=start,
+        stop=stop,
         num=num,
         endpoint=True,
         base=base,
@@ -162,6 +164,7 @@ def test_numpy_logspace(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
+        max_num_dims=1,
         min_dim_size=1,
         shared_dtype=True,
     ),
@@ -175,21 +178,22 @@ def test_numpy_meshgrid(
     sparse,
     indexing,
     fw,
+    native_array,
 ):
     input_dtypes, arrays = dtype_and_arrays
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = np.asarray(x_, dtype=input_dtypes[0])
+        kw["x{}".format(i)] = x_
         i += 1
     num_positional_args = len(arrays)
-
-    helpers.test_frontend_function(
+    ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=False,
+        native_array_flags=native_array,
+        test_values=False,
         fw=fw,
         frontend="numpy",
         fn_tree="meshgrid",
@@ -198,6 +202,8 @@ def test_numpy_meshgrid(
         sparse=sparse,
         indexing=indexing,
     )
+    for u, v in zip(ret, ret_gt):
+        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v)
 
 
 # mgrid
