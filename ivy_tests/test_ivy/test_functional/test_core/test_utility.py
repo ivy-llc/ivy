@@ -1,7 +1,6 @@
 """Collection of tests for utility functions."""
 
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -43,7 +42,7 @@ def test_all(
         instance_method=instance_method,
         fw=fw,
         fn_name="all",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
     )
@@ -83,7 +82,7 @@ def test_any(
         instance_method=instance_method,
         fw=fw,
         fn_name="any",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keepdims,
     )
