@@ -1289,5 +1289,5 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, fw, native_array):
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Relu",
-        features=np.asarray(x, dtype=dtype),
+        features=x[0],
     )
