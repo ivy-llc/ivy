@@ -45,7 +45,6 @@ jobs:
 
        - name: Run Stateful Tests
          id: tests
-         shell: bash
          run: |
            cd ivy
            python ./run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}

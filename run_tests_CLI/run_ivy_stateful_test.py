@@ -27,10 +27,10 @@ j = run % M
 backend = backends[i]
 submodule = submodules[j]
 
-with open("fw.txt") as outfile:
+with open("./fw.txt") as outfile:
     outfile.write(backend)
 
-with open("submodule.txt") as outfile:
+with open("./submodule.txt") as outfile:
     outfile.write(submodule)
 
 
