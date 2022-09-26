@@ -28,11 +28,8 @@ backend = backends[i]
 submodule = submodules[j]
 
 
-with open("./fw.txt", "w") as outfile:
-    outfile.write(backend)
-
-with open("./submodule.txt", "w") as outfile:
-    outfile.write(submodule)
+with open("./fwsubmod.txt", "w") as outfile:
+    outfile.write(f"{backend}-{submodule}")
 
 
 os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
