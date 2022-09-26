@@ -232,7 +232,7 @@ class ArrayWithLayers(abc.ABC):
             dilations=dilations,
             out=out,
         )
-    
+
     def conv2d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
@@ -300,7 +300,7 @@ class ArrayWithLayers(abc.ABC):
             dilations=dilations,
             out=out,
         )
-        
+
     def conv3d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],

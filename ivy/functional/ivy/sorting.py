@@ -74,6 +74,11 @@ def argsort(
     >>> print(y)
     ivy.array([1,2,0])
 
+    >>> x = ivy.array([4,3,8])
+    >>> y = ivy.argsort(x, descending=True)
+    >>> print(y)
+    ivy.array([2,0,1])
+
     >>> x = ivy.array([[1.5, 3.2], [2.3, 2.3]])
     >>> ivy.argsort(x, axis=0, descending=True, stable=False, out=x)
     >>> print(x)
@@ -92,6 +97,29 @@ def argsort(
     {
         a: ivy.array([1, 2, 0]),
         b: ivy.array([[0, 1], [1, 0]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[3.5, 5],[2.4, 1]]))
+    >>> y = ivy.argsort(x)
+    >>> print(y)
+    {
+        a: ivy.array([[0,1],[1,0]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([4,3,6]), b=ivy.array([[4, 5], [2, 4]]))
+    >>> y = ivy.argsort(x, descending=True)
+    >>> print(y)
+    {
+        a: ivy.array([2, 0, 1]),
+        b: ivy.array([[1, 0], [1, 0]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1.5, 3.2],[2.3, 4]]), b=ivy.array([[[1,3],[3,2],[2,0]]]))
+    >>> y = x.argsort(axis=-1, descending=True, stable=False)
+    >>> print(y)
+    {
+        a: ivy.array([[1,0],[1,0]]),
+        b: ivy.array([[[1,0],[0, 1],[0, 1]]])
     }
     """
     return ivy.current_backend(x).argsort(

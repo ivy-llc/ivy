@@ -126,7 +126,7 @@ def roll(
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    axis: Union[int, Sequence[int]] = None,
+    axis: Union[int, Sequence[int]],
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -309,7 +309,7 @@ def clip(
 
 
 def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = 0, keepdims: bool = False
 ) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]

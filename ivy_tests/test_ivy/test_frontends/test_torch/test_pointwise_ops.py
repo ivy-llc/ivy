@@ -42,8 +42,8 @@ def test_torch_add(
         frontend="torch",
         fn_tree="add",
         rtol=1e-03,
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         alpha=alpha,
         out=None,
     )
@@ -77,7 +77,7 @@ def test_torch_tan(
         fw=fw,
         frontend="torch",
         fn_tree="tan",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -110,7 +110,7 @@ def test_torch_atan(
         fw=fw,
         frontend="torch",
         fn_tree="atan",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -143,8 +143,7 @@ def test_torch_tanh(
         fw=fw,
         frontend="torch",
         fn_tree="tanh",
-        input=np.asarray(x, dtype=input_dtype),
-        out=None,
+        input=x[0],
     )
 
 
@@ -176,7 +175,7 @@ def test_torch_abs(
         fw=fw,
         frontend="torch",
         fn_tree="abs",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -209,7 +208,7 @@ def test_torch_cos(
         fw=fw,
         frontend="torch",
         fn_tree="cos",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -242,7 +241,7 @@ def test_torch_sin(
         fw=fw,
         frontend="torch",
         fn_tree="sin",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -275,7 +274,7 @@ def test_torch_acos(
         fw=fw,
         frontend="torch",
         fn_tree="acos",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -308,7 +307,7 @@ def test_torch_sinh(
         fw=fw,
         frontend="torch",
         fn_tree="sinh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -341,7 +340,7 @@ def test_torch_acosh(
         fw=fw,
         frontend="torch",
         fn_tree="acosh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -374,7 +373,7 @@ def test_torch_arccos(
         fw=fw,
         frontend="torch",
         fn_tree="arccos",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -414,8 +413,8 @@ def test_torch_subtract(
         fw=fw,
         frontend="torch",
         fn_tree="subtract",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         alpha=alpha,
         out=None,
         rtol=1e-04,
@@ -450,7 +449,7 @@ def test_torch_exp(
         fw=fw,
         frontend="torch",
         fn_tree="exp",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -483,7 +482,7 @@ def test_torch_asin(
         fw=fw,
         frontend="torch",
         fn_tree="asin",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -516,7 +515,7 @@ def test_torch_arccosh(
         fw=fw,
         frontend="torch",
         fn_tree="arccosh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -549,7 +548,7 @@ def test_torch_arcsin(
         fw=fw,
         frontend="torch",
         fn_tree="arcsin",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -582,7 +581,7 @@ def test_torch_asinh(
         fw=fw,
         frontend="torch",
         fn_tree="asinh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -615,7 +614,7 @@ def test_torch_cosh(
         fw=fw,
         frontend="torch",
         fn_tree="cosh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -648,7 +647,7 @@ def test_torch_atanh(
         fw=fw,
         frontend="torch",
         fn_tree="atanh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -681,7 +680,7 @@ def test_torch_arctanh(
         fw=fw,
         frontend="torch",
         fn_tree="arctanh",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -714,7 +713,7 @@ def test_torch_log2(
         fw=fw,
         frontend="torch",
         fn_tree="log2",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         out=None,
     )
 
@@ -747,7 +746,7 @@ def test_torch_square(
         fw=fw,
         frontend="torch",
         fn_tree="square",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         out=None,
     )
 
@@ -782,8 +781,8 @@ def test_torch_atan2(
         fw=fw,
         frontend="torch",
         fn_tree="atan2",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -816,7 +815,7 @@ def test_torch_negative(
         fw=fw,
         frontend="torch",
         fn_tree="negative",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -851,8 +850,8 @@ def test_torch_bitwise_and(
         frontend="torch",
         fn_tree="bitwise_and",
         rtol=1e-04,
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -885,7 +884,7 @@ def test_torch_bitwise_not(
         fw=fw,
         frontend="torch",
         fn_tree="bitwise_not",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -919,8 +918,8 @@ def test_torch_bitwise_xor(
         fw=fw,
         frontend="torch",
         fn_tree="bitwise_xor",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -954,8 +953,8 @@ def test_torch_bitwise_or(
         fw=fw,
         frontend="torch",
         fn_tree="bitwise_or",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -983,7 +982,6 @@ def test_torch_bitwise_left_shift(
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
     x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -993,8 +991,8 @@ def test_torch_bitwise_left_shift(
         fw=fw,
         frontend="torch",
         fn_tree="bitwise_left_shift",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -1032,8 +1030,8 @@ def test_torch_bitwise_right_shift(
         fw=fw,
         frontend="torch",
         fn_tree="bitwise_right_shift",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -1066,7 +1064,7 @@ def test_torch_log10(
         fw=fw,
         frontend="torch",
         fn_tree="log10",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -1099,7 +1097,7 @@ def test_torch_trunc(
         fw=fw,
         frontend="torch",
         fn_tree="trunc",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -1130,7 +1128,7 @@ def test_torch_sqrt(
         fw=fw,
         frontend="torch",
         fn_tree="sqrt",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         out=None,
     )
 
@@ -1163,7 +1161,7 @@ def test_torch_sign(
         fw=fw,
         frontend="torch",
         fn_tree="sign",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -1196,7 +1194,7 @@ def test_torch_absolute(
         fw=fw,
         frontend="torch",
         fn_tree="absolute",
-        input=np.asarray(input, dtype=input_dtype),
+        input=input[0],
         out=None,
     )
 
@@ -1228,7 +1226,7 @@ def test_torch_logical_not(
         fw=fw,
         frontend="torch",
         fn_tree="logical_not",
-        input=np.asarray(x, dtype=input_dtype),
+        input=x[0],
         out=None,
     )
 
@@ -1260,8 +1258,8 @@ def test_torch_logical_and(
         fw=fw,
         frontend="torch",
         fn_tree="logical_and",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -1293,8 +1291,8 @@ def test_torch_logical_or(
         fw=fw,
         frontend="torch",
         fn_tree="logical_or",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )
 
@@ -1326,7 +1324,7 @@ def test_torch_logical_xor(
         fw=fw,
         frontend="torch",
         fn_tree="logical_xor",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
+        input=x[0],
+        other=x[1],
         out=None,
     )

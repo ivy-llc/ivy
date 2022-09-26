@@ -2638,8 +2638,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
-            a: array([1, 0, 1, 1], dtype=int32),
-            b: array([1, -1, 0, 0], dtype=int32)
+            a: array([1, 0, 1, 1]),
+            b: array([1, -1, 0, 0])
         }
 
         >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),\
@@ -2648,7 +2648,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
             a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0], dtype=int32)
+            b: array([1, 1, -1, 0])
         }
 
         Examples
@@ -2720,10 +2720,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
+                      [1, 0, -1]]),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
+                      [1, 1, 1]])
         }
 
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),\
@@ -2733,10 +2733,10 @@ class ContainerWithGeneral(ContainerBase):
         {
             a: array([[-1, 0, 1],
                       [-1, 0, 1],
-                      [1, 0, -1]], dtype=int32),
+                      [1, 0, -1]]),
             b: array([[-1, 0, 0],
                       [1, 0, 1],
-                      [1, 1, 1]], dtype=int32)
+                      [1, 1, 1]])
         }
 
         Examples
@@ -3539,7 +3539,7 @@ class ContainerWithGeneral(ContainerBase):
 
     @staticmethod
     def static_supports_inplace_updates(
-        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable],
+        x: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -3579,8 +3579,8 @@ class ContainerWithGeneral(ContainerBase):
         Raises
         ------
         ValueError
-            If a node(s) of the container isn't a class instance of ivy.Variable,
-            ivy.Array, or ivy.NativeArray, an exception will be raised.
+            If a node(s) of the container isn't a class instance of ivy.Array or
+            ivy.NativeArray, an exception will be raised.
 
         Examples
         --------
