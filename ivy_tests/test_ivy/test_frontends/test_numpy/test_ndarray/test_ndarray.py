@@ -94,3 +94,43 @@ def test_numpy_ndarray_add(
         class_name="ndarray",
         method_name="add",
     )
+
+# squeeze
+@st.composite
+def dtype_x_bounded_axis(draw, **kwargs):
+    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
+    axis = draw(helpers.ints(min_value=0, max_value=max(len(shape) - 1, 0)))
+    return dtype, x, axis
+
+@handle_cmd_line_args
+@given(
+    dtypes_x_axis=dtype_x_bounded_axis(),
+)
+def test_numpy_ndarray_squeeze(
+    dtypes_x_axis,
+    as_variable,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtypes_x_axis
+    helpers.test_frontend_method(
+
+        input_dtypes_init=[input_dtype],
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=0,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": np.array(x, dtype=input_dtype),
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "axis": axis,
+        },
+        fw=fw,
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="squeeze",
+    )
