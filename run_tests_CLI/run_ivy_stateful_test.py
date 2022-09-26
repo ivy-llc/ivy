@@ -1,7 +1,6 @@
 import sys
 import os
 
-run = int(sys.argv[1])
 backends = ["numpy", "torch", "jax", "tensorflow"]
 submodules = [
     "activations",
@@ -13,17 +12,24 @@ submodules = [
     "sequential",
 ]
 
-N = len(backends)
-M = len(submodules)
 
-num_tests = N * M
-run = run % num_tests
+def cron_job():
+    run = int(sys.argv[1])
+    N = len(backends)
+    M = len(submodules)
 
-i = run // M
-j = run % M
+    num_tests = N * M
+    run = run % num_tests
 
-backend = backends[i]
-submodule = submodules[j]
+    i = run // M
+    j = run % M
 
-print(backend, submodule)
-os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
+    backend = backends[i]
+    submodule = submodules[j]
+    os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
+    print(backend, submodule)
+    return backend, submodule
+
+
+if __name__ == "__main__":
+    cron_job()
