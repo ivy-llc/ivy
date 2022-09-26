@@ -47,6 +47,7 @@ jobs:
          id: tests
          run: |
            cd ivy
+           pwd
            python ./run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}
            export BACKEND = $(cat fw.txt)
            export SUBMODULE = $(cat submodule.txt)

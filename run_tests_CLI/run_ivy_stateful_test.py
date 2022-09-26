@@ -27,6 +27,7 @@ j = run % M
 backend = backends[i]
 submodule = submodules[j]
 
+print(os.getcwd())
 with open("./fw.txt") as outfile:
     outfile.write(backend)
 
