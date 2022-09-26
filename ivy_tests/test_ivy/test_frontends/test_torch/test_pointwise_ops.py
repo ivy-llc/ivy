@@ -1233,7 +1233,7 @@ def test_torch_divide(
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
-               fn_tree="divide",
+        fn_tree="divide",
         input=np.asarray(x[0], dtype=input_dtype[0]),
         other=np.asarray(x[1], dtype=input_dtype[1]),
         rounding_mode=rounding_mode,
