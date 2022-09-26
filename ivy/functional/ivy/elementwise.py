@@ -1275,7 +1275,7 @@ def bitwise_right_shift(
                [21, 10],
                [ 2,  4]])
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> a = ivy.native_array([[32, 40, 55], \
                               [16, 33, 170]])
@@ -1285,7 +1285,7 @@ def bitwise_right_shift(
     ivy.array([[ 1, 10, 27],
                [ 0,  8, 85]])
 
-    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     >>> a = ivy.array([[10, 64], \
                        [43, 87], \
@@ -1396,7 +1396,7 @@ def bitwise_xor(
     >>> print(a)
     ivy.array([2, 0, 2])
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> a = ivy.native_array([0, 1, 3, 67, 91])
     >>> b = ivy.native_array([4, 7, 90, 89, 98])
@@ -1404,7 +1404,7 @@ def bitwise_xor(
     >>> print(y)
     ivy.array([ 4, 6, 89, 26, 57])
 
-    With a mix of :code: `ivy.Array` and :code:`ivy.NativeArray` inputs:
+    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
 
     >>> a = ivy.array([0, 1, 3, 67, 91])
     >>> a = ivy.native_array([4, 7, 90, 89, 98])
@@ -1412,7 +1412,7 @@ def bitwise_xor(
     >>> print(y)
     ivy.array([0,0,0,0,0])
 
-    With :code: `ivy.Container` input:
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([89]))
     >>> b = ivy.array([90])
@@ -1438,7 +1438,7 @@ def bitwise_xor(
     Instance Method Examples
     ------------------------
 
-    Using :code: `ivy.Array` instance method:
+    Using :code:`ivy.Array` instance method:
 
     >>> a = ivy.array([[89, 51, 32], [14, 18, 19]])
     >>> b = ivy.array([[[19, 26, 27], [22, 23, 20]]])
@@ -5102,7 +5102,7 @@ def square(
     >>> print(x)
     ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])
 
-    With :code: `ivy.NativeArray` input:
+    With :code:`ivy.NativeArray` input:
 
     >>> a = ivy.native_array([1, 2, 3])
     >>> b = ivy.square(a)

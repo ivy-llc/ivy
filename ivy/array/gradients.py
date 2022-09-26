@@ -279,7 +279,7 @@ class ArrayWithGradients(abc.ABC):
 
         Examples
         --------
-        With :code: `ivy.Array` inputs:
+        With :code:`ivy.Array` inputs:
 
         >>> w = ivy.array([[1., 2, 3],\
                        [4, 6, 1],\

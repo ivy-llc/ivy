@@ -723,6 +723,8 @@ def matmul(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the matrix product.
@@ -837,7 +839,9 @@ def matmul(
     ivy.array([[7.],[9.]])
 
     """
-    return current_backend(x1).matmul(x1, x2, out=out)
+    return current_backend(x1).matmul(
+        x1, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+    )
 
 
 @to_native_arrays_and_back
