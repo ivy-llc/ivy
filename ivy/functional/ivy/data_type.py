@@ -1339,9 +1339,8 @@ def dtype(
     ret
         Data type of the array
 
-    Functional Method Examples
-    --------------------------
-
+    Examples
+    --------
     With :code:`ivy.Array` inputs:
 
     >>> x1 = ivy.array([1, 0, 1, -1, 0])
@@ -1382,7 +1381,6 @@ def dtype(
 
     Instance Method Examples
     ------------------------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])

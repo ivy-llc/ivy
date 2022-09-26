@@ -132,7 +132,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-        With :code: `ivy.Array` instance method:
+        With :code:`ivy.Array` instance method:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.broadcast_to((3,3))

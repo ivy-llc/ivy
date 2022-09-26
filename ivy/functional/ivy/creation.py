@@ -420,7 +420,7 @@ def full_like(
 
     Functional Examples
     -------------------
-    With int datatype:
+    With :code:`int` datatype:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
@@ -434,7 +434,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With float datatype:
+    With :code:`float` datatype:
 
     >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     >>> fill_value = 0.000123
@@ -442,7 +442,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With ivy.NativeArray input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3.0, 8.0])
     >>> fill_value = 0.000123
@@ -456,7 +456,7 @@ def full_like(
     ivy.array([[0.000123, 0.000123, 0.000123],
            [0.000123, 0.000123, 0.000123]])
 
-    With ivy.Container input:
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
                            b=ivy.array([4.123,5.23,6.23]))
@@ -471,7 +471,7 @@ def full_like(
     Instance Method Examples:
     ------------------------
 
-    With ivy.Array input:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
@@ -479,7 +479,7 @@ def full_like(
     >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
 
-    With ivy.Container input:
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1,2,3]), \
                            b=ivy.array([4,5,6]))
@@ -1160,7 +1160,7 @@ def full(
     >>> print(x)
     ivy.array([[0.68, 0.68]])
 
-    With :code:'ivy.Container' input:
+    With :code:`ivy.Container` input:
 
     >>> shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))
     >>> fill_value = ivy.Container(a=0.99, b=False)
