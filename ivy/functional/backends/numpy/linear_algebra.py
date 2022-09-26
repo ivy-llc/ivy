@@ -192,8 +192,8 @@ qr.unsupported_dtypes = ("float16",)
 
 def slogdet(
     x: np.ndarray
-) -> Tuple[np.ndarray, np.ndarray]:
-    results = namedtuple("slogdet", "sign logabsdet")
+) -> NamedTuple:
+    results = NamedTuple("slogdet", [("sign", np.ndarray), ("logabsdet", np.ndarray)])
     sign, logabsdet = np.linalg.slogdet(x)
     sign = np.asarray(sign) if not isinstance(sign, np.ndarray) else sign
     logabsdet = (

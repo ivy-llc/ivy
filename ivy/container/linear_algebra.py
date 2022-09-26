@@ -1042,13 +1042,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            This function returns a container containing NamedTuple of two values for
-            each square matrix. Each NamedTuple of output will have -
+            This function returns a container containing NamedTuples.
+            Each NamedTuple of output will have -
                 sign:
-                A number representing the sign of the determinant.
+                An array containing a number representing the sign of the determinant
+                for each square matrix.
 
-                logdet:
-                The natural log of the absolute value of the determinant.
+                logabsdet:
+                An array containing natural log of the absolute determinant of each
+                square matrix.
 
         Examples
         --------
@@ -1106,13 +1108,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            This function returns container containing NamedTuple of two values for each
-            square matrix. Each NamedTuple of output will have -
+            This function returns container containing NamedTuples.
+            Each NamedTuple of output will have -
                 sign:
-                A number representing the sign of the determinant.
+                An array of a number representing the sign of the determinant of each
+                square.
 
-                logdet:
-                The natural log of the absolute value of the determinant.
+                logabsdet:
+                An array of the natural log of the absolute value of the determinant of
+                each square.
 
         Examples
         --------

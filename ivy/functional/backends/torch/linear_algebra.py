@@ -245,8 +245,11 @@ qr.unsupported_dtypes = (
 
 def slogdet(
     x: torch.Tensor
-) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
-    results = namedtuple("slogdet", "sign logabsdet")
+) -> NamedTuple:
+    results = NamedTuple(
+        "slogdet",
+        [("sign", torch.Tensor), ("logabsdet", torch.Tensor)]
+    )
     sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)
 

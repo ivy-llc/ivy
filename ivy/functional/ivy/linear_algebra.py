@@ -1141,10 +1141,13 @@ def slogdet(
     ret
         This function returns NamedTuple with two values -
             sign:
-            A number representing the sign of the determinant.
+            An array containing a number representing the sign of the determinant
+            for each square matrix.
 
-            logdet:
-            The natural log of the absolute value of the determinant.
+            logabsdet:
+            An array containing natural log of the absolute determinant of each
+            square matrix.
+
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
