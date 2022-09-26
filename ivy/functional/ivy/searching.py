@@ -281,8 +281,8 @@ def nonzero(
     >>> print(y)
     ivy.array([[0, 1], [1, 0], [1, 1]])
 
-    >>> x = ivy.array([0, 1], size=2, fill_value=4)
-    >>> y = ivy.nonzero(x)
+    >>> x = ivy.array([0, 1])
+    >>> y = ivy.nonzero(x, size=2, fill_value=4)
     >>> print(y)
     (ivy.array([1, 4]),)
 
