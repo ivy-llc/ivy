@@ -1,10 +1,10 @@
-|              | numpy   | torch   | tensorflow   | jax   |
-|:-------------|:--------|:--------|:-------------|:------|
-| activations  | passing |         |              |       |
-| converters   |         |         |              |       |
-| initializers |         |         |              |       |
-| layers       |         |         |              |       |
-| modules      |         |         |              |       |
-| norms        |         |         |              |       |
-| optmizers    |         |         |              |       |
-| sequential   |         |         |              |       |
+|              | numpy   | torch                                                                                                                                                                  | tensorflow   | jax   |
+|:-------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------|:------|
+| activations  | passing |                                                                                                                                                                        |              |       |
+| converters   |         |                                                                                                                                                                        |              |       |
+| initializers |         |                                                                                                                                                                        |              |       |
+| layers       |         |                                                                                                                                                                        |              |       |
+| modules      |         | <a href="https://github.com/unifyai/ivy/actions/runs/3128315082" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |              |       |
+| norms        |         |                                                                                                                                                                        |              |       |
+| optmizers    |         |                                                                                                                                                                        |              |       |
+| sequential   |         |                                                                                                                                                                        |              |       |
