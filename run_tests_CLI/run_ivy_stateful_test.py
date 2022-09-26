@@ -1,5 +1,6 @@
 import sys
-import subprocess
+import os
+
 
 backends = ["numpy", "torch", "jax", "tensorflow"]
 submodules = [
@@ -11,6 +12,15 @@ submodules = [
     "optimizers",
     "sequential",
 ]
+
+
+def get_my_print(file=sys.stdout):
+    _original_print = print
+
+    def my_print(*objects, sep="", end="\n", file=file, flush=False):
+        _original_print(*objects, sep="", end="\n", file=file, flush=False)
+
+    return my_print
 
 
 def cron_job():
@@ -26,11 +36,9 @@ def cron_job():
 
     backend = backends[i]
     submodule = submodules[j]
-    subprocess.run(
-        [f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}"],
-        shell=True,
-        stdout=subprocess.PIPE,
-    ).stdout.decode("utf-8")
+    os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
+    print = get_my_print(sys.stderr)
+    print(backend, submodule)
 
 
 if __name__ == "__main__":
