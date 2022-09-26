@@ -46,9 +46,11 @@ jobs:
 
        - name: Run Functional-Core Tests
          id: tests
+         shell: pwsh
          run: |
            cd ivy
            python run_tests_CLI/run_ivy_core_test.py ${{ github.run_number }}
+           Write-Host "::set-output name=fw_submod::$(cat fwsubmod.txt)"
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
@@ -63,6 +65,14 @@ jobs:
            name: hypothesis_zip
            path: |
              ivy/.hypothesis/examples.zip
+         continue-on-error: true
+
+       - name: Update Database
+         env:
+            MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+         run: |
+             cd ivy/automation_tools/dashboard_automation/
+             python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} ${{ steps.tests.outputs.fw_submod}} ${{ steps.tests.outcome }} ${{ github.run_id }}
          continue-on-error: true
 
        - name: Check on failures
