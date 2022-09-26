@@ -5,9 +5,9 @@ sqrt
 
 .. autofunction:: ivy.array.array_methods.sqrt
 
-.. autofunction:: ivy.container.container_methods.static_sqrt
-
 .. autofunction:: ivy.container.container_methods.sqrt
+
+.. autofunction:: ivy.container.container_methods.static_sqrt
 
 .. list-table:: Device Support
    :widths: 20 20 20 20 20
