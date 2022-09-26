@@ -406,7 +406,6 @@ def test_torch_elu(
     )
 
 
-# ToDo test for values once inplace test implemented
 # elu_
 @handle_cmd_line_args
 @given(
@@ -584,7 +583,6 @@ def test_torch_rrelu(
     )
 
 
-# ToDo test for values once inplace test implemented
 # rrelu_
 @handle_cmd_line_args
 @given(
