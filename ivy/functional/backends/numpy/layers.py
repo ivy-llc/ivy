@@ -316,26 +316,11 @@ def conv3d(
 
     # adding dilations
     if dilations[1] > 1:
-        filters = np.insert(
-            filters,
-            [i for i in range(1, filters.shape[1])] * (dilations[1] - 1),
-            values=0,
-            axis=1,
-        )
+        filters = _add_dilations(filters, dilations[1], axis=1)
     if dilations[0] > 1:
-        filters = np.insert(
-            filters,
-            [i for i in range(1, filters.shape[0])] * (dilations[0] - 1),
-            values=0,
-            axis=0,
-        )
+        filters = _add_dilations(filters, dilations[0], axis=0)
     if dilations[2] > 1:
-        filters = np.insert(
-            filters,
-            [i for i in range(1, filters.shape[2])] * (dilations[2] - 1),
-            values=0,
-            axis=2,
-        )
+        filters = _add_dilations(filters, dilations[2], axis=2)
 
     filter_shape = list(filters.shape[0:3])
 
@@ -476,4 +461,82 @@ def conv3d_transpose(
     )
     if data_format == "NCDHW":
         res = np.transpose(res, (0, 4, 1, 2, 3))
+    return res
+
+
+def conv_general_dilated(
+    x: np.ndarray,
+    filters: np.ndarray,
+    strides: Union[int, Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+    out: np.ndarray = None,
+) -> np.ndarray:
+    if isinstance(strides, int):
+        strides = [strides] * dims
+
+    if isinstance(dilations, int):
+        dilations = [dilations] * dims
+
+    for j in range(dims):
+        if dilations[j] > 1:
+            filters = np.insert(
+                filters,
+                [i for i in range(1, filters.shape[j])] * (dilations[j] - 1),
+                values=0,
+                axis=j,
+            )
+    filter_shape = list(filters.shape[0:dims])
+    if data_format == "channel_first":
+        x = np.transpose(x, (0, *range(2, dims + 2), 1))
+    x_shape = list(x.shape[1 : dims + 1])
+    pad_specific = [
+        ivy.handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
+        for i in range(dims)
+    ]
+    pad_list = [
+        (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+        for i in range(dims)
+    ]
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            *pad_list,
+            (0, 0),
+        ],
+        "constant",
+    )
+    x_shape = x.shape
+    input_dim = filters.shape[-2]
+    output_dim = filters.shape[-1]
+    new_shape = [
+        (x_shape[i + 1] - filter_shape[i]) // strides[i] + 1 for i in range(dims)
+    ]
+    new_shape = [x_shape[0], *new_shape] + filter_shape + [input_dim]
+    normal_strides = [x.strides[i] for i in range(1, dims + 2)]
+    changed_strides = [x.strides[i] * strides[dims - i] for i in range(1, dims + 1)]
+    new_strides = (x.strides[0], *changed_strides, *normal_strides)
+    # B x OH x OW x KH x KW x I
+    sub_matrices = np.lib.stride_tricks.as_strided(
+        x, new_shape, new_strides, writeable=False
+    )
+
+    # B x OH x OW x KH x KW x I x O
+    sub_matrices_w_output_dim = np.tile(
+        np.expand_dims(sub_matrices, -1), [1] * (dims * 2 + 2) + [output_dim]
+    )
+    # B x OH x OW x KH x KW x I x O
+    mult = sub_matrices_w_output_dim * filters.reshape(
+        [1] * (dims + 1) + filter_shape + [input_dim, output_dim]
+    )
+
+    # B x OH x OW x O
+    res = np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)]))
+    if data_format == "channel_first":
+        return np.transpose(res, (0, -1, *range(1, dims + 1)))
     return res

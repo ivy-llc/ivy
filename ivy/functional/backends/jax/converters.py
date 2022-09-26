@@ -75,10 +75,10 @@ def to_ivy_module(
     kwargs = ivy.default(kwargs, {})
 
     if not ivy.exists(native_module):
-        if not ivy.exists(native_module_class):
-            raise Exception(
-                "native_module_class must be specified if native_module is not given"
-            )
+        ivy.assertions.check_exists(
+            native_module_class,
+            message="native_module_class must be specified if native_module is None",
+        )
 
         def forward_fn(*a, **kw):
             model = native_module_class(*args, **kwargs)

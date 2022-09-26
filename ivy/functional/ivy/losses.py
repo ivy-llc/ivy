@@ -4,12 +4,27 @@
 import ivy
 from typing import Optional, Union
 from ivy.func_wrapper import handle_nestable
+from ivy.exceptions import handle_exceptions
+
+# Helpers #
+# ------- #
+
+
+def _reduce_loss(red, loss, axis, out):
+    if red == "sum":
+        return ivy.negative(ivy.sum(loss, axis=axis, out=out), out=out)
+    elif red == "mean":
+        return ivy.negative(ivy.mean(loss, axis=axis, out=out), out=out)
+    else:
+        return ivy.negative(loss, out=out)
+
 
 # Extra #
 # ------#
 
 
 @handle_nestable
+@handle_exceptions
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -17,6 +32,7 @@ def cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
+    reduction: str = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes cross-entropy between predicted and true discrete distributions.
@@ -54,18 +70,21 @@ def cross_entropy(
     ivy.array(0.35667497)
 
     """
+    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
-    return ivy.negative(ivy.sum(log_pred * true, axis=axis, out=out), out=out)
+    return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
 @handle_nestable
+@handle_exceptions
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     epsilon: float = 1e-7,
+    reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the binary cross entropy loss.
@@ -152,14 +171,18 @@ def binary_cross_entropy(
     ivy.array([0.223, 0.223, 0.223, 0.223])
 
     """
+    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    return ivy.negative(
+    return _reduce_loss(
+        reduction,
         ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true), out=out),
-        out=out,
+        None,
+        out,
     )
 
 
 @handle_nestable
+@handle_exceptions
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -167,6 +190,7 @@ def sparse_cross_entropy(
     *,
     axis: int = -1,
     epsilon: float = 1e-7,
+    reduction: str = "sum",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes sparse cross entropy between logits and labels.
@@ -264,5 +288,8 @@ def sparse_cross_entropy(
      }
 
     """
+    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     true = ivy.one_hot(true, pred.shape[axis])
-    return ivy.cross_entropy(true, pred, axis=axis, epsilon=epsilon, out=out)
+    return ivy.cross_entropy(
+        true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
+    )

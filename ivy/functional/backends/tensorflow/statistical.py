@@ -1,7 +1,7 @@
 # global
 _round = round
 import tensorflow as tf
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -11,11 +11,23 @@ import ivy
 # -------------------#
 
 
+def min(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+
+
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -35,18 +47,6 @@ def mean(
     return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
-def min(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Union[int, Tuple[int]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
-
-
 def _infer_dtype(dtype: tf.DType):
     default_dtype = ivy.infer_default_dtype(dtype)
     if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
@@ -58,7 +58,7 @@ def prod(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[tf.DType] = None,
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -67,14 +67,14 @@ def prod(
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.experimental.numpy.prod(x, axis, dtype, keepdims)
+    return tf.experimental.numpy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
 def std(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -126,8 +126,12 @@ def var(
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     else:
-        return (size / (size - correction)) ** 0.5 * tf.experimental.numpy.var(
-            x, axis=axis, out=out, keepdims=keepdims
+        return tf.cast(
+            tf.math.multiply(
+                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
+                size / (size - correction),
+            ),
+            x.dtype,
         )
 
 
