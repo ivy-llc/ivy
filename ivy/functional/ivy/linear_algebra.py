@@ -1139,7 +1139,7 @@ def slogdet(
     Returns
     -------
     ret
-        This function returns two values -
+        This function returns NamedTuple with two values -
             sign:
             A number representing the sign of the determinant.
 
@@ -1158,7 +1158,7 @@ def slogdet(
                        [3.0, 4.0]])
     >>> y = ivy.slogdet(x)
     >>> print(y)
-    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.69314718))
+    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
     With :code:`ivy.Container` input:
 
@@ -1178,11 +1178,11 @@ def slogdet(
     With :code:`ivy.Container` static method:
 
     >>> a = ivy.array([[[1.0, 2.0],  \
-                    [3.0, 4.0]], \
-                   [[1.0, 2.0],  \
-                    [2.0, 1.0]], \
-                   [[1.0, 3.0],  \
-                    [3.0, 1.0]]])
+                        [3.0, 4.0]], \
+                       [[1.0, 2.0],  \
+                        [2.0, 1.0]], \
+                       [[1.0, 3.0],  \
+                        [3.0, 1.0]]])
     >>> x = ivy.Container(a=a)
     >>> y = ivy.Container.static_slogdet(x)
     >>> print(y)
@@ -1193,10 +1193,10 @@ def slogdet(
     With :code:`ivy.Array` instance methods:
 
     >>> x = ivy.array([[1.0, 2.0], \
-                   [3.0, 4.0]])
+                       [3.0, 4.0]])
     >>> y = x.slogdet()
     >>> print(y)
-    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.69314718))
+    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
     With :code:`ivy.Container` instance methods:
 

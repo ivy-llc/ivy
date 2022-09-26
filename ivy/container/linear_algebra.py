@@ -1019,9 +1019,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static instance method variant of ivy.slogdet.
-        This method simply wraps the function, and so the docstring
-        for ivy.slogdet also applies to this method with minimal changes.
+        ivy.Container static instance method variant of ivy.slogdet. This method simply
+        wraps the function, and so the docstring for ivy.slogdet also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -1042,9 +1042,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            This function returns a container containing two values for each square
-            matrix.
-            Each value of output will have -
+            This function returns a container containing NamedTuple of two values for
+            each square matrix. Each NamedTuple of output will have -
                 sign:
                 A number representing the sign of the determinant.
 
@@ -1053,7 +1052,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-
         >>> a = ivy.array([[[1.0, 2.0],  \
                             [3.0, 4.0]], \
                            [[1.0, 2.0],  \
@@ -1085,9 +1083,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.slogdet.
-        This method simply wraps the function, and so the docstring
-        for ivy.slogdet also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.slogdet. This method simply wraps
+        the function, and so the docstring for ivy.slogdet also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -1108,9 +1106,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            This function returns container containing two values for each square
-            matrix.
-            Each value of output will have -
+            This function returns container containing NamedTuple of two values for each
+            square matrix. Each NamedTuple of output will have -
                 sign:
                 A number representing the sign of the determinant.
 
@@ -1119,7 +1116,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-
         >>> x = ivy.Container(a=ivy.array([[1.0, 2.0], \
                                            [3.0, 4.0]])
         >>> y = x.slogdet()
@@ -1129,7 +1125,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
 
         """
-
         return self.static_slogdet(
             self,
             key_chains,

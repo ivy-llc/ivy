@@ -270,8 +270,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
     ) -> NamedTuple:
         """
-        ivy.Array instance method variant of ivy.slogdet. This method computes the sign
-        and natural logarithm of the determinant of an array.
+        ivy.Array instance method variant of ivy.slogdet. This method simply wraps the
+        function, and so the docstring for ivy.slogdet also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -282,7 +283,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         Returns
         -------
         ret
-            This function returns two values -
+            This function returns NamedTuple with two values -
                 sign:
                 A number representing the sign of the determinant.
 
@@ -291,12 +292,11 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
         Examples
         --------
-
         >>> x = ivy.array([[1.0, 2.0], \
-                          [3.0, 4.0]])
+                           [3.0, 4.0]])
         >>> y = x.slogdet()
         >>> print(y)
-        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.69314718))
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
         """
         return ivy.slogdet(self._data)
