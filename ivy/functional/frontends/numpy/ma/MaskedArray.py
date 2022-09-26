@@ -147,6 +147,29 @@ class MaskedArray(np_frontend.ndarray):
         if not self._hard_mask and ivy.any(self._mask):
             self._mask[query] = False
 
+    def __repr__(self):
+        dec_vals = ivy.array_decimal_values()
+        with np.printoptions(precision=dec_vals):
+            return (
+                "ivy.MaskedArray("
+                + self._array_in_str()
+                + ",\n\tmask="
+                + str(self._mask.to_list())
+                + ",\n\tfill_value="
+                + str(self._fill_value.to_list())
+                + "\n)"
+            )
+
+    def _array_in_str(self):
+        if ivy.any(self._mask):
+            return str(
+                [
+                    masked_print_options if mask else x
+                    for x, mask in zip(self._data.to_list(), self._mask.to_list())
+                ]
+            )
+        return str(self._data.to_list())
+
     # Instance Methods #
     # ---------------- #
 
