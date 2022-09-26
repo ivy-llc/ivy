@@ -35,7 +35,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ivy.is_native_array(self._data, exclusive=exclusive)
+        return ivy.is_native_array(self, exclusive=exclusive)
 
     def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
@@ -80,7 +80,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_array(self, exclusive=exclusive, out=out)
 
     def is_ivy_container(
         self: ivy.Array, /, *, out: Optional[ivy.Array] = None
@@ -100,7 +100,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an ivy container.
         """
-        return ivy.is_ivy_container(self._data, out=out)
+        return ivy.is_ivy_container(self, out=out)
 
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
