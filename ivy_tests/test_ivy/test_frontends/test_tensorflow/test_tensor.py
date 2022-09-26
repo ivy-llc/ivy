@@ -86,7 +86,7 @@ def test_tensorflow_instance_Reshape(
         frontend="tensorflow",
         frontend_class=Tensor,
         fn_tree="Tensor.Reshape",
-        self=np.asarray(x, dtype=dtypes),
+        self=x[0],
         shape=shape,
     )
 
@@ -116,5 +116,5 @@ def test_tensorflow_instance_get_shape(
         frontend="tensorflow",
         frontend_class=Tensor,
         fn_tree="Tensor.get_shape",
-        self=np.asarray(x, dtype=input_dtype),
+        self=x[0],
     )
