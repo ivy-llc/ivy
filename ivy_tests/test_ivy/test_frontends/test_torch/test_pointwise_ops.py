@@ -1199,6 +1199,49 @@ def test_torch_absolute(
     )
 
 
+# divide
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+    rounding_mode=st.sampled_from(["trunc", "floor", None]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.divide"
+    ),
+)
+def test_torch_divide(
+    dtype_and_x,
+    rounding_mode,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+               fn_tree="divide",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        other=np.asarray(x[1], dtype=input_dtype[1]),
+        rounding_mode=rounding_mode,
+        out=None,
+        rtol=1e-04,
+    )
+
+
 # logical not
 @handle_cmd_line_args
 @given(
@@ -1440,47 +1483,4 @@ def test_torch_clip(
         min=np.asarray(x[1], dtype=input_dtype[1]),
         max=np.asarray(x[2], dtype=input_dtype[2]),
         out=None,
-    )
-
-
-# divide
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-        shared_dtype=True,
-    ),
-    rounding_mode=st.sampled_from(["trunc", "floor", None]),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.divide"
-    ),
-)
-def test_torch_divide(
-    dtype_and_x,
-    rounding_mode,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="divide",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        other=np.asarray(x[1], dtype=input_dtype[1]),
-        rounding_mode=rounding_mode,
-        out=None,
-        rtol=1e-04,
     )
