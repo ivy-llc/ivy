@@ -264,3 +264,46 @@ def test_softplus(
         beta=beta,
         threshold=threshold,
     )
+
+
+# log_softmax
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    num_positional_args=helpers.num_positional_args(fn_name="log_softmax"),
+)
+def test_log_softmax(
+    *,
+    dtype_and_x,
+    as_variable,
+    axis,
+    with_out,
+    num_positional_args,
+    container,
+    instance_method,
+    native_array,
+    fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        num_positional_args=num_positional_args,
+        container_flags=container,
+        instance_method=instance_method,
+        fn_name="log_softmax",
+        rtol_=1e-02,
+        atol_=1e-02,
+        x=np.asarray(x, dtype=dtype),
+        axis=axis,
+    )

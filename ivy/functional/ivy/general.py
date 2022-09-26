@@ -1875,13 +1875,6 @@ def current_backend_str() -> Union[str, None]:
 
     >>> print(ivy.current_backend_str())
 
-
-    With setting default backend as 'torch':
-
-    >>> ivy.set_backend('torch')
-    >>> print(ivy.current_backend_str())
-    torch
-
     """
     fw = current_backend()
     if not backend_stack:
@@ -2321,7 +2314,7 @@ def set_queue_timeout(timeout: float):
     --------
     >>> x = ivy.get_queue_timeout()
     >>> print(x)
-    15.0
+    10.0
 
     To set the timeout for example 30 seconds
 
@@ -2467,7 +2460,7 @@ def inplace_variables_supported(f=None):
 @handle_nestable
 @handle_exceptions
 def supports_inplace_updates(
-    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray, ivy.Variable]
+    x: Union[str, ivy.Dtype, ivy.Array, ivy.NativeArray]
 ) -> bool:
     """
     Determines whether in-place operations are supported for x's data type,
@@ -2488,8 +2481,8 @@ def supports_inplace_updates(
     Raises
     ------
     ValueError
-        If x isn't a class instance of ivy.Variable, ivy.Array,
-        or ivy.NativeArray, an exception will be raised.
+        If x isn't a class instance of ivy.Array or ivy.NativeArray, an exception will
+        be raised.
 
     This function is *nestable*, and therefore also accepts :code:'ivy.Container'
     instance in place of the argument.
@@ -2506,12 +2499,6 @@ def supports_inplace_updates(
     >>> ret = ivy.supports_inplace_updates(x)
     >>> print(ret)
     True
-
-    With :code:'ivy.Variable' input and backend set as 'jax':
-    >>> x = ivy.variable(ivy.array(5.5))
-    >>> ret = ivy.supports_inplace_updates(x)
-    >>> print(ret)
-    False
 
     With :code:'ivy.Container' input and backend set as 'torch':
     >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))
@@ -2627,6 +2614,7 @@ def inplace_update(
 
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -2707,6 +2695,7 @@ def inplace_decrement(
 
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],

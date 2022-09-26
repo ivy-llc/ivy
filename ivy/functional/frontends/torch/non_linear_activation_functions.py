@@ -207,6 +207,15 @@ def leaky_relu_(input, negative_slope=0.01):
     return input
 
 
+def hardswish(input, inplace=False):
+    relu6_val = ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6)
+    ret = ivy.multiply(input, ivy.divide(relu6_val, 6))
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
 def hardsigmoid(input, inplace=False):
     ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
     if inplace:

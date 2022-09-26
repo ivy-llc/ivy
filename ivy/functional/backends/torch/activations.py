@@ -78,3 +78,14 @@ def softplus(
         k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
     }
     return torch.nn.functional.softplus(x, **kwargs)
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
+def log_softmax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+):
+    return torch.nn.functional.log_softmax(x, axis)
+
