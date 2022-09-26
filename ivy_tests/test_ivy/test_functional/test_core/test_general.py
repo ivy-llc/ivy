@@ -446,6 +446,82 @@ def test_clip_vector_norm(
 #     )
 
 
+@st.composite
+def values_and_ndindices(
+    draw,
+    *,
+    array_dtypes,
+    indices_dtypes=ivy_np.valid_int_dtypes,
+    allow_inf=False,
+    x_min_value=None,
+    x_max_value=None,
+    min_num_dims=2,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    x_dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=array_dtypes,
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_value=x_min_value,
+            max_value=x_max_value,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    x_dtype = x_dtype[0] if isinstance(x_dtype, (list)) else x_dtype
+    x = x[0] if isinstance(x, (list)) else x
+    # indices_dims defines how far into the array to index.
+    indices_dims = draw(
+        helpers.ints(
+            min_value=1,
+            max_value=len(x_shape) - 1,
+        )
+    )
+
+    # num_ndindices defines the number of elements to generate.
+    num_ndindices = draw(
+        helpers.ints(
+            min_value=1,
+            max_value=x_shape[indices_dims],
+        )
+    )
+
+    # updates_dims defines how far into the array to index.
+    updates_dtype, updates = draw(
+        helpers.dtype_and_values(
+            available_dtypes=array_dtypes,
+            allow_inf=allow_inf,
+            shape=x_shape[indices_dims:],
+            num_arrays=num_ndindices,
+            shared_dtype=True,
+        )
+    )
+    updates_dtype = (
+        updates_dtype[0] if isinstance(updates_dtype, list) else updates_dtype
+    )
+    updates = updates[0] if isinstance(updates, list) else updates
+
+    indices = []
+    indices_dtype = draw(st.sampled_from(indices_dtypes))
+    for _ in range(num_ndindices):
+        nd_index = []
+        for j in range(indices_dims):
+            axis_index = draw(
+                helpers.ints(
+                    min_value=0,
+                    max_value=max(0, x_shape[j] - 1),
+                )
+            )
+            nd_index.append(axis_index)
+        indices.append(nd_index)
+    return [x_dtype, indices_dtype, updates_dtype], x, indices, updates
+
+
 # scatter_flat
 @handle_cmd_line_args
 @given(
@@ -506,21 +582,13 @@ def test_scatter_flat(
 # scatter_nd
 @handle_cmd_line_args
 @given(
-    x=st.tuples(
-        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=10)
-    ).flatmap(
-        lambda n: st.tuples(
-            helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
-                shape=(n[1], n[0]),
-            ),
-            helpers.dtype_and_values(
-                available_dtypes=["int32", "int64"],
-                min_value=0,
-                max_value=max(n[1] - 1, 0),
-                shape=(n[1],),
-            ).filter(lambda l: len(set(l[1][0])) == len(l[1][0])),
-        )
+    x=values_and_ndindices(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        x_min_value=0,
+        x_max_value=0,
+        min_num_dims=2,
+        allow_inf=False,
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
     num_positional_args=helpers.num_positional_args(fn_name="scatter_nd"),
@@ -537,20 +605,22 @@ def test_scatter_nd(
     device,
     fw,
 ):
-    (val_dtype, vals), (ind_dtype, ind) = x
+    (val_dtype, ind_dtype, update_dtype), vals, ind, updates = x
+    ivy.set_backend("tensorflow")
+    shape = vals.shape
     helpers.test_function(
-        input_dtypes=ind_dtype + val_dtype,
+        input_dtypes=[ind_dtype, update_dtype],
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="scatter_nd",
-        indices=ind[0].reshape([len(vals[0]), 1]),
-        updates=vals[0],
-        shape=vals[0].shape,
+        indices=np.asarray(ind, dtype=ind_dtype),
+        updates=updates,
+        shape=shape,
         reduction=reduction,
     )
 
