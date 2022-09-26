@@ -1,6 +1,6 @@
-|             | numpy   | torch   | tensorflow   | jax     |
-|:------------|:--------|:--------|:-------------|:--------|
-| activations | failure | failure | failure      | failure |
-| layers      | success | success | success      | success |
-| losses      | success | success | success      | success |
-| norms       | success | success | success      | success |
+|             | numpy   | torch                                                                                                                                                                  | tensorflow   | jax     |
+|:------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------|:--------|
+| activations | failure | failure                                                                                                                                                                | failure      | failure |
+| layers      | success | <a href="https://github.com/unifyai/ivy/actions/runs/3128271865" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> | success      | success |
+| losses      | success | success                                                                                                                                                                | success      | success |
+| norms       | success | success                                                                                                                                                                | success      | success |
