@@ -1199,6 +1199,7 @@ def test_torch_absolute(
     )
 
 
+# logical not
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1231,6 +1232,7 @@ def test_torch_logical_not(
     )
 
 
+# logical and
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1264,6 +1266,7 @@ def test_torch_logical_and(
     )
 
 
+# logical or
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1297,6 +1300,7 @@ def test_torch_logical_or(
     )
 
 
+# logical xor
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1326,5 +1330,114 @@ def test_torch_logical_xor(
         fn_tree="logical_xor",
         input=x[0],
         other=x[1],
+        out=None,
+    )
+
+
+# ceil
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.ceil"
+    ),
+)
+def test_torch_ceil(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="ceil",
+        input=x[0],
+        out=None,
+    )
+
+
+# clamp
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("float32", "float64"),
+        num_arrays=3,
+        shared_dtype=True,
+        shape=(5,),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.clamp"
+    ),
+)
+def test_torch_clamp(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="clamp",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        min=np.asarray(x[1], dtype=input_dtype[1]),
+        max=np.asarray(x[2], dtype=input_dtype[2]),
+        out=None,
+    )
+
+
+# clip
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("float32", "float64"),
+        num_arrays=3,
+        shared_dtype=True,
+        shape=(5,),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.clip"
+    ),
+)
+def test_torch_clip(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="clip",
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+        min=np.asarray(x[1], dtype=input_dtype[1]),
+        max=np.asarray(x[2], dtype=input_dtype[2]),
         out=None,
     )
