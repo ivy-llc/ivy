@@ -127,6 +127,13 @@ In both signatures, we follow the `Array API Standard convention`_ about positio
 * Positional parameters must be positional-only parameters. Positional-only parameters have no externally-usable name. When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order. This is indicated with an :code:`/` after all the position-only arguments.
 * Optional parameters must be keyword-only arguments. A :code:`*` must be added before any of the keyword-only arguments.
 
+Nearly all the functions in the `Array API Standard convention`_ have strictly positional-only and keyword-only arguments, with an exception of
+few :code:`creation` functions such as :code:`ones(shape, *, dtype=None, device=None)` , :code:`linspace(start, stop, /, num, *, dtype=None, device=None, endpoint=True)` etc.
+The rationale behind this is purely a convention. The :code:`shape` argument is often passed as a keyword, while the :code:`nums` argument in :code:`linspace` is often
+passed as a keyword for improved understandability of the code. Therefore, given that Ivy fully adheres to the Array API Standard, Ivy also adopts these same exceptions to the
+general rule for the :code:shape and :code:num arguments in these functions.
+
+
 Arrays
 ------
 

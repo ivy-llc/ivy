@@ -4,6 +4,10 @@ import ivy
 import torch
 
 
+# Array API Standard #
+# ------------------ #
+
+
 def argmax(
     x: torch.Tensor,
     /,
@@ -12,7 +16,6 @@ def argmax(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.tensor(x)
     return torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
 
 
@@ -27,7 +30,6 @@ def argmin(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = torch.tensor(x)
     return torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
 
 
@@ -50,4 +52,12 @@ def where(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.where(condition, x1, x2)
+    return torch.where(condition, x1, x2).to(dtype=x1.dtype)
+
+
+# Extra #
+# ----- #
+
+
+def argwhere(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.argwhere(x)
