@@ -164,6 +164,7 @@ def test_numpy_logspace(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_num_dims=1,
+        max_num_dims=1,
         min_dim_size=1,
         shared_dtype=True,
     ),
@@ -197,7 +198,7 @@ def test_numpy_meshgrid(
         frontend="numpy",
         fn_tree="meshgrid",
         **kw,
-        copy=copy,
+        copy=False,
         sparse=sparse,
         indexing=indexing,
     )
