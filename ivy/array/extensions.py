@@ -1,1 +1,1 @@
-# extenstion file
+# extension file
