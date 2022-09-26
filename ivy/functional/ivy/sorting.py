@@ -57,6 +57,7 @@ def argsort(
         an array of indices. The returned array must have the same shape as ``x``. The
         returned array must have the default array index data type.
 
+
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.argsort.html>`_ # noqa
@@ -259,7 +260,8 @@ def searchsorted(
     Parameters
     ----------
     x
-        input array
+        Input array. If `sorter` is None, then it must be sorted in ascending order,
+        otherwise `sorter` must be an array of indices that sort it.
     v
         specific elements to insert in array x1
     side
@@ -271,7 +273,8 @@ def searchsorted(
         the data type for the return value, Default: ivy.int64,
         only ivy.int32 or ivy.int64 is allowed.
     sorter
-
+        optional array of integer indices that sort array x into ascending order,
+        typically the result of argsort.
     out
         optional output array, for writing the result to.
 
@@ -301,6 +304,7 @@ def searchsorted(
     >>> y  = ivy.searchsorted(x1, x2, side='left')
     >>> print(y)
     ivy.array([3,2,4])
+
     """
     return ivy.current_backend(x, v).searchsorted(
         x,
