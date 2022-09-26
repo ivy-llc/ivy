@@ -187,14 +187,12 @@ def glu(input, dim=-1):
     return ivy.multiply(a, ivy.sigmoid(b))
 
 
-# ToDo Implement log_softmax in ivy functional API
-# for it to be faster than ivy.log(ivy.softmax) and more mathematical stable
 def log_softmax(input, dim=None, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     if dim is None:
         dim = -1
-    return ivy.log(ivy.softmax(input, axis=dim))
+    return ivy.log_softmax(input, axis=dim)
 
 
 def tanhshrink(input):
