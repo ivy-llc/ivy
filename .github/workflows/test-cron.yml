@@ -45,10 +45,11 @@ jobs:
 
        - name: Run Stateful Tests
          id: tests
+         shell: bash
          run: |
            cd ivy
            python ./run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}
-           ls -a
+           ls -al
            "::set-output name=backend::$(BACKEND)\n"
            "::set-output name=submodule::$(SUBMODULE)\n"
          continue-on-error: true
