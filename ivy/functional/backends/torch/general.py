@@ -89,6 +89,8 @@ def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
             raise ivy.exceptions.IvyException(
                 "Overwriting the same address is not supported for torch."
             )
+    elif isinstance(x, list):
+        return [ivy.to_numpy(u) for u in x]
     raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
