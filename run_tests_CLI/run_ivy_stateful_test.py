@@ -27,11 +27,11 @@ j = run % M
 backend = backends[i]
 submodule = submodules[j]
 
-"""
-with open("~/.bashrc", "a") as outfile:
-    # 'a' stands for "append"
-    outfile.write(f"export BACKEND={backend}\n")
-    outfile.write(f"export SUBMODULE={submodule}\n")
-"""
+with open("fw.txt") as outfile:
+    outfile.write(backend)
+
+with open("submodule.txt") as outfile:
+    outfile.write(submodule)
+
 
 os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
