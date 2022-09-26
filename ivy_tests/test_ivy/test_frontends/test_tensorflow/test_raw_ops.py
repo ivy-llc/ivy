@@ -2,7 +2,6 @@
 import ivy
 from hypothesis import given, strategies as st
 
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
@@ -1267,4 +1266,49 @@ def test_tensorflow_NotEqual(
         fn_tree="raw_ops.NotEqual",
         x=x[0],
         y=x[1],
+    )
+
+
+# cumsum
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.Cumsum"
+    ),
+)
+def test_tensorflow_Cumsum(
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    fw,
+    native_array,
+    exclusive,
+    reverse,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Cumsum",
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        rtol=1e-02,
     )

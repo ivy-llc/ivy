@@ -183,3 +183,9 @@ def Transpose(*, x, perm, name="Transpose"):
 
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
+
+
+def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )
