@@ -13,7 +13,6 @@ from ivy import (
 )
 
 
-
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import version
 
@@ -26,11 +25,19 @@ from ivy.functional.ivy.creation import (
 )
 
 
-
 # Array API Standard #
 # -------------------#
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16",)}, version)
+
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 def arange(
     start: float,
     /,
@@ -72,7 +79,6 @@ def arange(
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
-
 def asarray(
     obj: Union[
         tf.Tensor, tf.Variable, bool, int, float, NestedSequence, SupportsBufferProtocol
@@ -374,7 +380,7 @@ def logspace(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base ** power_seq
+    return base**power_seq
 
 
 def one_hot(

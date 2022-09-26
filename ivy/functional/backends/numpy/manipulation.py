@@ -10,6 +10,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import version
 
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 

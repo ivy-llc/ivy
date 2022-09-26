@@ -78,7 +78,9 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     return list(torch.broadcast_tensors(*arrays))
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("uint8", "uint16", "uint32", "uint64")}, version
+)
 def broadcast_to(
     x: torch.Tensor, shape: Union[ivy.NativeShape, Sequence[int]]
 ) -> torch.Tensor:

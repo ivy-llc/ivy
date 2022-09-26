@@ -133,9 +133,8 @@ def gather_nd(
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-                                reduce(mul, params_shape[i + 1:], 1) for i in
-                                range(len(params_shape) - 1)
-                            ] + [1]
+        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+    ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_params = torch.reshape(params, (-1,))
@@ -237,7 +236,11 @@ def cumsum(
 cumsum.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": "bfloat16",
+    },
+    version,
 )  # TODO Fixed in PyTorch 1.12.1
 def cumprod(
     x: torch.Tensor,
@@ -288,7 +291,12 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": "bfloat16", }, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": "bfloat16",
+    },
+    version,
+)
 def scatter_flat(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -344,7 +352,15 @@ def scatter_flat(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16",) }, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -383,14 +399,14 @@ def scatter_nd(
             [
                 torch.reshape(value, (-1,))
                 for value in torch.meshgrid(
-                *[
-                    torch.range(0, s - 1)
-                    if idx == slice(None, None, None)
-                    else torch.Tensor([idx % s])
-                    for s, idx in zip(shape, indices)
-                ],
-                indexing="ij",
-            )
+                    *[
+                        torch.range(0, s - 1)
+                        if idx == slice(None, None, None)
+                        else torch.Tensor([idx % s])
+                        for s, idx in zip(shape, indices)
+                    ],
+                    indexing="ij",
+                )
             ],
             dim=-1,
         )
@@ -423,9 +439,8 @@ def scatter_nd(
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-                                reduce(mul, shape[i + 1:], 1) for i in
-                                range(len(shape) - 1)
-                            ] + [1]
+        reduce(mul, shape[i + 1 :], 1) for i in range(len(shape) - 1)
+    ] + [1]
     result_dim_sizes = torch.tensor(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_result_size = reduce(mul, shape, 1)
@@ -492,11 +507,7 @@ def scatter_nd(
     return res
 
 
-
-
 scatter_nd.support_native_out = True
-
-
 
 
 def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:

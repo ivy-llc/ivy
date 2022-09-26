@@ -227,5 +227,6 @@ def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
         .replace("float", "")
     )
 
+
 # ToDo:
 # 1. result_type: Add support for bfloat16 with int16

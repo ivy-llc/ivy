@@ -7,6 +7,7 @@ import tensorflow as tf
 
 # local
 import ivy
+
 # noinspection PyProtectedMember
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
@@ -227,8 +228,16 @@ def repeat(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "int8", "int16",)},
-    version
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "int8",
+            "int16",
+        )
+    },
+    version,
 )
 def tile(
     x: Union[tf.Tensor, tf.Variable],

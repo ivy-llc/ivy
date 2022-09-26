@@ -38,23 +38,23 @@ def fn_name_from_version_specific_fn_name(name, version):
     if "_to_" in name:
         i = name.index("_v_")
         e = name.index("_to_")
-        version_start = name[i + 3: e]
+        version_start = name[i + 3 : e]
         version_start = int(version_start.replace("p", ""))
-        version_end = name[e + 4:]
+        version_end = name[e + 4 :]
         version_end = int(version_end.replace("p", ""))
         if version in range(version_start, version_end + 1):
             return name[0:i]
     elif "_and_above" in name:
         i = name.index("_v_")
         e = name.index("_and_")
-        version_start = name[i + 3: e]
+        version_start = name[i + 3 : e]
         version_start = int(version_start.replace("p", ""))
         if version >= version_start:
             return name[0:i]
     else:
         i = name.index("_v_")
         e = name.index("_and_")
-        version_start = name[i + 3: e]
+        version_start = name[i + 3 : e]
         version_start = int(version_start.replace("p", ""))
         if version <= version_start:
             return name[0:i]
@@ -75,7 +75,7 @@ def set_frontend_to_specific_version(frontend):
 
     """
     f = str(frontend.__name__)
-    f = f[f.index("frontends") + 10:]
+    f = f[f.index("frontends") + 10 :]
     try:
         f = importlib.import_module(f)
         f_version = f.__version__

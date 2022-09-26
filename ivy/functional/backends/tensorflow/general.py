@@ -309,14 +309,14 @@ def scatter_nd(
             [
                 tf.reshape(value, (-1,))
                 for value in tf.meshgrid(
-                *[
-                    tf.range(s)
-                    if idx == slice(None, None, None)
-                    else tf.constant([idx % s])
-                    for s, idx in zip(shape, indices)
-                ],
-                indexing="ij",
-            )
+                    *[
+                        tf.range(s)
+                        if idx == slice(None, None, None)
+                        else tf.constant([idx % s])
+                        for s, idx in zip(shape, indices)
+                    ],
+                    indexing="ij",
+                )
             ],
             axis=-1,
         )

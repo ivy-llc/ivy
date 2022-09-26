@@ -25,7 +25,6 @@ def leaky_relu(
     return jnp.where(x > 0, x, x * alpha)
 
 
-
 def gelu(
     x: JaxArray,
     /,

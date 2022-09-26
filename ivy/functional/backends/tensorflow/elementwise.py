@@ -455,8 +455,7 @@ def multiply(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")},
-    version
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, version
 )
 def negative(
     x: Union[float, tf.Tensor, tf.Variable],
@@ -685,10 +684,18 @@ def minimum(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below":
-            ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "int32", "int64",)
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
     },
-    version
+    version,
 )
 def reciprocal(
     x: Union[float, tf.Tensor, tf.Variable],

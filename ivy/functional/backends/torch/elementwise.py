@@ -529,7 +529,9 @@ def atan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 atan.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)  # TODO Fixed in PyTorch 1.12.1
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("float16", "bfloat16")}, version
+)  # TODO Fixed in PyTorch 1.12.1
 def atan2(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -647,6 +649,7 @@ def erf(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tens
 
 
 erf.support_native_out = True
+
 
 def minimum(
     x1: Union[float, torch.Tensor],

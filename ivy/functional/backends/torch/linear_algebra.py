@@ -6,7 +6,6 @@ from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
 
-
 # local
 import ivy
 from ivy import inf
@@ -88,26 +87,21 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigh(x, UPLO=UPLO, out=out)
 
 
-
 eigh.support_native_out = True
 
 
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def eigvalsh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
-
-
 
 
 eigvalsh.support_native_out = True
@@ -122,7 +116,6 @@ def inner(
 
 
 inner.support_native_out = True
-
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
@@ -189,7 +182,7 @@ def matrix_power(
 matrix_power.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def matrix_rank(
     x: torch.Tensor,
     /,
@@ -200,7 +193,6 @@ def matrix_rank(
     # ToDo: add support for default rtol value here, for the case where None is provided
     ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
     return ret.to(dtype=x.dtype)
-
 
 
 matrix_rank.support_native_out = True
@@ -237,7 +229,7 @@ def pinv(
 pinv.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def qr(
     x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
 ) -> NamedTuple:
@@ -255,7 +247,6 @@ def qr(
     return ret
 
 
-
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def slogdet(
     x: torch.Tensor, *, out: Optional[torch.Tensor] = None
@@ -268,7 +259,7 @@ def slogdet(
 slogdet.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def solve(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -298,7 +289,6 @@ def solve(
     if expanded_last:
         ret = torch.squeeze(ret, dim=-1)
     return ret
-
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)

@@ -50,7 +50,15 @@ def cross(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 def det(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -110,7 +118,19 @@ def eigvalsh(
         return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("int8", "uint8", "int16", "uint16", "uint32", "uint64",)}, version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "int8",
+            "uint8",
+            "int16",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    version,
+)
 # noinspection PyUnusedLocal,PyShadowingBuiltins
 def inner(
     x1: Union[tf.Tensor, tf.Variable],
@@ -314,8 +334,20 @@ def matrix_rank(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("float16", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64")},
-    version
+    {
+        "2.9.1 and below": (
+            "float16",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    version,
 )
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
@@ -469,7 +501,9 @@ def trace(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float16", "float32", "float64")}, version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "float32", "float64")}, version
+)
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -518,8 +552,21 @@ def vector_norm(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1": ("int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64", "float16", "float64",)},
-    version
+    {
+        "2.9.1": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "float16",
+            "float64",
+        )
+    },
+    version,
 )
 def vector_to_skew_symmetric_matrix(
     vector: Union[tf.Tensor, tf.Variable],

@@ -4,8 +4,6 @@ from .. import versions
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
-
-
 def flip(input, dims):
     return ivy.flip(input, axis=dims)
 
@@ -23,12 +21,18 @@ def fliplr(input):
 def roll(input, shifts, dims=None):
     return ivy.roll(input, shifts, axis=dims)
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint8", "bfloat16","float16"),"1.12.1":()}, versions["torch"])
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
+    versions["torch"],
+)
 def cumsum(input, dim, *, dtype=None, out=None):
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, versions["torch"])
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("float16", "bfloat16")}, versions["torch"]
+)
 def trace(input):
     if "int" in input.dtype:
         input = input.astype("int64")

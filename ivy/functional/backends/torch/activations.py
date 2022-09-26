@@ -36,7 +36,7 @@ def gelu(
 ) -> torch.Tensor:
     if approximate:
         return (
-            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
+            0.5 * x * (1 + torch.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
         )
     return torch.nn.functional.gelu(x)
 
@@ -64,7 +64,6 @@ def softmax(
     return torch.nn.functional.softmax(x, axis)
 
 
-
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def softplus(
     x: torch.Tensor,
@@ -79,6 +78,7 @@ def softplus(
     }
     return torch.nn.functional.softplus(x, **kwargs)
 
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 def log_softmax(
     x: torch.Tensor,
@@ -88,4 +88,3 @@ def log_softmax(
     out: Optional[torch.Tensor] = None,
 ):
     return torch.nn.functional.log_softmax(x, axis)
-

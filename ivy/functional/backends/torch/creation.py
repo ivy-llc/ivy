@@ -263,7 +263,9 @@ def full_like(
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
-@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, version)
+@with_unsupported_device_and_dtypes(
+    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+)
 def linspace(
     start: Union[torch.Tensor, float],
     stop: Union[torch.Tensor, float],
@@ -278,8 +280,8 @@ def linspace(
 ) -> torch.Tensor:
     if not endpoint:
         ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
-              :-1
-              ]
+            :-1
+        ]
     else:
         ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
     if (
@@ -476,7 +478,9 @@ def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.
     return x.clone()
 
 
-@with_unsupported_device_and_dtypes({"1.11.0 and below": {"cpu": ("float16",)}}, version)
+@with_unsupported_device_and_dtypes(
+    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+)
 def logspace(
     start: Union[torch.Tensor, int],
     stop: Union[torch.Tensor, int],
@@ -490,7 +494,7 @@ def logspace(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base ** power_seq
+    return base**power_seq
 
 
 logspace.support_native_out = True

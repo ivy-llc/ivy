@@ -15,7 +15,15 @@ def _out_shape(x, strides, pad, dilations, filters):
     return (x - 1) * strides - 2 * pad + dilations * (filters - 1) + 1
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 # noinspection PyUnresolvedReferences
 def conv1d(
     x: torch.Tensor,
@@ -50,7 +58,15 @@ def conv1d(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 # noinspection PyUnresolvedReferences
 def conv1d_transpose(
     x,
@@ -109,7 +125,15 @@ def conv1d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 # noinspection PyUnresolvedReferences
 def conv2d(
     x: torch.Tensor,
@@ -159,8 +183,15 @@ def conv2d(
     return res
 
 
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(
     x: torch.Tensor,
@@ -239,7 +270,7 @@ def conv2d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16","bfloat16")}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, version)
 # noinspection PyUnresolvedReferences
 def depthwise_conv2d(
     x: torch.Tensor,
@@ -286,7 +317,6 @@ def depthwise_conv2d(
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
-
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
@@ -344,7 +374,15 @@ def conv3d(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 # noinspection PyUnresolvedReferences
 def conv3d_transpose(
     x: torch.Tensor,
@@ -442,7 +480,15 @@ def conv3d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 def conv_general_dilated(
     x: torch.Tensor,
     filters: torch.Tensor,
@@ -510,5 +556,3 @@ def conv_general_dilated(
     if data_format == "channel_last":
         return res.permute(0, *range(2, dims + 2), 1)
     return res
-
-

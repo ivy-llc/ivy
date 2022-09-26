@@ -63,7 +63,6 @@ def diagonal(
     return np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
@@ -84,7 +83,6 @@ def inner(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.inner(x1, x2)
-
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, version)
@@ -139,7 +137,15 @@ def matrix_power(
     return np.linalg.matrix_power(x, n)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16",)}, version)
+@with_unsupported_dtypes(
+    {
+        "1.23.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    version,
+)
 @_handle_0_dim_output
 def matrix_rank(
     x: np.ndarray,
@@ -163,6 +169,7 @@ def outer(
 
 
 outer.support_native_out = True
+
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, version)
 def pinv(
