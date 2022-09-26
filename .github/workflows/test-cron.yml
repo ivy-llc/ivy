@@ -49,10 +49,8 @@ jobs:
            cd ivy
            pwd
            python ./run_tests_CLI/run_ivy_stateful_test.py ${{ github.run_number }}
-           export BACKEND = $(cat fw.txt)
-           export SUBMODULE = $(cat submodule.txt)
-           "::set-output name=backend::$(BACKEND)\n"
-           "::set-output name=submodule::$(SUBMODULE)\n"
+           "::set-output name=backend::$(cat fw.txt)\n"
+           "::set-output name=submodule::$(cat submodule.txt)\n"
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
