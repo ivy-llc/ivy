@@ -767,7 +767,7 @@ def _glu_arrays(draw):
     shape = draw(st.shared(helpers.ints(min_value=1, max_value=5)))
     shape = shape * 2
     input = draw(helpers.array_values(dtype=dtype[0], shape=(shape, shape)))
-    dim = draw(st.shared(helpers.get_axis(shape=(shape, shape), force_int=True)))
+    dim = draw(st.shared(helpers.get_axis(shape=(shape,), force_int=True)))
     return dtype, input, dim
 
 
