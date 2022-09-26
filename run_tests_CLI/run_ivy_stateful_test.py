@@ -26,4 +26,4 @@ j = run % M
 
 backend = backends[i]
 submodule = submodules[j]
-os.system(f". ./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
+os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
