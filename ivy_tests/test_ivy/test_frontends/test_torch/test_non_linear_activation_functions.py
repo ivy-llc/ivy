@@ -751,7 +751,6 @@ def test_torch_silu(
         frontend="torch",
         fn_tree="nn.functional.silu",
         input=input[0],
-        inplace=False,
     )
 
 
