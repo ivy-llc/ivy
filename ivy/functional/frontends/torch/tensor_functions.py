@@ -34,3 +34,14 @@ def numel(input):
 
 def is_floating_point(input):
     return ivy.is_float_dtype(ivy.asarray(input).dtype)
+
+
+def is_nonzero(input):
+    ivy.assertions.check_equal(
+        numel(input),
+        1,
+        message="bool value of Tensor with "
+        "more than one or no values "
+        "is ambiguous",
+    )
+    return not ivy.asarray(input)[0]
