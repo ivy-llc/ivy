@@ -1,5 +1,6 @@
 # global
 from hypothesis import given, strategies as st
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -114,4 +115,25 @@ def test_numpy_any(
         keepdims=keepdims,
         where=where,
         test_values=False,
+    )
+
+
+@handle_cmd_line_args
+@given(
+    element=st.booleans() | st.floats() | st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.isscalar"
+    )
+)
+def test_numpy_isscalar(element, as_variable, native_array, num_positional_args, fw):
+    helpers.test_frontend_function(
+        input_dtypes=ivy.all_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        fw=fw,
+        frontend="numpy",
+        fn_tree="isscalar",
+        element=element
     )
