@@ -539,7 +539,7 @@ def test_inner(
         small_abs_safety_factor=2,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="inv"),
 )
 def test_inv(
@@ -554,7 +554,6 @@ def test_inv(
     fw,
 ):
     input_dtype, x = dtype_x
-
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
