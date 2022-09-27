@@ -138,14 +138,14 @@ Arrays
 ------
 
 In each example, we can see that the input arrays have type :code:`Union[ivy.Array, ivy.NativeArray]`
-whereas the output arrays have type :code:`ivy.Array`. This is the case for all functions in the Ivy API.
-We always return an :code:`ivy.Array` instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
-all operators performed on the returned array now handled by the special methods of the :code:`ivy.Array` class,
-and not the special methods of the backend array class (:code:`ivy.NativeArray`). For example,
+whereas the output arrays have type :class:`ivy.Array`. This is the case for all functions in the Ivy API.
+We always return an :class:`ivy.Array` instance to ensure that any subsequent Ivy code is fully framework-agnostic, with
+all operators performed on the returned array now handled by the special methods of the :class:`ivy.Array` class,
+and not the special methods of the backend array class (:class:`ivy.NativeArray`). For example,
 calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
 (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__div__` etc.) being called on the array class.
 
-:code:`ivy.NativeArray` instances are also not permitted for the :code:`out` argument, which is used in many functions.
+:class:`ivy.NativeArray` instances are also not permitted for the :code:`out` argument, which is used in many functions.
 This is because the :code:`out` argument dicates the array to which the result should be written, and so it effectively
 serves the same purpose as the function return when no :code:`out` argument is specified.
 This is all explained in more detail in the :ref:`Arrays` section.
@@ -203,15 +203,15 @@ and the :code:`shape` argument of :code:`ivy.zeros`, as shown above.
 Nestable Functions
 ------------------
 
-Most functions in the Ivy API can also consume and return :code:`ivy.Container` instances in place of the **any** of
-the function arguments. if an :code:`ivy.Container` is passed, then the function is mapped across all of the leaves of
+Most functions in the Ivy API can also consume and return :class:`ivy.Container` instances in place of the **any** of
+the function arguments. if an :class:`ivy.Container` is passed, then the function is mapped across all of the leaves of
 this container. Because of this feature, we refer to these functions as *nestable* functions.
 However, because so many functions in the Ivy API are indeed *nestable* functions,
 and because this flexibility applies to **every** argument in the function,
 every type hint for these functions should technically be extended like so: :code:`Union[original_type, ivy.Container]`.
 
 However, this would be very cumbersome, and would only serve to hinder the readability of the docs.
-Therefore, we simply omit these :code:`ivy.Container` type hints from *nestable* functions,
+Therefore, we simply omit these :class:`ivy.Container` type hints from *nestable* functions,
 and instead mention in the docstring whether the function is *nestable* or not.
 
 **Round Up**

@@ -81,10 +81,10 @@ Some common important tasks are:
 #. remove all :code:`lambda` and direct bindings for the backend functions
    (in :code:`ivy.functional.backends`), with each function instead defined using
    :code:`def`.
-#. implement the following if they don't exist but should do: :code:`ivy.Array` instance
-   method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
-   :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,
-   :code:`ivy.Container` special method, :code:`ivy.Container` reverse special method.
+#. implement the following if they don't exist but should do: :class:`ivy.Array` instance
+   method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method,
+   :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method,
+   :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct
    category-specific parent class, such as :code:`ivy.ArrayWithElementwise`,
    :code:`ivy.ContainerWithManipulation` etc.

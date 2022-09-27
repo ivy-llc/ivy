@@ -230,7 +230,7 @@ class ContainerWithSorting(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([5, 9, 0.2]),\
                               b=ivy.array([[8, 1], [5, 0.8]]))

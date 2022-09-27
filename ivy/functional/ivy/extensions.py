@@ -327,7 +327,7 @@ class SparseArray:
                 row += 1
         # make dense array
         ret = ivy.scatter_nd(
-            ivy.array([all_coordinates]), self._values, ivy.array(self._dense_shape)
+            ivy.array(all_coordinates), self._values, ivy.array(self._dense_shape)
         )
         return ret.to_native() if native else ret
 

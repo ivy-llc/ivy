@@ -1,5 +1,4 @@
 import sys
-import emoji
 from pymongo import MongoClient
 
 action_url = "https://github.com/unifyai/ivy/actions/runs/"
@@ -11,27 +10,27 @@ test_configs = {
     "test-stateful-ivy": ["ivy_stateful", 3],
 }
 result_config = {
-    "success": emoji.emojize(":white_check_mark:", language="alias"),
-    "failure": emoji.emojize(":x:", language="alias"),
+    "success": "https://img.shields.io/badge/-success-success",
+    "failure": "https://img.shields.io/badge/-failure-red",
 }
 
 
 def make_clickable(url, name):
-    return '<a href="{}" rel="noopener noreferrer" target="_blank">{}</a>'.format(
-        url, name
-    )
+    return '<a href="{}" rel="noopener noreferrer" '.format(
+        url
+    ) + 'target="_blank"><img src={}></a>'.format(name)
 
 
 def update_test_results():
-    key, workflow, backend, submodule, result, run_id = (
+    key, workflow, fw_submod, result, run_id = (
         str(sys.argv[1]),
         str(sys.argv[2]),
         str(sys.argv[3]),
         str(sys.argv[4]),
         str(sys.argv[5]),
-        str(sys.argv[6]),
     )
-    print(workflow, backend, submodule, result, run_id)
+    backend = fw_submod.split("-")[0]
+    submodule = fw_submod.split("-")[1]
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
