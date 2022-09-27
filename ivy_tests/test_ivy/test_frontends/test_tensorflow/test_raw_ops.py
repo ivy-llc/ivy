@@ -1407,5 +1407,5 @@ def test_tensorflow_Relu6(dtype_and_x, as_variable, fw, native_array):
         fw=fw,
         frontend="tensorflow",
         fn_tree="raw_ops.Relu6",
-        features=np.asarray(x, dtype=dtype),
+        features=x[0],
     )
