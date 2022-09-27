@@ -1311,10 +1311,10 @@ def test_tensorflow_Cumsum(
         exclusive=exclusive,
         reverse=reverse,
         rtol=1e-02,
-        atol=1e-02
+        atol=1e-02,
     )
-    
-    
+
+
 # Relu
 @handle_cmd_line_args
 @given(
