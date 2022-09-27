@@ -140,9 +140,8 @@ def inv(
             ret = torch.inverse(x, out=out)
             return ret
         else:
-            cofactor = torch.t(torch.linalg.inv(x)) * torch.linalg.det(x)
-            inverse = torch.mul(torch.div(1, torch.linalg.det(x)), torch.t(cofactor))
-            ret = inverse
+            x = torch.t(x)
+            ret = torch.inverse(x, out=out)
             if ivy.exists(out):
                 return ivy.inplace_update(out, ret)
             return ret

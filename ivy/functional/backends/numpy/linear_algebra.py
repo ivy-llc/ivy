@@ -101,10 +101,8 @@ def inv(
             ret = np.linalg.inv(x)
             return ret
         else:
-            cofactor = np.transpose(np.linalg.inv(x)) * np.linalg.det(x)
-            inverse = np.multiply(np.divide(1, 
-                                            np.linalg.det(x)), np.transpose(cofactor))
-            ret = inverse
+            x = np.transpose(x)
+            ret = np.linalg.inv(x)
             return ret
 
 
