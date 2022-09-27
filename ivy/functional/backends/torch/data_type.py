@@ -106,9 +106,6 @@ def can_cast(from_: Union[torch.dtype, torch.Tensor], to: torch.dtype, /) -> boo
     return True
 
 
-can_cast.unsupported_dtypes = ("complex64", "complex128")
-
-
 @_handle_nestable_dtype_info
 def finfo(type: Union[torch.dtype, str, torch.Tensor]) -> Finfo:
     if isinstance(type, torch.Tensor):
