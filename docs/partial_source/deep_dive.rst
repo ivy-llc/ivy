@@ -33,7 +33,7 @@ We're excited for you to get involved!  🦾
 | Different types of arrays, and how they're handled 🔢
 |
 | (f) :ref:`Containers`
-| What the :code:`ivy.Container` does  🗂️
+| What the :class:`ivy.Container` does  🗂️
 |
 | (g) :ref:`Data Types`
 | How functions infer the correct data type  💾

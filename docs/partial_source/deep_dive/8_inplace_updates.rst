@@ -40,9 +40,9 @@ This is one particular area of the Ivy code where, technically speaking,
 the function :code:`ivy.inplace_update` will result in subtly different behaviour
 for each backend, unless the :code:`ensure_in_backend` flag is set to :code:`True`.
 
-While :code:`ivy.Array` instances will always be inplace updated consistently,
-in some cases it is simply not possible to also inplace update the :code:`ivy.NativeArray`
-which :code:`ivy.Array` wraps, due to design choices made by each backend.
+While :class:`ivy.Array` instances will always be inplace updated consistently,
+in some cases it is simply not possible to also inplace update the :class:`ivy.NativeArray`
+which :class:`ivy.Array` wraps, due to design choices made by each backend.
 
 **JAX**:
 
@@ -64,7 +64,7 @@ which :code:`ivy.Array` wraps, due to design choices made by each backend.
 
 JAX **does not** natively support inplace updates,
 and so there is no way of actually inplace updating the :code:`JaxArray` instance :code:`x_native`.
-Therefore, an inplace update is only performed on :code:`ivy.Array` instances provided in the input.
+Therefore, an inplace update is only performed on :class:`ivy.Array` instances provided in the input.
 
 **NumPy**:
 
@@ -85,7 +85,7 @@ Therefore, an inplace update is only performed on :code:`ivy.Array` instances pr
 
 NumPy **does** natively support inplace updates,
 and so :code:`x_native` is updated inplace with :code:`val_native`.
-Following this, an inplace update is then also performed on the :code:`ivy.Array` instance,
+Following this, an inplace update is then also performed on the :class:`ivy.Array` instance,
 if provided in the input.
 
 **TensorFlow**:
@@ -118,7 +118,7 @@ However, TensorFlow **does** natively support inplace updates for :code:`tf.Vari
 Therefore, if :code:`x_native` is a :code:`tf.Variable`,
 then :code:`x_native` is updated inplace with :code:`val_native`.
 Irrespective of whether the native array is a :code:`tf.Tensor` or a :code:`tf.Variable`,
-an inplace update is then also performed on the :code:`ivy.Array` instance, if provided in the input.
+an inplace update is then also performed on the :class:`ivy.Array` instance, if provided in the input.
 
 **PyTorch**:
 
@@ -139,15 +139,15 @@ an inplace update is then also performed on the :code:`ivy.Array` instance, if p
 
 PyTorch **does** natively support inplace updates,
 and so :code:`x_native` is updated inplace with :code:`val_native`.
-Following this, an inplace update is then also performed on the :code:`ivy.Array` instance,
+Following this, an inplace update is then also performed on the :class:`ivy.Array` instance,
 if provided in the input.
 
 The function :code:`ivy.inplace_update` is also *nestable*,
-meaning it can accept :code:`ivy.Container` instances in the input.
-If an :code:`ivy.Container` instance is provided for the argument :code:`x`,
+meaning it can accept :class:`ivy.Container` instances in the input.
+If an :class:`ivy.Container` instance is provided for the argument :code:`x`,
 then along with the arrays at all of the leaves,
 the container :code:`x` is **also** inplace updated,
-meaning that a new :code:`ivy.Container` instance is not created for the function return.
+meaning that a new :class:`ivy.Container` instance is not created for the function return.
 
 out argument
 ------------
@@ -158,17 +158,17 @@ This could for example be the input array itself, but can also be any other arra
 
 All Ivy functions which return a single array should support inplace updates via the :code:`out` argument.
 The type hint of the :code:`out` argument is :code:`Optional[ivy.Array]`.
-However, as discussed above, if the function is *nestable* then :code:`ivy.Container` instances are also supported.
-:code:`ivy.Container` is omitted from the type hint in such cases,
+However, as discussed above, if the function is *nestable* then :class:`ivy.Container` instances are also supported.
+:class:`ivy.Container` is omitted from the type hint in such cases,
 as explained in the :ref:`Function Arguments` section.
 
-When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :code:`ivy.Array`
-(or :code:`ivy.Container` if *nestable*).
+When the :code:`out` argument is unspecified, then the return is simply provided in a newly created :class:`ivy.Array`
+(or :class:`ivy.Container` if *nestable*).
 However, when :code:`out` is specified, then the return is provided as an inplace update of the
 :code:`out` argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.
 
-In the case of :code:`ivy.Array` return types, the :code:`out` argument is predominantly handled in
+In the case of :class:`ivy.Array` return types, the :code:`out` argument is predominantly handled in
 `handle_out_argument`_. As explained in the :ref:`Function Wrapping` section,
 this wrapping is applied to every function with the :code:`@handle_out_argument` decorator
 dynamically during `backend setting`_.
@@ -230,10 +230,10 @@ dictates whether the argument should be handled `by the backend function`_ or `b
 This distinction only concerns how the inplace update is applied to the native array,
 which is operated upon directly by the backend.
 If :code:`out` is specified in an Ivy function, then an inplace update is always **also**
-performed on the :code:`ivy.Array` instance itself, which is how :code:`out` is provided to the function originally.
-The inplace update of this :code:`ivy.Array` is always `handled by the wrapper`_.
+performed on the :class:`ivy.Array` instance itself, which is how :code:`out` is provided to the function originally.
+The inplace update of this :class:`ivy.Array` is always `handled by the wrapper`_.
 
-Alternatively, if :code:`out` is an :code:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
+Alternatively, if :code:`out` is an :class:`ivy.Container`, then the inplace update is always handled by `_wrap_fn`_ in
 the container wrapping module.
 
 **Special Case**
@@ -266,7 +266,7 @@ Here we still have the :code:`support_native_out` attribute since we want to tak
 enabled by :code:`torch.linalg.cholesky` in the first condition. However, in the :code:`else` statement, the last
 operation is :code:`torch.transpose` which does not support the :code:`out` argument, and so the native inplace update
 can't be performed by torch here. This is why we need to call :code:`ivy.inplace_update` explicitly here, to ensure the
-native inplace update is performed, as well as the :code:`ivy.Array` inplace update.
+native inplace update is performed, as well as the :class:`ivy.Array` inplace update.
 
 **Compositional Functions**
 

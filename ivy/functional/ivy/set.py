@@ -86,8 +86,8 @@ def unique_all(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     the `docstring <https://data-apis.org/array-api/latest/API_specification/
     generated/signatures.elementwise_functions.tan.html>`_
     in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    the method also accepts :class:`ivy.Container` instances in place of
+    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
     Functional Examples
@@ -311,8 +311,8 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     the `docstring <https://data-apis.org/array-api/latest/API_specification/
     generated/signatures..set_functions.unique_inverse.html>`_
     in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    the method also accepts :class:`ivy.Container` instances in place of
+    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
 
     Examples
     --------
@@ -332,7 +332,7 @@ def unique_inverse(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     unique_inverse(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
     inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1., 4., 3. , 5. , 3. , 7.]), \
                           b=ivy.array([3,2,6,3,7,4,9]))
@@ -462,8 +462,8 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     the `docstring <https://data-apis.org/array-api/latest/API_specification/
     generated/signatures.set_functions.unique_counts.html>` in the standard.
     The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    the method also accepts :class:`ivy.Container` instances in place of
+    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
     Examples
@@ -487,7 +487,7 @@ def unique_counts(x: Union[ivy.Array, ivy.NativeArray]) -> NamedTuple:
     >>> print(y)
     Tuple([0.2,0.3,0.4,1.4,2.3],[3,1,1,1,1]
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]), \
                           b=ivy.array([1,2,1,3,4,1,3]))
