@@ -285,7 +285,7 @@ of argument names when calling functions, and this will increase our flexibility
 future releases without breaking forward compatibility. Similar arguments can be kept together in the argument list,
 rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.</p>
 <p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code> and <code class="code docutils literal notranslate"><span class="pre">out</span></code> arguments are always keyword-only.
-Arrays always have type hint <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> in the input and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> in the output.
+Arrays always have type hint <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> in the input and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> in the output.
 All functions which produce a single array include the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
 The reasons for each of these features are explained in the following sections.</p>
 </section>
@@ -307,7 +307,7 @@ The reasons for each of these features are explained in the following sections.<
 <p>The <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, <code class="code docutils literal notranslate"><span class="pre">device</span></code> and <code class="code docutils literal notranslate"><span class="pre">out</span></code> arguments are again all keyword-only,
 but <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> are now required arguments, rather than optional as they were in the Ivy API.
 All arrays also now have the same type hint <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>,
-rather than <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> in the input and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> in the output.
+rather than <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> in the input and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.</p>
 </section>

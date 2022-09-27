@@ -84,7 +84,7 @@ The backend-specific implementation of :code:`ivy.tan`  for PyTorch in
 
 The reason that the Ivy implementation has type hint :code:`Union[ivy.Array, ivy.NativeArray]` but PyTorch
 implementation has :code:`torch.Tensor` is explained in the :ref:`Arrays` section.
-Likewise, the reason that the :code:`out` argument in the Ivy implementation has array type hint :code:`ivy.Array`
+Likewise, the reason that the :code:`out` argument in the Ivy implementation has array type hint :class:`ivy.Array`
 whereas :code:`x` has :code:`Union[ivy.Array, ivy.NativeArray]` is also explained in the :ref:`Arrays` section.
 
 Compositional Functions
@@ -160,12 +160,12 @@ and `ivy.stable_divide`_ which simply adds a small constant to the denominator o
 Nestable Functions
 ------------------
 
-*Nestable* functions are functions which can accept :code:`ivy.Container` instances in place
+*Nestable* functions are functions which can accept :class:`ivy.Container` instances in place
 of **any** of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
 provided that the containers share a common nested structure.
-If an :code:`ivy.Container` is passed, then the function is applied to all of the
+If an :class:`ivy.Container` is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
-In this case, the function will return an :code:`ivy.Container` in the output.
+In this case, the function will return an :class:`ivy.Container` in the output.
 *Primary*, *compositional*, *mixed*, and *standalone* functions can all *also* be nestable.
 This categorization is **not** mutually exclusive, as outlined by the Venn diagram below:
 
@@ -180,12 +180,12 @@ Another example is when the same operation must be performed on each weight in a
 This *nestable* property of Ivy functions means that the same function can be used for any of these use cases
 without modification.
 
-This added support for handling :code:`ivy.Container` instances is all handled automatically when `_wrap_function`_
+This added support for handling :class:`ivy.Container` instances is all handled automatically when `_wrap_function`_
 is applied to every function in the :code:`ivy` module during `backend setting`_. This will add the `handle_nestable`_
 wrapping to the function if it has the :code:`@handle_nestable` decorator.
 This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
 
-Under the hood, the :code:`ivy.Container` API static methods are called when :code:`ivy.Container` instances are passed
+Under the hood, the :class:`ivy.Container` API static methods are called when :class:`ivy.Container` instances are passed
 in as inputs to functions in the functional API.
 
 Nestable functions are explained in more detail in the :ref:`Containers` section.

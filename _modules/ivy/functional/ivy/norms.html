@@ -186,7 +186,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0], [3.0, 4.0]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.layer_norm(x, [0, 1], new_std=2.0)</span>
@@ -211,7 +211,7 @@
 <span class="sd">               [ 0.581,  0.891,  1.33 ],</span>
 <span class="sd">               [ 1.01 , -0.579, -0.931]])</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2., 3.], [4., 5., 6.]])</span>
 <span class="sd">    &gt;&gt;&gt; normalized_idxs = ivy.Container({&#39;a&#39;: [0], &#39;b&#39;: [1]})</span>
@@ -224,7 +224,7 @@
 <span class="sd">                      [-1.33, 0.2, 1.73]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
 <span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
@@ -237,7 +237,7 @@
 <span class="sd">                      [0.241, 0.241, 0.241]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: ivy.array([7., 10., 12.]), \</span>
 <span class="sd">                           &#39;b&#39;: ivy.array([[1., 2., 3.], [4., 5., 6.]])})</span>
@@ -253,7 +253,7 @@
 <span class="sd">    }</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -356,7 +356,7 @@ Let’s look at the data produced by this strategy -:</p>
 <span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mf">574352379.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.99999</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.2250738585072014e-308</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.103515625e-05</span><span class="p">]])</span>
 </pre></div>
 </div>
-<p>These values are then unpacked, converted to <code class="code docutils literal notranslate"><span class="pre">ivy.array</span></code> class, with corresponding dtypes. The test then runs on the newly
+<p>These values are then unpacked, converted to <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, with corresponding dtypes. The test then runs on the newly
 created arrays with specified dtypes. Similar is the case with other parameters which the function above is required to test.</p>
 </section>
 <section id="why-do-we-need-helper-functions">
@@ -449,7 +449,7 @@ second element is a list/nested list containing floating point numbers of that p
 </div>
 <p>This function contains a list of <a href="#id11"><span class="problematic" id="id12">`keyword`_</span></a> arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
 It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
-which expects at least one <code class="code docutils literal notranslate"><span class="pre">ivy.array</span></code>.</p>
+which expects at least one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>.</p>
 <p>7. <strong>reshape_shapes</strong> - This function returns a valid shape after a reshape operation is applied given as input of any
 arbitrary shape. For example-:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">print_hypothesis_examples</span><span class="p">(</span><span class="n">reshape_shapes</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>

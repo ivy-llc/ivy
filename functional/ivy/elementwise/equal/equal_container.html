@@ -235,7 +235,7 @@ that the inputs broadcast to.</p></li>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><em>ret</em> – a container containing the element-wise results. The returned container
 must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p></li>
-<li><p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs</p></li>
+<li><p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs</p></li>
 <li><p><em>&gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))</em></p></li>
 <li><p><em>&gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))</em></p></li>
 <li><p><em>&gt;&gt;&gt; y = x1.equal(x2)</em></p></li>
@@ -243,7 +243,7 @@ must have a data type of <code class="docutils literal notranslate"><span class=
 <li><p><em>{</em> – a: ivy.array([True, False, False]),
 b: ivy.array([False, False, False])</p></li>
 <li><p><em>}</em></p></li>
-<li><p>With mixed <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs</p></li>
+<li><p>With mixed <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs</p></li>
 <li><p><em>&gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))</em></p></li>
 <li><p><em>&gt;&gt;&gt; x2 = ivy.array([3., 1., 0.9])</em></p></li>
 <li><p><em>&gt;&gt;&gt; y = x1.equal(x2)</em></p></li>

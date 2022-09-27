@@ -149,7 +149,7 @@
              
   <section id="ivy-stateful-api">
 <h1>Ivy Stateful API<a class="headerlink" href="#ivy-stateful-api" title="Permalink to this heading"></a></h1>
-<p>Here we explain how Ivy’s stateful API builds on the functional API and the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!</p>
+<p>Here we explain how Ivy’s stateful API builds on the functional API and the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!</p>
 <p>So, without further ado, let’s walk through what the stateful API has to offer!</p>
 <section id="modules">
 <h2>Modules<a class="headerlink" href="#modules" title="Permalink to this heading"></a></h2>
@@ -180,7 +180,7 @@
 </pre></div>
 </div>
 <p>For simplicity, this is slightly different to the builtin <code class="code docutils literal notranslate"><span class="pre">ivy.Linear</span></code> in a couple of ways, as we will explain in the Initializer section below.</p>
-<p>All <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>. For our example above, the hierarchical structure of these variables is the same as that defined in the method <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code>.</p>
+<p>All <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>. For our example above, the hierarchical structure of these variables is the same as that defined in the method <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linear</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 
@@ -419,7 +419,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Given that the weights of our network are stored in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, and the gradients returned from <code class="code docutils literal notranslate"><span class="pre">ivy.execute_with_gradients</span></code> are also stored in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:</p>
+<p>Given that the weights of our network are stored in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, and the gradients returned from <code class="code docutils literal notranslate"><span class="pre">ivy.execute_with_gradients</span></code> are also stored in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
 <span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>

@@ -203,7 +203,7 @@
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
@@ -260,12 +260,12 @@
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2]) #x.shape-&gt;(3,)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.expand_dims(x) #y.shape-&gt;(1, 3)</span>
@@ -309,7 +309,7 @@
 <span class="sd">                  [ 1.4],</span>
 <span class="sd">                  [ 5.7]]]]])</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -324,7 +324,7 @@
 <span class="sd">                      [5.]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -381,12 +381,12 @@
 
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -419,13 +419,13 @@
 <span class="sd">               [[12, 11, 10],</span>
 <span class="sd">                [ 9,  8,  7]]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([2., 1., 0.])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                      b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.flip(x)</span>
@@ -437,13 +437,13 @@
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([2., 1., 0.])</span>
 
-<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+<span class="sd">    Using :class:`ivy.Container` instance method:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.flip()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -488,7 +488,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.permute_dims(x, axes=(1, 0))</span>
@@ -504,7 +504,7 @@
 <span class="sd">               [0., 0.],</span>
 <span class="sd">               [0., 0.]])</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1. ,2.]]), b=ivy.array([[3., 4., 5.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.permute_dims(x, axes=(1, 0))</span>
@@ -543,7 +543,7 @@
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -593,12 +593,12 @@
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.], \</span>
 <span class="sd">                       [3., 4., 5.]])</span>
@@ -609,7 +609,7 @@
 <span class="sd">               [4., 5.]])</span>
 
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.],[3., 4., 5.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x,(2,3))</span>
@@ -617,7 +617,7 @@
 <span class="sd">    ivy.array([[0., 1., 2.],</span>
 <span class="sd">               [3., 4., 5.]])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]), \</span>
 <span class="sd">                          b=ivy.array([0, 1, 2, 3, 4, 5]))</span>
@@ -630,7 +630,7 @@
 <span class="sd">                      [3, 4, 5]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2, 3]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x, (2, 2))</span>
@@ -638,7 +638,7 @@
 <span class="sd">    ivy.array([[0, 1],</span>
 <span class="sd">               [2, 3]])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x, (-1, 1))</span>
@@ -705,12 +705,12 @@
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.roll(x, 1)</span>
@@ -736,7 +736,7 @@
 <span class="sd">                [ 3., 1.],</span>
 <span class="sd">                [ 6., 2.]]])</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -747,7 +747,7 @@
 <span class="sd">        b: ivy.array([5., 3., 4.])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -815,13 +815,13 @@
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0, 1], [2, 3]]])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.squeeze(x, axis=0))</span>
@@ -846,7 +846,7 @@
 <span class="sd">    &gt;&gt;&gt; print(ivy.squeeze(x, axis=(0, 2)))</span>
 <span class="sd">    ivy.array([0, 1, 2])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -912,7 +912,7 @@
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -961,12 +961,12 @@
 <span class="sd">        x_min, and those &gt; x_max with x_max.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.clip(x, 1., 5.)</span>
@@ -986,7 +986,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
 <span class="sd">    &gt;&gt;&gt; x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])</span>
@@ -995,7 +995,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
 <span class="sd">    &gt;&gt;&gt; x_min = ivy.native_array([3., 3., 1., 0., 2., 3., 4., 2., 4., 4.])</span>
@@ -1004,7 +1004,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([3., 3., 2., 3., 4., 5., 6., 3., 8., 8.])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -1015,7 +1015,7 @@
 <span class="sd">        b: ivy.array([3., 4., 5.])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -1028,7 +1028,7 @@
 <span class="sd">        b: ivy.array([-1., -1., -1.])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
 <span class="sd">    &gt;&gt;&gt; x_min = ivy.array([3., 0., 1])</span>
@@ -1080,7 +1080,7 @@
 <span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1121,19 +1121,19 @@
 <span class="sd">        The repeated output array.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y= ivy.repeat(x, 2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([3, 3, 4, 4, 5, 5])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1, 2, 3], [4, 5, 6]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.repeat(x, [1, 2], axis=0)</span>
@@ -1142,7 +1142,7 @@
 <span class="sd">               [4, 5, 6],</span>
 <span class="sd">               [4, 5, 6]])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), \</span>
 <span class="sd">                          b=ivy.array([0., 1., 2.]))</span>
@@ -1189,7 +1189,7 @@
 <span class="sd">        A list of sub-arrays.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
@@ -1210,14 +1210,14 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[4], [6, 5, 3]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([7, 8, 9])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.split(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    [ivy.array([7]),ivy.array([8]),ivy.array([9])]</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([10, 45, 2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.split(x)</span>
@@ -1264,12 +1264,12 @@
 <span class="sd">        x with its axes permuted.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 1)</span>
@@ -1302,7 +1302,7 @@
 <span class="sd">               [[4, 6],</span>
 <span class="sd">                [5, 7]]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 1)</span>
@@ -1311,7 +1311,7 @@
 <span class="sd">               [1],</span>
 <span class="sd">               [2]])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.swapaxes(x, 0, 1)</span>
@@ -1327,7 +1327,7 @@
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.]])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.swapaxes(0, 1)</span>
@@ -1336,7 +1336,7 @@
 <span class="sd">               [1.],</span>
 <span class="sd">               [2.]])</span>
 
-<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+<span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.swapaxes(0, 1)</span>
@@ -1385,7 +1385,7 @@
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2,3,4])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tile(x,(3))</span>
@@ -1401,7 +1401,7 @@
 <span class="sd">               [1,2,3,1,2,3,1,2,3],</span>
 <span class="sd">               [4,5,6,4,5,6,4,5,6]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[0], \</span>
 <span class="sd">                               [1]]])</span>
@@ -1416,7 +1416,7 @@
 <span class="sd">                [0,0,0],</span>
 <span class="sd">                [1,1,1]]])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container( a = ivy.array([0,1,2]), b = ivy.array([[3],[4]]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.tile(x, (1,2))</span>
@@ -1428,7 +1428,7 @@
 <span class="sd">    }</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1459,7 +1459,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.unstack(x, axis=0)</span>
@@ -1475,7 +1475,7 @@
 <span class="sd">                [[5, 6]]]), ivy.array([[[3, 4]],</span>
 <span class="sd">                [[7, 8]]])]</span>
 
-<span class="sd">    With :code:`ivy.Container` inputs:</span>
+<span class="sd">    With :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),</span>
 <span class="sd">                            b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
@@ -1540,7 +1540,7 @@
 <span class="sd">        Padded array of rank equal to x with shape increased according to pad_width.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

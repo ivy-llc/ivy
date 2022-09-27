@@ -203,7 +203,7 @@ implementation.</p>
 </div>
 <p>The reason that the Ivy implementation has type hint <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> but PyTorch
 implementation has <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.
-Likewise, the reason that the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the Ivy implementation has array type hint <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
+Likewise, the reason that the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the Ivy implementation has array type hint <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>
 whereas <code class="code docutils literal notranslate"><span class="pre">x</span></code> has <code class="code docutils literal notranslate"><span class="pre">Union[ivy.Array,</span> <span class="pre">ivy.NativeArray]</span></code> is also explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section.</p>
 </section>
 <section id="compositional-functions">
@@ -267,12 +267,12 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/f18d
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
-<p><em>Nestable</em> functions are functions which can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
+<p><em>Nestable</em> functions are functions which can accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
 of <strong>any</strong> of the arguments. Multiple containers can also be passed in for multiple arguments at the same time,
 provided that the containers share a common nested structure.
-If an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is passed, then the function is applied to all of the
+If an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> is passed, then the function is applied to all of the
 leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
-In this case, the function will return an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> in the output.
+In this case, the function will return an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> in the output.
 <em>Primary</em>, <em>compositional</em>, <em>mixed</em>, and <em>standalone</em> functions can all <em>also</em> be nestable.
 This categorization is <strong>not</strong> mutually exclusive, as outlined by the Venn diagram below:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/1_function_types/nestable.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/1_function_types/nestable.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/1_function_types/nestable.png?raw=true" style="width: 50%;" /></a>
@@ -282,11 +282,11 @@ where batches of different training data often need to be processed concurrently
 Another example is when the same operation must be performed on each weight in a network.
 This <em>nestable</em> property of Ivy functions means that the same function can be used for any of these use cases
 without modification.</p>
-<p>This added support for handling <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances is all handled automatically when <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412">_wrap_function</a>
+<p>This added support for handling <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances is all handled automatically when <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412">_wrap_function</a>
 is applied to every function in the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> module during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>. This will add the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L370">handle_nestable</a>
 wrapping to the function if it has the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_nestable</span></code> decorator.
 This function wrapping process is covered in a bit more detail in the <a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section.</p>
-<p>Under the hood, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are called when <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are passed
+<p>Under the hood, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are called when <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are passed
 in as inputs to functions in the functional API.</p>
 <p>Nestable functions are explained in more detail in the <a class="reference internal" href="5_containers.html#containers"><span class="std std-ref">Containers</span></a> section.</p>
 </section>

@@ -241,7 +241,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([0.2, 0.8, 0.3, 0.8])</span>
@@ -255,7 +255,7 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([[0.916,1.61,1.2,0.357]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, 1, 0, 1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([0.2, 0.7, 0.2, 0.6])</span>
@@ -263,7 +263,7 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([0.223,0.357,0.223,0.511])</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 0, 1, 1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array([0.1, 0.2, 0.8, 0.6])</span>
@@ -271,7 +271,7 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([0.105,0.223,0.223,0.511])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))</span>
@@ -279,7 +279,7 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {a:ivy.array([0.511,0.223,0.357]),b:ivy.array([1.61,0.223,1.61])}</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1 , 1, 0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.7, 0.8, 0.2]))</span>
@@ -292,7 +292,7 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 0, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([0.8, 0.2, 0.2, 0.2])</span>
@@ -349,7 +349,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([0.1, 0.1, 0.7, 0.1])</span>
@@ -366,14 +366,14 @@
 <span class="sd">     &gt;&gt;&gt; print(ivy.cross_entropy(x, y))</span>
 <span class="sd">     ivy.array(11.512926)</span>
 
-<span class="sd">     With :code:`ivy.NativeArray` input:</span>
+<span class="sd">     With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">     &gt;&gt;&gt; x = ivy.native_array([4])</span>
 <span class="sd">     &gt;&gt;&gt; y = ivy.native_array([0.1, 0.2, 0.1, 0.1, 0.5])</span>
 <span class="sd">     &gt;&gt;&gt; print(ivy.sparse_cross_entropy(x, y))</span>
 <span class="sd">     ivy.array([0.693])</span>
 
-<span class="sd">     With :code:`ivy.Container` input:</span>
+<span class="sd">     With :class:`ivy.Container` input:</span>
 
 <span class="sd">     &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4]))</span>
 <span class="sd">     &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.1, 0.2, 0.1, 0.1, 0.5]))</span>
@@ -382,14 +382,14 @@
 <span class="sd">         a: ivy.array([0.693])</span>
 <span class="sd">     }</span>
 
-<span class="sd">     With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
 
 <span class="sd">     &gt;&gt;&gt; x = ivy.array([0])</span>
 <span class="sd">     &gt;&gt;&gt; y = ivy.native_array([0.1, 0.2, 0.6, 0.1])</span>
 <span class="sd">     &gt;&gt;&gt; print(ivy.sparse_cross_entropy(x,y))</span>
 <span class="sd">     ivy.array([2.3])</span>
 
-<span class="sd">     With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">     &gt;&gt;&gt; x = ivy.array([0])</span>
 <span class="sd">     &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))</span>
@@ -401,14 +401,14 @@
 <span class="sd">     Instance Method Examples</span>
 <span class="sd">     ------------------------</span>
 
-<span class="sd">     With :code:`ivy.Array` input:</span>
+<span class="sd">     With :class:`ivy.Array` input:</span>
 
 <span class="sd">     &gt;&gt;&gt; x = ivy.array([2])</span>
 <span class="sd">     &gt;&gt;&gt; y = ivy.array([0.1, 0.1, 0.7, 0.1])</span>
 <span class="sd">     &gt;&gt;&gt; print(x.sparse_cross_entropy(y))</span>
 <span class="sd">     ivy.array([0.357])</span>
 
-<span class="sd">     With :code:`ivy.Container` input:</span>
+<span class="sd">     With :class:`ivy.Container` input:</span>
 
 <span class="sd">     &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2]))</span>
 <span class="sd">     &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0.1, 0.1, 0.7, 0.1]))</span>

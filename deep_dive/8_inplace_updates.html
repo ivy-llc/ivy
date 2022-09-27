@@ -170,9 +170,9 @@ and the important differences.</p>
 <p>This is one particular area of the Ivy code where, technically speaking,
 the function <code class="code docutils literal notranslate"><span class="pre">ivy.inplace_update</span></code> will result in subtly different behaviour
 for each backend, unless the <code class="code docutils literal notranslate"><span class="pre">ensure_in_backend</span></code> flag is set to <code class="code docutils literal notranslate"><span class="pre">True</span></code>.</p>
-<p>While <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances will always be inplace updated consistently,
-in some cases it is simply not possible to also inplace update the <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
-which <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> wraps, due to design choices made by each backend.</p>
+<p>While <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances will always be inplace updated consistently,
+in some cases it is simply not possible to also inplace update the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code>
+which <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> wraps, due to design choices made by each backend.</p>
 <p><strong>JAX</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">JaxArray</span><span class="p">],</span>
@@ -191,7 +191,7 @@ which <code class="code docutils literal notranslate"><span class="pre">ivy.Arra
 </div>
 <p>JAX <strong>does not</strong> natively support inplace updates,
 and so there is no way of actually inplace updating the <code class="code docutils literal notranslate"><span class="pre">JaxArray</span></code> instance <code class="code docutils literal notranslate"><span class="pre">x_native</span></code>.
-Therefore, an inplace update is only performed on <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances provided in the input.</p>
+Therefore, an inplace update is only performed on <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances provided in the input.</p>
 <p><strong>NumPy</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -209,7 +209,7 @@ Therefore, an inplace update is only performed on <code class="code docutils lit
 </div>
 <p>NumPy <strong>does</strong> natively support inplace updates,
 and so <code class="code docutils literal notranslate"><span class="pre">x_native</span></code> is updated inplace with <code class="code docutils literal notranslate"><span class="pre">val_native</span></code>.
-Following this, an inplace update is then also performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
+Following this, an inplace update is then also performed on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
 if provided in the input.</p>
 <p><strong>TensorFlow</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
@@ -239,7 +239,7 @@ However, TensorFlow <strong>does</strong> natively support inplace updates for <
 Therefore, if <code class="code docutils literal notranslate"><span class="pre">x_native</span></code> is a <code class="code docutils literal notranslate"><span class="pre">tf.Variable</span></code>,
 then <code class="code docutils literal notranslate"><span class="pre">x_native</span></code> is updated inplace with <code class="code docutils literal notranslate"><span class="pre">val_native</span></code>.
 Irrespective of whether the native array is a <code class="code docutils literal notranslate"><span class="pre">tf.Tensor</span></code> or a <code class="code docutils literal notranslate"><span class="pre">tf.Variable</span></code>,
-an inplace update is then also performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, if provided in the input.</p>
+an inplace update is then also performed on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, if provided in the input.</p>
 <p><strong>PyTorch</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -257,14 +257,14 @@ an inplace update is then also performed on the <code class="code docutils liter
 </div>
 <p>PyTorch <strong>does</strong> natively support inplace updates,
 and so <code class="code docutils literal notranslate"><span class="pre">x_native</span></code> is updated inplace with <code class="code docutils literal notranslate"><span class="pre">val_native</span></code>.
-Following this, an inplace update is then also performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
+Following this, an inplace update is then also performed on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
 if provided in the input.</p>
 <p>The function <code class="code docutils literal notranslate"><span class="pre">ivy.inplace_update</span></code> is also <em>nestable</em>,
-meaning it can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in the input.
-If an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance is provided for the argument <code class="code docutils literal notranslate"><span class="pre">x</span></code>,
+meaning it can accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in the input.
+If an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance is provided for the argument <code class="code docutils literal notranslate"><span class="pre">x</span></code>,
 then along with the arrays at all of the leaves,
 the container <code class="code docutils literal notranslate"><span class="pre">x</span></code> is <strong>also</strong> inplace updated,
-meaning that a new <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance is not created for the function return.</p>
+meaning that a new <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance is not created for the function return.</p>
 <section id="out-argument">
 <h2>out argument<a class="headerlink" href="#out-argument" title="Permalink to this heading"></a></h2>
 <p>Most functions in Ivy support inplace updates via the inclusion of a keyword-only <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
@@ -272,15 +272,15 @@ This enables users to specify the array to which they would like the output of a
 This could for example be the input array itself, but can also be any other array of choice.</p>
 <p>All Ivy functions which return a single array should support inplace updates via the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
 The type hint of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is <code class="code docutils literal notranslate"><span class="pre">Optional[ivy.Array]</span></code>.
-However, as discussed above, if the function is <em>nestable</em> then <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is omitted from the type hint in such cases,
+However, as discussed above, if the function is <em>nestable</em> then <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are also supported.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> is omitted from the type hint in such cases,
 as explained in the <a class="reference internal" href="11_function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> section.</p>
-<p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>
-(or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> if <em>nestable</em>).
+<p>When the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is unspecified, then the return is simply provided in a newly created <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>
+(or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> if <em>nestable</em>).
 However, when <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified, then the return is provided as an inplace update of the
 <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument provided. This can for example be the same as the input to the function,
 resulting in a simple inplace update of the input.</p>
-<p>In the case of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> return types, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is predominantly handled in
+<p>In the case of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> return types, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument is predominantly handled in
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340">handle_out_argument</a>. As explained in the <a class="reference internal" href="9_function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section,
 this wrapping is applied to every function with the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_out_argument</span></code> decorator
 dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
@@ -329,9 +329,9 @@ dictates whether the argument should be handled <a class="reference external" hr
 <p>This distinction only concerns how the inplace update is applied to the native array,
 which is operated upon directly by the backend.
 If <code class="code docutils literal notranslate"><span class="pre">out</span></code> is specified in an Ivy function, then an inplace update is always <strong>also</strong>
-performed on the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance itself, which is how <code class="code docutils literal notranslate"><span class="pre">out</span></code> is provided to the function originally.
-The inplace update of this <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> is always <a class="reference external" href="https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L373">handled by the wrapper</a>.</p>
-<p>Alternatively, if <code class="code docutils literal notranslate"><span class="pre">out</span></code> is an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, then the inplace update is always handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69">_wrap_fn</a> in
+performed on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance itself, which is how <code class="code docutils literal notranslate"><span class="pre">out</span></code> is provided to the function originally.
+The inplace update of this <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> is always <a class="reference external" href="https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L373">handled by the wrapper</a>.</p>
+<p>Alternatively, if <code class="code docutils literal notranslate"><span class="pre">out</span></code> is an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, then the inplace update is always handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69">_wrap_fn</a> in
 the container wrapping module.</p>
 <p><strong>Special Case</strong></p>
 <p>Take a function which has multiple possible “paths” through the code:</p>
@@ -360,7 +360,7 @@ the container wrapping module.</p>
 enabled by <code class="code docutils literal notranslate"><span class="pre">torch.linalg.cholesky</span></code> in the first condition. However, in the <code class="code docutils literal notranslate"><span class="pre">else</span></code> statement, the last
 operation is <code class="code docutils literal notranslate"><span class="pre">torch.transpose</span></code> which does not support the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, and so the native inplace update
 can’t be performed by torch here. This is why we need to call <code class="code docutils literal notranslate"><span class="pre">ivy.inplace_update</span></code> explicitly here, to ensure the
-native inplace update is performed, as well as the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> inplace update.</p>
+native inplace update is performed, as well as the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inplace update.</p>
 <p><strong>Compositional Functions</strong></p>
 <p>For <em>compositional</em> functions, the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument should <strong>always</strong> be handled in the compositional implementation,
 with no wrapping applied at all. This is for a few reasons:</p>

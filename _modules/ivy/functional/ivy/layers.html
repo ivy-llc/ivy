@@ -316,13 +316,13 @@
 <span class="sd">        The shape of output array is *[batch_shape,num_queries,feat_dim]* .</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
@@ -348,7 +348,7 @@
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
@@ -374,7 +374,7 @@
 <span class="sd">    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])</span>
 
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),\</span>
 <span class="sd">    b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))</span>
@@ -407,7 +407,7 @@
 <span class="sd">                    [4.4, 5.6]]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])</span>
@@ -428,7 +428,7 @@
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),\</span>
@@ -449,7 +449,7 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])</span>
@@ -468,7 +468,7 @@
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),\</span>
 <span class="sd">    b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))</span>
@@ -490,7 +490,7 @@
 <span class="sd">                    [4.4, 5.6]]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])</span>
 <span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),\</span>
@@ -675,7 +675,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.asarray([[[0.], [3.], [0.]]]) #NWC</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.array([[[0.]], [[1.]], [[0.]]]) #WIO</span>
@@ -683,7 +683,7 @@
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    ivy.array([[[0.], [3.], [0.]]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[1., 3.], [2., 4.], [5., 7]]])</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.native_array([[[0., 1.], [1., 0.]]])</span>
@@ -692,7 +692,7 @@
 <span class="sd">    ivy.array([[[3., 1.], \</span>
 <span class="sd">                [7., 5.]]])</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a= ivy.array([[[1.2, 3.1, 4.8], [5.9, 2.2, 3.3],\</span>
 <span class="sd">                                       [10.8, 7.6, 4.9], [6.1, 2.2, 9.5]]]), \</span>
@@ -802,13 +802,13 @@
 <span class="sd">        The result of the convolution operation.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[[1.], [2.0],[3.]], \</span>
 <span class="sd">                      [[1.], [2.0],[3.]], \</span>
@@ -826,7 +826,7 @@
 <span class="sd">              [[2.],[4.],[6.]]</span>
 <span class="sd">              ]])</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[[1.], [2.0],[3.]], \</span>
 <span class="sd">                                        [[1.], [2.0],[3.]], \</span>
@@ -839,7 +839,7 @@
 <span class="sd">        a:ivy.array([[[[3.], [3.]], [[1.], [5.]]]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),  \</span>
 <span class="sd">                          b = ivy.eye(4, 4).reshape((1, 4, 4, 1)), \</span>
 <span class="sd">                          c = ivy.eye(5, 5).reshape((1, 5, 5, 1)))</span>
@@ -857,7 +857,7 @@
 <span class="sd">                    ]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)), \</span>
 <span class="sd">                          b = ivy.eye(5, 5).reshape((1, 5, 5, 1)))</span>
@@ -970,12 +970,12 @@
 <span class="sd">        The result of the convolution operation.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3]) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3]) #HWI (I == d_in)</span>
@@ -996,7 +996,7 @@
 <span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
 <span class="sd">    (1, 61, 61, 32)</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array( \</span>
 <span class="sd">        ivy.random_normal(mean=0, std=1, shape=[1, 7, 7, 64]) \</span>
@@ -1008,7 +1008,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 7, 7, 64)</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; a = ivy.array([[1., 1., 1.], [1., -8., 1.], [1., 1., 1.]]).expand_dims(axis=-1)</span>
@@ -1029,8 +1029,8 @@
 <span class="sd">                        [0.333]]]])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array`, code:`ivy.NativeArray`</span>
-<span class="sd">    and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array`, code:`ivy.NativeArray`</span>
+<span class="sd">    and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.eye(6, 6).reshape((1, 6, 6, 1)) #NHWC</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.native_array(ivy.eye(6, 6).reshape((1, 6, 6, 1)))</span>
@@ -1164,7 +1164,7 @@
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])</span>
@@ -1172,7 +1172,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 6, 56, 56, 6)</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array( \</span>
 <span class="sd">        ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64]) \</span>
@@ -1184,7 +1184,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 9, 258, 258, 32)</span>
 
-<span class="sd">    With :code:`ivy.Container` inputs:</span>
+<span class="sd">    With :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal( \</span>
 <span class="sd">                                mean=0, std=1, shape=[1, 3, 28, 28, 3] \</span>
@@ -1198,7 +1198,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    [1, 6, 56, 56, 6]</span>
 
-<span class="sd">    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.full((1, 6, 6, 6, 1), 2.7)</span>
 <span class="sd">    &gt;&gt;&gt; a =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])</span>
@@ -1209,8 +1209,8 @@
 <span class="sd">    [1, 8, 8, 8, 1]</span>
 
 
-<span class="sd">    With a mix of :code:`ivy.Array`, :code:`ivy.NativeArray`</span>
-<span class="sd">    and :code:`ivy.Container` inputs:</span>
+<span class="sd">    With a mix of :class:`ivy.Array`, :class:`ivy.NativeArray`</span>
+<span class="sd">    and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.full((1, 6, 6, 6, 1), 1.23)</span>
 <span class="sd">    &gt;&gt;&gt; a =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))</span>
@@ -1223,7 +1223,7 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])</span>
 <span class="sd">    &gt;&gt;&gt; filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])</span>
@@ -1231,7 +1231,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y.shape)</span>
 <span class="sd">    (1, 6, 56, 56, 6)</span>
 
-<span class="sd">    Using :code:`ivy.Container` instance method:</span>
+<span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.random_normal( \</span>
 <span class="sd">                                mean=0, std=1, shape=[1, 3, 28, 28, 3] \</span>

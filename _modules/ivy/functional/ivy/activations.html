@@ -174,7 +174,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1., 0., 1.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.relu(x)</span>
@@ -194,7 +194,7 @@
 <span class="sd">    ivy.array([[1.1, 2.2, 3.3],</span>
 <span class="sd">               [0., 0., 0.]])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., -1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.relu(x)</span>
@@ -204,7 +204,7 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-0.5, 1., -2.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.relu()</span>
@@ -246,7 +246,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0.39, -0.85])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.leaky_relu(x)</span>
@@ -267,7 +267,7 @@
 <span class="sd">       [-0.88, -1.1 , -1.32]])</span>
 
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0., -1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.leaky_relu(x)</span>
@@ -278,7 +278,7 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-0.5, 1., -2.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.leaky_relu()</span>
@@ -320,21 +320,21 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1.2, -0.6, 1.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.gelu(x)</span>
 <span class="sd">    &gt;&gt;&gt; y</span>
 <span class="sd">    ivy.array([-0.138, -0.165, 1.4])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([-1.3, 3.8, 2.1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.gelu(x)</span>
 <span class="sd">    &gt;&gt;&gt; y</span>
 <span class="sd">    ivy.array([-0.126, 3.8, 2.06])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.gelu(x)</span>
@@ -373,14 +373,14 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sigmoid(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([0.269, 0.731, 0.881])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([-1.3, 3.8, 2.1])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.sigmoid(x)</span>
@@ -390,7 +390,7 @@
 <span class="sd">    Instance Method Example</span>
 <span class="sd">    -----------------------</span>
 
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1., 1., 2.])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.sigmoid()</span>
@@ -433,7 +433,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.0, 0, 1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.softmax(x)</span>
@@ -448,7 +448,7 @@
 <span class="sd">               [0.0768, 0.231 , 0.693 ]])</span>
 
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1.5, 0.3, 1.2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.softmax(x)</span>
@@ -458,7 +458,7 @@
 <span class="sd">    Instance Method Example</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.0, 0, 1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.softmax()</span>
@@ -503,7 +503,7 @@
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-0.3461, -0.6491])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.softplus(x)</span>
@@ -520,7 +520,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([1.31, 2.13, 3.  ])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([-0.3461, -0.6491])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.softplus(x)</span>
@@ -531,7 +531,7 @@
 <span class="sd">    Instance Method Example</span>
 <span class="sd">    ------------------------</span>
 
-<span class="sd">    Using :code:`ivy.Array` instance method:</span>
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-0.3461, -0.6491])</span>
 <span class="sd">    &gt;&gt;&gt; y = x.softplus()</span>
@@ -573,7 +573,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([-1.0, -0.98])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.log_softmax(x)</span>
@@ -585,14 +585,14 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([-2.41, -1.41, -0.408])</span>
 
-<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1.5, 0.5, 1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.log_softmax(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([-0.68, -1.68, -1.18])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.5, 0.5, 1.0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.log_softmax(x)</span>

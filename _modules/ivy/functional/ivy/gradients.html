@@ -319,19 +319,19 @@
 <span class="sd">        An ivy variable, supporting gradient computation.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 0.3, -4.5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.variable(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([ 1. ,  0.3, -4.5])</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.2, 4.]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.variable(x)</span>
@@ -368,12 +368,12 @@
 <span class="sd">        Boolean, true if x is a trainable variable, false otherwise.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.variable(ivy.array(2.3))</span>
 <span class="sd">    &gt;&gt;&gt; is_var = ivy.is_variable(x)</span>
@@ -385,7 +385,7 @@
 <span class="sd">    &gt;&gt;&gt; print(is_var)</span>
 <span class="sd">    False</span>
 
-<span class="sd">    With :code:`ivy.Container` input:</span>
+<span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array(3.2), b=ivy.array(2))</span>
 <span class="sd">    &gt;&gt;&gt; is_var = ivy.is_variable(x, exclusive=True)</span>
@@ -395,7 +395,7 @@
 <span class="sd">        b: false</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.variable(ivy.array([2.0, -1.0, 0.0])),\</span>
 <span class="sd">                          b=ivy.array([0., -0.4, 8]))</span>
@@ -433,7 +433,7 @@
 <span class="sd">        The internal data stored by the variable</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -470,12 +470,12 @@
 <span class="sd">        The same array x, but with no gradient information.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.stop_gradient(x, preserve_type=True)</span>
@@ -488,7 +488,7 @@
 <span class="sd">    ivy.array([[0., 0., 0.],</span>
 <span class="sd">               [0., 0., 0.]])</span>
 
-<span class="sd">    With one :code:`ivy.Container` inputs:</span>
+<span class="sd">    With one :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -499,7 +499,7 @@
 <span class="sd">        b: ivy.array([3., 4., 5.])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -566,7 +566,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.variable(ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]]))</span>
 <span class="sd">    &gt;&gt;&gt; func = lambda x: ivy.mean(ivy.square(x))</span>
@@ -600,7 +600,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.6, 2.1, 5], [2.8, 1.3, 6.2]])</span>
 <span class="sd">    &gt;&gt;&gt; func = lambda x: ivy.mean(ivy.square(x))</span>
@@ -699,7 +699,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; mw = ivy.ones(3)</span>
@@ -737,7 +737,7 @@
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">        ivy.array([0.171, 0.171, 0.171])</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                             b=ivy.array([3., 4., 5.]))</span>
@@ -761,7 +761,7 @@
 <span class="sd">        b: ivy.array([0.216, 0.384, 0.6])</span>
 <span class="sd">    })</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                             b=ivy.array([3., 4., 5.]))</span>
@@ -843,7 +843,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; effective_grad = ivy.zeros(3)</span>
@@ -878,7 +878,7 @@
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([0.999, 2.   , 3.   ])</span>
 
-<span class="sd">    With one :code:`ivy.Container` input:</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -891,7 +891,7 @@
 <span class="sd">        b: ivy.array([3., 4., 5.])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([0., 1., 2.]),\</span>
 <span class="sd">                          b=ivy.array([3., 4., 5.]))</span>
@@ -963,7 +963,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([[1., 2, 3],\</span>
 <span class="sd">                       [4, 6, 1],\</span>
@@ -986,7 +986,7 @@
 <span class="sd">    &gt;&gt;&gt; print(out)</span>
 <span class="sd">    ivy.array([0.85, 1.94, 2.97])</span>
 
-<span class="sd">    With one :code:`ivy.Container` inputs:</span>
+<span class="sd">    With one :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
 <span class="sd">                          b=ivy.array([3.48, 5.72, 1.98]))</span>
@@ -999,7 +999,7 @@
 <span class="sd">        b: ivy.array([3.33, 5.66, 1.95])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
 <span class="sd">                          b=ivy.array([3.48, 5.72, 1.98]))</span>
@@ -1199,7 +1199,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Array` inputs:</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.array([1., 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([0.5,0.2,0.1])</span>
@@ -1236,7 +1236,7 @@
 <span class="sd">               [ 3.64 ,  5.64 ,  0.639],\</span>
 <span class="sd">               [ 0.639, -0.361,  6.64 ]])</span>
 
-<span class="sd">    With one :code:`ivy.Container` inputs:</span>
+<span class="sd">    With one :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([4., 5., 6.]))</span>
 <span class="sd">    &gt;&gt;&gt; dcdw = ivy.array([3., 4., 5.])</span>
@@ -1251,7 +1251,7 @@
 <span class="sd">        b: ivy.array([4., 5., 6.])</span>
 <span class="sd">    }, ivy.array([0.3, 0.4, 0.5]), ivy.array([1.01, 1.01, 1.02]))</span>
 
-<span class="sd">    With multiple :code:`ivy.Container` inputs:</span>
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; w = ivy.Container(a=ivy.array([1.,3.,5.]),\</span>
 <span class="sd">                          b=ivy.array([3.,4.,2.]))</span>

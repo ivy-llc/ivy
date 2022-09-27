@@ -159,13 +159,13 @@
              
   <section id="ivy-container">
 <h1>Ivy Container<a class="headerlink" href="#ivy-container" title="Permalink to this heading"></a></h1>
-<p>Here, we explain how the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class saves you a ton of time and cleans up code in almost all aspects of your ML workflow. So without further ado, let’s dive in!</p>
+<p>Here, we explain how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class saves you a ton of time and cleans up code in almost all aspects of your ML workflow. So without further ado, let’s dive in!</p>
 <p>Firstly, Dictionaries are an incredibly powerful and useful data type in Python. They enable a clean, readable and efficient-access (via hashing) storage of arbitrarily hierarchical data.</p>
-<p>The <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class can be seen as a souped-up Dict, with many useful features built on top. It’s the backbone of most high level operations in Ivy.</p>
-<p>Let’s walk through some of the most important features of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>!</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class can be seen as a souped-up Dict, with many useful features built on top. It’s the backbone of most high level operations in Ivy.</p>
+<p>Let’s walk through some of the most important features of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>!</p>
 <section id="construction">
 <h2>Construction<a class="headerlink" href="#construction" title="Permalink to this heading"></a></h2>
-<p>A container can be constructed in a number of ways. All construction approaches below result in identical <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances.</p>
+<p>A container can be constructed in a number of ways. All construction approaches below result in identical <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 
  <span class="n">dct</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
@@ -193,7 +193,7 @@
 </section>
 <section id="representation">
 <h2>Representation<a class="headerlink" href="#representation" title="Permalink to this heading"></a></h2>
-<p><code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> prints the hierarchical structure to the terminal in a very intuitive manner, much more so than native Python Dicts.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> prints the hierarchical structure to the terminal in a very intuitive manner, much more so than native Python Dicts.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
 
 <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])}}</span>
@@ -248,7 +248,7 @@
 </section>
 <section id="recursive-methods">
 <h2>Recursive Methods<a class="headerlink" href="#recursive-methods" title="Permalink to this heading"></a></h2>
-<p>All methods in Ivy’s functional API are implemented as recursive methods on the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>. This means you can easily map a single method to all arrays in the container with a single line.</p>
+<p>All methods in Ivy’s functional API are implemented as recursive methods on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>. This means you can easily map a single method to all arrays in the container with a single line.</p>
 <p>Starting with the following container:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span>
                      <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]),</span>
@@ -279,7 +279,7 @@
  <span class="p">}</span>
 </pre></div>
 </div>
-<p>There are about 200 such functions for the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class in total, check out the <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/ivy/container">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/core/container.html">docs</a> to see what they are!</p>
+<p>There are about 200 such functions for the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class in total, check out the <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/ivy/container">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/core/container.html">docs</a> to see what they are!</p>
 </section>
 <section id="built-ins">
 <h2>Built-ins<a class="headerlink" href="#built-ins" title="Permalink to this heading"></a></h2>
@@ -305,11 +305,11 @@
  <span class="p">}</span>
 </pre></div>
 </div>
-<p>Check out the section below on Ivy’s stateful API to see how the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> is used for storing all network weights in <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances!</p>
+<p>Check out the section below on Ivy’s stateful API to see how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> is used for storing all network weights in <code class="code docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances!</p>
 </section>
 <section id="access">
 <h2>Access<a class="headerlink" href="#access" title="Permalink to this heading"></a></h2>
-<p>The keys in an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> can be set and accessed by using either class attributes or keys in the dictionary. Both of these setting and accessing approaches are equivalent under the hood.</p>
+<p>The keys in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> can be set and accessed by using either class attributes or keys in the dictionary. Both of these setting and accessing approaches are equivalent under the hood.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])})</span>
 
 <span class="n">cnt</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
@@ -467,7 +467,7 @@
 </section>
 <section id="customized-representations">
 <h2>Customized Representations<a class="headerlink" href="#customized-representations" title="Permalink to this heading"></a></h2>
-<p>Not only does <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation. This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.</p>
+<p>Not only does <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation. This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.</p>
 <p>If our networks weights go many levels deep in the nested hierarchy, we might not want to see all of them when printing our container to screen. Consider the following nested structure.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
     <span class="p">{</span><span class="s1">&#39;decoder&#39;</span><span class="p">:</span>
@@ -559,7 +559,7 @@
 </section>
 <section id="compartmentalization">
 <h2>Compartmentalization<a class="headerlink" href="#compartmentalization" title="Permalink to this heading"></a></h2>
-<p>The most obvious use case for the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class is to compartmentalize inputs into a useful structure. For example, without better foresight, we could untidily implement a function <code class="code docutils literal notranslate"><span class="pre">update_agent</span></code> as follows:</p>
+<p>The most obvious use case for the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class is to compartmentalize inputs into a useful structure. For example, without better foresight, we could untidily implement a function <code class="code docutils literal notranslate"><span class="pre">update_agent</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize_img</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="n">img_max</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
     <span class="n">img_min</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
@@ -625,7 +625,7 @@
 </section>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h2>
-<p>As briefly alluded to when explaining the <code class="code docutils literal notranslate"><span class="pre">ivy.Container.diff</span></code> method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.</p>
+<p>As briefly alluded to when explaining the <code class="code docutils literal notranslate"><span class="pre">ivy.Container.diff</span></code> method, the container class is also the ideal data type for storing experiment configurations. Configurations can either first be stored to disk as a JSON file and then loaded into the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.</p>
 </section>
 <section id="data-loading">
 <h2>Data loading<a class="headerlink" href="#data-loading" title="Permalink to this heading"></a></h2>
@@ -724,7 +724,7 @@
 </pre></div>
 </div>
 <p><strong>Round Up</strong></p>
-<p>That should hopefully be enough to get you started with the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class 😊</p>
+<p>That should hopefully be enough to get you started with the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class 😊</p>
 <p>Please check out the discussions on the <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> for FAQs, and reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> if you have any questions!</p>
 </section>
 </section>

@@ -190,14 +190,14 @@ inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Functional Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
 1. Axes = 0 : tensor product
 &gt;&gt;&gt; x = ivy.array([[1., 2.], [2., 3.]])
 &gt;&gt;&gt; y = ivy.array([[3., 4.], [4., 5.]])
 &gt;&gt;&gt; res = ivy.tensordot(x, y, axes =0)
 &gt;&gt;&gt; print(res)
 ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])</p>
-<p>With a mix of <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> inputs:</p>
+<p>With a mix of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> inputs:</p>
 <p>2. Axes = 1 : tensor dot product
 &gt;&gt;&gt; x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
 &gt;&gt;&gt; y = ivy.native_array([[1.], [2.], [3.]])
@@ -208,7 +208,7 @@ ivy.array([[ 4.],</p>
 <div><p>[26.],
 [20.]])</p>
 </div></blockquote>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
 <p>3. Axes = 2: (default) tensor double contraction
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),                          b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))
 &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),                          b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))

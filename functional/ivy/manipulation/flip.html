@@ -185,10 +185,10 @@ relative to <code class="docutils literal notranslate"><span class="pre">x</span
 <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.flip.html">docstring</a> 
 in the standard.</p>
 <p>Both the description and the type hints above assumes an array input for simplicity,
-but this function is <em>nestable</em>, and therefore also accepts <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 instances in place of any of the arguments.</p>
 <p class="rubric">Functional Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
 &gt;&gt;&gt; x = ivy.array([3, 4, 5])
 &gt;&gt;&gt; y = ivy.flip(x)
 &gt;&gt;&gt; print(y)
@@ -224,12 +224,12 @@ ivy.array([5, 4, 3])</p>
 <span class="go">            [ 9,  8,  7]]])</span>
 </pre></div>
 </div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:
 &gt;&gt;&gt; x = ivy.native_array([0., 1., 2.])
 &gt;&gt;&gt; y = ivy.flip(x)
 &gt;&gt;&gt; print(y)
 ivy.array([2., 1., 0.])</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),                       b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; y = ivy.flip(x)
 &gt;&gt;&gt; print(y)
@@ -240,12 +240,12 @@ b: ivy.array([5., 4., 3.])</p>
 </div></blockquote>
 <p>}</p>
 <p class="rubric">Instance Method Examples</p>
-<p>Using <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:
+<p>Using <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method:
 &gt;&gt;&gt; x = ivy.array([0., 1., 2.])
 &gt;&gt;&gt; y = x.flip()
 &gt;&gt;&gt; print(y)
 ivy.array([2., 1., 0.])</p>
-<p>Using <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method:
+<p>Using <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method:
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
 &gt;&gt;&gt; y = x.flip()
 &gt;&gt;&gt; print(y)

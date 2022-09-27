@@ -166,13 +166,13 @@
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/container.py#L25">ivy.Container</a> inherits from <a class="reference external" href="https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56">dict</a>, and is useful for storing nested data.
 For example, the container is equally suitable for storing batches of training data,
 or for storing the weights of a network.</p>
-<p>The methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are more varied than those of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
-All methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> are instance methods,
+<p>The methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are more varied than those of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+All methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> are instance methods,
 and almost all of them directly wrap a function in the functional API.</p>
-<p>For the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>, there are also methods which are specific to the container itself,
+<p>For the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, there are also methods which are specific to the container itself,
 for performing nested operations on the leaves of the container for example.
 In addition, there are also static methods.
-Overall, this results in the following five mutually exclusive groups of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods.
+Overall, this results in the following five mutually exclusive groups of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods.
 Each of these are explained in the following sub-sections.</p>
 <ol class="arabic simple">
 <li><p>Container instance methods</p></li>
@@ -203,23 +203,23 @@ and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1e
 </section>
 <section id="api-static-methods">
 <h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this heading"></a></h2>
-<p>Unlike the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements
+<p>Unlike the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements
 <strong>all nestable functions</strong> in the functional API as <em>static</em> methods.
 The main reason for this is to support the <em>nestable</em> property of all functions in the API,
 which is explained in detail in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
-<p>To recap, what this means is that every function can arbitrarily accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for <strong>any</strong>
+<p>To recap, what this means is that every function can arbitrarily accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for <strong>any</strong>
 of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
 When multiple containers are passed, this mapping is only applied to their shared nested structure,
 with the mapping applied to each of these leaves.</p>
-<p>In such cases, the function in the functional API defers to this <em>static</em> <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> implementation.
+<p>In such cases, the function in the functional API defers to this <em>static</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> implementation.
 Under the hood, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> enables us to pass in arbitrary combinations of containers
 and non-containers, and perform the correct mapping across the leaves.
 Internally, <code class="code docutils literal notranslate"><span class="pre">ivy.Container.multi_map_in_static_method</span></code> calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593">ivy.Container.multi_map</a>.
 In cases where there are no containers passed,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167">ivy.Container.multi_map_in_static_method</a> will simply call the function once on the non-container arguments provided.</p>
-<p>A few examples of <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are
+<p>A few examples of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71">ivy.Container.static_add</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240">ivy.Container.static_tan</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135">ivy.Container.static_roll</a>.</p>
-<p>As with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+<p>As with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
 given the simple set of rules which underpin how these static methods should all be implemented,
 if a source-code implementation is not found,
 then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L199">static method is added</a> programmatically.
@@ -230,17 +230,17 @@ It also enables other helpful perks, such as auto-completions in the IDE etc.</p
 </section>
 <section id="api-instance-methods">
 <h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this heading"></a></h2>
-<p>The <em>API</em> instance methods serve a similar purpose to the instance methods of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
-They enable functions in Ivy’s functional API to be called as instance methods on the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.
-The difference is that with the <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>,
+<p>The <em>API</em> instance methods serve a similar purpose to the instance methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
+They enable functions in Ivy’s functional API to be called as instance methods on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.
+The difference is that with the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>,
 the API function is applied recursively to all the leaves of the container.
-The <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance methods should <strong>exactly match</strong> the instance methods
-of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, both in terms of the methods implemented and the argument
+The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance methods should <strong>exactly match</strong> the instance methods
+of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, both in terms of the methods implemented and the argument
 which <code class="code docutils literal notranslate"><span class="pre">self</span></code> replaces in the function being called. This means <code class="code docutils literal notranslate"><span class="pre">self</span></code> should
 always replace the first array argument in the function.
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/container/elementwise.py#L158">ivy.Container.add</a>
 is a good example.</p>
-<p>However, as with the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> class,
+<p>However, as with the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class,
 it’s important to bear in mind that this is <em>not necessarily the first argument</em>,
 although in most cases it will be.
 We also <strong>do not</strong> set the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument to <code class="code docutils literal notranslate"><span class="pre">self</span></code> for instance methods.
@@ -251,12 +251,12 @@ instance method. For example, we do not implement an instance method for
 For example, <a href="#id4"><span class="problematic" id="id5">`ivy.Container.add`_</span></a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_add</span></code>,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1259">ivy.Container.tan</a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_tan</span></code>,
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L158">ivy.Container.roll</a> calls <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_roll</span></code>.</p>
-<p>As is the case for <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+<p>As is the case for <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
 the organization of these instance methods follows the same organizational structure as the
 files in the functional API.
-The <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> class <a class="reference external" href="https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/container.py#L25">inherits</a> from many category-specific array classes,
+The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class <a class="reference external" href="https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/container.py#L25">inherits</a> from many category-specific array classes,
 such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/8cbffbda9735cf16943f4da362ce350c74978dcb/ivy/container/elementwise.py#L12">ContainerWithElementwise</a>, each of which implement the category-specific instance methods.</p>
-<p>Again, as with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
+<p>Again, as with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>,
 given the simple set of rules which underpin how these instance methods should all be implemented,
 if a source-code implementation is not found,
 then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/__init__.py#L173">instance method is added</a> programmatically.
@@ -277,25 +277,25 @@ These special methods include
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4884">__setitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be set via a chain of keys,
 <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4904">__contains__</a> that enables us to check for chains of keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>,
 and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4912">__getstate__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/base.py#L4927">__setstate__</a> which combined enable the container to be pickled and unpickled.</p>
-<p>As for the special methods which are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+<p>As for the special methods which are <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L98">implemented</a> in the main <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 class, they all make calls to the corresponding standard operator functions.</p>
 <p>As a result, the operator functions will make use of the special methods of the lefthand
 passed input objects if available, otherwise it will make use of the reverse special
 method of the righthand operand. For instance, if the lefthand operand at any given leaf
-of the container in an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code>, then the operator function will make calls to
+of the container in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, then the operator function will make calls to
 the special methods of this array object. As explained in the <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section of
 the Deep Dive, these special methods will in turn call the corresponding functions from
 the ivy functional API.</p>
 <p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L115">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L121">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L127">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/36e32ca1f17ef1e4c1b986599b45974156c19737/ivy/container/container.py#L133">__truediv__</a> which will make
 calls to <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.subtract</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and
-<code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> respectively if the lefthand operand is an <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> object.
+<code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code> respectively if the lefthand operand is an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> object.
 Otherwise, these special methods will be called on whatever objects are at the leaves of
 the container, such as :code`int`, <code class="code docutils literal notranslate"><span class="pre">float</span></code>, :code`ivy.NativeArray` etc.</p>
 </section>
 <section id="nestable-functions">
 <h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading"></a></h2>
 <p>As introduced in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section, most functions in Ivy are
-<em>nestable</em>, which means that they can accept <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
+<em>nestable</em>, which means that they can accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place
 of <strong>any</strong> of the arguments.</p>
 <p>Here, we expand on this explanation.
 Please check out the explanation in the <a class="reference internal" href="1_function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section first.</p>
@@ -307,7 +307,7 @@ passed in the input. More information on this can be found in the <a class="refe
 section of the Deep Dive.</p>
 <p>Additionally, any nestable function which returns multiple arrays, will return the same number of containers for it’s container
 counterpart. This property makes the function symmetric with regards to the input-output behavior, irrespective of whether
-<code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are based used. Any argument in the input can be replaced with a container
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are based used. Any argument in the input can be replaced with a container
 without changing the number of inputs, and the presence or absence of ivy.Container instances in the input should not change the
 number of return values of the function. In other words, if containers are detected in the input, then we should return a separate
 container for each array that the function would otherwise return.</p>
@@ -333,7 +333,7 @@ and <code class="code docutils literal notranslate"><span class="pre">ivy.negati
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Therefore, when passing an <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance in the input,
+<p>Therefore, when passing an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance in the input,
 each internal function will, in turn, correctly handle the container, and return
 a new container with the correct operations having been performed. This makes it very
 easy and intuitive to debug the code, as the code is stepped through chronologically.

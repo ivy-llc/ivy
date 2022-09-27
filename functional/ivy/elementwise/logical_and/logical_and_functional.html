@@ -229,7 +229,7 @@ data type of bool.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:
 &gt;&gt;&gt; x = ivy.array([True, True, False])
 &gt;&gt;&gt; y = ivy.array([True, False, True])
 &gt;&gt;&gt; print(ivy.logical_and(x, y))
@@ -239,7 +239,7 @@ ivy.array([True,False,False])</p>
 <span class="go">ivy.array([True,False,False])</span>
 </pre></div>
 </div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]),         b=ivy.array([True, False, False]))
 &gt;&gt;&gt; y = ivy.Container(a=ivy.array([True, True, False]),         b=ivy.array([False, False, True]))
 &gt;&gt;&gt; print(ivy.logical_and(y, x))
@@ -257,7 +257,7 @@ b: ivy.array([False, False, False])</p>
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:
 &gt;&gt;&gt; x = ivy.native_array([True, True, False])
 &gt;&gt;&gt; y = ivy.native_array([True, False, True])
 &gt;&gt;&gt; print(ivy.logical_and(x, y))

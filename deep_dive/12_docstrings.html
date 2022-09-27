@@ -223,7 +223,7 @@ is the default name used in the <a class="reference external" href="https://data
 </div>
 <p>Finally, <strong>if</strong> the function is <em>nestable</em>, then we add a simple explanation for this as follows:</p>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+Both the description and the type hints above assumes an array input for simplicity,</span><span class="w"></span>
-<span class="gi">+but this function is *nestable*, and therefore also accepts :code:`ivy.Container`</span><span class="w"></span>
+<span class="gi">+but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span><span class="w"></span>
 <span class="gi">+instances in place of any of the arguments.</span><span class="w"></span>
 </pre></div>
 </div>
@@ -263,7 +263,7 @@ This function conforms to the `Array API Standard
 in the standard.
 
 Both the description and the type hints above assumes an array input for simplicity,
-but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
 instances in place of any of the arguments.
 </pre></div>
 </div>
@@ -272,7 +272,7 @@ then you must simply follow this general template as closely as possible,
 but instead you must use your own judgment when adding descriptions for the overall function,
 and also for each of its arguments.</p>
 <p><strong>Classes</strong></p>
-<p>The instance methods in <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> which directly wrap
+<p>The instance methods in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> which directly wrap
 a function in the functional API do not require thorough docstrings, on account that
 these instance methods require no explanation beyond that provided in the docstring
 for the wrapped function.</p>
@@ -290,7 +290,7 @@ for the wrapped function.</p>
 <span class="o">&lt;</span><span class="k">return</span> <span class="n">value</span> <span class="k">with</span> <span class="n">its</span> <span class="n">description</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>The exception to this is <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> <code class="code docutils literal notranslate"><span class="pre">special</span></code> method docstrings,
+<p>The exception to this is <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> <code class="code docutils literal notranslate"><span class="pre">special</span></code> method docstrings,
 which should instead use the following text, as these do not <em>directly</em> wrap a function
 in Ivy’s functional API, but rather wrap the pure operator functions themselves,
 which can be called on any types that support the corresponding special methods:</p>
@@ -342,7 +342,7 @@ defined in <a class="reference external" href="https://github.com/unifyai/ivy/bl
 the function signatures of <code class="code docutils literal notranslate"><span class="pre">ivy.linear</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Linear._forward</span></code> are still
 quite distinct, with the former including all trainable variables explicitly,
 and the latter having these implicit as internal instance attributes of the class.</p>
-<p>Therefore, with the exception of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+<p>Therefore, with the exception of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
 methods which directly wrap functions in the functional API,
 we should always add full and thorough docstrings to all methods of all other classes in Ivy,
 including cases where these also directly wrap functions in the functional API.</p>

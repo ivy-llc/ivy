@@ -270,8 +270,8 @@ arguments seek to control are simply not controllable when using Ivy.
 Similarly, <code class="code docutils literal notranslate"><span class="pre">subok</span></code> controls whether or not subclasses of the <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
 should be permitted as inputs to the function.
 Again, this is a very framework-specific argument. All ivy functions by default do
-enable subclasses of the <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> to be passed, and the frontend function will
-be operating with <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances rather than <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
+enable subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> to be passed, and the frontend function will
+be operating with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances rather than <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
 instances, and so we omit this argument. Again, it has no bearing on input-output
 behaviour and so this is not a problem when transpiling between frameworks.</p>
 <p>See the section “Unused Arguments” below for more details.</p>
