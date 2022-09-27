@@ -158,11 +158,7 @@ def test_binary_cross_entropy(
 # smooth_l1_loss
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0.0,
         max_value=1.0,
         large_value_safety_factor=1.0,
@@ -175,11 +171,7 @@ def test_binary_cross_entropy(
         min_dim_size=2,
     ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(
-                set(ivy_torch.valid_float_dtypes)
-            )
-        ),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1.0013580322265625e-05,
         max_value=1.0,
         large_value_safety_factor=1.0,
