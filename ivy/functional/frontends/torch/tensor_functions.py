@@ -11,9 +11,6 @@ import ivy
 # def is_conj(obj):
 # 	return ivy.is_conj(obj)
 
-# def is_floating_point(obj):
-# 	return ivy.is_float_dtype(obj)
-
 # def is_nonzero(obj):
 # 	return ivy.is_nonzero(obj)
 
@@ -33,3 +30,7 @@ def numel(input):
     for e in input_shape:
         num = num * e
     return num
+
+
+def is_floating_point(input):
+    return ivy.is_float_dtype(ivy.asarray(input).dtype)
