@@ -398,7 +398,7 @@ class Array(
 
         Examples
         --------
-        With :code:`ivy.Array` instances only:
+        With :class:`ivy.Array` instances only:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
@@ -652,7 +652,7 @@ class Array(
 
         Examples
         --------
-        With :code:`ivy.Array` instances only:
+        With :class:`ivy.Array` instances only:
 
         >>> a = ivy.array([2, 3, 4])
         >>> b = ivy.array([0, 1, 2])

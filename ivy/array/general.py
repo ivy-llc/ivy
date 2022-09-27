@@ -59,9 +59,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
-    def is_array(
-        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_array(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_array. This method simply wraps the
         function, and so the docstring for ivy.is_array also applies to this method
@@ -80,11 +78,9 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self, exclusive=exclusive, out=out)
+        return ivy.is_array(self, exclusive=exclusive)
 
-    def is_ivy_container(
-        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_ivy_container(self: ivy.Array) -> bool:
         """
         ivy.Array instance method variant of ivy.is_ivy_container. This method simply
         wraps the function, and so the docstring for ivy.is_ivy_container also applies
@@ -100,7 +96,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an ivy container.
         """
-        return ivy.is_ivy_container(self, out=out)
+        return ivy.is_ivy_container(self)
 
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
@@ -471,7 +467,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0, 1, 2])
         >>> y = x.to_list()
@@ -529,7 +525,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_decrement(1)
@@ -573,7 +569,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.asarray([4., 5., 6.])
         >>> y = x.stable_divide(2)
@@ -627,7 +623,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.clip_vector_norm(2.0)
@@ -718,7 +714,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([-1])
         >>> y = x.to_scalar()
@@ -805,7 +801,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With one :code:`ivy.Array` instance method:
+        With one :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([92])
         >>> y = x.value_is_nan()
@@ -969,7 +965,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_increment(1)
@@ -1016,7 +1012,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([[0., 1., 2.]])
         >>> y = x.clip_matrix_norm(2.0)
