@@ -131,7 +131,7 @@ def test_argmin(
     ),
     as_tuple=st.booleans(),
     size=st.integers(min_value=1, max_value=5),
-    fill_value=st.integers(min_value=0, max_value=5),
+    fill_value=st.one_of(st.integers(0, 5), helpers.floats()),
     num_positional_args=helpers.num_positional_args(fn_name="nonzero"),
 )
 def test_nonzero(

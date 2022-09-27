@@ -1,4 +1,5 @@
 # global
+from numbers import Number
 from typing import Optional, Union, Tuple
 
 import tensorflow as tf
@@ -40,11 +41,16 @@ def nonzero(
     *,
     as_tuple: bool = True,
     size: Optional[int] = None,
-    fill_value: int = 0,
+    fill_value: Number = 0,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable]]]:
     res = tf.experimental.numpy.nonzero(x)
 
     if size is not None:
+        dtype = tf.int64
+        if isinstance(fill_value, float):
+            dtype = tf.float64
+        res = tf.cast(res, dtype)
+
         diff = size - res[0].shape[0]
         if diff > 0:
             res = tf.pad(res, [[0, 0], [0, diff]], constant_values=fill_value)

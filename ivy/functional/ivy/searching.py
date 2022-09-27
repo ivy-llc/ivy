@@ -1,4 +1,5 @@
 # global
+from numbers import Number
 from typing import Union, Optional, Tuple
 
 # local
@@ -229,7 +230,7 @@ def nonzero(
     *,
     as_tuple: bool = True,
     size: Optional[int] = None,
-    fill_value: int = 0,
+    fill_value: Number = 0,
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 

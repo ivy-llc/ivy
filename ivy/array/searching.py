@@ -1,5 +1,6 @@
 # global
 import abc
+from numbers import Number
 from typing import Optional, Union, Tuple
 
 # local
@@ -92,7 +93,7 @@ class ArrayWithSearching(abc.ABC):
         *,
         as_tuple: bool = True,
         size: Optional[int] = None,
-        fill_value: int = 0,
+        fill_value: Number = 0,
     ) -> Union[Tuple[ivy.Array], ivy.Array]:
         """
         ivy.Array instance method variant of ivy.nonzero. This method simply

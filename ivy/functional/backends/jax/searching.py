@@ -1,3 +1,4 @@
+from numbers import Number
 from typing import Optional, Tuple, Union
 
 import jax.numpy as jnp
@@ -38,7 +39,7 @@ def nonzero(
     *,
     as_tuple: bool = True,
     size: Optional[int] = None,
-    fill_value: int = 0,
+    fill_value: Number = 0,
 ) -> Union[JaxArray, Tuple[JaxArray]]:
     res = jnp.nonzero(x, size=size, fill_value=fill_value)
 

@@ -1,3 +1,4 @@
+from numbers import Number
 from typing import Optional, Tuple, Union
 
 import torch
@@ -44,10 +45,14 @@ def nonzero(
     *,
     as_tuple: bool = True,
     size: Optional[int] = None,
-    fill_value: int = 0,
+    fill_value: Number = 0,
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
     res = torch.stack(torch.nonzero(x, as_tuple=True))
+
     if size is not None:
+        if isinstance(fill_value, float):
+            res = res.to(dtype=torch.float64)
+
         diff = size - res[0].shape[0]
         if diff > 0:
             res = tnf.pad(res, (0, diff), value=fill_value)

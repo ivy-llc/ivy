@@ -212,7 +212,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         as_tuple: bool = True,
         size: Optional[int] = None,
-        fill_value: int = 0,
+        fill_value: Number = 0,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.nonzero. This method simply
