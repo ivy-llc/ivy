@@ -162,8 +162,18 @@
 <dd><p>Bases: <a class="reference internal" href="array/activations/ArrayWithActivations.html#ivy.array.activations.ArrayWithActivations" title="ivy.array.activations.ArrayWithActivations"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithActivations</span></code></a>, <a class="reference internal" href="array/creation/ArrayWithCreation.html#ivy.array.creation.ArrayWithCreation" title="ivy.array.creation.ArrayWithCreation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithCreation</span></code></a>, <a class="reference internal" href="array/data_type/ArrayWithDataTypes.html#ivy.array.data_type.ArrayWithDataTypes" title="ivy.array.data_type.ArrayWithDataTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithDataTypes</span></code></a>, <a class="reference internal" href="array/device/ArrayWithDevice.html#ivy.array.device.ArrayWithDevice" title="ivy.array.device.ArrayWithDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithDevice</span></code></a>, <a class="reference internal" href="array/elementwise/ArrayWithElementwise.html#ivy.array.elementwise.ArrayWithElementwise" title="ivy.array.elementwise.ArrayWithElementwise"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithElementwise</span></code></a>, <a class="reference internal" href="array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral" title="ivy.array.general.ArrayWithGeneral"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithGeneral</span></code></a>, <a class="reference internal" href="array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients" title="ivy.array.gradients.ArrayWithGradients"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithGradients</span></code></a>, <a class="reference internal" href="array/image/ArrayWithImage.html#ivy.array.image.ArrayWithImage" title="ivy.array.image.ArrayWithImage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithImage</span></code></a>, <a class="reference internal" href="array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers" title="ivy.array.layers.ArrayWithLayers"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithLayers</span></code></a>, <a class="reference internal" href="array/linear_algebra/ArrayWithLinearAlgebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra" title="ivy.array.linear_algebra.ArrayWithLinearAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithLinearAlgebra</span></code></a>, <a class="reference internal" href="array/losses/ArrayWithLosses.html#ivy.array.losses.ArrayWithLosses" title="ivy.array.losses.ArrayWithLosses"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithLosses</span></code></a>, <a class="reference internal" href="array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation" title="ivy.array.manipulation.ArrayWithManipulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithManipulation</span></code></a>, <a class="reference internal" href="array/norms/ArrayWithNorms.html#ivy.array.norms.ArrayWithNorms" title="ivy.array.norms.ArrayWithNorms"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithNorms</span></code></a>, <a class="reference internal" href="array/random/ArrayWithRandom.html#ivy.array.random.ArrayWithRandom" title="ivy.array.random.ArrayWithRandom"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithRandom</span></code></a>, <a class="reference internal" href="array/searching/ArrayWithSearching.html#ivy.array.searching.ArrayWithSearching" title="ivy.array.searching.ArrayWithSearching"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithSearching</span></code></a>, <a class="reference internal" href="array/set/ArrayWithSet.html#ivy.array.set.ArrayWithSet" title="ivy.array.set.ArrayWithSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithSet</span></code></a>, <a class="reference internal" href="array/sorting/ArrayWithSorting.html#ivy.array.sorting.ArrayWithSorting" title="ivy.array.sorting.ArrayWithSorting"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithSorting</span></code></a>, <a class="reference internal" href="array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical" title="ivy.array.statistical.ArrayWithStatistical"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithStatistical</span></code></a>, <a class="reference internal" href="array/utility/ArrayWithUtility.html#ivy.array.utility.ArrayWithUtility" title="ivy.array.utility.ArrayWithUtility"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayWithUtility</span></code></a></p>
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.T">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T</span></span><a class="headerlink" href="#ivy.array.array.Array.T" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#ivy.array.array.Array.T" title="Permalink to this definition"></a></dt>
+<dd><p>Transpose of the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – two-dimensional array whose first and last dimensions (axes) are
+permuted in reverse order relative to original array.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.__add__">
@@ -557,8 +567,14 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.data">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#ivy.array.array.Array.data" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">_DeviceArray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DeviceArray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ivy.array.array.Array.data" title="Permalink to this definition"></a></dt>
+<dd><p>The native array being wrapped in self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[    </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.deconv_length">
@@ -618,13 +634,25 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.device">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">device</span></span><a class="headerlink" href="#ivy.array.array.Array.device" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Device</span></em><a class="headerlink" href="#ivy.array.array.Array.device" title="Permalink to this definition"></a></dt>
+<dd><p>Hardware device the array data resides on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.dtype">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#ivy.array.array.Array.dtype" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dtype</span></em><a class="headerlink" href="#ivy.array.array.Array.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Data type of the array elements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.dtype_bits">
@@ -924,11 +952,11 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.is_variable">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_variable</span></span><a class="headerlink" href="#ivy.array.array.Array.is_variable" title="Permalink to this definition"></a></dt>
-<dd><p>Determines whether the array is a variable or not.</p>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_variable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#ivy.array.array.Array.is_variable" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether the array is a trainable variable or not.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Boolean, true if the array is a trainable variable, false otherwise.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -959,8 +987,20 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.mT">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mT</span></span><a class="headerlink" href="#ivy.array.array.Array.mT" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Array</span></em><a class="headerlink" href="#ivy.array.array.Array.mT" title="Permalink to this definition"></a></dt>
+<dd><p>Transpose of a matrix (or a stack of matrices).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – array whose last two dimensions (axes) are permuted in reverse order
+relative to original array (i.e., for an array instance having shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code>, the returned array must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code>).
+The returned array must have the same data type as the original array.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.match_kwargs">
@@ -1004,11 +1044,11 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.ndim">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndim</span></span><a class="headerlink" href="#ivy.array.array.Array.ndim" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#ivy.array.array.Array.ndim" title="Permalink to this definition"></a></dt>
 <dd><p>Number of array dimensions (axes).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – number of array dimensions (axes).</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1231,8 +1271,14 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#ivy.array.array.Array.shape" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Shape</span></em><a class="headerlink" href="#ivy.array.array.Array.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Array dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.shape_array_mode">
@@ -1244,23 +1290,13 @@ the name function_name and the new args variable or kwargs as the new inputs.</p
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.array.array.Array.size">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#ivy.array.array.Array.size" title="Permalink to this definition"></a></dt>
-<dd><p>Number of elements in an array.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This must equal the product of the array’s dimensions.</p>
-</div>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ivy.array.array.Array.size" title="Permalink to this definition"></a></dt>
+<dd><p>Number of elements in the array.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>out</em> – number of elements in an array. The returned value must be <code class="docutils literal notranslate"><span class="pre">None</span></code> if
-and only if one or more array dimensions are unknown.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For array libraries having graph-based computational models, an array may
-have unknown dimensions due to data-dependent operations.</p>
-</div>
 </dd></dl>
 
 <dl class="py method">
