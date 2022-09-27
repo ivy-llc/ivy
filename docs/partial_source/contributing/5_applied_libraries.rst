@@ -140,7 +140,7 @@ local directory:
 **NOTE:** To use development container in VSCode, the extension "Remote - Containers"
 needs to be installed.
 
-**NOTE:** When using GitHub Codespaces, the "mounts" config in
+**NOTE:** When using GitHub Codespaces, the :code:`mounts`config in
 :code:`.devcontainer/devcontainer.json` is not supported.
 
 **Round Up**
