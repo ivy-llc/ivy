@@ -2,10 +2,6 @@
 import ivy
 
 
-def is_tensor(obj):
-    return ivy.is_array(obj)
-
-
 # def is_storage(obj):
 # 	return ivy.is_storage(obj)
 
@@ -21,9 +17,6 @@ def is_tensor(obj):
 # def is_nonzero(obj):
 # 	return ivy.is_nonzero(obj)
 
-# def numel(obj):
-# 	return ivy.numel(obj)
-
 # def set_flush_denormal(obj):
 # 	ivy.set_flush_denormal(obj)
 
@@ -32,3 +25,11 @@ def is_tensor(obj):
 
 # def set_default_tensor_type(obj):
 # 	ivy.set_default_tensor_type(obj)
+
+
+def numel(input):
+    num = 1
+    input_shape = ivy.asarray(input).shape
+    for e in input_shape:
+        num = num * e
+    return num
