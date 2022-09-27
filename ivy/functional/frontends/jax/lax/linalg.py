@@ -10,7 +10,3 @@ def cholesky(x, /, *, symmetrize_input=True):
         x = symmetrize(x)
 
     return ivy.cholesky(x)
-
-
-def matrix_power(m, n):
-    return ivy.matrix_power(m, n)
