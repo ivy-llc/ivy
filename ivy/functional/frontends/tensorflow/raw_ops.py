@@ -98,6 +98,14 @@ def FloorDiv(*, x, y, name="FloorDiv"):
     return ivy.floor_divide(x, y)
 
 
+def Greater(*, x, y, name="Greater"):
+    return ivy.greater(x, y)
+
+
+def GreaterEqual(*, x, y, name="GreaterEqual"):
+    return ivy.greater_equal(x, y)
+
+
 def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
