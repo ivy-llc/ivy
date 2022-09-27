@@ -261,8 +261,12 @@ the docker image after every change.</p>
 <p><strong>IDE Development</strong></p>
 <ol class="arabic simple">
 <li><p>For <strong>PyCharm</strong>, configurations are saved in the <code class="code docutils literal notranslate"><span class="pre">.idea</span></code> folder (part of the ivy repo).</p></li>
-<li><p>For <strong>VSCode</strong>, configurations can be found in the <code class="code docutils literal notranslate"><span class="pre">.vscode</span></code> folder (not part of the ivy repo).</p></li>
+<li><p>For <strong>VSCode</strong>, configurations can be found in the <code class="code docutils literal notranslate"><span class="pre">.devcontainer</span></code> folder (not part of the ivy repo).</p></li>
 </ol>
+<p><strong>NOTE:</strong> To use development container in VSCode, the extension “Remote - Containers”
+needs to be installed.</p>
+<p><strong>NOTE:</strong> When using GitHub Codespaces, the <code class="code docutils literal notranslate"><span class="pre">mounts</span></code> config in
+<code class="code docutils literal notranslate"><span class="pre">.devcontainer/devcontainer.json</span></code> is not supported.</p>
 <p><strong>Round Up</strong></p>
 <p>These examples should hopefully give you a good understanding of what is required
 when developing the Ivy applied libraries.</p>
