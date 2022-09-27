@@ -142,8 +142,8 @@ def test_tensorflow_binary_accuracy(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_accuracy",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
         threshold=threshold,
     )
 
@@ -174,13 +174,13 @@ def test_sparse_categorical_crossentropy(
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
-
+    y_pred = y_pred[0]
     # Perform softmax on prediction if it's not a probability distribution.
     if not from_logits:
         y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
 
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int32, dtype],
+        input_dtypes=[ivy.int32] + dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -189,7 +189,7 @@ def test_sparse_categorical_crossentropy(
         frontend="tensorflow",
         fn_tree="keras.metrics.sparse_categorical_crossentropy",
         y_true=y_true,
-        y_pred=y_pred,
+        y_pred=y_pred[0],
         from_logits=from_logits,
     )
 
@@ -213,7 +213,6 @@ def test_tensorflow_mean_absolute_error(
     input_dtype_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = input_dtype_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -223,8 +222,8 @@ def test_tensorflow_mean_absolute_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -264,7 +263,7 @@ def test_binary_crossentropy(
         y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
 
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int32, dtype],
+        input_dtypes=[ivy.int32] + dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -273,7 +272,7 @@ def test_binary_crossentropy(
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_crossentropy",
         y_true=y_true,
-        y_pred=y_pred,
+        y_pred=y_pred[0],
         from_logits=from_logits,
         label_smoothing=label_smoothing,
     )
@@ -373,8 +372,8 @@ def test_tensorflow_kl_divergence(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.kl_divergence",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -404,8 +403,8 @@ def test_tensorflow_poisson(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.poisson",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -437,8 +436,8 @@ def test_tensorflow_mean_squared_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -470,8 +469,8 @@ def test_tensorflow_mean_absolute_percentage_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_percentage_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -501,8 +500,8 @@ def test_tensorflow_hinge(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.hinge",
-        y_pred=np.asarray(y_pred, dtype=input_dtype[0]),
-        y_true=np.asarray(y_true, dtype=input_dtype[1]),
+        y_pred=y_pred,
+        y_true=y_true,
     )
 
 
@@ -532,8 +531,8 @@ def test_tensorflow_squared_hinge(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.squared_hinge",
-        y_pred=np.asarray(y_pred, dtype=input_dtype[0]),
-        y_true=np.asarray(y_true, dtype=input_dtype[1]),
+        y_pred=y_pred,
+        y_true=y_true,
     )
 
 
@@ -558,7 +557,6 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -568,6 +566,50 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_logarithmic_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
+    )
+
+
+# Cosine Similarity
+@handle_cmd_line_args
+@given(
+    d_type=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), shared_dtype=True, num_arrays=2
+    ),
+    y_true=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=1, max_value=5
+    ),
+    y_pred=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=5, max_value=10
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cosine_similarity"
+    ),
+)
+def test_tensorflow_cosine_similarity(
+    d_type,
+    y_true,
+    y_pred,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    with_out,  # noqa: E501
+):
+    dtype = d_type
+    y_true = y_true
+    y_pred = y_pred
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.cosine_similarity",
+        y_true=y_true,
+        y_pred=y_pred,
     )

@@ -98,6 +98,13 @@ def divide_no_nan(x, y, name="divide_no_nan"):
     )
 
 
+def maximum(a, b):
+    # Cast inputs to ivy array
+    a = ivy.array(a)
+    b = ivy.array(b)
+    return ivy.maximum(a, b)
+
+
 def erfcinv(x, name="erfcinv"):
     return 1 / (1 - ivy.erf(x))
 
@@ -150,7 +157,7 @@ def polyval(coeffs, x, name=None):
     ivy.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
-        return ivy.zeros_like(x)
+        return ivy.zeros_like(x, dtype=x.dtype)
     coeffs = [ivy.array(_) for _ in coeffs]
     p = coeffs[0]
     for c in coeffs[1:]:

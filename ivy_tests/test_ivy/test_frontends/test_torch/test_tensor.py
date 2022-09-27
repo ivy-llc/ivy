@@ -102,6 +102,6 @@ def test_torch_instance_reshape(
         frontend="torch",
         frontend_class=Tensor,
         fn_tree="Tensor.reshape",
-        self=np.asarray(x, dtype=input_dtype),
+        self=x[0],
         shape=shape,
     )
