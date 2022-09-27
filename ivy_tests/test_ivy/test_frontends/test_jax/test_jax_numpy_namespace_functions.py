@@ -72,8 +72,7 @@ def test_jax_numpy_absolute(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.add"
@@ -97,7 +96,7 @@ def test_jax_numpy_add(
         frontend="jax",
         fn_tree="numpy.add",
         x1=x[0],
-        x2=x[0]
+        x2=x[0],
     )
 
 
@@ -195,7 +194,7 @@ def _get_clip_inputs(draw):
         max = (
             draw(
                 helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                    dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
                 )
             )
             if max
@@ -205,7 +204,7 @@ def _get_clip_inputs(draw):
         min = None
         max = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
             )
         )
     return x_dtype, x, min, max
