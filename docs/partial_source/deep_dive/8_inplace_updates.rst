@@ -183,7 +183,7 @@ be added to all functions which wrap a function in the backend supporting inplac
 `tf.math.tan`_, `jax.numpy.tan`_ and `mx.nd.tan`_ for example do **not** support inplace updates,
 and so the :code:`support_native_out` attribute should **not** be added to the :code:`tan` implementations.
 
-The implementations of :code:`ivy.tan` for each backend are as follows.
+The implementations of :func:`ivy.tan` for each backend are as follows.
 
 **JAX** (no :code:`support_native_out` attribute):
 

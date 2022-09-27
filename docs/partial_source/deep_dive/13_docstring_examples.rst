@@ -277,7 +277,7 @@ ivy.tan
 
 **Functional Examples**
 
-The signature for :code:`ivy.tan` is as follows:
+The signature for :func:`ivy.tan` is as follows:
 
 .. code-block:: python
 
@@ -405,19 +405,19 @@ point 11.
 
 **Array Operator Examples**
 
-Points 12 and 13 are not relevant as :code:`ivy.tan` is not an *operator* function.
+Points 12 and 13 are not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Array Reverse Operator Example**
 
-Point 14 is not relevant as :code:`ivy.tan` is not an *operator* function.
+Point 14 is not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 15, 16 and 17 are not relevant as :code:`ivy.tan` is not an *operator* function.
+Points 15, 16 and 17 are not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
-Point 18 is not relevant as :code:`ivy.tan` is not an *operator* function.
+Point 18 is not relevant as :func:`ivy.tan` is not an *operator* function.
 
 ivy.roll
 --------
@@ -474,8 +474,8 @@ These examples cover points 1, 2, 3, 4 and 5.
 Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
 to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
 
-Point 1 is a bit less trivial to satisfy than it was for :code:`ivy.tan` above. While :code:`x` again only has one
-variation (for the same reason as explained in the :code:`ivy.tan` example above), :code:`shift` has two variations
+Point 1 is a bit less trivial to satisfy than it was for :func:`ivy.tan` above. While :code:`x` again only has one
+variation (for the same reason as explained in the :func:`ivy.tan` example above), :code:`shift` has two variations
 (:code:`int` or sequence of :code:`int`), and :code:`axis` has three variations
 (:code:`int`, :sequence of :code:`int`, or :code:`None`).
 
@@ -510,7 +510,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
         b: ivy.array([5., 3., 4.])
     }
 
-Unlike :code:`ivy.tan`, point 7 is relevant in this case,
+Unlike :func:`ivy.tan`, point 7 is relevant in this case,
 as there are three function inputs in total (excluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs,
 in order to satisfy point 7.
@@ -672,7 +672,7 @@ These examples cover points 1, 2, 3, 4 and 5.
 Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input
 to be seperated by a '\\' so that they can be parsed by the script that tests the examples in the docstrings.
 
-Point 1 is again trivial to satisfy, as was the case for :code:`ivy.tan`.
+Point 1 is again trivial to satisfy, as was the case for :func:`ivy.tan`.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7,
 and also ignoring the *nestable* nature of the function which is covered by points 8 and 9,
 then as far as point 1 is concerned, inputs :code:`x1` and :code:`x2` both only have one possible variation.
@@ -711,7 +711,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
                       [8.1, 9.3, 3.4]])
     }
 
-Again, unlike :code:`ivy.tan`, point 7 is relevant in this case,
+Again, unlike :func:`ivy.tan`, point 7 is relevant in this case,
 as there are two function inputs in total (exluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs,
 in order to satisfy point 7.

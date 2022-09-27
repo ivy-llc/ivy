@@ -453,7 +453,7 @@ def can_cast(
 
     Examples
     --------
-     With :code:`ivy.Dtype` input:
+     With :class:`ivy.Dtype` input:
 
     >>> print(ivy.can_cast(ivy.uint8, ivy.int32))
     True
@@ -534,7 +534,7 @@ def finfo(
 
     Examples
     --------
-    With :code:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> ivy.finfo(ivy.float32)
     finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)
@@ -626,7 +626,7 @@ def iinfo(
 
     Examples
     --------
-    With :code:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> ivy.iinfo(ivy.int32)
     iinfo(min=-2147483648, max=2147483647, dtype=int32)
@@ -749,7 +749,7 @@ def result_type(
     >>> print(ivy.result_type(x, y))
     float64
 
-    With :code:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> print(ivy.result_type(ivy.uint8, ivy.uint64))
     uint64
@@ -856,7 +856,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
 
     Examples
     --------
-    With :code:`ivy.Dtype` inputs:
+    With :class:`ivy.Dtype` inputs:
 
     >>> x = ivy.dtype_bits(ivy.float32)
     >>> print(x)
@@ -870,7 +870,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
     >>> print(x)
     16
 
-    With :code:`ivy.NativeDtype` inputs:
+    With :class:`ivy.NativeDtype` inputs:
 
     >>> x = ivy.dtype_bits(ivy.native_int8)
     >>> print(x)
@@ -949,7 +949,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
 
     Examples
     --------
-    With :code:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> xType = ivy.float16
     >>> yType = ivy.closest_valid_dtype(xType)
@@ -1547,7 +1547,7 @@ def is_int_dtype(
 
     Examples
     --------
-     With :code:`ivy.Dtype` input:
+     With :class:`ivy.Dtype` input:
 
     >>> x = ivy.is_int_dtype(ivy.int8)
     >>> print(x)
@@ -1671,7 +1671,7 @@ def is_float_dtype(
 
     Examples
     --------
-    With :code:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> x = ivy.is_float_dtype(ivy.float32)
     >>> print(x)
@@ -1797,7 +1797,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
 
     Examples
     --------
-    With :code:`ivy.Dtype` input:
+    With :class:`ivy.Dtype` input:
 
     >>> ivy.set_default_dtype("float64")
     >>> ivy.default_dtype_stack
@@ -1819,7 +1819,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
         ['uint8']
     >>> ivy.unset_default_dtype()
 
-    With :code:`ivy.NativeDtype` input:
+    With :class:`ivy.NativeDtype` input:
 
     >>> ivy.set_default_dtype(ivy.native_int32)
     >>> ivy.default_dtype_stack
@@ -2012,7 +2012,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
 
     Examples
     --------
-    with :code:`ivy.Dtype` inputs:
+    with :class:`ivy.Dtype` inputs:
 
     >>> print(ivy.valid_dtype(None))
     True
@@ -2038,7 +2038,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
     >>> print(ivy.valid_dtype(ivy.uint8))
     True
 
-    with :code:`ivy.NativeDtype` inputs:
+    with :class:`ivy.NativeDtype` inputs:
 
     >>> print(ivy.valid_dtype('native_bool'))
     False
