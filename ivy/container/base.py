@@ -3109,7 +3109,7 @@ class ContainerBase(dict, abc.ABC):
                         continue
                 return_dict[key] = func(value, this_key_chain)
         if inplace:
-            return
+            return self
         return ivy.Container(return_dict, **self._config)
 
     def map_conts(
