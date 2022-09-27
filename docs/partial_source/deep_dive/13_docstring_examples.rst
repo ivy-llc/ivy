@@ -50,7 +50,7 @@ docstring of the :code:`ivy.Container` special method
 
 The first four example types are very common, while the last four, unsurprisingly,
 are only relevant for *operator* functions
-such as :code:`ivy.add`, `ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`.
+such as :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and :code:`ivy.divide`.
 
 For example, calling any of (:code:`+`, :code:`-`, :code:`*`, :code:`/` etc.) on the array will result in
 (:code:`__add__`, :code:`__sub__`, :code:`__mul__`, :code:`__truediv__` etc.) being called on the array class.
@@ -74,7 +74,7 @@ Firstly, we should include *functional* examples with :code:`ivy.Array` instance
 These should:
 
 1. cover all possible variants (explained below) for each of the arguments independently,
-   not combinatorily. This means the number of examples should be equal to the maximum number of
+   not combinatorially. This means the number of examples should be equal to the maximum number of
    variations for a single argument, and not the entire grid of variations across all arguments
    (further explained in the examples below)
 
