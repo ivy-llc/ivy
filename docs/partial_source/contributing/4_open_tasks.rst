@@ -10,6 +10,7 @@ Open Tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
+.. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -105,7 +106,7 @@ for the formatting task as follows:
 :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
 is the name of the category that the function belongs to. An example of this is shown below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_generator.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_generator.png?raw=true
    :width: 420
 
 Using this formatting will then trigger our github automation bots to update your 
@@ -115,14 +116,14 @@ few moments to take effect, so please be patient. 🙂
 2. After adding the checklist to your PR, you should then modify this checklist with 
 the status of each item according to the symbols(emojis) within the LEGEND section.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true
    :width: 420
 
 1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
 your PR and we will start checking your implementation and marking the items as complete 
 using the checkboxes next to them.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_checked.png?raw=true
    :width: 420
 
 4. In case you are stuck or need help with one of the checklist items, please add the
@@ -130,7 +131,7 @@ using the checkboxes next to them.
 on your point of struggle with this item. The PR assignee will then see this comment
 and address your issues.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_SOS.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_SOS.png?raw=true
    :width: 420
 
 **Notes**: 
@@ -232,7 +233,7 @@ sub-directories to choose from:
     creation_routines
     fft
     indexing_routines
-    linear_algebra
+    linalg
     logic
     ma
     manipulation_routines
@@ -244,19 +245,29 @@ sub-directories to choose from:
     statistics
     ufunc
 
-There is a :code:`linear_algebra` sub-directory, so we choose this. There is then a linalg sub-directory. From the numpy
-API, we can see that certain functions listed under 'Linear Algebra (:code:`numpy.linalg`)' actually do *not* require the
-linalg namespace. :code:`inner` is one such function, hence it will not be placed in this directory. We then need to choose
-from the files at this hierarchy (ignoring :code:`__init__.py` files):
+There is a :code:`linalg` sub-directory, so we choose this. Then we need to choose
+from the files at this hierarchy:
 
 .. code-block:: bash
-    :emphasize-lines: 1
+    :emphasize-lines: 3
 
+    __init__.py
+    decompositions.py
     matrix_and_vector_products.py
+    matrix_eigenvalues.py
     norms_and_other_numbers.py
+    solving_equations_and_inverting_matrices.py
+
 
 This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
-:code:`matrix_and_vector_products.py` seems like the most appropriate option. The location of
+:code:`matrix_and_vector_products.py` seems like the most appropriate option. It is important to note that some functions
+require the :code:`np.linalg.[func]` namespace, as can gleamed from the numpy `reference API`_.
+These functions are listed out under the :code:`functional/frontends/numpy/__init__.py` `imports`_. There are some
+functions which have not been implemented yet, and are therefore commented out. Once you have finished the implementation of
+one of these functions, uncomment it from the list.
+
+
+The location of
 :code:`test_numpy_inner` should mirror the location of its corresponding function, this time in
 :code:`ivy_tests/test_ivy/test_frontends/[backend]`.
 

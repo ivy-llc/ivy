@@ -296,13 +296,13 @@ and passing checks for a commit relevant to your PR by clicking on the ‚ùå or ‚ú
 one or more tests are failing, all tests are passing, the check has just started, respectively)
 icon next to the commit hash.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/basics/PR_checks.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/pull_requests/PR_checks.png?raw=true
        :width: 420
 
 Further, if you click on the details next to a check then you can see the logs for that particular
 test.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/basics/pr_logs.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/pull_requests/pr_logs.png?raw=true
        :width: 420
 
 Also, if you have pushed multiple commits to a PR in a relatively short time, you may want to cancel
@@ -311,7 +311,7 @@ described above and clicking on the `Cancel Workflow` button.
 
 Note that this option might be unavailable depending on the level of access that you have.
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/basics/cancel_workflow.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/pull_requests/cancel_workflow.png?raw=true
        :width: 420
 
 Finally, all PRs must give write access to Ivy maintainers of the branch.
@@ -590,13 +590,13 @@ with PyCharm
         #. :code:`Ctrl+F` will prompt you to type in the text to be found, if not already selected, and then
             find all the instances of text within current file.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_file.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/find_file.png?raw=true
                :align: center
                :width: 50%
 
         #. :code:`Ctrl+Shift+F` will find all the instances of text within the project.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_project_wide.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/find_project_wide.png?raw=true
                :align: center
                :width: 50%
 
@@ -604,14 +604,14 @@ with PyCharm
         #. :code:`Ctrl+R` will prompt you to type in the text to be found and the text to be replaced, 
             if not already selected, within current file.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_n_replace_file.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/find_n_replace_file.png?raw=true
                :align: center
                :width: 50%
 
         #. :code:`Ctrl+Shift+R` will prompt you to type in the text to be found and the text to be replaced, 
             if not already selected, within the whole project.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/find_and_replace_project_wide.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/find_and_replace_project_wide.png?raw=true
                :align: center
                :width: 50%
 
@@ -619,7 +619,7 @@ with PyCharm
         #. :code:`Ctrl+Shift+Alt+J` will find all the instances of selected text and multiply 
             the cursor to all these locations.
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/multiple_cursor.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/multiple_cursor.png?raw=true
                :align: center
                :width: 50%
 
@@ -631,7 +631,7 @@ with PyCharm
         #. Click the gutter at the executable line of code where you want to set the breakpoint. or 
            Place the caret at the line and press :code:`Ctrl+F8`
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/adding_breakpoint.png?raw=true
            :aligh: center
            :width: 50%
 
@@ -639,7 +639,7 @@ with PyCharm
         #. Click on Run icon and Select **Debug test** or press :code:`Shift+F9`
         This will open up a Debug Window Toolbar:
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/open_in_debug_mode.png?raw=true
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/open_in_debug_mode.png?raw=true
            :align: center
            :width: 50%
 
@@ -650,7 +650,7 @@ with PyCharm
 
             #. Click the Step Over button or press :code:`F8`
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/step_over.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/step_over.png?raw=true
                :align: center
                :width: 50%
 
@@ -667,7 +667,7 @@ with PyCharm
 
                 #. Press :code:`Shift+F7`. This will prompt you to select the method you want to step into:
 
-                .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/smart_step_into.png?raw=true
+                .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/smart_step_into.png?raw=true
                    :align: center
                    :width: 50%
 
@@ -681,7 +681,7 @@ with PyCharm
         #. If you want to open console at certain breakpoint:
             #. Select the breakpoint-fragment of code, press :code:`Alt+shift+E` Start debugging!
 
-            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/console_coding.png?raw=true
+            .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/console_coding.png?raw=true
                :aligh: center
                :width: 50%
 
@@ -689,7 +689,7 @@ with PyCharm
         #. PyChram is great at pointing the lines of code which are causing tests to fail. Navigating to that line, 
         you can add Try-Except block with breakpoints to get in depth understanding of the errors. 
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/try_except.png?raw=true
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/try_except.png?raw=true
            :align: center
            :width: 50%
 
@@ -697,7 +697,7 @@ with PyCharm
         #. Create a separate dummy :code:`test.py` file wherein you can evaluate a particular test failure. 
             Make sure you don't add or commit this dummy file while pushing your changes. 
 
-        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/getting_most_out_of_IDE/dummy_test.png?raw=true
+        .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/1_the_basics/getting_most_out_of_IDE/dummy_test.png?raw=true
            :align: center
            :width: 50%
 

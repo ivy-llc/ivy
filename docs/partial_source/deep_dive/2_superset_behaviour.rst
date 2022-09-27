@@ -6,8 +6,9 @@ Superset Behaviour
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
 .. _`superset behavior discussion`: https://github.com/unifyai/ivy/discussions/4367
 
-When implementing functions in Ivy, we are constantly faced with the question: which
-backend implementation should Ivy most closely follow?
+When implementing functions in Ivy, whether they are primary, compositional or mixed,
+we are constantly faced with the question: which backend implementation should Ivy most
+closely follow?
 
 Extending the Standard
 ----------------------
@@ -33,6 +34,69 @@ However, this is not always totally possible, and in some cases certain
 framework-specific features must be sacrificed, but usually it's possible to implement a
 very generalized function which covers most of the unique features among the
 corresponding functions in each framework.
+
+We strive to implement the superset for primary, compositional and mixed functions. In
+many cases compositional functions do not actually have corresponding backend-specific
+functions, but this is not always the case. For example, :code:`ivy.linear` is a
+fully compositional function, but :code:`torch.nn.functional.linear` also exists.
+We should therefore make sure the compositional :code:`ivy.linear` function includes all
+behaviours supported by :code:`torch.nn.functional.linear`.
+
+A Non-Duplicate Superset
+------------------------
+
+It would be easy to assume that implementing the superset simply means adding all
+arguments from all related functions into the Ivy function. However, this is **not** the
+case for a few reasons. Firstly, different functions might have different argument names
+for the same behaviour. Looking at the functions
+`numpy.concatenate <https://numpy.org/doc/stable/reference/generated/numpy.concatenate.html>`_
+and
+`torch.cat <https://pytorch.org/docs/stable/generated/torch.cat.html>`_,
+we of course do not want to add both of the arguments :code:`axis` and :code:`dim` to
+:code:`ivy.concat`, as these both represent exactly the same thing: the dimemsion/axis
+along which to concatenate. In this case, the argument is
+`covered <https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html>`_
+in the `Array API Standard`_ and so we opt for :code:`axis`. In cases where there are
+differences between the backend argument names, and the function or argument is not in
+the standard, then it is up to us to determine which argument name to use.
+
+What is not the Superset?
+-------------------------
+
+We've already explained that we should not duplicate arguments in the Ivy function when
+striving for the superset. Does this mean, provided that the proposed argument is not a
+duplicate, that we should always add this backend-specific argument to the Ivy function?
+The answer is **no**. When determining the superset, we are only concerned with the
+pure **mathematics** of the function, and nothing else. For example, the :code:`name`
+argument is common to many TensorFlow functions, such as
+`tf.concat <https://www.tensorflow.org/api_docs/python/tf/concat>`_,
+and is used for uniquely identifying parts of the compiled computation graph during
+logging and debugging. This has nothing to do with the mathematics of the function, and
+so is *not* included in the superset considerations when implementing Ivy functions.
+Similarly, in NumPy the argument :code:`subok` controls whether subclasses of the
+:code:`numpy.ndarray` class should be permitted, and :code:`order` controls the
+low-level memory layout of the array, both of which are included for many functions,
+such as `numpy.ndarray.astype <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html>`_.
+Finally, in JAX the argument :code:`precision` is quite common, which controls the
+precision of the return values, as used in
+`jax.lax.conv <https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.conv.html>`_
+for example. Similarly, the functions :code:`jacfwd` and :code:`jacrev` in JAX are
+actually mathematically identical, and these functions differ *only* in their underlying
+algorithm, either forward mode or reverse mode.
+
+None of the above arguments or function variants are included in our superset
+considerations, as again they are not relating to the pure mathematics, and instead
+relate to framework, hardware or algorithmic specifics. Given the abstraction layer that
+Ivy operates at, Ivy is fundamentally unable to control under-the-hood specifics such as
+those mentioned above. However, this is by design, and the central benefit of Ivy is the
+ability to abstract many different runtimes and algorithms under the same banner,
+unified by their shared fundamental mathematics.
+
+Regarding the **only mathematics** rule regarding the superset considerations, there are
+two exceptions to this, which are the handling of data type and device arguments.
+Neither of these relate to the pure mathematics of the function. However, as is
+discussed below, we always strive to implement Ivy functions such that they support as
+many data types and devices as possible.
 
 When the Superset is Too Much
 -----------------------------
@@ -254,3 +318,12 @@ function in Ivy, then we will most likely have this discussion on your Pull Requ
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `superset behavior discussion`_,
 or reach out on `discord`_ in the `superset behavior channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/_D6xER3H4NU" class="video">
+    </iframe>
