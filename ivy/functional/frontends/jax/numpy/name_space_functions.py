@@ -68,8 +68,6 @@ def clip(a, a_min=None, a_max=None, out=None):
         message="at most one of a_min or a_max can be None",
     )
     a = ivy.array(a)
-    a_min = ivy.array(a_min) if ivy.exists(a_min) else None
-    a_max = ivy.array(a_max) if ivy.exists(a_max) else None
     if a_min is None:
         return ivy.minimum(a, a_max, out=out)
     if a_max is None:
