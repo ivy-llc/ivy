@@ -1,6 +1,6 @@
 # global
 import jax.numpy as jnp
-from typing import Tuple, Union, Optional, Sequence
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -11,11 +11,23 @@ from ivy.functional.backends.jax import JaxArray
 # -------------------#
 
 
+def min(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+
+
 def max(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -35,18 +47,6 @@ def mean(
     return jnp.mean(x, axis=axis, keepdims=keepdims)
 
 
-def min(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
-
-
 def _infer_dtype(dtype: jnp.dtype):
     default_dtype = ivy.infer_default_dtype(dtype)
     if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
@@ -58,7 +58,7 @@ def prod(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[jnp.dtype] = None,
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
@@ -76,7 +76,7 @@ def std(
     x: JaxArray,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     correction: Union[int, float] = 0.0,
     keepdims: bool = False,
     out: Optional[JaxArray] = None,

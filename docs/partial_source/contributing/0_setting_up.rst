@@ -11,6 +11,8 @@ Setting Up
 .. _`other channel`: https://discord.com/channels/799879767196958751/982727719836069928
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
+.. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
+
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
 This page explains the main steps to get started!
@@ -278,6 +280,67 @@ Ubuntu
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
 
+Setting Up Testing
+******************
+There are a couple of options to choose from when running ivy tests in PyCharm. To run a single unit test, e.g. `test_abs`,
+you can avail of the context menu in the PyCharm code editor by pressing the green ▶️ symbol which appears to the left
+of `def test_abs(`.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/setting_up_testing/pycharm_test_run_1.png?raw=true
+  :width: 420
+
+You can then click 'Run pytest for...' or 'Debug pytest for...'. Keyboard shortcuts for running the rest are displayed
+also. These screenshots are from a Mac, hence the shortcut for running a test is :code:`ctrl - shift - R`.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/setting_up_testing/pycharm_test_run_2.png?raw=true
+  :width: 420
+
+The test run should pop up in a window at the bottom of the screen (or elsewhere, depending on your settings).
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/setting_up_testing/pycharm_test_run_3.png?raw=true
+  :width: 420
+
+To run all the tests in a file, press :code:`ctrl` - right click (on Mac) on the :code:`test_elementwise.py` open tab.
+A menu will appear in which you can find 'Run pytest in test_elementwise.py...'
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/setting_up_testing/pycharm_run_all_1.png?raw=true
+  :width: 420
+
+Click this and you should see a progress bar of all the tests running in the file.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/setting_up_testing/pycharm_run_all_2.png?raw=true
+  :width: 420
+
+It is also possible to run the entire set of ivy tests or the array api test suite using pre-written shell scripts that
+can be run from the 'Terminal' tab in PyCharm. There are a number of such shell scripts in `ivy/run_tests_CLI`_:
+
+.. code-block:: bash
+    :emphasize-lines: 4,5,8,9,10
+
+    run_ivy_core_test.py
+    run_ivy_nn_test.py
+    run_ivy_stateful_test.py
+    run_tests.sh
+    test_array_api.sh
+    test_dependencies.py
+    test_dependencies.sh
+    test_ivy_core.sh
+    test_ivy_nn.sh
+    test_ivy_stateful.sh
+
+* :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory. This runs all tests in :code:`ivy/ivy_tests`.
+* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`. This runs all array-api tests for a certain submodule in a certain backend.
+* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory. This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
+* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`. Make sure to check the submodule names in the source code before running.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/0_setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
+  :width: 420
+
+If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available
+in :code:`run_tests_CLI`. All are run like:
+:code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
+
+
 More Detailed Hypothesis Logs
 ****
 For testing, we use the `Hypothesis <https://hypothesis.readthedocs.io/en/latest/#>`_ module for data generation.
@@ -289,12 +352,12 @@ This is because PyCharm by default turns off headers and summary's while running
 #. Using the search bar to search for 'Pytest'
 #. Make sure that the checkbox for 'Pytest: do not add "--no-header --no-summary -q"' is checked.
 
-    a. .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_setting.png
+    a. .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_setting.png?raw=true
           :width: 420
 
 Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:
 
-.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/setting_up/detailed_hypothesis_example.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
 
 GitHub Codespaces
@@ -308,7 +371,7 @@ It can be headache to install Docker and setup the PyCharm development environme
 
 2. Once Visual Studio Code is installed, head over to the extension page (it's icon is on the left pane), and search "Codespaces" and then install the extension locally.
 
-.. image:: content/extension_install.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/extension_install.png?raw=true
    :width: 420
 
 Now we are ready to begin!
@@ -319,32 +382,32 @@ Just follow the steps outlined below:
 
 1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on "create codespace on master".
 
-.. image:: content/fork_create_codespace.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/fork_create_codespace.png?raw=true
    :width: 420
 
 2. This will open up a new tab, where you click on "Open this codespaces on VS code desktop". Give the relevant permissions to the browser to open up Visual Studio Code.
 
-.. image:: content/open_vscode_desktop.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/open_vscode_desktop.png?raw=true
    :width: 420
 
 3. Once visual studio code opens up, it will start building the remote container. In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box. Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process. Any subsequent connections to your ivy codespace will launch in 10-12 seconds.
 
-.. image:: content/building_codespace.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/building_codespace.png?raw=true
    :width: 420
 
 Log of container being built would look like below:
 
-.. image:: content/log_codespace.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/log_codespace.png?raw=true
    :width: 420
 
 4. Once the container is built, you would see the following output log saying "Finished configuring codespace".
 
-.. image:: content/codespace_built.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/codespace_built.png?raw=true
    :width: 420
 
 5. That's it, you have just setup GitHub codespaces and can start developing Ivy. The configuration files installs all the required packages, extensions for you to get started quickly.
 
-**Opening an existing Codespaces**
+**Opening an existing Codespace**
 
 If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.
 
@@ -352,17 +415,17 @@ There are 3 ways to connect your existing codespaces, you can use any of the app
 
 1. Go to your fork of ivy, click on the green coloured dropdown "Code", go to codespaces tab, then select your codespace. This will open up a new tab, from there either you can develop on the browser itself, or click on "Open this codespaces on VS code desktop" to open up visual studio code application and develop from there.
 
-.. image:: content/existing_codespace_fork.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/existing_codespace_fork.png?raw=true
    :width: 420
 
 2. Other way to connect is to open up visual studio code application. There is a good chance that you would see :code:`ivy [Codespaces]` or :code:`ivy [vscode-remote]` on your recently opened projects. If you click either of those, it will open up your codespace. 
 
-.. image:: content/recent_projects.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/recent_projects.png?raw=true
    :width: 420
 
 3. If in any case it doesn't show your codespace on recent projects, go to "Remote Connection Explorer" extension tab on the left pane, from there make sure you have selected "Github Codespaces" on the top-left dropdown. Once you find your codespace, right click on it and then select "Connect to codespace in current window".
 
-.. image:: content/connect_existing.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/0_setting_up/github_codespaces/connect_existing.png?raw=true
    :width: 420
 
 **Troubleshooting**

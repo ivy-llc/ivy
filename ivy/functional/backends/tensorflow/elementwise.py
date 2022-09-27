@@ -42,10 +42,13 @@ def add(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.experimental.numpy.add(x1, x2)
+    if alpha not in (1, None):
+        x2 = alpha * x2
+    return tf.add(x1, x2)
 
 
 def asin(
@@ -130,8 +133,7 @@ def bitwise_left_shift(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
-    ret = tf.bitwise.left_shift(x1, x2)
-    return tf.where(x2 >= x1.dtype.size * 8, tf.zeros(ret.shape, dtype=ret.dtype), ret)
+    return tf.bitwise.left_shift(x1, x2)
 
 
 def bitwise_or(
@@ -600,9 +602,12 @@ def subtract(
     x2: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
+    alpha: Optional[Union[int, float]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = x2 * alpha
     return tf.subtract(x1, x2)
 
 

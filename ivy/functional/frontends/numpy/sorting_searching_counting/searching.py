@@ -17,10 +17,8 @@ def nonzero(a):
     return ivy.nonzero(a)
 
 
-def argmin(x, /, *, axis=None, keepdims=False, out=None):
-    return ivy.native_array(
-        ivy.argmin(x, axis=axis, out=out, keepdims=keepdims), dtype=x.dtype
-    )
+def argmin(a, /, *, axis=None, keepdims=False, out=None):
+    return ivy.argmin(a, axis=axis, out=out, keepdims=keepdims)
 
 
 def argmax(
@@ -32,3 +30,11 @@ def argmax(
     keepdims=False,
 ):
     return ivy.argmax(a, axis=axis, out=out, keepdims=keepdims)
+
+
+def flatnonzero(a):
+    return ivy.nonzero(ivy.reshape(a, (-1,)))
+
+
+def searchsorted(a, v, side="left", sorter=None):
+    return ivy.searchsorted(a, v, side=side, sorter=sorter)
