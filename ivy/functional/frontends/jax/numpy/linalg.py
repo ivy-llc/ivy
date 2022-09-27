@@ -1,6 +1,11 @@
 import ivy
 
 
+# inv
+def inv(a):
+    return ivy.inv(a)
+
+
 def det(a):
     return ivy.det(a)
 
