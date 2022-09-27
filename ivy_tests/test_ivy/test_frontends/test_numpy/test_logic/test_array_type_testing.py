@@ -95,7 +95,6 @@ def test_numpy_isinf(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
@@ -143,5 +142,4 @@ def test_numpy_isnan(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )

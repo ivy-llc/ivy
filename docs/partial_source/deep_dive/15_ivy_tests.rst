@@ -265,7 +265,7 @@ Let's look at the data produced by this strategy -:
     ('float64', [9433925.0, -1.401298464324817e-45])
     ('float64', [[574352379.0, -0.99999], [2.2250738585072014e-308, -6.103515625e-05]])
 
-These values are then unpacked, converted to :code:`ivy.array` class, with corresponding dtypes. The test then runs on the newly
+These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes. The test then runs on the newly
 created arrays with specified dtypes. Similar is the case with other parameters which the function above is required to test.
 
 Why do we need helper functions
@@ -372,7 +372,7 @@ second element is a list/nested list containing floating point numbers of that p
 
 This function contains a list of `keyword`_ arguments. To name a few, min_value, max_value, allow_inf, min_num_dims etc.
 It can be used wherever an array of values with a specified data type is expected. That would again be a list a functions
-which expects at least one :code:`ivy.array`.
+which expects at least one :class:`ivy.Array`.
 
 7. **reshape_shapes** - This function returns a valid shape after a reshape operation is applied given as input of any
 arbitrary shape. For example-:
