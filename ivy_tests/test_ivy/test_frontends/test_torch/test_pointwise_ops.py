@@ -1376,7 +1376,7 @@ def _get_clip_inputs(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("float"),
             shape=shape,
         )
     )
@@ -1385,13 +1385,13 @@ def _get_clip_inputs(draw):
         max = draw(st.booleans())
         min = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5
+                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
             )
         )
         max = (
             draw(
                 helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
+                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
                 )
             )
             if max
@@ -1401,7 +1401,7 @@ def _get_clip_inputs(draw):
         min = None
         max = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
+                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
             )
         )
     return x_dtype, x, min, max
@@ -1412,7 +1412,7 @@ def _get_clip_inputs(draw):
 @given(
     input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.clamp"
+        fn_name="ivy.functional.frontends.torch.clamp"
     ),
 )
 def test_torch_clamp(
@@ -1445,7 +1445,7 @@ def test_torch_clamp(
 @given(
     input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.clip"
+        fn_name="ivy.functional.frontends.torch.clip"
     ),
 )
 def test_torch_clip(
