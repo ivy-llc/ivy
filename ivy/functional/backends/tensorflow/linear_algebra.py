@@ -161,11 +161,8 @@ def inv(
             ret = tf.linalg.inv(x)
             return ret
         else:
-            cofactor = tf.transpose(tf.linalg.inv(x)) * tf.linalg.det(x)
-            inverse = tf.math.multiply(
-                tf.math.divide(1, tf.linalg.det(x)), tf.transpose(cofactor)
-            )
-            ret = inverse
+            x = tf.linalg.adjoint(x)
+            ret = tf.linalg.inv(x)
             return ret
 
 
@@ -180,8 +177,14 @@ def matmul(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if transpose_a is True:
+        x1 = tf.transpose(x1)
+    if transpose_b is True:
+        x2 = tf.transpose(x2)
     dtype_from = tf.experimental.numpy.promote_types(
         x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
     )
@@ -326,7 +329,9 @@ def matrix_rank(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = None
     ret_shape = x.shape[:-2]
-    if len(x.shape) > 2:
+    if len(x.shape) == 2:
+        singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    elif len(x.shape) > 2:
         y = tf.reshape(x, (-1, *x.shape[-2:]))
         singular_values = tf.stack(
             [
@@ -335,8 +340,8 @@ def matrix_rank(
             ]
         )
         axis = 1
-    else:
-        singular_values = tf.linalg.svd(x, full_matrices=False, compute_uv=False)
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return tf.constant(0, dtype=x.dtype)
     max_values = tf.math.reduce_max(singular_values, axis=axis)
     if rtol:
         ret = tf.experimental.numpy.sum(singular_values > max_values * rtol, axis=axis)

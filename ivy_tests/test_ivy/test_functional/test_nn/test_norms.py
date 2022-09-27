@@ -1,7 +1,6 @@
 """Collection of tests for unified neural network layers."""
 
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -62,7 +61,7 @@ def test_layer_norm(
         fn_name="layer_norm",
         rtol_=1e-1,
         atol_=1e-1,
-        x=np.asarray(x, dtype=dtype),
+        x=x[0],
         normalized_idxs=normalized_idxs,
         epsilon=epsilon,
         scale=scale,

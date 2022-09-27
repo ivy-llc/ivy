@@ -54,12 +54,12 @@ def cholesky(
         the same shape as x.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0], \
                        [1.0, 0.5, 0.0, 0.0, 0.0], \
@@ -101,7 +101,7 @@ def cholesky(
                [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],
                [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> u = ivy.cholesky(x, upper='false')
@@ -109,7 +109,7 @@ def cholesky(
     ivy.array([[ 1., -2.],
                [ 0.,  1.]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
@@ -122,7 +122,7 @@ def cholesky(
                         [0., 0.707]])
     }
 
-    With multiple :code:`ivy.Container` inputs:
+    With multiple :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]), \
                           b=ivy.array([[2., 1.],[1., 1.]]))
@@ -136,7 +136,7 @@ def cholesky(
                         [0., 0.707]])
     }
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([[1., -2.], [2., 5.]])
     >>> upper = ivy.Container(a=1, b=-1)
@@ -193,13 +193,13 @@ def cross(
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    the method also accepts :class:`ivy.Container` instances in place of
+    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([1., 0., 0.])
     >>> y = ivy.array([0., 1., 0.])
@@ -207,7 +207,7 @@ def cross(
     >>> print(z)
     ivy.array([0., 0., 1.])
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([5., 0., 0.]), \
                           b=ivy.array([0., 0., 2.]))
@@ -220,7 +220,7 @@ def cross(
         b: ivy.array([0., 6., 0.])
     }
 
-    With a combination of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([9., 0., 3.])
     >>> y = ivy.Container(a=ivy.array([1., 1., 0.]), \
@@ -268,13 +268,13 @@ def det(
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html>`_ # noqa
     in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :code:`ivy.Container` instances in place of
-    :code:`ivy.Array` or :code:`ivy.NativeArray` instances, as shown in the type hints
+    the method also accepts :class:`ivy.Container` instances in place of
+    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
     and also the examples below.
 
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
@@ -285,14 +285,14 @@ def det(
     >>> print(y)
     ivy.array(293.46997)
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
     >>> y = ivy.det(x)
     >>> print(y)
     ivy.array(293.46997)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
                                  b = ivy.array([[2., 1.], [1., 1.]]))
@@ -303,14 +303,14 @@ def det(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[2.,4.],[6.,7.]])
     >>> y = x.det()
     >>> print(y)
     ivy.array(-10.)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) , \
                                     b = ivy.array([[2., 1.], [1., 1.]]))
@@ -377,13 +377,13 @@ def diagonal(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     ------------------
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1., 2.],\
                        [3., 4.]])
@@ -450,7 +450,7 @@ def diagonal(
     ivy.array([[3.],
                [4.]])
 
-    With :code:`ivy.NativeArray` inputs:
+    With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[1., 2.],\
                               [3., 4.]])
@@ -481,7 +481,7 @@ def diagonal(
     ivy.array([0, 4, 8])
 
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\
@@ -661,12 +661,12 @@ def inv(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> y = ivy.zeros(3)
@@ -723,6 +723,8 @@ def matmul(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the matrix product.
@@ -783,12 +785,12 @@ def matmul(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([2., 0., 3.])
     >>> y = ivy.array([4., 1., 8.])
@@ -796,7 +798,7 @@ def matmul(
     >>> print(z)
     ivy.array(32.)
 
-    With :code:`ivy.NativeArray` inputs:
+    With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[1., 2.], [0., 1.]])
     >>> y = ivy.native_array([[2., 0.], [0., 3.]])
@@ -804,7 +806,7 @@ def matmul(
     >>> print(z)
     ivy.array([[2., 6.],[0., 3.]])
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([5., 1.]), b=ivy.array([1., 0.]))
     >>> y = ivy.Container(a=ivy.array([4., 7.]), b=ivy.array([3., 0.]))
@@ -815,8 +817,8 @@ def matmul(
         b: ivy.array(3.)
     }
 
-    With a combination of :code:`ivy.Array`
-    and :code:`ivy.Container` inputs:
+    With a combination of :class:`ivy.Array`
+    and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([9., 0.])
     >>> y = ivy.Container(a=ivy.array([2., 1.]), b=ivy.array([1., 0.]))
@@ -827,8 +829,8 @@ def matmul(
         b: ivy.array(9.)
     }
 
-    With a combination of :code:`ivy.NativeArray`
-    and :code:`ivy.Array` inputs:
+    With a combination of :class:`ivy.NativeArray`
+    and :class:`ivy.Array` inputs:
 
     >>> x = ivy.native_array([[1., 2.], [0., 3.]])
     >>> y = ivy.array([[1.], [3.]])
@@ -837,7 +839,9 @@ def matmul(
     ivy.array([[7.],[9.]])
 
     """
-    return current_backend(x1).matmul(x1, x2, out=out)
+    return current_backend(x1).matmul(
+        x1, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -1119,7 +1123,24 @@ def pinv(
         floating-point data type determined by :ref:`type-promotion` and must have shape
         ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost
         two dimensions must be transposed).
-
+    
+    Examples
+    --------
+    x = ivy.array([[1., 2.],\
+                  [3., 4.]])
+    y = pinv(x, None, None)
+    print(y)
+    ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+    
+    x = ivy.array([[1., 2.],\
+                  [3., 4.]])
+    out = ivy.array()
+    pinv(x, 0, out)
+    print(out)
+    ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+    
     """
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 
@@ -1351,7 +1372,7 @@ def svdvals(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
     >>> S = ivy.svdvals(x)
@@ -1368,7 +1389,7 @@ def svdvals(
     >>> print(error)
     ivy.array([0.,0.])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],\
                               [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
@@ -1389,7 +1410,7 @@ def svdvals(
     >>> print(error)
     ivy.array([0.00e+00, 2.38e-07, 0.00e+00])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[2.0, 3.0], [3.0, 4.0],\
                                        [1.0, 3.0], [3.0, 5.0]]),\
@@ -1407,7 +1428,7 @@ def svdvals(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[8.0, 3.0], [2.0, 3.0],\
                        [2.0, 1.0], [3.0, 4.0],\
@@ -1416,7 +1437,7 @@ def svdvals(
     >>> print(y)
     ivy.array([13.4, 3.88])
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],\
                                        [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),\
@@ -1472,7 +1493,7 @@ def tensordot(
 
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
     1. Axes = 0 : tensor product
     >>> x = ivy.array([[1., 2.], [2., 3.]])
     >>> y = ivy.array([[3., 4.], [4., 5.]])
@@ -1480,7 +1501,7 @@ def tensordot(
     >>> print(res)
     ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     2. Axes = 1 : tensor dot product
     >>> x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])
@@ -1491,7 +1512,7 @@ def tensordot(
                 [26.],
                 [20.]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     3. Axes = 2: (default) tensor double contraction
     >>> x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),\
@@ -1556,7 +1577,7 @@ def trace(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[2., 0., 3.],\
                         [3., 5., 6.]])
@@ -1572,7 +1593,7 @@ def trace(
     >>> print(y)
     ivy.array([2., 6.])
 
-    With :code:`ivy.NativeArray` inputs:
+    With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[2., 0., 3.],[3., 5., 6.]])
     >>> y = ivy.trace(x, offset=0)
@@ -1586,7 +1607,7 @@ def trace(
     >>> print(y)
     ivy.array(12)
 
-    With :code:`ivy.Container` inputs:
+    With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(\
             a = ivy.array([[7, 1, 2],\

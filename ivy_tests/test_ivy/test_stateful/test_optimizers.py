@@ -4,7 +4,6 @@
 # global
 from hypothesis import given
 from hypothesis import strategies as st
-import numpy as np
 
 # local
 import ivy.functional.backends.numpy as ivy_np
@@ -53,8 +52,8 @@ def test_sgd_optimizer(
         native_array_flags_method=native_array,
         container_flags_method=container,
         all_as_kwargs_np_method={
-            "v": np.asarray(x[0], dtype=input_dtype[0]),
-            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+            "v": x[0],
+            "grads": x[1],
         },
         fw=fw,
         class_name="SGD",
@@ -106,8 +105,8 @@ def test_lars_optimizer(
         native_array_flags_method=native_array,
         container_flags_method=container,
         all_as_kwargs_np_method={
-            "v": np.asarray(x[0], dtype=input_dtype[0]),
-            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+            "v": x[0],
+            "grads": x[1],
         },
         fw=fw,
         class_name="LARS",
@@ -167,8 +166,8 @@ def test_adam_optimizer(
         container_flags_method=container,
         device_=device,
         all_as_kwargs_np_method={
-            "v": np.asarray(x[0], dtype=input_dtype[0]),
-            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+            "v": x[0],
+            "grads": x[1],
         },
         fw=fw,
         class_name="Adam",
@@ -234,8 +233,8 @@ def test_lamb_optimizer(
         container_flags_method=container,
         device_=device,
         all_as_kwargs_np_method={
-            "v": np.asarray(x[0], dtype=input_dtype[0]),
-            "grads": np.asarray(x[1], dtype=input_dtype[1]),
+            "v": x[0],
+            "grads": x[1],
         },
         fw=fw,
         class_name="LAMB",
