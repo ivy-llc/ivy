@@ -926,10 +926,6 @@ def cumsum(
         Array which holds the result of applying cumsum at each
         original array elements along the specified axis.
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
     Examples
     --------
     With :class:`ivy.Array` input:
