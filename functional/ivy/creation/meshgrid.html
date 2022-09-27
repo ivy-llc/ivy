@@ -202,6 +202,9 @@ length <code class="docutils literal notranslate"><span class="pre">M</span></co
 array must have shape <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">N,</span> <span class="pre">P)</span></code>, and, if Cartesian indexing <code class="docutils literal notranslate"><span class="pre">xy</span></code>, then
 each returned array must have shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">M,</span> <span class="pre">P)</span></code>.</p>
 <p>Each returned array should have the same data type as the input arrays.</p>
+</p>
+</dd>
+</dl>
 <p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of
 the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html">docstring</a> 
 in the standard.</p>
@@ -215,12 +218,12 @@ instances in place of any of the arguments.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xv</span><span class="p">,</span> <span class="n">yv</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span>
 <span class="go">ivy.array([[1, 2],</span>
-<span class="go">       [1, 2]])</span>
+<span class="go">        [1, 2]])</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yv</span><span class="p">)</span>
 <span class="go">ivy.array([[3, 3],</span>
-<span class="go">       [4, 4]])</span>
+<span class="go">        [4, 4]])</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
@@ -228,14 +231,14 @@ instances in place of any of the arguments.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xv</span><span class="p">,</span> <span class="n">yv</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span>
 <span class="go">ivy.array([[1, 1],</span>
-<span class="go">       [2, 2],</span>
-<span class="go">       [5, 5]])</span>
+<span class="go">        [2, 2],</span>
+<span class="go">        [5, 5]])</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yv</span><span class="p">)</span>
 <span class="go">ivy.array([[4, 1],</span>
-<span class="go">       [4, 1],</span>
-<span class="go">       [4, 1]])</span>
+<span class="go">        [4, 1],</span>
+<span class="go">        [4, 1]])</span>
 </pre></div>
 </div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
@@ -244,17 +247,14 @@ instances in place of any of the arguments.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xv</span><span class="p">,</span> <span class="n">yv</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span>
 <span class="go">ivy.array([[1, 2],</span>
-<span class="go">       [1, 2]])</span>
+<span class="go">        [1, 2]])</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">yv</span><span class="p">)</span>
 <span class="go">ivy.array([[3, 3],</span>
-<span class="go">       [4, 4]])</span>
+<span class="go">        [4, 4]])</span>
 </pre></div>
 </div>
-</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">

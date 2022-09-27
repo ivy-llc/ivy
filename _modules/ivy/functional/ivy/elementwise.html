@@ -357,6 +357,13 @@
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
 
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the inverse hyperbolic cosine of each element in x. The</span>
+<span class="sd">        returned array must have a floating-point data type determined by</span>
+<span class="sd">        :ref:`type-promotion`.</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -366,13 +373,6 @@
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an array containing the inverse hyperbolic cosine of each element in x. The</span>
-<span class="sd">        returned array must have a floating-point data type determined by</span>
-<span class="sd">        :ref:`type-promotion`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1430,6 +1430,7 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type determined by :ref:`type-promotion`.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html&gt;`_  </span>
@@ -2233,6 +2234,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the evaluated result for each element in ``x``. The returned</span>
 <span class="sd">        array must have a floating-point data type determined by :ref:`type-promotion`.</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -4086,6 +4088,7 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of ``bool``.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html&gt;`_ </span>
@@ -4999,6 +5002,8 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        An array of the same shape and type as x, with the elements rounded to integers.</span>
+
+
 
 <span class="sd">    Note: PyTorch supports an additional argument :code:`decimals` for the</span>
 <span class="sd">    `round function &lt;https://pytorch.org/docs/stable/generated/torch.round.html&gt;`_.</span>

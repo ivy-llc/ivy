@@ -174,11 +174,13 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>A “cpu” as device:
-&gt;&gt;&gt; with ivy.DefaultDevice(“cpu”) as device:
-&gt;&gt;&gt;     # with block calls device.__enter__()
-&gt;&gt;&gt;     print(device._dev)
-“cpu”</p>
+<p>A “cpu” as device:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">DefaultDevice</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">device</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># with block calls device.__enter__()</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
+<span class="go">&quot;cpu&quot;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -194,18 +196,22 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>A “gpu” as device:
-&gt;&gt;&gt; with ivy.DefaultDevice(“gpu”) as device:
-&gt;&gt;&gt;     pass
-&gt;&gt;&gt; # after with block device.__exit__() is called
-&gt;&gt;&gt; print(device._dev)
-“cpu”</p>
-<p>A “tpu” as device:
-&gt;&gt;&gt; with ivy.DefaultDevice(“tpu”) as device:
-&gt;&gt;&gt;     pass
-&gt;&gt;&gt; # after with block device.__exit__() is called
-&gt;&gt;&gt; print(device._dev)
-“cpu”</p>
+<p>A “gpu” as device:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">DefaultDevice</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">device</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># after with block device.__exit__() is called</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
+<span class="go">&quot;cpu&quot;</span>
+</pre></div>
+</div>
+<p>A “tpu” as device:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">DefaultDevice</span><span class="p">(</span><span class="s2">&quot;tpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">device</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># after with block device.__exit__() is called</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
+<span class="go">&quot;cpu&quot;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
