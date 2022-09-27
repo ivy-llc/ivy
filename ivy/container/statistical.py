@@ -117,7 +117,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.mean()
@@ -540,7 +540,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]), \
                               b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
@@ -682,7 +682,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3], \
                                           [2, 4, 5]]), \
@@ -833,7 +833,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = ivy.Container.static_cumprod(x, axis=0)
@@ -918,7 +918,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = x.cumprod(axis=0)

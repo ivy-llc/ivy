@@ -59,7 +59,7 @@ def argmax(
     Functional Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
@@ -94,7 +94,7 @@ def argmax(
                [2], \
                [2]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
@@ -104,7 +104,7 @@ def argmax(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.argmax()
@@ -157,7 +157,7 @@ def argmin(
     Functional Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
@@ -185,7 +185,7 @@ def argmin(
                [1]])
 
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., -1.])
     >>> y = ivy.argmin(x)
@@ -193,7 +193,7 @@ def argmin(
     ivy.array(2)
 
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
@@ -204,14 +204,14 @@ def argmin(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0., 1., -1.])
     >>> y = x.argmin()
     >>> print(y)
     ivy.array(2)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.argmin()
@@ -265,7 +265,7 @@ def nonzero(
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
     >>> y = ivy.nonzero(x)
@@ -299,7 +299,7 @@ def nonzero(
     >>> print(y)
     (ivy.array([1, 2, 4]), ivy.array([0, 0, 0]))
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
     >>> y = ivy.nonzero(x)
@@ -318,14 +318,14 @@ def nonzero(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])
     >>> y = x.nonzero()
     >>> print(y)
     (ivy.array([3, 4, 5]),)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
     >>> y = x.nonzero()
