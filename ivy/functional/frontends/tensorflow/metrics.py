@@ -85,7 +85,7 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
             [
                 (
                     0 <= res < labels
-                    and ivy.min(top_k[ind] - predictions[ind, res]) < 1e-6
+                    and ivy.min(top_k[ind] - predictions[ind, res]) <= 1e-9
                 )
                 for ind, res in enumerate(targets)
             ]
@@ -190,3 +190,19 @@ def squared_hinge(y_true, y_pred):
     y_true = ivy.astype(ivy.array(y_true), y_pred.dtype)
     y_true = _cond_convert_labels(y_true)
     return ivy.mean(ivy.square(ivy.maximum(1.0 - y_true * y_pred, 0.0)), axis=-1)
+
+
+def cosine_similarity(y_true, y_pred):
+
+    y_pred = ivy.asarray(y_pred)
+    y_true = ivy.asarray(y_true)
+
+    if len(y_pred.shape) == len(y_pred.shape) and len(y_true.shape) == 2:
+        numerator = ivy.sum(y_true * y_pred, axis=1)
+        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
+    else:
+        numerator = ivy.vecdot(y_true, y_pred)
+        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
+
+    cosine = numerator / denominator
+    return cosine

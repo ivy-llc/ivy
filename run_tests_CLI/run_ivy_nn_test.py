@@ -22,5 +22,7 @@ j = run % M
 backend = backends[i]
 submodule = submodules[j]
 
-print(backend, submodule)
+with open("./fwsubmod.txt", "w") as outfile:
+    outfile.write(f"{backend}-{submodule}")
+
 os.system(f"./run_tests_CLI/test_ivy_nn.sh {backend} test_{submodule}")

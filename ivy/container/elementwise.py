@@ -365,7 +365,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.array([[1.1, 2.3, -3.6]])
         >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
@@ -381,7 +381,7 @@ class ContainerWithElementwise(ContainerBase):
                           [8.1, 9.3, 3.4]])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
                             b=ivy.array([2, 3, 4]))
@@ -1591,7 +1591,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
         >>> y = ivy.Container.static_cos(x)
@@ -1653,7 +1653,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -6]))
         >>> y = x.cos()
@@ -1715,7 +1715,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> y = ivy.array([1, 2, 3])
         >>> x = ivy.Container(a=ivy.array([4, 5, 6]))
@@ -1725,7 +1725,7 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([5, 7, 7]),
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
                             b=ivy.array([2, 3, 4]))
@@ -1791,7 +1791,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), \
                                 b=ivy.array([2, 3, 4]))
@@ -1862,7 +1862,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
         >>> b = ivy.array([0, 1, 2])
@@ -1873,7 +1873,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([5, 5, 16])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> a = ivy.Container(a = ivy.array([2, 3, 4]), b = ivy.array([5, 10, 64]))
         >>> b = ivy.Container(a = ivy.array([0, 1, 2]), b = ivy.array([2]))
@@ -2226,7 +2226,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
         >>> y = ivy.Container.static_cosh(x)
@@ -2298,7 +2298,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([-1, 0.23, 1.12]), b=ivy.array([1, -2, 0.76]))
         >>> y = x.cosh()
@@ -2310,7 +2310,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
                     b=ivy.array([0.67, -0.98, -3]))
-        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> ivy.Container.cosh(x, out=y)
         >>> print(y)
         {
@@ -2375,7 +2375,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
         >>> x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
@@ -2445,7 +2445,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
         >>> x2 = ivy.Container(a=ivy.array([1., 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
@@ -2566,7 +2566,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
 
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
         >>> x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
@@ -2577,7 +2577,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False])
         }
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
         >>> x2 = ivy.array([3., 1., 0.9])
@@ -2976,7 +2976,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
         >>> x2 = ivy.Container(a=ivy.array([5., 4., 2.5]), b=ivy.array([2.3, 3.7, 5]))
@@ -2987,7 +2987,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([3., 2., 1.])
         }
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
         >>> x2 = ivy.array([2, 3, 4])
@@ -3057,7 +3057,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
         >>> x2 = ivy.Container(a=ivy.array([5., 4., 2.5]), b=ivy.array([2.3, 3.7, 5]))
@@ -3068,7 +3068,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([3., 2., 1.])
         }
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4., 5., 6.]), b=ivy.array([7., 8., 9.]))
         >>> x2 = ivy.array([2, 3, 4])
@@ -4306,7 +4306,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` input:
+        Using :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
                               b=ivy.array([-0., -3.9, float('+inf')]),\
@@ -4371,7 +4371,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
                               b=ivy.array([-0., -3.9, float('+inf')]), \
@@ -4441,7 +4441,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` input:
+        Using :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([4., 5., .]),\
                               b=ivy.array([2., 3., 4.]))
@@ -4512,7 +4512,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` input:
+        Using :class:`ivy.Container` input:
         
         >>> x = ivy.Container(a=ivy.array([4., 5., 6.]),\
                               b=ivy.array([2., 3., 4.]))
@@ -4929,12 +4929,12 @@ class ContainerWithElementwise(ContainerBase):
         in the standard.
 
         Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
         instances in place of any of the arguments.
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
 
         >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
         >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
@@ -5002,7 +5002,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.array([0,0,1,1,0])
         >>> y = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
@@ -5013,7 +5013,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, False, False, True, False])
         }
 
-        With multiple :code:`ivy.Container` inputs:
+        With multiple :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([1,0,0,1,0]), b=ivy.array([1,0,1,0,0]))
         >>> y = ivy.Container(a=ivy.array([0,0,1,1,0]), b=ivy.array([1,0,1,1,0]))
@@ -5678,7 +5678,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
         >>> x2 = ivy.Container(a=ivy.array([1., 3., 4.]), b=ivy.array([1., 3., 3.]))
@@ -5689,7 +5689,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0., 2., 1.])
         }
 
-        With mixed :code:`ivy.Container` and `ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and `ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
         >>> x2 = ivy.array([1., 2., 3.])
@@ -5700,7 +5700,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0., 0., 1.])
         }
 
-        With mixed :code:`ivy.Container` and `ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Container` and `ivy.NativeArray` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
         >>> x2 = ivy.native_array([1., 2., 3.])
@@ -5772,7 +5772,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
         >>> x2 = ivy.Container(a=ivy.array([1., 3., 4.]), b=ivy.array([1., 3., 3.]))
@@ -5783,7 +5783,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0., 2., 1.])
         }
 
-        With mixed :code:`ivy.Container` and `ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and `ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
         >>> x2 = ivy.array([1., 2., 3.])
@@ -5794,7 +5794,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0., 0., 1.])
         }
 
-        With mixed :code:`ivy.Container` and `ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Container` and `ivy.NativeArray` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([2., 3., 5.]), b=ivy.array([2., 2., 4.]))
         >>> x2 = ivy.native_array([1., 2., 3.])
@@ -5858,7 +5858,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
                     b=ivy.array([-300.9, -527.3, 4.5]))
@@ -5919,7 +5919,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),\
                     b=ivy.array([-300.9, -527.3, 4.5]))
@@ -6307,7 +6307,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
                     b=ivy.array([0.67, -0.98, -3]))
-        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> x.sinh(out=y)
         >>> print(y)
         {
@@ -7320,6 +7320,102 @@ class ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
+    def static_reciprocal(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.reciprocal.
+        This method simply wraps the function, and so the docstring for
+        ivy.reciprocal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the element-wise recirpocal of ``x``
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "reciprocal",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def reciprocal(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.reciprocal.
+        This method simply wraps the function, and so the docstring for
+        ivy.reciprocal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container to compute the element-wise reciprocal for.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the element-wise recirpocal of ``x``
+
+        """
+        return self.static_reciprocal(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_deg2rad(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -7419,7 +7515,7 @@ class ContainerWithElementwise(ContainerBase):
         
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
             b=ivy.native_array([0,-1.5,-50,ivy.nan]))
@@ -7540,7 +7636,7 @@ class ContainerWithElementwise(ContainerBase):
         
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x=ivy.Container(a=ivy.array([0., 0.351, -0.881, ivy.nan]),\
             b=ivy.native_array([0,-1.5,-50,7.2]))
@@ -7609,7 +7705,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
         >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))
@@ -7679,7 +7775,7 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 9.]))
         >>> x2 = ivy.Container(a=ivy.array([1., 2.3, -3]), b=ivy.array([2.4, 3., -2.]))

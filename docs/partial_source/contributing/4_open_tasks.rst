@@ -81,10 +81,10 @@ Some common important tasks are:
 #. remove all :code:`lambda` and direct bindings for the backend functions
    (in :code:`ivy.functional.backends`), with each function instead defined using
    :code:`def`.
-#. implement the following if they don't exist but should do: :code:`ivy.Array` instance
-   method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
-   :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,
-   :code:`ivy.Container` special method, :code:`ivy.Container` reverse special method.
+#. implement the following if they don't exist but should do: :class:`ivy.Array` instance
+   method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method,
+   :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method,
+   :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct
    category-specific parent class, such as :code:`ivy.ArrayWithElementwise`,
    :code:`ivy.ContainerWithManipulation` etc.
@@ -106,7 +106,7 @@ for the formatting task as follows:
 :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
 is the name of the category that the function belongs to. An example of this is shown below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_generator.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_generator.png?raw=true
    :width: 420
 
 Using this formatting will then trigger our github automation bots to update your 
@@ -116,14 +116,14 @@ few moments to take effect, so please be patient. 🙂
 2. After adding the checklist to your PR, you should then modify this checklist with 
 the status of each item according to the symbols(emojis) within the LEGEND section.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true
    :width: 420
 
 1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
 your PR and we will start checking your implementation and marking the items as complete 
 using the checkboxes next to them.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_checked.png?raw=true
    :width: 420
 
 4. In case you are stuck or need help with one of the checklist items, please add the
@@ -131,7 +131,7 @@ using the checkboxes next to them.
 on your point of struggle with this item. The PR assignee will then see this comment
 and address your issues.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_SOS.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_SOS.png?raw=true
    :width: 420
 
 **Notes**: 
@@ -293,18 +293,18 @@ for this task.
 
 A general workflow for these tasks would be:
 
-#. Implement the functions in each of the backend files :code:`ivy/functional/backends/backend_name/extenstion.py`,
+#. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/extension.py`,
    sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific 
    helper functions to recreate the behaviour. Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#backend-api>`_
    on how this can be done.
-#. Implement the functions in :code:`ivy/functional/ivy/extenstion.py` simply defering to 
+#. Implement the functions in :mod:`ivy/functional/ivy/extension.py` simply deferring to
    their backend-specific implementation. Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#ivy-api>`_ 
    to get a clearer picture of how this must be done.
 #. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
 
 A few points to keep in mind while doing this:
 
-#. Make sure all the positional arguments are postional-only and optional arguments are keywork-only.
+#. Make sure all the positional arguments are positional-only and optional arguments are keyword-only.
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function 
    in the hypothesis library.
 

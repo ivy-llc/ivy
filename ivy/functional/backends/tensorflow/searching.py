@@ -1,8 +1,10 @@
 # global
+from numbers import Number
 from typing import Optional, Union, Tuple
 
-import ivy
 import tensorflow as tf
+
+import ivy
 
 
 # Array API Standard #
@@ -17,10 +19,8 @@ def argmax(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.constant(x).numpy().argmax(axis=axis, keepdims=keepdims)
-    ret = tf.convert_to_tensor(ret, dtype=ret.dtype)
-
-    return ret
+    ret = x.numpy().argmax(axis=axis, keepdims=keepdims)
+    return tf.convert_to_tensor(ret, dtype=ret.dtype)
 
 
 def argmin(
@@ -38,8 +38,28 @@ def argmin(
 def nonzero(
     x: Union[tf.Tensor, tf.Variable],
     /,
-) -> Tuple[Union[tf.Tensor, tf.Variable]]:
-    return tuple(tf.experimental.numpy.nonzero(x))
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable]]]:
+    res = tf.experimental.numpy.nonzero(x)
+
+    if size is not None:
+        dtype = tf.int64
+        if isinstance(fill_value, float):
+            dtype = tf.float64
+        res = tf.cast(res, dtype)
+
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = tf.pad(res, [[0, 0], [0, diff]], constant_values=fill_value)
+        elif diff < 0:
+            res = tf.slice(res, [0, 0], [-1, size])
+
+    if as_tuple:
+        return tuple(res)
+    return tf.stack(res, axis=1)
 
 
 def where(
