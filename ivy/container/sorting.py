@@ -25,9 +25,9 @@ class ContainerWithSorting(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.argsort. This method 
-        simply wraps the function, and so the docstring for 
-        ivy.argsort also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.argsort. This method simply wraps the
+        function, and so the docstring for ivy.argsort also applies to this method
+        with minimal changes.
         
         Parameters
         ----------
@@ -225,7 +225,7 @@ class ContainerWithSorting(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.add also applies to this method
+        function, and so the docstring for ivy.sort also applies to this method
         with minimal changes.
 
         Examples
@@ -346,6 +346,12 @@ class ContainerWithSorting(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.searchsorted.
+        This method simply wraps the function, and so the docstring for ivy.searchsorted
+        also applies to this method with minimal changes.
+
+        """
         return ContainerBase.multi_map_in_static_method(
             "searchsorted",
             x1,
@@ -372,6 +378,12 @@ class ContainerWithSorting(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.searchsorted.
+        This method simply wraps the function, and so the docstring for ivy.searchsorted
+        also applies to this method with minimal changes.
+
+        """
         return self.static_searchsorted(
             self,
             v,
