@@ -14,9 +14,37 @@ class ArrayWithLayers(abc.ABC):
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Union[ivy.Array, ivy.NativeArray] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.linear. This method simply
+        wraps the function, and so the docstring for ivy.conv1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input x compute linear transformation on.
+            *[outer_batch_shape,inner_batch_shape,in_features]*
+        weight
+            The weight matrix. *[outer_batch_shape,out_features,in_features]*
+        bias
+            The bias vector, default is None. *[outer_batch_shape,out_features]*
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the linear transformation.
+            *[outer_batch_shape,inner_batch_shape,out_features]*
+
+        Examples
+        --------
+        
+        """
         return ivy.linear(
             self._data,
             weight,

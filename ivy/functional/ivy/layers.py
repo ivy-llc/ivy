@@ -27,7 +27,7 @@ def linear(
     weight: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    bias: Union[ivy.Array, ivy.NativeArray] = None,
+    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies a linear transformation to the incoming data: y = x * t(weight) + bias.
@@ -52,6 +52,39 @@ def linear(
     ret
         Result array of the linear transformation.
         *[outer_batch_shape,inner_batch_shape,out_features]*
+    
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> w = ivy.array([[1, 0, 0]])
+    >>> y = ivy.linear(x, w)
+    >>> print(y)
+    ivy.array([1])  
+    
+    >>> x = ivy.array([[0.666, -0.4269, 1.911]])
+    >>> w = ivy.array([[1, 0, 0], [0, 0, 1]])
+    >>> y = ivy.zeros(2)
+    >>> print(y)
+    ivy.array([[0.666, 1.91 ]])
+
+    >>> x = ivy.array([[1.546, 5.234, 6.487], [0.157, 5.753, 4.52]])
+    >>> w = ivy.array([[[1.545, 2.547, 3.124], \
+    ...                 [0.231, 7.753, 9.147], \
+    ...                 [5.852, 8.753, 6.963]]])   
+    >>> b = ivy.array([1,1,1])
+    >>> ivy.linear(x, w, bias=b, out=x)
+    >>> print(x)
+    ivy.array([[[ 37. , 101. , 101. ],
+            [ 30. ,  87. ,  83.7]]])
+        
+    With :class:`ivy.Container` input:
+
 
     """
     outer_batch_shape = list(weight.shape[:-2])

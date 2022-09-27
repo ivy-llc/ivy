@@ -16,13 +16,41 @@ class ContainerWithLayers(ContainerBase):
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        bias: Union[ivy.Array, ivy.NativeArray] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        to_apply: Optional[bool] = True,
+        prune_unapplied: Optional[bool] = False,
+        map_sequences: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.linear. This method simply
+        wraps the function, and so the docstring for ivy.conv1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input x compute linear transformation on.
+            *[outer_batch_shape,inner_batch_shape,in_features]*
+        weight
+            The weight matrix. *[outer_batch_shape,out_features,in_features]*
+        bias
+            The bias vector, default is None. *[outer_batch_shape,out_features]*
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the linear transformation.
+            *[outer_batch_shape,inner_batch_shape,out_features]*
+
+        Examples
+        --------
+        
+        """
         return ContainerBase.multi_map_in_static_method(
             "linear",
             x,
@@ -47,6 +75,34 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.linear. This method simply
+        wraps the function, and so the docstring for ivy.conv1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input x compute linear transformation on.
+            *[outer_batch_shape,inner_batch_shape,in_features]*
+        weight
+            The weight matrix. *[outer_batch_shape,out_features,in_features]*
+        bias
+            The bias vector, default is None. *[outer_batch_shape,out_features]*
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the linear transformation.
+            *[outer_batch_shape,inner_batch_shape,out_features]*
+
+        Examples
+        --------
+        
+        """
         return self.static_linear(
             self,
             weight,
