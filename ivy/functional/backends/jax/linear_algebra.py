@@ -310,12 +310,11 @@ def svd(
     /,
     *,
     full_matrices: bool = True,
-    compute_uv: bool = True,
-    hermitian: bool = False,
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
     results = namedtuple("svd", "U S Vh")
     U, D, VT = jnp.linalg.svd(
-        x, full_matrices=full_matrices, compute_uv=compute_uv, hermitian=hermitian
+        x,
+        full_matrices=full_matrices,
     )
     return results(U, D, VT)
 

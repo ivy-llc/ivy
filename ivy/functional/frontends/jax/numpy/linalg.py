@@ -22,6 +22,4 @@ def eigh(a, UPLO="L", symmetrize_input=True):
 
 
 def svd(x, /, *, full_matrices=True, compute_uv=True, hermitian=False):
-    return ivy.svd(
-        x, full_matrices=full_matrices, compute_uv=compute_uv, hermitian=hermitian
-    )
+    return ivy.svd(x, full_matrices=full_matrices)

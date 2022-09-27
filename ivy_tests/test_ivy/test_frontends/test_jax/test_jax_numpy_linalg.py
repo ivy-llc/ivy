@@ -132,23 +132,23 @@ def test_jax_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_ar
 
 @st.composite
 def _svd_get_dtype_and_data(draw, **kwargs):
-    hermitian = st.booleans()
+    hermitian = draw(st.booleans())
     # construct hermitian matrix
     if hermitian:
         random_size = draw(st.integers(min_value=2, max_value=6))
         shape = (random_size, random_size)
-        dtype, x, re_shape = draw(
-            helpers.dtype_and_values(**kwargs, shape=shape, ret_shape=True)
-        )
-        y = np.asarray(x, dtype=dtype).conjugate().T
+        dtype, x = draw(helpers.dtype_and_values(**kwargs, shape=shape))
+
+        x = x[0]
+
+        y = x.conjugate().T
         x += y
         return dtype, x, hermitian
 
-    dtype, x, re_shape = draw(
-        helpers.dtype_and_values(
-            **kwargs, min_num_dims=2, min_dim_size=2, ret_shape=True
-        )
-    )
+    dtype, x = draw(helpers.dtype_and_values(**kwargs, min_num_dims=2, min_dim_size=2))
+
+    x = x[0]
+
     return dtype, x, hermitian
 
 
@@ -172,6 +172,7 @@ def test_jax_svd(
     full_matrices,
 ):
     input_dtype, x, hermitian = dtype_and_x
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -182,7 +183,7 @@ def test_jax_svd(
         test_values=False,
         frontend="jax",
         fn_tree="numpy.linalg.svd",
-        x=np.asarray(x, dtype=input_dtype),
+        x=x,
         full_matrices=full_matrices,
         compute_uv=True,
         hermitian=hermitian,
