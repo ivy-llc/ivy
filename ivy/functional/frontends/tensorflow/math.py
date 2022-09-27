@@ -14,6 +14,20 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+def clip_by_value(t, clip_value_min, clip_value_max):
+    ivy.assertions.check_all_or_any_fn(
+        clip_value_min,
+        clip_value_max,
+        fn=ivy.exists,
+        type="all",
+        message="clip_value_min and clip_value_max must exist",
+    )
+    t = ivy.array(t)
+    clip_value_min = ivy.array(clip_value_min)
+    clip_value_max = ivy.array(clip_value_max)
+    return ivy.clip(t, clip_value_min, clip_value_max)
+
+
 def confusion_matrix(
     labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
 ):
