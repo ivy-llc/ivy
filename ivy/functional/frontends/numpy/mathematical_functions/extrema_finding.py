@@ -33,7 +33,6 @@ def amin(
     initial=None,
     where=True,
 ):
-
     if initial is not None:
         s = ivy.shape(a, as_array=True)
         ax = axis
@@ -61,19 +60,11 @@ def nanmin(
     initial=None,
     where=True,
 ):
-    bound_max = ivy.finfo(a).max
-    # select only the specified elements
-    if ivy.is_array(where):
-        a = ivy.where(where, a, a.full_like(bound_max))
+    bound_max = ivy.finfo(a).max if initial is None else initial
     nan_mask = ivy.isnan(a)
-    x = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(bound_max))
-    if initial is not None:
-        s = ivy.shape(x, as_array=True)
-        if axis is not None:
-            s[axis] = 1
-        header = ivy.full(ivy.Shape(s.to_list()), initial)
-        if axis:
-            x = ivy.concat([x, header], axis=axis)
-        else:
-            x = ivy.concat([x, header])
-    return ivy.min(x, axis=axis, out=out, keepdims=keepdims)
+    a = ivy.where(
+        ivy.logical_not(nan_mask), a, ivy.default(out, a.full_like(bound_max)), out=out
+    )
+    return ivy.amin(
+        a, axis=axis, out=out, keepdims=keepdims, initial=initial, where=where
+    )
