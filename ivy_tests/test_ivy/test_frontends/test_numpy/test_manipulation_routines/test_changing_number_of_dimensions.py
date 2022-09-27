@@ -38,9 +38,9 @@ def test_numpy_squeeze(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
+        native_array_flags=[False],
         num_positional_args=num_positional_args,
         fw=fw,
         frontend="numpy",
@@ -75,9 +75,9 @@ def test_numpy_expand_dims(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
+        native_array_flags=[False],
         num_positional_args=num_positional_args,
         fw=fw,
         frontend="numpy",

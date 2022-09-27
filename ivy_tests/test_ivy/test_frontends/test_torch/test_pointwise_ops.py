@@ -1199,6 +1199,7 @@ def test_torch_absolute(
     )
 
 
+# logical not
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1231,6 +1232,7 @@ def test_torch_logical_not(
     )
 
 
+# logical and
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1264,6 +1266,7 @@ def test_torch_logical_and(
     )
 
 
+# logical or
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1297,6 +1300,7 @@ def test_torch_logical_or(
     )
 
 
+# logical xor
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -1326,5 +1330,144 @@ def test_torch_logical_xor(
         fn_tree="logical_xor",
         input=x[0],
         other=x[1],
+        out=None,
+    )
+
+
+# ceil
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.ceil"
+    ),
+)
+def test_torch_ceil(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="ceil",
+        input=x[0],
+        out=None,
+    )
+
+
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+    min = draw(st.booleans())
+    if min:
+        max = draw(st.booleans())
+        min = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
+            )
+        )
+        max = (
+            draw(
+                helpers.array_values(
+                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                )
+            )
+            if max
+            else None
+        )
+    else:
+        min = None
+        max = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+            )
+        )
+    return x_dtype, x, min, max
+
+
+# clamp
+@handle_cmd_line_args
+@given(
+    input_and_ranges=_get_clip_inputs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.clamp"
+    ),
+)
+def test_torch_clamp(
+    input_and_ranges,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    x_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="clamp",
+        input=x[0],
+        min=min,
+        max=max,
+        out=None,
+    )
+
+
+# clip
+@handle_cmd_line_args
+@given(
+    input_and_ranges=_get_clip_inputs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.clip"
+    ),
+)
+def test_torch_clip(
+    input_and_ranges,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    x_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="torch",
+        fn_tree="clip",
+        input=x[0],
+        min=min,
+        max=max,
         out=None,
     )

@@ -118,6 +118,10 @@ def LogicalNot(*, x, name="LogicalNot"):
     return ivy.logical_not(x)
 
 
+def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
+    return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+
+
 def Maximum(*, x, y, name="Maximum"):
     return ivy.maximum(x, y)
 
@@ -138,6 +142,10 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
         ivy.not_equal(x, y)
     except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
         return ivy.array(False)
+
+
+def Relu(features, name="Relu"):
+    return ivy.relu(features)
 
 
 def Reshape(*, tensor, shape, name="Reshape"):
@@ -183,3 +191,9 @@ def Transpose(*, x, perm, name="Transpose"):
 
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
+
+
+def Cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
+    return ivy.astype(
+        ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+    )

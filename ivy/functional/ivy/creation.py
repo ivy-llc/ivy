@@ -195,7 +195,7 @@ def arange(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
     return current_backend().arange(
@@ -251,7 +251,7 @@ def asarray(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
     return current_backend().asarray(
@@ -298,7 +298,7 @@ def zeros(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
@@ -353,7 +353,7 @@ def ones(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
@@ -415,7 +415,7 @@ def full_like(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
@@ -442,7 +442,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3.0, 8.0])
     >>> fill_value = 0.000123
@@ -456,7 +456,7 @@ def full_like(
     ivy.array([[0.000123, 0.000123, 0.000123],
            [0.000123, 0.000123, 0.000123]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
                            b=ivy.array([4.123,5.23,6.23]))
@@ -471,7 +471,7 @@ def full_like(
     Instance Method Examples:
     ------------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
@@ -479,7 +479,7 @@ def full_like(
     >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1,2,3]), \
                            b=ivy.array([4,5,6]))
@@ -538,7 +538,7 @@ def ones_like(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
@@ -594,7 +594,7 @@ def zeros_like(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
@@ -706,7 +706,7 @@ def tril(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -752,7 +752,7 @@ def triu(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -798,7 +798,7 @@ def empty(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -846,7 +846,7 @@ def empty_like(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -902,7 +902,7 @@ def eye(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -962,7 +962,7 @@ def linspace(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -1028,13 +1028,13 @@ def meshgrid(
         in the standard.
 
         Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
         instances in place of any of the arguments.
 
         Functional Examples
         -------------------
 
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([1, 2])
         >>> y = ivy.array([3, 4])
@@ -1060,7 +1060,7 @@ def meshgrid(
                [4, 1],
                [4, 1]])
 
-        With :code:`ivy.NativeArray` input:
+        With :class:`ivy.NativeArray` input:
 
         >>> x = ivy.native_array([1, 2])
         >>> y = ivy.native_array([3, 4])
@@ -1122,7 +1122,7 @@ def full(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
@@ -1160,7 +1160,7 @@ def full(
     >>> print(x)
     ivy.array([[0.68, 0.68]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))
     >>> fill_value = ivy.Container(a=0.99, b=False)
@@ -1217,7 +1217,7 @@ def from_dlpack(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """
@@ -1255,7 +1255,7 @@ def copy_array(
 
     Examples
     --------
-    With one :code:`ivy.Array` input:
+    With one :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1, 0, 1])
     >>> y = ivy.copy_array(x)
@@ -1278,7 +1278,7 @@ def copy_array(
     >>> print(x)
     ivy.array([1, 0, 1, 1])
 
-    With one :code:`ivy.Container` input:
+    With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]))
     >>> y = ivy.copy_array(x)
@@ -1296,7 +1296,7 @@ def copy_array(
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
 
-    With one :code:`ivy.Container` static method:
+    With one :class:`ivy.Container` static method:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),\
                           b=ivy.array([-1, 0, 1, 1, 1, 0]))
@@ -1307,7 +1307,7 @@ def copy_array(
         b: ivy.array([-1, 0, 1, 1, 1, 0])
     }
 
-    With one :code:`ivy.Array` instance method:
+    With one :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([-1, 0, 1])
     >>> y = x.copy_array()
@@ -1319,7 +1319,7 @@ def copy_array(
     >>> print(y)
     ivy.array([1, 0, 1, 1])
 
-    With :code:`ivy.Container` instance method:
+    With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1, 0, 1]),\
                           b=ivy.array([-1, 0, 1, 1]))
@@ -1453,7 +1453,7 @@ def logspace(
         Tensor of evenly-spaced values.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     """

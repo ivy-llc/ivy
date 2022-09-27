@@ -213,6 +213,10 @@ class Array(
         return self._data.__array_wrap__(*args, **kwargs)
 
     @_native_wrapper
+    def __array_namespace__(self, api_version=None):
+        return ivy
+
+    @_native_wrapper
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
@@ -394,7 +398,7 @@ class Array(
 
         Examples
         --------
-        With :code:`ivy.Array` instances only:
+        With :class:`ivy.Array` instances only:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
@@ -648,7 +652,7 @@ class Array(
 
         Examples
         --------
-        With :code:`ivy.Array` instances only:
+        With :class:`ivy.Array` instances only:
 
         >>> a = ivy.array([2, 3, 4])
         >>> b = ivy.array([0, 1, 2])
