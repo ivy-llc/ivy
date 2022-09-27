@@ -179,7 +179,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -207,7 +207,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     >>> print(y)
     4
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -235,7 +235,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     >>> print(y)
     0
 
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
+    With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
 
     >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
@@ -263,7 +263,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     >>> print(y)
     4
 
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
+    With a mix of :class:`ivy.Container` and :class:`ivy.NativeArray` input:
 
     >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())

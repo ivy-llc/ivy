@@ -144,8 +144,8 @@ arguments seek to control are simply not controllable when using Ivy.
 Similarly, :code:`subok` controls whether or not subclasses of the :code:`numpy.ndarray`
 should be permitted as inputs to the function.
 Again, this is a very framework-specific argument. All ivy functions by default do
-enable subclasses of the :code:`ivy.Array` to be passed, and the frontend function will
-be operating with :code:`ivy.Array` instances rather than :code:`numpy.ndarray`
+enable subclasses of the :class:`ivy.Array` to be passed, and the frontend function will
+be operating with :class:`ivy.Array` instances rather than :code:`numpy.ndarray`
 instances, and so we omit this argument. Again, it has no bearing on input-output
 behaviour and so this is not a problem when transpiling between frameworks.
 
