@@ -36,9 +36,7 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
         ret_ = ret.astype(int)
         a = a * ivy.ones_like(ret_)
         b = b * ivy.ones_like(ret_)
-        ret[finites] = _compute_allclose_with_tol(
-            a[finites], b[finites], rtol, atol
-        )
+        ret[finites] = _compute_allclose_with_tol(a[finites], b[finites], rtol, atol)
         nans = ivy.bitwise_invert(finites)
         ret[nans] = ivy.equal(a[nans], b[nans])
         if equal_nan:
@@ -66,9 +64,7 @@ def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
         ret_ = ret.astype(int)
         a = a * ivy.ones_like(ret_)
         b = b * ivy.ones_like(ret_)
-        ret[finites] = _compute_isclose_with_tol(
-            a[finites], b[finites], rtol, atol
-        )
+        ret[finites] = _compute_isclose_with_tol(a[finites], b[finites], rtol, atol)
         nans = ivy.bitwise_invert(finites)
         ret[nans] = ivy.equal(a[nans], b[nans])
         if equal_nan:
