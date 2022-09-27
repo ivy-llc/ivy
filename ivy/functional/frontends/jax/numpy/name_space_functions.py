@@ -6,6 +6,18 @@ def abs(x):
     return ivy.abs(x)
 
 
+def absolute(x):
+    return ivy.abs(x)
+
+
+def add(x1, x2):
+    return ivy.add(x1, x2)
+
+
+def all(a, axis=None, out=None, keepdims=False, *, where=False):
+    return ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+
 def _compute_allclose_with_tol(input, other, rtol, atol):
     return ivy.all(
         ivy.less_equal(
