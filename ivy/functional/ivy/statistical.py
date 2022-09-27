@@ -66,6 +66,17 @@ def min(
         containing the minimum values. The returned array must have the same data type
         as x.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -165,9 +176,10 @@ def max(
         containing the maximum values. The returned array must have the same data type
         as ``x``.
 
+
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.max.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.max.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -446,6 +458,16 @@ def prod(
         the products. The returned array must have a data type as described by the dtype
         parameter above.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.prod.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     >>> x = ivy.array([1, 2, 3])
     >>> z = ivy.prod(x)
     >>> print(z)
@@ -523,6 +545,16 @@ def std(
         containing the standard deviation; otherwise, an array containing the standard
         deviations. The returned array must have a data type as described by the
         ``dtype`` parameter above.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -605,6 +637,16 @@ def sum(
         If the sum was computed over the entire array, a zero-dimensional array
         containing the sum; otherwise, an array containing the sums. The returned array
         must have a data type as described by the ``dtype`` parameter above.
+
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.sum.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -716,6 +758,16 @@ def var(
         containing the variance; otherwise, a non-zero-dimensional array containing the
         variances. The returned array must have the same data type as x.
 
+
+    This method conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.var.html>`_  # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -753,15 +805,6 @@ def var(
         a: ivy.array(0.12666667),
         b: ivy.array(0.11555555)
     }
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.elementwise_functions.tan.html>`_ in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
