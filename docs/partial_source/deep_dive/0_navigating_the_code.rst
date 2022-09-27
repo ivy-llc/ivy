@@ -144,7 +144,7 @@ future releases without breaking forward compatibility. Similar arguments can be
 rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
-Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
 The reasons for each of these features are explained in the following sections.
 
@@ -170,7 +170,7 @@ Code in the backend submodules such as :code:`ivy.functional.backends.torch` sho
 The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only,
 but :code:`dtype` and :code:`device` are now required arguments, rather than optional as they were in the Ivy API.
 All arrays also now have the same type hint :code:`torch.Tensor`,
-rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :code:`ivy.Array` in the output.
+rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 The backend methods also should not add a docstring.
 Again, the reasons for these features are explained in the following sections.
 

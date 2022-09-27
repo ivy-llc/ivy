@@ -4,6 +4,7 @@ import copy
 import functools
 import numpy as np
 from operator import mul
+from typing import Optional
 
 # local
 import ivy
@@ -110,73 +111,68 @@ class Array(
     # ---------- #
 
     @property
-    def mT(self):
+    def data(self) -> ivy.NativeArray:
+        """The native array being wrapped in self."""
+        return self._data
+
+    @property
+    def dtype(self) -> ivy.Dtype:
+        """Data type of the array elements"""
+        return self._dtype
+
+    @property
+    def device(self) -> ivy.Device:
+        """Hardware device the array data resides on."""
+        return self._device
+
+    @property
+    def mT(self) -> ivy.Array:
+        """
+        Transpose of a matrix (or a stack of matrices).
+
+        Returns
+        -------
+        ret
+            array whose last two dimensions (axes) are permuted in reverse order
+            relative to original array (i.e., for an array instance having shape
+            ``(..., M, N)``, the returned array must have shape ``(..., N, M)``).
+            The returned array must have the same data type as the original array.
+        """
         ivy.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
         return ivy.matrix_transpose(self._data)
 
     @property
-    def data(self):
-        return self._data
+    def ndim(self) -> int:
+        """Number of array dimensions (axes)."""
+        return len(tuple(self._shape))
 
     @property
-    def shape(self):
+    def shape(self) -> ivy.Shape:
+        """Array dimensions."""
         return ivy.Shape(self._shape)
 
     @property
-    def ndim(self):
-        """Number of array dimensions (axes).
+    def size(self) -> Optional[int]:
+        """Number of elements in the array."""
+        return self._size
+
+    @property
+    def T(self) -> ivy.Array:
+        """
+        Transpose of the array.
 
         Returns
         -------
         ret
-            number of array dimensions (axes).
-
+            two-dimensional array whose first and last dimensions (axes) are
+            permuted in reverse order relative to original array.
         """
-        return len(tuple(self._shape))
-
-    @property
-    def dtype(self):
-        return self._dtype
-
-    @property
-    def device(self):
-        return self._device
-
-    @property
-    def T(self):
         ivy.assertions.check_equal(len(self._data.shape), 2)
         return ivy.matrix_transpose(self._data)
 
     @property
-    def size(self):
-        """Number of elements in an array.
-
-        .. note::
-           This must equal the product of the array's dimensions.
-
-        Returns
-        -------
-        out
-            number of elements in an array. The returned value must be ``None`` if
-            and only if one or more array dimensions are unknown.
-
-
-        .. note::
-           For array libraries having graph-based computational models, an array may
-           have unknown dimensions due to data-dependent operations.
-
-        """
-        return self._size
-
-    @property
-    def is_variable(self):
-        """Determines whether the array is a variable or not.
-
-        Returns
-        -------
-        ret
-            Boolean, true if the array is a trainable variable, false otherwise.
-        """
+    def is_variable(self) -> bool:
+        """Determine whether the array is a trainable variable or not."""
         return self._is_variable
 
     # Setters #
@@ -211,6 +207,10 @@ class Array(
     def __array_wrap__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
         return self._data.__array_wrap__(*args, **kwargs)
+
+    @_native_wrapper
+    def __array_namespace__(self, api_version=None):
+        return ivy
 
     @_native_wrapper
     def __repr__(self):
@@ -394,7 +394,7 @@ class Array(
 
         Examples
         --------
-        With :code:`ivy.Array` instances only:
+        With :class:`ivy.Array` instances only:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([4, 5, 6])
@@ -648,7 +648,7 @@ class Array(
 
         Examples
         --------
-        With :code:`ivy.Array` instances only:
+        With :class:`ivy.Array` instances only:
 
         >>> a = ivy.array([2, 3, 4])
         >>> b = ivy.array([0, 1, 2])
@@ -714,7 +714,3 @@ class Array(
     @_native_wrapper
     def __iter__(self):
         return iter([to_ivy(i) for i in self._data])
-
-    @_native_wrapper
-    def __str__(self):
-        return str(self._data)

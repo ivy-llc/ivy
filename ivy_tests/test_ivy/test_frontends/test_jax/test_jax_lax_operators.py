@@ -2163,6 +2163,35 @@ def test_jax_lax_shift_right_logical(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+
+# expand_dims
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.lax.expand_dims",
+    ),
+)
+def test_jax_lax_expand_dims(
+    dtype_x_axis,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    x_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -2170,5 +2199,10 @@ def test_jax_lax_shift_right_logical(
         fn_tree="lax.shift_right_logical",
         x=np.asarray(x[0], dtype=input_dtype[0]),
         y=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+        fn_tree="lax.expand_dims",
+        array=x[0],
+        dimensions=(axis,),
     )
 

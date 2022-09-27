@@ -4,6 +4,7 @@
 from hypothesis import given, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
@@ -102,24 +103,17 @@ def test_sort(
 def _get_v_and_x(draw):
     dtype_x, x = draw(
         helpers.dtype_and_values(
-            dtype=["int64"],  # ToDo, fix to accept all integers
+            available_dtypes=helpers.get_dtypes("numeric"),
             shape=draw(
                 helpers.get_shape(
                     min_num_dims=1,
-                    max_num_dims=1,
                 )
-            ),  # ToDo, should accept N-D inputs
+            ),
         )
     )
     dtype_v, v = draw(
         helpers.dtype_and_values(
-            dtype=["int64"],
-            shape=draw(
-                helpers.get_shape(
-                    min_num_dims=1,
-                    max_num_dims=1,
-                )
-            ),
+            available_dtypes=helpers.get_dtypes("numeric"),
         )
     )
     return [dtype_x, dtype_v], [x, v]
@@ -130,6 +124,8 @@ def _get_v_and_x(draw):
     dtypes_and_xs=_get_v_and_x(),
     num_positional_args=helpers.num_positional_args(fn_name="searchsorted"),
     side=st.sampled_from(["left", "right"]),
+    sorter=st.booleans(),
+    ret_dtype=st.sampled_from(["int32", "int64"]),
 )
 def test_searchsorted(
     *,
@@ -142,8 +138,11 @@ def test_searchsorted(
     instance_method,
     fw,
     side,
+    sorter,
+    ret_dtype,
 ):
     dtypes, xs = dtypes_and_xs
+    sorter = ivy.argsort(ivy.asarray(xs[0])) if sorter and fw != "tensorflow" else None
     helpers.test_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -157,4 +156,6 @@ def test_searchsorted(
         x=xs[0],
         v=xs[1],
         side=side,
+        sorter=sorter,
+        ret_dtype=ret_dtype,
     )
