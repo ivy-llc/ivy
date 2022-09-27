@@ -606,7 +606,6 @@ def test_scatter_nd(
     fw,
 ):
     (val_dtype, ind_dtype, update_dtype), vals, ind, updates = x
-    ivy.set_backend("tensorflow")
     shape = vals.shape
     helpers.test_function(
         input_dtypes=[ind_dtype, update_dtype],
