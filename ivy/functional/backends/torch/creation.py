@@ -1,8 +1,9 @@
 # global
+from typing import Union, List, Optional, Sequence
+
 import numpy as np
 import torch
 from torch import Tensor
-from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
@@ -18,6 +19,7 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+
 
 # Array API Standard #
 # -------------------#
@@ -267,9 +269,8 @@ def linspace(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)[
-            :-1
-        ]
+        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)
+        ans = ans[:-1]
     else:
         ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
     if (
