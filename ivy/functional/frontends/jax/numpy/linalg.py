@@ -19,4 +19,4 @@ def eigh(a, UPLO="L", symmetrize_input=True):
         a = symmetrize(a)
 
     return ivy.eigh(a, UPLO=UPLO)
-    
+
