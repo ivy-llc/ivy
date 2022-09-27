@@ -562,7 +562,6 @@ def test_frontend_function(
             copy_kwargs["inplace"] = True
             first_array = ivy.func_wrapper._get_first_array(*copy_args, **copy_kwargs)
             ret_ = frontend_fn(*copy_args, **copy_kwargs)
-            ret_ = frontend_fn(*copy_args, **copy_kwargs)
             if ivy.native_inplace_support:
                 assert ret_.data is first_array.data
             assert first_array is ret_
