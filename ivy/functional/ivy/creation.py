@@ -1,7 +1,7 @@
 # global
 import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable
+from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
 
 import numpy as np
 
@@ -115,6 +115,21 @@ def asarray_infer_device(fn: Callable) -> Callable:
     return new_fn
 
 
+# Type hints #
+# -----------#
+
+SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
+_T_co = TypeVar("_T_co", covariant=True)
+
+
+class NestedSequence(Protocol[_T_co]):
+    def __getitem__(self, key: int, /) -> _T_co:
+        ...
+
+    def __len__(self, /) -> int:
+        ...
+
+
 # Array API Standard #
 # -------------------#
 
@@ -191,18 +206,27 @@ def arange(
 @handle_out_argument
 @handle_exceptions
 def asarray(
-    x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
+    obj: Union[
+        ivy.Array,
+        ivy.NativeArray,
+        bool,
+        int,
+        float,
+        NestedSequence,
+        SupportsBufferProtocol,
+    ],
     /,
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Converts the input to an array.
 
     Parameters
     ----------
-    x
+    obj
         input data, in any form that can be converted to an array. This includes lists,
         lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
     copy
@@ -212,6 +236,9 @@ def asarray(
        be the default floating-point data type. Default  ``None``.
     device
        device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
@@ -227,7 +254,9 @@ def asarray(
     but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
     instances in place of any of the arguments.
     """
-    return current_backend().asarray(x, copy=copy, dtype=dtype, device=device)
+    return current_backend().asarray(
+        obj, copy=copy, dtype=dtype, device=device, out=out
+    )
 
 
 @outputs_to_ivy_arrays
@@ -391,7 +420,7 @@ def full_like(
 
     Functional Examples
     -------------------
-    With int datatype:
+    With :code:`int` datatype:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
@@ -405,7 +434,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With float datatype:
+    With :code:`float` datatype:
 
     >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     >>> fill_value = 0.000123
@@ -413,7 +442,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With ivy.NativeArray input:
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([3.0, 8.0])
     >>> fill_value = 0.000123
@@ -427,7 +456,7 @@ def full_like(
     ivy.array([[0.000123, 0.000123, 0.000123],
            [0.000123, 0.000123, 0.000123]])
 
-    With ivy.Container input:
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1.2,2.2324,3.234]), \
                            b=ivy.array([4.123,5.23,6.23]))
@@ -442,7 +471,7 @@ def full_like(
     Instance Method Examples:
     ------------------------
 
-    With ivy.Array input:
+    With :code:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5, 6])
     >>> fill_value = 1
@@ -450,7 +479,7 @@ def full_like(
     >>> print(y)
     ivy.array([1, 1, 1, 1, 1, 1])
 
-    With ivy.Container input:
+    With :code:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1,2,3]), \
                            b=ivy.array([4,5,6]))
@@ -1131,7 +1160,7 @@ def full(
     >>> print(x)
     ivy.array([[0.68, 0.68]])
 
-    With :code:'ivy.Container' input:
+    With :code:`ivy.Container` input:
 
     >>> shape = ivy.Container(a=ivy.NativeShape((2, 1)), b=ivy.Shape((2, 1, 2)))
     >>> fill_value = ivy.Container(a=0.99, b=False)

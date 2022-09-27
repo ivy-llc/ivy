@@ -1621,7 +1621,7 @@ class ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        With :code: `ivy.Array` inputs:
+        With :code:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([2., 5., 15.])
         >>> x2 = ivy.array([3., 2., 4.])

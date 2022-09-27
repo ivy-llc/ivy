@@ -171,10 +171,7 @@ def log_sigmoid(x):
 
 
 def log_softmax(x, axis=-1):
-    x_max = ivy.max(x)
-    shifted = ivy.subtract(x, x_max)
-    shifted_logsumexp = ivy.log(ivy.sum(ivy.exp(shifted), axis=axis, keepdims=True))
-    return shifted - shifted_logsumexp
+    return ivy.log_softmax(x, axis=axis)
 
 
 def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):

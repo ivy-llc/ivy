@@ -723,6 +723,8 @@ def matmul(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the matrix product.
@@ -798,14 +800,11 @@ def matmul(
 
     With :code:`ivy.NativeArray` inputs:
 
-    >>> x = ivy.native_array([[1., 2.],  \
-                            [0., 1.]])
-    >>> y = ivy.native_array([[2., 0.],  \
-                            [0., 3.]])
+    >>> x = ivy.native_array([[1., 2.], [0., 1.]])
+    >>> y = ivy.native_array([[2., 0.], [0., 3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
-    ivy.array([[2., 6.],
-                [0., 3.]])
+    ivy.array([[2., 6.],[0., 3.]])
 
     With :code:`ivy.Container` inputs:
 
@@ -833,17 +832,16 @@ def matmul(
     With a combination of :code:`ivy.NativeArray`
     and :code:`ivy.Array` inputs:
 
-    >>> x = ivy.native_array([[1., 2.], \
-                            [0., 3.]])
-    >>> y = ivy.array([[1.], \
-                        [3.]])
+    >>> x = ivy.native_array([[1., 2.], [0., 3.]])
+    >>> y = ivy.array([[1.], [3.]])
     >>> z = ivy.matmul(x, y)
     >>> print(z)
-    ivy.array([[7.],
-               [9.]])
+    ivy.array([[7.],[9.]])
 
     """
-    return current_backend(x1).matmul(x1, x2, out=out)
+    return current_backend(x1).matmul(
+        x1, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -1125,7 +1123,24 @@ def pinv(
         floating-point data type determined by :ref:`type-promotion` and must have shape
         ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost
         two dimensions must be transposed).
-
+    
+    Examples
+    --------
+    x = ivy.array([[1., 2.],\
+                  [3., 4.]])
+    y = pinv(x, None, None)
+    print(y)
+    ivy.array([[-2., 1.],\
+               [1.5, -0.5]])
+    
+    x = ivy.array([[1., 2.],\
+                  [3., 4.]])
+    out = ivy.array()
+    pinv(x, 0, out)
+    print(out)
+    ivy.array([[0.0426, 0.0964],\
+               [0.0605, 0.1368]])
+    
     """
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 
