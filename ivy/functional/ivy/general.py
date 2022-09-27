@@ -773,10 +773,9 @@ def to_numpy(
 @handle_nestable
 @handle_exceptions
 def to_scalar(
+    # x: Union[ivy.Array, ivy.NativeArray, ivy.variable]
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
+    /
 ) -> Number:
     """Converts an array with a single element into a scalar.
 
@@ -789,6 +788,10 @@ def to_scalar(
     -------
     ret
         a scalar copying the element of the array ``x``.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
