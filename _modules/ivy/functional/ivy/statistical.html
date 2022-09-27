@@ -196,6 +196,17 @@
 <span class="sd">        containing the minimum values. The returned array must have the same data type</span>
 <span class="sd">        as x.</span>
 
+
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
@@ -295,9 +306,10 @@
 <span class="sd">        containing the maximum values. The returned array must have the same data type</span>
 <span class="sd">        as ``x``.</span>
 
+
 <span class="sd">    This method conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.max.html&gt;`_  </span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.max.html&gt;`_  </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -576,6 +588,16 @@
 <span class="sd">        the products. The returned array must have a data type as described by the dtype</span>
 <span class="sd">        parameter above.</span>
 
+
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.prod.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.prod(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
@@ -653,6 +675,16 @@
 <span class="sd">        containing the standard deviation; otherwise, an array containing the standard</span>
 <span class="sd">        deviations. The returned array must have a data type as described by the</span>
 <span class="sd">        ``dtype`` parameter above.</span>
+
+
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -735,6 +767,16 @@
 <span class="sd">        If the sum was computed over the entire array, a zero-dimensional array</span>
 <span class="sd">        containing the sum; otherwise, an array containing the sums. The returned array</span>
 <span class="sd">        must have a data type as described by the ``dtype`` parameter above.</span>
+
+
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.sum.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -846,6 +888,16 @@
 <span class="sd">        containing the variance; otherwise, a non-zero-dimensional array containing the</span>
 <span class="sd">        variances. The returned array must have the same data type as x.</span>
 
+
+<span class="sd">    This method conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.var.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
@@ -883,15 +935,6 @@
 <span class="sd">        a: ivy.array(0.12666667),</span>
 <span class="sd">        b: ivy.array(0.11555555)</span>
 <span class="sd">    }</span>
-
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/</span>
-<span class="sd">    signatures.elementwise_functions.tan.html&gt;`_ in the standard.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
