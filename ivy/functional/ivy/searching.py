@@ -1,15 +1,16 @@
 # global
+from numbers import Number
 from typing import Union, Optional, Tuple
 
 # local
 import ivy
 from ivy.backend_handler import current_backend
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -223,7 +224,14 @@ def argmin(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
+def nonzero(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    as_tuple: bool = True,
+    size: Optional[int] = None,
+    fill_value: Number = 0,
+) -> Union[Tuple[ivy.Array], ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
@@ -231,6 +239,19 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     x
         input array. Must have a positive rank. If `x` is zero-dimensional, the function
         must raise an exception.
+    as_tuple
+        if True, the output is returned as a tuple of indices, one for each
+        dimension of the input, containing the indices of the true elements in that
+        dimension. If False, the coordinates are returned in a (N, ndim) array,
+        where N is the number of true elements. Default = True.
+    size
+        if specified, the function will return an array of shape (size, ndim).
+        If the number of non-zero elements is fewer than size, the remaining elements
+        will be filled with fill_value. Default = None.
+    fill_value
+        when size is specified and there are fewer than size number of elements,
+        the remaining elements in the output array will be filled with fill_value.
+        Default = 0.
 
     Returns
     -------
@@ -256,7 +277,17 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y)
     (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
 
-    With :class:`ivy.NativeArray` input:
+    >>> x = ivy.array([[0, 2], [-1, -2]])
+    >>> y = ivy.nonzero(x, as_tuple=False)
+    >>> print(y)
+    ivy.array([[0, 1], [1, 0], [1, 1]])
+
+    >>> x = ivy.array([0, 1])
+    >>> y = ivy.nonzero(x, size=2, fill_value=4)
+    >>> print(y)
+    (ivy.array([1, 4]),)
+
+    With :code:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)
@@ -310,7 +341,9 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y.b)
     (ivy.array([]),)
     """
-    return current_backend(x).nonzero(x)
+    return current_backend(x).nonzero(
+        x, as_tuple=as_tuple, size=size, fill_value=fill_value
+    )
 
 
 @to_native_arrays_and_back
