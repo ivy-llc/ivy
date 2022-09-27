@@ -1343,11 +1343,6 @@ def dtype(
     --------
     With :class:`ivy.Array` inputs:
 
-    >>> x1 = ivy.array([1, 0, 1, -1, 0])
-    >>> y = ivy.dtype(x1)
-    >>> print(y)
-    int32
-
     >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
     >>> y = ivy.dtype(x1)
     >>> print(y)
@@ -1360,45 +1355,13 @@ def dtype(
     >>> print(y)
     int32
 
-    >>> x1 = ivy.native_array([1.0, 2.0, 3.5, 4.5, 5, 6])
-    >>> y = ivy.dtype(x1)
-    >>> print(y)
-    float32
-
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([1, 0, -1, 0, 1]), \
-                    b=ivy.array([1, 0, -1, 0, 1]))
-    >>> y = ivy.dtype(x.a)
-    >>> print(y)
-    int32
-
-    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]), \
-                            b=ivy.native_array([1, 0, 0, 0, 1]))
+    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),
+    ...                   b=ivy.native_array([1, 0, 0, 0, 1]))
     >>> y = ivy.dtype(x.a)
     >>> print(y)
     float32
-
-    Instance Method Examples
-    ------------------------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x.dtype
-    >>> print(y)
-    int32
-
-    With :class:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                      b=ivy.array([2, 3, 4]))
-    >>> y = x.dtype()
-    >>> print(y)
-    {
-        a: int32,
-        b: int32
-    }
-
     """
     return current_backend(x).dtype(x, as_native)
 
@@ -1462,7 +1425,6 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     >>> ivy.set_backend('torch')
     >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
     ('float16','uint16','uint32','uint64')
-
     """
     ivy.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
@@ -1496,55 +1458,17 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> 
 
     Examples
     --------
-    with :code:`ivy.Dtype` inputs:
-
     >>> print(ivy.invalid_dtype(None))
     False
 
-    >>> print(ivy.invalid_dtype('uint64'))
+    >>> print(ivy.invalid_dtype("uint64"))
     False
 
     >>> print(ivy.invalid_dtype(ivy.float64))
     False
 
-    >>> print(ivy.invalid_dtype('float32'))
-    False
-
-
-
-    with :code:`ivy.NativeDtype` inputs:
-
     >>> print(ivy.invalid_dtype(ivy.native_uint8))
     False
-
-    >>> print(ivy.invalid_dtype(ivy.native_float32))
-    False
-
-    >>> print(ivy.invalid_dtype('native_bool'))
-    True
-
-    >>> print(ivy.invalid_dtype('native_float64'))
-    True
-
-    >>> print(ivy.invalid_dtype(ivy.native_int16))
-    False
-
-    >>> print(ivy.invalid_dtype('native_int32'))
-    True
-
-    >>> print(ivy.invalid_dtype(ivy.native_float16))
-    False
-
-    >>> print(ivy.invalid_dtype(ivy.native_int64))
-    False
-
-    >>> print(ivy.invalid_dtype(ivy.native_int8))
-    False
-
-    >>> print(ivy.invalid_dtype('native_uint64'))
-    True
-
-
     """
     if dtype_in is None:
         return False
@@ -1574,7 +1498,6 @@ def is_bool_dtype(
     Both the description and the type hints above assumes an array input for
     simplicity but this function is *nestable*, and therefore also accepts
     :class:`ivy.Container` instances in place of any of the arguments.
-
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
