@@ -31,8 +31,8 @@ def test_numpy_minimum(
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    input_dtype, xs = dtype_and_x
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -47,8 +47,8 @@ def test_numpy_minimum(
         fw=fw,
         frontend="numpy",
         fn_tree="minimum",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        x1=xs[0],
+        x2=xs[1],
         out=None,
         where=where,
         casting="same_kind",
@@ -90,8 +90,7 @@ def test_numpy_amin(
         assume(initial is np.NINF)
 
     input_dtype, x, axis = dtype_and_x
-    input_dtype = [input_dtype]
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -107,7 +106,7 @@ def test_numpy_amin(
         frontend="numpy",
         fn_tree="amin",
         test_values=False,
-        a=np.asarray(x, dtype=input_dtype[0]),
+        a=x[0],
         axis=axis,
         keepdims=keepdims,
         initial=initial,

@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given
 
 # local
@@ -25,7 +24,6 @@ def test_numpy_shape(
     fw,
 ):
     input_dtypes, xs = xs_n_input_dtypes_n_unique_idx
-    xs = np.asarray(xs, dtype=input_dtypes)
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -35,7 +33,7 @@ def test_numpy_shape(
         fw=fw,
         frontend="numpy",
         fn_tree="shape",
-        array=xs,
+        array=xs[0],
         test_values=False,
     )
     # Manually compare the shape here because ivy.shape doesn't return an array, so

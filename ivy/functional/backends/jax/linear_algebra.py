@@ -118,8 +118,10 @@ def inv(
             ret = jnp.linalg.inv(x)
             return ret
         else:
-            cofactor = jnp.linalg.inv(x).T * jnp.linalg.det(x)
-            inverse = jnp.multiply(jnp.divide(1, jnp.linalg.det(x)), cofactor.T)
+            cofactor = jnp.transpose(jnp.linalg.inv(x)) * jnp.linalg.det(x)
+            inverse = jnp.multiply(
+                jnp.divide(1, jnp.linalg.det(x)), jnp.transpose(cofactor)
+            )
             ret = inverse
             return ret
 
@@ -131,8 +133,18 @@ inv.unsupported_dtypes = (
 
 
 def matmul(
-    x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if transpose_a is True:
+        x1 = jnp.transpose(x1)
+    if transpose_b is True:
+        x2 = jnp.transpose(x2)
     return jnp.matmul(x1, x2)
 
 
@@ -173,7 +185,9 @@ def matrix_rank(
 ) -> JaxArray:
     axis = None
     ret_shape = x.shape[:-2]
-    if len(x.shape) > 2:
+    if len(x.shape) == 2:
+        singular_values = jnp.linalg.svd(x, compute_uv=False)
+    elif len(x.shape) > 2:
         y = x.reshape((-1, *x.shape[-2:]))
         singular_values = jnp.asarray(
             [
@@ -182,8 +196,8 @@ def matrix_rank(
             ]
         )
         axis = 1
-    else:
-        singular_values = jnp.linalg.svd(x, compute_uv=False)
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return jnp.array(0, dtype=x.dtype)
     max_values = jnp.max(singular_values, axis=axis)
     if rtol:
         ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
