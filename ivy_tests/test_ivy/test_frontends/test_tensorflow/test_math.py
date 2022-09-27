@@ -58,7 +58,7 @@ def _get_clip_inputs(draw):
         helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5)
     )
     max = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=5, max_value=50)
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=6, max_value=50)
     )
     return x_dtype, x, min, max
 
