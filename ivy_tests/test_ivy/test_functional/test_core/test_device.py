@@ -295,7 +295,7 @@ def test_split_func_call(
     x2 = np.random.uniform(size=shape).astype(dtype[0])
     x1 = ivy.asarray(x1)
     x2 = ivy.asarray(x2)
-    if as_variable:
+    if as_variable and ivy.is_float_dtype(dtype[0]):
         x1 = ivy.variable(x1)
         x2 = ivy.variable(x2)
 
