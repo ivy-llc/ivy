@@ -226,8 +226,7 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
-<span class="sd">                        b=ivy.array([4.5, -5.3, -0, -2.3]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),b=ivy.array([4.5, -5.3, -0, -2.3]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.abs(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
@@ -290,6 +289,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0., 1., -1.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.acos(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
@@ -595,8 +595,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([-1.57,-0.524,0.644,1.57])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.1, 0.2, 0.3], \</span>
-<span class="sd">                       [-0.4, -0.5, -0.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.1, 0.2, 0.3],[-0.4, -0.5, -0.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.asin(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0.1,0.201,0.305],[-0.412,-0.524,-0.644]])</span>
@@ -628,11 +627,13 @@
 
 <span class="sd">    Using :class:`ivy.Container` instance method:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 0.1, 0.2]), \</span>
-<span class="sd">                          b=ivy.array([0.3, 0.4, 0.5]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),b=ivy.array([0.3, 0.4, 0.5]))</span>
 <span class="sd">    &gt;&gt;&gt; y = x.asin()</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array([0.,0.1,0.201]),</span>
+<span class="sd">        b:ivy.array([0.305,0.412,0.524])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -704,8 +705,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([-1.44, -0.693, 0.809, 0.881])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.2, 0.4, 0.6], \</span>
-<span class="sd">                       [-0.8, -1, -2]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.2, 0.4, 0.6],[-0.8, -1, -2]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.asinh(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[ 0.199, 0.39, 0.569],</span>
@@ -773,6 +773,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the inverse tangent of each element in ``x``. The returned</span>
 <span class="sd">        array must have a floating-point data type determined by :ref:`type-promotion`.</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -907,15 +908,16 @@
 <span class="sd">        an array containing the inverse tangent of the quotient ``x1/x2``. The returned</span>
 <span class="sd">        array must have a floating-point data type.</span>
 
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html&gt;`_ </span>
+
+<span class="sd">    This method conforms to the</span>
+<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html&gt;`_  </span>
 <span class="sd">    in the standard.</span>
 
-<span class="sd">    The descriptions above assume an array input for simplicity, but</span>
-<span class="sd">    the method also accepts :class:`ivy.Container` instances in place of</span>
-<span class="sd">    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints</span>
-<span class="sd">    and also the examples below.</span>
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -975,6 +977,7 @@
 <span class="sd">    ivy.array([ 3.14 ,  0.   , -2.23 , -0.785,  0.197,  2.18 ])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),\</span>
 <span class="sd">                          b=ivy.array([4.5, -5.3, -0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([3.0, 2.0, 1.0])</span>
@@ -1235,6 +1238,7 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have the</span>
 <span class="sd">        same data type as x.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_invert.html&gt;`_ </span>
@@ -1364,10 +1368,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]), \</span>
-<span class="sd">                            b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                            b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.bitwise_or(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -1378,8 +1380,7 @@
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                            b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.bitwise_or(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -1550,13 +1551,15 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type determined by :ref:`type-promotion`.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html&gt;`_ </span>
-<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
-<span class="sd">    the method also accepts :class:`ivy.Container` instances in place of</span>
-<span class="sd">    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints</span>
-<span class="sd">    and also the examples below.</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
@@ -1713,6 +1716,7 @@
 <span class="sd">        an array containing the rounded result for each element in ``x``. The returned</span>
 <span class="sd">        array must have the same data type as ``x``.</span>
 
+
 <span class="sd">    This method conforms to the</span>
 <span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
 <span class="sd">    This docstring is an extension of the</span>
@@ -1805,6 +1809,16 @@
 <span class="sd">        an array containing the cosine of each element in ``x``. The returned array must</span>
 <span class="sd">        have a floating-point data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">    This method conforms to the</span>
+<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cos.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
@@ -1880,13 +1894,16 @@
 <span class="sd">        an array containing the hyperbolic cosine of each element in ``x``. The returned</span>
 <span class="sd">        array must have a floating-point data type determined by :ref:`type-promotion`.</span>
 
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html&gt;`_ </span>
-<span class="sd">    in the standard. The descriptions above assume an array input for simplicity, but</span>
-<span class="sd">    the method also accepts :class:`ivy.Container` instances in place of</span>
-<span class="sd">    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints</span>
-<span class="sd">    and also the examples below.</span>
+
+<span class="sd">    This method conforms to the</span>
+<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
@@ -1964,6 +1981,17 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        floating-point data type determined by Type Promotion Rules.</span>
+
+
+<span class="sd">    This method conforms to the</span>
+<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.divide.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -2045,6 +2073,17 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of bool.</span>
+
+
+<span class="sd">    This method conforms to the</span>
+<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.equal.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -2302,10 +2341,10 @@
 
 
 <span class="sd">    This method conforms to the</span>
-<span class="sd">    `Array API Standard&lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
 <span class="sd">    This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/</span>
-<span class="sd">    generated/signatures.elementwise_functions.floor.html&gt;`_ in the standard.</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
@@ -2480,6 +2519,7 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of bool.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater.html&gt;`_ </span>
@@ -2637,21 +2677,24 @@
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                           b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.greater_equal(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])}</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),</span>
+<span class="sd">        b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                  b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                      b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.greater_equal(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array([True,True,True]),</span>
+<span class="sd">        b:ivy.array([False,False,False])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
@@ -2687,22 +2730,25 @@
 
 <span class="sd">    With :class:`ivy.Container` instances:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                  b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                      b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = x &gt;= y</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array([True,True,True]),</span>
+<span class="sd">        b:ivy.array([False,False,False])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\</span>
-<span class="sd">                          b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))</span>
 <span class="sd">    &gt;&gt;&gt; z = x &gt;= y</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])}</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),</span>
+<span class="sd">        b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
@@ -2773,10 +2819,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                  b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                      b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.less_equal(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -2896,6 +2940,7 @@
 <span class="sd">        an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is</span>
 <span class="sd">        finite and ``False`` otherwise. The returned array must have a data type of</span>
 <span class="sd">        ``bool``.</span>
+
 
 <span class="sd">    This method conforms to the</span>
 <span class="sd">    `Array API Standard&lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
@@ -3093,6 +3138,7 @@
 <span class="sd">    ivy.array([[False],[False],[True]])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]), \</span>
 <span class="sd">        b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
 <span class="sd">    &gt;&gt;&gt; x.isinf()</span>
@@ -3161,6 +3207,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` inputs:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.isnan(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
@@ -3219,6 +3266,7 @@
 <span class="sd">    Instance Method Examples</span>
 <span class="sd">    ------------------------</span>
 <span class="sd">    With :class:`ivy.Array` inputs:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; x.isnan()</span>
 <span class="sd">    ivy.array([False, False, False])</span>
@@ -3362,10 +3410,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),\</span>
-<span class="sd">                          b=ivy.array([2, 3, 4]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),\</span>
-<span class="sd">                          b=ivy.array([5, 6, 7]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.less(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3558,7 +3604,7 @@
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html&gt;`_ </span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log1p.html&gt;`_ </span>
 <span class="sd">    in the standard.</span>
 
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
@@ -3651,6 +3697,17 @@
 <span class="sd">        ``x``. The returned array must have a floating-point data type determined by</span>
 <span class="sd">        :ref:`type-promotion`.</span>
 
+
+<span class="sd">    This method conforms to the</span>
+<span class="sd">    `Array API Standard &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+<span class="sd">    This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log2.html&gt;`_  </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3697,6 +3754,7 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        floating-point data type determined by :ref:`type-promotion`.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logaddexp.html&gt;`_ </span>
@@ -3741,10 +3799,8 @@
 
 <span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4., 5., 6.]),\</span>
-<span class="sd">                        b=ivy.array([2., 3., 4.]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1., 2., 3.]),\</span>
-<span class="sd">                        b=ivy.array([5., 6., 7.]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4., 5., 6.]),b=ivy.array([2., 3., 4.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1., 2., 3.]),b=ivy.array([5., 6., 7.]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.logaddexp(y,x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
@@ -3803,6 +3859,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([True, True, False])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([True, False, True])</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.logical_and(x, y))</span>
@@ -3813,6 +3870,7 @@
 <span class="sd">    ivy.array([True,False,False])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, True, True]), \</span>
 <span class="sd">        b=ivy.array([True, False, False]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([True, True, False]), \</span>
@@ -3902,6 +3960,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of ``bool``.</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -4236,6 +4295,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the evaluated result for each element in x</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.negative.html&gt;`_ </span>
@@ -4352,6 +4412,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type of ``bool``.</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -4751,6 +4812,7 @@
 <span class="sd">        an array containing the element-wise results. The returned array must have a</span>
 <span class="sd">        data type determined by :ref:`type-promotion`.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.pow.html&gt;`_ </span>
@@ -4848,6 +4910,7 @@
 <span class="sd">        the same sign as the respective element ``x2_i``. The returned array must have a</span>
 <span class="sd">        data type determined by :ref:`Type Promotion Rules`.</span>
 
+
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.remainder.html&gt;`_ </span>
@@ -4941,6 +5004,7 @@
 <span class="sd">    `round function &lt;https://pytorch.org/docs/stable/generated/torch.round.html&gt;`_.</span>
 <span class="sd">    It has been deliberately omitted here due to the imprecise</span>
 <span class="sd">    nature of the argument in :code:`torch.round`.</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -5391,6 +5455,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the evaluated result for each element in ``x``.</span>
 
+
 <span class="sd">    This method conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
 <span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.square.html&gt;`_ </span>
@@ -5508,6 +5573,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the element-wise differences.</span>
+
 
 <span class="sd">    This method conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -5751,6 +5817,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the values before the decimal point for each element ``x``.</span>
 <span class="sd">        The returned array must have the same data type as ``x``.</span>
+
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -6035,8 +6102,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([ 0.    , -0.0262, -0.873 ,     nan])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3], \</span>
-<span class="sd">                    [-4.4, -5.5, -6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.deg2rad(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[ 0.0192,  0.0384,  0.0576],</span>
@@ -6118,8 +6184,7 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([  0. ,  -1.5, -50. ,   nan])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3], \</span>
-<span class="sd">                    [-4.4, -5.5, -6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.rad2deg(x, out=x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[  63.,  126.,  189.],</span>
