@@ -728,6 +728,7 @@ def result_type(
     ret
         the dtype resulting from an operation involving the input arrays and dtypes.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html>`_ # noqa

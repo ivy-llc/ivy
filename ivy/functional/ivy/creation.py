@@ -189,6 +189,7 @@ def arange(
         output array must be ceil((stop-start)/step) if stop - start and step have the
         same sign, and length 0 otherwise.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.arange.html>`_ # noqa
@@ -197,6 +198,7 @@ def arange(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
@@ -245,6 +247,7 @@ def asarray(
     ret
         An array interpretation of x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.asarray.html>`_ # noqa
@@ -291,6 +294,7 @@ def zeros(
     -------
     ret
         an array containing zeros.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -346,6 +350,7 @@ def ones(
     -------
     ret
         an array containing ones.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -408,6 +413,7 @@ def full_like(
     ret
         an array having the same shape as ``x`` and where every element is equal to
         ``fill_value``.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -532,6 +538,7 @@ def ones_like(
     ret
         an array having the same shape as x and filled with ones.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones_like.html>`_ # noqa
@@ -587,6 +594,7 @@ def zeros_like(
     -------
     ret
         an array having the same shape as ``x`` and filled with ``zeros``.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -700,6 +708,7 @@ def tril(
         the same shape and data type as x. All elements above the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.tril.html>`_ # noqa
@@ -746,6 +755,7 @@ def triu(
         the same shape and data type as x. All elements below the specified diagonal k
         must be zeroed. The returned array should be allocated on the same device as x.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.triu.html>`_ # noqa
@@ -791,6 +801,7 @@ def empty(
     -------
     ret
         an uninitialized array having a specified shape
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -839,6 +850,7 @@ def empty_like(
     -------
     ret
         an array having the same shape as x and containing uninitialized data.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -895,6 +907,7 @@ def eye(
     -------
     ret
         device on which to place the created array. Default: None.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -955,6 +968,7 @@ def linspace(
     -------
     ret
         Tensor of evenly-spaced values.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -1022,56 +1036,57 @@ def meshgrid(
 
         Each returned array should have the same data type as the input arrays.
 
-        This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-        the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
-        in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
+    in the standard.
 
-        Functional Examples
-        -------------------
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
-        With :class:`ivy.Array` input:
+    Functional Examples
+    -------------------
 
-        >>> x = ivy.array([1, 2])
-        >>> y = ivy.array([3, 4])
-        >>> xv, yv = ivy.meshgrid(x, y)
-        >>> print(xv)
-        ivy.array([[1, 2],
-               [1, 2]])
+    With :class:`ivy.Array` input:
 
-        >>> print(yv)
-        ivy.array([[3, 3],
-               [4, 4]])
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([3, 4])
+    >>> xv, yv = ivy.meshgrid(x, y)
+    >>> print(xv)
+    ivy.array([[1, 2],
+            [1, 2]])
 
-        >>> x = ivy.array([1, 2, 5])
-        >>> y = ivy.array([4, 1])
-        >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
-        >>> print(xv)
-        ivy.array([[1, 1],
-               [2, 2],
-               [5, 5]])
+    >>> print(yv)
+    ivy.array([[3, 3],
+            [4, 4]])
 
-        >>> print(yv)
-        ivy.array([[4, 1],
-               [4, 1],
-               [4, 1]])
+    >>> x = ivy.array([1, 2, 5])
+    >>> y = ivy.array([4, 1])
+    >>> xv, yv = ivy.meshgrid(x, y, indexing='ij')
+    >>> print(xv)
+    ivy.array([[1, 1],
+            [2, 2],
+            [5, 5]])
 
-        With :class:`ivy.NativeArray` input:
+    >>> print(yv)
+    ivy.array([[4, 1],
+            [4, 1],
+            [4, 1]])
 
-        >>> x = ivy.native_array([1, 2])
-        >>> y = ivy.native_array([3, 4])
-        >>> xv, yv = ivy.meshgrid(x, y)
-        >>> print(xv)
-        ivy.array([[1, 2],
-               [1, 2]])
+    With :class:`ivy.NativeArray` input:
 
-        >>> print(yv)
-        ivy.array([[3, 3],
-               [4, 4]])
+    >>> x = ivy.native_array([1, 2])
+    >>> y = ivy.native_array([3, 4])
+    >>> xv, yv = ivy.meshgrid(x, y)
+    >>> print(xv)
+    ivy.array([[1, 2],
+            [1, 2]])
+
+    >>> print(yv)
+    ivy.array([[3, 3],
+            [4, 4]])
 
     """
     return current_backend().meshgrid(*arrays, indexing=indexing)
@@ -1115,6 +1130,7 @@ def full(
     -------
     ret
         an array where every element is equal to `fill_value`.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -1210,6 +1226,7 @@ def from_dlpack(
 
            The returned array may be either a copy or a view. See
            :ref:`data-interchange` for details.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
