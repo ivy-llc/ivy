@@ -79,5 +79,12 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+def concatenate(arrays, axis=0, dtype=None):
+    ret = ivy.concat(arrays, axis=axis)
+    if dtype:
+        ret = ivy.array(ret, dtype=dtype)
+    return ret
+
+
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
