@@ -167,12 +167,12 @@ as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 returned array must have the default array index data type.</p>
 </dd>
 </dl>
-<p>This method conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
 <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.argsort.html">docstring</a> 
-in the standard. The descriptions above assume an array input for simplicity, but
-the method also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the type hints
-and also the examples below.</p>
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments</p>
 <p class="rubric">Examples</p>
 <p>With: code:<cite>ivy.Array</cite> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
@@ -319,12 +319,12 @@ as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 along the given <cite>axis</cite>.</p>
 </dd>
 </dl>
-<p>This method conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
 <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.sort.html">docstring</a> 
-in the standard. The descriptions above assume an array input for simplicity, but
-the method also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances, as shown in the type hints
-and also the examples below.</p>
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments</p>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>

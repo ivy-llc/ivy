@@ -155,9 +155,9 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container instance method variant of ivy.argsort. This method </span>
-<span class="sd">        simply wraps the function, and so the docstring for </span>
-<span class="sd">        ivy.argsort also applies to this method with minimal changes.</span>
+<span class="sd">        ivy.Container static method variant of ivy.argsort. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.argsort also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -355,7 +355,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container static method variant of ivy.sort. This method simply wraps the</span>
-<span class="sd">        function, and so the docstring for ivy.add also applies to this method</span>
+<span class="sd">        function, and so the docstring for ivy.sort also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
 
 <span class="sd">        Examples</span>
@@ -476,6 +476,12 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container static method variant of ivy.searchsorted.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for ivy.searchsorted</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;searchsorted&quot;</span><span class="p">,</span>
             <span class="n">x1</span><span class="p">,</span>
@@ -502,6 +508,12 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.searchsorted.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring for ivy.searchsorted</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_searchsorted</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">v</span><span class="p">,</span>
