@@ -23,8 +23,6 @@ def clip_by_value(t, clip_value_min, clip_value_max):
         message="clip_value_min and clip_value_max must exist",
     )
     t = ivy.array(t)
-    # clip_value_min = ivy.array(clip_value_min)
-    # clip_value_max = ivy.array(clip_value_max)
     return ivy.clip(t, clip_value_min, clip_value_max)
 
 
