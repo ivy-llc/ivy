@@ -194,7 +194,7 @@ docstring of the <code class="code docutils literal notranslate"><span class="pr
 <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="code docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__</span></code>.</p>
 <p>The first four example types are very common, while the last four, unsurprisingly,
 are only relevant for <em>operator</em> functions
-such as <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <cite>ivy.subtract</cite>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code>.</p>
+such as <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.subtract</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.multiply</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.divide</span></code>.</p>
 <p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
 (<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__sub__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__truediv__</span></code> etc.) being called on the array class.</p>
 <p><strong>Operator</strong> examples are only relevant for <em>operator</em> functions. These are functions which are called when a
@@ -212,7 +212,7 @@ in the Ivy API <code class="code docutils literal notranslate"><span class="pre"
 <p>These should:</p>
 <ol class="arabic simple">
 <li><p>cover all possible variants (explained below) for each of the arguments independently,
-not combinatorily. This means the number of examples should be equal to the maximum number of
+not combinatorially. This means the number of examples should be equal to the maximum number of
 variations for a single argument, and not the entire grid of variations across all arguments
 (further explained in the examples below)</p></li>
 <li><p>vary the values and input shapes considerably between examples</p></li>
