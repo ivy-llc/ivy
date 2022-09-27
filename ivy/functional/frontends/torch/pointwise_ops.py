@@ -172,8 +172,8 @@ def clamp(input, min=None, max=None, *, out=None):
         message="at most one of min or max can be None",
     )
     input = ivy.array(input)
-    min = ivy.array(min) if ivy.exists(min) else None
-    max = ivy.array(max) if ivy.exists(max) else None
+    # min = ivy.array(min) if ivy.exists(min) else None
+    # max = ivy.array(max) if ivy.exists(max) else None
     if min is None:
         return ivy.minimum(input, max, out=out)
     if max is None:
@@ -191,8 +191,8 @@ def clip(input, min=None, max=None, *, out=None):
         message="at most one of min or max can be None",
     )
     input = ivy.array(input)
-    min = ivy.array(min) if ivy.exists(min) else None
-    max = ivy.array(max) if ivy.exists(max) else None
+    # min = ivy.array(min) if ivy.exists(min) else None
+    # max = ivy.array(max) if ivy.exists(max) else None
     if min is None:
         return ivy.minimum(input, max, out=out)
     if max is None:

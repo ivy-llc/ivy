@@ -1391,7 +1391,7 @@ def _get_clip_inputs(draw):
         max = (
             draw(
                 helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                    dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
                 )
             )
             if max
@@ -1401,7 +1401,7 @@ def _get_clip_inputs(draw):
         min = None
         max = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                dtype=x_dtype[0], shape=shape, min_value=6, max_value=50
             )
         )
     return x_dtype, x, min, max
