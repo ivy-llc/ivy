@@ -216,6 +216,7 @@ ivy.tan()
         fw,
     ):
         input_dtype, input = dtype_and_input
+        assume("float16" not in input_dtype)
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
