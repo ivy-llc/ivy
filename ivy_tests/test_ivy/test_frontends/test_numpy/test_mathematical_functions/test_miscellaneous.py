@@ -93,7 +93,6 @@ def test_numpy_clip(
         order="k",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
