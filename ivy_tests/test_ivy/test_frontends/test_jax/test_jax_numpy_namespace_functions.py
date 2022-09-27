@@ -382,17 +382,19 @@ def _arrays_idx_n_dtypes(draw):
 
 
 @st.composite
-def _dtype_n_with_out(draw):
-    dtype = draw(helpers.get_dtypes("float", none=True))
+def _dtype(draw):
+    dtype = draw(
+        helpers.get_dtypes("float", none=True),
+    )
     if dtype is None:
-        return dtype, draw(st.booleans())
-    return dtype, False
+        return dtype
+    return dtype
 
 
 @handle_cmd_line_args
 @given(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    dtype_n_with_out=_dtype_n_with_out(),
+    dtype=_dtype(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.concatenate"
     ),
@@ -400,17 +402,16 @@ def _dtype_n_with_out(draw):
 def test_jax_numpy_concat(
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
-    dtype_n_with_out,
+    dtype,
     num_positional_args,
     native_array,
     fw,
 ):
-    dtype, with_out = dtype_n_with_out
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,
@@ -418,6 +419,5 @@ def test_jax_numpy_concat(
         fn_tree="numpy.concatenate",
         arrays=xs,
         axis=unique_idx,
-        out=None,
         dtype=dtype,
     )
