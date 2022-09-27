@@ -1339,9 +1339,8 @@ def dtype(
     ret
         Data type of the array
 
-    Functional Method Examples
-    --------------------------
-
+    Examples
+    --------
     With :code:`ivy.Array` inputs:
 
     >>> x1 = ivy.array([1, 0, 1, -1, 0])
@@ -1382,7 +1381,6 @@ def dtype(
 
     Instance Method Examples
     ------------------------
-
     With :code:`ivy.Array` inputs:
 
     >>> x = ivy.array([1, 2, 3])
@@ -2005,7 +2003,33 @@ def type_promote_arrays(
 
 @handle_exceptions
 def unset_default_dtype():
-    """"""
+    """
+    Unsets the datatype dtype from default data type.
+
+    Parameters
+    ----------
+    None
+
+    Examples
+    --------
+    >>> ivy.set_default_dtype('float64')
+    >>> ivy.default_dtype_stack
+        ['float64']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+
+    >>> ivy.set_default_dtype(ivy.int32)
+    >>> ivy.set_default_dtype(ivy.bool)
+    >>> ivy.default_dtype_stack
+        ['int32', 'bool']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        ['int32']
+    >>> ivy.unset_default_dtype()
+    >>> ivy.default_dtype_stack
+        []
+    """
     global default_dtype_stack
     if default_dtype_stack:
         default_dtype_stack.pop(-1)

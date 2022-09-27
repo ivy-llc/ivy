@@ -140,8 +140,8 @@ def inv(
             ret = torch.inverse(x, out=out)
             return ret
         else:
-            cofactor = torch.linalg.inv(x).T * torch.linalg.det(x)
-            inverse = torch.mul(torch.div(1, torch.linalg.det(x)), cofactor.T)
+            cofactor = torch.t(torch.linalg.inv(x)) * torch.linalg.det(x)
+            inverse = torch.mul(torch.div(1, torch.linalg.det(x)), torch.t(cofactor))
             ret = inverse
             if ivy.exists(out):
                 return ivy.inplace_update(out, ret)
@@ -157,8 +157,18 @@ inv.support_native_out = True
 
 
 def matmul(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if transpose_a is True:
+        x1 = torch.t(x1)
+    if transpose_b is True:
+        x2 = torch.t(x2)
     dtype_from = torch.promote_types(x1.dtype, x2.dtype)
     x1 = x1.type(dtype_from)
     x2 = x2.type(dtype_from)
@@ -203,7 +213,7 @@ def matrix_rank(
 ) -> torch.Tensor:
     # ToDo: add support for default rtol value here, for the case where None is provided
     ret = torch.linalg.matrix_rank(x, rtol=rtol, out=out)
-    return torch.tensor(ret, dtype=ivy.default_int_dtype(as_native=True))
+    return ret.to(dtype=x.dtype)
 
 
 matrix_rank.unsupported_dtypes = (

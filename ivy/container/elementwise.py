@@ -2310,7 +2310,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
                     b=ivy.array([0.67, -0.98, -3]))
-        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> ivy.Container.cosh(x, out=y)
         >>> print(y)
         {
@@ -6307,7 +6307,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),\
                     b=ivy.array([0.67, -0.98, -3]))
-        >>> y = ivy.Container(a=ivy.zeros(1), b=ivy.zeros(1))
+        >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
         >>> x.sinh(out=y)
         >>> print(y)
         {
