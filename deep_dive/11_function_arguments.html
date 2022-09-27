@@ -166,21 +166,21 @@
   <section id="function-arguments">
 <h1>Function Arguments<a class="headerlink" href="#function-arguments" title="Permalink to this heading"></a></h1>
 <p>Here, we explain how the function arguments differ between the placeholder implementation at
-<code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and the backend-specific implementation at
-<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, and the backend-specific implementation at
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
 <p>Many of these points are already adressed in the previous sections:
 <a class="reference internal" href="4_arrays.html#arrays"><span class="std std-ref">Arrays</span></a>, <a class="reference internal" href="6_data_types.html#data-types"><span class="std std-ref">Data Types</span></a>, <a class="reference internal" href="7_devices.html#devices"><span class="std std-ref">Devices</span></a> and <a class="reference internal" href="8_inplace_updates.html#inplace-updates"><span class="std std-ref">Inplace Updates</span></a>.
 However, we thought it would be convenient to revisit all of these considerations in a single section,
 dedicated to function arguments.</p>
 <p>As for type-hints,
-all functions in the Ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> should have full and thorough type-hints.
+all functions in the Ivy API at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> should have full and thorough type-hints.
 Likewise, all backend implementations at
-<code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code> should also have full and thorough type-hints.</p>
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code> should also have full and thorough type-hints.</p>
 <p>In order to understand the various requirements for function arguments, it’s useful to first look at some examples.</p>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <p>For the purposes of explanation, we will use four functions as examples:
-<code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code>.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.roll</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.zeros</span></code>.</p>
 <p>We present both the Ivy API signature and also a backend-specific signature for each function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ivy</span>
 <span class="nd">to_native_arrays_and_back</span>
@@ -301,11 +301,11 @@ The <code class="code docutils literal notranslate"><span class="pre">out</span>
 </section>
 <section id="dtype-and-device-arguments">
 <h2>dtype and device arguments<a class="headerlink" href="#dtype-and-device-arguments" title="Permalink to this heading"></a></h2>
-<p>In the Ivy API at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>,
+<p>In the Ivy API at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>,
 the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> arguments should both always be provided as keyword-only arguments,
 with default value of <code class="code docutils literal notranslate"><span class="pre">None</span></code>.
 In contrast, these arguments should both be added as required arguments in the backend implementation
-at <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.
+at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.
 In a nutshell, by the time the backend implementation is entered,
 the correct <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">device</span></code> to use have both already been correctly handled
 by code which is wrapped around the backend implementation.
@@ -315,16 +315,16 @@ This is futher explained in the <a class="reference internal" href="6_data_types
 <h2>Numbers in Operator Functions<a class="headerlink" href="#numbers-in-operator-functions" title="Permalink to this heading"></a></h2>
 <p>All operator functions (which have a corresponding
 such as <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code>) must also be fully compatible with
-numbers (<code class="code docutils literal notranslate"><span class="pre">float</span></code> or <code class="code docutils literal notranslate"><span class="pre">int</span></code>) passed into any of the array inputs,
+numbers (float or <code class="code docutils literal notranslate"><span class="pre">int</span></code>) passed into any of the array inputs,
 even in the absence of any arrays.
 For example, <code class="code docutils literal notranslate"><span class="pre">ivy.add(1,</span> <span class="pre">2)</span></code>, <code class="code docutils literal notranslate"><span class="pre">ivy.add(1.5,</span> <span class="pre">2)</span></code> and
 <code class="code docutils literal notranslate"><span class="pre">ivy.add(1.5,</span> <span class="pre">ivy.array([2]))</span></code> should all run without error.
-Therefore, the type hints for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> include <code class="code docutils literal notranslate"><span class="pre">float</span></code> as one of the types
+Therefore, the type hints for <code class="code docutils literal notranslate"><span class="pre">ivy.add</span></code> include float as one of the types
 in the <code class="code docutils literal notranslate"><span class="pre">Union</span></code> for the array inputs,
 and also as one of the types in the <code class="code docutils literal notranslate"><span class="pre">Union</span></code> for the output.
 <a class="reference external" href="https://peps.python.org/pep-0484/#the-numeric-tower">PEP 484 Type Hints</a>
 state that “when an argument is annotated as having type float,
-an argument of type int is acceptable”. Therefore, we only include <code class="code docutils literal notranslate"><span class="pre">float</span></code> in the
+an argument of type int is acceptable”. Therefore, we only include float in the
 type hints.</p>
 </section>
 <section id="integer-sequences">

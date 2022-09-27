@@ -391,18 +391,18 @@ and <code class="code docutils literal notranslate"><span class="pre">NumPy</spa
 for this task.</p>
 <p>A general workflow for these tasks would be:</p>
 <ol class="arabic simple">
-<li><p>Implement the functions in each of the backend files <code class="code docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/extenstion.py</span></code>,
+<li><p>Implement the functions in each of the backend files <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/extension.py</span></code>,
 sometimes as a composition if the respective backends do not behave in a similar way. You may also use submodule-specific
 helper functions to recreate the behaviour. Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#backend-api">Backend API Guide</a>
 on how this can be done.</p></li>
-<li><p>Implement the functions in <code class="code docutils literal notranslate"><span class="pre">ivy/functional/ivy/extenstion.py</span></code> simply defering to
+<li><p>Implement the functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/extension.py</span></code> simply deferring to
 their backend-specific implementation. Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/0_navigating_the_code.html#ivy-api">Ivy API Guide</a>
 to get a clearer picture of how this must be done.</p></li>
 <li><p>Write tests for the function using the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html">Ivy Tests</a> guide, and make sure they are passing.</p></li>
 </ol>
 <p>A few points to keep in mind while doing this:</p>
 <ol class="arabic simple">
-<li><p>Make sure all the positional arguments are postional-only and optional arguments are keywork-only.</p></li>
+<li><p>Make sure all the positional arguments are positional-only and optional arguments are keyword-only.</p></li>
 <li><p>In case some tests require function-specific parameters, you can create composite hypothesis strategies using the <code class="code docutils literal notranslate"><span class="pre">draw</span></code> function
 in the hypothesis library.</p></li>
 </ol>

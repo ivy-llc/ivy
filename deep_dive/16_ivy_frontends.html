@@ -226,7 +226,7 @@ according to the framework set in the backend.</p>
 <code class="code docutils literal notranslate"><span class="pre">operators</span></code>, again in the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.lax.html">jax.lax</a> directory.
 By referring to the <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html">jax.lax.tan</a> documentation, we can see that it has only one
 argument. In the same manner as our <code class="code docutils literal notranslate"><span class="pre">add</span></code> function, we simply link its return
-to <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, and again the computation then depends on the backend framework.</p>
+to <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, and again the computation then depends on the backend framework.</p>
 <p><strong>NumPy</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
@@ -326,7 +326,7 @@ argument.</p>
 </div>
 <p>Likewise, <code class="code docutils literal notranslate"><span class="pre">tan</span></code> is also placed under <code class="code docutils literal notranslate"><span class="pre">math</span></code>.
 By referring to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">tf.tan</a> documentation, we add the same arguments,
-and simply wrap <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> in this case.
+and simply wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> in this case.
 Again, we do not support the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument for the reasons outlined above.</p>
 <p><strong>PyTorch</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
@@ -350,7 +350,7 @@ into <code class="code docutils literal notranslate"><span class="pre">ivy.add</
 </div>
 <p><code class="code docutils literal notranslate"><span class="pre">tan</span></code> is also placed under <code class="code docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a>
 framework. Looking at the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation, we can mimic the same arguments,
-and again simply wrap <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>,
+and again simply wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>,
 also making use of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in this case.</p>
 </section>
 <section id="unused-arguments">
@@ -576,7 +576,7 @@ dict to the Ivy frontend function and the key from the
 in <code class="code docutils literal notranslate"><span class="pre">test_frontend_function</span></code>.</p>
 <p>The way we do this is to wrap all framework-specific classes inside a
 <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> during frontend testing. The <code class="code docutils literal notranslate"><span class="pre">NativeClass</span></code> is defined in
-<code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/__init__.py</span></code>, and this acts as a
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_ivy/test_frontends/__init__.py</span></code>, and this acts as a
 placeholder class to represent the framework-specific class and its counterpart.
 It has only one attribute, <code class="code docutils literal notranslate"><span class="pre">_native_class</span></code>, which holds the reference to the
 special class being used by the targeted framework.

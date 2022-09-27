@@ -626,7 +626,7 @@ inputs broadcast to.</p></li>
 <span class="go">            [True,  True]]])</span>
 </pre></div>
 </div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">ivy.NativeDevice</span></code> input:</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDevice</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fill_value</span> <span class="o">=</span> <span class="mf">0.68</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float64</span>
@@ -705,7 +705,7 @@ inputs broadcast to.</p></li>
 <span class="go">ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])</span>
 </pre></div>
 </div>
-<p>With <code class="code docutils literal notranslate"><span class="pre">float</span></code> datatype:</p>
+<p>With float datatype:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fill_value</span> <span class="o">=</span> <span class="mf">0.000123</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">)</span>

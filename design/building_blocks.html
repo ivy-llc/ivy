@@ -320,7 +320,7 @@ until the user explicitly sets a different backend. The examples can be seen bel
 </section>
 <section id="backend-handler">
 <h2>Backend Handler ✅<a class="headerlink" href="#backend-handler" title="Permalink to this heading"></a></h2>
-<p>All code for setting and unsetting backend resides in the submodule at <code class="code docutils literal notranslate"><span class="pre">ivy/backend_handler.py</span></code>, and the front facing function is <code class="code docutils literal notranslate"><span class="pre">ivy.current_backend()</span></code>. The contents of this function are as follows:</p>
+<p>All code for setting and unsetting backend resides in the submodule at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/backend_handler.py</span></code>, and the front facing function is <code class="code docutils literal notranslate"><span class="pre">ivy.current_backend()</span></code>. The contents of this function are as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/backend_handler.py</span>
  <span class="k">def</span> <span class="nf">current_backend</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
      <span class="k">global</span> <span class="n">implicit_backend</span>

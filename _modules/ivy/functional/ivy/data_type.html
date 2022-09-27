@@ -583,7 +583,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">     With :code:`ivy.Dtype` input:</span>
+<span class="sd">     With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.can_cast(ivy.uint8, ivy.int32))</span>
 <span class="sd">    True</span>
@@ -664,7 +664,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
+<span class="sd">    With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.finfo(ivy.float32)</span>
 <span class="sd">    finfo(resolution=1e-06, min=-3.4028235e+38, max=3.4028235e+38, dtype=float32)</span>
@@ -756,7 +756,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
+<span class="sd">    With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.iinfo(ivy.int32)</span>
 <span class="sd">    iinfo(min=-2147483648, max=2147483647, dtype=int32)</span>
@@ -879,7 +879,7 @@
 <span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, y))</span>
 <span class="sd">    float64</span>
 
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
+<span class="sd">    With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.result_type(ivy.uint8, ivy.uint64))</span>
 <span class="sd">    uint64</span>
@@ -986,7 +986,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` inputs:</span>
+<span class="sd">    With :class:`ivy.Dtype` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.float32)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -1000,7 +1000,7 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    16</span>
 
-<span class="sd">    With :code:`ivy.NativeDtype` inputs:</span>
+<span class="sd">    With :class:`ivy.NativeDtype` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.dtype_bits(ivy.native_int8)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -1079,7 +1079,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
+<span class="sd">    With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; xType = ivy.float16</span>
 <span class="sd">    &gt;&gt;&gt; yType = ivy.closest_valid_dtype(xType)</span>
@@ -1677,7 +1677,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">     With :code:`ivy.Dtype` input:</span>
+<span class="sd">     With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.is_int_dtype(ivy.int8)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -1801,7 +1801,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
+<span class="sd">    With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.is_float_dtype(ivy.float32)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
@@ -1927,7 +1927,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    With :code:`ivy.Dtype` input:</span>
+<span class="sd">    With :class:`ivy.Dtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(&quot;float64&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
@@ -1949,7 +1949,7 @@
 <span class="sd">        [&#39;uint8&#39;]</span>
 <span class="sd">    &gt;&gt;&gt; ivy.unset_default_dtype()</span>
 
-<span class="sd">    With :code:`ivy.NativeDtype` input:</span>
+<span class="sd">    With :class:`ivy.NativeDtype` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_default_dtype(ivy.native_int32)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_dtype_stack</span>
@@ -2142,7 +2142,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    with :code:`ivy.Dtype` inputs:</span>
+<span class="sd">    with :class:`ivy.Dtype` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(None))</span>
 <span class="sd">    True</span>
@@ -2168,7 +2168,7 @@
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(ivy.uint8))</span>
 <span class="sd">    True</span>
 
-<span class="sd">    with :code:`ivy.NativeDtype` inputs:</span>
+<span class="sd">    with :class:`ivy.NativeDtype` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; print(ivy.valid_dtype(&#39;native_bool&#39;))</span>
 <span class="sd">    False</span>

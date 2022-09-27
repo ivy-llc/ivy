@@ -375,7 +375,7 @@ examples that should be included in the docstring!</p>
 <section id="ivy-tan">
 <h2>ivy.tan<a class="headerlink" href="#ivy-tan" title="Permalink to this heading"></a></h2>
 <p><strong>Functional Examples</strong></p>
-<p>The signature for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is as follows:</p>
+<p>The signature for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tan</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
@@ -480,13 +480,13 @@ point 11.</p>
 </pre></div>
 </div>
 <p><strong>Array Operator Examples</strong></p>
-<p>Points 12 and 13 are not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is not an <em>operator</em> function.</p>
+<p>Points 12 and 13 are not relevant as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> is not an <em>operator</em> function.</p>
 <p><strong>Array Reverse Operator Example</strong></p>
-<p>Point 14 is not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is not an <em>operator</em> function.</p>
+<p>Point 14 is not relevant as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> is not an <em>operator</em> function.</p>
 <p><strong>Container Operator Examples</strong></p>
-<p>Points 15, 16 and 17 are not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is not an <em>operator</em> function.</p>
+<p>Points 15, 16 and 17 are not relevant as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> is not an <em>operator</em> function.</p>
 <p><strong>Container Reverse Operator Example</strong></p>
-<p>Point 18 is not relevant as <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> is not an <em>operator</em> function.</p>
+<p>Point 18 is not relevant as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> is not an <em>operator</em> function.</p>
 </section>
 <section id="ivy-roll">
 <h2>ivy.roll<a class="headerlink" href="#ivy-roll" title="Permalink to this heading"></a></h2>
@@ -535,8 +535,8 @@ ivy.array([[[ 9., 3.],
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
 <p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
 to be seperated by a ‘\’ so that they can be parsed by the script that tests the examples in the docstrings.</p>
-<p>Point 1 is a bit less trivial to satisfy than it was for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> above. While <code class="code docutils literal notranslate"><span class="pre">x</span></code> again only has one
-variation (for the same reason as explained in the <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code> example above), <code class="code docutils literal notranslate"><span class="pre">shift</span></code> has two variations
+<p>Point 1 is a bit less trivial to satisfy than it was for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> above. While <code class="code docutils literal notranslate"><span class="pre">x</span></code> again only has one
+variation (for the same reason as explained in the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> example above), <code class="code docutils literal notranslate"><span class="pre">shift</span></code> has two variations
 (<code class="code docutils literal notranslate"><span class="pre">int</span></code> or sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>), and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> has three variations
 (<code class="code docutils literal notranslate"><span class="pre">int</span></code>, :sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>, or <code class="code docutils literal notranslate"><span class="pre">None</span></code>).</p>
 <p>Therefore, we need at least three examples (equal to the maximum number of variations, in this case <code class="code docutils literal notranslate"><span class="pre">axis</span></code>),
@@ -563,7 +563,7 @@ making all three examples possible.</p>
 }
 </pre></div>
 </div>
-<p>Unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 7 is relevant in this case,
+<p>Unlike <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, point 7 is relevant in this case,
 as there are three function inputs in total (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
 We can therefore add an example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
 in order to satisfy point 7.</p>
@@ -696,7 +696,7 @@ ivy.array([[[9.5],
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
 <p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
 to be seperated by a ‘\’ so that they can be parsed by the script that tests the examples in the docstrings.</p>
-<p>Point 1 is again trivial to satisfy, as was the case for <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>.
+<p>Point 1 is again trivial to satisfy, as was the case for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>.
 Ignoring the union over <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by points 6 and 7,
 and also ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9,
 then as far as point 1 is concerned, inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code> both only have one possible variation.
@@ -728,7 +728,7 @@ the broadcasting rules to apply, which dictates how the operation is performed a
 }
 </pre></div>
 </div>
-<p>Again, unlike <code class="code docutils literal notranslate"><span class="pre">ivy.tan</span></code>, point 7 is relevant in this case,
+<p>Again, unlike <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, point 7 is relevant in this case,
 as there are two function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
 We can therefore add an example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
 in order to satisfy point 7.</p>

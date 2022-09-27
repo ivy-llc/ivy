@@ -45,14 +45,14 @@ The data types supported by Ivy are as follows:
 * bool
 
 These are all defined at `import time`_, with each of these set as an `ivy.Dtype`_ instance.
-The :code:`ivy.Dtype` class derives from :code:`str`,
+The :class:`ivy.Dtype` class derives from :code:`str`,
 and has simple logic in the constructor to verify that the string formatting is correct.
-All data types can be queried as attributes of the :code:`ivy` namespace, such as :code:`ivy.float32` etc.
+All data types can be queried as attributes of the :mod:`ivy` namespace, such as :code:`ivy.float32` etc.
 
 In addition, *native* data types are `also specified`_ at import time.
 Likewise, these are all *initially* set as `ivy.Dtype`_ instances.
 
-There is also an :code:`ivy.NativeDtype` class defined, but this is initially set as an `empty class`_.
+There is also an :class:`ivy.NativeDtype` class defined, but this is initially set as an `empty class`_.
 
 The following `tuples`_ are also defined: :code:`all_dtypes`, :code:`all_numeric_dtypes`, :code:`all_int_dtypes`,
 :code:`all_float_dtypes`. These each contain all possible data types which fall into the corresponding category.
@@ -62,23 +62,23 @@ When no backend is set, all data types are assumed to be valid, and so the :code
 and the :code:`valid` tuples are set as equal to the original four *"all"* tuples.
 
 However, when a backend is set, then some of these are updated.
-Firstly, the :code:`ivy.NativeDtype` is replaced with the backend-specific `data type class`_.
+Firstly, the :class:`ivy.NativeDtype` is replaced with the backend-specific `data type class`_.
 Secondly, each of the native data types are replaced with the `true native data types`_.
 Thirdly, the `valid data types`_ are updated.
 Finally, the `invalid data types`_ are updated.
 
 This leaves each of the data types unmodified,
-for example :code:`ivy.float32` will still reference the  `original definition`_ in :code:`ivy/ivy/__init__.py`,
+for example :code:`ivy.float32` will still reference the  `original definition`_ in :mod:`ivy/ivy/__init__.py`,
 whereas :code:`ivy.native_float32` will now reference the `new definition`_ in
 :code:`/ivy/functional/backends/backend/__init__.py`.
 
 The tuples :code:`all_dtypes`, :code:`all_numeric_dtypes`, :code:`all_int_dtypes` and :code:`all_float_dtypes`
 are also left unmodified.
-Importantly, we must ensure that unsupported data types are removed from the :code:`ivy` namespace.
+Importantly, we must ensure that unsupported data types are removed from the :mod:`ivy` namespace.
 For example, torch supports :code:`uint8`, but does not support :code:`uint16`, :code:`uint32` or :code:`uint64`.
 Therefore, after setting a torch backend via :code:`ivy.set_backend('torch')`,
 we should no longer be able to access :code:`ivy.uint16`.
-This is `handled`_ in :code:`ivy.set_backend`.
+This is `handled`_ in :func:`ivy.set_backend`.
 
 Data Type Module
 ----------------
@@ -132,7 +132,7 @@ and promote the data types of the numeric or array values inputs and
 return new type promoted values, respectively.
 
 For an example of how some of these functions are used,
-the implementations for :code:`ivy.add` in each backend framework are as follows:
+the implementations for :func:`ivy.add` in each backend framework are as follows:
 
 # JAX
 
@@ -192,9 +192,9 @@ the implementations for :code:`ivy.add` in each backend framework are as follows
         return torch.add(x1, x2, out=out)
 
 It's important to always make use of the Ivy promotion functions as opposed to
-backend-specific promotion functions such as :code:`jax.numpy.promote_types`,
-:code:`numpy.promote_types`, :code:`tf.experimental.numpy.promote_types` and
-:code:`torch.promote_types`, as these will generally have promotion rules which will
+backend-specific promotion functions such as :func:`jax.numpy.promote_types`,
+:func:`numpy.promote_types`, :func:`tf.experimental.numpy.promote_types` and
+:func:`torch.promote_types`, as these will generally have promotion rules which will
 subtly differ from one another and from Ivy's unified promotion rules.
 
 Arguments in other Functions
@@ -203,7 +203,7 @@ Arguments in other Functions
 All :code:`dtype` arguments are keyword-only.
 All creation functions include the :code:`dtype` argument, for specifying the data type of the created array.
 Some other non-creation functions also support the :code:`dtype` argument,
-such as :code:`ivy.prod` and :code:`ivy.sum`, but most functions do not include it.
+such as :func:`ivy.prod` and :func:`ivy.sum`, but most functions do not include it.
 The non-creation functions which do support it are generally functions that involve a compounding reduction across the
 array, which could result in overflows, and so an explicit :code:`dtype` argument is useful to handling such cases.
 
@@ -217,31 +217,31 @@ Overall, `ivy.default_dtype`_ infers the data type as follows:
 
 #. if the :code:`dtype` argument is provided, use this directly
 #. otherwise, if an array is present in the arguments, set :code:`arr` to this array. \
-   This will then be used to infer the data type by calling :code:`ivy.dtype` on the array
+   This will then be used to infer the data type by calling :func:`ivy.dtype` on the array
 #. otherwise, if a *relevant* scalar is present in the arguments, set :code:`arr` to this scalar \
-   and derive the data type from this by calling either :code:`ivy.default_int_dtype` or \
-   :code:`ivy.default_float_dtype` depending on whether the scalar is an :code:`int` or :code:`float`. \
-   This will either return the globally set default :code:`int` or globally set default :code:`float` \
-   (settable via :code:`ivy.set_default_int_dtype` and :code:`ivy.set_default_float_dtype` respectively). \
-   An example of a *relevant* scalar is :code:`start` in the function :code:`ivy.arange`, \
+   and derive the data type from this by calling either :func:`ivy.default_int_dtype` or \
+   :func:`ivy.default_float_dtype` depending on whether the scalar is an int or float. \
+   This will either return the globally set default int data type or globally set default float data type \
+   (settable via :func:`ivy.set_default_int_dtype` and :func:`ivy.set_default_float_dtype` respectively). \
+   An example of a *relevant* scalar is :code:`start` in the function :func:`ivy.arange`, \
    which is used to set the starting value of the returned array. \
    Examples of *irrelevant* scalars which should **not** be used for determining the data type are :code:`axis`, \
    :code:`axes`, :code:`dims` etc. which must be integers, and control other configurations of the function \
    being called, with no bearing at all on the data types used by that function.
 #. otherwise, if no arrays or relevant scalars are present in the arguments, \
-   then use the global default data type, which can either be an :code:`int` or :code:`float` data type. \
-   This is settable via :code:`ivy.set_default_dtype`.
+   then use the global default data type, which can either be an int or float data type. \
+   This is settable via :func:`ivy.set_default_dtype`.
 
 For the majority of functions which defer to `infer_dtype`_ for handling the data type,
 these steps will have been followed and the :code:`dtype` argument will be populated with the correct value
 before the backend-specific implementation is even entered into. Therefore, whereas the :code:`dtype` argument is
-listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
+listed as optional in the ivy API at :mod:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py`.
+:mod:`ivy/functional/backends/backend_name/category_name.py`.
 
-Let's take a look at the function :code:`ivy.zeros` as an example.
+Let's take a look at the function :func:`ivy.zeros` as an example.
 
-The implementation in :code:`ivy/functional/ivy/creation.py` has the following signature:
+The implementation in :mod:`ivy/functional/ivy/creation.py` has the following signature:
 
 .. code-block:: python
 
@@ -256,7 +256,7 @@ The implementation in :code:`ivy/functional/ivy/creation.py` has the following s
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Array:
 
-Whereas the backend-specific implementations in :code:`ivy/functional/backends/backend_name/statistical.py`
+Whereas the backend-specific implementations in :mod:`ivy/functional/backends/backend_name/statistical.py`
 all list :code:`dtype` as required.
 
 Jax:
