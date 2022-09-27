@@ -149,7 +149,7 @@ def test_torch_leaky_relu(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=False,
+        with_inplace=True,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         fw=fw,

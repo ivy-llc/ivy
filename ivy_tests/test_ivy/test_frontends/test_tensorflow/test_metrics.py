@@ -575,9 +575,7 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
 @handle_cmd_line_args
 @given(
     d_type=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shared_dtype=True,
-        num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"), shared_dtype=True, num_arrays=2
     ),
     y_true=helpers.array_values(
         dtype=ivy.int32, shape=(1, 5), min_value=1, max_value=5
@@ -590,7 +588,14 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     ),
 )
 def test_tensorflow_cosine_similarity(
-    d_type, y_true, y_pred, as_variable, num_positional_args, native_array, fw, with_out  # noqa: E501
+    d_type,
+    y_true,
+    y_pred,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    with_out,  # noqa: E501
 ):
     dtype = d_type
     y_true = y_true

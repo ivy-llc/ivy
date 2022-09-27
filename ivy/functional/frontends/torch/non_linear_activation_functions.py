@@ -68,7 +68,11 @@ def sigmoid(input):
 
 
 def leaky_relu(input, negative_slope=0.01, inplace=False):
-    return ivy.leaky_relu(input, alpha=negative_slope)
+    ret = ivy.leaky_relu(input, alpha=negative_slope)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 def softmax(input, dim=None, dtype=None):
