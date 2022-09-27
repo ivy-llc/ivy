@@ -74,3 +74,76 @@ def test_jax_numpy_allclose(
         atol=1e-08,
         equal_nan=equal_nan,
     )
+
+
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    min = draw(st.booleans())
+    if min:
+        max = draw(st.booleans())
+        min = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5
+            )
+        )
+        max = (
+            draw(
+                helpers.array_values(
+                    dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                )
+            )
+            if max
+            else None
+        )
+    else:
+        min = None
+        max = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=0, max_value=50
+            )
+        )
+    return x_dtype, x, min, max
+
+
+# clip
+@handle_cmd_line_args
+@given(
+    input_and_ranges=_get_clip_inputs(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.clip"
+    ),
+)
+def test_jax_clip(
+    input_and_ranges,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    fw,
+):
+    x_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=with_out,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.clip",
+        a=x[0],
+        a_min=min,
+        a_max=max,
+        out=None,
+    )
