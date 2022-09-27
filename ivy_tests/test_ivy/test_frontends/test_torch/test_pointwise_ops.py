@@ -1367,40 +1367,75 @@ def test_torch_ceil(
     )
 
 
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    min = draw(st.booleans())
+    if min:
+        max = draw(st.booleans())
+        min = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5
+            )
+        )
+        max = (
+            draw(
+                helpers.array_values(
+                    dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                )
+            )
+            if max
+            else None
+        )
+    else:
+        min = None
+        max = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+            )
+        )
+    return x_dtype, x, min, max
+
+
 # clamp
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=("float32", "float64"),
-        num_arrays=3,
-        shared_dtype=True,
-        shape=(5,),
-    ),
+    input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.clamp"
     ),
 )
 def test_torch_clamp(
-    dtype_and_x,
+    input_and_ranges,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
         num_positional_args=num_positional_args,
+        with_out=with_out,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="clamp",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        min=np.asarray(x[1], dtype=input_dtype[1]),
-        max=np.asarray(x[2], dtype=input_dtype[2]),
+        input=x[0],
+        min=min,
+        max=max,
         out=None,
     )
 
@@ -1408,36 +1443,31 @@ def test_torch_clamp(
 # clip
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=("float32", "float64"),
-        num_arrays=3,
-        shared_dtype=True,
-        shape=(5,),
-    ),
+    input_and_ranges=_get_clip_inputs(),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.clip"
     ),
 )
 def test_torch_clip(
-    dtype_and_x,
+    input_and_ranges,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fw,
 ):
-    input_dtype, x = dtype_and_x
+    x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
         num_positional_args=num_positional_args,
+        with_out=with_out,
         native_array_flags=native_array,
         fw=fw,
         frontend="torch",
         fn_tree="clip",
-        input=np.asarray(x[0], dtype=input_dtype[0]),
-        min=np.asarray(x[1], dtype=input_dtype[1]),
-        max=np.asarray(x[2], dtype=input_dtype[2]),
+        input=x[0],
+        min=min,
+        max=max,
         out=None,
     )
