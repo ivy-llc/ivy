@@ -223,7 +223,7 @@ def test_to_device(*, array_shape, dtype, as_variable, with_out, fw, device, str
 
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
     x = ivy.asarray(x)
-    if as_variable:
+    if as_variable and ivy.is_float_dtype(dtype[0]):
         x = ivy.variable(x)
 
     # create a dummy array for out that is broadcastable to x
