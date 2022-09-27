@@ -632,6 +632,8 @@ def array_values(
         dtype = draw(dtype)
         dtype = dtype[0] if isinstance(dtype, list) else draw(dtype)
 
+    if "complex" in dtype:
+        dtype = "float32" if dtype == "complex64" else "float64"
     if "float" in dtype:
         kind_dtype = "float"
         dtype_info = ivy.finfo(dtype)

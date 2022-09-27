@@ -78,9 +78,14 @@ class Dtype(str):
     def __new__(cls, dtype_str):
         if not isinstance(dtype_str, str):
             raise ivy.exceptions.IvyException("dtype_str must be type str")
-        if not ("int" in dtype_str or "float" in dtype_str or "bool" in dtype_str):
+        if not (
+            "int" in dtype_str
+            or "float" in dtype_str
+            or "bool" in dtype_str
+            or "complex" in dtype_str
+        ):
             raise ivy.exceptions.IvyException(
-                "dtype must be string and starts with int, float, or bool"
+                "dtype must be string and starts with int, float, complex, or bool"
             )
         return str.__new__(cls, dtype_str)
 
@@ -137,6 +142,17 @@ class UintDtype(IntDtype):
         return str.__new__(cls, dtype_str)
 
 
+class ComplexDtype(Dtype):
+    def __new__(cls, dtype_str):
+        if not isinstance(dtype_str, str):
+            raise ivy.exceptions.IvyException("dtype_str must be type str")
+        if "complex" not in dtype_str:
+            raise ivy.exceptions.IvyException(
+                "dtype must be string and starts with complex"
+            )
+        return str.__new__(cls, dtype_str)
+
+
 class Node(str):
     # ToDo: add formatting checks once multi-node is supported
     pass
@@ -179,6 +195,9 @@ float16 = FloatDtype("float16")
 float32 = FloatDtype("float32")
 float64 = FloatDtype("float64")
 double = float64
+complex64 = ComplexDtype("complex64")
+complex128 = ComplexDtype("complex128")
+complex256 = ComplexDtype("complex256")
 bool = Dtype("bool")
 
 # native data types
@@ -195,6 +214,9 @@ native_float16 = FloatDtype("float16")
 native_float32 = FloatDtype("float32")
 native_float64 = FloatDtype("float64")
 native_double = native_float64
+complex64 = ComplexDtype("complex64")
+complex128 = ComplexDtype("complex128")
+complex256 = ComplexDtype("complex256")
 native_bool = Dtype("bool")
 
 # all
@@ -211,6 +233,9 @@ all_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
+    complex256,
     bool,
 )
 all_numeric_dtypes = (
@@ -249,6 +274,11 @@ all_uint_dtypes = (
     uint32,
     uint64,
 )
+all_complex_dtypes = (
+    complex64,
+    complex128,
+    complex256,
+)
 
 # valid data types
 valid_dtypes = all_dtypes
@@ -256,6 +286,7 @@ valid_numeric_dtypes = all_numeric_dtypes
 valid_int_dtypes = all_int_dtypes
 valid_float_dtypes = all_float_dtypes
 valid_uint_dtypes = all_uint_dtypes
+valid_complex_dtypes = all_complex_dtypes
 
 # invalid data types
 invalid_dtypes = ()
@@ -263,6 +294,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = ()
 
 # data type promotion
 array_api_promotion_table = {
@@ -414,6 +446,15 @@ extra_promotion_table = {
     (float32, bfloat16): float32,
     (bfloat16, float64): float64,
     (float64, bfloat16): float64,
+    (complex64, complex64): complex64,
+    (complex64, complex128): complex128,
+    (complex64, complex256): complex256,
+    (complex128, complex64): complex128,
+    (complex128, complex128): complex128,
+    (complex128, complex256): complex256,
+    (complex256, complex64): complex256,
+    (complex256, complex128): complex256,
+    (complex256, complex256): complex256,
 }
 
 promotion_table = {**array_api_promotion_table, **extra_promotion_table}
@@ -568,9 +609,12 @@ def _assert_array_significant_figures_formatting(sig_figs):
     ivy.assertions.check_greater(sig_figs, 0)
 
 
+# ToDo: SF formating for complex number
 def _sf(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
+    if isinstance(x, complex):
+        return complex(x)
     f = float(
         np.format_float_positional(
             x, precision=sig_fig, unique=False, fractional=False, trim="k"

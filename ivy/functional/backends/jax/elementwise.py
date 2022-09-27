@@ -447,3 +447,7 @@ def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
+
+
+def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.isreal(x)
