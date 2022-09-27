@@ -292,6 +292,7 @@ def sparse_cross_entropy(
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(true, pred, axis=axis, epsilon=epsilon, out=out)
 
+
 sparse_cross_entropy.unsupported_dtypes = {"torch": ("float16",)}
 sparse_cross_entropy.supported_dtypes = {"tensorflow": ("uint8", "int32", "int64")}
 

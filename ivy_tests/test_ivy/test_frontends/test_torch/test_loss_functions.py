@@ -220,8 +220,8 @@ def test_smooth_l1_loss(
         fw=fw,
         frontend="torch",
         fn_tree="nn.functional.smooth_l1_loss",
-        input=np.asarray(pred, dtype=pred_dtype),
-        target=np.asarray(true, dtype=true_dtype),
+        input=pred[0],
+        target=true[0],
         reduction=reduction,
         beta=beta,
     )
