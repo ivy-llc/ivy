@@ -323,12 +323,13 @@ def smooth_l1_loss(
 
     Examples
     --------
-
-    """
     >>> a = ivy.array([0, 0, 1.5, 0])
     >>> b = ivy.array([0.25, 0.25, 0.25, 0.25])
     >>> print(ivy.smooth_l1_loss(a, b))
     ivy.array([0.0312, 0.0312, 0.75, 0.0312])
+
+    """
+
     assert beta > 0, "the parameter beta must be non-negative."
     ret = 0.5 * (pred - true) ** 2 / beta
     ret[abs(pred - true) >= beta] = abs(pred[abs(pred - true) >= beta]
