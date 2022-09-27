@@ -118,5 +118,5 @@ class matrix:
             return ivy.any(self.A, axis=axis, keepdims=True, out=out)
         return ivy.any(self.A, axis=axis, out=out)
 
-    def transpose(self, a, axis=None):
-        return ivy.matrix_transpose(a, out=None)
+    def transpose(self, axis=None):
+        return ivy.matrix_transpose(self.A, out=None)
