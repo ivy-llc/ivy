@@ -59,9 +59,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
-    def is_array(
-        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_array(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_array. This method simply wraps the
         function, and so the docstring for ivy.is_array also applies to this method
@@ -80,11 +78,9 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self, exclusive=exclusive, out=out)
+        return ivy.is_array(self, exclusive=exclusive)
 
-    def is_ivy_container(
-        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_ivy_container(self: ivy.Array) -> bool:
         """
         ivy.Array instance method variant of ivy.is_ivy_container. This method simply
         wraps the function, and so the docstring for ivy.is_ivy_container also applies
@@ -100,7 +96,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an ivy container.
         """
-        return ivy.is_ivy_container(self, out=out)
+        return ivy.is_ivy_container(self)
 
     def all_equal(
         self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
