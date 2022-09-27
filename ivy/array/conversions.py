@@ -13,11 +13,11 @@ import ivy
 # --------#
 
 
-def _to_native(x: Any) -> Any:
+def _to_native(x: Any,inplace=False) -> Any:
     if isinstance(x, ivy.Array):
         return _to_native(x.data)
     elif isinstance(x, ivy.Container):
-        return x.map(lambda x_, _: _to_native(x_))
+        return x.map(lambda x_, _: _to_native(x_,inplace=inplace),inplace=inplace)
     return x
 
 
@@ -106,6 +106,7 @@ def to_native(
     x: Union[ivy.Array, ivy.NativeArray, Iterable],
     nested: bool = False,
     include_derived: Dict[type, bool] = None,
+    cont_inplace = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Returns the input item in it's native backend framework form if it is an
     ivy.Array or ivy.Variable instance. otherwise the input is returned unchanged. If
@@ -123,6 +124,9 @@ def to_native(
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
         Default is False.
+    cont_inplace
+        Whether to update containers in place.
+        Default is False
 
     Returns
     -------
@@ -132,13 +136,14 @@ def to_native(
 
     """
     if nested:
-        return ivy.nested_map(x, _to_native, include_derived)
-    return _to_native(x)
+        return ivy.nested_map(x, lambda x: _to_native(x, inplace=cont_inplace), include_derived)
+    return _to_native(x,inplace=cont_inplace)
 
 
 def args_to_native(
     *args: Iterable[Any],
     include_derived: Dict[type, bool] = None,
+    cont_inplace = False,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
     """Returns args and keyword args in their native backend framework form for all
@@ -152,6 +157,9 @@ def args_to_native(
     include_derived
         Whether to also recursive for classes derived from tuple, list and dict.
         Default is False.
+    cont_inplace
+        Whether to update containers in place.
+        Default is False
     kwargs
         The key-word arguments to check
 
@@ -162,6 +170,6 @@ def args_to_native(
         converted to their native form.
 
     """
-    native_args = ivy.nested_map(args, _to_native, include_derived)
-    native_kwargs = ivy.nested_map(kwargs, _to_native, include_derived)
+    native_args = ivy.nested_map(args, lambda x: _to_native(x,inplace=cont_inplace), include_derived)
+    native_kwargs = ivy.nested_map(kwargs, lambda x: _to_native(x,inplace=cont_inplace), include_derived)
     return native_args, native_kwargs
