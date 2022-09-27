@@ -86,7 +86,7 @@ def test_dev(*, array_shape, dtype, as_variable, fw):
 
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
-        if as_variable:
+        if as_variable and ivy.is_float_dtype(dtype[0]):
             x = ivy.variable(x)
 
         ret = ivy.dev(x)
