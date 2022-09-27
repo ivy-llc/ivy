@@ -93,7 +93,7 @@ Using :code:`lax.tan` as a second example, we can see that this is placed under
 :code:`operators`, again in the `jax.lax`_ directory.
 By referring to the `jax.lax.tan`_ documentation, we can see that it has only one
 argument. In the same manner as our :code:`add` function, we simply link its return
-to :code:`ivy.tan`, and again the computation then depends on the backend framework.
+to :func:`ivy.tan`, and again the computation then depends on the backend framework.
 
 **NumPy**
 
@@ -209,7 +209,7 @@ argument.
 
 Likewise, :code:`tan` is also placed under :code:`math`.
 By referring to the `tf.tan`_ documentation, we add the same arguments,
-and simply wrap :code:`ivy.tan` in this case.
+and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
 **PyTorch**
@@ -239,7 +239,7 @@ into :code:`ivy.add`.
 
 :code:`tan` is also placed under :code:`pointwise_ops` as is the case in the `torch`_
 framework. Looking at the `torch.tan`_ documentation, we can mimic the same arguments,
-and again simply wrap :code:`ivy.tan`,
+and again simply wrap :func:`ivy.tan`,
 also making use of the :code:`out` argument in this case.
 
 Unused Arguments
@@ -508,7 +508,7 @@ in :code:`test_frontend_function`.
 
 The way we do this is to wrap all framework-specific classes inside a
 :code:`NativeClass` during frontend testing. The :code:`NativeClass` is defined in
-:code:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
+:mod:`ivy/ivy_tests/test_ivy/test_frontends/__init__.py`, and this acts as a
 placeholder class to represent the framework-specific class and its counterpart.
 It has only one attribute, :code:`_native_class`, which holds the reference to the
 special class being used by the targeted framework.
