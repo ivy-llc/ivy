@@ -1,6 +1,4 @@
 # global
-import ivy
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
