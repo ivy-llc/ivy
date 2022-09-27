@@ -117,7 +117,7 @@ def test_numpy_amin(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
