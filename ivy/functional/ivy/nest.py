@@ -43,7 +43,7 @@ def index_nest(
     >>> print(z)
     1
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1., 2.], \
                        [3., 4.]])
@@ -114,7 +114,7 @@ def set_nest_at_index(
 
     Examples
     --------
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = (1, 1)
     >>> z = 5.
@@ -147,7 +147,7 @@ def set_nest_at_index(
     >>> print(x)
     [['a','b','c'],['d','e','f'],['g',['H','i']]]
 
-     With :code:`ivy.Container` input:
+     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
     >>> y = ('b',)
     >>> z = ivy.array([3., 4.])
@@ -276,7 +276,7 @@ def set_nest_at_indices(
     >>> print(nest)
     {'a': [1.0, 11.0, 3.0], 'b': [4.0, 5.0, 22.0], 'c': [33.0]}
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> nest = ivy.array([[1., 2., 3.],[4., 5., 6.]])
     >>> indices = ((0, 1),(1, 2))
@@ -355,7 +355,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> print(nest)
     {'a': [8.0, 16.0, 23.0], 'b': [11.0, 44.0, 81.0], 'c': [9.0, 76.0, 37.0]}
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> nest = ivy.array([[-9., 8., -17.],[11., -3., 5.]])
     >>> indices = ((0, 1),(1, 1),(1, 2))
@@ -637,7 +637,7 @@ def map(
     >>> print(results)
     [1.0, 11.0, 21.0]
 
-    With :code:`ivy.Array` inputs:
+    With :class:`ivy.Array` inputs:
 
     >>> results = ivy.map(fn = linear_model, \
         constant = {'w':ivy.array([1.,0.,1.]), 'b':ivy.array([0.,10.,100.])}, \
@@ -875,7 +875,7 @@ def copy_nest(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> nest = ivy.array([[1.,2.,3.],[7.,8.,9.]])
     >>> copied_nest = ivy.copy_nest(nest)
