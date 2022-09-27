@@ -57,14 +57,15 @@ def abs(
         an array containing the absolute value of each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.abs.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances in place of any of the arguments
 
     Examples
     --------
@@ -145,6 +146,17 @@ def acos(
         an array containing the inverse cosine of each element in x. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acos.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -215,6 +227,16 @@ def acosh(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acosh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Returns
     -------
     ret
@@ -225,6 +247,7 @@ def acosh(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2.5, 10])
     >>> y = ivy.acosh(x)
     >>> print(y)
@@ -331,6 +354,7 @@ def add(
         an array containing the element-wise sums. The returned array must have a data
         type determined by :ref:`type-promotion`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
@@ -338,11 +362,12 @@ def add(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances in place of any of the arguments
 
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.add(x, y)
@@ -414,15 +439,15 @@ def asin(
         an array containing the inverse sine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-        signatures.elementwise_functions.tan.html>`_
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asin.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances in place of any of the arguments
 
     Functional Examples
     -------------------
@@ -524,9 +549,10 @@ def asinh(
         returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asinh.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -618,9 +644,19 @@ def atan(
         an array containing the inverse tangent of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.atan(x)
     >>> print(y)
@@ -861,9 +897,20 @@ def atanh(
         returned array must have a floating-point data type determined by Type Promotion
         Rules.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atanh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([0, -0.5])
     >>> y = ivy.atanh(x)
     >>> print(y)
@@ -933,10 +980,11 @@ def bitwise_and(
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances in place of
-    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Functional Examples
     -------------------
@@ -1057,6 +1105,15 @@ def bitwise_invert(
         an array containing the element-wise results. The returned array must have the
         same data type as x.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_invert.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Examples
     --------
     >>> x = ivy.array([1, 6, 9])
@@ -1104,8 +1161,12 @@ def bitwise_left_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_left_shift.html>`_ # noqa
     in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     """
     return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
@@ -1146,6 +1207,7 @@ def bitwise_or(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
     >>> z = ivy.bitwise_or(x, y)
@@ -1256,8 +1318,7 @@ def bitwise_right_shift(
     >>> print(y)
     ivy.array([2, 4, 4, 3])
 
-    >>> a = ivy.array([[32, 40, 55], \
-                       [16, 33, 170]])
+    >>> a = ivy.array([[32, 40, 55], [16, 33, 170]])
     >>> b = ivy.array([5, 2, 1])
     >>> y = ivy.zeros((2, 3))
     >>> ivy.bitwise_right_shift(a, b, out=y)
@@ -1265,9 +1326,7 @@ def bitwise_right_shift(
     ivy.array([[ 1., 10., 27.],
                [ 0.,  8., 85.]])
 
-    >>> a = ivy.array([[10, 64], \
-                       [43, 87], \
-                       [5, 37]])
+    >>> a = ivy.array([[10, 64],[43, 87],[5, 37]])
     >>> b = ivy.array([1, 3])
     >>> ivy.bitwise_right_shift(a, b, out=a)
     >>> print(a)
@@ -1287,15 +1346,11 @@ def bitwise_right_shift(
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
-    >>> a = ivy.array([[10, 64], \
-                       [43, 87], \
-                       [5, 37]])
+    >>> a = ivy.array([[10, 64],[43, 87],[5, 37]])
     >>> b = ivy.native_array([1, 3])
     >>> y = ivy.bitwise_right_shift(a, b)
     >>> print(y)
-    ivy.array([[ 5,  8],
-               [21, 10],
-               [ 2,  4]])
+    ivy.array([[ 5,  8],[21, 10],[ 2,  4]])
 
     With one :class:`ivy.Container` input:
 
@@ -2115,6 +2170,7 @@ def floor(
         an array containing the rounded result for each element in ``x``. The returned
         array must have the same data type as ``x``.
 
+
     This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
@@ -2202,6 +2258,17 @@ def floor_divide(
         an array containing the element-wise results. The returned array must have a
         numeric data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor_divide.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -2282,6 +2349,15 @@ def greater(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Examples
     --------
@@ -2377,6 +2453,16 @@ def greater_equal(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater_equal.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Functional Examples
     -------------------
@@ -2520,10 +2606,15 @@ def less_equal(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
-    This method conforms to the `Array API Standard
+
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.less_equal.html>`_ # noqa
     in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Examples
     --------
@@ -2626,6 +2717,16 @@ def multiply(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.multiply.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Returns
     -------
@@ -2767,6 +2868,7 @@ def isinf(
         positive or negative infinity and False otherwise. The returned array must have
         a data type of bool.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isinf.html>`_ # noqa
@@ -2779,6 +2881,7 @@ def isinf(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([1, 2, 3])
     >>> z = ivy.isinf(x)
     >>> print(z)
@@ -2830,6 +2933,7 @@ def isinf(
     Instance Method Examples
     ------------------------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([1, 2, 3])
     >>> x.isinf()
     ivy.array([False, False, False])
@@ -2914,13 +3018,15 @@ def isnan(
         ``NaN`` and ``False`` otherwise. The returned array should have a data type of
         ``bool``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isnan.html>`_ # noqa
-    in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances in place of
-    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Examples
     --------
@@ -3032,6 +3138,7 @@ def isnan(
     Container Static Method Examples
     ------------------------
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]), \
                           b=ivy.array([float('nan'), 3.3, -4.2]))
     >>> z = ivy.Container.static_isnan(x)
@@ -3224,9 +3331,10 @@ def log10(
         ``x``. The returned array must have a floating-point data type determined by
         :ref:`type-promotion`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log10.html>`_  # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3552,6 +3660,16 @@ def logical_and(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_and.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -3583,6 +3701,7 @@ def logical_and(
     }
 
     With :class:`ivy.NativeArray` input:
+
     >>> x = ivy.native_array([True, True, False])
     >>> y = ivy.native_array([True, False, True])
     >>> print(ivy.logical_and(x, y))
@@ -3653,6 +3772,15 @@ def logical_not(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_not.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Functional Examples
     -------------------
@@ -3781,6 +3909,7 @@ def logical_or(
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([True, False, True])
     >>> y = ivy.array([True, True, False])
     >>> print(ivy.logical_or(x, y))
@@ -3882,6 +4011,16 @@ def logical_xor(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_xor.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Returns
     -------
     ret
@@ -3966,6 +4105,15 @@ def negative(
     -------
     ret
         an array containing the evaluated result for each element in x
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.negative.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Functional Examples
     -------------------
@@ -4331,6 +4479,16 @@ def positive(
     ret
         A new array with the positive value of each element in ``x``.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.positive.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Functional Examples
     -------------------
 
@@ -4463,6 +4621,16 @@ def pow(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.pow.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
+
     """
     return ivy.current_backend(x1, x2).pow(x1, x2, out=out)
 
@@ -4549,6 +4717,15 @@ def remainder(
         an array containing the element-wise results. Each element-wise result must have
         the same sign as the respective element ``x2_i``. The returned array must have a
         data type determined by :ref:`Type Promotion Rules`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.remainder.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
     Examples
     --------
@@ -4727,7 +4904,7 @@ def sign(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sign.html>`_ # noqa
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4812,15 +4989,15 @@ def sin(
         an array containing the sine of each element in ``x``. The returned array must
         have a floating-point data type determined by :ref:`type-promotion`.
 
-    This method conforms to the
-    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.elementwise_functions.sin.html>` _ in the standard.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sin.html>`_ # noqa
+    in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances in place of any of the arguments
 
     Examples
     --------
@@ -4904,6 +5081,16 @@ def sinh(
         an array containing the hyperbolic sine of each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sinh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -4978,13 +5165,15 @@ def sqrt(
         an array containing the square root of each element in ``x``. The returned array
         must have a floating-point data type determined by :ref:`type-promotion`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
     in the standard.
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances in place of any of the arguments
 
     Functional Examples
     -------------------
@@ -5341,11 +5530,14 @@ def tanh(
         floating-point data type determined by :ref:`type-promotion`.
 
 
-    This method conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tanh.html>`_ # noqa in the standard. The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances in place of
-    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tanh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
 
 
     Examples
@@ -5430,6 +5622,15 @@ def trunc(
         an array containing the values before the decimal point for each element ``x``.
         The returned array must have the same data type as ``x``.
 
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.trunc.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
     """
     return ivy.current_backend(x).trunc(x, out=out)
 
@@ -5496,14 +5697,6 @@ def maximum(
         An array with the elements of x1, but clipped to not be lower than the x2
         values.
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Examples
     --------
@@ -5547,10 +5740,8 @@ def maximum(
 
     With multiple :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([1, 3, 1]),\
-                        b=ivy.array([2, 8, 5]))
-    >>> y = ivy.Container(a=ivy.array([1, 5, 6]),\
-                        b=ivy.array([5, 9, 7]))
+    >>> x = ivy.Container(a=ivy.array([1, 3, 1]),b=ivy.array([2, 8, 5]))
+    >>> y = ivy.Container(a=ivy.array([1, 5, 6]),b=ivy.array([5, 9, 7]))
     >>> z = ivy.maximum(x, y)
     >>> print(z)
     {
@@ -5589,18 +5780,11 @@ def minimum(
     ret
         An array with the elements of x1, but clipped to not exceed the x2 values.
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([7, 9, 5])
     >>> y = ivy.array([9, 3, 2])
     >>> z = ivy.minimum(x, y)
@@ -5625,8 +5809,7 @@ def minimum(
     With one :class:`ivy.Container` input:
 
     >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
-    >>> y = ivy.Container(a=ivy.array([1, 0,]), \
-                          b=ivy.array([-5, 9]))
+    >>> y = ivy.Container(a=ivy.array([1, 0,]),b=ivy.array([-5, 9]))
     >>> z = ivy.minimum(x, y)
     >>> print(z)
     {
@@ -5813,6 +5996,7 @@ def rad2deg(
         [-252., -315., -378.]])
 
     With :class:`ivy.NativeArray` input:
+
     >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
     >>> y=ivy.rad2deg(x)
     >>> print(y)
@@ -5825,6 +6009,7 @@ def rad2deg(
     ivy.array([   0., 1150.,   nan])
 
     With :class:`ivy.Container` input:
+    
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),\
                         b=ivy.array([0,1,2,3,4]))
     >>> y=ivy.rad2deg(x)
