@@ -44,7 +44,7 @@ def conv1d_transpose(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if not ivy.gpu_is_available() and dilations > 1:
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     filters = tf.transpose(filters, (0, 2, 1))
@@ -115,7 +115,7 @@ def conv2d_transpose(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     filters = tf.transpose(filters, (0, 1, 3, 2))
     if not ivy.gpu_is_available() and (dilations[0] > 1 or dilations[1] > 1):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "conv2d_transpose does not support dilations greater than 1 when device"
             "is cpu for tensorflow"
         )
@@ -160,7 +160,7 @@ def depthwise_conv2d(
         and (dilations[0] > 1 or dilations[1] > 1)
         and (strides[0] > 1 or strides[1] > 1)
     ):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "depthwise_conv2d does not support dilations greater than 1 and"
             "strides greater than 1 when device is cpu for tensorflow"
         )
@@ -211,7 +211,7 @@ def conv3d_transpose(
     padding: str,
     /,
     *,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    output_shape=None,
     data_format: str = "NDHWC",
     dilations: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -223,7 +223,7 @@ def conv3d_transpose(
     if not ivy.gpu_is_available() and (
         dilations[1] > 1 or dilations[2] > 1 or dilations[3] > 1
     ):
-        raise Exception(
+        raise ivy.exceptions.IvyException(
             "conv3d_transpose does not support dilations greater than 1 when"
             "device is cpu for tensorflow"
         )
@@ -258,3 +258,165 @@ def conv3d_transpose(
 
 
 conv3d_transpose.unsupported_dtypes = ("bfloat16",)
+
+
+def conv_general_dilated(
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x_dilations, int):
+        x_dilations = (x_dilations,) * dims
+    elif len(x_dilations) == 1:
+        x_dilations = (x_dilations[0],) * dims
+    if dims == 3:
+        strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
+        dilations = (
+            [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]
+        )
+    if data_format == "channel_first":
+        x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+    x_shape = list(x.shape[1 : dims + 2])
+
+    # adding dilation in input
+    if dims == 1:
+        permute_list = [2]
+    else:
+        permute_list = [i for i in range(3, dims + 2)]
+        permute_list += [2]
+    x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+    for i in range(dims):
+        if x_dilations[i] > 1:
+            h = x_shape[i]
+            new_height = h + (h - 1) * (x_dilations[i] - 1)
+            h = tf.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
+            x = tf.matmul(tf.transpose(x, (0, 1, *permute_list)), h)
+    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+
+    df = ivy.get_x_data_format(dims, "chanel_last")
+    if dims == 1:
+        res = tf.concat(
+            [
+                tf.nn.conv1d(
+                    x[:, :, i : i + filters.shape[-2]],
+                    filters[:, :, j : j + filters.shape[-1] // feature_group_count],
+                    strides,
+                    padding,
+                    df,
+                    dilations,
+                )
+                for i, j in zip(
+                    range(0, x.shape[-1], filters.shape[-2]),
+                    range(
+                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
+                    ),
+                )
+            ],
+            axis=-1,
+        )
+    elif dims == 2:
+        res = tf.concat(
+            [
+                tf.nn.conv2d(
+                    x[:, :, :, i : i + filters.shape[-2]],
+                    filters[:, :, :, j : j + filters.shape[-1] // feature_group_count],
+                    strides,
+                    padding,
+                    df,
+                    dilations,
+                )
+                for i, j in zip(
+                    range(0, x.shape[-1], filters.shape[-2]),
+                    range(
+                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
+                    ),
+                )
+            ],
+            axis=-1,
+        )
+    else:
+        res = tf.concat(
+            [
+                tf.nn.conv3d(
+                    x[:, :, :, :, i : i + filters.shape[-2]],
+                    filters[
+                        :, :, :, :, j : j + filters.shape[-1] // feature_group_count
+                    ],
+                    strides,
+                    padding,
+                    df,
+                    dilations,
+                )
+                for i, j in zip(
+                    range(0, x.shape[-1], filters.shape[-2]),
+                    range(
+                        0, filters.shape[-1], filters.shape[-1] // feature_group_count
+                    ),
+                )
+            ],
+            axis=-1,
+        )
+    if data_format == "channel_first":
+        res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
+    return res
+
+
+conv_general_dilated.unsupported_dtypes = ("bfloat16",)
+
+
+def conv_general_transpose(
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    output_shape=None,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if dims == 1:
+        res = conv1d_transpose(
+            x,
+            filters,
+            strides,
+            padding,
+            output_shape=output_shape,
+            data_format=ivy.get_x_data_format(dims, data_format),
+            dilations=dilations,
+        )
+    elif dims == 2:
+        res = conv2d_transpose(
+            x,
+            filters,
+            strides,
+            padding,
+            output_shape=output_shape,
+            data_format=ivy.get_x_data_format(dims, data_format),
+            dilations=dilations,
+        )
+    else:
+        res = conv3d_transpose(
+            x,
+            filters,
+            strides,
+            padding,
+            output_shape=output_shape,
+            data_format=ivy.get_x_data_format(dims, data_format),
+            dilations=dilations,
+        )
+    return res
+
+
+conv_general_transpose.unsupported_dtypes = ("bfloat16",)

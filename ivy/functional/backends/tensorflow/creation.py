@@ -1,7 +1,6 @@
-# For Review
 # global
 import tensorflow as tf
-from typing import Union, Tuple, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence
 
 # local
 import ivy
@@ -10,9 +9,13 @@ from ivy import (
     default_dtype,
     as_ivy_dtype,
 )
-
-# noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
+)
 
 
 # Array API Standard #
@@ -63,8 +66,13 @@ arange.unsupported_dtypes = (
 )
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
-    object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
+    obj: Union[
+        tf.Tensor, tf.Variable, bool, int, float, NestedSequence, SupportsBufferProtocol
+    ],
     /,
     *,
     copy: Optional[bool] = None,
@@ -74,48 +82,48 @@ def asarray(
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         if copy:
-            if dtype is None and isinstance(object_in, tf.Tensor):
-                return tf.identity(object_in)
-            if dtype is None and not isinstance(object_in, tf.Tensor):
+            if dtype is None and isinstance(obj, tf.Tensor):
+                return tf.identity(obj)
+            if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    dtype = default_dtype(item=object_in, as_native=True)
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    dtype = default_dtype(item=obj, as_native=True)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = default_dtype(dtype=dtype, item=object_in, as_native=True)
+                    dtype = default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=obj))
                 try:
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
         else:
-            if dtype is None and isinstance(object_in, tf.Tensor):
-                return object_in
-            if dtype is None and not isinstance(object_in, tf.Tensor):
+            if dtype is None and isinstance(obj, tf.Tensor):
+                return obj
+            if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    return tf.convert_to_tensor(object_in)
+                    return tf.convert_to_tensor(obj)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+                    dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=obj))
                     return tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=obj))
                 try:
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
@@ -217,7 +225,7 @@ def full(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     with tf.device(device):
         return tf.fill(
             shape,
@@ -234,7 +242,7 @@ def full_like(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 

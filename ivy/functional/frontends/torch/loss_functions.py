@@ -10,7 +10,9 @@ def _get_reduction_func(reduction):
     elif reduction == "sum":
         ret = ivy.sum
     else:
-        raise ValueError("{} is not a valid value for reduction".format(reduction))
+        raise ivy.exceptions.IvyException(
+            "{} is not a valid value for reduction".format(reduction)
+        )
     return ret
 
 
@@ -45,7 +47,9 @@ def _get_reduction_method(reduction, to_reduce):
     elif reduction == "sum":
         ret = ivy.sum(to_reduce)
     else:
-        raise ValueError(f"{reduction} is not a valid value for reduction")
+        raise ivy.exceptions.IvyException(
+            f"{reduction} is not a valid value for reduction"
+        )
     return ret
 
 
@@ -117,4 +121,3 @@ def smooth_l1_loss(
 ):
     reduction = _get_reduction(reduction)
     return reduction(ivy.smooth_l1_loss(input, target, beta))
-

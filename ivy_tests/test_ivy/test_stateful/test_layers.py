@@ -95,14 +95,14 @@ def test_linear_layer(
             "bias_initializer": bias_initializer,
             "with_bias": with_bias,
             "device": device,
-            "dtype": input_dtype,
+            "dtype": input_dtype[0],
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"x": np.asarray(x, dtype=input_dtype)},
+        all_as_kwargs_np_method={"x": x[0]},
         fw=fw,
         class_name="Linear",
         init_with_v=init_with_v,
@@ -144,20 +144,19 @@ def test_dropout_layer(
     device,
 ):
     input_dtype, x = dtype_and_x
-    x = np.asarray(x, dtype=input_dtype)
     ret = helpers.test_method(
         num_positional_args_init=num_positional_args_init,
         all_as_kwargs_np_init={
             "prob": prob,
             "scale": scale,
-            "dtype": input_dtype,
+            "dtype": input_dtype[0],
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": x},
+        all_as_kwargs_np_method={"inputs": x[0]},
         fw=fw,
         class_name="Dropout",
         test_values=False,
@@ -165,7 +164,7 @@ def test_dropout_layer(
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
         # cardinality test
-        assert u.shape == x.shape
+        assert u.shape == x[0].shape
 
 
 # Attention #

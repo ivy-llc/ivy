@@ -2,8 +2,8 @@
 import ivy
 
 
-def add(input, other, *, alpha=1, out=None):
-    return ivy.add(input, other * alpha, out=out)
+def add(input, other, *, alpha=None, out=None):
+    return ivy.add(input, other, alpha=alpha, out=out)
 
 
 def tan(input, *, out=None):
@@ -102,6 +102,26 @@ def bitwise_and(input, other, *, out=None):
     return ivy.bitwise_and(input, other, out=out)
 
 
+def bitwise_not(input, *, out=None):
+    return ivy.bitwise_invert(input, out=out)
+
+
+def bitwise_xor(input, other, *, out=None):
+    return ivy.bitwise_xor(input, other, out=out)
+
+
+def bitwise_or(input, other, *, out=None):
+    return ivy.bitwise_or(input, other, out=out)
+
+
+def bitwise_left_shift(input, other, *, out=None):
+    return ivy.bitwise_left_shift(input, other, out=out)
+
+
+def bitwise_right_shift(input, other, *, out=None):
+    return ivy.bitwise_right_shift(input, other, out=out)
+
+
 def log10(input, *, out=None):
     return ivy.log10(input, out=out)
 
@@ -136,3 +156,45 @@ def logical_or(input, other, *, out=None):
 
 def logical_xor(input, other, *, out=None):
     return ivy.logical_xor(input, other, out=out)
+
+
+def ceil(input, *, out=None):
+    return ivy.ceil(input, out=out)
+
+
+def clamp(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    input = ivy.array(input)
+    min = ivy.array(min) if ivy.exists(min) else None
+    max = ivy.array(max) if ivy.exists(max) else None
+    if min is None:
+        return ivy.minimum(input, max, out=out)
+    if max is None:
+        return ivy.maximum(input, min, out=out)
+    return ivy.clip(input, min, max, out=out)
+
+
+def clip(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    input = ivy.array(input)
+    min = ivy.array(min) if ivy.exists(min) else None
+    max = ivy.array(max) if ivy.exists(max) else None
+    if min is None:
+        return ivy.minimum(input, max, out=out)
+    if max is None:
+        return ivy.maximum(input, min, out=out)
+    return ivy.clip(input, min, max, out=out)
