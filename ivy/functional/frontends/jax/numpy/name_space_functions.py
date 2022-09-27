@@ -56,3 +56,22 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
             ret[both_nan] = both_nan[both_nan]
         ret = ivy.all(ret)
     return ivy.array(ret, dtype=ivy.bool)
+
+
+def clip(a, a_min=None, a_max=None, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        a_min,
+        a_max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of a_min or a_max can be None",
+    )
+    a = ivy.array(a)
+    a_min = ivy.array(a_min) if ivy.exists(a_min) else None
+    a_max = ivy.array(a_max) if ivy.exists(a_max) else None
+    if a_min is None:
+        return ivy.minimum(a, a_max, out=out)
+    if a_max is None:
+        return ivy.maximum(a, a_min, out=out)
+    return ivy.clip(a, a_min, a_max, out=out)
