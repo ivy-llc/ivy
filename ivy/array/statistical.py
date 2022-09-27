@@ -77,7 +77,7 @@ class ArrayWithStatistical(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([3., 4., 5.])
         >>> y = x.mean()

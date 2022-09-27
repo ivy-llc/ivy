@@ -54,7 +54,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-        Using :code:`ivy.Array` instance method:
+        Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([[-1, -2], [0, 2]])
         >>> print(x.astype(ivy.float64))
@@ -88,7 +88,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` inputs:
+        With :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.array([1, 2])
         >>> x2 = ivy.array([0.2, 0.])
@@ -97,7 +97,7 @@ class ArrayWithDataTypes(abc.ABC):
         >>> print(y)
         [ivy.array([1, 2]), ivy.array([0.2, 0. ]), ivy.array([0., 0.])]
 
-        With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
         >>> x1 = ivy.array([-1., 3.4])
         >>> x2 = ivy.native_array([2.4, 5.1])
@@ -132,7 +132,7 @@ class ArrayWithDataTypes(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = x.broadcast_to((3,3))
