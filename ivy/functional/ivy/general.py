@@ -122,22 +122,9 @@ def is_native_array(
     >>> ivy.is_native_array(x)
     False
 
-    >>> x = ivy.native_array([1.5, 2.3, 4.9, 2.6])
-    >>> ivy.is_native_array(x)
-    True
-
-    >>> x = ivy.native_array([-1, 2, 7, -3])
-    >>> ivy.is_native_array(x, exclusive=False)
-    True
-
     >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
     >>> ivy.is_native_array(x, exclusive=True)
     True
-
-    >>> x = ivy.array([5, 2, 6, 9])
-    >>> ivy.is_native_array(x, exclusive=True)
-    False
-
     """
     try:
         return current_backend(x).is_native_array(x, exclusive=exclusive)
@@ -171,22 +158,9 @@ def is_ivy_array(
     >>> ivy.is_ivy_array(x)
     True
 
-    >>> x = ivy.native_array([1.5, 2.3, 4.9, 2.6])
-    >>> ivy.is_ivy_array(x)
-    False
-
-    >>> x = ivy.native_array([-1, 2, 7, -3])
-    >>> ivy.is_ivy_array(x, exclusive=False)
-    False
-
     >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
     >>> ivy.is_ivy_array(x, exclusive=True)
     False
-
-    >>> x = ivy.array([5, 2, 6, 9])
-    >>> ivy.is_ivy_array(x, exclusive=True)
-    True
-
     """
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
 
@@ -207,7 +181,6 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     -------
     ret
         Boolean, whether or not x is an array.
-
     """
     return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
         x, exclusive=exclusive
