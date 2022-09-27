@@ -115,10 +115,10 @@ def test_numpy_ndarray_transpose(
     native_array,
     fw,
 ):
-    array, axes = array_and_axes
+    array, dtype, axes = array_and_axes
     helpers.test_frontend_method(
-        input_dtypes_init=["int8"],
-        input_dtypes_method=["int8"],
+        input_dtypes_init=dtype,
+        input_dtypes_method=dtype,
         as_variable_flags_init=as_variable,
         num_positional_args_init=num_positional_args,
         num_positional_args_method=num_positional_args,

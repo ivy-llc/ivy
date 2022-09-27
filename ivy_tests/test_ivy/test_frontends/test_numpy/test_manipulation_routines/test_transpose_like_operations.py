@@ -26,9 +26,9 @@ def test_numpy_transpose(
     native_array,
     fw,
 ):
-    array, axes = array_and_axes
+    array, dtype, axes = array_and_axes
     helpers.test_frontend_function(
-        input_dtypes=["int8"],
+        input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -36,7 +36,7 @@ def test_numpy_transpose(
         fw=fw,
         frontend="numpy",
         fn_tree="transpose",
-        array=np.array(array),
+        array=np.array(array, dtype=dtype),
         axes=axes,
     )
 

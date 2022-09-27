@@ -24,7 +24,7 @@ def dtype_x_bounded_axis(draw, **kwargs):
 def _array_and_axes_permute_helper(
     draw, *, min_num_dims, max_num_dims, min_dim_size, max_dim_size,
 ):
-    """Returns array and either the random permutation of its axes or None.
+    """Returns array, its dtype and either the random permutation of its axes or None.
 
     Parameters
     ----------
@@ -42,19 +42,20 @@ def _array_and_axes_permute_helper(
 
     Returns
     -------
-    A strategy that draws an array and axes (or None).
+    A strategy that draws an array, its dtype and axes (or None).
     """
     shape = draw(helpers.get_shape(
         allow_none=False, min_num_dims=min_num_dims,
         max_num_dims=max_num_dims, min_dim_size=min_dim_size,
         max_dim_size=max_dim_size))
-    array = draw(helpers.array_values(dtype="int8", shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
+    array = draw(helpers.array_values(dtype=dtype, shape=shape))
     axes = draw(st.one_of(st.none(), helpers.get_axis(
         shape=shape, allow_neg=False, allow_none=False,
         sorted=False, unique=True, min_size=len(shape), max_size=len(shape),
         force_tuple=True, force_int=False,
     )).filter(lambda x: x != tuple(range(len(shape)))))
-    return (array, axes)
+    return (array, dtype, axes)
 
 
 # noinspection PyShadowingNames
