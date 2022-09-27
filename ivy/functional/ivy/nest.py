@@ -627,7 +627,7 @@ def map(
     >>> print(results)
     [1. 2.]
 
-    With :code:`float` inputs:
+    With float inputs:
 
     >>> def linear_model(w:float, x:float, b:float) -> float: return w*x + b
     >>> results = ivy.map(fn = linear_model, \

@@ -181,7 +181,7 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 -----------------
 
-All code for setting and unsetting backend resides in the submodule at :code:`ivy/backend_handler.py`, and the front facing function is :code:`ivy.current_backend()`. The contents of this function are as follows:
+All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :code:`ivy.current_backend()`. The contents of this function are as follows:
 
 .. code-block:: python
 

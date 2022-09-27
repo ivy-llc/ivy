@@ -22,12 +22,12 @@ The devices currently supported by Ivy are as follows:
 * gpu:idx
 * tpu:idx
 
-In a similar manner to the :code:`ivy.Dtype` and :code:`ivy.NativeDtype` classes (see :ref:`Data Types`),
-there is both an `ivy.Device`_ class and an :code:`ivy.NativeDevice` class,
-with :code:`ivy.NativeDevice` initially set as an `empty class`_.
-The :code:`ivy.Device` class derives from :code:`str`,
+In a similar manner to the :class:`ivy.Dtype` and :class:`ivy.NativeDtype` classes (see :ref:`Data Types`),
+there is both an `ivy.Device`_ class and an :class:`ivy.NativeDevice` class,
+with :class:`ivy.NativeDevice` initially set as an `empty class`_.
+The :class:`ivy.Device` class derives from :code:`str`,
 and has simple logic in the constructor to verify that the string formatting is correct.
-When a backend is set, the :code:`ivy.NativeDtype` is replaced with the backend-specific `device class`_.
+When a backend is set, the :class:`ivy.NativeDtype` is replaced with the backend-specific `device class`_.
 
 Device Module
 -------------
@@ -88,15 +88,15 @@ Overall, `ivy.default_device`_ infers the device as follows:
 For the majority of functions which defer to `infer_device`_ for handling the device,
 these steps will have been followed and the :code:`device` argument will be populated with the correct value
 before the backend-specific implementation is even entered into. Therefore, whereas the :code:`device` argument is
-listed as optional in the ivy API at :code:`ivy/functional/ivy/category_name.py`,
+listed as optional in the ivy API at :mod:`ivy/functional/ivy/category_name.py`,
 the argument is listed as required in the backend-specific implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py`.
+:mod:`ivy/functional/backends/backend_name/category_name.py`.
 
 This is exactly the same as with the :code:`dtype` argument, as explained in the :ref:`Data Types` section.
 
 Let's take a look at the function :code:`ivy.zeros` as an example.
 
-The implementation in :code:`ivy/functional/ivy/creation.py` has the following signature:
+The implementation in :mod:`ivy/functional/ivy/creation.py` has the following signature:
 
 .. code-block:: python
 
@@ -111,7 +111,7 @@ The implementation in :code:`ivy/functional/ivy/creation.py` has the following s
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Array:
 
-Whereas the backend-specific implementations in :code:`ivy/functional/backends/backend_name/creation.py`
+Whereas the backend-specific implementations in :mod:`ivy/functional/backends/backend_name/creation.py`
 all list :code:`device` as required.
 
 Jax:
