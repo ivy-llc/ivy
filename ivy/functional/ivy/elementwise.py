@@ -227,6 +227,13 @@ def acosh(
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
+    Returns
+    -------
+    ret
+        an array containing the inverse hyperbolic cosine of each element in x. The
+        returned array must have a floating-point data type determined by
+        :ref:`type-promotion`.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -236,13 +243,6 @@ def acosh(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
-
-    Returns
-    -------
-    ret
-        an array containing the inverse hyperbolic cosine of each element in x. The
-        returned array must have a floating-point data type determined by
-        :ref:`type-promotion`.
 
     Examples
     --------
@@ -1300,6 +1300,7 @@ def bitwise_right_shift(
         an array containing the element-wise results. The returned array must have a
         data type determined by :ref:`type-promotion`.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
@@ -2103,6 +2104,7 @@ def expm1(
     ret
         an array containing the evaluated result for each element in ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -3956,6 +3958,7 @@ def logical_or(
         an array containing the element-wise results. The returned array must have a
         data type of ``bool``.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
@@ -4869,6 +4872,8 @@ def round(
     -------
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
+
+
 
     Note: PyTorch supports an additional argument :code:`decimals` for the
     `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
