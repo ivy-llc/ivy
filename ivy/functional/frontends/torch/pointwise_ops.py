@@ -163,22 +163,38 @@ def ceil(input, *, out=None):
 
 
 def clamp(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
     input = ivy.array(input)
-    if min.all() is None:
+    min = ivy.array(min) if ivy.exists(min) else None
+    max = ivy.array(max) if ivy.exists(max) else None
+    if min is None:
         return ivy.minimum(input, max, out=out)
-    if max.all() is None:
+    if max is None:
         return ivy.maximum(input, min, out=out)
-    if min.all() is None and max.all() is None:
-        return input
-    return ivy.minimum(ivy.maximum(input, min), max, out=out)
+    return ivy.clip(input, min, max, out=out)
 
 
 def clip(input, min=None, max=None, *, out=None):
+    ivy.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
     input = ivy.array(input)
-    if min.all() is None:
+    min = ivy.array(min) if ivy.exists(min) else None
+    max = ivy.array(max) if ivy.exists(max) else None
+    if min is None:
         return ivy.minimum(input, max, out=out)
-    if max.all() is None:
+    if max is None:
         return ivy.maximum(input, min, out=out)
-    if min.all() is None and max.all() is None:
-        return input
-    return ivy.minimum(ivy.maximum(input, min), max, out=out)
+    return ivy.clip(input, min, max, out=out)
