@@ -189,7 +189,3 @@ def dtype_bits(dtype_in: Union[torch.dtype, str]) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
-
-
-# ToDo:
-# 1. can_cast : Add support for complex64, complex128
