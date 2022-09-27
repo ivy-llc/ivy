@@ -17,7 +17,7 @@ class Tensor:
     def Reshape(self, shape, name="Reshape"):
         return tf_frontend.Reshape(tensor=self.data, shape=shape, name=name)
 
-    def add(self, y, name="add"):
+    def __add__(self, y, name="add"):
         return tf_frontend.add(self.data, y, name)
 
     def get_shape(self):
