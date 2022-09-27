@@ -8,6 +8,108 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+@st.composite
+def _dtype_pred_and_labels(
+    draw,
+    *,
+    dtype=None,
+    available_dtypes=helpers.get_dtypes("numeric"),
+    min_pred_val=0,
+    max_pred_val=1,  # predication array output as probabilities
+    label_set=None,
+    min_label_val=0,
+    max_label_val=None,
+    allow_inf=False,
+    allow_nan=False,
+    exclude_min=False,
+    exclude_max=False,
+    sparse_label=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    shape=None,
+):
+    if isinstance(min_dim_size, st._internal.SearchStrategy):
+        min_dim_size = draw(min_dim_size)
+    if isinstance(max_dim_size, st._internal.SearchStrategy):
+        max_dim_size = draw(max_dim_size)
+    if isinstance(available_dtypes, st._internal.SearchStrategy):
+        available_dtypes = draw(available_dtypes)
+
+    if dtype is None:
+        assert available_dtypes is not None, "Unspecified dtype or available_dtypes."
+        dtype = draw(
+            helpers.array_dtypes(
+                num_arrays=1,
+                available_dtypes=available_dtypes,
+            )
+        )
+        dtype.append("int32")
+    # initialize shapes for pred and label
+    if shape is not None:
+        if not isinstance(shape, (tuple, list)):
+            shape = draw(shape)
+    else:
+        shape = draw(
+            st.shared(
+                helpers.get_shape(
+                    min_num_dims=min_num_dims,
+                    max_num_dims=max_num_dims,
+                    min_dim_size=min_dim_size,
+                    max_dim_size=max_dim_size,
+                ),
+                key="shape",
+            )
+        )
+
+    if not sparse_label:
+        label_shape = shape
+    else:
+        label_shape = shape[:-1]
+
+    pred = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=shape,
+            min_value=min_pred_val,
+            max_value=max_pred_val,
+            allow_inf=allow_inf,
+            allow_nan=allow_nan,
+            exclude_min=exclude_min,
+            exclude_max=exclude_max,
+        )
+    )
+    # generate labels by restriction
+    if label_set is not None:
+        length = 1
+        for _ in label_shape:
+            length *= _
+        indices = draw(
+            helpers.list_of_length(
+                x=st.integers(min_value=0, max_value=len(label_set) - 1), length=length
+            )
+        )
+        values = [label_set[_] for _ in indices]
+        array = np.array(values)
+        labels = array.reshape(label_shape).tolist()
+    else:
+        labels = draw(
+            helpers.array_values(
+                dtype=dtype[1],
+                shape=label_shape,
+                min_value=min_label_val,
+                max_value=max_label_val,
+                allow_inf=allow_inf,
+                allow_nan=allow_nan,
+                exclude_min=exclude_min,
+                exclude_max=exclude_max,
+            )
+        )
+
+    return dtype, pred, labels
+
+
 # binary_accuracy
 @handle_cmd_line_args
 @given(
@@ -40,8 +142,8 @@ def test_tensorflow_binary_accuracy(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_accuracy",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
         threshold=threshold,
     )
 
@@ -72,13 +174,13 @@ def test_sparse_categorical_crossentropy(
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
-
+    y_pred = y_pred[0]
     # Perform softmax on prediction if it's not a probability distribution.
     if not from_logits:
         y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
 
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int32, dtype],
+        input_dtypes=[ivy.int32] + dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -87,7 +189,7 @@ def test_sparse_categorical_crossentropy(
         frontend="tensorflow",
         fn_tree="keras.metrics.sparse_categorical_crossentropy",
         y_true=y_true,
-        y_pred=y_pred,
+        y_pred=y_pred[0],
         from_logits=from_logits,
     )
 
@@ -111,7 +213,6 @@ def test_tensorflow_mean_absolute_error(
     input_dtype_x, as_variable, num_positional_args, native_array, fw
 ):
     input_dtype, x = input_dtype_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -121,8 +222,8 @@ def test_tensorflow_mean_absolute_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -162,7 +263,7 @@ def test_binary_crossentropy(
         y_pred = ivy.exp(y_pred) / ivy.sum(ivy.exp(y_pred))
 
     helpers.test_frontend_function(
-        input_dtypes=[ivy.int32, dtype],
+        input_dtypes=[ivy.int32] + dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -171,7 +272,7 @@ def test_binary_crossentropy(
         frontend="tensorflow",
         fn_tree="keras.metrics.binary_crossentropy",
         y_true=y_true,
-        y_pred=y_pred,
+        y_pred=y_pred[0],
         from_logits=from_logits,
         label_smoothing=label_smoothing,
     )
@@ -180,22 +281,22 @@ def test_binary_crossentropy(
 # sparse_top_k_categorical_accuracy
 @handle_cmd_line_args
 @given(
-    dtype_and_y_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=0,
+    dtype_pred_and_labels=_dtype_pred_and_labels(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_pred_val=1e-6,
+        max_label_val=5,
+        sparse_label=True,
         shape=(5, 10),
     ),
-    y_true=helpers.array_values(shape=(5,), min_value=0, dtype=ivy.int32),
     k=st.integers(min_value=3, max_value=10),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.sparse_top_k_categorical_accuracy"
     ),
 )
 def test_sparse_top_k_categorical_accuracy(
-    dtype_and_y_pred, y_true, k, as_variable, num_positional_args, native_array, fw
+    dtype_pred_and_labels, k, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, y_pred = dtype_and_y_pred
-    print(y_pred, y_true, k)
+    input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -271,8 +372,8 @@ def test_tensorflow_kl_divergence(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.kl_divergence",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -302,8 +403,8 @@ def test_tensorflow_poisson(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.poisson",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -335,8 +436,8 @@ def test_tensorflow_mean_squared_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
@@ -368,26 +469,28 @@ def test_tensorflow_mean_absolute_percentage_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_absolute_percentage_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
     )
 
 
 # hinge
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
+    dtype_pred_and_labels=_dtype_pred_and_labels(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_num_dims=1,
-        shared_dtype=True,
+        label_set=[-1, 1],
+        min_num_dims=2,
+        min_dim_size=2,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.hinge"
     ),
 )
-def test_tensorflow_hinge(dtype_x, as_variable, num_positional_args, native_array, fw):
-    input_dtype, x = dtype_x
+def test_tensorflow_hinge(
+    dtype_pred_and_labels, as_variable, num_positional_args, native_array, fw
+):
+    input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -397,28 +500,28 @@ def test_tensorflow_hinge(dtype_x, as_variable, num_positional_args, native_arra
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.hinge",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_pred=y_pred,
+        y_true=y_true,
     )
 
 
 # squared_hinge
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
+    dtype_pred_and_labels=_dtype_pred_and_labels(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_num_dims=1,
-        shared_dtype=True,
+        label_set=[-1, 1],
+        min_num_dims=2,
+        min_dim_size=2,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.squared_hinge"
     ),
 )
 def test_tensorflow_squared_hinge(
-    dtype_x, as_variable, num_positional_args, native_array, fw
+    dtype_pred_and_labels, as_variable, num_positional_args, native_array, fw
 ):
-    input_dtype, x = dtype_x
+    input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -428,8 +531,8 @@ def test_tensorflow_squared_hinge(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.squared_hinge",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_pred=y_pred,
+        y_true=y_true,
     )
 
 
@@ -454,7 +557,6 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     fw,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -464,6 +566,50 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         fw=fw,
         frontend="tensorflow",
         fn_tree="keras.metrics.mean_squared_logarithmic_error",
-        y_true=np.asarray(x[0], dtype=input_dtype[0]),
-        y_pred=np.asarray(x[1], dtype=input_dtype[1]),
+        y_true=x[0],
+        y_pred=x[1],
+    )
+
+
+# Cosine Similarity
+@handle_cmd_line_args
+@given(
+    d_type=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), shared_dtype=True, num_arrays=2
+    ),
+    y_true=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=1, max_value=5
+    ),
+    y_pred=helpers.array_values(
+        dtype=ivy.int32, shape=(1, 5), min_value=5, max_value=10
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.cosine_similarity"
+    ),
+)
+def test_tensorflow_cosine_similarity(
+    d_type,
+    y_true,
+    y_pred,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+    with_out,  # noqa: E501
+):
+    dtype = d_type
+    y_true = y_true
+    y_pred = y_pred
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="keras.metrics.cosine_similarity",
+        y_true=y_true,
+        y_pred=y_pred,
     )

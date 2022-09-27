@@ -1,5 +1,4 @@
 # global
-import random
 from hypothesis import given, strategies as st
 
 # local
@@ -22,25 +21,22 @@ import ivy
     padding=st.sampled_from([1, 2, 3, 4, 5, "same", "valid"]),
 )
 def test_torch_conv2d_1(input, weight, bias, stride, dilation, padding, fw):
-    dtype = random.choice([ivy.float32, ivy.float64])
-    groups = 3
-    dtypes = [dtype] * 3
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=["float32"],
         num_positional_args=7,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
+        native_array_flags=[False],
         fw=fw,
         frontend="torch",
         fn_tree="conv2d",
-        input=ivy.array(input, dtype=dtype),
-        weight=ivy.array(weight, dtype=dtype),
-        bias=ivy.array(bias, dtype=dtype),
+        input=input,
+        weight=weight,
+        bias=bias,
         stride=stride,
         padding=padding,
         dilation=dilation,
-        groups=groups,
+        groups=3,
     )
 
 
@@ -58,23 +54,20 @@ def test_torch_conv2d_1(input, weight, bias, stride, dilation, padding, fw):
     padding=st.sampled_from([1, 2, 3, 4, 5, "same", "valid"]),
 )
 def test_torch_conv2d_2(input, weight, bias, stride, dilation, padding, fw):
-    dtype = random.choice([ivy.float32, ivy.float64])
-    groups = 1
-    dtypes = [dtype] * 3
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=["float32"],
         num_positional_args=7,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
+        native_array_flags=[False],
         fw=fw,
         frontend="torch",
         fn_tree="conv2d",
-        input=ivy.array(input, dtype=dtype),
-        weight=ivy.array(weight, dtype=dtype),
-        bias=ivy.array(bias, dtype=dtype),
+        input=input,
+        weight=weight,
+        bias=bias,
         stride=stride,
         padding=padding,
         dilation=dilation,
-        groups=groups,
+        groups=1,
     )

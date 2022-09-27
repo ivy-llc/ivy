@@ -68,7 +68,7 @@ def min(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
     >>> z = x.min()
@@ -91,7 +91,7 @@ def min(
     >>> print(y)
     ivy.array(0)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.min(x)
@@ -171,12 +171,12 @@ def max(
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
     >>> z = x.max()
@@ -199,7 +199,7 @@ def max(
     >>> print(y)
     ivy.array(10)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.max(x)
@@ -273,9 +273,20 @@ def mean(
            array ``x`` has an integer data type, the returned array must have the
            default floating-point data type.
 
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.statistical_functions.mean.html>`_ in the standard.
+
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
+
+    
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3., 4., 5.])
     >>> y = ivy.mean(x)
@@ -288,7 +299,7 @@ def mean(
     >>> print(y)
     ivy.array(1.)
 
-    >>> x = ivy.array([[-1, -2, -3, 0, -1], [1, 2, 3, 0, 1]])
+    >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
     >>> y = ivy.array([0., 0.])
     >>> ivy.mean(x, axis=1, out=y)
     >>> print(y)
@@ -313,14 +324,14 @@ def mean(
     >>> print(y)
     [1., 4.]
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+    >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
     >>> y = ivy.mean(x)
     >>> print(y)
     {
         a: ivy.array(0.),
-        b: ivy.array(0.9)
+        b: ivy.array(0.90000004)
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
@@ -334,7 +345,7 @@ def mean(
 
     Instance Method Examples
     ------------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3., 4., 5.])
     >>> y = x.mean()
@@ -353,29 +364,7 @@ def mean(
     >>> print(y)
     ivy.array([-0.25,  1.05,  2.1])
 
-    With :code:`ivy.native_array` input:
-
-    >>> x = ivy.native_array([0.0, 1.1, 2.2])
-    >>> y = x.mean()
-    >>> print(y)
-    1.1
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean()
-    >>> print(y)
-    2.5
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean(axis=0)
-    >>> print(y)
-    [1.5 2.5 3.5]
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = x.mean(axis=1)
-    >>> print(y)
-    [1.0 4.0]
-
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.2, 2.2, 4.2]))
     >>> y = x.mean()
@@ -385,12 +374,12 @@ def mean(
         b: ivy.array(2.2)
     }
 
-    >>> x = ivy.Container(a=ivy.array([1., 1., 1.], b=ivy.array([0., -1., 1.])))
+    >>> x = ivy.Container(a=ivy.array([1., 1., 1.]), b=ivy.array([0., -1., 1.]))
     >>> x.mean(out=x)
     >>> print(x)
     {
-        a: ivy.array(1.1),
-        b: ivy.array(0.)
+        a: ivy.array(0.),
+        b: ivy.array(1.)
     }
 
     >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
@@ -401,15 +390,6 @@ def mean(
         a: ivy.array([1., 2.]),
         b: ivy.array([3., 4.])
     }
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
-    signatures.statistical_functions.mean.html>`_ in the standard.
-
-    Both the description and the type hints above assumes an array input for
-    simplicity, but this function is *nestable*, and therefore also accepts
-    :code:`ivy.Container` instances in place of any of the arguments.
     """
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
@@ -628,7 +608,7 @@ def sum(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0.41, 0.89])
     >>> y = ivy.sum(x)
@@ -665,7 +645,7 @@ def sum(
     >>> print(y)
     ivy.array(8.)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.sum(x)
@@ -738,7 +718,7 @@ def var(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
     >>> y = ivy.var(x)
@@ -763,7 +743,7 @@ def var(
     >>> print(y)
     ivy.array(0.07472222)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
                           b=ivy.array([0.7, 0.1, 0.9]))
@@ -780,12 +760,12 @@ def var(
     signatures.elementwise_functions.tan.html>`_ in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Functional Examples
     -------------------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])
     >>> y = ivy.var(x)
@@ -816,7 +796,7 @@ def var(
     >>> print(y)
     ivy.array([6., 6., 6.])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
     >>> y = ivy.var(x)
@@ -829,7 +809,7 @@ def var(
     >>> print(y)
     ivy.array(0.5)
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), b=ivy.array([3.0, 4.0, 5.0]))
     >>> y = ivy.var(x)
@@ -904,12 +884,12 @@ def cumsum(
         original array elements along the specified axis.
 
     Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :code:`ivy.Container`
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 5, 2, 0])
     >>> y = ivy.cumsum(x, exclusive= True, reverse=False)
@@ -940,7 +920,7 @@ def cumsum(
                [14, 11,  5],
                [14, 13, 10]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
                           b=ivy.array([[3, 5, 7]]))
@@ -1041,7 +1021,7 @@ def cumprod(
 
     Examples
     --------
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3, 4])
     >>> y = ivy.cumprod(x)
@@ -1078,7 +1058,7 @@ def cumprod(
                 [2.,  3.],
                 [10., 21.]])
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
     >>> y = ivy.cumprod(x)
@@ -1246,7 +1226,7 @@ def einsum(
     >>> print(C)
     ivy.array([ 0, 22, 76])
 
-    With a mix of :code:`ivy.Array` and :code:`ivy.Container` inputs:
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.Container(a=ivy.array([[ 0,  1,  2,  3],\

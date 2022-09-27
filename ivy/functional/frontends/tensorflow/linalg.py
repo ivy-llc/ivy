@@ -10,6 +10,10 @@ def det(input, name=None):
     return ivy.det(input)
 
 
+def eigh(tensor, name=None):
+    return ivy.eigh(tensor)
+
+
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
@@ -65,4 +69,4 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
-eye.unsupported_dtypes = {"torch": ("float16", "bfloat16")}
+eye.unsupported_dtypes = ("float16", "bfloat16")

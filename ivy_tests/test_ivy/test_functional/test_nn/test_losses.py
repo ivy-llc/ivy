@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import given, strategies as st
 
 # local
@@ -11,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -53,7 +52,7 @@ def test_cross_entropy(
     true_dtype, true = dtype_and_true
 
     helpers.test_function(
-        input_dtypes=[true_dtype, pred_dtype],
+        input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -63,8 +62,8 @@ def test_cross_entropy(
         fw=fw,
         fn_name="cross_entropy",
         rtol_=1e-03,
-        true=np.asarray(true, dtype=true_dtype),
-        pred=np.asarray(pred, dtype=pred_dtype),
+        true=true[0],
+        pred=pred[0],
         axis=axis,
         epsilon=epsilon,
         reduction=reduction,
@@ -75,7 +74,7 @@ def test_cross_entropy(
 @handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -113,9 +112,8 @@ def test_binary_cross_entropy(
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
-
     helpers.test_function(
-        input_dtypes=[true_dtype, pred_dtype],
+        input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -124,8 +122,8 @@ def test_binary_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="binary_cross_entropy",
-        true=np.asarray(true, dtype=true_dtype),
-        pred=np.asarray(pred, dtype=pred_dtype),
+        true=true[0],
+        pred=pred[0],
         epsilon=epsilon,
         reduction=reduction,
     )
@@ -135,7 +133,7 @@ def test_binary_cross_entropy(
 @handle_cmd_line_args
 @given(
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer", full=True),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=2,
         allow_inf=False,
@@ -175,9 +173,8 @@ def test_sparse_cross_entropy(
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
-
     helpers.test_function(
-        input_dtypes=[true_dtype, pred_dtype],
+        input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -186,8 +183,8 @@ def test_sparse_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="sparse_cross_entropy",
-        true=np.asarray(true, dtype=true_dtype),
-        pred=np.asarray(pred, dtype=pred_dtype),
+        true=true[0],
+        pred=pred[0],
         axis=axis,
         epsilon=epsilon,
         reduction=reduction,

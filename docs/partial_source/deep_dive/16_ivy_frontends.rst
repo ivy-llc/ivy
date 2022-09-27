@@ -73,7 +73,7 @@ We start with the function :code:`lax.add` as an example.
 
 :code:`lax.add` is categorised under :code:`operators` as shown in the `jax.lax`_
 package directory. We organize the functions using the same categorizations as the
-original framework, and also mimick the importing behaviour regarding modules and
+original framework, and also mimic the importing behaviour regarding modules and
 namespaces etc.
 
 For the function arguments, these must be identical to the original function in
@@ -144,8 +144,8 @@ arguments seek to control are simply not controllable when using Ivy.
 Similarly, :code:`subok` controls whether or not subclasses of the :code:`numpy.ndarray`
 should be permitted as inputs to the function.
 Again, this is a very framework-specific argument. All ivy functions by default do
-enable subclasses of the :code:`ivy.Array` to be passed, and the frontend function will
-be operating with :code:`ivy.Array` instances rather than :code:`numpy.ndarray`
+enable subclasses of the :class:`ivy.Array` to be passed, and the frontend function will
+be operating with :class:`ivy.Array` instances rather than :code:`numpy.ndarray`
 instances, and so we omit this argument. Again, it has no bearing on input-output
 behaviour and so this is not a problem when transpiling between frameworks.
 
@@ -228,7 +228,7 @@ and we therefore use the same for our PyTorch frontend :code:`add`.
 We wrap :code:`ivy.add` as usual, but the arguments work slightly different in this
 example. Looking at the PyTorch `torch.add`_ documentation,
 we can see that :code:`alpha` acts as a scale for the :code:`other` argument.
-Thus, we can mimick the original behaviour by simply passing :code:`other * alpha`
+Thus, we can mimic the original behaviour by simply passing :code:`other * alpha`
 into :code:`ivy.add`.
 
 .. code-block:: python
@@ -238,7 +238,7 @@ into :code:`ivy.add`.
         return ivy.tan(input, out=out)
 
 :code:`tan` is also placed under :code:`pointwise_ops` as is the case in the `torch`_
-framework. Looking at the `torch.tan`_ documentation, we can mimick the same arguments,
+framework. Looking at the `torch.tan`_ documentation, we can mimic the same arguments,
 and again simply wrap :code:`ivy.tan`,
 also making use of the :code:`out` argument in this case.
 
@@ -320,7 +320,7 @@ the backend :code:`ivy.cumprod()` does not support this argument or behaviour.
         return current_backend(x).cumprod(x, axis, exclusive, out=out)
 
 To enable this behaviour, we need to incorporate other Ivy functions which are
-compositionally able to mimick the required behaviour.
+compositionally able to mimic the required behaviour.
 For example, we can simply reverse the result by calling :code:`ivy.flip()` on the
 result of :code:`ivy.cumprod()`.
 
@@ -358,7 +358,7 @@ to be timely and sensible, then we will add this function to the
 "Extend Ivy Functional API"
 `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 At this point in time, you can reserve the function for yourself and get it implemented
-in a unique PR. Once merged, you can then resume working on the frontned function,
+in a unique PR. Once merged, you can then resume working on the frontend function,
 which will now be a much easier task with the new addition to Ivy.
 
 Temporary Compositions
@@ -512,7 +512,7 @@ The way we do this is to wrap all framework-specific classes inside a
 placeholder class to represent the framework-specific class and its counterpart.
 It has only one attribute, :code:`_native_class`, which holds the reference to the
 special class being used by the targeted framework.
-Then, in order to pass the key and value to the orignal and frontend functions
+Then, in order to pass the key and value to the original and frontend functions
 respectively, :code:`test_frontend_function` detects all :code:`NativeClass` instances
 in the arguments, makes use of :code:`<framework>_classes_to_ivy_classes` internally
 to find the corresponding value to the key wrapped inside the :code:`NativeClass`
@@ -528,10 +528,8 @@ As an example, we show how :code:`NativeClass` is used in the frontend test for 
     Novalue = NativeClass(numpy._NoValue)
     @handle_cmd_line_args
     @given(
-        dtype_x_axis=_dtype_x_axis(
-            available_dtypes=ivy_np.valid_float_dtypes),
-        dtype=st.sampled_from(
-            ivy_np.valid_float_dtypes + (None,)),
+        dtype_x_axis=_dtype_x_axis(available_dtypes=helpers.get_dtypes("float")),
+        dtype=helpers.get_dtypes("float", full=False, none=True),
         keep_dims= st.one_of (st.booleans(), Novalue),
         initial=st.one_of(st.floats(), Novalue),
         num_positional_args=helpers.num_positional_args(
@@ -584,3 +582,12 @@ as well if you prefer a video explanation!
 If you're ever unsure of how best to proceed,
 please feel free to engage with the `ivy frontends discussion`_,
 or reach out on `discord`_ in the `ivy frontends channel`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/_9KeK-idaFs" class="video">
+    </iframe>
