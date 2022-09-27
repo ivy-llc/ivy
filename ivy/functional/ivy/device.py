@@ -69,6 +69,7 @@ class DefaultDevice:
         Examples
         --------
         A "cpu" as device:
+
         >>> with ivy.DefaultDevice("cpu") as device:
         >>>     # with block calls device.__enter__()
         >>>     print(device._dev)
@@ -90,6 +91,7 @@ class DefaultDevice:
         Examples
         --------
         A "gpu" as device:
+
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -97,6 +99,7 @@ class DefaultDevice:
         "cpu"
 
         A "tpu" as device:
+
         >>> with ivy.DefaultDevice("tpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
