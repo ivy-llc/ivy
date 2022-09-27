@@ -131,7 +131,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
+        Using :class:`ivy.Container` instance method:
         
         >>> x = ivy.Container(a=ivy.array([False,True,True]), \
                                 b=ivy.array([3.14, 2.718, 1.618]))
@@ -193,7 +193,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
         >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
@@ -207,7 +207,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0, 1])
         }]
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
         >>> x2 = ivy.array([0.2, 3.])
@@ -266,7 +266,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
         >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
@@ -280,7 +280,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0, 1])
         }]
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
         >>> x2 = ivy.zeros(2)
@@ -336,7 +336,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` static method:
+        With :class:`ivy.Container` static method:
 
         >>> x = ivy.Container(a=ivy.array([1]),\
             b=ivy.array([2]))
@@ -394,7 +394,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` instance method:
+        With :class:`ivy.Container` instance method:
         
         >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
             b=ivy.array([4, 5]))

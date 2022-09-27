@@ -467,7 +467,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0, 1, 2])
         >>> y = x.to_list()
@@ -525,7 +525,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_decrement(1)
@@ -569,7 +569,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.asarray([4., 5., 6.])
         >>> y = x.stable_divide(2)
@@ -623,7 +623,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.clip_vector_norm(2.0)
@@ -714,7 +714,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([-1])
         >>> y = x.to_scalar()
@@ -801,7 +801,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With one :code:`ivy.Array` instance method:
+        With one :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([92])
         >>> y = x.value_is_nan()
@@ -965,7 +965,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_increment(1)
@@ -1012,7 +1012,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([[0., 1., 2.]])
         >>> y = x.clip_matrix_norm(2.0)
