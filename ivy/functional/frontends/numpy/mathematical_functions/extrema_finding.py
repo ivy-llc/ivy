@@ -76,7 +76,7 @@ def nanmin(
                 s[axis[0]] = 1
             else:
                 s[axis] = 1
-        header = ivy.full(ivy.Shape(s.to_list()), initial)
+        header = ivy.full(ivy.Shape(s.to_list()), initial)  # , dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
                 a = ivy.concat([a, header], axis=axis[0])
