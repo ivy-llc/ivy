@@ -58,6 +58,10 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     return ivy.array(ret, dtype=ivy.bool)
 
 
+def broadcast_to(arr, shape):
+    return ivy.broadcast_to(arr, shape)
+
+
 def clip(a, a_min=None, a_max=None, out=None):
     ivy.assertions.check_all_or_any_fn(
         a_min,

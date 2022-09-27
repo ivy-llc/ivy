@@ -170,6 +170,57 @@ def test_jax_numpy_allclose(
     )
 
 
+# broadcast_to
+@st.composite
+def _get_input_and_broadcast_shape(draw):
+    dim1 = draw(helpers.ints(min_value=2, max_value=5))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shape=(dim1,),
+        )
+    )
+    broadcast_dim = draw(helpers.ints(min_value=1, max_value=3))
+    shape = ()
+    for _ in range(broadcast_dim):
+        shape += (draw(helpers.ints(min_value=1, max_value=dim1)),)
+    shape += (dim1,)
+    return x_dtype, x, shape
+
+
+@handle_cmd_line_args
+@given(
+    input_x_broadcast=_get_input_and_broadcast_shape(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.broadcast_to"
+    ),
+)
+def test_jax_numpy_broadcast_to(
+    input_x_broadcast,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    x_dtype, x, shape = input_x_broadcast
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.broadcast_to",
+        arr=x[0],
+        shape=shape,
+    )
+
+
 @st.composite
 def _get_clip_inputs(draw):
     shape = draw(
