@@ -209,7 +209,6 @@ def inplace_update(
         return val
 
 
-
 def inplace_variables_supported():
     return True
 
