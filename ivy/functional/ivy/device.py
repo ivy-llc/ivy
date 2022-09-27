@@ -363,14 +363,14 @@ def dev(
     Functional Examples
     --------------------
 
-    With :code:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 1, 4, 5])
     >>> y = ivy.dev(x)
     >>> print(y)
     cpu
 
-    With :code:'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[2, 5, 4], [3, 1, 5]])
     >>> y = ivy.dev(x, as_native=True)
@@ -380,7 +380,7 @@ def dev(
     Array Instance Method Examples
     ------------------------------
 
-    With :code:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])
     >>> y = x.dev(as_native=True)
@@ -390,7 +390,7 @@ def dev(
     Container Static Method Examples
     ---------------------------------
 
-    With :code:'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),\
                           b=ivy.native_array([1, 2, 4, 5, 7]))
@@ -405,7 +405,7 @@ def dev(
     Container Instance Method Examples
     ----------------------------
 
-    With :code:'ivy.Container' input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),\
                           b=ivy.native_array([[1, 2], [4, 5]]))
