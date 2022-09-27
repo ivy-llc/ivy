@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import assume, given, strategies as st
 
 # local
@@ -9,19 +8,58 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy import argsort, array
 
 
+# clip
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
+    min = draw(st.booleans())
+    if min:
+        min = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=-50, max_value=5
+            )
+        )
+        max = draw(st.booleans())
+        max = (
+            draw(
+                helpers.array_values(
+                    dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+                )
+            )
+            if max
+            else None
+        )
+    else:
+        min = None
+        max = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=5, max_value=50
+            )
+        )
+    return x_dtype, x, min, max
+
+
 @handle_cmd_line_args
 @given(
-    x_min_n_max=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=3, shared_dtype=True
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    input_and_ranges=_get_clip_inputs(),
+    dtype=helpers.get_dtypes("valid", full=False, none=True),
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.clip"
     ),
 )
 def test_numpy_clip(
-    x_min_n_max,
+    input_and_ranges,
     dtype,
     where,
     as_variable,
@@ -30,18 +68,15 @@ def test_numpy_clip(
     native_array,
     fw,
 ):
-    input_dtypes, (x_list, min_val_list, max_val_list) = x_min_n_max
-    # ToDo should generate the data so we don't have to use assume here
-    # same that is done in JAX clamp
-    assume(np.all(np.less(np.asarray(min_val_list), np.asarray(max_val_list))))
+    x_dtype, x, min, max = input_and_ranges
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtypes,
+        input_dtype=x_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -49,9 +84,9 @@ def test_numpy_clip(
         fw=fw,
         frontend="numpy",
         fn_tree="clip",
-        x=x_list,
-        a_min=min_val_list,
-        a_max=max_val_list,
+        a=x[0],
+        a_min=min,
+        a_max=max,
         out=None,
         where=where,
         casting="same_kind",
@@ -62,6 +97,7 @@ def test_numpy_clip(
     )
 
 
+# cbrt
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
