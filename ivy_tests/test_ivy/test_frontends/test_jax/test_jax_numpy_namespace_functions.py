@@ -269,7 +269,7 @@ def _get_clip_inputs(draw):
         fn_name="ivy.functional.frontends.jax.numpy.clip"
     ),
 )
-def test_jax_clip(
+def test_jax_numpy_clip(
     input_and_ranges,
     num_positional_args,
     with_out,
