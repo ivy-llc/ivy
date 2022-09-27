@@ -250,13 +250,25 @@ is False.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.searching.ContainerWithSearching.nonzero">
-<span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/searching.html#ContainerWithSearching.nonzero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.searching.ContainerWithSearching.nonzero" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_tuple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/searching.html#ContainerWithSearching.nonzero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.searching.ContainerWithSearching.nonzero" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container instance method variant of ivy.nonzero. This method simply
 wraps the function, and so the docstring for ivy.nonzero also applies
 to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>) – input array or container. Should have a numeric data type.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>) – input array or container. Should have a numeric data type.</p></li>
+<li><p><strong>as_tuple</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, the output is returned as a tuple of indices, one for each (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+dimension of the input, containing the indices of the true elements in that
+dimension. If False, the coordinates are returned in a (N, ndim) array,
+where N is the number of true elements. Default = True.</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – if specified, the function will return an array of shape (size, ndim). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+If the number of non-zero elements is fewer than size, the remaining
+elements will be filled with fill_value. Default = None.</p></li>
+<li><p><strong>fill_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – when size is specified and there are fewer than size number of elements, (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
+the remaining elements in the output array will be filled with fill_value.
+Default = 0.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
@@ -355,13 +367,25 @@ is False.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.searching.ContainerWithSearching.static_nonzero">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/searching.html#ContainerWithSearching.static_nonzero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.searching.ContainerWithSearching.static_nonzero" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_tuple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/searching.html#ContainerWithSearching.static_nonzero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.searching.ContainerWithSearching.static_nonzero" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container static method variant of ivy.nonzero. This method simply
 wraps the function, and so the docstring for ivy.nonzero also applies
 to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – input array or container. Should have a numeric data type.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>, <a class="reference internal" href="../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>    ) – input array or container. Should have a numeric data type.</p></li>
+<li><p><strong>as_tuple</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, the output is returned as a tuple of indices, one for each (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+dimension of the input, containing the indices of the true elements in that
+dimension. If False, the coordinates are returned in a (N, ndim) array,
+where N is the number of true elements. Default = True.</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – if specified, the function will return an array of shape (size, ndim). (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+If the number of non-zero elements is fewer than size, the remaining
+elements will be filled with fill_value. Default = None.</p></li>
+<li><p><strong>fill_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>) – when size is specified and there are fewer than size number of elements, (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)
+the remaining elements in the output array will be filled with fill_value.
+Default = 0.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>

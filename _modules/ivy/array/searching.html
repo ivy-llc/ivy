@@ -130,7 +130,8 @@
   <h1>Source code for ivy.array.searching</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -216,7 +217,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithSearching.nonzero"><a class="viewcode-back" href="../../../data_classes/array/searching/ArrayWithSearching.html#ivy.array.searching.ArrayWithSearching.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="ArrayWithSearching.nonzero"><a class="viewcode-back" href="../../../data_classes/array/searching/ArrayWithSearching.html#ivy.array.searching.ArrayWithSearching.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">as_tuple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fill_value</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.nonzero. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.nonzero also applies</span>
@@ -226,6 +234,19 @@
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            input array. Should have a numeric data type.</span>
+<span class="sd">        as_tuple</span>
+<span class="sd">            if True, the output is returned as a tuple of indices, one for each</span>
+<span class="sd">            dimension of the input, containing the indices of the true elements in that</span>
+<span class="sd">            dimension. If False, the coordinates are returned in a (N, ndim) array,</span>
+<span class="sd">            where N is the number of true elements. Default = True.</span>
+<span class="sd">        size</span>
+<span class="sd">            if specified, the function will return an array of shape (size, ndim).</span>
+<span class="sd">            If the number of non-zero elements is fewer than size, the remaining</span>
+<span class="sd">            elements will be filled with fill_value. Default = None.</span>
+<span class="sd">        fill_value</span>
+<span class="sd">            when size is specified and there are fewer than size number of elements,</span>
+<span class="sd">            the remaining elements in the output array will be filled with fill_value.</span>
+<span class="sd">            Default = 0.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -233,7 +254,9 @@
 <span class="sd">            Array containing the indices of the non-zero values.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">as_tuple</span><span class="o">=</span><span class="n">as_tuple</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithSearching.where"><a class="viewcode-back" href="../../../data_classes/array/searching/ArrayWithSearching.html#ivy.array.searching.ArrayWithSearching.where">[docs]</a>    <span class="k">def</span> <span class="nf">where</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>

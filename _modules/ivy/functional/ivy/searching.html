@@ -129,17 +129,18 @@
              
   <h1>Source code for ivy.functional.ivy.searching</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <span class="c1"># Array API Standard #</span>
@@ -353,7 +354,14 @@
 <div class="viewcode-block" id="nonzero"><a class="viewcode-back" href="../../../../functional/ivy/searching/nonzero/nonzero_functional.html#ivy.functional.ivy.searching.nonzero">[docs]</a><span class="nd">to_native_arrays_and_back</span>
 <span class="nd">handle_nestable</span>
 <span class="nd">handle_exceptions</span>
-<span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">as_tuple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fill_value</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Returns the indices of the array elements which are non-zero.</span>
 
 <span class="sd">    Parameters</span>
@@ -361,6 +369,19 @@
 <span class="sd">    x</span>
 <span class="sd">        input array. Must have a positive rank. If `x` is zero-dimensional, the function</span>
 <span class="sd">        must raise an exception.</span>
+<span class="sd">    as_tuple</span>
+<span class="sd">        if True, the output is returned as a tuple of indices, one for each</span>
+<span class="sd">        dimension of the input, containing the indices of the true elements in that</span>
+<span class="sd">        dimension. If False, the coordinates are returned in a (N, ndim) array,</span>
+<span class="sd">        where N is the number of true elements. Default = True.</span>
+<span class="sd">    size</span>
+<span class="sd">        if specified, the function will return an array of shape (size, ndim).</span>
+<span class="sd">        If the number of non-zero elements is fewer than size, the remaining elements</span>
+<span class="sd">        will be filled with fill_value. Default = None.</span>
+<span class="sd">    fill_value</span>
+<span class="sd">        when size is specified and there are fewer than size number of elements,</span>
+<span class="sd">        the remaining elements in the output array will be filled with fill_value.</span>
+<span class="sd">        Default = 0.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -386,7 +407,17 @@
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))</span>
 
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 2], [-1, -2]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.nonzero(x, as_tuple=False)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0, 1], [1, 0], [1, 1]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.nonzero(x, size=2, fill_value=4)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    (ivy.array([1, 4]),)</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[10, 20], [10, 0], [0, 0]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.nonzero(x)</span>
@@ -440,7 +471,9 @@
 <span class="sd">    &gt;&gt;&gt; print(y.b)</span>
 <span class="sd">    (ivy.array([]),)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">as_tuple</span><span class="o">=</span><span class="n">as_tuple</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="where"><a class="viewcode-back" href="../../../../functional/ivy/searching/where/where_functional.html#ivy.functional.ivy.searching.where">[docs]</a><span class="nd">to_native_arrays_and_back</span>
