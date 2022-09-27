@@ -1,17 +1,19 @@
-# For Review
 # global
-import numpy
 import numpy as np
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import Union, Optional, List, Sequence
 
 # local
 import ivy
 from .data_type import as_native_dtype
 from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
-
-# noinspection PyProtectedMember
-from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
+from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
+)
 
 
 # Array API Standard #
@@ -39,8 +41,11 @@ def arange(
     return res
 
 
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
-    object_in: Union[np.ndarray, List[float], Tuple[float]],
+    obj: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
     /,
     *,
     copy: Optional[bool] = None,
@@ -49,26 +54,20 @@ def asarray(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # If copy=none then try using existing memory buffer
-    if isinstance(object_in, np.ndarray) and dtype is None:
-        dtype = object_in.dtype
-    elif (
-        isinstance(object_in, (list, tuple, dict))
-        and len(object_in) != 0
-        and dtype is None
-    ):
-        dtype = default_dtype(item=object_in, as_native=True)
+    if isinstance(obj, np.ndarray) and dtype is None:
+        dtype = obj.dtype
+    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
+        dtype = default_dtype(item=obj, as_native=True)
         if copy is True:
-            return _to_device(
-                np.copy(np.asarray(object_in, dtype=dtype)), device=device
-            )
+            return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
         else:
-            return _to_device(np.asarray(object_in, dtype=dtype), device=device)
+            return _to_device(np.asarray(obj, dtype=dtype), device=device)
     else:
-        dtype = default_dtype(dtype=dtype, item=object_in)
+        dtype = default_dtype(dtype=dtype, item=obj)
     if copy is True:
-        return _to_device(np.copy(np.asarray(object_in, dtype=dtype)), device=device)
+        return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
     else:
-        return _to_device(np.asarray(object_in, dtype=dtype), device=device)
+        return _to_device(np.asarray(obj, dtype=dtype), device=device)
 
 
 def empty(
@@ -92,7 +91,7 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    k: Optional[int] = 0,
+    k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: np.dtype,
     device: str,
@@ -110,9 +109,7 @@ def eye(
         return _to_device(return_mat, device=device)
 
 
-# noinspection PyShadowingNames
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
-    # noinspection PyProtectedMember
     return np.from_dlpack(x)
 
 
@@ -125,7 +122,7 @@ def full(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         np.full(shape, fill_value, dtype),
         device=device,
@@ -141,7 +138,7 @@ def full_like(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 
@@ -163,8 +160,8 @@ def linspace(
     # Waiting for fix when start is -0.0: https://github.com/numpy/numpy/issues/21513
     if (
         ans.shape[0] >= 1
-        and (not isinstance(start, numpy.ndarray))
-        and (not isinstance(stop, numpy.ndarray))
+        and (not isinstance(start, np.ndarray))
+        and (not isinstance(stop, np.ndarray))
     ):
         ans[0] = start
     return _to_device(ans, device=device)
@@ -225,6 +222,10 @@ def zeros_like(
 array = asarray
 
 
+def copy_array(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return x.copy()
+
+
 def logspace(
     start: Union[np.ndarray, int],
     stop: Union[np.ndarray, int],
@@ -243,3 +244,12 @@ def logspace(
         np.logspace(start, stop, num=num, base=base, dtype=dtype, axis=axis),
         device=device,
     )
+
+
+def one_hot(
+    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    res = np.eye(depth, dtype=indices.dtype)[
+        np.array(indices, dtype="int64").reshape(-1)
+    ]
+    return res.reshape(list(indices.shape) + [depth])

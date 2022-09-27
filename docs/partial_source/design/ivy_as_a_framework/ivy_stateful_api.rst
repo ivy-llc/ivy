@@ -1,7 +1,7 @@
 Ivy Stateful API
 ================
 
-Here we explain how Ivy’s stateful API builds on the functional API and the :code:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
+Here we explain how Ivy’s stateful API builds on the functional API and the :class:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
 
 So, without further ado, let’s walk through what the stateful API has to offer!
 
@@ -38,7 +38,7 @@ The most helpful stateful Ivy class is perhaps the :code:`ivy.Module`. This can 
 
 For simplicity, this is slightly different to the builtin :code:`ivy.Linear` in a couple of ways, as we will explain in the Initializer section below.
 
-All :code:`ivy.Module` instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an :code:`ivy.Container`. For our example above, the hierarchical structure of these variables is the same as that defined in the method :code:`_create_variables`.
+All :code:`ivy.Module` instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an :class:`ivy.Container`. For our example above, the hierarchical structure of these variables is the same as that defined in the method :code:`_create_variables`.
 
 .. code-block:: python
 
@@ -299,7 +299,7 @@ It may seem counter intuitive to implement the activation as an :code:`ivy.Modul
         }
     }
 
-Given that the weights of our network are stored in an :code:`ivy.Container`, and the gradients returned from :code:`ivy.execute_with_gradients` are also stored in an :code:`ivy.Container`, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:
+Given that the weights of our network are stored in an :class:`ivy.Container`, and the gradients returned from :code:`ivy.execute_with_gradients` are also stored in an :class:`ivy.Container`, all operations are applied recursively to every variable at all leaves. Therefore, we can train the network in a few lines of code like so:
 
 .. code-block:: python
 

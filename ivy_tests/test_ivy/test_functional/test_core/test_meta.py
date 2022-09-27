@@ -187,8 +187,7 @@ def test_fomaml_step_shared_vars(
     fw,
 ):
     # Numpy does not support gradients, jax does not support gradients on custom
-    # nested classes, and mxnet does not support only_inputs argument to
-    # mx.autograd.grad
+    # nested classes
     if fw == "numpy":
         return
 
@@ -354,8 +353,7 @@ def test_fomaml_step_overlapping_vars(
     fw,
 ):
     # Numpy does not support gradients, jax does not support gradients on custom
-    # nested classes, and mxnet does not support only_inputs argument to
-    # mx.autograd.grad
+    # nested classes
     if fw == "numpy":
         return
 
@@ -494,10 +492,9 @@ def test_fomaml_step_overlapping_vars(
 def test_reptile_step(
     device, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
 ):
-    if ivy.current_backend_str() in ("numpy", "mxnet"):
+    if ivy.current_backend_str() == "numpy":
         # Numpy does not support gradients, jax does not support gradients on custom
-        # nested classes, and mxnet does not support only_inputs argument to
-        # mx.autograd.grad
+        # nested classes,
         pytest.skip()
 
     # config
@@ -614,10 +611,9 @@ def test_maml_step_unique_vars(
     num_tasks,
     return_inner_v,
 ):
-    if ivy.current_backend_str() in ("numpy", "mxnet"):
+    if ivy.current_backend_str() == "numpy":
         # Numpy does not support gradients, jax does not support gradients on custom
-        # nested classes, and mxnet does not support only_inputs argument to
-        # mx.autograd.grad
+        # nested classes
         pytest.skip()
 
     if ivy.current_backend_str() == "tensorflow":
@@ -761,10 +757,9 @@ def test_maml_step_shared_vars(
     num_tasks,
     return_inner_v,
 ):
-    if ivy.current_backend_str() in ("numpy", "mxnet"):
+    if ivy.current_backend_str() == "numpy":
         # Numpy does not support gradients, jax does not support gradients on custom
-        # nested classes, and mxnet does not support only_inputs argument to
-        # mx.autograd.grad
+        # nested classes
         pytest.skip()
 
     if ivy.current_backend_str() == "tensorflow":
@@ -975,10 +970,9 @@ def test_maml_step_overlapping_vars(
     num_tasks,
     return_inner_v,
 ):
-    if ivy.current_backend_str() in ("numpy", "mxnet"):
+    if ivy.current_backend_str() == "numpy":
         # Numpy does not support gradients, jax does not support gradients on custom
-        # nested classes, and mxnet does not support only_inputs argument to
-        # mx.autograd.grad
+        # nested classes
         pytest.skip()
 
     if ivy.current_backend_str() == "tensorflow":

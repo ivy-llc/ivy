@@ -1,4 +1,3 @@
-# For Review
 # global
 import ivy
 import torch
@@ -36,7 +35,7 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
-    axis: Union[int, Tuple[int], List[int]] = 0,
+    axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
@@ -48,7 +47,7 @@ def flip(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     num_dims: int = len(x.shape)
@@ -107,17 +106,20 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     /,
-    axis: Optional[Union[int, Tuple[int], List[int]]] = None,
+    axis: Union[int, Sequence[int]],
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 "Expected dimension of size [{}, {}], but found "
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         if x.shape[axis] != 1:
-            raise ValueError(f"Expected size of axis to be 1 but was {x.shape[axis]}")
+            raise ivy.exceptions.IvyException(
+                f"Expected size of axis to be 1 but was {x.shape[axis]}"
+            )
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
@@ -132,7 +134,7 @@ def squeeze(
     for i in axis_updated_after_squeeze:
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
-            raise ValueError(
+            raise ivy.exceptions.IvyException(
                 "Expected dimension of size [{}, {}], "
                 "but found dimension size {}".format(-dim, dim, shape)
             )
@@ -145,7 +147,7 @@ def stack(
     arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.stack(arrays, axis, out=out)
@@ -168,7 +170,7 @@ def split(
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -212,6 +214,9 @@ def repeat(
         axis = None
     repeats = torch.tensor(repeats)
     return torch.repeat_interleave(x, repeats, axis)
+
+
+repeat.unsupported_dtypes = ("int8", "int16", "uint8")
 
 
 def tile(
@@ -266,9 +271,7 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    assert torch.all(
-        torch.less(torch.tensor(x_min), x_max)
-    ), "Min value must be less than max."
+    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
@@ -280,3 +283,14 @@ def clip(
 
 clip.support_native_out = True
 clip.unsupported_dtypes = ("float16",)
+
+
+def unstack(
+    x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
+) -> List[torch.Tensor]:
+    if x.shape == ():
+        return [x]
+    ret = list(torch.unbind(x, axis))
+    if keepdims:
+        return [r.unsqueeze(axis) for r in ret]
+    return ret

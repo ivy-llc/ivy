@@ -8,6 +8,9 @@ Open Tasks
 .. _`Ivy Frontends`: https://lets-unify.ai/ivy/deep_dive/16_ivy_frontends.html
 .. _`Ivy Frontend Tests`: https://lets-unify.ai/ivy/deep_dive/17_ivy_frontends_tests.html
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html
+.. _`issue description`: https://github.com/unifyai/ivy/issues/1526
+.. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
+.. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
 
 Here, we explain all tasks which are currently open for
 contributions from the community!
@@ -78,10 +81,10 @@ Some common important tasks are:
 #. remove all :code:`lambda` and direct bindings for the backend functions
    (in :code:`ivy.functional.backends`), with each function instead defined using
    :code:`def`.
-#. implement the following if they don't exist but should do: :code:`ivy.Array` instance
-   method, :code:`ivy.Container` static method, :code:`ivy.Container` instance method,
-   :code:`ivy.Array` special method, :code:`ivy.Array` reverse special method,
-   :code:`ivy.Container` special method, :code:`ivy.Container` reverse special method.
+#. implement the following if they don't exist but should do: :class:`ivy.Array` instance
+   method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method,
+   :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method,
+   :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct
    category-specific parent class, such as :code:`ivy.ArrayWithElementwise`,
    :code:`ivy.ContainerWithManipulation` etc.
@@ -103,7 +106,7 @@ for the formatting task as follows:
 :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* 
 is the name of the category that the function belongs to. An example of this is shown below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_generator.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_generator.png?raw=true
    :width: 420
 
 Using this formatting will then trigger our github automation bots to update your 
@@ -113,14 +116,14 @@ few moments to take effect, so please be patient. 🙂
 2. After adding the checklist to your PR, you should then modify this checklist with 
 the status of each item according to the symbols(emojis) within the LEGEND section.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_legend.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_legend.png?raw=true
    :width: 420
 
 1. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for 
 your PR and we will start checking your implementation and marking the items as complete 
 using the checkboxes next to them.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_checked.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_checked.png?raw=true
    :width: 420
 
 4. In case you are stuck or need help with one of the checklist items, please add the
@@ -128,7 +131,7 @@ using the checkboxes next to them.
 on your point of struggle with this item. The PR assignee will then see this comment
 and address your issues.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/checklist_SOS.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/4_open_tasks/checklist_SOS.png?raw=true
    :width: 420
 
 **Notes**: 
@@ -153,6 +156,7 @@ for this task.
 
 The general workflow for this task is:
 
+#. find the correct location for the function by following the *Where to place a frontend function* subsection below
 #. implement the function by following the `Ivy Frontends`_ guide
 #. write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. verify that the tests for your function are passing
@@ -210,6 +214,68 @@ issue to request for the function to be added to Ivy. Meanwhile, you can select
 another frontend function to work on from the ToDo list! If you're stuck on a
 function which requires complex compositions, you're allowed to reselect a function
 too!
+
+Where to place a frontend function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The placement of new frontend functions for a given backend should follow the categorisation of the backend API as
+faithfully as possible. In each `issue description`_, there will be a link to the relevant `reference API`_. Check
+where the function you're working on is located, e.g. :code:`numpy.inner` falls under :code:`numpy.linalg`. Then, in the
+Ivy source code, check :code:`ivy/functional/frontends/[backend]` for pre-existing files which best match the function's
+category in the backend reference API.
+
+Taking :code:`numpy.inner` as an example, we can see that there are a few :code:`ivy/functional/frontends/numpy`
+sub-directories to choose from:
+
+.. code-block:: bash
+    :emphasize-lines: 4
+
+    creation_routines
+    fft
+    indexing_routines
+    linalg
+    logic
+    ma
+    manipulation_routines
+    mathematical_functions
+    matrix
+    ndarray
+    random
+    sorting_searching_counting
+    statistics
+    ufunc
+
+There is a :code:`linalg` sub-directory, so we choose this. Then we need to choose
+from the files at this hierarchy:
+
+.. code-block:: bash
+    :emphasize-lines: 3
+
+    __init__.py
+    decompositions.py
+    matrix_and_vector_products.py
+    matrix_eigenvalues.py
+    norms_and_other_numbers.py
+    solving_equations_and_inverting_matrices.py
+
+
+This may require a bit of reasoning. :code:`inner` calculates the inner product of two arrays, so
+:code:`matrix_and_vector_products.py` seems like the most appropriate option. It is important to note that some functions
+require the :code:`np.linalg.[func]` namespace, as can gleamed from the numpy `reference API`_.
+These functions are listed out under the :code:`functional/frontends/numpy/__init__.py` `imports`_. There are some
+functions which have not been implemented yet, and are therefore commented out. Once you have finished the implementation of
+one of these functions, uncomment it from the list.
+
+
+The location of
+:code:`test_numpy_inner` should mirror the location of its corresponding function, this time in
+:code:`ivy_tests/test_ivy/test_frontends/[backend]`.
+
+If you're unsure about where to put the function you're working on, explore the content of these files to see if you
+can find a similar function. In :code:`matrix_and_vector_products.py`, we can see other functions such as :code:`outer`
+that are similar to :code:`inner`. This is confirmation that we've found the correct place! If many of the files are
+empty and you're unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.
+
 
 Ivy API Extensions
 ------------------

@@ -132,7 +132,7 @@ class ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        alpha: Optional[ivy.Container] = 0.2,
+        alpha: ivy.Container = 0.2,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -194,7 +194,7 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        alpha: Optional[ivy.Container] = 0.2,
+        alpha: ivy.Container = 0.2,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -318,7 +318,7 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        approximate: Optional[bool] = True,
+        approximate: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -620,6 +620,8 @@ class ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -635,6 +637,10 @@ class ContainerWithActivations(ContainerBase):
         ----------
         x
             input container.
+        beta
+            The beta value for the softplus formation. Default: None.
+        threshold
+            values above this revert to a linear function. Default: None.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -663,10 +669,18 @@ class ContainerWithActivations(ContainerBase):
             a: ivy.array([0.535, 0.42])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "softplus",
             x,
+            beta=beta,
+            threshold=threshold,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -678,6 +692,8 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -693,6 +709,10 @@ class ContainerWithActivations(ContainerBase):
         ----------
         self
             input container.
+        beta
+            The beta value for the softplus formation. Default: None.
+        threshold
+            values above this revert to a linear function. Default: None.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -721,9 +741,155 @@ class ContainerWithActivations(ContainerBase):
             a: ivy.array([0.535, 0.42])
         }
 
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
         """
         return self.static_softplus(
             self,
+            beta=beta,
+            threshold=threshold,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_log_softmax(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.log_softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.log_softmax also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        axis
+            the axis or axes along which the log_softmax should be computed
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the log_softmax unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
+        >>> y = ivy.Container.static_log_softmax(x)
+        >>> print(y)
+        {
+            a: ivy.array([-3.37, -3.35, -0.0719])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.4]), b=ivy.array([-0.2, -1.0]))
+        >>> y = ivy.Container.static_log_softmax(x)
+        >>> print(y)
+        {
+            a: ivy.array([-1.62, -0.22]),
+            b: ivy.array([-0.371, -1.17])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "log_softmax",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def log_softmax(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.log_softmax.
+        This method simply wraps the function, and so the docstring
+        for ivy.log_softmax also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            the axis or axes along which the log_softmax should be computed
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the log_softmax unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1.0, -0.98, 2.3]))
+        >>> y = x.log_softmax()
+        >>> print(y)
+        {
+            a: ivy.array([-3.37, -3.35, -0.0719])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.4]), b=ivy.array([-0.2, -1.0]))
+        >>> y = x.log_softmax()
+        >>> print(y)
+        {
+            a: ivy.array([-1.62, -0.22]),
+            b: ivy.array([-0.371, -1.17])
+        }
+        """
+        return self.static_log_softmax(
+            self,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

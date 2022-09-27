@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
 )
+from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -18,14 +19,15 @@ from ivy.func_wrapper import (
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, int]:
+) -> ivy.Array:
     """Returns the indices of the maximum values along a specified axis. When the
     maximum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -56,7 +58,7 @@ def argmax(
     Functional Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
@@ -91,7 +93,7 @@ def argmax(
                [2], \
                [2]])
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([-0., 1., -1.])
     >>> y = ivy.argmax(x)
@@ -101,7 +103,7 @@ def argmax(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0., 1., 2.])
     >>> y = x.argmax()
@@ -115,14 +117,15 @@ def argmax(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, int]:
+) -> ivy.Array:
     """Returns the indices of the minimum values along a specified axis. When the
     minimum value occurs multiple times, only the indices corresponding to the first
     occurrence are returned.
@@ -153,7 +156,7 @@ def argmin(
     Functional Examples
     --------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., -1.])
     >>> y = ivy.argmin(x)
@@ -181,7 +184,7 @@ def argmin(
                [1]])
 
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([0., 1., -1.])
     >>> y = ivy.argmin(x)
@@ -189,7 +192,7 @@ def argmin(
     ivy.array(2)
 
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
@@ -200,14 +203,14 @@ def argmin(
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0., 1., -1.])
     >>> y = x.argmin()
     >>> print(y)
     ivy.array(2)
 
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = x.argmin()
@@ -219,6 +222,7 @@ def argmin(
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_exceptions
 def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     """Returns the indices of the array elements which are non-zero.
 
@@ -240,7 +244,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     Functional Examples
     -------------------
 
-    With :code:`ivy.Array` input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 10, 15, 20, -50, 0])
     >>> y = ivy.nonzero(x)
@@ -252,7 +256,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y)
     (ivy.array([0, 0, 1, 1]), ivy.array([0, 1, 0, 1]))
 
-    With :code:`ivy.NativeArray` input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[10, 20], [10, 0], [0, 0]])
     >>> y = ivy.nonzero(x)
@@ -264,7 +268,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     >>> print(y)
     (ivy.array([1, 2, 4]), ivy.array([0, 0, 0]))
 
-    With :code:`ivy.Container` input:
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
     >>> y = ivy.nonzero(x)
@@ -283,21 +287,14 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
     Instance Method Examples
     ------------------------
 
-    Using :code:`ivy.Array` instance method:
+    Using :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])
     >>> y = x.nonzero()
     >>> print(y)
     (ivy.array([3, 4, 5]),)
 
-    Using :code:`ivy.NativeArray` instance method:
-
-    >>> x = ivy.native_array([[1,1], [0,0], [1,1]])
-    >>> y = x.nonzero()
-    >>> print(y)
-    tensor([[0,0],[0,1],[2,0],[2,1]])
-
-    Using :code:`ivy.Container` instance method:
+    Using :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
     >>> y = x.nonzero()
@@ -319,6 +316,7 @@ def nonzero(x: Union[ivy.Array, ivy.NativeArray], /) -> Tuple[ivy.Array]:
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -427,3 +425,32 @@ def where(
 
 # Extra #
 # ------#
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def argwhere(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns indices the indices of all non-zero elements of the input array.
+
+    Parameters
+    ----------
+    x
+        input array, for which indices are desired.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Indices of non-zero elements.
+
+    """
+    return current_backend(x).argwhere(x, out=out)
