@@ -339,7 +339,7 @@ def test_split_func_call_with_cont_input(
     x2 = ivy.asarray(x2, device=device)
     # inputs
 
-    if as_variable:
+    if as_variable and ivy.is_float_dtype(dtype[0]):
         in0 = ivy.Container(cont_key=ivy.variable(x1))
         in1 = ivy.Container(cont_key=ivy.variable(x2))
     else:
