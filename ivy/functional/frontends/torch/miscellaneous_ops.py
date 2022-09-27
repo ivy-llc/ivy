@@ -154,3 +154,7 @@ def logcumsumexp(input, dim, *, out=None):
 
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
+
+
+def cross(input, other, dim=None, *, out=None):
+    return ivy.cross(input, other, out=out)
