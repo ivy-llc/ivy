@@ -434,7 +434,7 @@ def full_like(
     >>> print(y)
     ivy.array([0.000123, 0.000123, 0.000123, 0.000123, 0.000123])
 
-    With :code:`float` datatype:
+    With float datatype:
 
     >>> x = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
     >>> fill_value = 0.000123
@@ -1150,7 +1150,7 @@ def full(
                [[True,  True],
                 [True,  True]]])
 
-    With :code:`ivy.NativeDevice` input:
+    With :class:`ivy.NativeDevice` input:
 
     >>> shape = ivy.NativeShape((1, 2))
     >>> fill_value = 0.68

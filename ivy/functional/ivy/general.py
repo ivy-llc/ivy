@@ -2154,7 +2154,7 @@ def stable_divide(
     >>> print(x)
     0.2
 
-    With :code:`float` input:
+    With float input:
 
     >>> x = ivy.stable_divide(5.0, 3.33)
     >>> print(x)

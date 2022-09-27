@@ -190,7 +190,7 @@ Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which wil
 calls to :code:`ivy.add`, :code:`ivy.subtract`, :code:`ivy.multiply` and
 :code:`ivy.divide` respectively if the lefthand operand is an :class:`ivy.Array` object.
 Otherwise, these special methods will be called on whatever objects are at the leaves of
-the container, such as :code`int`, :code:`float`, :code`ivy.NativeArray` etc.
+the container, such as :code`int`, float, :code`ivy.NativeArray` etc.
 
 Nestable Functions
 ------------------

@@ -92,7 +92,7 @@ class ArrayWithCreation(abc.ABC):
         >>> x.full_like(fill_value)
         ivy.array([0, 0, 0])
 
-        With :code:`float` datatype:
+        With float datatype:
 
         >>> fill_value = 0.000123
         >>> x = ivy.array(ivy.ones(5))
