@@ -77,3 +77,7 @@ def clip(a, a_min=None, a_max=None, out=None):
     if a_max is None:
         return ivy.maximum(a, a_min, out=out)
     return ivy.clip(a, a_min, a_max, out=out)
+
+
+def reshape(a, newshape, order="C"):
+    return ivy.reshape(a, newshape)

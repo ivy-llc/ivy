@@ -292,3 +292,54 @@ def test_jax_clip(
         a_max=max,
         out=None,
     )
+
+
+# reshape
+@st.composite
+def _get_input_and_reshape(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shape=shape,
+        )
+    )
+    new_shape = shape[1:] + (shape[0],)
+    return x_dtype, x, new_shape
+
+
+@handle_cmd_line_args
+@given(
+    input_x_shape=_get_input_and_reshape(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.reshape"
+    ),
+)
+def test_jax_numpy_reshape(
+    input_x_shape,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    x_dtype, x, shape = input_x_shape
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.reshape",
+        a=x[0],
+        newshape=shape,
+    )
