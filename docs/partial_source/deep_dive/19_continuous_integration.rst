@@ -6,23 +6,29 @@ We follow the practice of Continuous Integration (CI), in order to build and tes
 #. The commit doesn't introduce new errors, in the code base.
 #. The developer can easily debug the code when finding the source of an error.
 
-We use Github Actions in order to implement the CI Pipeline in our code, as explained in the following sections.
+We use GitHub Actions in order to implement the CI Pipeline in our code, as explained in the following sections.
 
-Github Actions
+GitHub Actions
 =========
 
-Github Actions allow implementing custom workflows that can build the code in the repository and run the tests. Workflows can be configured to be triggered on the following events:
+GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. Workflows can be configured to be triggered on the following events:
 
-#. Push: The Workflow triggers on any push to the repository with the possibility of getting triggered only on changes to specific files.
-#. Pull Requests: The Workflow triggers on any pull request made to the repository.
-#. Schedule: The Workflow runs on a fixed schedule, for ex., every hour, every day, etc. (Similar Cron Jobs in Ubuntu).
+* **Push**: The Workflow triggers on a push to the repository with the possibility of getting started only on changes to specific files.
+* **Pull Requests**: The Workflow triggers on any pull request made to the repository.
+* **Schedule**: The Workflow runs on a fixed schedule, for ex., every hour, every day, etc. (Similar to Cron Jobs in Ubuntu).
 
 All the workflows used by Ivy are defined in the .github/workflows directory.
 
-The following sections describe the relevant Workflows used in the Ivy Repository, that implement the CI Pipeline. Each of the workflows described below are triggered on:
+The following sections describe the relevant Workflows used in the Ivy Repository, that implement the CI Pipeline. Each of the workflows described below, are triggered on:
 
-#. Any push made to the repository
-#. Any pull request made to the repository with the labels 'labeled', 'opened', 'synchronize', 'reopened', or 'review_requested'.
+#. Any push made to the repository.
+#. Any pull request made to the repository of the following types:
+
+    * :code:`labeled`
+    * :code:`opened`
+    * :code:`synchronize`
+    * :code:`reopened`
+    * :code:`review_requested`
 
 Array API Tests
 =========
@@ -33,7 +39,7 @@ The Workflow runs the Array API Tests for each backend and submodule pair. More 
 Ivy Core Tests
 =========
 
-The `test-ivy-core.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core.yml>`_ workflow runs the Ivy Core Tests.
+The `test-ivy-core.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core.yml>`_ Workflow runs the Ivy Core Tests.
 
 Individual Tests in the Workflow are triggered only on changes to specific files. For a given backend :code:`b` and submodule :code:`s`, the corresponding test is run only if the commit changes the following files (and otherwise, it is skipped):
 
@@ -44,7 +50,7 @@ Individual Tests in the Workflow are triggered only on changes to specific files
 #. :code:`ivy/functional/backends/b/s.py`
 #. :code:`ivy/functional/ivy/s.py`
 
-In case you want to run all the Ivy Core Tests, there is a manually-triggered workflow available `here <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core-manual.yml>`_ that can be dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ tab.
+In case you want to run all the Ivy Core Tests, a manually-triggered workflow is available `here <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-core-manual.yml>`_ that can be dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ tab.
 
 More details about Ivy Tests are available `here <https://lets-unify.ai/ivy/deep_dive/15_ivy_tests.html>`_.
 
@@ -62,7 +68,7 @@ Similar to the Ivy Core Tests Workflow, Individual Tests are triggered only on c
 #. :code:`ivy/functional/backends/b/s.py`
 #. :code:`ivy/functional/ivy/s.py`
 
-Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy NN Tests, there is a manually-triggered workflow available `here <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn-manual.yml>`_.
+Similar to the Ivy Core Tests Workflow, in case you want to run all the Ivy NN Tests, a manually-triggered workflow is available `here <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-nn-manual.yml>`_.
 
 
 Ivy Stateful Tests
@@ -85,10 +91,10 @@ Ivy Frontend Tests
 =========
 The following workflows run the Frontend tests for the corresponding backend:
 
-#. Jax: `test-frontend-jax.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-jax.yml>`_
-#. NumPy: `test-frontend-numpy.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-numpy.yml>`_
-#. TensorFlow: `test-frontend-tensorflow.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-tensorflow.yml>`_
-#. PyTorch: `test-frontend-torch.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-torch.yml>`_
+#. **Jax**: `test-frontend-jax.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-jax.yml>`_
+#. **NumPy**: `test-frontend-numpy.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-numpy.yml>`_
+#. **TensorFlow**: `test-frontend-tensorflow.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-tensorflow.yml>`_
+#. **PyTorch**: `test-frontend-torch.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-frontend-torch.yml>`_
 
 Each of these workflows can also be Manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab.
 
@@ -98,18 +104,18 @@ The below subsections provide the roadmap for running workflows and interpreting
 
 Push
 --------
-Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above). This can be seen on the Github Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:
+Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above). This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:
 
 
 .. image:: https://drive.google.com/uc?id=1RR3oc8c3wd3mQvhe2FXtADpllKq-47nt
    :alt: Push
 
-Clicking on the yellow dot (which changes to a cross or tick, when the tests have completed) yields a view of the test-suite results as shown below:
+Clicking on the yellow dot (which changes to a cross or tick, when the tests have been completed) yields a view of the test-suite results as shown below:
 
 .. image:: https://drive.google.com/uc?id=1cixTYEtBz-KI8LTfcBHT4L2aOKjuM11a
    :alt: Test-Suite
 
-Click on "Details" corresponding to the failing tests, in order to identify the cause of the failure. It redirects to the Actions Tab, showing details of the failure, as shown below:
+Click on the "Details" link corresponding to the failing tests, in order to identify the cause of the failure. It redirects to the Actions Tab, showing details of the failure, as shown below:
 
 .. image:: https://drive.google.com/uc?id=16PPYN-zy0hDyh2C3Ey-G1deTyCoykeB9
    :alt: Workflow Result
@@ -122,7 +128,7 @@ Click on the corresponding section, as given below, in order to see the logs of 
 #. Ivy Stateful Tests: Run Stateful Tests
 #. Ivy Frontend Tests: Run Frontend Test
 
-You can ignore the other sections of the workflow, as they are for book-keeping and implementation purposes.
+You can ignore the other sections of the Workflow, as they are for book-keeping and implementation purposes.
 
 Pull Request
 -----------
@@ -149,7 +155,7 @@ The cron jobs are used to update the latest results in the Dashboard, as explain
 
 Dashboard
 =========
-In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest workflow that ran each test. These are the links to the dashboard for the given workflows:
+In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test. These are the links to the Dashboard for the given workflows:
 
 #. `Array API Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md>`_
 #. `Ivy Core Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_core_dashboard.md>`_
