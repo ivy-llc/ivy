@@ -79,6 +79,11 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+def dot(a, b, *, precision=None):
+    # TODO: precision handling
+    return ivy.vecdot(a, b)
+
+
 # def einsum(*operands, out=None, optimize="optimal", precision=None,
 # _use_xeinsum=False):
 #     # TODO: optimize, precision handling

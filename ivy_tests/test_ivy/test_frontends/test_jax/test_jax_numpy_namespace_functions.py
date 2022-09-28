@@ -295,6 +295,45 @@ def test_jax_numpy_clip(
     )
 
 
+# dot
+@handle_cmd_line_args
+@given(
+    dtype_x_y=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=10,
+        large_abs_safety_factor=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.dot"
+    ),
+)
+def test_jax_numpy_dot(
+    dtype_x_y,
+    num_positional_args,
+    as_variable,
+    native_array,
+    fw,
+):
+    input_dtype, x = dtype_x_y
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.dot",
+        a=x[0],
+        b=x[1],
+        precision=None,
+    )
+
+
 # reshape
 @st.composite
 def _get_input_and_reshape(draw):
