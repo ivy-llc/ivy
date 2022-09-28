@@ -154,3 +154,9 @@ def logcumsumexp(input, dim, *, out=None):
 
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
+
+
+def ravel(input):
+    reshape_shape = (int(ivy.prod(ivy.array(tuple(input.shape)))), 1)
+    return ivy.array(
+        ivy.array(input, dtype=input.dtype).reshape(reshape_shape))
