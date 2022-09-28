@@ -232,7 +232,7 @@ def x_and_mha(draw):
     method_with_v=st.booleans(),
     num_positional_args_init=helpers.num_positional_args(fn_name="MultiHeadAttention.__init__"),
     num_positional_args_method=helpers.num_positional_args(fn_name="MultiHeadAttention._forward"),
-    build_mode=st.sampled_from(["on_init"]),
+    build_mode=st.just("on_init"),
 )
 def test_multi_head_attention_layer(
     dtype_mha,
