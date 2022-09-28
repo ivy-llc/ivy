@@ -642,4 +642,3 @@ vector_to_skew_symmetric_matrix.unsupported_dtypes = (
     "float16",
     "float64",
 )
-# vector_to_skew_symmetric_matrix.unsupported_dtypes = ("float16", "float64")
