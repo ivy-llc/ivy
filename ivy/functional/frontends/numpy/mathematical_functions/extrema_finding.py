@@ -60,11 +60,8 @@ def nanmin(
     initial=None,
     where=True,
 ):
-    bound_max = ivy.finfo(a).max if initial is None else initial
     nan_mask = ivy.isnan(a)
-    a = ivy.where(
-        ivy.logical_not(nan_mask), a, ivy.default(out, a.full_like(bound_max))
-    )
+    a = ivy.where(ivy.logical_not(nan_mask), a, ivy.default(out, a.full_like(+ivy.inf)))
     if initial is not None:
         if ivy.is_array(where):
             a = ivy.where(where, a, ivy.default(out, a.full_like(initial)))
@@ -76,7 +73,7 @@ def nanmin(
                 s[axis[0]] = 1
             else:
                 s[axis] = 1
-        header = ivy.full(ivy.Shape(s.to_list()), initial)  # , dtype=ivy.dtype(a))
+        header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
                 a = ivy.concat([a, header], axis=axis[0])
