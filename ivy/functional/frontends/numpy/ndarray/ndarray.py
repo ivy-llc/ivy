@@ -23,11 +23,13 @@ class ndarray:
         kind="introselect",
         order=None,
     ):
-        return np.argpartition(self.data, 
+        return np.argpartition(
+            self.data, 
             kth=kth,
             axis=axis, 
             kind=kind, 
-            order=order)
+            order=order,
+        )
 
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
