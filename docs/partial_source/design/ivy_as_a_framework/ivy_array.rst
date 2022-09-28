@@ -11,7 +11,7 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
 
 .. code-block:: python
 
-    # ivy/array/__init__.py
+    # ivy/array/array.py
     class Array(
         ArrayWithActivations,
         ArrayWithCreation,
@@ -240,7 +240,7 @@ In addition to the functions in the topic-specific parent classes, there are abo
 
 .. code-block:: python
 
-    # ivy/array/__init__.py
+    # ivy/array/array.py
     def __add__(self, other):
         return ivy.add(self, other)
 
