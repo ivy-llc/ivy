@@ -524,7 +524,9 @@ def test_bitwise_right_shift(
 
     # negative shifts will throw an exception
     # shifts >= dtype witdth produce backend-defined behavior
-    x[1] = np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1)
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtype[1]).bits - 1), dtype=input_dtype[1]
+    )
 
     helpers.test_function(
         input_dtypes=input_dtype,
