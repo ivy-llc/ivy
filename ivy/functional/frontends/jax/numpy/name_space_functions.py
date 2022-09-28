@@ -86,5 +86,12 @@ def concatenate(arrays, axis=0, dtype=None):
     return ret
 
 
+def mean(x, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    ret = ivy.mean(x, axis=axis, out=out, keepdims=keepdims)
+    if dtype:
+        ret = ivy.array(ret, dtype=dtype)
+    return ret
+
+
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
