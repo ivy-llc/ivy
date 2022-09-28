@@ -39,6 +39,7 @@ def test_torch_is_tensor(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.numel"
@@ -69,6 +70,7 @@ def test_torch_numel(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.is_floating_point"
@@ -99,6 +101,7 @@ def test_torch_is_floating_point(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
         min_dim_size=1,
         max_dim_size=1,
     ),

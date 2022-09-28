@@ -15,12 +15,6 @@ def is_tensor(obj):
 # def is_conj(obj):
 # 	return ivy.is_conj(obj)
 
-# def set_flush_denormal(obj):
-# 	ivy.set_flush_denormal(obj)
-
-# def set_default_tensor_type(obj):
-# 	ivy.set_default_tensor_type(obj)
-
 
 def numel(input):
     ivy.assertions.check_true(
