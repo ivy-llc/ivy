@@ -170,8 +170,14 @@ def matmul(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    transpose_a: bool = False,
+    transpose_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if transpose_a is True:
+        x1 = tf.transpose(x1)
+    if transpose_b is True:
+        x2 = tf.transpose(x2)
     dtype_from = tf.experimental.numpy.promote_types(
         x1.dtype.as_numpy_dtype, x2.dtype.as_numpy_dtype
     )
