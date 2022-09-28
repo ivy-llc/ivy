@@ -79,6 +79,12 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+# def einsum(*operands, out=None, optimize="optimal", precision=None,
+# _use_xeinsum=False):
+#     # TODO: optimize, precision handling
+#     return ivy.eimsum(equation=optimize, *operands, out=out)
+
+
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
 
