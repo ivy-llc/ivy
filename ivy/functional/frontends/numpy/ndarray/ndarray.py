@@ -1,4 +1,5 @@
 # global
+import numpy as np
 
 # local
 import ivy
@@ -17,8 +18,16 @@ class ndarray:
     # argpartition #
     def argpartition(
         self,
+        kth,
+        axis=-1,
+        kind='introselect',
+        order=None,
     ):
-        pass
+        return np.argpartition(self.data, 
+            kth=kth,
+            axis=axis, 
+            kind=kind, 
+            order=order)
 
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
