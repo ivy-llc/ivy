@@ -122,6 +122,7 @@ ivy.tan()
         dtype,
         where,
         as_variable,
+        with_out,
         num_positional_args,
         native_array,
         fw,
@@ -137,7 +138,7 @@ ivy.tan()
         np_frontend_helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
-            with_out=True,
+            with_out=with_out,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
             fw=fw,
@@ -198,44 +199,45 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_non_linear_activation_functions.py
-    # threshold
+    # leaky_relu
     @handle_cmd_line_args
     @given(
-        dtype_and_input=helpers.dtype_and_values(
+        dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
         ),
         num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.torch.threshold"
+            fn_name="ivy.functional.frontends.torch.leaky_relu"
         ),
+        alpha=st.floats(min_value=0, max_value=1),
     )
-    def test_torch_threshold(
-        dtype_and_input,
-        as_variable,
+    def test_torch_leaky_relu(
+        dtype_and_x,
         num_positional_args,
+        as_variable,
+        with_out,
         native_array,
         fw,
+        alpha,
     ):
-        input_dtype, input = dtype_and_input
-        assume("float16" not in input_dtype)
+        input_dtype, x = dtype_and_x
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
-            with_out=False,
+            with_out=with_out,
             with_inplace=True,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
             fw=fw,
             frontend="torch",
-            fn_tree="nn.functional.threshold",
-            input=input[0],
-            threshold=0.5,
-            value=20,
+            fn_tree="nn.functional.leaky_relu",
+            input=x[0],
+            negative_slope=alpha,
         )
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for PyTorch.
 * We set :code:`fn_tree` to :code:`tan` which is the path to the function in the PyTorch namespace.
-* We set :code:`with_inplace` to :code:`True` and :code:`with_out` to :code:`False` as the function supports direct inplace in a special way: updating the :code:`input` argument according to the :code:`inplace` argument.
-* We also set :code:`with_inplace` to :code:`True` and :code:`with_out` to :code:`False` when we deal with the special In-place versions of PyTorch functions that always do inplace update.
+* We set :code:`with_inplace` to :code:`True` as the function supports direct inplace update in a special way: updating the :code:`input` argument according to the :code:`inplace` argument.
+* We also set :code:`with_inplace` to :code:`True` when we deal with the special In-place versions of PyTorch functions that always do inplace update.
 
 ivy.full()
 ^^^^^^^^^^
