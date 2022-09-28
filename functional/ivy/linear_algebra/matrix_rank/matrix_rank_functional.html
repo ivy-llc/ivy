@@ -208,18 +208,30 @@ but this function is <em>nestable</em>, and therefore also accepts <code class="
 instances in place of any of the arguments.</p>
 <p class="rubric">Examples</p>
 <p>With :code: ‘ivy.Array’ inputs:</p>
-<p>1. Full Matrix
-&gt;&gt;&gt; x = ivy.array([[1., 2.], [3., 4.]])
-&gt;&gt;&gt; ivy.matrix_rank(x)
-ivy.array(2.)</p>
-<p>2. Rank Deficient Matrix
-&gt;&gt;&gt; x = ivy.array([[1., 0.], [0., 0.]])
-&gt;&gt;&gt; ivy.matrix_rank(x)
-ivy.array(1.)</p>
-<p>3. 1 Dimension - rank 1 unless all 0
-&gt;&gt;&gt; x = ivy.array([[1., 1.])
-&gt;&gt;&gt; ivy.matrix_rank(x)
-ivy.array(1.)</p>
+<ol class="arabic simple">
+<li><p>Full Matrix</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array(2.)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Rank Deficient Matrix</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array(1.)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>1 Dimension - rank 1 unless all 0</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array(1.)</span>
+</pre></div>
+</div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="go">ivy.array(0)</span>
@@ -237,7 +249,10 @@ ivy.array(1.)</p>
 <div><p>b = ivy.array([[1., 0.], [0., 0.]]))</p>
 </div></blockquote>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">{a:ivy.array(2.), b:ivy.array(1.)}</span>
+<span class="go">{</span>
+<span class="go">    a:ivy.array(2.),</span>
+<span class="go">    b:ivy.array(1.)</span>
+<span class="go">}</span>
 </pre></div>
 </div>
 </dd></dl>
