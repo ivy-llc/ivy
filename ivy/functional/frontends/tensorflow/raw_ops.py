@@ -15,6 +15,10 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
+def Add(*, x, y, name="Add"):
+    return ivy.add(x, y)
+
+
 def ArgMax(*, input, dimension, output_type=None, name=None):
     if output_type in ["uint16", "int16", "int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=dimension), output_type)
@@ -66,6 +70,10 @@ def Cos(*, x, name="Cos"):
 
 def Cosh(*, x, name="cosh"):
     return ivy.cosh(x)
+
+
+def Div(*, x, y, name="Div"):
+    return ivy.divide(x, y)
 
 
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
