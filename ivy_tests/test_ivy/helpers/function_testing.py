@@ -1221,49 +1221,30 @@ def test_frontend_method(
     # Run testing
     class_name = class_name.split(".")
     ins_class = ivy.functional.frontends.__dict__[frontend]
+    frontend_class = importlib.import_module(frontend)
     for c_n in class_name:
         ins_class = getattr(ins_class, c_n)
+        frontend_class = getattr(frontend_class, c_n)
     ins = ins_class(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
 
     # Compute the return with a Ground Truth backend
-    ivy.set_backend(ground_truth_backend)
-    args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
-        args_np=args_np_constructor,
-        arg_np_vals=con_arg_np_vals,
-        args_idxs=con_args_idxs,
-        kwargs_np=kwargs_np_constructor,
-        kwarg_np_vals=con_kwarg_np_vals,
-        kwargs_idxs=con_kwargs_idxs,
-        input_dtypes=input_dtypes_init,
-        as_variable_flags=as_variable_flags_init,
-        native_array_flags=native_array_flags_init,
-    )
-    args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
-        args_np=args_np_method,
-        arg_np_vals=met_arg_np_vals,
-        args_idxs=met_args_idxs,
-        kwargs_np=kwargs_np_method,
-        kwarg_np_vals=met_kwarg_np_vals,
-        kwargs_idxs=met_kwargs_idxs,
-        input_dtypes=input_dtypes_method,
-        as_variable_flags=as_variable_flags_method,
-        native_array_flags=native_array_flags_method,
-    )
-    ins_gt = ins_class(*args_gt_constructor, **kwargs_gt_constructor)
-    ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
-    )
+    ivy.set_backend(frontend)
+    ins_gt = frontend_class(*args_constructor, **kwargs_constructor)
+    frontend_ret = ins_gt.__getattribute__(method_name)(*args_method, **kwargs_method)
+    frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
+    frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+    frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, ret_from_gt
+        return ret, frontend_ret
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
-        ret_np_from_gt_flat=ret_np_from_gt_flat,
+        ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol_,
         atol=atol_,
     )
