@@ -118,11 +118,8 @@ def inv(
             ret = jnp.linalg.inv(x)
             return ret
         else:
-            cofactor = jnp.transpose(jnp.linalg.inv(x)) * jnp.linalg.det(x)
-            inverse = jnp.multiply(
-                jnp.divide(1, jnp.linalg.det(x)), jnp.transpose(cofactor)
-            )
-            ret = inverse
+            x = jnp.transpose(x)
+            ret = jnp.linalg.inv(x)
             return ret
 
 

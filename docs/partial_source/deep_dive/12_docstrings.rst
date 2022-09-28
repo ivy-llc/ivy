@@ -8,13 +8,13 @@ Docstrings
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ
 .. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
 
-All functions in the Ivy API at :code:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
+All functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
 In contrast, all backend implementations at
-:code:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
+:mod:`ivy/functional/backends/backend_name/category_name.py` should not have any docstrings,
 on account that these are effectively just different instantiations of the functions at
-:code:`ivy/functional/ivy/category_name.py`.
+:mod:`ivy/functional/ivy/category_name.py`.
 
-In order to explain how docstrings should be written, we will use :code:`ivy.tan` as an example.
+In order to explain how docstrings should be written, we will use :func:`ivy.tan` as an example.
 
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a
 template. These docstrings can be found under `spec/API_specification/array_api`_.
@@ -61,7 +61,7 @@ docstring like so:
 
 The `Array API Standard`_ defines a subset of behaviour that each function must adhere to.
 Ivy extends many of these functions with additional behaviour and arguments.
-In the case of :code:`ivy.tan`, there is also the argument :code:`out` which needs to be added to the docstring,
+In the case of :func:`ivy.tan`, there is also the argument :code:`out` which needs to be added to the docstring,
 like so:
 
 .. code-block:: diff
@@ -185,7 +185,7 @@ which can be called on any types that support the corresponding special methods:
     -------
     <return value with its description>
 
-Let's take :code:`ivy.add` as an example.
+Let's take :func:`ivy.add` as an example.
 The docstring for
 `ivy.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191>`_
 is thorough, as explained above.
@@ -217,9 +217,9 @@ wraps the function
 `ivy.linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22>`_,
 but does so in a stateful manner
 with the variables stored internally in the instance of the class.
-Even though the :code:`ivy.Linear` class wraps :code:`ivy.linear` in the forward pass
+Even though the :class:`ivy.Linear` class wraps :func:`ivy.linear` in the forward pass
 defined in `ivy.Linear._forward <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84>`_,
-the function signatures of :code:`ivy.linear` and :code:`ivy.Linear._forward` are still
+the function signatures of :func:`ivy.linear` and :meth:`ivy.Linear._forward` are still
 quite distinct, with the former including all trainable variables explicitly,
 and the latter having these implicit as internal instance attributes of the class.
 

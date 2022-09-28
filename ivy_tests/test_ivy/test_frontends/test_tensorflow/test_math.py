@@ -169,8 +169,8 @@ def test_tensorflow_maximum(dtype_and_x, as_variable, native_array, fw):
         fw=fw,
         frontend="tensorflow",
         fn_tree="maximum",
-        a=np.asarray(x[0], dtype=input_dtype[0]),
-        b=np.asarray(x[1], dtype=input_dtype[1]),
+        a=x[0],
+        b=x[1],
     )
 
 
@@ -1016,8 +1016,8 @@ def test_tensorflow_polyval(
         fw=fw,
         frontend="tensorflow",
         fn_tree="math.polyval",
-        coeffs=coeffs[0],
-        x=x[0],
+        coeffs=coeffs,
+        x=x,
     )
 
 
