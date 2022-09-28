@@ -289,15 +289,15 @@ of runtime efficiency. We explore this through the examples of <code class="code
 <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/softplus">TensorFlow</a>,
 and
 <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.functional.softplus.html">PyTorch</a>,
-we can see that <code class="code docutils literal notranslate"><span class="pre">torch</span></code> is the only framework which supports the inclusion of the
+we can see that torch is the only framework which supports the inclusion of the
 <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> arguments, which are added for improved numerical
-stability. We can also see that <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> does not support a <code class="code docutils literal notranslate"><span class="pre">softplus</span></code>
+stability. We can also see that numpy does not support a <code class="code docutils literal notranslate"><span class="pre">softplus</span></code>
 function at all. Ivy should also support the <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code>
 arguments, in order to provide the generalized superset implementation among the backend
 frameworks.</p>
-<p>Let’s take the <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> backend implementation as an example when assessing
+<p>Let’s take the tensorflow backend implementation as an example when assessing
 the necessary changes. Without superset behaviour, the implementation is incredibly
-simple, with only a single <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> function called under the hood.</p>
+simple, with only a single tensorflow function called under the hood.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
              <span class="o">/</span><span class="p">,</span>
              <span class="o">*</span><span class="p">,</span>
@@ -306,7 +306,7 @@ simple, with only a single <code class="code docutils literal notranslate"><span
 </pre></div>
 </div>
 <p>The simplest approach would be to implement <code class="code docutils literal notranslate"><span class="pre">softplus</span></code> in each Ivy backend as
-a simple composition. For example, a simple composition in the <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code>
+a simple composition. For example, a simple composition in the tensorflow
 backend would look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
              <span class="o">/</span><span class="p">,</span>
@@ -320,7 +320,7 @@ backend would look like the following:</p>
 </div>
 <p>This approach uses the default argument values used by PyTorch, and it does indeed
 extend the behaviour correctly. However, the implementation now uses <strong>six</strong>
-<code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> function calls instead of one, being: <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>,
+tensorflow function calls instead of one, being: <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>,
 <code class="code docutils literal notranslate"><span class="pre">tf.nn.softplus</span></code>, <code class="code docutils literal notranslate"><span class="pre">__div__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__mul__</span></code>, <code class="code docutils literal notranslate"><span class="pre">__gt__</span></code>,
 <code class="code docutils literal notranslate"><span class="pre">tf.where</span></code> in order of execution respectively. If a user doesn’t care about the
 extra <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> and <code class="code docutils literal notranslate"><span class="pre">beta</span></code> arguments, then a <code class="code docutils literal notranslate"><span class="pre">6×</span></code> increase in
@@ -372,8 +372,8 @@ implement the full superset, for some of the reasons explained above.</p>
 <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/linspace">TensorFlow</a>,
 and
 <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.linspace.html">PyTorch</a>,
-we can see that <code class="code docutils literal notranslate"><span class="pre">torch</span></code> does not support arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and
-<code class="code docutils literal notranslate"><span class="pre">end</span></code> arguments, while <code class="code docutils literal notranslate"><span class="pre">jax</span></code>, <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> all do.
+we can see that torch does not support arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">end</span></code> arguments, while JAX, numpy and tensorflow all do.
 Likewise, Ivy also supports arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">stop</span></code> arguments,
 and in doing so provides the generalized superset implementation among the backend
 frameworks.</p>
@@ -385,7 +385,7 @@ frameworks.</p>
 <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/eye">TensorFlow</a>,
 and
 <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.eye.html">PyTorch</a>,
-we can see that <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> is the only framework which supports a
+we can see that tensorflow is the only framework which supports a
 <code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code> argument. Likewise, Ivy also supports a <code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code>
 argument, and in doing so provides the generalized superset implementation among the
 backend frameworks.</p>
@@ -397,7 +397,7 @@ backend frameworks.</p>
 <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/scatter_nd">TensorFlow</a>,
 and
 <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.scatter.html">PyTorch</a>,
-we can see that <code class="code docutils literal notranslate"><span class="pre">torch</span></code> only supports scattering along a single dimension,
+we can see that torch only supports scattering along a single dimension,
 while all other frameworks support scattering across multiple dimensions at once.
 Likewise, Ivy also supports scattering across multiple dimensions at once,
 and in doing so provides the generalized superset implementation among the backend
@@ -410,10 +410,10 @@ frameworks.</p>
 <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/logical_and">TensorFlow</a>,
 and
 <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.logical_and.html">PyTorch</a>,
-we can see that <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch</span></code> support the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument for
-performing inplace updates, while <code class="code docutils literal notranslate"><span class="pre">jax</span></code> and <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> do not.
-With regards to the supported data types, <code class="code docutils literal notranslate"><span class="pre">jax</span></code>, <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch</span></code>
-support numeric arrays, while <code class="code docutils literal notranslate"><span class="pre">tensorflow</span></code> supports only boolean arrays.
+we can see that numpy and torch support the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument for
+performing inplace updates, while JAX and tensorflow do not.
+With regards to the supported data types, JAX, numpy and torch
+support numeric arrays, while tensorflow supports only boolean arrays.
 With regards to both of these points, Ivy provides the generalized superset
 implementation among the backend frameworks, with support for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument
 and also support for both numeric and boolean arrays in the input.</p>

@@ -181,27 +181,27 @@ frontend functions.</p>
 explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a href="#id4"><span class="problematic" id="id5">`open_task`_</span></a>.</p>
 <p><strong>Jax</strong></p>
 <p>JAX has two distinct groups of functions, those in the <code class="code docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace and
-those in the <code class="code docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace. The former set of functions map very closely
+those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace. The former set of functions map very closely
 to the API for the Accelerated Linear Algebra (<a class="reference external" href="https://www.tensorflow.org/xla">XLA</a>)
 compiler, which is used under the hood to run high performance JAX code. The latter set
 of functions map very closely to NumPy’s well known API. In general, all functions in
-the <code class="code docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace are themselves implemented as a composition of the
+the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace are themselves implemented as a composition of the
 lower-level functions in the <code class="code docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace.</p>
 <p>When transpiling between frameworks, the first step is to compile the computation graph
 into low level python functions for the source framework using Ivy’s graph
 compiler, before then replacing these nodes with the associated functions in Ivy’s
 frontend API. Given that all jax code can be decomposed into <code class="code docutils literal notranslate"><span class="pre">jax.lax</span></code>
-function calls, when transpiling <code class="code docutils literal notranslate"><span class="pre">jax</span></code> code it should always be possible to
+function calls, when transpiling JAX code it should always be possible to
 express the computation graph as a composition of only <code class="code docutils literal notranslate"><span class="pre">jax.lax</span></code> functions.
 Therefore, arguably these are the <em>only</em> functions we should need to implement in the
 JAX frontend. However, in general we wish to be able to compile a graph in the backend
 framework with varying levels of dynamicism. A graph of only <code class="code docutils literal notranslate"><span class="pre">jax.lax</span></code> functions
 chained together in general is more <em>static</em> and less <em>dynamic</em> than a graph which
-chains <code class="code docutils literal notranslate"><span class="pre">jax.numpy</span></code> functions together. We wish to enable varying extents of
+chains <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> functions together. We wish to enable varying extents of
 dynamicism when compiling a graph with our graph compiler, and therefore we also
-implement the functions in the <code class="code docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace in our frontend API for JAX.</p>
-<p>Thus, both <code class="code docutils literal notranslate"><span class="pre">lax</span></code> and <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> modules are created in the JAX frontend API.
-We start with the function <code class="code docutils literal notranslate"><span class="pre">lax.add</span></code> as an example.</p>
+implement the functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace in our frontend API for JAX.</p>
+<p>Thus, both <code class="xref py py-mod docutils literal notranslate"><span class="pre">lax</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code> modules are created in the JAX frontend API.
+We start with the function <code class="xref py py-func docutils literal notranslate"><span class="pre">lax.add()</span></code> as an example.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
