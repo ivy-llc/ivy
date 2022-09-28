@@ -3,6 +3,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
@@ -342,4 +343,62 @@ def test_jax_numpy_reshape(
         fn_tree="numpy.reshape",
         a=x[0],
         newshape=shape,
+    )
+
+
+# var
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
+    ddof=st.floats(min_value=0, max_value=1),
+    keepdims=st.booleans(),
+    where=np_helpers.where(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.var"
+    ),
+)
+def test_jax_numpy_var(
+    dtype_x_axis,
+    dtype,
+    ddof,
+    keepdims,
+    where,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    fw,
+):
+    x_dtype, x, axis = dtype_x_axis
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="jax",
+        fn_tree="numpy.var",
+        a=x[0],
+        axis=axis,
+        dtype=dtype,
+        out=None,
+        ddof=ddof,
+        keepdims=keepdims,
+        where=where,
     )

@@ -81,3 +81,13 @@ def clip(a, a_min=None, a_max=None, out=None):
 
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, newshape)
+
+
+def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
+    a = ivy.array(a)
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret.astype(dtype)
